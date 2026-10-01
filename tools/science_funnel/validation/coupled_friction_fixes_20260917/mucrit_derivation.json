@@ -1,0 +1,24 @@
+{
+  "descent_peak_demand_first_600_ticks": 0.7820104343326856,
+  "frozen_descent_peak": 0.7848445602,
+  "frozen_mu_crit_settle": 0.7820104343,
+  "heat_ratio_0_6_over_0_8": 2.6407379669047364,
+  "mu_0_6": {
+    "friction_heat_J": 0.012667781762499225,
+    "settles": false,
+    "slide_ticks": 2253,
+    "stick_ticks": 3716,
+    "travel_m": 0.049269776954677685
+  },
+  "mu_0_8": {
+    "friction_heat_J": 0.004797061246234663,
+    "settles": true,
+    "slide_ticks": 0,
+    "stick_ticks": 5969,
+    "travel_m": 0.020187596748124925
+  },
+  "mu_crit_settle_bisection": 0.78523469467713,
+  "predicate": "press targets 20/20, 6000 ticks, settle = slip<1e-9 m/s on every one of the final 600 ticks",
+  "scene": ".tmp\\coupled-native\\scene.json",
+  "whole_trial_peak_demand": 0.7820104343326856
+}

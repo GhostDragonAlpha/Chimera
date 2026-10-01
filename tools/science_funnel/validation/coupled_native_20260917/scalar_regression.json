@@ -1,0 +1,108 @@
+{
+  "checks": [
+    {
+      "detail": {},
+      "name": "intent_does_not_write_pose",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "power_off_falls_to_support",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "passive_work_zero",
+      "pass": true
+    },
+    {
+      "detail": {
+        "expected_N": 1.8948861880413692,
+        "measured_N": 1.894886188041369
+      },
+      "name": "static_support_from_virtual_work",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "obstruction_stalls_with_reaction",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "insufficient_torque_cannot_reach_target",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "stronger_drive_lifts_weight",
+      "pass": true
+    },
+    {
+      "detail": {
+        "worst_J": 1.1957101975212936e-13
+      },
+      "name": "16_scenario_energy_account",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "nonnegative_store",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "torque_never_exceeds_cap",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "named_energy_exhaustion",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "empty_store_no_later_active_work",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "empty_store_reports_unusable",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "positive_remainder_is_not_available_work",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "constant_torque_analytic",
+      "pass": true
+    },
+    {
+      "detail": {
+        "coarse_error_rad": 6.374446719359383e-07,
+        "half_step_error_rad": 1.515109357974609e-07
+      },
+      "name": "second_order_time_refinement",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "support_requires_explicit_reset",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "pose_write_refused",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "native_force_scene_geometry",
+      "pass": true
+    }
+  ],
+  "failed": 0
+}

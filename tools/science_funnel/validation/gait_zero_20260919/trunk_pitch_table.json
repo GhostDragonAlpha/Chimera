@@ -1,0 +1,303 @@
+{
+ "membrane": "trunk-pitch freedom: theta*(phi) minimizing max demand/cap over the single-support window",
+ "scan": "theta in [-0.60, +0.60] rad at 0.02; statics with the base-rotation DOF, contact planted, pitch actuator carrying the GRF moment about the pelvis",
+ "nodes": [
+  {
+   "phi": 0.0,
+   "theta_star_rad": -0.26,
+   "theta_star_deg": -14.9,
+   "worst_ratio": 0.4653,
+   "all_within_caps": true,
+   "ratios": {
+    "hip": 0.4653,
+    "knee": 0.3123,
+    "ankle": 0.1672,
+    "mp": 0.0052,
+    "posture": 0.4498
+   },
+   "demands_Nm": {
+    "hip": -5.22,
+    "knee": 2.075,
+    "ankle": 1.237,
+    "mp": 0.005,
+    "posture": -5.045
+   }
+  },
+  {
+   "phi": 0.05,
+   "theta_star_rad": -0.16,
+   "theta_star_deg": -9.17,
+   "worst_ratio": 0.4993,
+   "all_within_caps": true,
+   "ratios": {
+    "hip": 0.4993,
+    "knee": 0.496,
+    "ankle": 0.1621,
+    "mp": 0.0052,
+    "posture": 0.286
+   },
+   "demands_Nm": {
+    "hip": -5.602,
+    "knee": 3.295,
+    "ankle": 1.199,
+    "mp": 0.005,
+    "posture": -3.209
+   }
+  },
+  {
+   "phi": 0.1,
+   "theta_star_rad": 0.0,
+   "theta_star_deg": 0.0,
+   "worst_ratio": 0.6072,
+   "all_within_caps": true,
+   "ratios": {
+    "hip": 0.6072,
+    "knee": 0.5731,
+    "ankle": 0.156,
+    "mp": 0.0053,
+    "posture": 0.0169
+   },
+   "demands_Nm": {
+    "hip": -6.811,
+    "knee": 3.807,
+    "ankle": 1.154,
+    "mp": 0.005,
+    "posture": -0.19
+   }
+  },
+  {
+   "phi": 0.15,
+   "theta_star_rad": 0.14,
+   "theta_star_deg": 8.02,
+   "worst_ratio": 0.6493,
+   "all_within_caps": true,
+   "ratios": {
+    "hip": 0.623,
+    "knee": 0.6493,
+    "ankle": 0.1544,
+    "mp": 0.0052,
+    "posture": 0.2184
+   },
+   "demands_Nm": {
+    "hip": -6.989,
+    "knee": 4.313,
+    "ankle": 1.142,
+    "mp": 0.005,
+    "posture": 2.45
+   }
+  },
+  {
+   "phi": 0.2,
+   "theta_star_rad": 0.26,
+   "theta_star_deg": 14.9,
+   "worst_ratio": 0.6621,
+   "all_within_caps": true,
+   "ratios": {
+    "hip": 0.633,
+    "knee": 0.6621,
+    "ankle": 0.1542,
+    "mp": 0.0051,
+    "posture": 0.4073
+   },
+   "demands_Nm": {
+    "hip": -7.101,
+    "knee": 4.399,
+    "ankle": 1.141,
+    "mp": 0.004,
+    "posture": 4.569
+   }
+  },
+  {
+   "phi": 0.25,
+   "theta_star_rad": 0.38,
+   "theta_star_deg": 21.77,
+   "worst_ratio": 0.6412,
+   "all_within_caps": true,
+   "ratios": {
+    "hip": 0.6412,
+    "knee": 0.6394,
+    "ankle": 0.1525,
+    "mp": 0.0048,
+    "posture": 0.5797
+   },
+   "demands_Nm": {
+    "hip": -7.194,
+    "knee": 4.248,
+    "ankle": 1.128,
+    "mp": 0.004,
+    "posture": 6.504
+   }
+  },
+  {
+   "phi": 0.3,
+   "theta_star_rad": -0.2,
+   "theta_star_deg": -11.46,
+   "worst_ratio": 0.948,
+   "all_within_caps": true,
+   "ratios": {
+    "hip": 0.337,
+    "knee": 0.948,
+    "ankle": 0.9442,
+    "mp": 0.0051,
+    "posture": 0.3411
+   },
+   "demands_Nm": {
+    "hip": 3.781,
+    "knee": 6.298,
+    "ankle": -6.984,
+    "mp": 0.005,
+    "posture": -3.826
+   }
+  },
+  {
+   "phi": 0.35,
+   "theta_star_rad": 0.38,
+   "theta_star_deg": 21.77,
+   "worst_ratio": 0.9374,
+   "all_within_caps": true,
+   "ratios": {
+    "hip": 0.895,
+    "knee": 0.1685,
+    "ankle": 0.9374,
+    "mp": 0.0049,
+    "posture": 0.5423
+   },
+   "demands_Nm": {
+    "hip": -10.04,
+    "knee": -1.119,
+    "ankle": -6.933,
+    "mp": 0.004,
+    "posture": 6.084
+   }
+  },
+  {
+   "phi": 0.4,
+   "theta_star_rad": 0.52,
+   "theta_star_deg": 29.79,
+   "worst_ratio": 0.9233,
+   "all_within_caps": true,
+   "ratios": {
+    "hip": 0.9059,
+    "knee": 0.2406,
+    "ankle": 0.9233,
+    "mp": 0.0047,
+    "posture": 0.7473
+   },
+   "demands_Nm": {
+    "hip": -10.163,
+    "knee": -1.598,
+    "ankle": -6.829,
+    "mp": 0.004,
+    "posture": 8.383
+   }
+  },
+  {
+   "phi": 0.45,
+   "theta_star_rad": 0.08,
+   "theta_star_deg": 4.58,
+   "worst_ratio": 0.9397,
+   "all_within_caps": true,
+   "ratios": {
+    "hip": 0.4508,
+    "knee": 0.9397,
+    "ankle": 0.9392,
+    "mp": 0.0053,
+    "posture": 0.0775
+   },
+   "demands_Nm": {
+    "hip": 5.058,
+    "knee": 6.242,
+    "ankle": -6.947,
+    "mp": 0.005,
+    "posture": 0.869
+   }
+  },
+  {
+   "phi": 0.5,
+   "theta_star_rad": 0.18,
+   "theta_star_deg": 10.31,
+   "worst_ratio": 0.9262,
+   "all_within_caps": true,
+   "ratios": {
+    "hip": 0.4027,
+    "knee": 0.9262,
+    "ankle": 0.9213,
+    "mp": 0.0053,
+    "posture": 0.2453
+   },
+   "demands_Nm": {
+    "hip": 4.517,
+    "knee": 6.153,
+    "ankle": -6.815,
+    "mp": 0.005,
+    "posture": 2.752
+   }
+  },
+  {
+   "phi": 0.55,
+   "theta_star_rad": 0.3,
+   "theta_star_deg": 17.19,
+   "worst_ratio": 0.8708,
+   "all_within_caps": true,
+   "ratios": {
+    "hip": 0.2504,
+    "knee": 0.8532,
+    "ankle": 0.8708,
+    "mp": 0.0052,
+    "posture": 0.4416
+   },
+   "demands_Nm": {
+    "hip": 2.809,
+    "knee": 5.668,
+    "ankle": -6.441,
+    "mp": 0.005,
+    "posture": 4.954
+   }
+  },
+  {
+   "phi": 0.6,
+   "theta_star_rad": 0.44,
+   "theta_star_deg": 25.21,
+   "worst_ratio": 0.7936,
+   "all_within_caps": true,
+   "ratios": {
+    "hip": 0.1075,
+    "knee": 0.758,
+    "ankle": 0.7936,
+    "mp": 0.0052,
+    "posture": 0.6656
+   },
+   "demands_Nm": {
+    "hip": 1.206,
+    "knee": 5.035,
+    "ankle": -5.87,
+    "mp": 0.005,
+    "posture": 7.467
+   }
+  },
+  {
+   "phi": 0.65,
+   "theta_star_rad": 0.52,
+   "theta_star_deg": 29.79,
+   "worst_ratio": 0.8058,
+   "all_within_caps": true,
+   "ratios": {
+    "hip": 0.0418,
+    "knee": 0.8058,
+    "ankle": 0.7543,
+    "mp": 0.0044,
+    "posture": 0.7898
+   },
+   "demands_Nm": {
+    "hip": 0.469,
+    "knee": 5.353,
+    "ankle": -5.579,
+    "mp": 0.004,
+    "posture": 8.86
+   }
+  }
+ ],
+ "verdict_feasible_single_support": "theta*(phi) exists at every single-support node (0.20-0.50)",
+ "full_table": "the stance-wide table is the posture target (double-support nodes are single-contact overestimates)",
+ "falsifier_rule": "pre-registered: feasibility requires worst_ratio < 1.0 at EVERY node"
+}

@@ -1,0 +1,66 @@
+{
+ "falsified_expectations": [
+  "The mu=1 landing impact books MORE total friction heat (4.79e-3 J) than the whole mu=0.05 slide (2.0e-3 J); total heat does not discriminate stick from slide. The templates use slip, post-touch hand motion and heat growth instead (measured 2026-09-18, first live run of this lane).",
+  "The elbow/shoulder torque caps make the (60, 60) target command stall at (36.6, 33.0) deg: an angle request is not a guaranteed pose (authored scope; measured in the first live run)."
+ ],
+ "judge_protocol": "numeric template by the harness; visual pass by the GLM 5.3 judge recorded via --record-visual; scenario verdict = numeric AND visual.",
+ "kind": "visual_scene_run_manifest.v1",
+ "label": "DYAD visual verification of the live coupled-arm scene: renders + numeric state + structured judgement per scenario.",
+ "module_sha256": "bb9ab86572ebc4efb1cbf3006f78189e65d0b7158cc33ae6a3ce28e9b518194a",
+ "rule0": {
+  "admitted_utc": "2026-09-17 (before the first run of this lane)",
+  "falsifiers": {
+   "F1": "re-render from the recorded state is byte-identical (sha256)",
+   "F2": "python FK hand point == engine body.position_m within 1e-6 m",
+   "F3": "a corrupted penetrating state FAILS the template and renders visibly wrong; a template that passes it is worthless",
+   "F4": "every settled ledger closes (balance_error_J and store_balance_error_J within 1e-4 J -- 10x the repo live-qual bar for these 45-90 s windows -- and the mechanical identity holds); a leak falsifies the energy claims"
+  },
+  "prediction": "All five scenarios pass their numeric templates AND render the expected picture (hang / reach / press-at-plane / stick / slide-with-heat); a penetrating-hand corruption fails.",
+  "statement": "The live scene's own numeric state, rendered by a pure deterministic renderer and judged against a structured expected-physics template, is a valid verification record closing the loop between the numbers and the eye."
+ },
+ "scenarios": {
+  "contact_press": {
+   "F1_re_render_byte_identical": true,
+   "dir": "contact_press/",
+   "numeric_verdict": "PASS"
+  },
+  "free_fall": {
+   "F1_re_render_byte_identical": true,
+   "dir": "free_fall/",
+   "numeric_verdict": "PASS"
+  },
+  "friction_slide": {
+   "F1_re_render_byte_identical": true,
+   "dir": "friction_slide/",
+   "numeric_verdict": "PASS"
+  },
+  "friction_stick": {
+   "F1_re_render_byte_identical": true,
+   "dir": "friction_stick/",
+   "numeric_verdict": "PASS"
+  },
+  "target_reach": {
+   "F1_re_render_byte_identical": true,
+   "dir": "target_reach/",
+   "numeric_verdict": "PASS"
+  }
+ },
+ "scene_provenance": {
+  "compiled_scene_sha256": "89a21c17f0d1c123ef4a7fd8ae909e7506f96da418b9ec34eb2dfc8cca2d4619",
+  "engine_exe": "E:/ChimeraWork/visual-verify-20260918/.tmp/coupled-native-engine/Release/chimera_engine.exe",
+  "engine_exe_sha256": "18B13786E603131945C972AA33AA8C13B21CD8A0F20A1601C08A5A4D749574DE",
+  "engine_pid": 144668,
+  "graph_hash": "d16d38a4e715fa8231c0ad44a5cf1a0f58b11c69c71faef6cc86771b325e8086",
+  "mode": "native_coupled_arm",
+  "port": 8191,
+  "runtime_json": "E:/ChimeraWork/visual-verify-20260918/.tmp/coupled-native/runtime.json",
+  "scene_json_sha256": "DF914B641B247236B69BD9EBEB435DDB525C20EEBE7075470D4D1E1BFFD32128",
+  "verified_scene_sha256": "89a21c17f0d1c123ef4a7fd8ae909e7506f96da418b9ec34eb2dfc8cca2d4619"
+ },
+ "written_utc": "2026-09-18T22:16:31.476558+00:00",
+ "wrong_state_probe": {
+  "corrupted_verdict": "FAIL",
+  "dir": "wrong_state_probe/",
+  "probe_passed": true
+ }
+}

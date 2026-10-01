@@ -1,0 +1,71 @@
+[build] building the store from authored seeds
+[join] reference objects added: 1349; candidate mappings: 23
+[item 6] reference import idempotency + provenance survival
+  [PASS] 6: second import creates nothing -- first run created 0, second created 0, unchanged 1348, conflicts 0
+  [PASS] 6: store bytes identical after re-import -- sha256 4057fb2da2508a32
+  [PASS] 6: units + source provenance survive on assertions -- pa.osim.leg6dof9musc.soleus_r.max_isometric_force_N: value=5137.0 N, conditions=isometric, maximally activated, source=opensim.leg6dof9musc
+  [PASS] 6: mapping provenance survives, still CANDIDATE (not equivalence) -- map.uberon-femur__osim-femur_r: mapping_type=candidate
+  [PASS] 6: model import never executes (XML-only parser) -- parsers.py contains no exec/eval/subprocess/os.system; the .osim is read as declarative XML only
+[item 7] graph fidelity: refreshes + placeholders + typed connections
+  [PASS] 7: authored seed files unchanged through build+import+export -- 5 files, sha256 match
+  [PASS] 7: distinct typed connections preserved (one wall, two owners) -- memb.septum.feet_shins bounds_region -> ['region.band.feet', 'region.band.shins']
+  [PASS] 7: authored placeholders preserved through the build -- 9 placeholders incl. ['region.leg_l', 'inst.comp.thigh_l', 'inst.comp.shin_l', 'inst.comp.foot_l']
+  [PASS] 7: projection preserves edge DIRECTION -- source->target pairs [('memb_septum_feet_shins', 'region_band_feet'), ('memb_septum_feet_shins', 'region_band_shins')]
+  [PASS] 7: projection preserves relation MULTIPLICITY (2 distinct edges) -- keys ['r_84f6ef2c69f3dda440cc248564719586a6bb8b3c4c504191b4553dff03836148_0', 'r_9bcb8b240bdb4e3b56307f4623fa3b0021e4894aaa811cb2a4445b9926db18a2_0']
+  [PASS] 7: moving diagram nodes cannot move the creature -- spatial.band_y still [-0.019507, 0.338]; layout moved to tier 7 x 42 (separate dicts)
+  [PASS] 7: schema rejects layout keys inside engine coordinates -- validate_object -> ["inst.band.feet: spatial carries layout key 'roadmap_tier' (layout lives in store.layout)"]
+[item 8] evidence lifecycle: conservative staleness; sources never verify
+  [PASS] 8: relevant physical change STALES dependent evidence -- septum 779448aa0a51a077 -> 06dd826468aeff34; staled: ['ev.acceptance.synthetic']
+  [PASS] 8: the pre-staleness result stays VISIBLE -- last_result=passing (stale_reasons ['memb.septum.feet_shins'])
+  [PASS] 8: a failing current test stays visible (not hidden by staleness) -- ev.reflex_controls_fail validation=stale (last_result=failing)
+  [PASS] 8: source availability never auto-verifies (EXTRACTED is not verified) -- all 1372 reference records are status=extracted; extracted ranks below geometry_built and never satisfies verification
+[item 9] consistent IDs + timestamps (graph side)
+[item 10] save/reload preserves graph state (graph side)
+  [PASS] 10: graph hash preserved across save/reload -- 2fc146707354ca92 == 2fc146707354ca92
+  [PASS] 10: validation lifecycle survives reload -- validation=stale, last_result=passing
+  [PASS] 10: relations + layout preserved -- 141 relations; layout x=42 survives
+[queries] the six gap-query shapes on the seeded graph
+  [PASS] Q1: compartment boundary closure query -- 7 A1 compartments: inst.band.feet=boundary support registered; closure unverified; inst.band.shins=boundary support registered; closure unverified; inst.band.thighs=boundary support registered; closure unverified; inst.band.torso=boundary support registered; closure unverified; inst.comp.thigh_l=boundary pending build; inst.comp.shin_l=boundary pending build; inst.comp.foot_l=boundary pending build
+  [PASS] Q2: placeholder-only structures -- 9 structures exist only as placeholders
+  [PASS] Q3: active parameters lacking provenance -- 6 in-use parameters, each with explicit residual gaps (units/source present; applicability conditions + independent validation outstanding)
+  [PASS] Q4: blockers for local withdrawal -- ready now: ['work.partition_leg_l', 'work.septa_leg_l', 'work.causal_demo_leg_l']; blocked: [('memb.septum.shin_l_foot_l', ['work.septa_leg_l']), ('memb.septum.thigh_l_shin_l', ['work.septa_leg_l']), ('inst.comp.foot_l', ['work.partition_leg_l', 'work.septa_leg_l']), ('inst.comp.shin_l', ['work.partition_leg_l', 'work.septa_leg_l']), ('inst.comp.thigh_l', ['work.partition_leg_l', 'work.septa_leg_l']), ('req.every_bone_sealed', ['inst.comp.foot_l', 'inst.comp.shin_l', 'inst.comp.thigh_l'])]
+  [PASS] Q5: evidence at risk if septum/material changed -- if memb.septum.feet_shins changed: ['ev.band_seal_conservation', 'ev.acceptance.synthetic']; if material.water changed: ['ev.band_seal_conservation', 'ev.limb_restore_recipes_20260915', 'ev.limb_live_control_20260915', 'ev.limb_cold_restart_20260915']
+  [PASS] Q6: next ready task by authored priority -- next = work.partition_leg_l (authored priority 1) enabling ['experience.local_withdrawal', 'experience.press_and_response']
+[join] reference objects added: 1349; candidate mappings: 23
+
+wrote E:\ChimeraWork\codex-graph-contracts-20260915\agent_logs\codex\graph_contracts_20260915\acceptance_results.json
+summary: 25/26 checks pass
+[join] reference objects added: 1349; candidate mappings: 23
+[1] native store: 1486 objects / 141 relations (schema 2.0.0)
+[2] exported projection: 1486 nodes / 141 edges -> .tmp\creature_graph_projection_demo\creature_graph_projection.json
+[3] schema gate: ACCEPTED (schema_version 2.0.0, directed multidigraph)
+[4] sanitizer pre-check: 1486 originals -> 1486 distinct ids, 0 collisions
+[5] ingested via save_dna_graph: +1486 nodes / +141 edges (store was 0/0)
+[6] round-trip verification (against the native store):
+    PASS  node_identity_round_trip
+    PASS  edge_identity_round_trip
+    PASS  multiplicity_preserved
+    PASS  traversal_parity_2hop
+    PASS  graphify_query_health
+    PASS  because_of_honest_empty
+    PASS  fts_search_finds_ingested
+VERDICT: HONEST -- the consumer round-trips the projection
+report: .tmp\creature_graph_projection_demo\consumer_demo_report.json
+[join] reference objects added: 1349; candidate mappings: 23
+[1] native store: 1486 objects / 141 relations (schema 2.0.0)
+[2] exported projection: 1486 nodes / 141 edges -> .tmp\creature_graph_projection_demo\creature_graph_projection.json
+[3] schema gate: ACCEPTED (schema_version 2.0.0, directed multidigraph)
+[4] sanitizer pre-check: 1486 originals -> 1486 distinct ids, 0 collisions
+[5] ingested via save_dna_graph: +1486 nodes / +141 edges (store was 1486/141)
+[6] round-trip verification (against the native store):
+    PASS  node_identity_round_trip
+    PASS  edge_identity_round_trip
+    PASS  multiplicity_preserved
+    PASS  traversal_parity_2hop
+    PASS  graphify_query_health
+    PASS  because_of_honest_empty
+    PASS  fts_search_finds_ingested
+VERDICT: HONEST -- the consumer round-trips the projection
+report: .tmp\creature_graph_projection_demo\consumer_demo_report.json
+[join] reference objects added: 1349; candidate mappings: 23
+FINAL_INTEGRATION_VALIDATION_PASS

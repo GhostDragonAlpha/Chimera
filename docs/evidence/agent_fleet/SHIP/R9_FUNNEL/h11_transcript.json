@@ -1,0 +1,134 @@
+{
+  "at": "2026-09-14T13:22:50.054Z",
+  "runner": "H11-store-package",
+  "consoleErrors": [],
+  "consoleWarns": [],
+  "pageErrors": [],
+  "badResponses": [],
+  "failedRequests": [],
+  "checks": {
+    "site_200": {
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "loadMs": 38
+      }
+    },
+    "og_title": {
+      "ok": true,
+      "detail": "CHIMERA — press it and the water answers"
+    },
+    "og_description": {
+      "ok": true,
+      "detail": "A living creature of sealed water cells. Press it anywhere and the pressure answers; let go and watch it heal. Ten short lessons, free in your browser."
+    },
+    "og_type_website": {
+      "ok": true,
+      "detail": "website"
+    },
+    "meta_description": {
+      "ok": true,
+      "detail": "CHIMERA is a living creature of sealed water cells: press it anywhere and the pressure answers; let go and watch it heal. Ten short lessons, free in your browser."
+    },
+    "og_image_count": {
+      "ok": true,
+      "detail": [
+        "store_art/capsule_616x353.png",
+        "store_art/capsule_460x215.png"
+      ]
+    },
+    "og_image_200:store_art/capsule_616x353.png": {
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "bytes": 60218,
+        "type": "image/png"
+      }
+    },
+    "og_image_200:store_art/capsule_460x215.png": {
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "bytes": 37395,
+        "type": "image/png"
+      }
+    },
+    "hero_press_answer": {
+      "ok": true,
+      "detail": null
+    },
+    "hero_watch_it_heal": {
+      "ok": true,
+      "detail": null
+    },
+    "hero_ten_lessons": {
+      "ok": true,
+      "detail": null
+    },
+    "ten_lessons_card": {
+      "ok": true,
+      "detail": [
+        "One world",
+        "Real water",
+        "Real healing",
+        "Ten lessons"
+      ]
+    },
+    "demo_door": {
+      "ok": true,
+      "detail": {
+        "door": "http://127.0.0.1:8206/",
+        "title": "CHIMERA — touch the living physics"
+      }
+    },
+    "signup_recorded": {
+      "ok": true,
+      "detail": {
+        "note": "you're on the list. the creature will be waiting.",
+        "before": 2,
+        "after": 3
+      }
+    },
+    "signups_jsonl_refused": {
+      "ok": true,
+      "detail": 404
+    },
+    "console_errors_zero": {
+      "ok": true,
+      "detail": []
+    },
+    "no_failed_selftest": {
+      "ok": true,
+      "detail": []
+    },
+    "page_errors_zero": {
+      "ok": true,
+      "detail": []
+    },
+    "no_http_400plus": {
+      "ok": true,
+      "detail": []
+    },
+    "no_failed_requests": {
+      "ok": true,
+      "detail": []
+    }
+  },
+  "notes": [],
+  "landingMeta": {
+    "title": "CHIMERA — press it and the water answers",
+    "description": "CHIMERA is a living creature of sealed water cells: press it anywhere and the pressure answers; let go and watch it heal. Ten short lessons, free in your browser.",
+    "ogTitle": "CHIMERA — press it and the water answers",
+    "ogDesc": "A living creature of sealed water cells. Press it anywhere and the pressure answers; let go and watch it heal. Ten short lessons, free in your browser.",
+    "ogType": "website",
+    "ogImages": [
+      "store_art/capsule_616x353.png",
+      "store_art/capsule_460x215.png"
+    ],
+    "ogDims": {
+      "w": "616",
+      "h": "353"
+    },
+    "ogAlt": "CHIMERA — touch the living physics"
+  }
+}

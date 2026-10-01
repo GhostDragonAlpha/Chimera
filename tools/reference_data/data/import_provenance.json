@@ -1,0 +1,356 @@
+{
+ "generated_note": "provenance table of record",
+ "sources": {
+  "uberon.appendicular-minimal": {
+   "source_id": "uberon.appendicular-minimal",
+   "family": "anatomy ontology subset (appendicular skeleton: limbs)",
+   "entry_url": "http://purl.obolibrary.org/obo/uberon/appendicular-minimal.obo",
+   "resolved_url": "https://github.com/obophenotype/uberon/releases/download/v2026-06-23/appendicular-minimal.obo",
+   "release": "uberon v2026-06-23 (resolved via purl 302 chain, 2026-09-15)",
+   "license": "CC BY 3.0",
+   "license_evidence": {
+    "artifact": "obo_registry/uberon.md",
+    "source": "https://raw.githubusercontent.com/OBOFoundry/OBOFoundry.github.io/master/ontology/uberon.md",
+    "statement": "license: label 'CC BY 3.0' (http://creativecommons.org/licenses/by/3.0/)"
+   },
+   "artifacts": {
+    "uberon/appendicular-minimal.obo": {
+     "sha256": "9456e0a671633cdedbcfd671cbcf6062466eb7e279fb574b0c2141cfb100ab8b",
+     "bytes": 910801,
+     "cached_path": "uberon/appendicular-minimal.obo",
+     "url": "https://github.com/obophenotype/uberon/releases/download/v2026-06-23/appendicular-minimal.obo",
+     "pin": "verified"
+    }
+   },
+   "parser": "obo",
+   "coverage": "the appendicular-minimal module (1,227 [Term] stanzas): limb skeleton concepts (femur, tibia/fibula, pes, autopod...) with is_a/part_of relations -- the musculoskeletal subset relevant to the selected limb",
+   "known_gaps": "full Uberon (~700 MB uberon.owl) NOT imported; axial skeleton and organs deferred; no developmental/axiom-heavy subsets",
+   "first_pinned_utc": "2026-09-15"
+  },
+  "ro.base": {
+   "source_id": "ro.base",
+   "family": "relation ontology (relation types + meanings)",
+   "entry_url": "https://raw.githubusercontent.com/oborel/obo-relations/v2026-09-04/ro-base.owl",
+   "resolved_url": "https://raw.githubusercontent.com/oborel/obo-relations/v2026-09-04/ro-base.owl",
+   "release": "obo-relations v2026-09-04 (latest release tag, published 2026-09-07, observed 2026-09-15)",
+   "license": "CC0 1.0",
+   "license_evidence": {
+    "artifact": "obo_registry/ro.md",
+    "source": "https://raw.githubusercontent.com/OBOFoundry/OBOFoundry.github.io/master/ontology/ro.md",
+    "statement": "license: label 'CC0 1.0' (http://creativecommons.org/publicdomain/zero/1.0/)"
+   },
+   "artifacts": {
+    "ro/ro-base.owl": {
+     "sha256": "bdfe8dda3adc4b9cda9d9c843b02e1031772280a92c07003af7c9c22cde027fe",
+     "bytes": 876042,
+     "cached_path": "ro/ro-base.owl",
+     "url": "https://raw.githubusercontent.com/oborel/obo-relations/v2026-09-04/ro-base.owl",
+     "pin": "verified"
+    }
+   },
+   "parser": "ro_owl",
+   "coverage": "ro-base.owl (876 KB): the relation TYPES referenced by the Uberon subset (part_of, has_part, connected/continuous...) with labels + definitions",
+   "known_gaps": "ro-full.owl (with domain/range axioms over all of OBO) NOT imported; only the selected relation IRIs are projected",
+   "first_pinned_utc": "2026-09-15"
+  },
+  "qudt.units": {
+   "source_id": "qudt.units",
+   "family": "units + quantity kinds (QUDT)",
+   "entry_url": "https://qudt.org/vocab/unit/{UNIT}",
+   "resolved_url": "https://qudt.org/vocab/unit/{UNIT} (Turtle via Accept: text/turtle)",
+   "release": "QUDT live LOD endpoint, served 2026-09-15; NOT a release-pinned artifact -- pinned instead by per-file sha256 in data/pins.json (drift fails the import loudly)",
+   "license": "not stated in the served unit documents -- recorded UNKNOWN (QUDT site terms govern; qudt-public-repo not fetched this run)",
+   "license_evidence": {
+    "artifact": null,
+    "source": null,
+    "statement": "absence recorded honestly (missing metadata stays unknown)"
+   },
+   "artifacts": {
+    "qudt/unit_M3.ttl": {
+     "sha256": "6b05100b3b531535c292bc206342e71bcb6156a02dd41941884a0bbec3a9724a",
+     "bytes": 3176,
+     "cached_path": "qudt/unit_M3.ttl",
+     "url": "https://qudt.org/vocab/unit/M3",
+     "pin": "verified"
+    },
+    "qudt/unit_PER-PA.ttl": {
+     "sha256": "d02e8b9ab906023e4a2ec46de484d60f22832bcbeee5b356c6275e8e9f23e760",
+     "bytes": 2747,
+     "cached_path": "qudt/unit_PER-PA.ttl",
+     "url": "https://qudt.org/vocab/unit/PER-PA",
+     "pin": "verified"
+    },
+    "qudt/unit_M2.ttl": {
+     "sha256": "c58ffbeae1c0e3670d59efbac25600a3ef0d1a886d45a52581aeb392cdf469c8",
+     "bytes": 3248,
+     "cached_path": "qudt/unit_M2.ttl",
+     "url": "https://qudt.org/vocab/unit/M2",
+     "pin": "verified"
+    },
+    "qudt/unit_PA.ttl": {
+     "sha256": "a21ff8e8655f9faa4030e06527e7869d1bdae451e0e03b863f51d9350846bc13",
+     "bytes": 3681,
+     "cached_path": "qudt/unit_PA.ttl",
+     "url": "https://qudt.org/vocab/unit/PA",
+     "pin": "verified"
+    },
+    "qudt/unit_MIN.ttl": {
+     "sha256": "c635d34660fdd7728df355f1df13b117219e9d8d33224c7ea266d3c3583b75a2",
+     "bytes": 2905,
+     "cached_path": "qudt/unit_MIN.ttl",
+     "url": "https://qudt.org/vocab/unit/MIN",
+     "pin": "verified"
+    },
+    "qudt/unit_SEC.ttl": {
+     "sha256": "5f8b0c864d23571f7ea99481c3f16cfca84c1a8c80113c157e2b6a9b98ed8458",
+     "bytes": 5405,
+     "cached_path": "qudt/unit_SEC.ttl",
+     "url": "https://qudt.org/vocab/unit/SEC",
+     "pin": "verified"
+    },
+    "qudt/unit_M.ttl": {
+     "sha256": "f37934471e09bf0211aca761eb5882587bd5da4b0e9537bd47af0de47e726fe1",
+     "bytes": 3401,
+     "cached_path": "qudt/unit_M.ttl",
+     "url": "https://qudt.org/vocab/unit/M",
+     "pin": "verified"
+    },
+    "qudt/unit_HR.ttl": {
+     "sha256": "0c4365e4bb0076c7555070590f3656c2dae674cfdf3a4a667b404095824c83df",
+     "bytes": 2883,
+     "cached_path": "qudt/unit_HR.ttl",
+     "url": "https://qudt.org/vocab/unit/HR",
+     "pin": "verified"
+    },
+    "qudt/unit_J.ttl": {
+     "sha256": "f6e96999e29eb598dd14330f3e19d2bc04962e06d5234f093312d4530b1e7784",
+     "bytes": 4962,
+     "cached_path": "qudt/unit_J.ttl",
+     "url": "https://qudt.org/vocab/unit/J",
+     "pin": "verified"
+    },
+    "qudt/unit_N-PER-M.ttl": {
+     "sha256": "126a554321a277a103dace6225e9214fc6083f606fd9e989f2c405681c6e51e4",
+     "bytes": 3373,
+     "cached_path": "qudt/unit_N-PER-M.ttl",
+     "url": "https://qudt.org/vocab/unit/N-PER-M",
+     "pin": "verified"
+    },
+    "qudt/unit_W.ttl": {
+     "sha256": "b057374daff1e8dfa5a08c665161ecc5fe2ce82b7cb5c8b6aff8398277d1b127",
+     "bytes": 4176,
+     "cached_path": "qudt/unit_W.ttl",
+     "url": "https://qudt.org/vocab/unit/W",
+     "pin": "verified"
+    },
+    "qudt/unit_K.ttl": {
+     "sha256": "55e000fd8bd96ba1fc2fb29f5e1ee4d976a95717e330d5586531f4b717241807",
+     "bytes": 4671,
+     "cached_path": "qudt/unit_K.ttl",
+     "url": "https://qudt.org/vocab/unit/K",
+     "pin": "verified"
+    },
+    "qudt/unit_N.ttl": {
+     "sha256": "c72c158bd3a6f4087676649412918cf5a8f94d99e23732c4e1c958676dda4854",
+     "bytes": 3513,
+     "cached_path": "qudt/unit_N.ttl",
+     "url": "https://qudt.org/vocab/unit/N",
+     "pin": "verified"
+    },
+    "qudt/unit_M-PER-SEC.ttl": {
+     "sha256": "1df4e457378aec00102b7881da043b7cec8c207872752f76d7717ad597d0d6ea",
+     "bytes": 3805,
+     "cached_path": "qudt/unit_M-PER-SEC.ttl",
+     "url": "https://qudt.org/vocab/unit/M-PER-SEC",
+     "pin": "verified"
+    },
+    "qudt/unit_KiloGM.ttl": {
+     "sha256": "5a3bb00f9a162a897d5fd45c4894e2ebea5be4c022f3cc6ab2a24b93f23749c3",
+     "bytes": 3870,
+     "cached_path": "qudt/unit_KiloGM.ttl",
+     "url": "https://qudt.org/vocab/unit/KiloGM",
+     "pin": "verified"
+    },
+    "qudt/unit_RAD.ttl": {
+     "sha256": "786596996c43bab1500ae57be5ae035f87d90dee6b917a663b68d1c067a00d43",
+     "bytes": 4932,
+     "cached_path": "qudt/unit_RAD.ttl",
+     "url": "https://qudt.org/vocab/unit/RAD",
+     "pin": "verified"
+    },
+    "qudt/unit_N-M.ttl": {
+     "sha256": "58d9fe68631a7af876bdf7934d02f26de0408e8ad7e7a6f54f9c2765cce09cf1",
+     "bytes": 3546,
+     "cached_path": "qudt/unit_N-M.ttl",
+     "url": "https://qudt.org/vocab/unit/N-M",
+     "pin": "verified"
+    },
+    "qudt/unit_RAD-PER-SEC.ttl": {
+     "sha256": "2563ef2a290bf88525c0968ad3a6c6d9f4fae3c5bcd10fc3384030510ed2c4db",
+     "bytes": 3353,
+     "cached_path": "qudt/unit_RAD-PER-SEC.ttl",
+     "url": "https://qudt.org/vocab/unit/RAD-PER-SEC",
+     "pin": "verified"
+    },
+    "qudt/unit_PA-SEC-PER-M3.ttl": {
+     "sha256": "b260f587d614cf2264b55fd7d5072e27b03719e8c661f5fe66d4e0fc5aaf90cb",
+     "bytes": 4222,
+     "cached_path": "qudt/unit_PA-SEC-PER-M3.ttl",
+     "url": "https://qudt.org/vocab/unit/PA-SEC-PER-M3",
+     "pin": "verified"
+    },
+    "qudt/unit_KiloGM-PER-M3.ttl": {
+     "sha256": "19193ce84e3bb9120d7c82c91d04afab03089fca47e9b822e65f1626c3232e53",
+     "bytes": 4174,
+     "cached_path": "qudt/unit_KiloGM-PER-M3.ttl",
+     "url": "https://qudt.org/vocab/unit/KiloGM-PER-M3",
+     "pin": "verified"
+    },
+    "qudt/quantitykind_Pressure.ttl": {
+     "sha256": "18ce5beca15ccd95dbcc29ee3b9086f5ca7c98b510b809391e2fd06082998db9",
+     "bytes": 6347,
+     "cached_path": "qudt/quantitykind_Pressure.ttl",
+     "url": "https://qudt.org/vocab/quantitykind/Pressure",
+     "pin": "verified"
+    },
+    "qudt/quantitykind_Mass.ttl": {
+     "sha256": "2b922a9701f9e5a3a6b1f13579cbeef4481bc4b6ba689787a8de333b067a6db1",
+     "bytes": 4604,
+     "cached_path": "qudt/quantitykind_Mass.ttl",
+     "url": "https://qudt.org/vocab/quantitykind/Mass",
+     "pin": "verified"
+    },
+    "qudt/quantitykind_Velocity.ttl": {
+     "sha256": "ae09f786beb34afdbeb3cd8f45cf3a3abefac94481c70f4b919aa9e89ea7e335",
+     "bytes": 4398,
+     "cached_path": "qudt/quantitykind_Velocity.ttl",
+     "url": "https://qudt.org/vocab/quantitykind/Velocity",
+     "pin": "verified"
+    },
+    "qudt/quantitykind_Force.ttl": {
+     "sha256": "e994b74481bad5a1996fe48a2f3b8d5824036b5e691110c9cd4252a89e75f061",
+     "bytes": 3894,
+     "cached_path": "qudt/quantitykind_Force.ttl",
+     "url": "https://qudt.org/vocab/quantitykind/Force",
+     "pin": "verified"
+    },
+    "qudt/quantitykind_Length.ttl": {
+     "sha256": "f1573a5e7a5a473f43387216d8d1369f62ebae79530775bce26abbda63150423",
+     "bytes": 4127,
+     "cached_path": "qudt/quantitykind_Length.ttl",
+     "url": "https://qudt.org/vocab/quantitykind/Length",
+     "pin": "verified"
+    },
+    "qudt/quantitykind_Volume.ttl": {
+     "sha256": "14e641ef810f564ee307ac96255fbd0d0cefb704ed5538f79a6d60ab662649ab",
+     "bytes": 3733,
+     "cached_path": "qudt/quantitykind_Volume.ttl",
+     "url": "https://qudt.org/vocab/quantitykind/Volume",
+     "pin": "verified"
+    },
+    "qudt/quantitykind_Dimensionless.ttl": {
+     "sha256": "4351dcb58e4068a811b3d3da524e4d1ee0fc7ef1a483f211d874a2c529e79b62",
+     "bytes": 2150,
+     "cached_path": "qudt/quantitykind_Dimensionless.ttl",
+     "url": "https://qudt.org/vocab/quantitykind/Dimensionless",
+     "pin": "verified"
+    },
+    "qudt/quantitykind_Time.ttl": {
+     "sha256": "89fd34240786271750ddd66c5bae26af844783b3fe6d015398099e19fd99a3c2",
+     "bytes": 3714,
+     "cached_path": "qudt/quantitykind_Time.ttl",
+     "url": "https://qudt.org/vocab/quantitykind/Time",
+     "pin": "verified"
+    },
+    "qudt/quantitykind_Density.ttl": {
+     "sha256": "dc4532f486b3c1d1920b316197873c57156f706623d67ec06d81c9ebcfd90a5b",
+     "bytes": 4884,
+     "cached_path": "qudt/quantitykind_Density.ttl",
+     "url": "https://qudt.org/vocab/quantitykind/Density",
+     "pin": "verified"
+    }
+   },
+   "parser": "qudt_ttl",
+   "coverage": "the units the creature's physical laws actually use (Pa, Pa^-1, m^3, N/m, N*m, kg, s, hydraulic resistance Pa*s/m^3...) + 9 quantity kinds",
+   "known_gaps": "full QUDT vocabularies (all units/prefixes/currencies) NOT imported; no unit-conversion graph beyond SI multipliers",
+   "first_pinned_utc": "2026-09-15"
+  },
+  "opensim.leg6dof9musc": {
+   "source_id": "opensim.leg6dof9musc",
+   "family": "musculoskeletal reference model (ONE limb)",
+   "entry_url": "https://github.com/opensim-org/opensim-models",
+   "resolved_url": "https://raw.githubusercontent.com/opensim-org/opensim-models/master/Models/Leg6Dof9Musc/leg6dof9musc.osim",
+   "release": "opensim-models master as of 2026-09-15 (repo default branch 'master', last push 2025-11-05; commit-level pin via sha256)",
+   "license": "NOT STATED in the repo (no LICENSE file at repo root, checked 2026-09-15 via the GitHub contents API) -- recorded UNKNOWN; treated as reference-only",
+   "license_evidence": {
+    "artifact": null,
+    "source": "https://api.github.com/repos/opensim-org/opensim-models/contents/ (no LICENSE entry)",
+    "statement": "absence recorded honestly (missing metadata stays unknown)"
+   },
+   "artifacts": {
+    "osim/leg6dof9musc.osim": {
+     "sha256": "3f02c0036210fc2ed8b1f3e8cbe220dcf5b75198dbd95fd3f6b9e47e32555ca1",
+     "bytes": 127479,
+     "cached_path": "osim/leg6dof9musc.osim",
+     "url": "https://raw.githubusercontent.com/opensim-org/opensim-models/master/Models/Leg6Dof9Musc/leg6dof9musc.osim",
+     "pin": "verified"
+    }
+   },
+   "parser": "osim_xml",
+   "coverage": "the human RIGHT leg: bodies pelvis/femur_r/tibia_r/patella_r/talus_r/calcn_r/toes_r; joints ground_pelvis, hip_r, knee_r, tib_pat_r, ankle_r (CustomJoint) + subtalar_r, mtp_r (WeldJoint); 9 Thelen2003Muscle units with max isometric force, optimal fiber length, tendon slack length, pennation",
+   "known_gaps": "human proportions are REFERENCE, not Chimera proportions; model is one side (right); tendon wrapping paths simplified; NO license terms -- selection/adaptation is a human decision",
+   "first_pinned_utc": "2026-09-15"
+  },
+  "bodyparts3d": {
+   "source_id": "bodyparts3d",
+   "family": "anatomy geometry (DEFERRED -- registered, not imported)",
+   "entry_url": "https://dbarchive.biosciencedbc.jp/en/bodyparts3d/download.html",
+   "resolved_url": "https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html",
+   "release": "archive layout observed 2026-09-15 (FMA-based tables + mesh zips; no release versioning on the archive)",
+   "license": "CC Attribution 4.0 International",
+   "license_evidence": {
+    "artifact": "bp3d/lic.html",
+    "source": "https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html",
+    "statement": "\"The license for this database is specified in the Creative Commons Attribution 4.0 International\"; attribution: \"BodyParts3D, (c) The Database Center for Life Science licensed under CC Attribution 4.0 International\""
+   },
+   "artifacts": {
+    "bp3d/lic.html + bp3d/download.html": {
+     "sha256": "7fd311e6646fb82711e9cec857095dde7906ab976e50e89f7a79aaba86306f00",
+     "bytes": 14694,
+     "cached_path": "bp3d/lic.html + bp3d/download.html",
+     "url": "https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html",
+     "pin": "verified"
+    }
+   },
+   "parser": null,
+   "coverage": "NONE imported this run -- registration + license only",
+   "known_gaps": "bulk mesh/table zips NOT imported: geometry is only useful once the leg partition needs conforming caps; HUMAN proportions are NOT Chimera proportions (the sealed-compartment design remains a Chimera requirement)",
+   "first_pinned_utc": "2026-09-15"
+  }
+ },
+ "metas": {
+  "uberon": {
+   "n_terms": 1253,
+   "n_uberon_entities": 1221,
+   "n_structural_stanzas_not_projected": 6,
+   "n_edges_projected": 2200,
+   "omissions": "the simplified graph projection preserves is_a and named relationships; it OMITS intersection_of axioms, disjointness, and property_value annotations (present in the pinned cache, re-parseable any time)"
+  },
+  "ro": {
+   "n_selected": 9,
+   "n_selected_available": 10
+  },
+  "qudt": {
+   "n_records": 29
+  },
+  "osim": {
+   "n_bodies": 7,
+   "n_joints": 7,
+   "n_muscles": 9,
+   "n_property_assertions": 63
+  },
+  "mappings": {
+   "n_dataset_candidates": 6
+  }
+ }
+}

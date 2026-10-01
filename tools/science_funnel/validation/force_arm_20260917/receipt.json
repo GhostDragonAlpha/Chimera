@@ -1,0 +1,126 @@
+{
+  "schema": "chimera.scoped_validation.v1",
+  "recorded_utc": "2026-09-17T04:52:45.596783+00:00",
+  "candidate_commit": "8ef90a2402b9ad7341c87eeff2c133aacd75b9ac",
+  "candidate_tree": "e7d5acef8825d93ccab8adfd3c3c89747152b5cd",
+  "initial_implementation_commit": "df6a31cee539ad5da5ba68c06e38bac2f78c0169",
+  "graph_hash": "d66efc55f0aa5c36508b4917ac267911ced1134e796cbe67a2c4a6b7be451082",
+  "runtime": {
+    "pid": 106620,
+    "exe": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\force-arm-engine\\Release\\chimera_engine.exe",
+    "exe_sha256": "CD6845BB49BCB7AC27A76B43D5E47C600C23F8FE463E537F19CDFF533C86FAA5",
+    "scene": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\force-arm\\scene.json",
+    "scene_file_sha256": "C0D18318B14D634A37DAC257715105F61F23A9982B8EAA56A8801423DAAF7DB9",
+    "graph_hash": "d66efc55f0aa5c36508b4917ac267911ced1134e796cbe67a2c4a6b7be451082",
+    "scene_sha256": "d78fcc3c6d5b18463b3cad1a771926116ade95f0ad7e23b19b130258042be834",
+    "port": 8126,
+    "launched_utc": "2026-09-17T04:46:33.7253143Z"
+  },
+  "source_file_manifest_sha256": {
+    "ChimeraEngine/engine/arm_dynamics.hpp": "2169f1593543666af0fe77ef3c9bfa95fbb8b963983cda3e21299413d3a74eb9",
+    "ChimeraEngine/engine/earth_environment.hpp": "b4747d349ce201ebadb74227b33725466d16edd860ed421ac590ad789178469a",
+    "ChimeraEngine/engine/graph_earth.hpp": "19a566a7275e13f8e175a18c9f87f5747f410f59bf297c03e8ae219d2a6f24f7",
+    "ChimeraEngine/engine/main.cpp": "dfa3ef734aaca34139b9a15e32c0b0ad1bb6f2740c63a380bdeed1ed58cf7edd",
+    "ChimeraEngine/engine/tests_arm_dynamics/CMakeLists.txt": "817f9e76948678e9011dfdca8c344d07d5e7626cdfa4cc5dc126bde8011997be",
+    "ChimeraEngine/engine/tests_arm_dynamics/native.cpp": "3d3fa753b0aa800e72898f0399f8f79e6f3b90d3200f22854f8bb32e2f68971f",
+    "README.md": "ccc08c893486fea317259f08f538809255d346ed4abcf1c3900b3e6da79d7ed1",
+    "tools/creature_graph/data/authored/project_program.json": "d61580b9f5481bd125f78dd4d6a2e981ad6abe60fa0982dbee6727a8a1c26e1b",
+    "tools/creature_graph/data/creature_graph.json": "b3ad0dce709260a49278d9ca6f6ddad8883f3141b627191985fa3a9e2477f6d4",
+    "tools/science_funnel/arm_load.html": "4b1a2cb7bf7c2c01304c945d7d22cecc257976ae97be1f5caedf69f47f8c12e0",
+    "tools/science_funnel/earth_scene.py": "1e663bc3cbf776b57e898ad55f91ecf1f88029584f80026cacb93312766c46d1",
+    "tools/science_funnel/force_arm.py": "d14cee00e3bdd9816a3ae5bc6b3ffeefccaf2870354c9c1cf95eb8dd7d45ada0",
+    "tools/science_funnel/macaque_anatomy.py": "949954b74e35305828b54a496477e3c8725c1d9609a5f0071a44255137d8d267",
+    "tools/science_funnel/run_earth.ps1": "ead8ee65c0f3b9e33a33e7d768de63b018481a9b6f15289f747a6c4d88e284eb",
+    "tools/science_funnel/tests/qualify_force_arm_live.py": "1335a6b7d607776c837c766e67ba674a1bfb922a61965f910756d33f796d9226",
+    "tools/science_funnel/tests/test_force_arm.py": "13a44f59357875f128c53879f922f013e3b42e11d65f4fcc2aab8078fa2a9cd1",
+    "ChimeraEngine/engine/force_models.hpp": "483b97f4600ce0e4c178bc0d9420de55ae9cb853910e3c38a3e5cf9919f0630c",
+    "ChimeraEngine/engine/joint_binding.hpp": "7ab5504b38c26d8b9e0225630fab7ed2ffa0670b5af8c4ad9afa48a9eb21b8c2",
+    "ChimeraEngine/engine/CMakeLists.txt": "c203569e944881dd1ce0980ed1c538e3a4dfcfbef62dcbbfa39a70d11671e2c2",
+    "ChimeraEngine/engine/tests_environment/native.cpp": "99290bd13bcca5c0c6b9650b80e19199f48db2b8e81c13016732acbf549cf82f"
+  },
+  "manifest_note": "SHA256 of selected committed Git blobs, independent of Windows working-tree CRLF; candidate commit/tree pins all other tracked inputs.",
+  "scope": "Pinned macaque anatomy plus existing Earth environment -> graph force recipe and contact identities -> source-derived scalar hinge inertia -> native force/energy solve -> source-bound native triangles and browser controls. One dynamic elbow only. No requirements promoted.",
+  "checks": {
+    "python": 21,
+    "native": 19,
+    "live": 25,
+    "earth_regression": 23,
+    "graphify": 7,
+    "graph_rebuild_matches": true,
+    "historical_evidence_unchanged": 11,
+    "browser": "Independent agent review of actual native controls and responsive rendering; depletion presentation also checked with browser-only fixtures. Independent agent uses the same available model provider, not a cross-provider review."
+  },
+  "metrics": {
+    "static_support_from_virtual_work": {
+      "expected_N": 1.8948861880413692,
+      "measured_N": 1.894886188041369
+    },
+    "16_scenario_energy_account": {
+      "worst_J": 1.1957101975212936e-13
+    },
+    "second_order_time_refinement": {
+      "coarse_error_rad": 6.374446719359383e-07,
+      "half_step_error_rad": 1.515109357974609e-07
+    }
+  },
+  "interpretation": "Energy residual qualifies numerical accounting for this reduced model. Independent source FK kinetic-energy/gravity oracles and a timestep refinement check provide separate accuracy checks; none establishes complete biological or GPU fidelity.",
+  "exploratory_findings": [
+    {
+      "finding": "Force-mode contact originally reused the Earth release-port identity even though its offset rotates with the elbow.",
+      "resolution": "Separate graph attachment and support entities; compiler rejects recipe/entity disagreement and unsupported coordinates; live snapshot reports these exact identities."
+    },
+    {
+      "finding": "Initial UI could label a tiny positive unusable energy remainder as an enabled drive.",
+      "resolution": "Native battery_usable uses the same threshold as effort production; UI consumes this flag. Native tests exercise both exhaustion and a positive initially unusable store; browser fixtures verify depletion display and refill recovery."
+    }
+  ],
+  "not_qualified": [
+    "full animal or free six-DOF root",
+    "biological muscles, tendons or activation",
+    "other arm coordinates or coupled multibody mass matrix",
+    "watertight bones and layered skin/fat mechanics",
+    "distributed palm/mesh collision or grasp",
+    "GPU-resident force solve or frame-budget guarantee",
+    "empirically measured actuator loss and force-velocity curve",
+    "electrical/metabolic energy cost of holding torque",
+    "finite-mass supporting planet or body dynamics"
+  ],
+  "artifacts": {
+    "arm-desktop.png": "2599fd7220253972ef95df1b8b34846722d0979e3815462609b93682f4dc5623",
+    "arm-mobile.png": "60c1a5d3fd5dd33178e896f21bc7240d2b5eb1311563c727bcf989bc06574f1a",
+    "browser-review-final.md": "c8b2090bf2049a7386f874db97f9a30137825876e8291414b02f2e61feda0d8e",
+    "browser-review-initial.md": "6d7bd0bde40f9812ab03893e5ba9ca42cbb9ee63b3025e8b9405c6dd4d7019ae",
+    "earth-regression-build.log": "9f3572a6254cb7fbadc40436c4346ad1396d2d00e529a78d6bb617c2573b78c5",
+    "earth-regression.json": "56cbc6cb8ce34c524f33a02772e4eb385b1e3532b480e4db43ffe2a67954890e",
+    "engine-build.log": "1e319aa849ec781a422e6a5fe491136a9b53988846498c1b31f3fbb8d25ba9f5",
+    "eval-after-powercut.png": "4713ad07688f6c776dba524ab03779a71f80686a5b0f1a1d82191ab187ca2376",
+    "eval-before-powercut.png": "6a788918f80a9c874a4675f6b347f9f691418aad30d691608b95d4dc94b4552a",
+    "eval-blocked-loaded.png": "fab93635f246468be6a3ba55aee5aa55529b61f11286a406013c7d4bf116ca70",
+    "eval-desktop-1440.png": "831e87426fc41887c2603fabb2c88f8c2f40c224e5e44e856ab75315f81b62f9",
+    "eval-desktop-details-1440.png": "fb4539807285710c3918e3c2f1e397522eba6e4e1cef174e7e1658493eefe6c8",
+    "eval-desktop-details-open-1440.png": "4e485dec3b08179c24cf793c362fdad22cb6b33971d785de7ec107b042376a5b",
+    "eval-desktop-hover-1440.png": "9407956fd9a00493a5f0d5b734846318498740e1be21327df8f1799e997cf6d7",
+    "eval-mobile-375.png": "535184bebc30e333efbc558d5ce20e997738919443ba52109587a6e99faaf998",
+    "eval-mobile-controls-375.png": "e8d0002b142d8b638a90f45645f3b59aaf6e3753a97789822ee680af67d87842",
+    "eval-mobile-details-375.png": "e2a3e5ed1d9d88f26d04158f840554b7ceefdb79d885caffe4d08870895fe968",
+    "eval-mobile-energy-375.png": "9ba3f99233db1a95154aca6c20ad3c1aa6134769ad526b2428b443cb3ad99c5b",
+    "eval-mobile-top-375.png": "359e4393e1d39700d21e846b2a0af298af04761bf12201de1f56ec6368d0ca02",
+    "eval-paused-target.png": "7948069e3e98735fe69bc4f33b1059e91de5d1e5de9901ba2ff627c37ff2caeb",
+    "eval-tablet-768.png": "e577c33d70bbf52507cc988b6d21f4f07ff765126755a591f5f6172c12d489a6",
+    "eval-tablet-details-768.png": "6a1ee791f7d20973efa5a5b7aafe160ab2cc96d4662076a5034b3e6307c463f9",
+    "eval-tablet-expanded-768.png": "3e1665a92b44e3f06925d0034a7fe5cebc105bde54f4d9cc8864776fb2e65b2c",
+    "eval2-desktop-1440.png": "2599fd7220253972ef95df1b8b34846722d0979e3815462609b93682f4dc5623",
+    "eval2-fixture-unusable-remainder.png": "c8118fefabf6594d8ad125f3350ce02abd203a6ad6faf9d89b543131f0a6a95b",
+    "eval2-mobile-375.png": "a06b237320f26e452c58ee078d27a197d12bba205a0983219a9b652066f45cf4",
+    "eval2-mobile-controls-375.png": "b5409f2aeeac96d3cc2a19f1521d3103e2eee071bc88087294ff50d8658cdecf",
+    "eval2-mobile-top-375.png": "60c1a5d3fd5dd33178e896f21bc7240d2b5eb1311563c727bcf989bc06574f1a",
+    "eval2-tablet-768.png": "d5da7b9c2e6194ef2369687ba78904f0e0d470053808825adfb82fcb206f7ca3",
+    "graph-roundtrip.json": "8c1011ed208d4ece5f78de0955d1631c993cb31370d467e55ff624cc141f1c73",
+    "live.json": "06130230d1b61c00edb1849438c5ceeca25f13c2ff0f5c3d4dcda5096837f6c0",
+    "native-build.log": "700dd1a1b39f29b8b55759fb4aa969a9766fcca590528b807533be99c1f7f9d2",
+    "native.json": "22d5369105921c787ed6519557ba59b26c7106f5a07c266c3a6edc7f6b51ace7",
+    "python-checks.log": "b7ed92099bdb1a2e68c06ac308766fa9ae1c0771852681bc949c0ed810dbc7a5",
+    "runtime.json": "b5bf4413cebdfc56e0ecd3a43f96da9e762d978789faf1fc15ff408e835b1d0e",
+    "scene.json": "c0d18318b14d634a37dac257715105f61f23a9982b8eaa56a8801423daaf7db9"
+  }
+}

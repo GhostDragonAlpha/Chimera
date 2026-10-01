@@ -1,0 +1,388 @@
+{
+ "suite": "F2-graph-regressions adversarial reproduction suite",
+ "base_commit": "a12bfbcc494a273b4739f86a83e19001343ee70c",
+ "branch": "glm53/graph-tests",
+ "schema_version_under_test": "2.0.0",
+ "convention": "REPRODUCED = observed behavior violates the architectural contract stated per test (defect live on this base); REFUTED = measured exoneration",
+ "results": [
+  {
+   "defect": "D1",
+   "title": "PHYSICS_FIELDS omits top-level value/units/source/applicability; physical-value changes never stale evidence",
+   "expected_honest": "a physical-value change MUST change content_version and MUST stale dependent evidence (validation -> stale, last_result keeps 'passing' visible)",
+   "observed": "content_version unchanged after value 4.6e-10 -> 9.9e-10; stale_evidence() == []; refresh_validation() flipped []; validation remains 'passing'",
+   "verdict": "REPRODUCED",
+   "evidence": {
+    "value_before": 4.6e-10,
+    "value_after": 9.9e-10,
+    "content_version_before": "cb19a2c798f092df",
+    "content_version_after": "cb19a2c798f092df",
+    "stale_evidence": [],
+    "refresh_flipped": [],
+    "validation_after": "passing",
+    "captured_at_build": {
+     "inst.band.feet": "9c46079a7573cdce",
+     "param.water_compressibility": "cb19a2c798f092df"
+    },
+    "PHYSICS_FIELDS": [
+     "physical",
+     "spatial",
+     "geometry",
+     "status",
+     "attachments",
+     "unknowns"
+    ]
+   },
+   "contract_refs": [
+    "schema.py:139-142",
+    "schema.py:220-223",
+    "store.py:37-40",
+    "store.py:176-189"
+   ],
+   "base_commit": "a12bfbcc494a273b4739f86a83e19001343ee70c"
+  },
+  {
+   "defect": "D2",
+   "title": "capture records object content_versions only; removing carries_signal_to cannot stale",
+   "expected_honest": "removing a relation that the evidence's measurement covered MUST stale that evidence",
+   "observed": "relation removed from authored inputs and full rebuild run; captured unchanged (objects only); refresh_validation flipped []; validation remains 'passing'; no warning raised",
+   "verdict": "REPRODUCED",
+   "evidence": {
+    "relation_at_measurement": [
+     [
+      "sensor.scalar_cell_pressure",
+      "carries_signal_to",
+      "pathway.pressure_to_intent"
+     ]
+    ],
+    "relation_after": [],
+    "captured_at_measurement": {
+     "sensor.scalar_cell_pressure": "35f6c2168aa78152",
+     "pathway.pressure_to_intent": "e937092938f3ec63"
+    },
+    "captured_after_rebuild": {
+     "sensor.scalar_cell_pressure": "35f6c2168aa78152",
+     "pathway.pressure_to_intent": "e937092938f3ec63"
+    },
+    "refresh_flipped": [],
+    "validation_after": "passing",
+    "capture_structure": "dict {object_id: content_version} -- no relation identity is representable"
+   },
+   "contract_refs": [
+    "build_graph.py:57-64",
+    "store.py:26-29",
+    "store.py:166-189"
+   ],
+   "base_commit": "a12bfbcc494a273b4739f86a83e19001343ee70c"
+  },
+  {
+   "defect": "D3",
+   "title": "`captured or {}` -- empty capture passes; even dep deletion is invisible",
+   "expected_honest": "an empty capture MUST NOT pass: staleness is unknowable, so the record must flip to stale (reason 'capture missing/empty') or the API must refuse, never report clean",
+   "observed": "captured={} record stayed 'passing' through a physics-relevant mutation (spatial.v0_m3 0.287914 -> 0.5) AND through deletion of the dep object; zero mismatches reported in both cases",
+   "verdict": "REPRODUCED",
+   "evidence": {
+    "captured_as_authored": {},
+    "content_version_before": "9c46079a7573cdce",
+    "content_version_after": "6bda6d33a31e4fe9",
+    "stale_evidence_after_mutation": [],
+    "refresh_flipped_after_mutation": [],
+    "validation_after_mutation": "passing",
+    "stale_evidence_after_deletion": [],
+    "refresh_flipped_after_deletion": [],
+    "validation_after_deletion": "passing",
+    "provenance": "seed authors captured:{} at seed/build_seed.py:807"
+   },
+   "contract_refs": [
+    "store.py:176-189",
+    "store.py:191-208",
+    "seed/build_seed.py:807"
+   ],
+   "base_commit": "a12bfbcc494a273b4739f86a83e19001343ee70c"
+  },
+  {
+   "defect": "D4",
+   "title": "unconditional re-stamp rewrites historical capture; validation/captured_utc untouched",
+   "expected_honest": "a rebuild MUST NOT rewrite the historical capture; if it re-stamps it MUST update captured_utc and/or stale the evidence -- (captured, captured_utc) must never describe two different moments",
+   "observed": "rebuild rewrote captured to the new versions while captured_utc kept 2026-09-15T13:47:00Z; refresh_validation flipped []; validation remains 'passing'; the v0 change is now undetectable via the store API",
+   "verdict": "REPRODUCED",
+   "evidence": {
+    "captured_v1": {
+     "inst.band.feet": "9c46079a7573cdce",
+     "param.water_compressibility": "cb19a2c798f092df"
+    },
+    "captured_v2": {
+     "inst.band.feet": "6bda6d33a31e4fe9",
+     "param.water_compressibility": "cb19a2c798f092df"
+    },
+    "content_version_dep_v1": "9c46079a7573cdce",
+    "content_version_dep_v2": "6bda6d33a31e4fe9",
+    "captured_utc_before_and_after": "2026-09-15T13:47:00Z",
+    "refresh_flipped": [],
+    "validation_after": "passing",
+    "mutation": "instances.json inst.band.feet spatial.v0_m3 0.287914 -> 0.5 (a PHYSICS_FIELDS member)",
+    "real_world_instance": "ev.band_seal_conservation re-committed by the 14:31:44Z rebuild recorded in DISCOVERY_EVIDENCE D5"
+   },
+   "contract_refs": [
+    "build_graph.py:57-64",
+    "store.py:191-208",
+    "seed/build_seed.py (captured_utc 13:47:00Z)"
+   ],
+   "base_commit": "a12bfbcc494a273b4739f86a83e19001343ee70c"
+  },
+  {
+   "defect": "D5",
+   "title": "regex sanitizer + no duplicate check -- node ids collide while the docstring claims collision-safe",
+   "expected_honest": "projection node ids MUST be unique: injective sanitize or an explicit collision refusal/rename at export time",
+   "observed": "export succeeded; 2 nodes both carrying id 'probe_a_b'; id_map folds both originals to the same sanitized id; the inside-edge now has identical source and target",
+   "verdict": "REPRODUCED",
+   "evidence": {
+    "original_ids": [
+     "probe/a.b",
+     "probe_a_b"
+    ],
+    "exported_node_ids": [
+     "probe_a_b",
+     "probe_a_b"
+    ],
+    "duplicate_node_ids": [
+     "probe_a_b"
+    ],
+    "id_map": {
+     "probe/a.b": "probe_a_b",
+     "probe_a_b": "probe_a_b"
+    },
+    "edges_on_collided_ids": [
+     {
+      "source": "probe_a_b",
+      "target": "probe_a_b",
+      "relation": "inside"
+     }
+    ],
+    "export_report_sha256": "bc7b7ca50b5c904f",
+    "docstring_claim": "graphify_projection.py:37 'collision-safe'"
+   },
+   "contract_refs": [
+    "graphify_projection.py:9-12",
+    "graphify_projection.py:36-41",
+    "graphify_projection.py:48-74"
+   ],
+   "base_commit": "a12bfbcc494a273b4739f86a83e19001343ee70c"
+  },
+  {
+   "defect": "D6",
+   "title": "load records loaded_schema_version without comparing; unsupported schema versions load",
+   "expected_honest": "load MUST refuse (or explicitly migrate) a store whose schema_version is outside the supported set",
+   "observed": "load succeeded with no error; meta.loaded_schema_version recorded '0.0.9-from-the-future'; all objects served as-is; no migration performed",
+   "verdict": "REPRODUCED",
+   "evidence": {
+    "schema_version_supported": "2.0.0",
+    "persisted_schema_version": "0.0.9-from-the-future",
+    "load_error": null,
+    "loaded_schema_version_in_meta": "0.0.9-from-the-future",
+    "objects_served": [
+     "region.probe"
+    ],
+    "layout_served": {}
+   },
+   "contract_refs": [
+    "store.py:238-249",
+    "schema.py:135-137"
+   ],
+   "base_commit": "a12bfbcc494a273b4739f86a83e19001343ee70c"
+  },
+  {
+   "defect": "D7",
+   "title": "runtime-to-graph matching chooses ambiguous cells greedily (matches[0]; used-exclusion in cross_check is still greedy/unflagged)",
+   "expected_honest": "ambiguous band matches MUST be flagged and MUST NOT silently decide pass/fail when a consistent assignment exists (join both instances to distinct cells, or report 'ambiguous: N candidates')",
+   "observed": "map_cells_to_instances double-books live cell 0 (both rows engine_cell_index=0, cell 1 unused, match='by band geometry'); cross_check fails BOTH v0 checks under greedy used-exclusion although the perfect assignment (_a->cell1, _b->cell0) exists; no ambiguity flag anywhere",
+   "verdict": "REPRODUCED",
+   "evidence": {
+    "join_rows": [
+     {
+      "graph_id": "inst.band.feet_a",
+      "engine_cell_index": 0,
+      "match": "by band geometry",
+      "live_V_m3": 0.10521
+     },
+     {
+      "graph_id": "inst.band.feet_b",
+      "engine_cell_index": 0,
+      "match": "by band geometry",
+      "live_V_m3": 0.10521
+     }
+    ],
+    "cross_check_v0_checks": [
+     {
+      "check": "inst.band.feet_a v0 matches live cell 0",
+      "ok": false,
+      "detail": "graph 0.287914 vs live 0.10521"
+     },
+     {
+      "check": "inst.band.feet_b v0 matches live cell 1",
+      "ok": false,
+      "detail": "graph 0.10521 vs live 0.287914"
+     }
+    ],
+    "cross_check_pass": false,
+    "consistent_assignment_exists": true,
+    "cells_offered": [
+     {
+      "ylo": 0.0,
+      "yhi": 0.338,
+      "v0": 0.10521,
+      "V": 0.10521,
+      "degenerate": false
+     },
+     {
+      "ylo": 0.0,
+      "yhi": 0.338,
+      "v0": 0.287914,
+      "V": 0.287914,
+      "degenerate": false
+     }
+    ],
+    "code_refs": "engine_live.py:129/139/142 (join), :65-74 (cross_check)"
+   },
+   "contract_refs": [
+    "engine_live.py:116-153",
+    "engine_live.py:55-86"
+   ],
+   "base_commit": "a12bfbcc494a273b4739f86a83e19001343ee70c"
+  },
+  {
+   "defect": "D8",
+   "title": "exact conservation zero fails via `or 1.0`",
+   "expected_honest": "|conserve_pct| < 0.01 must pass INCLUDING exactly 0.0 (the best case); None must be reported as missing, not swapped for a sentinel",
+   "observed": "conserve_pct=0.0 -> check ok=False (sentinel 1.0 substituted); conserve_pct=1e-6 -> check ok=True; all other checks green in both reports, so the falsy-zero alone fails a perfect world",
+   "verdict": "REPRODUCED",
+   "evidence": {
+    "check_exact_zero": {
+     "check": "conservation ~0",
+     "ok": false,
+     "detail": "conserve_pct=0.0"
+    },
+    "other_checks_exact_zero_all_ok": true,
+    "check_1e-6": {
+     "check": "conservation ~0",
+     "ok": true,
+     "detail": "conserve_pct=1e-06"
+    },
+    "code": "engine_live.py:61  abs(tick.get(\"conserve_pct\") or 1.0) < 0.01"
+   },
+   "contract_refs": [
+    "engine_live.py:59-62",
+    "ev acceptance: |conserve_pct| < 0.01"
+   ],
+   "base_commit": "a12bfbcc494a273b4739f86a83e19001343ee70c"
+  },
+  {
+   "defect": "D9",
+   "title": "duplicate boundary edges manufacture closure (no wall-id dedup; n_support sums relation rows)",
+   "expected_honest": "closure must count DISTINCT walls: one wall registered twice is one wall, verdict stays 'boundary pending build' (an enclosure needs >1 wall)",
+   "observed": "one registration -> 'boundary pending build'; the SAME wall registered twice -> 'physically bounded'; bounding_membranes lists memb.septum.solo twice",
+   "verdict": "REPRODUCED",
+   "evidence": {
+    "one_registration": {
+     "verdict": "boundary pending build",
+     "bounding_membranes": [
+      {
+       "membrane": "memb.septum.solo",
+       "side": "A",
+       "status": "geometry_built",
+       "physically_supported": true,
+       "shared_wall_with": "region.outside"
+      }
+     ]
+    },
+    "two_registrations": {
+     "verdict": "physically bounded",
+     "bounding_membranes": [
+      {
+       "membrane": "memb.septum.solo",
+       "side": "A",
+       "status": "geometry_built",
+       "physically_supported": true,
+       "shared_wall_with": "region.outside"
+      },
+      {
+       "membrane": "memb.septum.solo",
+       "side": "A",
+       "status": "geometry_built",
+       "physically_supported": true,
+       "shared_wall_with": "region.outside"
+      }
+     ]
+    },
+    "supported_rows_duplicate_case": [
+     "memb.septum.solo",
+     "memb.septum.solo"
+    ],
+    "code_refs": "gaps.py:49-66 (per-relation rows), :66 (n_support sum), :73 (verdict iff n_support>=2 and verified)"
+   },
+   "contract_refs": [
+    "gaps.py:37-79",
+    "store.py:63-72 (multiplicity by design)"
+   ],
+   "base_commit": "a12bfbcc494a273b4739f86a83e19001343ee70c"
+  },
+  {
+   "defect": "QS",
+   "title": "QUERY SEMANTICS RECORD (not a defect claim): next_work vs q_next_ready_task answer different questions; empty risk query passes despite absent evidence",
+   "expected_honest": "both behaviors are the queries' DOCUMENTED shape here -- recorded so planners cannot conflate them: different subjects, different defaults, different rankings; an empty risk result must be disambiguated from 'no evidence exists'",
+   "observed": "next_work -> ['inst.comp.shin_l'] (structure, PRIORITY_RANK order); q_next_ready_task -> work.partition_leg_l (work item, authored_priority order); q_evidence_at_risk == [] with zero evidence records (reads as safe); with an empty-capture record the same query NAMES it while stale_evidence/refresh stay silent through a real physics-relevant change (protection promised but inert)",
+   "verdict": "REPRODUCED",
+   "evidence": {
+    "next_work": {
+     "module": "queries.py:48-92",
+     "default_experience": "experience.press_and_response",
+     "answers_with": "STRUCTURES only (kind work EXCLUDED at :58)",
+     "ranking": "PRIORITY_RANK, build_rank, order_hint, id",
+     "actionable": [
+      "inst.comp.shin_l"
+     ],
+     "work_items_in_answer": []
+    },
+    "q_next_ready_task": {
+     "module": "gaps.py:224-242",
+     "default_experience": "experience.local_withdrawal",
+     "answers_with": "WORK items only (kind==work filter at :230)",
+     "ranking": "authored_priority (None last), id",
+     "next": "work.partition_leg_l",
+     "ready": [
+      "work.partition_leg_l"
+     ],
+     "structures_in_answer": []
+    },
+    "empty_risk_query": {
+     "flavor_a_zero_evidence_records": {
+      "q_evidence_at_risk": [],
+      "evidence_records_in_store": 0,
+      "empty_despite_absent_evidence": true
+     },
+     "flavor_b_hollow_capture": {
+      "q_evidence_at_risk_names_it": [
+       {
+        "evidence": "ev.hollow",
+        "validation": "passing",
+        "why": "directly measured against it"
+       }
+      ],
+      "stale_evidence_before_change": [],
+      "stale_evidence_after_change": [],
+      "refresh_flipped": [],
+      "validation_after": "passing",
+      "protection_promised_but_inert": true
+     }
+    }
+   },
+   "contract_refs": [
+    "queries.py:48-92",
+    "gaps.py:141-184",
+    "gaps.py:191-242",
+    "gaps.py:258-274",
+    "store.py:176-189"
+   ],
+   "base_commit": "a12bfbcc494a273b4739f86a83e19001343ee70c"
+  }
+ ]
+}

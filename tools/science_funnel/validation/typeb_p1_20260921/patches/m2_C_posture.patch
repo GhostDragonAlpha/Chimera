@@ -1,0 +1,12 @@
+diff --git a/ChimeraEngine/engine/gait_controller.hpp b/ChimeraEngine/engine/gait_controller.hpp
+index 8e189c80..fdbbb4f5 100644
+--- a/ChimeraEngine/engine/gait_controller.hpp
++++ b/ChimeraEngine/engine/gait_controller.hpp
+@@ -1626,6 +1626,7 @@ class GaitWalker {
+    // or the level-entry first-cycle hand-off when the scene authors it.
+    double trunk_amp=post_amp();
+    double target_post=trunk_amp*tables_.trunk_target(phi_[0]);
++   if(ticks_>=150)target_post+=0.15; //TYPEB-P1 M2 DECLARED COMMAND C: posture command +0.15 rad at tick 150
+    tau[2]=(std::max)(-drives_[0].cap,(std::min)(drives_[0].cap,kp_post_*(target_post-s_.q[2])-kd_post_*s_.v[2]));}
+   return tau;}
+  // ── walker runtime (the free-root laws, n generalization) ──

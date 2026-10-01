@@ -1,0 +1,67 @@
+{
+ "lane": "agent/cl-L0-baseline-20260921",
+ "date": "2026-09-21",
+ "agent": "GLM 5.3 (L0 lane, constraint-ledger program)",
+ "base": "f9feeee0 (agent/constraint-ledger-20260921, the PILOT receipt commit; sparse partial clone at E:/ChimeraWork/l0-agent, ONE clone; master untouched; only this branch pushed)",
+ "rule_0": {
+  "statement": "THE L0 THEORY: the pinned wave-37 ship state (371f80d6) is fully determined by (its source tree) + (one deterministic scene) + (a pinned toolchain) with NO other input, so a sparse checkout over a shared object store -- no full source-tree clone -- reproduces its registered bytes, and the two pilot laws' replay boundary is closed (every input, initial value, reset event, phase, and expected bit pattern either captured losslessly or named). A description survives any result; a theory can lose.",
+  "prediction": "a fresh sparse worktree at 371f80d6 + a fresh no-cache build + a regenerated scene yield scene sha256 f6844eea... and stdout sha256 40e63035... (19258 bytes, plain==trace, refusal 295, ledger 30.219924 J, 38 red/137 checks); the pilot's trace instrument emits bits for every bit-level float; the ship walk's own lossless trace shows refusal 295 and row 0 equal to the declared initial state.",
+  "falsifier": "F-BASELINE-BYTES: any registered scene or stdout byte mismatch. F-EVIDENCE-GAP: any input, initial state, reset event, phase, or expected bit pattern required by the claimed two-law comparison missing from the boundary."
+ },
+ "manifest": {
+  "path": "tools/constraint_ledger/cl_L0_manifest_20260921.json",
+  "sha256": "e10051fbe5b3e484aef970734c433e2b917338d513ccb38556914e148d046b7a",
+  "required_fields": "every spec REQUIRED field filled from a measured digest or explicitly named-as-gap with its owning lane: records.record_set_manifest_digest -> GAP(L1; the pilot's record set lives in tests_p2.py, sha pinned); records.bootstrap_ir_and_codegen_digest -> PARTIAL (compile.py sha pinned; bootstrap IR not yet sealed -> L1/L4); evidence.boundary_fixture_manifest_digest -> PARTIAL (fixture set defined in tests_p2.py, sealed manifest -> L2); evidence.solver_model_and_background_assumptions_digest + solver_version_options_and_resource_limits -> GAP(L4); evidence.filesystem_and_cache_test_plan_digest -> L0's own plan executed here, the sealed multi-job plan -> GAP(L8); evidence.performance_measurement_plan_digest -> GAP(L8)"
+ },
+ "baseline_instantiated": {
+  "commit": "371f80d6 (agent/gait-wave37-full-relock; verified origin tip == 371f80d6ac6c41bacbcb59def4e566762cc2c0f9)",
+  "source_tree_digest": "e8c712a5d70a1cf5518d64db3969e82e0b3ad414 (git tree hash of the pin)",
+  "scene_digest": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342 (REGENERATED on this lane, byte-exact)",
+  "stdout_digest": "40e6303560d08caf89d36ed8ce3337843c69649a8f7f646f53a5a1642a3cf499 (19258 bytes; the receipt_wave37.json full sha, REPRODUCED on this lane)",
+  "initial_state_digest": "sha256 of canonical scene.json gait_controller section (the GaitWalker ctor's sole state input; see manifest for the digest value and convention)",
+  "seeds": "NO RNG, NO env, NO clock input to the trajectory (measured by source scan at the pin); the scene is the complete external-input surface; run configs and the reset event enumerated in the manifest",
+  "horizon": "WALK = 10*CYCLE_TICKS = 300 ticks, refusal-stop; the ship refuses at 295 (gait_positional_correction_budget); row j = status after step j-1 (dump(0) = reset row)",
+  "falsifier_letters": "29 source-carried letters (F-G1..G8, G14..G29, G31, G32, G34, G36, G37), 120 literal-named checks, with exact definitions mined from the pin's gait_unit.cpp (falsifier_letters_table.json) + first-registration receipt per letter (falsifier_letter_origins.json: 36 distinct letter forms across receipts wave02..wave37); G9-G13/G30/G33/G35 carry no source literal at the pin (G33's wave is BANKED not shipped) -- named, not silently dropped",
+  "named_letter_examples": "F-G5 free_fall_m_s2=-9.806650 exact + stand_fold_deg=5.037077 + f5_base_falls + f5_ledger; F-G22 touch census (LEGIT/CHATTER edges at kStab=1e-6, slams=0, resets_at_chatter=0, known-good L@40/R@55); F-G7 bit-identical re-run; F-G19/F-G20 entry digits"
+ },
+ "toolchain": {
+  "compiler": "MSVC 19.51.36256.0, generator Visual Studio 18 2026, cmake 4.2.1",
+  "flags": "/DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG + per-target /W4 /fp:precise, C++17; gait_unit_trace adds /DGAIT_EVENT_TRACE",
+  "fp_environment": "/fp:precise, binary64 at the boundary; pinned empirically by the byte-exact F-G5 free-fall digits and F-G7 bit-identity on the fresh build",
+  "threads": "single-threaded by construction: zero std::thread/OpenMP/atomic in gait_unit.cpp + gait_controller.hpp at the pin (all grep hits are comment substrings); no parallel reduction; one process per run -- the wave convention is structural"
+ },
+ "reproduction": {
+  "method": "git worktree add --no-checkout at 371f80d6 from the lane clone (the worktree IS a sparse checkout over the SHARED object store -- the permitted form; NO second clone; docs/ absent verified); fresh build dir .tmp/l0-repro-build (no CMakeCache existed; no cached artifact of any lane was read); scene regenerated; raw-byte runs via the declared harness run_and_hash.py (subprocess binary capture; no PowerShell '>')",
+  "scene": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342 EXACT",
+  "stdout_plain": "40e6303560d08caf89d36ed8ce3337843c69649a8f7f646f53a5a1642a3cf499 (19258 bytes) EXACT",
+  "stdout_trace": "40e6303560d08caf89d36ed8ce3337843c69649a8f7f646f53a5a1642a3cf499 EXACT (plain==trace byte-equal)",
+  "stdout_second_run": "40e6303560d08caf89d36ed8ce3337843c69649a8f7f646f53a5a1642a3cf499 (run1==run2 across processes)",
+  "headline": "exit 0; refused_tick=295 gait_positional_correction_budget; worst moving ledger 30.219924 J; 38 red / 137 checks -- the registered ship state exactly",
+  "first_discrepancy": "NONE (byte-exact on both registered hashes)"
+ },
+ "evidence_boundary": {
+  "schema": "tools/science_funnel/validation/cl_L0_baseline_20260921/boundary_schema.json",
+  "typed_call_boundary": "law 1 (touch band): tick-start phase; latch touching_prev_[2] init false,false; predicate pair-min <= kTouch=1e-5 / > kTouch+kReleaseBand=1.1e-5. law 2 (stand-first hold): decision phase; state held[2]=false, clear_tick[2]=-1, plant_y[2]=0.0 (bits 0), mode[2]=0, t[2]=0.0; arming at fire reads the touch law's SAME-TICK tick-start write (the declared record-input dependency); release pair-min > 1.1e-5 -> clear_tick=ticks_; completion mode==1 && t>=tair && pair-min <= 1e-5 -> mode=0,t=0,held=false; reset() (lines 2068-2078) re-zeroes all. Adjacent scheduler members enumerated as OUTSIDE the two-law boundary by consumption, not omission (hind_step_from_/to_/ap_/mp_/branch_/last_fire_/last_td_/stall_ -- fire-gate and census side)",
+  "losslessness_audit": {
+   "instrument": "tools/constraint_ledger/trace_harness.cpp (sha pinned in the manifest): floats carried as %.17g decimal AND uint64 IEEE bits for gaps/plant_y/heel_y/mp_y",
+   "verdict": "THE PILOT'S TRACE IS LOSSLESS -- Astra's warning does NOT apply to it: no required float is captured decimal-rounded-only where bits are needed; 2960 bit-pairs reconstructed from bits and re-encoded %.17g == recorded decimals, 0 mismatches on the ship trace (296 rows); the decimal-only fields (t, phase) are %.17g round-trip-exact for binary64, verified",
+   "ship_trace": "trace_harness compiled against the PIN's gait_controller.hpp: refusal 295 gait_positional_correction_budget == the registered death face; row 0 == declared initial state (touch [0,0], held 0, clear_tick -1, plant_y bits 0, mode 0, t 0, phi {0,0.5}); sha256 33fbdfb071fdae8bf54444cba56564d2405d3e28c9a6a6525d7f922cade73f26, byte-identical across two runs, committed as ship_trace_pin.jsonl"
+  },
+  "named_upgrades_not_silent_accepts": [
+   "kTouch/kReleaseBand not dumped in the trace meta row (pinned today by record constants + nextafter boundary fixtures + the bit-exact replay itself; upgrade: dump them -- trivial, the instrument already relaxes access for observation)",
+   "t and phase carry no *_bits columns (lossless by the %.17g round-trip property, verified; upgrade: add the columns so per-row decimal<->bits assertion covers ALL floats by measurement, not representation argument)"
+  ]
+ },
+ "measurements": {
+  "reproduction": "scene sha EXACT; stdout sha EXACT plain, trace, and second run; refusal 295; ledger 30.219924; 38 red / 137 checks; 19258 bytes. F-BASELINE-BYTES: GREEN (did not fire).",
+  "letters": "29 source letters / 120 named checks mined at the pin; 36 letter forms first-registered across receipts wave02..wave37; table + origin map committed.",
+  "boundary": "losslessness measured (2960/2960 bit-pairs, 0 mismatches; 1184 decimal-only round-trips clean); row 0 exact; refusal cross-check exact; two upgrades named. F-EVIDENCE-GAP: NO FIRED GAP for the two-law replay."
+ },
+ "gates": {
+  "creature_graph": "19 passed + 27 subtests passed from BOTH roots (repo-root cwd and tools/ cwd), zero reds",
+  "matter_kernel": "test_definition: 9/9 OK (PYTHONPATH=. python tools/matter_kernel/test_definition.py)",
+  "training_gate": "PASS (every target Froude-consistent; the body derives 0.9924 m/s)"
+ },
+ "pass": true,
+ "honest_summary": "L0 IS GREEN ON BOTH ITS PRE-REGISTERED FALSIFIERS. F-BASELINE-BYTES: from ONE sparse clone, a fresh sparse worktree at the pin (no second source-tree clone; docs/ absent), a fresh no-cache MSVC build, and a regenerated scene, both registered hashes reproduced byte-exactly -- scene f6844eea... and stdout 40e63035... (19258 bytes, plain==trace, twice), refusal 295 gait_positional_correction_budget, worst moving ledger 30.219924 J, 38 red / 137 checks. The manifest instantiates every spec REQUIRED field from measured digests or names its gap and owner (record-set manifest -> L1; solver model -> L4; sealed fixture manifest -> L2; sealed filesystem/performance plans -> L8). F-EVIDENCE-GAP: the two-law boundary is CLOSED -- persistent state (touching_prev_, held, clear_tick, plant_y, mode, t), initials, the reset event, the phases with the same-tick touch->hold dependency, and all inputs are captured, and the trace is measured LOSSLESS (2960 bit-pairs, 0 mismatches); Astra's decimal-rounded-trace warning was checked and does NOT apply, with two instrument upgrades named rather than silently accepted (meta-row kTouch/kReleaseBand; t/phase bits columns). The falsifier letters: 29 source-carried letters with exact definitions at the pin + the first-registration receipt for each of 36 letter forms. Deviations named: the 137 ship checks exceed the 120 literal ck() sites because a few checks increment manually (e.g. the f31 refusal path) -- the table carries the literal-named set and the receipt carries the convention; the g++-compiled trace instrument is OBSERVATION equipment verified by byte-equality and refusal cross-check, not part of the registered toolchain. Receipt: tools/science_funnel/validation/cl_L0_baseline_20260921/receipt.json; manifest: tools/constraint_ledger/cl_L0_manifest_20260921.json"
+}

@@ -1,0 +1,38 @@
+{
+ "schema": "chimera.render_truth_20260920.encode.v1",
+ "measured_mean_fps": 26.37,
+ "frames": 530,
+ "crf_ladder": [
+  {
+   "crf": 20,
+   "mb": 0.57
+  }
+ ],
+ "cut": "truetime (ffconcat per-frame durations = measured dt)",
+ "implied_duration_s": 20.09,
+ "crf_used": 20,
+ "mp4": {
+  "path": "E:\\ChimeraWork\\rendertruth-agent\\tools\\science_funnel\\validation\\render_truth_20260920\\real_body_slice_v2.mp4",
+  "bytes": 602012,
+  "sha256": "a60a7058571c1ef9ce8f8951e9e04da059b2a61a132074410d602e745b84a7b0"
+ },
+ "ffprobe": {
+  "programs": [],
+  "stream_groups": [],
+  "streams": [
+   {
+    "width": 640,
+    "height": 360,
+    "avg_frame_rate": "10375/501",
+    "nb_frames": "415",
+    "side_data_list": [
+     {}
+    ]
+   }
+  ],
+  "format": {
+   "duration": "20.040000",
+   "size": "602012"
+  }
+ }
+}

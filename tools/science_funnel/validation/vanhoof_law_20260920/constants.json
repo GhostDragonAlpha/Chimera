@@ -1,0 +1,46 @@
+{
+ "schema": "chimera.rule0.constant_registration.v1",
+ "lane": "vanhoof_law_20260920",
+ "written_before": "any law pass re-run (prereg receipt.json work_plan step 2); the re-run script consumes this file and refuses to run without it",
+ "route": "stated_cited",
+ "route_decision_rule": "prereg receipt.json rule0.constant_derivation_pre_commitment: (a) if the paper states its constant, THAT is the law, cited; (b) only if (a) finds nothing, the measured estimator (median implied 1.1004 g/cm3). Route (a) SUCCEEDED -- this file registers its evidence. The measured estimator is NOT registered and was not needed; it is recorded below only as the independent cross-check it had already been measured as by the landed lane.",
+ "constant": {
+  "rho_g_cm3": 1.1,
+  "rho_kg_m3": 1100.0,
+  "rho_as_printed_in_source": "0.0011 g/mm3",
+  "pcsa_factor_mm2_per_g_per_mm": "computed at run time as 1e6/(rho_g_cm3*1000.0) = 909.0909090909091... (never a rounded literal)",
+  "law_form": "PCSA_mm2_pred = 1e6 * (mass_g/1000) / (rho_g_cm3 * fl_mm/1000); checkable iff mass_g/fl_mm/pcsa_mm2 all TENTATIVE; PASS iff |PCSA_table - PCSA_pred|/PCSA_pred <= 0.02; verdict JOINT for the row-triple"
+ },
+ "unchanged_inherited_constants": {
+  "law_tolerance_rel": 0.02,
+  "floor_law_pass": 0.90,
+  "floor_agreement": 0.80,
+  "sources": "vanhoof_transcription_20260920 receipt.json prereg (floors, tolerance) <- adapters_muscle.py LAW_TOLERANCE / admit_vanhoof.py LAW_TOLERANCE; NOT re-sized (successor option (b) declined by the prereg: fit-to-pass by construction)"
+ },
+ "evidence": {
+  "source_paper": "Vanhoof MJM, van Leeuwen T, Galletta L, Vereecke EE. The forearm and hand musculature of semi-terrestrial rhesus macaques (Macaca mulatta) and arboreal gibbons (fam. Hylobatidae). Part II. Quantitative analysis. J Anat. 2021 Feb;238(2):321-337. doi:10.1111/joa.13314. PMCID PMC7812139, PMID 33011967.",
+  "citation_verified_against": "the intake's staged front-matter XML of the same article (tools/science_funnel/data/vanhoof_forearm/PMC7812139_fulltext.xml, sha256 47cc6b836d0a9b44d8a1ab35dba1c91114291f63721c2db44175de001c1ce8f8): authors, title, volume 238, issue 2, fpage 321, lpage 337, year 2020/2021, doi 10.1111/joa.13314, PMCID PMC7812139, PMID 33011967 -- all matched",
+  "url_fetched": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7812139/",
+  "fetched_utc_date": "2026-09-22",
+  "fetcher": "WebFetch (small fast model over PMC full text) + mcp web_reader full-page read (quote cross-checked verbatim between the two reads)",
+  "section": "2.3. Data analysis (Methods), Equations (1) and (2)",
+  "quote_rendering_note": "Equations (1) and (2) are stacked fractions in the source; both independent full-text readers render the fraction bar inline by concatenation, so 'muscle massmuscle fascicle length∗muscle density' reads mass / (muscle fascicle length * muscle density). The semantic form mass/(FL*rho) is confirmed by both readers' formula paraphrases AND by the numbers: at rho = 0.0011 g/mm3 the landed table's implied-rho median is 1.1004 g/cm3 (a different reading of the equation would not put the table's own implied constant at the paper's stated one).",
+  "quotes_verbatim": [
+   "PCSA=muscle massmuscle fascicle length∗muscle density. (1)",
+   "For the small intrinsic hand muscles we were not able to accurately determine the muscle volume using the submersion method. Therefore, we calculated the muscle density only for the extrinsic muscles of all specimens using Equation (2).",
+   "Muscle density=muscle belly massmuscle volume. (2)",
+   "For both gibbons and macaques, the average muscle density is 0.0011 g/mm3 (SD <0.0001 g/mm3), which is almost equal to the density defined for human muscles (0.00106 g/mm3) (Ward and Lieber, 2005).",
+   "Therefore, the density value of 0.0011 g/mm3 is used in the calculation of the PCSA for all muscles in this study."
+  ],
+  "density_citation_named_by_the_paper": "Ward S.R. & Lieber R.L. (2005) Density and hydration of fresh and fixed human skeletal muscle. Journal of Biomechanics 38(11):2317-2320 -- the paper's 0.00106 g/mm3 human constant; NOTE: this 1.06 g/cm3 IS the funnel's inherited adapters_muscle.MUSCLE_DENSITY_KG_M3=1060.0 -- the funnel had registered the paper's CITED HUMAN constant, not the paper's own MEASURED-AND-USED macaque/gibbon constant",
+  "pennation_stated_omission": "We chose to omit pennation angle (PA ...) from the PCSA equation as (a) there were difficulties in obtaining accurate PA measurements ..., (b) the in vitro measurements are not fully representative of the PA in vivo ..., (c) the PA of most muscles ranges between 0 and 30 degrees, the cosine of which ranges between 1 and 0.87, having only a minor influence on PCSA calculation",
+  "merged_bellies_rule_stated": "If muscles consisted of multiple muscle bellies that were easily separable (e.g. m. triceps brachii, m. flexor digitorum superficialis), the PCSA was calculated as the sum of the PCSA of the separate muscle bellies. -- the source's own per-row semantics; per-row residuals on such rows are the source's truth, named not repaired",
+  "local_pin_cross_check": "tools/science_funnel/data/vanhoof_forearm/PMC7812139_fulltext.xml (staged by the intake, sha256 47cc6b836d0a9b44d8a1ab35dba1c91114291f63721c2db44175de001c1ce8f8) is FRONT-MATTER ONLY (12,867 bytes: journal meta + abstract, no Methods body) -- it cannot carry the density statement; the live PMC full text is therefore the evidence source, per the prereg's route (a) wording"
+ },
+ "independent_cross_check_recorded_not_registered": {
+  "what": "the landed lane's measured implied-density distribution over the same 218 checkable rows (vanhoof_transcription_20260920 laws.json @ sha256 94dc0e18b1b7ec273f64eff6d366f51378cca2a198248498b4a56482fda0f85c): median 1.1004, IQR 1.095-1.115, min 0.7824, max 1.4992 g/cm3",
+  "agreement_with_stated_constant": "the stated 1.1 g/cm3 sits inside the measured IQR, 0.04% from the measured median -- the measurement corroborates the paper's statement; the paper's own measured density SD (<0.0001 g/mm3, i.e. <0.1 g/cm3 over the extrinsic muscles) bounds the density-driven component of per-row residuals",
+  "role": "corroboration only -- NOT the registration route; no pass rate was seen at this or any constant before this file was written (F2)"
+ },
+ "prediction_status_at_registration": "prereg P-CONST predicted the paper states rho ~= 1.10-1.112 g/cm3: MEASURED -- the paper states exactly 0.0011 g/mm3 = 1.10 g/cm3 (route a). P-RATE (pass 90-98%) is NOT yet measured; it is measured by the re-run that follows this registration."
+}

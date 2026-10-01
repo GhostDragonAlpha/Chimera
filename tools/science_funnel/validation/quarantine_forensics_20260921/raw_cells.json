@@ -1,0 +1,255 @@
+{
+ "carrier": "46ed85a3ba1e451cf5b02f068134bf6801dbd258",
+ "rows": {
+  "AB": {
+   "cells": {
+    "belly_len": {
+     "cell": "Macaca mulatta/H8",
+     "raw_text": "83.3"
+    },
+    "belly_mass": {
+     "cell": "Macaca mulatta/I8",
+     "raw_text": "4.78"
+    },
+    "fl_m": {
+     "cell": "Macaca mulatta/D8",
+     "raw_text": "3.0800000000000001E-2"
+    },
+    "musc_len": {
+     "cell": "Macaca mulatta/F8",
+     "raw_text": "179.58"
+    },
+    "musc_mass": {
+     "cell": "Macaca mulatta/G8",
+     "raw_text": "4.9000000000000004"
+    },
+    "pcsa_m2": {
+     "cell": "Macaca mulatta/E8",
+     "raw_text": "8.9099999999999997E-5"
+    },
+    "penn_deg": {
+     "cell": "Macaca mulatta/L8",
+     "raw_text": "6.1"
+    },
+    "tendon_len": {
+     "cell": "Macaca mulatta/J8",
+     "raw_text": "18.3"
+    },
+    "tendon_mass": {
+     "cell": "Macaca mulatta/K8",
+     "raw_text": "0.05"
+    }
+   },
+   "sheet_row": 8
+  },
+  "BFS": {
+   "cells": {
+    "belly_len": {
+     "cell": "<absent:H23>",
+     "raw_text": ""
+    },
+    "belly_mass": {
+     "cell": "<absent:I23>",
+     "raw_text": ""
+    },
+    "fl_m": {
+     "cell": "Macaca mulatta/D23",
+     "raw_text": "7.1199999999999999E-2"
+    },
+    "musc_len": {
+     "cell": "<absent:F23>",
+     "raw_text": ""
+    },
+    "musc_mass": {
+     "cell": "<absent:G23>",
+     "raw_text": ""
+    },
+    "pcsa_m2": {
+     "cell": "Macaca mulatta/E23",
+     "raw_text": "1.0076589999999999E-3"
+    },
+    "penn_deg": {
+     "cell": "Macaca mulatta/L23",
+     "raw_text": "26.2"
+    },
+    "tendon_len": {
+     "cell": "<absent:J23>",
+     "raw_text": ""
+    },
+    "tendon_mass": {
+     "cell": "<absent:K23>",
+     "raw_text": ""
+    }
+   },
+   "sheet_row": 23
+  },
+  "ObtInt": {
+   "cells": {
+    "belly_len": {
+     "cell": "Macaca mulatta/H4",
+     "raw_text": "48.9"
+    },
+    "belly_mass": {
+     "cell": "Macaca mulatta/I4",
+     "raw_text": "6.82"
+    },
+    "fl_m": {
+     "cell": "Macaca mulatta/D4",
+     "raw_text": "2.35E-2"
+    },
+    "musc_len": {
+     "cell": "Macaca mulatta/F4",
+     "raw_text": "69.849999999999994"
+    },
+    "musc_mass": {
+     "cell": "Macaca mulatta/G4",
+     "raw_text": "8.99"
+    },
+    "pcsa_m2": {
+     "cell": "Macaca mulatta/E4",
+     "raw_text": "3.6089899999999997E-4"
+    },
+    "penn_deg": {
+     "cell": "Macaca mulatta/L4",
+     "raw_text": "15.2"
+    },
+    "tendon_len": {
+     "cell": "Macaca mulatta/J4",
+     "raw_text": "22.1"
+    },
+    "tendon_mass": {
+     "cell": "Macaca mulatta/K4",
+     "raw_text": "0.15"
+    }
+   },
+   "sheet_row": 4
+  },
+  "RF": {
+   "cells": {
+    "belly_len": {
+     "cell": "Macaca mulatta/H11",
+     "raw_text": "154.28"
+    },
+    "belly_mass": {
+     "cell": "Macaca mulatta/I11",
+     "raw_text": "28.06"
+    },
+    "fl_m": {
+     "cell": "Macaca mulatta/D11",
+     "raw_text": "0.10299999999999999"
+    },
+    "musc_len": {
+     "cell": "Macaca mulatta/F11",
+     "raw_text": "198.97"
+    },
+    "musc_mass": {
+     "cell": "Macaca mulatta/G11",
+     "raw_text": "32.06"
+    },
+    "pcsa_m2": {
+     "cell": "Macaca mulatta/E11",
+     "raw_text": "2.9364400000000002E-4"
+    },
+    "penn_deg": {
+     "cell": "Macaca mulatta/L11",
+     "raw_text": "5"
+    },
+    "tendon_len": {
+     "cell": "Macaca mulatta/J11",
+     "raw_text": "49.2"
+    },
+    "tendon_mass": {
+     "cell": "Macaca mulatta/K11",
+     "raw_text": "3.25"
+    }
+   },
+   "sheet_row": 11
+  },
+  "SAR": {
+   "cells": {
+    "belly_len": {
+     "cell": "Macaca mulatta/H21",
+     "raw_text": "253.82"
+    },
+    "belly_mass": {
+     "cell": "Macaca mulatta/I21",
+     "raw_text": "9.39"
+    },
+    "fl_m": {
+     "cell": "Macaca mulatta/D21",
+     "raw_text": "0.21775"
+    },
+    "musc_len": {
+     "cell": "Macaca mulatta/F21",
+     "raw_text": "268.02"
+    },
+    "musc_mass": {
+     "cell": "Macaca mulatta/G21",
+     "raw_text": "9.4"
+    },
+    "pcsa_m2": {
+     "cell": "Macaca mulatta/E21",
+     "raw_text": "4.07E-5"
+    },
+    "penn_deg": {
+     "cell": "<absent:L21>",
+     "raw_text": ""
+    },
+    "tendon_len": {
+     "cell": "Macaca mulatta/J21",
+     "raw_text": "14.2"
+    },
+    "tendon_mass": {
+     "cell": "Macaca mulatta/K21",
+     "raw_text": "0.9"
+    }
+   },
+   "sheet_row": 21
+  },
+  "TP": {
+   "cells": {
+    "belly_len": {
+     "cell": "Macaca mulatta/H9",
+     "raw_text": "173.04"
+    },
+    "belly_mass": {
+     "cell": "Macaca mulatta/I9",
+     "raw_text": "14.11"
+    },
+    "fl_m": {
+     "cell": "Macaca mulatta/D9",
+     "raw_text": "7.0300000000000001E-2"
+    },
+    "musc_len": {
+     "cell": "Macaca mulatta/F9",
+     "raw_text": "200.56"
+    },
+    "musc_mass": {
+     "cell": "Macaca mulatta/G9",
+     "raw_text": "14.25"
+    },
+    "pcsa_m2": {
+     "cell": "Macaca mulatta/E9",
+     "raw_text": "1.9122900000000001E-4"
+    },
+    "penn_deg": {
+     "cell": "Macaca mulatta/L9",
+     "raw_text": "17.8"
+    },
+    "tendon_len": {
+     "cell": "Macaca mulatta/J9",
+     "raw_text": "27.52"
+    },
+    "tendon_mass": {
+     "cell": "Macaca mulatta/K9",
+     "raw_text": "1"
+    }
+   },
+   "sheet_row": 9
+  }
+ },
+ "schema": "chimera.quarantine_forensics_raw_cells.v1",
+ "sheet": "Macaca mulatta",
+ "xlsx_path": "tools/science_funnel/data/guimaraes_arch/AJPA-190-e70329-s001.xlsx",
+ "xlsx_sha256": "08ead4a901a53f97e136c709a7804b9d04b4b903107e873c01f3b9b5b9eb8678"
+}

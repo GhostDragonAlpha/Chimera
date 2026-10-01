@@ -1,0 +1,87 @@
+refusal: (302, 'gait_positional_correction_budget')  fires: 18  tds: 17  dvfl (t,leg) first-sample series: 113  dvfa series: 303
+THE WAVE-46 CALIBRATION (verbatim): plane_model_y_=0.004, pad radius=0.004, shift V{0,0,0} => split_abs=2*(pad_y-gmin); sref=2*(pad_y(fire)-gmin(fire+1)); lever(t)=split_abs(t)-sref.
+------------------------------------------------------------------------------------------------------------------------------------------------------
+ERA RATE CENSUS (F-G47a): fire->ct leg class span nSamp maxLever leverRate(maxLever/span) maxInc eraClassLabels=wave-45/46
+    98-> 107 leg=1 LIFT (slot) span= 9 nB= 1 leverMax=  +1.548 mm rate= +0.172 mm/tick maxInc= +1.548 mm/tick cross=99
+   142-> 160 leg=0 LIFT (alt) span=18 nB= 1 leverMax=  +5.090 mm rate= +0.283 mm/tick maxInc= +5.090 mm/tick cross=143
+   160-> 174 leg=1 LIFT (alt) span=14 nB= 1 leverMax=  +4.257 mm rate= +0.304 mm/tick maxInc= +4.257 mm/tick cross=161
+   161-> 170 leg=0 STALL(alt) span= 9 nB= 9 leverMax=  -3.142 mm rate= -0.349 mm/tick maxInc= -0.648 mm/tick cross=never
+   175-> 184 leg=0 STALL(alt) span= 9 nB= 9 leverMax=  -0.003 mm rate= -0.000 mm/tick maxInc= +0.219 mm/tick cross=never
+   184-> 193 leg=1 STALL(alt) span= 9 nB= 9 leverMax=  +0.151 mm rate= +0.017 mm/tick maxInc= +0.043 mm/tick cross=never
+   193-> 202 leg=0 STALL(alt) span= 9 nB= 9 leverMax=  -0.497 mm rate= -0.055 mm/tick maxInc= -0.331 mm/tick cross=never
+   202-> 211 leg=1 LIFT (alt) span= 9 nB= 4 leverMax=  +0.340 mm rate= +0.038 mm/tick maxInc= +0.115 mm/tick cross=206
+   211-> 220 leg=0 LIFT (alt) span= 9 nB= 4 leverMax=  -0.573 mm rate= -0.064 mm/tick maxInc= +0.100 mm/tick cross=215
+   220-> 229 leg=1 LIFT (alt) span= 9 nB= 9 leverMax=  +6.902 mm rate= +0.767 mm/tick maxInc= +0.872 mm/tick cross=never
+   229-> 238 leg=0 LIFT (alt) span= 9 nB= 9 leverMax=  +9.125 mm rate= +1.014 mm/tick maxInc= +1.178 mm/tick cross=never
+   238-> 247 leg=1 LIFT (alt) span= 9 nB= 9 leverMax=  +7.476 mm rate= +0.831 mm/tick maxInc= +0.984 mm/tick cross=never
+   247-> 256 leg=0 LIFT (alt) span= 9 nB= 9 leverMax= +11.577 mm rate= +1.286 mm/tick maxInc= +1.306 mm/tick cross=never
+   256-> 265 leg=1 STALL(alt) span= 9 nB= 9 leverMax=  +0.468 mm rate= +0.052 mm/tick maxInc= +0.203 mm/tick cross=never
+   265-> 274 leg=0 LIFT (alt) span= 9 nB= 9 leverMax= +16.426 mm rate= +1.825 mm/tick maxInc= +2.233 mm/tick cross=never
+   274-> 291 leg=1 STALL(alt) span=17 nB= 1 leverMax=  -0.413 mm rate= -0.024 mm/tick maxInc= -0.413 mm/tick cross=275
+   291-> 300 leg=0 STALL(alt) span= 9 nB= 9 leverMax=  -6.416 mm rate= -0.713 mm/tick maxInc= -2.506 mm/tick cross=never
+   300-> 302 leg=1 STALL(alt) span= 2 nB= 2 leverMax=  +0.551 mm rate= +0.275 mm/tick maxInc= +0.536 mm/tick cross=never
+------------------------------------------------------------------------------------------------------------------------------------------------------
+THE PER-TICK INCREMENT SERIES (never-crossed eras; mm/tick):
+  fire 161 STALL: 162:-3.1423 163:-2.5558 164:-2.1476 165:-1.8228 166:-1.5507 167:-1.3084 168:-1.0852 169:-0.8658 170:-0.6482
+  fire 175 STALL: 176:-0.4801 177:+0.1852 178:+0.2189 179:+0.0730 180:-0.0178 181:-0.0494 182:-0.0677 183:-0.1132 184:-0.1532
+  fire 184 STALL: 185:-0.0459 186:-0.0167 187:+0.0166 188:+0.0113 189:+0.0377 190:+0.0347 191:+0.0407 192:+0.0432 193:+0.0298
+  fire 193 STALL: 194:-0.4975 195:-0.5081 196:-0.4963 197:-0.4932 198:-0.4492 199:-0.4064 200:-0.3561 201:-0.3534 202:-0.3313
+  fire 220 LIFT: 221:+0.4524 222:+0.6258 223:+0.7877 224:+0.8574 225:+0.8725 226:+0.8433 227:+0.8171 228:+0.8097 229:+0.8361
+  fire 229 LIFT: 230:+0.8200 231:+0.8702 232:+0.9174 233:+0.9702 234:+1.0236 235:+1.0715 236:+1.1265 237:+1.1476 238:+1.1776
+  fire 238 LIFT: 239:+0.9839 240:+0.9463 241:+0.9073 242:+0.8708 243:+0.8373 244:+0.8023 245:+0.7554 246:+0.7103 247:+0.6629
+  fire 247 LIFT: 248:+1.2893 249:+1.3014 250:+1.3057 251:+1.2810 252:+1.2747 253:+1.2879 254:+1.2690 255:+1.2640 256:+1.3034
+  fire 256 STALL: 257:+0.2035 258:+0.1512 259:+0.0821 260:+0.0316 261:-0.0112 262:-0.0501 263:-0.0851 264:-0.1162 265:-0.1422
+  fire 265 LIFT: 266:+2.2334 267:+2.1510 268:+2.0611 269:+1.9575 270:+1.8468 271:+1.7323 272:+1.6114 273:+1.4839 274:+1.3481
+  fire 291 STALL: 292:-6.4157 293:-6.8510 294:-7.0422 295:-7.0927 296:-6.8280 297:-7.0702 298:-7.6535 299:-8.2303 300:-2.5055
+  fire 300 STALL: 301:+0.0145 302:+0.5360
+------------------------------------------------------------------------------------------------------------------------------------------------------
+THE CALIBRATION CROSS-CHECK (the era-total levers vs mine_wave45_out.txt's printed maxima):
+  fire 161 STALL: mine=-3.142 mm  wave45=-3.142 mm  MATCH
+  fire 175 STALL: mine=-0.003 mm  wave45=-0.003 mm  MATCH
+  fire 184 STALL: mine=+0.151 mm  wave45=+0.151 mm  MATCH
+  fire 193 STALL: mine=-0.497 mm  wave45=-0.497 mm  MATCH
+  fire 220 LIFT: mine=+6.902 mm  wave45=+6.902 mm  MATCH
+  fire 229 LIFT: mine=+9.125 mm  wave45=+9.125 mm  MATCH
+  fire 238 LIFT: mine=+7.476 mm  wave45=+7.476 mm  MATCH
+  fire 247 LIFT: mine=+11.577 mm  wave45=+11.577 mm  MATCH
+  fire 256 STALL: mine=+0.468 mm  wave45=+0.468 mm  MATCH
+  fire 265 LIFT: mine=+16.426 mm  wave45=+16.426 mm  MATCH
+  fire 291 STALL: mine=-6.416 mm  wave45=-6.416 mm  MATCH
+  fire 300 STALL: mine=+0.551 mm  wave45=+0.551 mm  MATCH
+  CROSS-CHECK: GREEN (all 12 never-crossed eras match to the printed precision)
+------------------------------------------------------------------------------------------------------------------------------------------------------
+THE CLASS ENVELOPES (never-crossed eras, the wave-45/46 labels):
+  LIFT  n=5  leverMax mm: [6.902, 9.125, 7.476, 11.577, 16.426]  -> 6.902 .. 16.426
+  LIFT  era-rate mm/tick: 0.767 .. 1.825   per-tick maxInc mm/tick: 0.872 .. 2.233
+  STALL n=7  leverMax mm: [-3.142, -0.003, 0.151, -0.497, 0.468, -6.416, 0.551]  -> -6.416 .. 0.551
+  STALL era-rate mm/tick: -0.713 .. 0.275   per-tick maxInc mm/tick: -2.506 .. 0.536
+  THE SEPARATING WINDOWS: LEVEL form (0.551, 6.902) mm; era-RATE form (0.275, 0.767) mm/tick; per-tick INC form (0.536, 0.872) mm/tick
+------------------------------------------------------------------------------------------------------------------------------------------------------
+THE CANDIDATE APPLICATION TABLE (F-G47b): rate mm/tick, level mm (=rate*tair=9), R1 frozen, R2 LEVEL, R2 RATE, R3
+  R2 LEVEL  = every never-crossed LIFT era has a tick with lever > D_level AND no STALL era does
+  R2 RATE   = every never-crossed LIFT era has a tick with inc  > D_rate  AND no STALL era does
+  R3        = the clause engages inside the ship walk (any era, either form)
+  edge/tair (the release law's own)          rate=   0.0012 level=   0.0110 | R1=PASS | R2L=fail R2R=fail | R3=yes | fails
+      R2 fail detail: fires in STALL eras 175:R,184:LR,256:LR,300:LR (the band-scale degeneracy)
+  kTouch/tair                                rate=   0.0011 level=   0.0100 | R1=PASS | R2L=fail R2R=fail | R3=yes | fails
+      R2 fail detail: fires in STALL eras 175:R,184:LR,256:LR,300:LR (the band-scale degeneracy)
+  kReleaseBand/tair                          rate=   0.0001 level=   0.0010 | R1=PASS | R2L=fail R2R=fail | R3=yes | fails
+      R2 fail detail: fires in STALL eras 175:R,184:LR,256:LR,300:LR (the band-scale degeneracy)
+  kSlip/tair                                 rate=   0.0000 level=   0.0000 | R1=PASS | R2L=fail R2R=fail | R3=yes | fails
+      R2 fail detail: fires in STALL eras 175:R,184:LR,256:LR,300:LR (the band-scale degeneracy)
+  g*dt^2 (the wave-22 free-fall quantum)     rate=   0.1090 level=   0.9807 | R1=FAIL | R2L=PASS R2R=fail | R3=yes | fails
+      the numerology trap: separates measurably, DEAD AT R1 (translational unconstrained fall; a rigid sole in free fall keeps its split CONSTANT (both pads fall equally) )
+  kSinkRateMax (the wave-27 mining pattern)  rate=   2.3490 level=  21.1410 | R1=FAIL | R2L=fail R2R=fail | R3=yes | fails
+  v_bound*dt (the capture slip budget)       rate=   0.6963 level=   6.2664 | R1=FAIL | R2L=PASS R2R=PASS | R3=yes | fails
+      the numerology trap: separates measurably, DEAD AT R1 (horizontal body-slip budget under friction vs the capture step window; no chain to sole rotation or the hold's)
+  c/tair (the commanded swing rise)          rate=   0.8889 level=   8.0000 | R1=FAIL | R2L=fail R2R=fail | R3=yes | fails
+  c*pi/(2*tair) (the glide arch max slope)   rate=   1.3963 level=  12.5664 | R1=FAIL | R2L=fail R2R=fail | R3=yes | fails
+  kDiveRateMax (joint-space, rad/tick)       rate=   4.0200 level=  36.1800 | R1=FAIL | R2L=fail R2R=fail | R3=yes | fails
+  dt/T_CYCLE (the clock rate, 1/tick)        rate=   4.6948 level=  42.2535 | R1=FAIL | R2L=fail R2R=fail | R3=yes | fails
+  the plane-engagement gate*dt               rate=   0.0033 level=   0.0300 | R1=FAIL | R2L=fail R2R=fail | R3=yes | fails
+------------------------------------------------------------------------------------------------------------------------------------------------------
+THE VERDICT (frozen rule receipt_wave47.json): DERIVATION EXISTS iff some candidate passes R1 AND (R2L or R2R) AND R3
+  VERDICT: NO DERIVATION EXISTS -- R1 INTERSECT R2 IS EMPTY; THE RECORD SHIPS; the controller chapter closes formally; the wave-48 bank = the TYPE-B convergence + the PD-authority face
+  the structural reading: the reflex band owns LEVELS against the solver's contact quantum; the split and
+  its rate are ROTATIONAL DOFs the machinery never reads; every rate-side clause needs a threshold no
+  derivation supplies -- the pad split and its rate are exactly the new sensing the TYPE-B policy layer owns.

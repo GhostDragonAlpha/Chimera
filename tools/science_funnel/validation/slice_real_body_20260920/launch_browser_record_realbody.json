@@ -1,0 +1,19 @@
+{
+ "falsifier": "F-SLICE-LAUNCH (browser half) + F-SLICE-VISUAL",
+ "schema": "chimera.real_body_20260920.browser_record.v1",
+ "method": "headless Chrome (chrome --headless=new --use-angle=swiftshader --virtual-time-budget --enable-logging=stderr) against the live slice server on 127.0.0.1:8301; the agent-browser CDP daemon path was attempted first and WEDGED on this page (measured: commands timed out after the open; 31 orphaned automation Chrome processes accumulated and starved the machine -- swept by command line), so the console transcript is Chrome's own stderr CONSOLE channel",
+ "console_messages": [
+  {"level": "INFO", "text": "Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader flag to opt in to lower security guarantees for trusted content.", "source": "http://127.0.0.1:8301/ (350)", "note": "Chrome's own software-WebGL notice under the swiftshader flag; NOT a page error"}
+ ],
+ "console_errors": [],
+ "page_errors": [],
+ "screenshots": [
+  {"file": "slice_shot_live_realbody.png", "what": "the REAL skeleton at the standing start, riding the tick: skull/spine/limbs discernible, root_y 0.1246 m on the HUD, gravity ON; the HUD lists REAL physics_body (the sha-pinned committed skeleton), FANTASY mock_carry, DECLARED ghost_standing_pose"},
+  {"file": "slice_shot_carry_realbody.png", "what": "after /api/send (the page button's own endpoint): the creature AT the marker -- objective reads 'the creature is at the marker (seated)', carry arrived x=0.5985 z=0.8749, root_y still 0.1246 m (the carry never touches Y)"},
+  {"file": "../playable_slice_20260921/slice_shot_live.png (committed, 0921 lane)", "what": "BEFORE: the bbox stand-in capsule body the 0921 slice shipped"}
+ ],
+ "notes": [
+  "the settled world's HUD numbers are the engine's own: root_y 0.1246 m is the derived attractor -(m*g/k)-ymin measured by F-SLICE-FALL/F-SLICE-RESTART",
+  "the carry was triggered via /api/send, the exact POST the page's SEND button issues; the RENDER is the real page's (WebGL2 triangles from /api/verts + /api/topology)"
+ ]
+}

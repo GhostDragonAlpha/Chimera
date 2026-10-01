@@ -1,0 +1,14 @@
+{
+ "source": "NGA Earth Gravitational Model 2008, 2.5-minute grid, redistributed by the PROJ CDN (us_nga_egm08_25.tif)",
+ "retrieved_utc": "2026-09-17T22:03:21.361513+00:00",
+ "license": "Public domain (NGA model redistributed under the PROJ data terms; copyright_and_licenses.csv in PROJ-data names it free use)",
+ "files": [
+  {
+   "path": "us_nga_egm08_25.tif",
+   "url": "https://cdn.proj.org/us_nga_egm08_25.tif",
+   "resolved_url": "https://cdn.proj.org/us_nga_egm08_25.tif",
+   "bytes": 80585622,
+   "sha256": "4191d471eefebf24091b56dbc604353cb3b8cf8cc70e448bb9ae56a272bef17a"
+  }
+ ]
+}

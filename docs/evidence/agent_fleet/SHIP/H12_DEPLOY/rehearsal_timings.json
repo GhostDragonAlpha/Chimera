@@ -1,0 +1,36 @@
+{
+  "what": "H12 deploy-doctor: supervisor kill/restart tests + full start-from-zero rehearsal, all on SCRATCH instances (private ports, isolated cwd). The live stack (engine 8107, shell 8206, site 8210) was never stopped, restarted, or health-disturbed beyond read-only curls.",
+  "date": "2026-09-14",
+  "workspace": "E:/ChimeraWork/slot-01, branch astra/tasks/matter-kernel-format-01, HEAD 569083bb",
+  "supervisor_coverage_test": {
+    "config": ".h12_scratch/scratch_dummies.json (3 dummy HTTP pieces on 8245/8246/8247, same health modes as the real pieces)",
+    "cold_boot_all_three": "08:18:08 first down -> 08:18:16 last up = ~8 s sequential",
+    "single_kill_shell": {"killed_at": "08:19:06.4", "detected": "08:19:07", "healthy_again": "08:19:09", "kill_to_healthy_s": 2.6},
+    "single_kill_engine_dummy": {"killed_at": "08:19:24", "detected": "08:19:30", "healthy_again": "08:19:32", "kill_to_healthy_s": 8, "note": "worst case: detection waited the full 5 s poll interval"},
+    "double_kill_site_plus_shell": {"killed_at": "08:20:35", "shell_healthy": "08:20:39", "site_healthy": "08:20:42", "kill_to_healthy_s": "4 and 7"},
+    "clean_shutdown": "watchdog_stopped children_terminated=3, all three ports closed (verified by netstat + curl 000)",
+    "verdict": "PASS - all three services covered by health checks + auto-restart, single and simultaneous"
+  },
+  "start_from_zero_rehearsal": {
+    "config": ".h12_scratch/scratch_real.json (REAL pieces, private ports: engine 8137 from an isolated cwd copy, shell 8246, site 8245; shell/site loopback, health-checked only)",
+    "attempt_1_engine_FAIL": {
+      "what_happened": "exe copied WITHOUT shaders/ -> engine process started, wrote a 0-byte session jsonl, never opened the port, died; watchdog retried (2 attempts per ~85 s cycle) and STILL brought shell + site up",
+      "lesson": "the engine piece ships as exe + shaders/ (the launcher dir has both); a deploy that copies only the exe boots nothing. Runbook failure call-tree now names this signature."
+    },
+    "attempt_2_full_stack_PASS": {
+      "engine_8137": "starting 08:24:30 -> up 08:24:31 (~1 s boot with shaders/ present; /tick_state returns real ticks JSON)",
+      "shell_8246": "starting 08:24:33 -> up 08:24:34 (~1 s)",
+      "site_8245": "starting 08:24:36 -> up 08:24:38 (~2 s)",
+      "total_stack_from_zero_s": 8,
+      "proxy_check": "GET :8246/api/state proxied to the engine and returned live world JSON (one read-only request)"
+    },
+    "real_engine_restart": {"killed_at": "08:25:16", "detected": "08:25:19", "healthy_again": "08:25:21", "kill_to_healthy_s": 5},
+    "shutdown_contract_validation": "watchdog max-seconds exit -> watchdog_stopped children_terminated=3; the DIRECTLY-spawned engine child was verified gone (port closed, PID absent). With the OLD bat-wrapper config the engine always survived shutdown (the `start \"\"` in launch_chimera.bat detaches it; the watchdog's child was a cmd wrapper that exits instantly).",
+    "bare_exe_resolution_test": "config with bare 'chimera_engine.exe' + piece-relative cwd boots and shuts down cleanly through the real supervisor code path (08:30:19 -> 08:30:35, children_terminated=1); Python's Popen does NOT resolve a relative exe against cwd= (WinError 2), so the resolution step was added to start_chimera.py::spawn",
+    "final_config_check": "python tools/supervisor/start_chimera.py --config tools/deploy/pieces_public.json -> 'stack already up', exit 0, live stack untouched"
+  },
+  "live_stack_observations": {
+    "binding": "dev stack on 127.0.0.1 for all three (runbook step 2 exists precisely so the public 0.0.0.0 bindings win at go-live)",
+    "pii_timeline": "website process started 9/13 21:56:41 (watchdog-restarted) predated the hardening commit 879cf69d (9/13 22:47) and SERVED tools/website/signups.jsonl raw on GET /signups.jsonl (200, loopback-only, never public). A restart at 9/14 08:19:18 loaded the hardened code; /signups.jsonl now 404s. Guard is in code, not in process state - hence the step-11 PII gate."
+  }
+}

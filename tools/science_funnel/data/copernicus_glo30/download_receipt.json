@@ -1,0 +1,35 @@
+{
+ "source": "Copernicus DEM GLO-30 Public tile N18 W066 (AWS Open Data bucket copernicus-dem-30m, 2021 release) with EOXML, water mask and bucket EULA",
+ "retrieved_utc": "2026-09-17T00:00:00+00:00",
+ "license": "Copernicus free licence with attribution; EULA pinned as artifact",
+ "files": [
+  {
+   "path": "Copernicus_DSM_10_N18_00_W066_00.xml",
+   "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N18_00_W066_00_DEM/Copernicus_DSM_10_N18_00_W066_00.xml",
+   "resolved_url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N18_00_W066_00_DEM/Copernicus_DSM_10_N18_00_W066_00.xml",
+   "bytes": 44729,
+   "sha256": "6e48b2289132d316fc05ca1df47e8ae4844d36a91f2ad1cee70a813cc2ce4527"
+  },
+  {
+   "path": "Copernicus_DSM_COG_10_N18_00_W066_00_DEM.tif",
+   "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N18_00_W066_00_DEM/Copernicus_DSM_COG_10_N18_00_W066_00_DEM.tif",
+   "resolved_url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N18_00_W066_00_DEM/Copernicus_DSM_COG_10_N18_00_W066_00_DEM.tif",
+   "bytes": 7406696,
+   "sha256": "371b1449f8bbaf632cf7b1e0b078c60603390a98403c2a5e2038ad98330dbca0"
+  },
+  {
+   "path": "Copernicus_DSM_COG_10_N18_00_W066_00_WBM.tif",
+   "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N18_00_W066_00_DEM/AUXFILES/Copernicus_DSM_COG_10_N18_00_W066_00_WBM.tif",
+   "resolved_url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N18_00_W066_00_DEM/AUXFILES/Copernicus_DSM_COG_10_N18_00_W066_00_WBM.tif",
+   "bytes": 105973,
+   "sha256": "aa3fb1c5e412a00a163fbf514f2c9c29b63c7ccfa8f66de52fb85c727a622d61"
+  },
+  {
+   "path": "Copernicus_eula_F.pdf",
+   "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N18_00_W066_00_DEM/INFO/eula_F.pdf",
+   "resolved_url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N18_00_W066_00_DEM/INFO/eula_F.pdf",
+   "bytes": 117522,
+   "sha256": "32049914c37f14e7d53b48d13d74a49e77c030236e2acc7a0df426f9344feba2"
+  }
+ ]
+}

@@ -7,6 +7,7 @@ stdlib http.server only — no third-party server dependencies.
 from __future__ import annotations
 
 import collections
+import hashlib
 import json
 import math
 import sys
@@ -55,7 +56,7 @@ class EngineWindowMirror:
                 window_capture.user32.GetWindowTextW(hwnd, title, 256)
                 self.hwnd, self.title = hwnd, title.value
                 return True
-        except (ValueError, subprocess.SubprocessError, OSError):
+        except (ValueError, sp.SubprocessError, OSError):
             pass
         self.find_attempts += 1
         return False
@@ -544,6 +545,7 @@ PAGE = """<!doctype html><html><head><meta charset="utf-8"><title>Chimera Produc
   <a href="/api/movie" target="_blank">movie (mp4 of the ring)</a> ·
   <a href="/api/health" target="_blank">health</a>
   </div>
+<!--CERTIFIED_WORLD-->
 <script>
 let misses=0, capOn=false, TAKE=false;
 // SELF-PACING LIVE VIEW: the engine's PNG readback is the measured bottleneck
@@ -565,8 +567,6 @@ function pace(imgEl, path, gap){
     imgEl.onerror=()=>{busy=false; setTimeout(next,Math.max(gap,1000));};
     imgEl.src=path+'?t='+t;
   }
-  next();
-}
   next();
 }
 function tick(){
@@ -674,7 +674,293 @@ function setOrbit(){fetch('/api/camera',{method:'POST',
   }).then(r=>r.json()).then(d=>{
     document.getElementById('cam').textContent=JSON.stringify(d).slice(0,300);});}
 tick(); tickGlass(); setInterval(state,1000); state();
-</script></body></html>"""
+</script>
+<!--WALKFILM_PLAYLIST-->
+</body></html>"""
+
+
+# ---------------------------------------------------------------------------
+# WALKFILM PLAYLIST (wk-liveviewer-d02): the sealed 202-frame W03 walk as a
+# browsable playlist. SEALED CAPTURE REPLAY ONLY — a client-side image cycler
+# over sha-pinned PNGs; ZERO engine work, zero physics claims, the sealed
+# trace strictly read-only. Semantics mirror the certified-frame contract
+# (sha256 + size verified at load AND re-verified at serve; refused frames
+# are NAMED, never silently dropped; served bytes are byte-exact).
+# ---------------------------------------------------------------------------
+
+WALKFILM_PLAYLIST_PATH = Path(__file__).resolve().parent / "walkfilm_playlist.json"
+
+
+def _sha256_file(path: Path) -> tuple[str, int]:
+    h = hashlib.sha256()
+    n = 0
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+            n += len(chunk)
+    return h.hexdigest(), n
+
+
+def load_walkfilm_playlist(manifest_path: Path = WALKFILM_PLAYLIST_PATH) -> dict:
+    """Read + verify the sealed walkfilm playlist. NEVER raises.
+
+    Each frame gains verified:bool + refusal:str|None. A frame is verified
+    only when its file exists AND sha256 AND byte size match the pin. A
+    missing/malformed playlist is an honest entry-less state, not a crash.
+    """
+    result = {"schema": "chimera.viewer.walkfilm_playlist.v1",
+              "manifest": str(manifest_path), "loaded": False,
+              "declared_limits": [], "pins": {}, "counts": {}, "frames": []}
+    try:
+        raw = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError, ValueError) as e:
+        result["refusal"] = f"playlist manifest unreadable: {e}"
+        return result
+    result["loaded"] = True
+    result["declared_limits"] = list(raw.get("declared_limits", []))
+    result["pins"] = dict(raw.get("pins", {}))
+    result["counts"] = dict(raw.get("counts", {}))
+    for ent in raw.get("frames", []):
+        e = dict(ent)
+        try:
+            f = Path(ent["file"])
+            if not f.is_file():
+                e["verified"], e["refusal"] = False, "file missing"
+            else:
+                sha, n = _sha256_file(f)
+                if sha != ent.get("sha256"):
+                    e["verified"] = False
+                    e["refusal"] = (f"sha256 mismatch (pinned "
+                                    f"{str(ent.get('sha256'))[:16]}, on disk {sha[:16]})")
+                elif n != int(ent.get("bytes", -1)):
+                    e["verified"] = False
+                    e["refusal"] = (f"byte size mismatch (pinned {ent.get('bytes')}, "
+                                    f"on disk {n})")
+                else:
+                    e["verified"], e["refusal"] = True, None
+        except (OSError, KeyError, TypeError, ValueError) as ex:
+            e["verified"], e["refusal"] = False, f"entry fault: {ex}"
+        result["frames"].append(e)
+    return result
+
+
+# The client-side cycler. Play/pause/scrub are LOCAL UI CONTROLS over this
+# frame playlist ONLY: they never POST anything, never touch the engine, and
+# never change any mode (the goal never leaves play mode). All failures are
+# caught and SHOWN - zero page-error tolerance per T0.
+WALKFILM_JS = """
+(function(){
+  var img=document.getElementById('wfimg');
+  var playBtn=document.getElementById('wfplay');
+  var prevBtn=document.getElementById('wfprev');
+  var nextBtn=document.getElementById('wfnext');
+  var scrub=document.getElementById('wfscrub');
+  var count=document.getElementById('wfcount');
+  var stateEl=document.getElementById('wfstate');
+  var frames=[], i=0, playing=false, timer=null, FPS=10;
+  function src(f){ return '/api/world/walkfilm/frame?name='+encodeURIComponent(f.name); }
+  function show(k){
+    if(!frames.length) return;
+    i=((k%frames.length)+frames.length)%frames.length;
+    var f=frames[i];
+    img.alt='walkfilm '+f.name+' tick '+f.tick+' ('+f.shot+')';
+    img.src=src(f);
+    scrub.value=String(i);
+    count.textContent=(i+1)+'/'+frames.length+' - tick '+f.tick+' ('+f.shot+')'
+      +' - sha256 '+String(f.sha256).slice(0,16)+'...';
+    for(var d=1; d<=6; d++){
+      var nf=frames[(i+d)%frames.length];
+      var pre=new Image(); pre.src=src(nf);
+    }
+  }
+  function play(){
+    if(playing||!frames.length) return;
+    playing=true; playBtn.textContent='pause';
+    timer=setInterval(function(){ if(frames.length) show(i+1); }, Math.round(1000/FPS));
+  }
+  function pause(){
+    playing=false;
+    if(timer){ clearInterval(timer); timer=null; }
+    playBtn.textContent='play';
+  }
+  if(playBtn) playBtn.onclick=function(){ if(playing){ pause(); } else { play(); } };
+  if(prevBtn) prevBtn.onclick=function(){ pause(); show(i-1); };
+  if(nextBtn) nextBtn.onclick=function(){ pause(); show(i+1); };
+  if(scrub) scrub.oninput=function(){
+    pause();
+    var k=Number(scrub.value);
+    if(Number.isFinite(k)) show(k);
+  };
+  if(img) img.onerror=function(){ stateEl.textContent='frame load REFUSED by the server (named refusal in /api/world/walkfilm)'; };
+  fetch('/api/world/walkfilm').then(function(r){ return r.json(); }).then(function(d){
+    if(!d || !d.ok){ stateEl.textContent='playlist unavailable'; return; }
+    frames=(d.frames||[]).filter(function(f){ return f.verified; });
+    var refused=(d.frames||[]).length - frames.length;
+    scrub.max=String(Math.max(0, frames.length-1));
+    if(frames.length){
+      show(0);
+      stateEl.textContent=frames.length+' frames verified, sealed replay at '
+        +FPS+' fps (sealed film authored at 24 fps)'
+        +(refused? (' - '+refused+' REFUSED, named in the page') : '');
+    } else {
+      stateEl.textContent='no verified frames - nothing to cycle';
+    }
+  }).catch(function(e){
+    stateEl.textContent='playlist load failed (shown, not thrown): '+e;
+  });
+})();
+"""
+
+
+def walkfilm_section(pl: dict) -> str:
+    """Server-built HTML for the sealed walkfilm playlist: the declared
+    limits, the identity line, the cycler player, and EVERY refused frame
+    NAMED (never silently dropped). The playlist data itself is fetched by
+    the cycler from /api/world/walkfilm."""
+    if not pl.get("loaded"):
+        return ("<fieldset><legend>WALKFILM PLAYLIST</legend>"
+                "<div style=\"font-size:12px;color:#ef476f\">sealed playlist "
+                f"not loaded: {pl.get('refusal', 'unknown')}</div></fieldset>")
+    frames = pl.get("frames", [])
+    refused = [e for e in frames if not e.get("verified")]
+    lim = "".join("<div style=\"font-size:11px;color:#9aa4af\">&bull; "
+                  f"{s}</div>" for s in pl.get("declared_limits", []))
+    pins = pl.get("pins", {})
+    ident = (f"sealed trace {str(pins.get('trace_sha256_file', ''))[:16]}&hellip; "
+             f"&middot; render job {pins.get('render_job', '?')} &middot; "
+             f"seed {pins.get('seed', '?')} &middot; authored "
+             f"{pins.get('fps', '?')} fps &middot; "
+             f"{len(frames)} frames, ticks {pins.get('stride_ticks', '?')}-strided")
+    ref = "".join(
+        f"<div style=\"font-size:11px;color:#ef476f\">{e.get('name', '?')}: "
+        f"NOT SERVED &mdash; {e.get('refusal', 'unverified')}</div>"
+        for e in refused)
+    refblock = (f"<div style=\"margin-top:6px\"><b style=\"font-size:12px;"
+                f"color:#ef476f\">{len(refused)} of {len(frames)} frames REFUSED:</b>{ref}</div>"
+                if refused else
+                f"<div style=\"font-size:11px;color:#9aa4af\">all {len(frames)} "
+                "frames sha-verified at load; re-verified at every serve</div>")
+    return (
+        "<fieldset style=\"margin-top:10px\"><legend>WALKFILM PLAYLIST &mdash; "
+        "the sealed W03 302-tick walk (SEALED CAPTURE REPLAY: the engine is NOT "
+        "rendering these; NOT interactive control, NOT live pixels, NOT new "
+        "physics)</legend>"
+        f"<div style=\"font-size:11px;color:#9aa4af\">{ident}</div>"
+        + lim
+        + "<div style=\"margin:8px 0\">"
+          "<img id=\"wfimg\" alt=\"walkfilm playlist (idle)\" "
+          "style=\"max-width:100%;border:1px solid #2a3138\" loading=\"lazy\">"
+          "</div>"
+          "<div>"
+          "<button id=\"wfplay\">play</button> "
+          "<button id=\"wfprev\">prev</button> "
+          "<button id=\"wfnext\">next</button> "
+          "<input id=\"wfscrub\" type=\"range\" min=\"0\" max=\"0\" step=\"1\" value=\"0\" "
+          "style=\"width:60%;vertical-align:middle\"> "
+          "<span id=\"wfcount\" style=\"font-size:11px;color:#9aa4af\">playlist loading&hellip;</span>"
+          "</div>"
+          "<div id=\"wfstate\" style=\"font-size:11px;color:#9aa4af;margin-top:2px\"></div>"
+          "<div style=\"font-size:11px;color:#9aa4af;margin-top:2px\">play/pause/scrub "
+          "are LOCAL UI CONTROLS over this sealed frame playlist only &mdash; they never "
+          "touch the engine and never change any mode (the goal never leaves play mode)</div>"
+        + refblock
+        + "<script>" + WALKFILM_JS + "</script>"
+        + "</fieldset>")
+
+
+# ---------------------------------------------------------------------------
+# Certified world captures (sealed evidence surface; no engine required)
+# ---------------------------------------------------------------------------
+
+CERTIFIED_MANIFEST_PATH = Path(__file__).resolve().parent / "certified_world.json"
+
+
+def _sha256_file(path: Path) -> tuple[str, int]:
+    h = hashlib.sha256()
+    n = 0
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+            n += len(chunk)
+    return h.hexdigest(), n
+
+
+def load_certified_world(manifest_path: Path = CERTIFIED_MANIFEST_PATH) -> dict:
+    """Read + verify the sealed-capture manifest. NEVER raises.
+
+    Each entry gains verified:bool + refusal:str|None. An entry is verified
+    only when its file exists AND sha256 AND byte size match the pin. A
+    missing/malformed manifest is an honest entry-less state, not a crash.
+    """
+    result = {"schema": "chimera.viewer.certified_world.v1",
+              "manifest": str(manifest_path), "loaded": False,
+              "declared_limits": [], "entries": []}
+    try:
+        raw = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError, ValueError) as e:
+        result["refusal"] = f"manifest unreadable: {e}"
+        return result
+    result["loaded"] = True
+    result["declared_limits"] = list(raw.get("declared_limits", []))
+    for ent in raw.get("entries", []):
+        e = dict(ent)
+        try:
+            f = Path(ent["file"])
+            if not f.is_file():
+                e["verified"], e["refusal"] = False, "file missing"
+            else:
+                sha, n = _sha256_file(f)
+                if sha != ent.get("sha256"):
+                    e["verified"] = False
+                    e["refusal"] = (f"sha256 mismatch (pinned "
+                                    f"{str(ent.get('sha256'))[:16]}, on disk {sha[:16]})")
+                elif n != int(ent.get("bytes", -1)):
+                    e["verified"] = False
+                    e["refusal"] = (f"byte size mismatch (pinned {ent.get('bytes')}, "
+                                    f"on disk {n})")
+                else:
+                    e["verified"], e["refusal"] = True, None
+        except (OSError, KeyError, TypeError, ValueError) as ex:
+            e["verified"], e["refusal"] = False, f"entry fault: {ex}"
+        result["entries"].append(e)
+    return result
+
+
+def certified_world_section(world: dict) -> str:
+    """Server-built HTML for the sealed captures. ZERO page JS: images are
+    plain <img> loads of a sha-verified local route. Refused entries are
+    named, never silently dropped. Nothing here claims a live engine frame.
+    An entry may carry a 'disclosure' line (rendered amber between image and
+    caption); it is declared page copy for a known anomaly, not a refusal."""
+    if not world.get("loaded"):
+        return ("<fieldset><legend>THE CERTIFIED WORLD</legend>"
+                "<div style=\"font-size:12px;color:#ef476f\">sealed-capture manifest "
+                f"not loaded: {world.get('refusal', 'unknown')}</div></fieldset>")
+    rows = []
+    for e in world["entries"]:
+        if e.get("verified"):
+            ident = e.get("identity_note", "")
+            disclosure = e.get("disclosure", "")
+            rows.append(
+                "<figure style=\"margin:8px 0\">"
+                f"<img loading=\"lazy\" alt=\"{e['name']}\" "
+                "style=\"width:100%;border:1px solid #2a3138\" "
+                f"src=\"/api/world/certified/frame?name={e['name']}\">"
+                + (f"<div style=\"font-size:12px;color:#ffd166\">{disclosure}</div>"
+                   if disclosure else "")
+                + "<figcaption style=\"font-size:11px;color:#9aa4af\">"
+                f"{e.get('caption', '')}"
+                + (f" &mdash; {ident}" if ident else "")
+                + f" &middot; sha256 {e['sha256'][:16]}&hellip;</figcaption></figure>")
+        else:
+            rows.append(f"<div style=\"font-size:12px;color:#ef476f\">"
+                        f"{e.get('name', '?')}: NOT SERVED &mdash; "
+                        f"{e.get('refusal', 'unverified')}</div>")
+    lim = "".join("<div style=\"font-size:11px;color:#9aa4af\">&bull; "
+                  f"{s}</div>" for s in world.get("declared_limits", []))
+    return ("<fieldset><legend>THE CERTIFIED WORLD &mdash; the monkey in the forest "
+            "(SEALED CAPTURES: rendered offline, sha-pinned; the engine is NOT "
+            "rendering these)</legend>" + lim + "".join(rows) + "</fieldset>")
 
 
 # ---------------------------------------------------------------------------
@@ -695,13 +981,18 @@ class ViewerHandler(BaseHTTPRequestHandler):
 
     # -- helpers -----------------------------------------------------------
     def _send(self, code: int, body: bytes, ctype: str):
-        self.send_response(code)
-        self.send_header("Content-Type", ctype)
-        self.send_header("Content-Length", str(len(body)))
-        self.end_headers()
+        # The WHOLE send sits inside the guard: on Windows a client-side
+        # abort during the header flush raises ConnectionAbortedError
+        # [WinError 10053], sibling of BrokenPipeError/ConnectionResetError.
+        # Swallow it log-free like its siblings (sgt-review-287b finding).
         try:
+            self.send_response(code)
+            self.send_header("Content-Type", ctype)
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
             self.wfile.write(body)
-        except (BrokenPipeError, ConnectionResetError):
+        except (BrokenPipeError, ConnectionResetError,
+                ConnectionAbortedError):
             pass
 
     def _json(self, obj, code: int = 200):
@@ -723,7 +1014,22 @@ class ViewerHandler(BaseHTTPRequestHandler):
         query = self.path.split("?")[1] if "?" in self.path else ""
         try:
             if path == "/" or path == "/index.html":
-                self._send(200, PAGE.encode("utf-8"), "text/html; charset=utf-8")
+                # Post-merge integration (battery-found): the two sealed-
+                # capture surfaces are INDEPENDENT - a handler state may carry
+                # world, walkfilm, or both (the same defensive getattr idiom
+                # the handler already uses for mirror/capture_thread). A
+                # missing surface simply leaves its invisible placeholder
+                # comment; make_server injects both. Crash proof: the merged
+                # chained-replace version raised AttributeError for any
+                # single-surface handler state.
+                html = PAGE
+                if getattr(H, "world", None) is not None:
+                    html = html.replace("<!--CERTIFIED_WORLD-->",
+                                        certified_world_section(H.world))
+                if getattr(H, "walkfilm", None) is not None:
+                    html = html.replace("<!--WALKFILM_PLAYLIST-->",
+                                        walkfilm_section(H.walkfilm))
+                self._send(200, html.encode("utf-8"), "text/html; charset=utf-8")
             elif path == "/api/live/glass":
                 st, png, ctype = H.engine.get("/glass")
                 if st == 200 and ctype.startswith("image/png"):
@@ -751,6 +1057,48 @@ class ViewerHandler(BaseHTTPRequestHandler):
                 recs = H.ring.all_records()
                 self._json({"stats": H.ring.stats(),
                             "records": [r.meta() for r in recs]})
+            elif path == "/api/world/certified":
+                self._json({"ok": True, "schema": H.world.get("schema"),
+                            "manifest": H.world.get("manifest"),
+                            "loaded": H.world.get("loaded", False),
+                            "declared_limits": H.world.get("declared_limits", []),
+                            "entries": [{k: e.get(k) for k in
+                                         ("name", "section", "caption", "disclosure",
+                                          "identity_note", "sha256", "bytes",
+                                          "verified", "refusal")}
+                                        for e in H.world["entries"]]})
+            elif path == "/api/world/certified/frame":
+                name = None
+                for kv in query.split("&"):
+                    if kv.startswith("name="):
+                        name = kv[5:]
+                rec = next((e for e in H.world["entries"]
+                            if e.get("name") == name), None)
+                if rec is None:
+                    self._json({"ok": False,
+                                "error": f"unknown certified capture '{name}'"}, 404)
+                elif not rec.get("verified"):
+                    self._json({"ok": False,
+                                "error": f"capture not served: {rec.get('refusal')}"}, 502)
+                else:
+                    # Serve-time guard (PR #287 round 2): read ONCE, hash exactly
+                    # those bytes, serve the hashed bytes. A file deleted or made
+                    # unreadable AFTER startup must yield a NAMED 502 refusal - not
+                    # an OSError escaping do_GET (which catches only EngineError)
+                    # and not a second, unverified read (TOCTOU).
+                    try:
+                        data = Path(rec["file"]).read_bytes()
+                    except OSError as e:
+                        self._json({"ok": False,
+                                    "error": f"capture unreadable at serve time: {e}"},
+                                   502)
+                    else:
+                        if hashlib.sha256(data).hexdigest() != rec["sha256"]:
+                            self._json({"ok": False,
+                                        "error": "sha256 mismatch at serve time; refusing"},
+                                       502)
+                        else:
+                            self._send(200, data, "image/png")
             elif path == "/api/camera":
                 try:
                     self._json({"ok": True, "presets": H.camera.list_presets(),
@@ -759,7 +1107,11 @@ class ViewerHandler(BaseHTTPRequestHandler):
                                 "fit_derivation": H.camera.derive_fit()})
                 except (EngineError, json.JSONDecodeError, KeyError) as e:
                     self._json({"ok": False, "error": str(e)}, 502)
-            if path == "/graph" or path == "/graph/":
+            # ONE if/elif chain: exactly ONE response per request. (This was
+            # a bare second `if`, so first-chain routes fell through into the
+            # terminal else and attempted an unsolicited second 404 -
+            # sgt-review-287b finding.)
+            elif path == "/graph" or path == "/graph/":
                 g = (Path(__file__).resolve().parents[2] / "docs" / "LEDGER_GRAPH.json")
                 if g.is_file():
                     payload = GRAPH_PAGE.replace("__DATA__", g.read_text(encoding="utf-8"))
@@ -789,6 +1141,51 @@ class ViewerHandler(BaseHTTPRequestHandler):
                             "take_mode": H.take_mode["on"],
                             "capture": capture.snapshot_stats() if capture else {},
                             "uptime_s": round(time.time() - H.started, 1)})
+            elif path == "/api/world/walkfilm":
+                self._json({"ok": True, "schema": H.walkfilm.get("schema"),
+                            "manifest": H.walkfilm.get("manifest"),
+                            "loaded": H.walkfilm.get("loaded", False),
+                            "refusal": H.walkfilm.get("refusal"),
+                            "declared_limits": H.walkfilm.get("declared_limits", []),
+                            "pins": H.walkfilm.get("pins", {}),
+                            "counts": H.walkfilm.get("counts", {}),
+                            "frames": [{k: e.get(k) for k in
+                                        ("name", "frame", "tick", "shot", "sha256",
+                                         "bytes", "verified", "refusal")}
+                                       for e in H.walkfilm.get("frames", [])]})
+            elif path == "/api/world/walkfilm/frame":
+                name = None
+                for kv in query.split("&"):
+                    if kv.startswith("name="):
+                        name = kv[5:]
+                rec = next((e for e in H.walkfilm.get("frames", [])
+                            if e.get("name") == name), None)
+                if rec is None:
+                    self._json({"ok": False,
+                                "error": f"unknown walkfilm frame '{name}'"}, 404)
+                elif not rec.get("verified"):
+                    self._json({"ok": False,
+                                "error": f"frame not served: {rec.get('refusal')}"}, 502)
+                else:
+                    # Serve-time guard (the PR #287 round-2 pattern, aligned
+                    # after the merge): read ONCE, hash exactly those bytes,
+                    # serve the hashed bytes. A frame deleted or made
+                    # unreadable AFTER startup yields a NAMED 502 refusal -
+                    # no OSError escaping do_GET (which catches only
+                    # EngineError), no second unverified read (TOCTOU).
+                    try:
+                        data = Path(rec["file"]).read_bytes()
+                    except OSError as e:
+                        self._json({"ok": False,
+                                    "error": f"frame unreadable at serve time: {e}"},
+                                   502)
+                    else:
+                        if hashlib.sha256(data).hexdigest() != rec["sha256"]:
+                            self._json({"ok": False,
+                                        "error": "sha256 mismatch at serve time; refusing"},
+                                       502)
+                        else:
+                            self._send(200, data, "image/png")
             else:
                 self._json({"ok": False, "error": "unknown route"}, 404)
         except EngineError as e:
@@ -975,6 +1372,8 @@ def make_server(engine_url: str, port: int, history: int = 240) -> ThreadingHTTP
         "engine": engine, "ring": ring, "camera": CameraPanel(engine),
         "started": time.time(), "capture_thread": capture,
         "mirror": EngineWindowMirror(engine_url, int(engine_port)),
+        "world": load_certified_world(),
+        "walkfilm": load_walkfilm_playlist(),
     })
     server = ThreadingHTTPServer(("127.0.0.1", port), handler)
     server.daemon_threads = True

@@ -1,0 +1,251 @@
+{
+ "fixed_point_byte_stable_frames": true,
+ "P1_jpg_q80_w1280_cut_factor": 119.0,
+ "rows": {
+  "png_full": {
+   "bytes": 14021062,
+   "dims": [
+    2560,
+    1369
+   ],
+   "mad_vs_ref": 0.0,
+   "bytes_s_at_30hz": 420631860
+  },
+  "png_w1280": {
+   "bytes": 3503097,
+   "dims": [
+    1280,
+    684
+   ],
+   "mad_vs_ref": 0.0,
+   "bytes_s_at_30hz": 105092910
+  },
+  "png_w960": {
+   "bytes": 3503097,
+   "dims": [
+    1280,
+    684
+   ],
+   "mad_vs_ref": 0.0,
+   "bytes_s_at_30hz": 105092910
+  },
+  "png_w640": {
+   "bytes": 875995,
+   "dims": [
+    640,
+    342
+   ],
+   "mad_vs_ref": 0.0,
+   "bytes_s_at_30hz": 26279850
+  },
+  "jpg_w1280_q95": {
+   "bytes": 54027,
+   "dims": [
+    1280,
+    684
+   ],
+   "mad_vs_png_same_w": 0.358,
+   "vis_budget_ok": true,
+   "bytes_s_at_30hz": 1620810,
+   "bw_budget_ok_at_30hz": false
+  },
+  "jpg_w1280_q85": {
+   "bytes": 33348,
+   "dims": [
+    1280,
+    684
+   ],
+   "mad_vs_png_same_w": 0.455,
+   "vis_budget_ok": true,
+   "bytes_s_at_30hz": 1000440,
+   "bw_budget_ok_at_30hz": true
+  },
+  "jpg_w1280_q80": {
+   "bytes": 29426,
+   "dims": [
+    1280,
+    684
+   ],
+   "mad_vs_png_same_w": 0.507,
+   "vis_budget_ok": true,
+   "bytes_s_at_30hz": 882780,
+   "bw_budget_ok_at_30hz": true
+  },
+  "jpg_w1280_q70": {
+   "bytes": 25709,
+   "dims": [
+    1280,
+    684
+   ],
+   "mad_vs_png_same_w": 0.912,
+   "vis_budget_ok": true,
+   "bytes_s_at_30hz": 771270,
+   "bw_budget_ok_at_30hz": true
+  },
+  "jpg_w1280_q50": {
+   "bytes": 21646,
+   "dims": [
+    1280,
+    684
+   ],
+   "mad_vs_png_same_w": 1.024,
+   "vis_budget_ok": true,
+   "bytes_s_at_30hz": 649380,
+   "bw_budget_ok_at_30hz": true
+  },
+  "jpg_w1280_q30": {
+   "bytes": 18239,
+   "dims": [
+    1280,
+    684
+   ],
+   "mad_vs_png_same_w": 1.413,
+   "vis_budget_ok": true,
+   "bytes_s_at_30hz": 547170,
+   "bw_budget_ok_at_30hz": true
+  },
+  "jpg_w960_q95": {
+   "bytes": 54027,
+   "dims": [
+    1280,
+    684
+   ],
+   "mad_vs_png_same_w": 0.358,
+   "vis_budget_ok": true,
+   "bytes_s_at_30hz": 1620810,
+   "bw_budget_ok_at_30hz": false
+  },
+  "jpg_w960_q85": {
+   "bytes": 33348,
+   "dims": [
+    1280,
+    684
+   ],
+   "mad_vs_png_same_w": 0.455,
+   "vis_budget_ok": true,
+   "bytes_s_at_30hz": 1000440,
+   "bw_budget_ok_at_30hz": true
+  },
+  "jpg_w960_q80": {
+   "bytes": 29426,
+   "dims": [
+    1280,
+    684
+   ],
+   "mad_vs_png_same_w": 0.507,
+   "vis_budget_ok": true,
+   "bytes_s_at_30hz": 882780,
+   "bw_budget_ok_at_30hz": true
+  },
+  "jpg_w960_q70": {
+   "bytes": 25709,
+   "dims": [
+    1280,
+    684
+   ],
+   "mad_vs_png_same_w": 0.912,
+   "vis_budget_ok": true,
+   "bytes_s_at_30hz": 771270,
+   "bw_budget_ok_at_30hz": true
+  },
+  "jpg_w960_q50": {
+   "bytes": 21646,
+   "dims": [
+    1280,
+    684
+   ],
+   "mad_vs_png_same_w": 1.024,
+   "vis_budget_ok": true,
+   "bytes_s_at_30hz": 649380,
+   "bw_budget_ok_at_30hz": true
+  },
+  "jpg_w960_q30": {
+   "bytes": 18239,
+   "dims": [
+    1280,
+    684
+   ],
+   "mad_vs_png_same_w": 1.413,
+   "vis_budget_ok": true,
+   "bytes_s_at_30hz": 547170,
+   "bw_budget_ok_at_30hz": true
+  },
+  "jpg_w640_q95": {
+   "bytes": 17705,
+   "dims": [
+    640,
+    342
+   ],
+   "mad_vs_png_same_w": 0.405,
+   "vis_budget_ok": true,
+   "bytes_s_at_30hz": 531150,
+   "bw_budget_ok_at_30hz": true
+  },
+  "jpg_w640_q85": {
+   "bytes": 10345,
+   "dims": [
+    640,
+    342
+   ],
+   "mad_vs_png_same_w": 0.554,
+   "vis_budget_ok": true,
+   "bytes_s_at_30hz": 310350,
+   "bw_budget_ok_at_30hz": true
+  },
+  "jpg_w640_q80": {
+   "bytes": 9255,
+   "dims": [
+    640,
+    342
+   ],
+   "mad_vs_png_same_w": 0.582,
+   "vis_budget_ok": true,
+   "bytes_s_at_30hz": 277650,
+   "bw_budget_ok_at_30hz": true
+  },
+  "jpg_w640_q70": {
+   "bytes": 7964,
+   "dims": [
+    640,
+    342
+   ],
+   "mad_vs_png_same_w": 0.988,
+   "vis_budget_ok": true,
+   "bytes_s_at_30hz": 238920,
+   "bw_budget_ok_at_30hz": true
+  },
+  "jpg_w640_q50": {
+   "bytes": 6254,
+   "dims": [
+    640,
+    342
+   ],
+   "mad_vs_png_same_w": 1.141,
+   "vis_budget_ok": true,
+   "bytes_s_at_30hz": 187620,
+   "bw_budget_ok_at_30hz": true
+  },
+  "jpg_w640_q30": {
+   "bytes": 5307,
+   "dims": [
+    640,
+    342
+   ],
+   "mad_vs_png_same_w": 1.453,
+   "vis_budget_ok": true,
+   "bytes_s_at_30hz": 159210,
+   "bw_budget_ok_at_30hz": true
+  },
+  "jpg_full_q80": {
+   "bytes": 100681,
+   "dims": [
+    2560,
+    1369
+   ],
+   "mad_vs_png_same_w": 0.426,
+   "vis_budget_ok": true,
+   "bytes_s_at_30hz": 3020430,
+   "bw_budget_ok_at_30hz": false
+  }
+ }
+}

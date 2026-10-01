@@ -1,0 +1,7 @@
+{"do":"click","x":720,"y":485}
+{"do":"type","text":"judgeH5dryrun"}
+{"do":"shot","name":"03_name_typed"}
+{"do":"clickText","text":"PLAY"}
+{"do":"wait","ms":4000}
+{"do":"shot","name":"04_after_play"}
+{"do":"text","max":4000}

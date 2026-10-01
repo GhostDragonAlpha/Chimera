@@ -1,0 +1,52 @@
+{
+ "mouseAimed": {
+  "pixel": {
+   "x": 546.6114452383937,
+   "y": 454.39710158608455
+  },
+  "touchBody": "{\"ok\":true,\"hit\":[-0.407853,4.622676,-0.368698]}",
+  "duringHold1": [
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "afterUp": {
+   "hand": "pressing — 20000 N",
+   "torso": 89829.1
+  }
+ },
+ "decayUnderHold": {
+  "torsoPa": [
+   2168490,
+   2168490,
+   2168490,
+   2168490,
+   2168490,
+   2168490
+  ],
+  "note": "SPACE still \"held\" (no keyup release in this build)"
+ },
+ "starvedPress": {
+  "burst429s": 52,
+  "torsoBefore": 18231,
+  "midLine": "judge: wake_the_cell phase=release goalMet=true passed=false touchTarget=set lastTouchForce=50000 holding=false",
+  "midHand": "hand open",
+  "torsoAfter": 0,
+  "answered": false
+ },
+ "injectedNoPress": {
+  "verdict": "the creature waits.",
+  "judge": "judge: the_gentle_hand phase=goal goalMet=false passed=false touchTarget=set lastTouchForce=50000 holding=false",
+  "blood": [
+   "cell 0: V=0.287 m3  P=0.060 MPa",
+   "cell 1: V=12.500 m3  P=0.000 MPa",
+   "cell 2: V=0.690 m3  P=0.000 MPa",
+   "cell 3: V=0.330 m3  P=0.000 MPa",
+   "cell 4: V=0.000 m3  P=1622.780 MPa",
+   "",
+   "conserve: 0.00 %"
+  ]
+ }
+}
