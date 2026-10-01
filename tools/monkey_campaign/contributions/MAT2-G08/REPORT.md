@@ -49,7 +49,7 @@ Every unsupported tick carries exactly one declared response class; the class re
 
 | operation | frozen window | measured worst | margin | within |
 | --- | --- | --- | --- | --- |
-| press_establishment_jn_eq_P | 1e-09 | 1.7069679003611782e-11 | 9.829303209963883e-10 | True |
+| press_establishment_jn_eq_P | 1e-09 | 5.5722093605936607e-11 | 9.442779063940635e-10 | True |
 | stick_arrest_vt | 1e-12 | 1.3877787808110033e-17 | 9.99986122212192e-13 | True |
 | handover_jt_share_g_DT | 1e-09 | 1.8504087151427484e-12 | 9.981495912848573e-10 | True |
 | flight_closed_form | 1e-12 | 1.0156372270975211e-14 | 9.898436277290248e-13 | True |
@@ -68,7 +68,15 @@ Every unsupported tick carries exactly one declared response class; the class re
 
 Tightest margin: impulse_work_identity (margin 9.86455279099573e-13 of window 1e-12, measured 1.354472090042691e-14). No window was widened.
 
-Reference math: any_flip False; conversion worst 3.4139375770791958e-09 N (window 1e-06 N); worst no-flip margin -0.31236380190000007 N*s.
+### 4.1 Measured-vs-certified composition bindings (amendment a1(ii); window 1e-09 absolute)
+
+| quantity | measured | certified (pinned receipt) | delta | bind |
+| --- | --- | --- | --- | --- |
+| conversion worst N (whole assembled battery; domain: WHOLE assembled T battery: all 9 runs x 229 ticks) | 1.1144422273901e-08 | 1.1144422273901e-08 | 0.0 | True |
+| flight closed form worst m (whole battery) | 1.0156372270975211e-14 | 1.0156372270975211e-14 | 0.0 | True |
+| press establishment jn worst N*s (whole battery; at {"pad": 0, "scenario": "scene|n=2", "tick": 193}) | 5.5722093605936607e-11 | none recorded in the pinned G06 receipt | -- | frozen window 1e-09 governs |
+
+Reference math: any_flip False; conversion worst 1.1144422273901e-08 N (window 1e-06 N); worst no-flip margin -0.31236380190000007 N*s.
 Continuity (T flight windows): worst 1.0156372270975211e-14 m (window 1e-12 m).
 
 ## 5. Seam union (A8)
@@ -92,7 +100,7 @@ G05-composition refusal codes on the T segment: {"timing_unbound": 1791} (the pi
 | FB2_support_overclaim | {"clean_ok": true, "scene_transfer_supported": true} | {"substituted_ticks": 162} | recording an unsupported transfer as supported is exactly the unsupported-transfer class the profile falsifier names |
 | FB3_flight_hidden_anchor | {"clean_ok": true, "ledger_worst_Ns": 7.321088190639666e-17} | {"refusal": "ledger_imbalance"} | an invisible anchor breaks the full-tick ledger identity (the concealment class) |
 | FB4_release_sticky | {"clean_ok": true, "disp_worst_m": 5.773159728050814e-14} | {"disp_worst_m": 0.01103624999999997} | a hidden sticky constraint holding the pads after press-off breaks the free-fall release law |
-| FB5_force_pose_inconsistency | {"clean_ok": true, "conversion_worst_N": 1.8606982621349744e-10} | {"doubled_target_delta_N": 119.99999999981392} | doubling the declared force conversion with the recorded pose unchanged is exactly the force/pose inconsistency the profile falsifier names |
+| FB5_force_pose_inconsistency | {"clean_ok": true, "conversion_worst_N": 3.4139375770791958e-09} | {"doubled_target_delta_N": 119.99999999658607} | doubling the declared force conversion with the recorded pose unchanged is exactly the force/pose inconsistency the profile falsifier names |
 
 F_all_green = True over 5 arms.
 
@@ -149,12 +157,12 @@ Named-variable law: the ten variables are inherited VERBATIM from the pinned G04
 
 | artifact | sha256 |
 | --- | --- |
-| experiment_receipt.json | d534c58eda6969067a9ad3097cc781b341a7313eb0b56a9ac1f0eb465bf72ba6 |
+| experiment_receipt.json | 1f8a0bb23a830008be97f4fbc7f9e8bc7d735bb664df6ef47d3a84e0417853bd |
 | experiment_trace.json | 17f8348813a51244df2a6ef187d04c574ddb46bd7b0ff64a585a13c5e95bb5d9 |
-| determinism_receipt.json | 926f2f1dc87668c1408f91a6b02a283a835d7acbb0509d71b72ac85fec6bd28e |
-| falsifier_receipt.json | 8f01932fe6de30c3b3b3eabf77bfc04193772e29311cf84250829c195f953369 |
+| determinism_receipt.json | 0a9e03253483b580f5c1ce0bf99197c8f8bb60e3efba40258a253e1361222957 |
+| falsifier_receipt.json | 42cf487258223e036c8bf58d4a6ca87101f722b52acc9de40dac413bf28d4060 |
 | regression_receipt.json | a8af8096b24d9d89d91b7d196dfda6aab7ed45a33e33be7c4066ca3a2c8e34e4 |
-| checks_receipt.json | 27340fb5185335282c9e923cfa12fca5a973ca91a58b3c91f678e48c47d2153e |
+| checks_receipt.json | 48e847eb33352df01aefad8119d8725288f707b7ce9c515603c622800913e9f3 |
 
 ## 13. Honest limitations
 

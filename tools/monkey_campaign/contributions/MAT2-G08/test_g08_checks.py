@@ -94,8 +94,14 @@ class ReceiptIdentity(unittest.TestCase):
     def test_a05_continuity(self):
         r = self.receipt
         self.assertIs(True, r['A5_continuity'])
-        self.assertTrue(r['A5_evidence']['ok'])
-        self.assertLessEqual(r['A5_evidence']['worst_m'], 1e-12)
+        ev = r['A5_evidence']
+        self.assertTrue(ev['ok'])
+        self.assertLessEqual(ev['worst_m'], 1e-12)
+        # amendment a1(ii): the assembled flight worst binds to the
+        # certified G06 x_evidence.flight_worst_non_event_m inside 1e-9
+        self.assertLessEqual(abs(ev['measured_minus_certified_m']),
+                             1e-09)
+        self.assertIs(True, ev['composition_bind_ok'])
 
     def test_a06_event_localization(self):
         r = self.receipt
@@ -116,6 +122,14 @@ class ReceiptIdentity(unittest.TestCase):
         self.assertTrue(ev['conversion_ok'])
         self.assertLessEqual(ev['conversion_worst_N'],
                              ev['conversion_window_N'])
+        # amendment a1(ii): WHOLE-battery domain disclosure + the
+        # measured-vs-certified composition binding inside 1e-9 absolute
+        self.assertIn('WHOLE assembled T battery', ev['conversion_domain'])
+        binding = ev['conversion_binding']
+        self.assertEqual(1.1144422273901e-08, binding['certified_N'])
+        self.assertLessEqual(abs(binding['measured_minus_certified_N']),
+                             1e-09)
+        self.assertIs(True, binding['composition_bind_ok'])
 
     def test_a08_seam_union(self):
         r = self.receipt
@@ -145,6 +159,11 @@ class ReceiptIdentity(unittest.TestCase):
         self.assertEqual(set(seen), set(WINDOWS_FROZEN),
                          'budget coverage mismatch')
         self.assertIn('operation', ev['tightest_margin_operation'])
+        press = next(op for op in ev['operations']
+                     if op['operation'] == 'press_establishment_jn_eq_P')
+        self.assertTrue(press['source'].startswith('WHOLE assembled T '
+                                                   'battery'))
+        self.assertFalse(press['certified_binding']['certified_recorded'])
 
     def test_a10_determinism(self):
         det = load('determinism_receipt.json')

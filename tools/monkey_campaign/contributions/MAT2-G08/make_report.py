@@ -190,6 +190,30 @@ def main():
       'window was widened.' % (tm['operation'], f(tm['margin']),
                                f(tm['window']), f(tm['measured_worst'])))
     w('')
+    w('### 4.1 Measured-vs-certified composition bindings (amendment '
+      'a1(ii); window 1e-09 absolute)')
+    w('')
+    w('| quantity | measured | certified (pinned receipt) | delta | bind |')
+    w('| --- | --- | --- | --- | --- |')
+    cb = refmath['conversion_binding']
+    w('| conversion worst N (whole assembled battery; domain: %s) | %s | '
+      '%s | %s | %s |' % (
+          refmath['conversion_domain'].split(';')[0],
+          f(refmath['conversion_worst_N']), f(cb['certified_N']),
+          f(cb['measured_minus_certified_N']),
+          'True' if cb['composition_bind_ok'] else 'False'))
+    w('| flight closed form worst m (whole battery) | %s | %s | %s | %s |'
+      % (f(cont['worst_m']), f(cont['certified_m']),
+         f(cont['measured_minus_certified_m']),
+         'True' if cont['composition_bind_ok'] else 'False'))
+    press = next(op for op in budget['operations']
+                 if op['operation'] == 'press_establishment_jn_eq_P')
+    w('| press establishment jn worst N*s (whole battery; at %s) | %s | '
+      'none recorded in the pinned G06 receipt | -- | frozen window %s '
+      'governs |' % (
+          json.dumps(press.get('worst_at'), sort_keys=True),
+          f(press['measured_worst']), f(press['window'])))
+    w('')
     w('Reference math: any_flip %s; conversion worst %s N (window %s N); '
       'worst no-flip margin %s N*s.' % (
           f(refmath['any_flip']), f(refmath['conversion_worst_N']),

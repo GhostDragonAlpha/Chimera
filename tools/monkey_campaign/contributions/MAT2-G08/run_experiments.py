@@ -157,7 +157,19 @@ def build_receipt(mods, t_recs, r_recs, t_cache, pins):
         ledger['unsupported']
 
     cont = al.continuity_t(lc, ts, t_cache)
-    a5_ok = cont['ok']
+    # amendment a1(ii): bind the assembled flight worst to the certified
+    # G06 x_evidence.flight_worst_non_event_m inside 1e-9 absolute
+    cont['certified_m'] = g06_receipt['x_evidence'][
+        'flight_worst_non_event_m']
+    cont['measured_minus_certified_m'] = (cont['worst_m']
+                                          - cont['certified_m'])
+    cont['composition_bind_ok'] = (abs(cont['measured_minus_certified_m'])
+                                   <= al.COMPOSITION_BIND)
+    if not cont['composition_bind_ok']:
+        raise ValueError('identity_binding_mismatch:flight_worst',
+                         {'measured': cont['worst_m'],
+                          'certified': cont['certified_m']})
+    a5_ok = cont['ok'] and cont['composition_bind_ok']
 
     events = al.event_localization(t_recs, r_recs)
     a6_ok = (events['t_handover_ticks'] == [31]
@@ -165,7 +177,7 @@ def build_receipt(mods, t_recs, r_recs, t_cache, pins):
              and events['t_release_start_ticks'] == [220]
              and events['r_release_flip_ticks'] == [21])
 
-    refmath = al.reference_math(gc, lc, ts, t_recs)
+    refmath = al.reference_math(gc, lc, ts, t_recs, t_cache, g06_receipt)
     a7_ok = refmath['reference_math_ok']
 
     seam = al.seam_union(t_recs, r_recs, g06_receipt, g07_receipt)
@@ -483,7 +495,8 @@ def mode_falsify():
                      'press-off breaks the free-fall release law'))
 
     # FB5 force_pose_inconsistency
-    worst_conv = al.conversion_check([_story_rec(r0, v0, 31)])['worst_N']
+    clean_conv = al.conversion_check(ts, {'FB5_clean': (h0, r0)})
+    worst_conv = clean_conv['worst_N']
     tam_conv = abs(worst_conv - 120.0)
     arms.append(_arm('FB5_force_pose_inconsistency',
                      {'clean_ok': worst_conv <= 1e-6,
@@ -499,17 +512,6 @@ def mode_falsify():
     (HERE / 'falsifier_receipt.json').write_bytes(canonical(receipt))
     print(json.dumps({'F_all_green': receipt['F_all_green'],
                       'arms': [a['arm'] for a in arms]}, indent=1))
-
-
-def _story_rec(rows, verdicts, tick):
-    """A minimal T-like record for the conversion probe (story tick only;
-    the band_mid|n=3 marks bind the flight window exactly like the clean
-    record)."""
-    return {'label': 'FB5_clean', 'reading_kg': 6.15, 'n_channels': 3,
-            'mu_s': 0.6, 'transfer_supported': True,
-            'handover_tick': 31, 'reattach_tick': 193,
-            'story': {str(tick): {'row': rows[tick - 1],
-                                  'verdict': verdicts[tick - 1]}}}
 
 
 def mode_regression():

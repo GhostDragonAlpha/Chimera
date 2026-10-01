@@ -647,11 +647,12 @@ def _merge_codes(t_recs):
 
 # ---- A7: reference math ------------------------------------------------------
 
-def reference_math(gc, lc, ts, t_recs):
+def reference_math(gc, lc, ts, t_recs, t_cache, g06_receipt=None):
     """The record-g vs standard-g composition no-flip check across the
     assembled transfer table, and the declared force conversion jn/DT =
-    60.0 N at every established press operating point (window 1e-6 N, the
-    G06 recorded bar)."""
+    60.0 N at EVERY established press operating point of the WHOLE
+    assembled battery (window 1e-6 N, the G06 recorded bar; amendment
+    a1(ii) measured-vs-certified binding)."""
     rows = []
     worst_flip_margin = None
     for rec in t_recs:
@@ -674,46 +675,106 @@ def reference_math(gc, lc, ts, t_recs):
                      'capacity_Ns': cf['capacity_Ns'],
                      'closes_solver_g': closes_solver_g,
                      'closes_standard_g': closes_std_g, 'flip': flip})
-    conversion = conversion_check(t_recs)
+    conversion = conversion_check(ts, t_cache, g06_receipt)
     return {'no_flip_table': rows, 'any_flip': any(r['flip'] for r in rows),
             'worst_margin_Ns': worst_flip_margin,
             'conversion_worst_N': conversion['worst_N'],
             'conversion_window_N': CONVERSION_WINDOW,
             'conversion_ok': conversion['ok'],
+            'conversion_domain': conversion['domain'],
+            'conversion_worst_at': conversion['worst_at'],
+            'conversion_binding': {
+                'certified_N': conversion.get('certified_N'),
+                'measured_minus_certified_N': conversion.get(
+                    'measured_minus_certified_N'),
+                'composition_bind_ok': conversion.get(
+                    'composition_bind_ok'),
+                'law': conversion.get('binding')},
             'reference_math_ok': (not any(r['flip'] for r in rows))
             and conversion['ok']}
 
 
 CONVERSION_WINDOW = 1e-6
 PRESS_NS = 0.30
+CONVERSION_TARGET_N = 60.0
+DT_S = 0.005                   # the pinned M06 DT (prereg: M06 G = 9.81,
+#                                DT = 0.005 s)
 
 
-def conversion_check(t_recs):
-    """|jn/DT - 60.0| at every ESTABLISHED press operating point (the
-    sealed G06 law's own scope: established jn >= PRESS/2; the approach
-    ticks carry the declared approach impulse and are excluded; flight
-    ticks carry no press)."""
-    worst = 0.0
-    target = 60.0
-    for rec in t_recs:
-        story = rec['story']
-        for key in story:
-            row = story[key]['row']
-            phase = row['phase']
-            if phase in ('approach', 'release'):
+def _established_points(header, rows):
+    """Yield (label, tick, pad_index, pad_row) for every PRESSED ATTACHED
+    operating point of the assembled T battery -- the SEALED G06 X4 scope
+    verbatim: pressed = (flyer AND flyer_pressed AND t >= 4) OR (non-flyer
+    AND t < release_start); the flyer's recorded ESTABLISHMENT tick (the
+    first tick carrying flyer_events -- the declared corner-impulse
+    disclosure) is skipped; a pad that honestly separated or slips (mode
+    slip/no_contact in the honest non-closings) is NOT in the pressed
+    attached state (its telemetry is recorded; the boundary verdict X2
+    carries that case's physics)."""
+    handover = header['handover_tick']
+    reattach = header['reattach_tick']
+    release_start = header['marks']['release'][0]
+    label = header['scenario_id']
+    est_tick = None
+    for row in rows:
+        if row['flyer_events']:
+            est_tick = row['tick']
+            break
+    for row in rows:
+        t = row['tick']
+        for pd in row['pads']:
+            k = pd['k']
+            pressed = ((k == 0 and t < release_start
+                        and not (handover <= t < reattach) and t >= 4)
+                       or (k != 0 and t < release_start))
+            if not pressed:
                 continue
-            flight = rec['handover_tick'] <= row['tick'] \
-                < rec['reattach_tick']
-            for k, pd in enumerate(row['pads']):
-                if k == 0 and flight:
-                    continue          # the unpressed relocating channel
-                if pd['jn_sum_Ns'] >= PRESS_NS / 2.0:
-                    worst = max(worst,
-                                abs(pd['jn_sum_Ns'] / 0.005 - target))
-    return {'worst_N': worst, 'ok': worst <= CONVERSION_WINDOW,
-            'scope': 'established press operating points (jn >= P/2) on '
-                     'non-approach, non-release ticks; the unpressed '
-                     'flight channel excluded'}
+            if k == 0 and t == est_tick:
+                continue
+            if pd['mode'] not in ('stick', 'still'):
+                continue
+            yield label, t, k, pd
+
+
+def conversion_check(ts, t_cache, g06_receipt=None, target=None):
+    """|jn/DT - 60.0| at EVERY established press operating point of the
+    WHOLE assembled battery (amendment a1(ii) scope: all runs, all ticks;
+    measured-vs-certified binding against the pinned G06
+    x_evidence.conversion_worst_N inside the COMPOSITION BINDING WINDOW
+    1e-9 absolute; excess refuses identity_binding_mismatch)."""
+    worst = 0.0
+    worst_at = None
+    target = CONVERSION_TARGET_N if target is None else target
+    for label, (header, rows) in sorted(t_cache.items()):
+        for lbl, tick, k, pd in _established_points(header, rows):
+            d = abs(pd['jn_sum_Ns'] / DT_S - target)
+            if d > worst:
+                worst, worst_at = d, (lbl, tick, k)
+    out = {'worst_N': worst,
+           'worst_at': {'scenario': worst_at[0], 'tick': worst_at[1],
+                        'pad': worst_at[2]} if worst_at else None,
+           'ok': worst <= CONVERSION_WINDOW,
+           'window_N': CONVERSION_WINDOW,
+           'domain': 'WHOLE assembled T battery: all 9 runs x 229 ticks; '
+                     'the sealed G06 X4 scope verbatim: PRESSED ATTACHED '
+                     'points (the flyer pressed outside the flight window '
+                     'from tick 4; non-flyer pads before the release), the '
+                     'flyer establishment tick skipped, modes stick/still '
+                     'only (an honestly separated or slipping pad is not '
+                     'in the pressed attached state)'}
+    if g06_receipt is not None:
+        cert = g06_receipt['x_evidence']['conversion_worst_N']
+        out['certified_N'] = cert
+        out['measured_minus_certified_N'] = worst - cert
+        out['composition_bind_ok'] = abs(worst - cert) <= COMPOSITION_BIND
+        out['binding'] = ('amendment a1(ii): measured-vs-certified inside '
+                          'the composition binding window 1e-9 absolute; '
+                          'excess refuses identity_binding_mismatch')
+        out['ok'] = out['ok'] and out['composition_bind_ok']
+        if not out['composition_bind_ok']:
+            raise ValueError('identity_binding_mismatch:conversion',
+                             {'measured': worst, 'certified': cert})
+    return out
 
 
 # ---- A9: the numerical budget -------------------------------------------------
@@ -725,33 +786,38 @@ def numerical_budget(t_recs, r_recs, t_cache, ts, rfa, lc_budget):
     window."""
     ops = []
 
-    def add(op, window, measured, source):
+    def add(op, window, measured, source, **extra):
         require(window > 0.0, 'budget_window_absent', op)
-        ops.append({'operation': op, 'window': window,
-                    'measured_worst': measured, 'source': source,
-                    'within_window': measured <= window,
-                    'margin': window - measured})
+        row = {'operation': op, 'window': window,
+               'measured_worst': measured, 'source': source,
+               'within_window': measured <= window,
+               'margin': window - measured}
+        row.update(extra)
+        ops.append(row)
 
-    # press establishment jn == P (T; ESTABLISHED operating points only:
-    # holders on pressing non-approach ticks, the flyer off its flight
-    # window -- the sealed G06 X4 law scope)
+    # press establishment jn == P (T; ESTABLISHED operating points over the
+    # WHOLE assembled battery -- all 9 runs x 229 ticks; the sealed G06 X4
+    # law scope; amendment a1(ii) whole-battery scope)
     worst_jn = 0.0
-    for rec in t_recs:
-        for key in rec['story']:
-            row = rec['story'][key]['row']
-            phase = row['phase']
-            if phase in ('approach', 'release'):
-                continue
-            flight = rec['handover_tick'] <= row['tick'] \
-                < rec['reattach_tick']
-            for k, pd in enumerate(row['pads']):
-                if k == 0 and flight:
-                    continue
-                if pd['jn_sum_Ns'] >= PRESS_NS / 2.0:
-                    worst_jn = max(worst_jn,
-                                   abs(pd['jn_sum_Ns'] - PRESS_NS))
+    worst_jn_at = None
+    for label, (header, rows) in sorted(t_cache.items()):
+        for lbl, tick, k, pd in _established_points(header, rows):
+            d = abs(pd['jn_sum_Ns'] - PRESS_NS)
+            if d > worst_jn:
+                worst_jn, worst_jn_at = d, (lbl, tick, k)
     add('press_establishment_jn_eq_P', 1e-9, worst_jn,
-        'T story rows (established operating points)')
+        'WHOLE assembled T battery (the sealed G06 X4 pressed-attached '
+        'scope)',
+        worst_at={'scenario': worst_jn_at[0], 'tick': worst_jn_at[1],
+                  'pad': worst_jn_at[2]} if worst_jn_at else None,
+        certified_binding={
+            'certified_recorded': False,
+            'note': 'no certified jn-worst in the pinned G06 receipt '
+                    '(x_evidence records only conversion_worst_N); the '
+                    'frozen window 1e-09 N*s governs; the reviewer '
+                    'correction whole-battery value (5.57e-11 N*s class) '
+                    'is disclosed in the correction message, not pinned '
+                    'as sealed evidence'})
 
     # stick arrest vt (T full rows via the in-process cache + R story rows)
     worst_vt = 0.0
