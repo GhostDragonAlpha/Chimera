@@ -53,6 +53,7 @@ def main() -> int:
     fill = load(vi.UPSTREAM / "w05_freeze_fill.json")
     validation = load(HERE / "capture" / "capture_validation_receipt.json")
     manifest = load(HERE / "capture" / "capture_manifest.json")
+    replay = load(HERE / "capture" / "replay_receipt.json")
 
     lines = []
     w = lines.append
@@ -61,10 +62,9 @@ def main() -> int:
     w("")
     w("Generated from the receipts; no hand-transcribed numbers (P2/P3). "
       "Profile: walking/motion; numerical evidence required (the receipts); "
-      "clean view + camera record delivered as the declared record-space "
-      "raster (G4/G8 honesty label and absent inventory below) — this card "
-      "EXECUTES ZERO RUNS (no training, no evaluation rollout, no tuned "
-      "run).")
+      "the profile-conformant capture is the MOTION REPLAY of the sealed "
+      "certified line (addendum 1; G4/G8 details below) — zero training, "
+      "zero tuned runs, zero evaluation rollouts of the trained candidates.")
     w("")
     w("## done_when verification (verbatim clause -> evidence)")
     w("")
@@ -83,11 +83,15 @@ def main() -> int:
       + fmt(len(heldout["cells"])) + " cells ("
       + fmt(6) + " off-diagonal held out); FB3 bite arms prove the "
       "completeness detectors fire on dropped seeds/cells |")
-    w("| without additional tuned runs | HELD (structural) | zero runs of "
-      "any kind executed by this card (receipt field "
-      "`no_runs_law`); FB5 AST scan over the whole contribution finds "
+    w("| without additional tuned runs | HELD (structural) | zero training "
+      "runs, zero tuned runs, zero evaluation rollouts of the trained "
+      "candidates (receipt field `no_runs_law`); the ONE declared capture "
+      "replay of the sealed certified line (addendum A1; ALLOW(frozen) "
+      "relation, anchors EXACT) produces no outcome number any verdict "
+      "reads; FB5 AST scan over the whole contribution finds "
       + fmt(len(summary["no_runs_law"]["FB5_scan_violations"]))
-      + " run paths; the executor itself has no retry path (FB5/W05) |")
+      + " undeclared run paths; the training executor itself has no retry "
+      "path (FB5/W05) |")
     w("| a failed result is not an implementation success | APPLIED | all "
       + fmt(len(SEEDS)) + " seeds FAIL the frozen training-signal criterion; "
       "the failure is the honest REPORTED outcome this card is graded on |")
@@ -239,21 +243,28 @@ def main() -> int:
       "(trained walking policy) stays explicitly-unresolved. This card "
       "deploys, re-certifies and re-issues nothing.")
     w("")
-    w("## The no-runs law (structural)")
+    w("## The no-runs law (structural; addendum A4 vocabulary)")
     w("")
-    w("- Physics runs executed by this card: "
-      + fmt(summary["no_runs_law"]["physics_runs_executed_by_this_card"])
-      + "; training runs: "
+    w("- Training runs executed by this card: "
       + fmt(summary["no_runs_law"]["training_runs_executed_by_this_card"])
       + "; tuned runs: "
       + fmt(summary["no_runs_law"]["tuned_runs_executed_by_this_card"])
-      + ".")
-    w("- FB5 AST scan over every contribution .py: "
+      + "; evaluation rollouts of the trained candidates: "
+      + fmt(summary["no_runs_law"][
+          "evaluation_rollouts_of_trained_candidates"])
+      + "; declared capture replays of the sealed certified line: "
+      + fmt(summary["no_runs_law"][
+          "declared_capture_replays_of_the_sealed_line"])
+      + " (the addendum A1 arm; anchors EXACT; no outcome number of this "
+      "evaluation reads it).")
+    w("- FB5 AST scan over every contribution .py (three declared classes: "
+      "training/run-launch paths everywhere; the pinned replay import and "
+      "the ffmpeg capture-tool calls only inside the declared "
+      "run_replay_capture.py): "
       + fmt(len(summary["no_runs_law"]["FB5_scan_violations"]))
-      + " run-path violations (scene/policy/training imports, subprocess, "
-      "socket); the bite arms prove the scanner fires on each class.")
-    w("- Every number in this report is therefore a PROOF-READING of the "
-      "sealed record (sha-pinned inputs), not a new measurement.")
+      + " violations; the bite arms prove the scanner fires on each class.")
+    w("- The per-seed verdicts remain PROOF-READINGS of the sealed W05 "
+      "record (sha-pinned inputs), not new measurements.")
     w("")
     w("## Named checks (G12 accounting)")
     w("")
@@ -262,23 +273,69 @@ def main() -> int:
       "skips: " + checks["known_skips"] + "; pass: " + fmt(checks["pass"])
       + ".")
     w("")
-    w("## Capture (profile walking/motion; the record-space delivery)")
+    w("## Capture (profile walking/motion; the profile-conformant MOTION replay)")
     w("")
-    w("- Honesty label: " + manifest["views"][0]["honesty_label"] + ".")
-    w("- Frames: " + fmt(manifest["sheet_layout"]["frame_count"])
-      + " (3 record-space views x diagnostic/clean); capture sha256 `"
-      + manifest["capture_sha256"] + "` (" + manifest["sheet_layout"][
-          "capture_sha_definition"] + ").")
-    w("- Subject identity on every row (clean AND diagnostic): composite "
-      "evaluation-record sha `" + manifest["subject_sha256"] + "` — view "
-      "toggles preserve the record identity (the profile falsifier's "
-      "instrument); all rows structure-OK: "
-      + fmt(validation["rows_ok"]) + "/" + fmt(validation["rows_total"])
-      + "; validator " + validation["validator"] + "; visual_acceptance "
-      + fmt(validation["visual_acceptance"]) + " (independent visual "
-      "review remains the Sergeant's).")
-    w("- Absent inventory (named, never imputed): "
-      + json.dumps(manifest["absent_inventory"]))
+    w("Delivered per prereg addendum 1 (committed BEFORE the capture; the "
+      "M03/P04 law): the SEALED CERTIFIED BASELINE LINE re-executed through "
+      "the UNMODIFIED pinned machinery — frozen P3 policy closed loop, "
+      "build " + replay["build_id"] + ", seed " + fmt(replay["seed"])
+      + ", " + fmt(replay["tick_interval"][1] + 1) + " ticks — the deploy "
+      "gate's ALLOW(frozen) relation. The BLOCKED trained thetas are never "
+      "loaded (structural: the generator never references them). VALIDITY "
+      "INSTRUMENT: the three W05 baseline anchors reproduce EXACTLY ("
+      + "; ".join(k + " " + v["verdict"]
+                  for k, v in replay["anchor_comparisons"].items())
+      + ") — every frame is by construction a view of the sealed line's own "
+      "trajectory; any drift would have been the named refusal "
+      "`baseline_drift:<key>` with NO capture emitted.")
+    w("")
+    w("- tick_interval: [" + fmt(replay["tick_interval"][0]) + ", "
+      + fmt(replay["tick_interval"][1]) + "] (t0 < t1; 1 tick = 1/300 s).")
+    w("- Frames: " + fmt(replay["frame_count"]) + " at the pinned runner's "
+      "decision boundaries (stride " + fmt(replay["frame_stride_ticks"])
+      + " ticks), each a sheet of the three profile views (diagnostic band "
+      "on top, clean band below, SAME recorded state per row); video "
+      + fmt(replay["frame_fps"]) + " fps; ffmpeg: " + replay["ffmpeg_version"]
+      + ".")
+    w("- Media: `capture_replay.mkv` (FFV1 level 3, g=1, bitexact), "
+      "capture sha256 `" + manifest["capture_sha256"] + "`; G4: the decode "
+      "is pixel-exact against the rendered stills on ALL "
+      + fmt(replay["g4"]["checked_frames"]) + " frames, and the frame-order "
+      "sensitivity check passes.")
+    w("- Trace binding (motion state_binding.kind == 'trace'): "
+      "`trace.json` sha `" + replay["trace_sha256"] + "` — the per-tick "
+      "sealed telemetry (com, phases, contacts, forces, pad gaps, applied "
+      "commands) plus the pinned state-chain events; subject receipt "
+      "`replay_receipt.json` sha `" + manifest["subject_sha256"] + "`.")
+    w("- Replay integrity (addendum R2, over all "
+      + fmt(replay["tick_interval"][1] + 1) + " ticks): contact_count min "
+      + fmt(replay["integrity"]["contact_floor_min"]) + " (gate >= 2); "
+      "max |v| " + fmt(replay["integrity"]["max_abs_v"]) + " m/s (envelope "
+      + fmt(replay["velocity_envelope_m_s"]) + " m/s); intervention none "
+      "everywhere; " + fmt(replay["integrity"]["events_count"])
+      + " state-chain events continuous (no hidden reset). The stance/swing "
+      "alternation of the recorded pads is visible in the side view and "
+      "close-up; the command and tick overlay shows the frozen policy's "
+      "own command stream (start/stride = speed, phase offsets = turn).")
+    w("- Validator: " + validation["validator"] + ", structurally_valid "
+      + fmt(validation["structurally_valid"]) + ", views "
+      + fmt(validation["view_count"]) + ", visual_acceptance "
+      + fmt(validation["visual_acceptance"]) + " — independent visual "
+      "review remains the Sergeant's.")
+    w("- Honesty: the scene of record is the DECLARED SURROGATE CPU walk "
+      "scene (its own module docstring and the W04 certificate say so); "
+      "the rigid skeleton of a full articulated body is NAMED ABSENT (the "
+      "surrogate records phases/contacts/forces, and the diagnostic "
+      "`skeleton` layer renders the recorded phase state — never invented "
+      "geometry); no claim about the C++ engine or the adopted assembly is "
+      "made; the native visual walk claim belongs to the W07 "
+      "runtime-consumption card.")
+    w("- RETIRED from the capture manifest (named, not silent): the first "
+      "capture's static record-space rasters — the format validator "
+      "forbids image rows under a motion profile (every row must be "
+      "video-located). They remain in the attempt workspace and the "
+      "evidence store as ADDITIONAL evidence; the metric tables they "
+      "rendered remain in this report as receipt-rendered text.")
     w("")
     w("## Gate disclosure (G1-G12)")
     w("")
@@ -290,9 +347,12 @@ def main() -> int:
       "0; every number in this report traces to the bound artifacts.")
     w("- G3: this report is GENERATED from the receipts; no hand-written "
       "qualitative claim.")
-    w("- G4/G8: delivered as the record-space raster above (camera field "
-      "vocabulary complete per row; NOT engine frames — named, with the "
-      "absent inventory).")
+    w("- G4/G8: delivered as the profile-conformant MOTION replay capture "
+      "above (tick_interval ["
+      + fmt(replay["tick_interval"][0]) + ", " + fmt(replay["tick_interval"][1])
+      + "]; FFV1 mkv; trace-bound; camera vocabulary per the closed "
+      "validator; NOT engine frames — the surrogate scene is declared, "
+      "with the absent inventory named).")
     w("- G5: `refuse_vacuous_comparison` + `vacuous_guard_selftest()` run "
       "at import and guard every relative-window comparison (M4 windows, "
       "M3 envelope, held-out deltas).")
@@ -317,6 +377,8 @@ def main() -> int:
     w("")
     pins = [
         ("PREREGISTRATION.md", HERE / "PREREGISTRATION.md"),
+        ("PREREGISTRATION-ADDENDUM-1.md",
+         HERE / "PREREGISTRATION-ADDENDUM-1.md"),
         ("checks_receipt.json", checks_path),
         ("receipts/input_pins.json", HERE / "receipts" / "input_pins.json"),
         ("receipts/evaluation_summary.json",
@@ -327,6 +389,11 @@ def main() -> int:
          HERE / "capture" / "capture_context.json"),
         ("capture/capture_validation_receipt.json",
          HERE / "capture" / "capture_validation_receipt.json"),
+        ("capture/replay_receipt.json",
+         HERE / "capture" / "replay_receipt.json"),
+        ("capture/trace.json", HERE / "capture" / "trace.json"),
+        ("capture/frame_hashes.json",
+         HERE / "capture" / "frame_hashes.json"),
     ]
     for s in SEEDS:
         pins.append((f"receipts/seed_{s}_evaluation.json",
@@ -341,16 +408,28 @@ def main() -> int:
     w("")
     w("## Honest limitations (named, not skipped)")
     w("")
-    w("- This evaluation is RECORDS-ONLY: it proves what the sealed run "
-      "recorded and nothing about unrecorded quantities. Native "
-      "pose/contact trajectories were never retained by the runbook, so "
-      "the profile's native views cannot be rendered from evidence — the "
-      "absent inventory is declared in the capture manifest, not imputed.")
+    w("- The per-seed evaluation is RECORDS-ONLY: it proves what the sealed "
+      "W05 run recorded and nothing about unrecorded quantities. The "
+      "TRAINING rollouts retained no trajectory bytes (the runbook's "
+      "streaming-chain law), so no per-seed motion capture of the TRAINED "
+      "candidates exists or may be produced without a new training run — "
+      "which the no-runs law forbids.")
+    w("- The motion replay capture is of the SEALED CERTIFIED BASELINE "
+      "LINE (the frozen P3 policy; the deploy gate's ALLOW relation), not "
+      "of the trained candidates: it demonstrates the profile procedure on "
+      "the only line the deploy gate admits, and its per-tick telemetry is "
+      "the trace-bound evidence. It is NOT a picture of the trained "
+      "policies' behavior.")
+    w("- The scene of record is the DECLARED SURROGATE CPU walk scene; the "
+      "rigid skeleton of an articulated body is NAMED ABSENT (the "
+      "diagnostic `skeleton` layer renders the recorded phase state; no "
+      "geometry is invented). No C++ engine or adopted-assembly claim is "
+      "made; the native visual walk claim belongs to W07.")
     w("- The M4 window metric is the f_plus (positive-perturbation) "
       "evaluation mean — the executor's own frozen definition, reproduced "
       "bit-exactly here; the f_minus column is carried in the pinned "
-      "curves (M6) and rendered in the capture, and the frozen criterion "
-      "does not read it.")
+      "curves (M6) and rendered in the retired record-space rasters, and "
+      "the frozen criterion does not read it.")
     w("- The trained thetas remain BLOCKed training candidates; no claim "
       "about FC-3 changes. A future accepted walking policy requires a "
       "re-trained run that actually improves the frozen criterion plus "

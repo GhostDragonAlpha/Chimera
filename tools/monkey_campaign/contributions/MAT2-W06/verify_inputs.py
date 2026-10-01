@@ -78,6 +78,45 @@ PINS_UPSTREAM = [
      "7b11dd01f8495068f46def84a072d211fe47b778bfc0fbc3f53fe3e82a7fe1a7"),
 ]
 
+# (pinned path parts relative to the pinned lane repo, sha256)
+# prereg addendum 1 section A1, verbatim (the replay-capture machinery).
+PINS_LANE = [
+    (("tools", "policy_compat", "__init__.py"),
+     "11d523c8c0ee363e09c4e57afa564f3e38b178e274d7ee3ef335f5a0c44e9f4e"),
+    (("tools", "policy_compat", "__main__.py"),
+     "74d592d0551e226289f944e8182a19a3b574d7d2ee331e157e17ac55ea969528"),
+    (("tools", "policy_compat", "certificate.py"),
+     "2b6a75ba79c367a646d89fdc8cbe2243239dbc5e336f1eba1deb33aa30e295ac"),
+    (("tools", "policy_compat", "engine_cert.py"),
+     "c1aa05362e20a3e0c8967634af2d97fadd11d62daf412e07917824f16c1e5152"),
+    (("tools", "policy_compat", "injections.py"),
+     "1b5b978bf5feafb93801066486a5656caaba7cf3a618949036c13d0ceae28f1e"),
+    (("tools", "policy_compat", "runner.py"),
+     "1fa8d8b70836d6e3355e3e2630f83e0a6a31a9658104e9f928d7ef52cfef5160"),
+    (("tools", "policy_compat", "scene_cpu.py"),
+     "ab4257024df63d9755e9c1ae524ee631339ce24a2fd36615d40575335f835af2"),
+    (("tools", "policy_compat", "snapshot_api.py"),
+     "c47a09596dd36692aa28f8f10b2967d9276b78082a96d0bba27bf632b8f0e493"),
+    (("tools", "science_funnel", "typeb_export", "infer_numpy.py"),
+     "8030b609c7ecbfcc368addee2c140b830450fff48ecb62e02683d62062bfbfc4"),
+    (("tools", "science_funnel", "typeb_export", "observation_schema.py"),
+     "8876e1a64d68e93b003c6daba8cacb34bff02c11133eb098bf1ef85bf8a39894"),
+    (("tools", "science_funnel", "typeb_export", "policy_manifest.py"),
+     "a65cf8757c9d4d4d6a8d5fce30be6aaebb016c98d7dc69f972b0b7781e2961d7"),
+    (("tools", "science_funnel", "validation", "typeb_p3_20260921",
+      "policy_manifest.json"),
+     "aa5334f797b50c2ac3950cec5b82b439f982c1090dd66827754a1acbb8a26b6f"),
+    (("tools", "science_funnel", "validation", "typeb_p3_20260921",
+      "dummy_actor.npz"),
+     "5fb2b7857d872fccc0bb89d6733582647da04d11d636e84c266912ce9c027f0f"),
+    (("tools", "science_funnel", "validation", "typeb_p3_20260921",
+      "trace_slice_wave38.json"),
+     "69babe846e2447333b527c7fd8c190499e5ac1d55733dbd043edd0422245daa2"),
+    (("tools", "science_funnel", "validation", "upgrade_gate_20260920",
+      "receipt.json"),
+     "2c7794e6ff0c5c2d81c39536076ce1d6a0900333f4738549079afbe21012685a"),
+]
+
 # (store-relative parts, sha256)
 PINS_STORE = [
     (("MAT2-W04", "numerical", "w04_freeze_manifest.json"),
@@ -86,10 +125,15 @@ PINS_STORE = [
      "07f05bfa982e066ae67413b04e3367c5ad7570830e99fc32edcb86cbe8d87598"),
 ]
 
+LANE_REPO = Path("E:/ChimeraWork/pass3-integ/repo")
+PINNED_ROOT = SCRATCH / "pinned_root"
+
 
 def pin_path(parts: tuple[str, ...]) -> Path:
     if parts[0] == "MAT2-W04":
         return STORE.joinpath(*parts)
+    if parts[0] == "tools":
+        return LANE_REPO.joinpath(*parts)
     return UPSTREAM.joinpath(*parts)
 
 
@@ -110,6 +154,35 @@ def prereg_sha256() -> str:
     return sha_bytes(PREREG.read_bytes())
 
 
+def addendum_sha256() -> str:
+    return sha_bytes((HERE / "PREREGISTRATION-ADDENDUM-1.md").read_bytes())
+
+
+def extract_pinned_tree() -> Path:
+    """Materialize the pinned execution tree under scratch (byte-verified);
+    the extracted bytes import exactly like the lane repo layout."""
+    import shutil
+    if PINNED_ROOT.exists():
+        shutil.rmtree(PINNED_ROOT)
+    for parts, expected in PINS_LANE:
+        data = LANE_REPO.joinpath(*parts).read_bytes()
+        require(sha_bytes(data) == expected,
+                "input_pin_mismatch:extract:" + parts[-1])
+        target = PINNED_ROOT.joinpath(*parts)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(data)
+    return PINNED_ROOT
+
+
+def bootstrap_pinned_imports() -> None:
+    """Point sys.path at the pinned extraction (identity checked by callers)."""
+    require(PINNED_ROOT.exists(), "input_pin_mismatch:extraction_missing")
+    root = str(PINNED_ROOT)
+    while root in sys.path:
+        sys.path.remove(root)
+    sys.path.insert(0, root)
+
+
 def require(condition, code: str) -> None:
     if not condition:
         raise Refusal(code)
@@ -118,7 +191,8 @@ def require(condition, code: str) -> None:
 def verify(expect: list | None = None) -> list[dict]:
     """Verify all pins (or an override table for the FB1 bite arm)."""
     rows = []
-    table = expect if expect is not None else (PINS_UPSTREAM + PINS_STORE)
+    table = expect if expect is not None else (PINS_UPSTREAM + PINS_LANE
+                                               + PINS_STORE)
     for parts, expected in table:
         path = parts[0] if isinstance(parts, Path) else pin_path(tuple(parts))
         data = path.read_bytes()
@@ -168,6 +242,7 @@ def main() -> int:
         "card_id": CARD_ID,
         "attempt_id": ATTEMPT_ID,
         "preregistration_sha256": prereg_sha256(),
+        "preregistration_addendum_1_sha256": addendum_sha256(),
         "criteria_sha256": CRITERIA_SHA256,
         "candidate_base": CANDIDATE_BASE,
         "registry": reg,

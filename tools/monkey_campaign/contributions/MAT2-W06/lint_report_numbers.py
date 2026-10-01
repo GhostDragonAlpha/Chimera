@@ -26,6 +26,7 @@ UPSTREAM = HERE.parent / "MAT2-W05"
 
 LOCAL_ARTIFACT_PATHS = [
     'PREREGISTRATION.md',
+    'PREREGISTRATION-ADDENDUM-1.md',
     'checks_receipt.json',
     'receipts/input_pins.json',
     'receipts/evaluation_summary.json',
@@ -35,6 +36,9 @@ LOCAL_ARTIFACT_PATHS = [
     'capture/capture_manifest.json',
     'capture/capture_context.json',
     'capture/capture_validation_receipt.json',
+    'capture/replay_receipt.json',
+    'capture/trace.json',
+    'capture/frame_hashes.json',
 ]
 
 UPSTREAM_ARTIFACT_PATHS = [

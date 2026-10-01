@@ -38,7 +38,6 @@ UP = vi.UPSTREAM
 # scratch bite texts (string constants only; the FB5 scanner sees no import)
 SCRATCH_RUN_TEXT = "import subprocess\nsubprocess.run(['x'])\n"
 SCRATCH_TRAIN_TEXT = "from run_training import main\nmain()\n"
-SCRATCH_SCENE_TEXT = "import scene_cpu\n"
 SCRATCH_SOCKET_TEXT = "import socket\ns = socket.socket()\n"
 
 FROZEN_RULE = ("SUCCESS iff mean_iteration_fitness_last100 > "
@@ -74,7 +73,7 @@ class W06Identity(unittest.TestCase):
 
     def test_pins_live(self):
         rows = vi.verify()
-        self.assertEqual(len(rows), 21)
+        self.assertEqual(len(rows), 36)
         self.assertTrue(all(r["ok"] for r in rows))
 
     def test_frozen_rule_verbatim_in_prereg(self):
@@ -284,22 +283,98 @@ class NoRunsStructuralChecks(unittest.TestCase):
         self.assertEqual(violations, [])
 
     def test_run_path_bites(self):
-        for text, marker in ((SCRATCH_RUN_TEXT, "import:subprocess"),
-                             (SCRATCH_TRAIN_TEXT, "importfrom:run_training"),
-                             (SCRATCH_SCENE_TEXT, "import:scene_cpu"),
-                             (SCRATCH_SOCKET_TEXT, "import:socket")):
-            violations = scan_no_run_paths(text, "scratch_bite.py")
-            self.assertTrue(any(v.startswith(marker) for v in violations),
-                            "%s not detected in %r" % (marker, violations))
+        # class (i): training/run-launch paths bite in EVERY file
+        for fname in ("scratch_bite.py", "run_replay_capture.py"):
+            for text, marker in ((SCRATCH_TRAIN_TEXT,
+                                  "importfrom:run_training"),
+                                 (SCRATCH_SOCKET_TEXT, "import:socket")):
+                violations = scan_no_run_paths(text, fname)
+                self.assertTrue(any(v.startswith(marker) for v in violations),
+                                "%s not detected in %s: %r"
+                                % (marker, fname, violations))
+        # class (iii): subprocess outside the declared replay file bites
+        violations = scan_no_run_paths(SCRATCH_RUN_TEXT, "scratch_bite.py")
+        self.assertTrue(any(v.startswith("import:subprocess_outside_replay")
+                            for v in violations))
+        # ...and is DECLARED inside it (no class-iii violation there)
+        violations = scan_no_run_paths(SCRATCH_RUN_TEXT,
+                                       "run_replay_capture.py")
+        self.assertFalse(any("subprocess" in v for v in violations))
+        # class (ii): the pinned replay import outside the replay file bites
+        pinned_text = "from tools.policy_compat import runner\n"
+        violations = scan_no_run_paths(pinned_text, "scratch_bite.py")
+        self.assertTrue(any(v.startswith(
+            "importfrom:pinned_replay_outside_replay") for v in violations))
+        violations = scan_no_run_paths(pinned_text,
+                                       "run_replay_capture.py")
+        self.assertFalse(any("pinned_replay" in v for v in violations))
 
     def test_no_runs_recorded(self):
         summary = load(HERE / "receipts" / "evaluation_summary.json")
-        self.assertEqual(summary["no_runs_law"][
-            "physics_runs_executed_by_this_card"], 0)
-        self.assertEqual(summary["no_runs_law"][
-            "training_runs_executed_by_this_card"], 0)
-        self.assertEqual(summary["no_runs_law"][
-            "tuned_runs_executed_by_this_card"], 0)
+        law = summary["no_runs_law"]
+        self.assertEqual(law["training_runs_executed_by_this_card"], 0)
+        self.assertEqual(law["tuned_runs_executed_by_this_card"], 0)
+        self.assertEqual(law["evaluation_rollouts_of_trained_candidates"], 0)
+        # the single declared capture replay of the sealed line (addendum A1)
+        self.assertLessEqual(law[
+            "declared_capture_replays_of_the_sealed_line"], 1)
+
+
+class MotionCaptureChecks(unittest.TestCase):
+    CAP = HERE / "capture"
+
+    def test_anchors_exact(self):
+        receipt = load(self.CAP / "replay_receipt.json")
+        for key, comp in receipt["anchor_comparisons"].items():
+            self.assertEqual(comp["verdict"], "EXACT", key)
+            self.assertEqual(comp["frozen"], comp["reproduced"])
+
+    def test_manifest_motion_interval(self):
+        manifest = load(self.CAP / "capture_manifest.json")
+        context = load(self.CAP / "capture_context.json")
+        validation = load(self.CAP / "capture_validation_receipt.json")
+        ticks = manifest["tick_interval"]
+        self.assertEqual(len(ticks), 2)
+        self.assertIsInstance(ticks[0], int)
+        self.assertIsInstance(ticks[1], int)
+        self.assertLess(ticks[0], ticks[1])
+        self.assertEqual(ticks, context["tick_interval"])
+        self.assertTrue(validation["structurally_valid"])
+        self.assertEqual(validation["capture_kind"], "video")
+        self.assertEqual(validation["validator"],
+                         "CAMERA_METADATA_STRUCTURE_ONLY")
+        self.assertFalse(validation["visual_acceptance"])
+
+    def test_state_binding_is_trace(self):
+        manifest = load(self.CAP / "capture_manifest.json")
+        trace_sha = vi.sha_bytes((self.CAP / "trace.json").read_bytes())
+        for row in manifest["views"]:
+            self.assertEqual(row["state_binding"]["kind"], "trace")
+            self.assertEqual(row["state_binding"]["sha256"], trace_sha)
+            self.assertEqual(row["artifact_locator"]["kind"], "video")
+        self.assertEqual(manifest["subject_sha256"],
+                         vi.sha_bytes(
+                             (self.CAP / "replay_receipt.json").read_bytes()))
+
+    def test_trace_integrity(self):
+        receipt = load(self.CAP / "replay_receipt.json")
+        self.assertGreaterEqual(receipt["integrity"]["contact_floor_min"], 2)
+        self.assertLessEqual(receipt["integrity"]["max_abs_v"],
+                             receipt["velocity_envelope_m_s"])
+        self.assertTrue(receipt["integrity"]["intervention_all_none"])
+        self.assertEqual(receipt["integrity"]["events_count"], 60)
+        self.assertEqual(receipt["tick_interval"], [0, 899])
+        self.assertEqual(receipt["frame_count"], 60)
+        self.assertTrue(receipt["g4"]["decode_pixel_exact_all_frames"])
+        self.assertTrue(receipt["g4"]["order_sensitivity_pass"])
+
+    def test_trained_thetas_never_loaded(self):
+        source = (HERE / "run_replay_capture.py").read_bytes().decode("utf-8")
+        # no reference to the trained artifacts or any weight loader
+        self.assertNotIn("trained/", source)
+        self.assertNotIn(".npz", source)
+        self.assertNotIn("np.load", source)
+        self.assertNotIn("load_manifest", source)
 
 
 class PredictionChecks(unittest.TestCase):
