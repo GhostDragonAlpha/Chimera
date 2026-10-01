@@ -929,7 +929,9 @@ def load_certified_world(manifest_path: Path = CERTIFIED_MANIFEST_PATH) -> dict:
 def certified_world_section(world: dict) -> str:
     """Server-built HTML for the sealed captures. ZERO page JS: images are
     plain <img> loads of a sha-verified local route. Refused entries are
-    named, never silently dropped. Nothing here claims a live engine frame."""
+    named, never silently dropped. Nothing here claims a live engine frame.
+    An entry may carry a 'disclosure' line (rendered amber between image and
+    caption); it is declared page copy for a known anomaly, not a refusal."""
     if not world.get("loaded"):
         return ("<fieldset><legend>THE CERTIFIED WORLD</legend>"
                 "<div style=\"font-size:12px;color:#ef476f\">sealed-capture manifest "
@@ -938,12 +940,15 @@ def certified_world_section(world: dict) -> str:
     for e in world["entries"]:
         if e.get("verified"):
             ident = e.get("identity_note", "")
+            disclosure = e.get("disclosure", "")
             rows.append(
                 "<figure style=\"margin:8px 0\">"
                 f"<img loading=\"lazy\" alt=\"{e['name']}\" "
                 "style=\"width:100%;border:1px solid #2a3138\" "
                 f"src=\"/api/world/certified/frame?name={e['name']}\">"
-                "<figcaption style=\"font-size:11px;color:#9aa4af\">"
+                + (f"<div style=\"font-size:12px;color:#ffd166\">{disclosure}</div>"
+                   if disclosure else "")
+                + "<figcaption style=\"font-size:11px;color:#9aa4af\">"
                 f"{e.get('caption', '')}"
                 + (f" &mdash; {ident}" if ident else "")
                 + f" &middot; sha256 {e['sha256'][:16]}&hellip;</figcaption></figure>")
@@ -1053,8 +1058,9 @@ class ViewerHandler(BaseHTTPRequestHandler):
                             "loaded": H.world.get("loaded", False),
                             "declared_limits": H.world.get("declared_limits", []),
                             "entries": [{k: e.get(k) for k in
-                                         ("name", "section", "caption", "identity_note",
-                                          "sha256", "bytes", "verified", "refusal")}
+                                         ("name", "section", "caption", "disclosure",
+                                          "identity_note", "sha256", "bytes",
+                                          "verified", "refusal")}
                                         for e in H.world["entries"]]})
             elif path == "/api/world/certified/frame":
                 name = None

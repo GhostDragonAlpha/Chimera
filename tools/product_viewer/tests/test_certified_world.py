@@ -121,7 +121,9 @@ class CertifiedWorldRoutes(unittest.TestCase):
             "declared_limits": [],
             "entries": [{"name": "route_capture", "file": str(png),
                          "sha256": sha, "bytes": png.stat().st_size,
-                         "caption": "route entry"}],
+                         "caption": "route entry",
+                         "disclosure": "Known render anomaly (route-test copy): "
+                                       "disclosed, not re-authored."}],
         }), encoding="utf-8")
         engine = pv.EngineClient("http://127.0.0.1:1")   # deliberately dead
         handler = type("BoundHandler", (pv.ViewerHandler,), {
@@ -162,6 +164,18 @@ class CertifiedWorldRoutes(unittest.TestCase):
         self.assertEqual(d["schema"], "chimera.viewer.certified_world.v1")
         self.assertEqual(len(d["entries"]), 1)
         self.assertTrue(d["entries"][0]["verified"])
+
+    def test_route_projects_disclosure_field(self):
+        """PR #291 review fix: the disclosure is part of the certified-world
+        honest state, so the /api/world/certified projection must carry it
+        (the original fixed key tuple omitted it; doc claimed otherwise)."""
+        st, body, _ = self._get("/api/world/certified")
+        self.assertEqual(st, 200)
+        entry = json.loads(body)["entries"][0]
+        self.assertIn("disclosure", entry)
+        self.assertEqual(entry["disclosure"],
+                         "Known render anomaly (route-test copy): "
+                         "disclosed, not re-authored.")
 
     def test_frame_route_serves_pinned_bytes_exactly(self):
         st, body, ctype = self._get("/api/world/certified/frame?name=route_capture")

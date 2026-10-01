@@ -16,7 +16,8 @@
    "sha256": "9efd86ce3054e9eccb1c1996768e8a00c447186701ff6a5beb49777a72375e2b",
    "bytes": 785014,
    "caption": "HERO: the monkey mid-stride (sealed W03 tick 150) on the +32 m plateau, haloed sun + river glint, forest horizon.",
-   "identity_note": "world buffer world_with_monkey.npz array sha 16a978f8e093be48...; QUICKVIEW picture #1"
+   "identity_note": "world buffer world_with_monkey.npz array sha 16a978f8e093be48...; QUICKVIEW picture #1",
+   "disclosure": "Known render anomaly: the small sharp-edged white disc upper-right of the sky is an AUTHORED decorative cloud cluster (sky-sun/sky_sun.py build_clouds, layer 6, one 12-blob cluster at 6.3-6.6 km, az ~200 deg el ~28 deg) whose stacked alpha Gaussians read as a 'second sun' beside the single authored sun - diagnosed in visual-defects/VISUAL_DEFECTS.md DEFECT 1 - disclosed per Captain decision 2026-09-30; the hero is not re-authored."
   },
   {
    "name": "stride_corridor_tick150",
