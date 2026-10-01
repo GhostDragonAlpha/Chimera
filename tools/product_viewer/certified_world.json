@@ -1,0 +1,112 @@
+{
+ "schema": "chimera.viewer.certified_world.v1",
+ "declared_by": "wk-liveviewer-d01 (viewer lane), branch wk/live-viewer-d01, 2026-09-30",
+ "declared_limits": [
+  "SEALED CAPTURES, not live engine pixels: every image below was rendered OFFLINE through the repaired reference engine and is served here byte-exact after sha256 verification. The viewer's live panes remain engine-driven; nothing on this page claims an engine frame.",
+  "The certified world buffer carries the VEGETATION V1 forest (67,373 instances). FOREST V2 (245,971 instances, vegetation_v2, overall_pass) is NOT composed into any certified buffer yet - the regen is world-lane work, not viewer work.",
+  "The certified world contains NO trunk. Trunk stills carry a DECLARED render-time overlay (trunk_overlay_splats.npz, arrays sha256 5a4a0b1752db5455..., re-seated amendment 6); trunk3c is the buffer-only honesty twin rendered from the certified buffer alone.",
+  "The monkey is the rigid rest pose (60,000 splats, layer 7) at certified W03 walk states - no limb swing, no per-tick joint angles, and the refusal-collapse tumble is NOT rendered (composition2 keyframe policy).",
+  "Motion input: none. Nothing here is playable; the page WALK control replays the CT standing body's certified stride pack, NOT the sealed 10.038 kg W03 walking line shown in these captures."
+ ],
+ "entries": [
+  {
+   "name": "hero_tick150",
+   "section": "certified_stills",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/captures/monkey2a_hero_midwalk_tick150_river_sun-fix2-reb2.png",
+   "sha256": "9efd86ce3054e9eccb1c1996768e8a00c447186701ff6a5beb49777a72375e2b",
+   "bytes": 785014,
+   "caption": "HERO: the monkey mid-stride (sealed W03 tick 150) on the +32 m plateau, haloed sun + river glint, forest horizon.",
+   "identity_note": "world buffer world_with_monkey.npz array sha 16a978f8e093be48...; QUICKVIEW picture #1"
+  },
+  {
+   "name": "stride_corridor_tick150",
+   "section": "certified_stills",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/captures/monkey2b_corridor_stride_ticks0_150-fix2-reb2.png",
+   "sha256": "5234238024c48d3ea12118e52bcecb3a6c6d8657f1ceb663227988c66e3458fb",
+   "bytes": 916943,
+   "caption": "STRIDE: corridor-height view of the tick-150 stride from 3 m behind.",
+   "identity_note": "world buffer world_with_monkey.npz array sha 16a978f8e093be48...; QUICKVIEW picture #4"
+  },
+  {
+   "name": "wf_f0000_tick000_track",
+   "section": "walkfilm_302ticks",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0000.png",
+   "sha256": "5fa620dacb7a9ec47981ac0f55c0f4b7f13b07fbf58667b5a840bcecd5ddb15a",
+   "bytes": 1000857,
+   "caption": "WALKFILM f0000 - track shot, tick 0: the walk begins.",
+   "identity_note": "buffer sha 7e10b5554ca75d58...; trace b47b709c43a021d2...; engine reb2 a2effe9a (gpu_pipeline 529c0e08...); job composition2-walkfilm-001"
+  },
+  {
+   "name": "wf_f0050_tick150_track",
+   "section": "walkfilm_302ticks",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0050.png",
+   "sha256": "d9439df26a0ee3bd62004f6109e9b313f5e083b8fb8a34dbd89a72e8594ec361",
+   "bytes": 1030480,
+   "caption": "WALKFILM f0050 - track shot, tick 150: mid-stride.",
+   "identity_note": "buffer sha 38e55322fc18ec1b... (prefix + tick-150 creature block); trace b47b709c43a021d2...; engine reb2 a2effe9a"
+  },
+  {
+   "name": "wf_f0100_tick300_track",
+   "section": "walkfilm_302ticks",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0100.png",
+   "sha256": "0522c103d139c7185a54908a921f8467901d9615d8cd346ecb586e074a073184",
+   "bytes": 1025917,
+   "caption": "WALKFILM f0100 - track shot, tick 300: walk end (planar base; refusal tumble not rendered, declared).",
+   "identity_note": "buffer sha ef720dea86a44a9f...; trace b47b709c43a021d2...; engine reb2 a2effe9a"
+  },
+  {
+   "name": "wf_f0101_tick000_approach",
+   "section": "walkfilm_302ticks",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0101.png",
+   "sha256": "03f213ef81841974c227fdf0cefe1c30e82851cc7d04a6668372cad49c86a441",
+   "bytes": 813764,
+   "caption": "WALKFILM f0101 - approach shot, tick 0: monkey walks toward the camera, sun in frame.",
+   "identity_note": "eye (4.453293, 3.112954, 1.704) m, yaw 218.17, pitch +6; buffer sha 7e10b5554ca75d58...; engine reb2 a2effe9a"
+  },
+  {
+   "name": "wf_f0150_tick147_approach",
+   "section": "walkfilm_302ticks",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0150.png",
+   "sha256": "17ed269cce94ccec6be3bb97dc4f2507c6e6d079b6f1c81da9454dbc59d99784",
+   "bytes": 813826,
+   "caption": "WALKFILM f0150 - approach shot, tick 147 (stride-3 grid): 5.35 m out, sun in frame.",
+   "identity_note": "eye (4.453293, 3.112954, 1.704) m, yaw 218.17, pitch +6; buffer sha 7c7646e8cbf4de4a...; engine reb2 a2effe9a"
+  },
+  {
+   "name": "wf_f0201_tick300_approach",
+   "section": "walkfilm_302ticks",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0201.png",
+   "sha256": "7932bad4c366de1b98cb67ca63274296d32d9527a9765ead85ebe10f596a7426",
+   "bytes": 814638,
+   "caption": "WALKFILM f0201 - approach shot, tick 300: closest approach, walk end.",
+   "identity_note": "buffer sha ef720dea86a44a9f...; engine reb2 a2effe9a; full film walkfilm_ffv1.mkv sha 22159c7c32d317c0..."
+  },
+  {
+   "name": "trunk3a_overlay_sun_monkey",
+   "section": "trunk_site_declared_overlay",
+   "file": "E:/ChimeraWork/world-build-20260928/composition3-trunk/captures/trunk3a_approach_sun_trunk_monkey.png",
+   "sha256": "66945a59c8865f6d8cd9729693734553e5740fdf2b66611b571f9fd1d4a94430",
+   "bytes": 1017819,
+   "caption": "TRUNK SITE 3a: sun + F03 trunk (DECLARED overlay, re-seated) + tick-150 monkey in one frame, aerial.",
+   "identity_note": "job composition3-trunk-002-reseat; eye (45, 45, 1.0) m, yaw -124.75, pitch +7.75; buffer sha 38e55322fc18ec1b...; overlay 5a4a0b1752db5455..."
+  },
+  {
+   "name": "trunk3b_low_angle_overlay",
+   "section": "trunk_site_declared_overlay",
+   "file": "E:/ChimeraWork/world-build-20260928/composition3-trunk/captures/trunk3b_low_angle_trunk_height.png",
+   "sha256": "dd69746144df7e784dc855913d9809bede9f57524b5bc973d279a3feed97d61d",
+   "bytes": 501698,
+   "caption": "TRUNK SITE 3b: the trunk's full height at eye level (DECLARED overlay; disclosed column-0 tile-cap defect declared in TRUNK_COMPOSITION 5.2).",
+   "identity_note": "job composition3-trunk-002-reseat; eye translated with the re-seat (z -20.7069677531 m); trunk rows 222-674 declared"
+  },
+  {
+   "name": "trunk3c_bufferonly_twin",
+   "section": "trunk_site_declared_overlay",
+   "file": "E:/ChimeraWork/world-build-20260928/composition3-trunk/captures/trunk3c_approach_bufferonly_no_overlay.png",
+   "sha256": "a4c2ca74fb663b42cfa9658a218c92a9c987e2ac6e4d86a035cf20e3462dab6c",
+   "bytes": 1016718,
+   "caption": "TRUNK SITE 3c - HONESTY TWIN: the certified buffer ALONE at the 3a pose. No trunk exists in the certified world; this is what the buffer actually holds at the trunk site.",
+   "identity_note": "job composition3-trunk-002-reseat; byte-identical across re-seat (buffer-only); buffer sha 38e55322fc18ec1b..."
+  }
+ ]
+}
