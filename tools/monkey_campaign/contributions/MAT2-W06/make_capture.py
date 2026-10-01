@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""MAT2-W06 profile-class capture (profile `walking`, kind `motion`).
+"""MAT2-W06 RETIRED record-space raster generator (additional
+evidence only; the profile-conformant capture is run_replay_capture.py
+per prereg addendum 1 - under a motion profile the format validator
+forbids image rows, so these rasters are NOT the capture manifest).
+
+Original header: MAT2-W06 profile-class capture (profile `walking`, kind `motion`).
 
 HONESTY LABEL (carried in the manifest, the context and burned into every
 diagnostic frame): this is a deterministic CPU software raster of the
