@@ -1,0 +1,832 @@
+{
+  "schema": "chimera.kanban.seed.v1",
+  "tasks": [
+    {
+      "id": "D-W04-MASS-20260924",
+      "planning_ids": [
+        "W04",
+        "P02"
+      ],
+      "kind": "bounded_diagnostic",
+      "objective": "Determine whether the frozen walking acceptance denominator is bound to the actual training body before W05.",
+      "source_edit_allowed": false,
+      "gpu_allowed": false,
+      "max_new_output_bytes": 16777216,
+      "output_directory": "E:/ChimeraWork/monkey-coordination/task-results/D-W04-MASS-20260924",
+      "read_first": [
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/bindings.json",
+        "E:/PythonChimera/tools/monkey_campaign/monkey_completion_map.json"
+      ],
+      "steps": [
+        "Read W04/P02 mapping receipts and locate the exact pinned runbook, acceptance.py and trainer-body sources using read-only git show.",
+        "Trace the 13824.5 kg, 10.038 kg, 6.15 kg and transported 17.04 kg references to their distinct lineages; derive which mass the current CoT definition actually consumes.",
+        "Produce an exact source/consumer matrix and the smallest correction proposal. Do not change training seeds, thresholds or source files. Escalate if the actual frozen expression is ambiguous."
+      ],
+      "falsifier": "Any conclusion using masses from different lineages as interchangeable, or claiming W04 ready while its denominator/body binding is unresolved, fails.",
+      "deliverables": [
+        "report.md with exact source revisions/hashes, findings and next implementation step",
+        "receipt.json recording checks actually performed, failures and remaining gates"
+      ],
+      "completion": "First lead-approved PR merged to astra/gait-capture, pinned to this card criteria hash. Preserve the original subtask verification below; report/test success alone does not close the card.",
+      "limits": "Read referenced sources and existing receipts. No production edits, model loads, engine starts, Git operations that change source checkouts, or broad new test/build runs. Request clarification in the mailbox only for a concrete remaining decision.",
+      "pr_destination": "tools/monkey_campaign/contributions/D-W04-MASS-20260924/",
+      "original_completion": "Preserve the scoped report, cease task writes, and use worker_start.py --arrival-id YOUR_ID --finish HANDOFF_JSON with the returned handoff_template. Independent review is queued automatically; execute next assigned work. Do not mark a planning task accepted.",
+      "original_verification": "Preserve the scoped report, cease task writes, and use worker_start.py --arrival-id YOUR_ID --finish HANDOFF_JSON with the returned handoff_template. Independent review is queued automatically; execute next assigned work. Do not mark a planning task accepted."
+    },
+    {
+      "id": "D-W03-ANCHORS-20260924",
+      "planning_ids": [
+        "W03"
+      ],
+      "kind": "bounded_diagnostic",
+      "objective": "Prepare the versioned anchor adoption evidence and isolate the remaining C++/host/device gap.",
+      "source_edit_allowed": false,
+      "gpu_allowed": false,
+      "max_new_output_bytes": 16777216,
+      "output_directory": "E:/ChimeraWork/monkey-coordination/task-results/D-W03-ANCHORS-20260924",
+      "read_first": [
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/decisions/W03_DECISION_REQUEST.md",
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/agents/TIE2/receipts/case4_anchor_registry.txt",
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/agents/P02P03/receipts/reach_band_v1_anchor_drift_b643a850.txt"
+      ],
+      "steps": [
+        "Read the lead W03 ruling in DOC_AUDIT.md. Inventory the existing v1-preserved/v2-recorded receipts and exact binary/source identities.",
+        "Map which C++, host and device paths each existing receipt actually covers; distinguish a historical GPU comparison from a fresh uncontended GPU qualification.",
+        "Prepare a proposed versioned manifest and a precise remaining-check checklist. Do not overwrite frozen anchors or run GPU workloads."
+      ],
+      "falsifier": "Changed old anchors, an unexplained out-of-band change, or a CPU result labeled as new device qualification fails.",
+      "deliverables": [
+        "report.md with exact source revisions/hashes, findings and next implementation step",
+        "receipt.json recording checks actually performed, failures and remaining gates"
+      ],
+      "completion": "First lead-approved PR merged to astra/gait-capture, pinned to this card criteria hash. Preserve the original subtask verification below; report/test success alone does not close the card.",
+      "limits": "Read referenced sources and existing receipts. No production edits, model loads, engine starts, Git operations that change source checkouts, or broad new test/build runs. Request clarification in the mailbox only for a concrete remaining decision.",
+      "pr_destination": "tools/monkey_campaign/contributions/D-W03-ANCHORS-20260924/",
+      "original_completion": "Preserve the scoped report, cease task writes, and use worker_start.py --arrival-id YOUR_ID --finish HANDOFF_JSON with the returned handoff_template. Independent review is queued automatically; execute next assigned work. Do not mark a planning task accepted.",
+      "original_verification": "Preserve the scoped report, cease task writes, and use worker_start.py --arrival-id YOUR_ID --finish HANDOFF_JSON with the returned handoff_template. Independent review is queued automatically; execute next assigned work. Do not mark a planning task accepted."
+    },
+    {
+      "id": "D-FOREST-RUNTIME-20260924",
+      "planning_ids": [
+        "F02",
+        "F03",
+        "F04"
+      ],
+      "kind": "bounded_diagnostic",
+      "objective": "Specify the smallest missing native terrain/trunk collision integration needed for the first playable clearing.",
+      "source_edit_allowed": false,
+      "gpu_allowed": false,
+      "max_new_output_bytes": 16777216,
+      "output_directory": "E:/ChimeraWork/monkey-coordination/task-results/D-FOREST-RUNTIME-20260924",
+      "read_first": [
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/PLAY_BOARD.md",
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/agents/F02_terrain/PREREGISTRATION.md",
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/agents/F03_trunk/PREREGISTRATION.md",
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/agents/F04_contact/PREREGISTRATION.md",
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/bindings.json"
+      ],
+      "steps": [
+        "Locate the current pinned playable runtime and its actual collision query/contact path from the source/receipts; record exact revision and symbols.",
+        "Compare that native path with the F02-F04 static terrain/trunk results. Enumerate missing interfaces, units, transforms and collision data without designing a second runtime.",
+        "Write the bounded native implementation brief: exact candidate files, input/output contract, independent contact oracle, tunnelling/ghost-support falsifiers, and real runtime acceptance evidence required. Do not edit implementation files."
+      ],
+      "falsifier": "A Python-only/static test counted as native playable collision, or an implementation brief without a real source interface, fails.",
+      "deliverables": [
+        "report.md with exact source revisions/hashes, findings and next implementation step",
+        "receipt.json recording checks actually performed, failures and remaining gates"
+      ],
+      "completion": "First lead-approved PR merged to astra/gait-capture, pinned to this card criteria hash. Preserve the original subtask verification below; report/test success alone does not close the card.",
+      "limits": "Read referenced sources and existing receipts. No production edits, model loads, engine starts, Git operations that change source checkouts, or broad new test/build runs. Request clarification in the mailbox only for a concrete remaining decision.",
+      "pr_destination": "tools/monkey_campaign/contributions/D-FOREST-RUNTIME-20260924/",
+      "original_completion": "Preserve the scoped report, cease task writes, and use worker_start.py --arrival-id YOUR_ID --finish HANDOFF_JSON with the returned handoff_template. Independent review is queued automatically; execute next assigned work. Do not mark a planning task accepted.",
+      "original_verification": "Preserve the scoped report, cease task writes, and use worker_start.py --arrival-id YOUR_ID --finish HANDOFF_JSON with the returned handoff_template. Independent review is queued automatically; execute next assigned work. Do not mark a planning task accepted."
+    },
+    {
+      "id": "I-R02-SAVE-STORE",
+      "planning_ids": [
+        "R02"
+      ],
+      "kind": "bounded_implementation",
+      "objective": "Implement an atomic user-save envelope store around opaque existing engine snapshot bytes, without inventing physics serialization.",
+      "source_edit_allowed": true,
+      "production_edit_allowed": false,
+      "gpu_allowed": false,
+      "max_new_output_bytes": 16777216,
+      "output_directory": "E:/ChimeraWork/monkey-coordination/task-results/I-R02-SAVE-STORE",
+      "owned_files": [
+        "save_store.py",
+        "test_save_store.py",
+        "report.md",
+        "receipt.json",
+        "PREREGISTRATION.md"
+      ],
+      "required_artifacts": [
+        "save_store.py",
+        "test_save_store.py"
+      ],
+      "depends_on": [],
+      "base_revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+      "source_repository": "E:/ChimeraWork/monkey-play-20260924",
+      "read_first": [
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/product/input_settings.py",
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/product/session_flow.py"
+      ],
+      "steps": [
+        "Recover existing claims first. Read the full parent execution packet and current board. This is an explicitly authorized preparatory implementation; final parent dependencies remain open. Freeze statement, prediction and falsifier in PREREGISTRATION.md before edits.",
+        "Read exact source bytes with git -c safe.directory=E:/ChimeraWork/monkey-play-20260924 -C E:/ChimeraWork/monkey-play-20260924 show 9afbddcd90164b5544a16fd0bc72278d985eb6e3:<path>. You may extract the named Python sources and their necessary Python imports identified from that pinned source (record every extracted path/hash) to your owned workspace for CPU tests, preserving source hashes. No checkout, branch switch, new clone/worktree or edits in the source repository. Add extracted dependencies under a local reference/ directory; keep it read-only after extraction.",
+        "Derive the envelope from explicit caller-supplied format version, build/scene/policy identities and opaque payload bytes. Missing expected identities must refuse; do not default them or infer compatibility.",
+        "Implement save/load/list in save_store.py using an explicitly supplied user directory, relative slot names, atomic replace, payload hash, bounded file reads and named corruption/version/identity refusals. No pickle or execution of stored content.",
+        "Exercise interrupted write before replace, truncated payload, tampered hash, wrong version/identity, path traversal and successful byte-exact payload restoration in temporary directories. Reuse existing atomic-write conventions where correct; provide an exact adapter proposal for SessionFlow without editing it."
+      ],
+      "falsifier": "Interrupted write destroys the previous valid save, traversal escapes the caller directory, or mismatched identities are accepted.",
+      "deliverables": [
+        "save_store.py",
+        "test_save_store.py",
+        "report.md",
+        "receipt.json",
+        "PREREGISTRATION.md"
+      ],
+      "completion": "First lead-approved PR merged to astra/gait-capture, pinned to this card criteria hash. Preserve the original subtask verification below; report/test success alone does not close the card.",
+      "limits": "This lead-issued claim authorizes code ONLY in this task output directory, including reference/ extraction and temporary test fixtures. No production checkout changes, network, package installation, GUI, native build, GPU, training, process control or unbounded fuzzing. Each test invocation must be bounded to 120 seconds and output growth to 16 MiB. Parent gameplay/runtime/human gates are NOT satisfied by these preparatory modules. Check existing equivalent code before implementing; reuse it and add the missing integration/tests instead of duplicating it.",
+      "pr_destination": "tools/monkey_campaign/contributions/I-R02-SAVE-STORE/",
+      "original_completion": "Implement the module and tests; run relevant bounded CPU checks; preserve source/artifact hashes and failures in report.md. Cease writes then use worker_start.py --arrival-id YOUR_ID --finish HANDOFF_JSON. Source and test artifacts are hash-bound for independent review. Continue next assigned task; only the existing publisher may integrate into the game.",
+      "original_verification": "Implement the module and tests; run relevant bounded CPU checks; preserve source/artifact hashes and failures in report.md. Cease writes then use worker_start.py --arrival-id YOUR_ID --finish HANDOFF_JSON. Source and test artifacts are hash-bound for independent review. Continue next assigned task; only the existing publisher may integrate into the game."
+    },
+    {
+      "id": "I-U07-TRACE",
+      "planning_ids": [
+        "U07"
+      ],
+      "kind": "bounded_implementation",
+      "objective": "Implement the trace ingestion and latency analysis needed for eventual real input/camera play measurements.",
+      "source_edit_allowed": true,
+      "production_edit_allowed": false,
+      "gpu_allowed": false,
+      "max_new_output_bytes": 16777216,
+      "output_directory": "E:/ChimeraWork/monkey-coordination/task-results/I-U07-TRACE",
+      "owned_files": [
+        "input_trace.py",
+        "test_input_trace.py",
+        "report.md",
+        "receipt.json",
+        "PREREGISTRATION.md"
+      ],
+      "required_artifacts": [
+        "input_trace.py",
+        "test_input_trace.py"
+      ],
+      "depends_on": [],
+      "base_revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+      "source_repository": "E:/ChimeraWork/monkey-play-20260924",
+      "read_first": [
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/product/input_mapper.py",
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/product/follow_camera.py"
+      ],
+      "steps": [
+        "Recover existing claims first. Read the full parent execution packet and current board. This is an explicitly authorized preparatory implementation; final parent dependencies remain open. Freeze statement, prediction and falsifier in PREREGISTRATION.md before edits.",
+        "Read exact source bytes with git -c safe.directory=E:/ChimeraWork/monkey-play-20260924 -C E:/ChimeraWork/monkey-play-20260924 show 9afbddcd90164b5544a16fd0bc72278d985eb6e3:<path>. You may extract the named Python sources and their necessary Python imports identified from that pinned source (record every extracted path/hash) to your owned workspace for CPU tests, preserving source hashes. No checkout, branch switch, new clone/worktree or edits in the source repository. Add extracted dependencies under a local reference/ directory; keep it read-only after extraction.",
+        "Inspect actual command/camera APIs at the pinned revision. Define an explicit event record carrying sequence, monotonic timestamp, clock identity, run/build identity and stage (input, command emitted, simulation consumed, presented). Preserve units.",
+        "Implement strict trace parsing and matched-stage latency calculations. Refuse missing stages, duplicate IDs, mixed clocks/builds, non-finite times and reversed stage order. Accept acceptance limits only as explicit caller data; report unqualified when P06 limits are absent.",
+        "Test analytic traces with exact expected intervals, deliberate missing/mixed-clock traces and empty data. Provide CLI JSON output and an insertion-point patch proposal, not fabricated live measurements."
+      ],
+      "falsifier": "Unmatched timestamps yield invented latency, clock domains are silently mixed, or fixture traces are labeled actual-play acceptance.",
+      "deliverables": [
+        "input_trace.py",
+        "test_input_trace.py",
+        "report.md",
+        "receipt.json",
+        "PREREGISTRATION.md"
+      ],
+      "completion": "First lead-approved PR merged to astra/gait-capture, pinned to this card criteria hash. Preserve the original subtask verification below; report/test success alone does not close the card.",
+      "limits": "This lead-issued claim authorizes code ONLY in this task output directory, including reference/ extraction and temporary test fixtures. No production checkout changes, network, package installation, GUI, native build, GPU, training, process control or unbounded fuzzing. Each test invocation must be bounded to 120 seconds and output growth to 16 MiB. Parent gameplay/runtime/human gates are NOT satisfied by these preparatory modules. Check existing equivalent code before implementing; reuse it and add the missing integration/tests instead of duplicating it.",
+      "pr_destination": "tools/monkey_campaign/contributions/I-U07-TRACE/",
+      "original_completion": "Implement the module and tests; run relevant bounded CPU checks; preserve source/artifact hashes and failures in report.md. Cease writes then use worker_start.py --arrival-id YOUR_ID --finish HANDOFF_JSON. Source and test artifacts are hash-bound for independent review. Continue next assigned task; only the existing publisher may integrate into the game.",
+      "original_verification": "Implement the module and tests; run relevant bounded CPU checks; preserve source/artifact hashes and failures in report.md. Cease writes then use worker_start.py --arrival-id YOUR_ID --finish HANDOFF_JSON. Source and test artifacts are hash-bound for independent review. Continue next assigned task; only the existing publisher may integrate into the game."
+    },
+    {
+      "id": "I-R05-RESOURCE-LEDGER",
+      "planning_ids": [
+        "R05"
+      ],
+      "kind": "bounded_implementation",
+      "objective": "Implement an ownership-scoped resource accounting checker for repeated session/restart teardown.",
+      "source_edit_allowed": true,
+      "production_edit_allowed": false,
+      "gpu_allowed": false,
+      "max_new_output_bytes": 16777216,
+      "output_directory": "E:/ChimeraWork/monkey-coordination/task-results/I-R05-RESOURCE-LEDGER",
+      "owned_files": [
+        "resource_ledger.py",
+        "test_resource_ledger.py",
+        "report.md",
+        "receipt.json",
+        "PREREGISTRATION.md"
+      ],
+      "required_artifacts": [
+        "resource_ledger.py",
+        "test_resource_ledger.py"
+      ],
+      "depends_on": [],
+      "base_revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+      "source_repository": "E:/ChimeraWork/monkey-play-20260924",
+      "read_first": [
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/product/session_flow.py",
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/data/monkey_forest/forest_loader.py"
+      ],
+      "steps": [
+        "Recover existing claims first. Read the full parent execution packet and current board. This is an explicitly authorized preparatory implementation; final parent dependencies remain open. Freeze statement, prediction and falsifier in PREREGISTRATION.md before edits.",
+        "Read exact source bytes with git -c safe.directory=E:/ChimeraWork/monkey-play-20260924 -C E:/ChimeraWork/monkey-play-20260924 show 9afbddcd90164b5544a16fd0bc72278d985eb6e3:<path>. You may extract the named Python sources and their necessary Python imports identified from that pinned source (record every extracted path/hash) to your owned workspace for CPU tests, preserving source hashes. No checkout, branch switch, new clone/worktree or edits in the source repository. Add extracted dependencies under a local reference/ directory; keep it read-only after extraction.",
+        "Inspect existing teardown ownership APIs. Define acquire/release records with session generation, explicit owner and unique resource ID; do not discover or terminate OS processes.",
+        "Implement a bounded event ledger with named duplicate-acquire, unknown-release, wrong-generation, wrong-owner and live-at-close failures. Generate per-cycle summaries with explicit caller-provided resource ceilings; never treat high free RAM as success.",
+        "Test repeated clean cycles, leaking cycles, reused IDs in distinct generations and unrelated operator-owned IDs. Provide a concrete hook-up proposal to current teardown code. No process enumeration, process kills, engine launches or soak-time claims."
+      ],
+      "falsifier": "An unrelated owner can be released, stale generations close current resources, or a leaked resource passes a cycle.",
+      "deliverables": [
+        "resource_ledger.py",
+        "test_resource_ledger.py",
+        "report.md",
+        "receipt.json",
+        "PREREGISTRATION.md"
+      ],
+      "completion": "First lead-approved PR merged to astra/gait-capture, pinned to this card criteria hash. Preserve the original subtask verification below; report/test success alone does not close the card.",
+      "limits": "This lead-issued claim authorizes code ONLY in this task output directory, including reference/ extraction and temporary test fixtures. No production checkout changes, network, package installation, GUI, native build, GPU, training, process control or unbounded fuzzing. Each test invocation must be bounded to 120 seconds and output growth to 16 MiB. Parent gameplay/runtime/human gates are NOT satisfied by these preparatory modules. Check existing equivalent code before implementing; reuse it and add the missing integration/tests instead of duplicating it.",
+      "pr_destination": "tools/monkey_campaign/contributions/I-R05-RESOURCE-LEDGER/",
+      "original_completion": "Implement the module and tests; run relevant bounded CPU checks; preserve source/artifact hashes and failures in report.md. Cease writes then use worker_start.py --arrival-id YOUR_ID --finish HANDOFF_JSON. Source and test artifacts are hash-bound for independent review. Continue next assigned task; only the existing publisher may integrate into the game.",
+      "original_verification": "Implement the module and tests; run relevant bounded CPU checks; preserve source/artifact hashes and failures in report.md. Cease writes then use worker_start.py --arrival-id YOUR_ID --finish HANDOFF_JSON. Source and test artifacts are hash-bound for independent review. Continue next assigned task; only the existing publisher may integrate into the game."
+    },
+    {
+      "id": "I-R06-FAILURE-SEQUENCES",
+      "planning_ids": [
+        "R06"
+      ],
+      "kind": "bounded_implementation",
+      "objective": "Implement a deterministic failure-sequence regression runner against the existing input/focus/session APIs.",
+      "source_edit_allowed": true,
+      "production_edit_allowed": false,
+      "gpu_allowed": false,
+      "max_new_output_bytes": 16777216,
+      "output_directory": "E:/ChimeraWork/monkey-coordination/task-results/I-R06-FAILURE-SEQUENCES",
+      "owned_files": [
+        "failure_sequences.py",
+        "test_failure_sequences.py",
+        "report.md",
+        "receipt.json",
+        "PREREGISTRATION.md"
+      ],
+      "required_artifacts": [
+        "failure_sequences.py",
+        "test_failure_sequences.py"
+      ],
+      "depends_on": [],
+      "base_revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+      "source_repository": "E:/ChimeraWork/monkey-play-20260924",
+      "read_first": [
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/product/focus_policy.py",
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/product/session_flow.py",
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/product/input_mapper.py",
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/product/focus_policy_tests.py"
+      ],
+      "steps": [
+        "Recover existing claims first. Read the full parent execution packet and current board. This is an explicitly authorized preparatory implementation; final parent dependencies remain open. Freeze statement, prediction and falsifier in PREREGISTRATION.md before edits.",
+        "Read exact source bytes with git -c safe.directory=E:/ChimeraWork/monkey-play-20260924 -C E:/ChimeraWork/monkey-play-20260924 show 9afbddcd90164b5544a16fd0bc72278d985eb6e3:<path>. You may extract the named Python sources and their necessary Python imports identified from that pinned source (record every extracted path/hash) to your owned workspace for CPU tests, preserving source hashes. No checkout, branch switch, new clone/worktree or edits in the source repository. Add extracted dependencies under a local reference/ directory; keep it read-only after extraction.",
+        "Read the current APIs and existing tests first. Select missing cross-component sequences involving focus loss, held input, pause/resume/restart and repeated close; do not duplicate existing unit assertions.",
+        "Implement a bounded replay runner with injected clock and side-effect-recording adapters. Import the existing components from read-only pinned modules rather than rewriting their logic; record exact imported source hashes.",
+        "Test invariants: released input cannot remain latched, paused flow cannot emit locomotion commands, and owned teardown occurs exactly once. For a failure, preserve the minimal event sequence and source identity. Report mocked platform boundaries separately from actual Windows/device testing."
+      ],
+      "falsifier": "The runner tests a rewritten stand-in instead of existing product code, or credits simulated events as real device-loss certification.",
+      "deliverables": [
+        "failure_sequences.py",
+        "test_failure_sequences.py",
+        "report.md",
+        "receipt.json",
+        "PREREGISTRATION.md"
+      ],
+      "completion": "First lead-approved PR merged to astra/gait-capture, pinned to this card criteria hash. Preserve the original subtask verification below; report/test success alone does not close the card.",
+      "limits": "This lead-issued claim authorizes code ONLY in this task output directory, including reference/ extraction and temporary test fixtures. No production checkout changes, network, package installation, GUI, native build, GPU, training, process control or unbounded fuzzing. Each test invocation must be bounded to 120 seconds and output growth to 16 MiB. Parent gameplay/runtime/human gates are NOT satisfied by these preparatory modules. Check existing equivalent code before implementing; reuse it and add the missing integration/tests instead of duplicating it.",
+      "pr_destination": "tools/monkey_campaign/contributions/I-R06-FAILURE-SEQUENCES/",
+      "original_completion": "Implement the module and tests; run relevant bounded CPU checks; preserve source/artifact hashes and failures in report.md. Cease writes then use worker_start.py --arrival-id YOUR_ID --finish HANDOFF_JSON. Source and test artifacts are hash-bound for independent review. Continue next assigned task; only the existing publisher may integrate into the game.",
+      "original_verification": "Implement the module and tests; run relevant bounded CPU checks; preserve source/artifact hashes and failures in report.md. Cease writes then use worker_start.py --arrival-id YOUR_ID --finish HANDOFF_JSON. Source and test artifacts are hash-bound for independent review. Continue next assigned task; only the existing publisher may integrate into the game."
+    },
+    {
+      "id": "I-S02-PACKAGE-PREFLIGHT",
+      "planning_ids": [
+        "S02"
+      ],
+      "kind": "bounded_implementation",
+      "objective": "Implement a read-only self-contained-package preflight checker, without distributing restricted assets.",
+      "source_edit_allowed": true,
+      "production_edit_allowed": false,
+      "gpu_allowed": false,
+      "max_new_output_bytes": 16777216,
+      "output_directory": "E:/ChimeraWork/monkey-coordination/task-results/I-S02-PACKAGE-PREFLIGHT",
+      "owned_files": [
+        "package_preflight.py",
+        "test_package_preflight.py",
+        "report.md",
+        "receipt.json",
+        "PREREGISTRATION.md"
+      ],
+      "required_artifacts": [
+        "package_preflight.py",
+        "test_package_preflight.py"
+      ],
+      "depends_on": [],
+      "base_revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+      "source_repository": "E:/ChimeraWork/monkey-play-20260924",
+      "read_first": [
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/product/session_flow.py"
+      ],
+      "steps": [
+        "Recover existing claims first. Read the full parent execution packet and current board. This is an explicitly authorized preparatory implementation; final parent dependencies remain open. Freeze statement, prediction and falsifier in PREREGISTRATION.md before edits.",
+        "Read exact source bytes with git -c safe.directory=E:/ChimeraWork/monkey-play-20260924 -C E:/ChimeraWork/monkey-play-20260924 show 9afbddcd90164b5544a16fd0bc72278d985eb6e3:<path>. You may extract the named Python sources and their necessary Python imports identified from that pinned source (record every extracted path/hash) to your owned workspace for CPU tests, preserving source hashes. No checkout, branch switch, new clone/worktree or edits in the source repository. Add extracted dependencies under a local reference/ directory; keep it read-only after extraction.",
+        "Locate the existing packaging entry point by read-only tracked-file search at the pinned revision and record what exists. Work only on preflight support while S01 distribution and R07 compatibility gates remain open.",
+        "Implement a caller-supplied package manifest checker for relative file paths, bounded hashes, missing files, unsafe traversal/junctions, undeclared external dependencies and development-root leakage in declared text configs. Never scan arbitrary user directories or infer asset rights.",
+        "Test a relocated synthetic package, a missing dependency, absolute E:/PythonChimera references, wrong hashes and traversal. Emit named findings and an integration proposal. Do not build/publish a game package or copy meshes/models."
+      ],
+      "falsifier": "Relocation changes valid-manifest results, an undeclared development dependency passes, or preflight claims distribution permission.",
+      "deliverables": [
+        "package_preflight.py",
+        "test_package_preflight.py",
+        "report.md",
+        "receipt.json",
+        "PREREGISTRATION.md"
+      ],
+      "completion": "First lead-approved PR merged to astra/gait-capture, pinned to this card criteria hash. Preserve the original subtask verification below; report/test success alone does not close the card.",
+      "limits": "This lead-issued claim authorizes code ONLY in this task output directory, including reference/ extraction and temporary test fixtures. No production checkout changes, network, package installation, GUI, native build, GPU, training, process control or unbounded fuzzing. Each test invocation must be bounded to 120 seconds and output growth to 16 MiB. Parent gameplay/runtime/human gates are NOT satisfied by these preparatory modules. Check existing equivalent code before implementing; reuse it and add the missing integration/tests instead of duplicating it.",
+      "pr_destination": "tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT/",
+      "original_completion": "Implement the module and tests; run relevant bounded CPU checks; preserve source/artifact hashes and failures in report.md. Cease writes then use worker_start.py --arrival-id YOUR_ID --finish HANDOFF_JSON. Source and test artifacts are hash-bound for independent review. Continue next assigned task; only the existing publisher may integrate into the game.",
+      "original_verification": "Implement the module and tests; run relevant bounded CPU checks; preserve source/artifact hashes and failures in report.md. Cease writes then use worker_start.py --arrival-id YOUR_ID --finish HANDOFF_JSON. Source and test artifacts are hash-bound for independent review. Continue next assigned task; only the existing publisher may integrate into the game."
+    },
+    {
+      "id": "I-S04-PLAYER-DIAGNOSTICS",
+      "planning_ids": [
+        "S04"
+      ],
+      "kind": "bounded_implementation",
+      "objective": "Implement a tested player-facing diagnostic translation module for existing named product refusals.",
+      "source_edit_allowed": true,
+      "production_edit_allowed": false,
+      "gpu_allowed": false,
+      "max_new_output_bytes": 16777216,
+      "output_directory": "E:/ChimeraWork/monkey-coordination/task-results/I-S04-PLAYER-DIAGNOSTICS",
+      "owned_files": [
+        "player_diagnostics.py",
+        "test_player_diagnostics.py",
+        "report.md",
+        "receipt.json",
+        "PREREGISTRATION.md"
+      ],
+      "required_artifacts": [
+        "player_diagnostics.py",
+        "test_player_diagnostics.py"
+      ],
+      "depends_on": [],
+      "base_revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+      "source_repository": "E:/ChimeraWork/monkey-play-20260924",
+      "read_first": [
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/product/input_settings.py",
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/product/state_feedback.py",
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/product/session_flow.py"
+      ],
+      "steps": [
+        "Recover existing claims first. Read the full parent execution packet and current board. This is an explicitly authorized preparatory implementation; final parent dependencies remain open. Freeze statement, prediction and falsifier in PREREGISTRATION.md before edits.",
+        "Read exact source bytes with git -c safe.directory=E:/ChimeraWork/monkey-play-20260924 -C E:/ChimeraWork/monkey-play-20260924 show 9afbddcd90164b5544a16fd0bc72278d985eb6e3:<path>. You may extract the named Python sources and their necessary Python imports identified from that pinned source (record every extracted path/hash) to your owned workspace for CPU tests, preserving source hashes. No checkout, branch switch, new clone/worktree or edits in the source repository. Add extracted dependencies under a local reference/ directory; keep it read-only after extraction.",
+        "Inventory real named failures from these current modules with exact source references. Map only supported states; do not invent climbing capability or new physical behavior.",
+        "Implement deterministic user-message/action records for real supported failures and an honest unknown-error fallback with a correlation ID. Keep developer traces in a separate diagnostic field and do not expose local paths or secrets in player text.",
+        "Test known failures, unexpected errors, path-bearing exception strings and action availability. Produce a real mapping module and focused tests, with a proposal for connecting it to existing feedback. Human readability/playthrough acceptance stays pending."
+      ],
+      "falsifier": "The player receives raw local paths, a message claims an unsupported action, or unknown errors silently report success.",
+      "deliverables": [
+        "player_diagnostics.py",
+        "test_player_diagnostics.py",
+        "report.md",
+        "receipt.json",
+        "PREREGISTRATION.md"
+      ],
+      "completion": "First lead-approved PR merged to astra/gait-capture, pinned to this card criteria hash. Preserve the original subtask verification below; report/test success alone does not close the card.",
+      "limits": "This lead-issued claim authorizes code ONLY in this task output directory, including reference/ extraction and temporary test fixtures. No production checkout changes, network, package installation, GUI, native build, GPU, training, process control or unbounded fuzzing. Each test invocation must be bounded to 120 seconds and output growth to 16 MiB. Parent gameplay/runtime/human gates are NOT satisfied by these preparatory modules. Check existing equivalent code before implementing; reuse it and add the missing integration/tests instead of duplicating it.",
+      "pr_destination": "tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS/",
+      "original_completion": "Implement the module and tests; run relevant bounded CPU checks; preserve source/artifact hashes and failures in report.md. Cease writes then use worker_start.py --arrival-id YOUR_ID --finish HANDOFF_JSON. Source and test artifacts are hash-bound for independent review. Continue next assigned task; only the existing publisher may integrate into the game.",
+      "original_verification": "Implement the module and tests; run relevant bounded CPU checks; preserve source/artifact hashes and failures in report.md. Cease writes then use worker_start.py --arrival-id YOUR_ID --finish HANDOFF_JSON. Source and test artifacts are hash-bound for independent review. Continue next assigned task; only the existing publisher may integrate into the game."
+    },
+    {
+      "id": "R5-forest-review",
+      "planning_ids": [
+        "F01",
+        "F02",
+        "F03",
+        "F04",
+        "F07",
+        "F08",
+        "W10"
+      ],
+      "kind": "bounded_diagnostic",
+      "objective": "Finish the existing independent forest-front review and publish its precise native-readiness verdict.",
+      "source_edit_allowed": false,
+      "production_edit_allowed": false,
+      "gpu_allowed": false,
+      "max_new_output_bytes": 16777216,
+      "read_first": [
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/PLAY_BOARD.md",
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/agents/R5_forest_review"
+      ],
+      "steps": [
+        "Recover and read the existing R5 work without changing its files; preserve its author/source identities.",
+        "Check each F01-F08 acceptance claim against actual source/receipts and list the native heightfield/trunk contact and walking prerequisites separately. F05/F06 are not complete merely because a front heading says F01-F08.",
+        "Publish the independently supported review evidence and corrections in the assigned PR contribution path. No duplicate GPU run or altered physical threshold."
+      ],
+      "falsifier": "Static Python receipts credited as native W10 playable readiness, or omitted F05/F06 gates counted complete.",
+      "completion": "First lead-approved PR merged to astra/gait-capture, pinned to this card criteria hash. Preserve the original subtask verification below; report/test success alone does not close the card.",
+      "depends_on": [],
+      "pr_destination": "tools/monkey_campaign/contributions/R5-forest-review/",
+      "original_completion": "Lead-reviewed, merged evidence PR; native gameplay gates remain open.",
+      "original_verification": "Lead-reviewed, merged evidence PR; native gameplay gates remain open."
+    },
+    {
+      "id": "I-R02-SAVE-STORE-FOLLOWUP",
+      "planning_ids": [
+        "R02"
+      ],
+      "kind": "bounded_implementation",
+      "objective": "Fault-inject the merged save-store implementation across process interruption",
+      "depends_on": [
+        "I-R02-SAVE-STORE"
+      ],
+      "source_edit_allowed": true,
+      "production_edit_allowed": false,
+      "gpu_allowed": false,
+      "max_new_output_bytes": 16777216,
+      "owned_files": [
+        "adapter.py",
+        "test_adapter.py",
+        "report.md",
+        "PREREGISTRATION.md"
+      ],
+      "required_artifacts": [
+        "adapter.py",
+        "test_adapter.py"
+      ],
+      "steps": [
+        "Read the winning PR and source bytes of the save-store card, including its public API and exact version rules.",
+        "Implement a bounded subprocess fault-injection harness using temporary directories: interrupted writer before atomic replace must preserve the prior valid save; corrupted/truncated new saves must refuse.",
+        "Publish exact commands, source hashes, independently checked payload outcomes and any minimal regression patch; do not claim physics state restore was tested."
+      ],
+      "read_first": [
+        "Winning merged PR and task inbox for I-R02-SAVE-STORE"
+      ],
+      "falsifier": "The adapter uses a rewritten stand-in instead of the accepted module, or claims native qualification from a fixture.",
+      "completion": "First lead-reviewed merged PR; code, targeted tests and exact evidence required.",
+      "pr_destination": "tools/monkey_campaign/contributions/I-R02-SAVE-STORE-FOLLOWUP/",
+      "limits": "Own attempt workspace only; CPU tests bounded to 120s per invocation; no GPU/network installs/production checkout edits."
+    },
+    {
+      "id": "I-U07-TRACE-FOLLOWUP",
+      "planning_ids": [
+        "U07"
+      ],
+      "kind": "bounded_implementation",
+      "objective": "Connect the accepted trace format to the existing input/camera test seam",
+      "depends_on": [
+        "I-U07-TRACE"
+      ],
+      "source_edit_allowed": true,
+      "production_edit_allowed": false,
+      "gpu_allowed": false,
+      "max_new_output_bytes": 16777216,
+      "owned_files": [
+        "adapter.py",
+        "test_adapter.py",
+        "report.md",
+        "PREREGISTRATION.md"
+      ],
+      "required_artifacts": [
+        "adapter.py",
+        "test_adapter.py"
+      ],
+      "steps": [
+        "Read the winning trace module and pinned input_mapper/follow_camera sources.",
+        "Implement an adapter that emits the actual existing input and command events using injected monotonic clock; add causal-matching tests without inventing native presentation timestamps.",
+        "Publish the adapter and tests with explicit missing native stages; no end-to-end latency pass or P06 limit is fabricated."
+      ],
+      "read_first": [
+        "Winning merged PR and task inbox for I-U07-TRACE"
+      ],
+      "falsifier": "The adapter uses a rewritten stand-in instead of the accepted module, or claims native qualification from a fixture.",
+      "completion": "First lead-reviewed merged PR; code, targeted tests and exact evidence required.",
+      "pr_destination": "tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/",
+      "limits": "Own attempt workspace only; CPU tests bounded to 120s per invocation; no GPU/network installs/production checkout edits."
+    },
+    {
+      "id": "I-R05-RESOURCE-LEDGER-FOLLOWUP",
+      "planning_ids": [
+        "R05"
+      ],
+      "kind": "bounded_implementation",
+      "objective": "Connect accepted resource accounting to existing session teardown tests",
+      "depends_on": [
+        "I-R05-RESOURCE-LEDGER"
+      ],
+      "source_edit_allowed": true,
+      "production_edit_allowed": false,
+      "gpu_allowed": false,
+      "max_new_output_bytes": 16777216,
+      "owned_files": [
+        "adapter.py",
+        "test_adapter.py",
+        "report.md",
+        "PREREGISTRATION.md"
+      ],
+      "required_artifacts": [
+        "adapter.py",
+        "test_adapter.py"
+      ],
+      "steps": [
+        "Read the winning ledger module and current SessionFlow/forest_loader ownership hooks.",
+        "Implement a real adapter and bounded restart/close tests around these Python hooks, including a deliberate unreleased resource and wrong-generation release.",
+        "Publish actual source imports, results and remaining native-process/VRAM soak gaps. Never enumerate or terminate operator processes."
+      ],
+      "read_first": [
+        "Winning merged PR and task inbox for I-R05-RESOURCE-LEDGER"
+      ],
+      "falsifier": "The adapter uses a rewritten stand-in instead of the accepted module, or claims native qualification from a fixture.",
+      "completion": "First lead-reviewed merged PR; code, targeted tests and exact evidence required.",
+      "pr_destination": "tools/monkey_campaign/contributions/I-R05-RESOURCE-LEDGER-FOLLOWUP/",
+      "limits": "Own attempt workspace only; CPU tests bounded to 120s per invocation; no GPU/network installs/production checkout edits."
+    },
+    {
+      "id": "D-W04-MASS-20260924-FOLLOWUP",
+      "planning_ids": [
+        "W04",
+        "P02"
+      ],
+      "kind": "bounded_implementation",
+      "objective": "Implement the accepted walking body/manifest consistency check",
+      "depends_on": [
+        "D-W04-MASS-20260924"
+      ],
+      "source_edit_allowed": true,
+      "production_edit_allowed": false,
+      "gpu_allowed": false,
+      "max_new_output_bytes": 16777216,
+      "owned_files": [
+        "implementation.py",
+        "test_implementation.py",
+        "proposed.patch",
+        "report.md",
+        "PREREGISTRATION.md"
+      ],
+      "required_artifacts": [
+        "report.md"
+      ],
+      "read_first": [
+        "Winning merged PR, source references and inbox of D-W04-MASS-20260924"
+      ],
+      "steps": [
+        "Freeze derivation, expected behavior and falsifier before edits; derive all physical quantities from the accepted source chain.",
+        "Read the winning mass-lineage report and the exact acceptance/trainer expressions it identifies.",
+        "Implement a source-bound compatibility validator for that body/denominator relationship, using explicit units, source identities and refusal for unresolved lineage. Do not substitute another body mass or change training thresholds.",
+        "Test the actual resolved binding plus deliberately mismatched lineages; publish source/test identities and any still-open W04 gate."
+      ],
+      "falsifier": "A missing predecessor fact is fabricated, a fixture is labeled native acceptance, or the patch changes unscoped physics/thresholds.",
+      "completion": "Lead-reviewed merged PR containing actual implementation/patch and relevant tests; preserve runtime/visual gates not yet exercised.",
+      "pr_destination": "tools/monkey_campaign/contributions/D-W04-MASS-20260924-FOLLOWUP/",
+      "limits": "Own attempt workspace only. Source reads from winning pinned evidence. No GPU, training, process termination, live checkout edits, model/mesh copying or unapproved threshold changes."
+    },
+    {
+      "id": "D-W03-ANCHORS-20260924-FOLLOWUP",
+      "planning_ids": [
+        "W03"
+      ],
+      "kind": "bounded_implementation",
+      "objective": "Implement the versioned walking-anchor certificate verifier",
+      "depends_on": [
+        "D-W03-ANCHORS-20260924"
+      ],
+      "source_edit_allowed": true,
+      "production_edit_allowed": false,
+      "gpu_allowed": false,
+      "max_new_output_bytes": 16777216,
+      "owned_files": [
+        "implementation.py",
+        "test_implementation.py",
+        "proposed.patch",
+        "report.md",
+        "PREREGISTRATION.md"
+      ],
+      "required_artifacts": [
+        "report.md"
+      ],
+      "read_first": [
+        "Winning merged PR, source references and inbox of D-W03-ANCHORS-20260924"
+      ],
+      "steps": [
+        "Freeze derivation, expected behavior and falsifier before edits; derive all physical quantities from the accepted source chain.",
+        "Read the winning anchor inventory and retained v1/v2 hashes and identify every remaining host/device coverage gate.",
+        "Implement a deterministic certificate verifier that binds source/binary/input/output identities and reports missing comparisons without accepting CPU evidence as device proof.",
+        "Test old-anchor mutation, missing device receipt, mismatched source and complete synthetic certificate cases; preserve real missing qualification as missing."
+      ],
+      "falsifier": "A missing predecessor fact is fabricated, a fixture is labeled native acceptance, or the patch changes unscoped physics/thresholds.",
+      "completion": "Lead-reviewed merged PR containing actual implementation/patch and relevant tests; preserve runtime/visual gates not yet exercised.",
+      "pr_destination": "tools/monkey_campaign/contributions/D-W03-ANCHORS-20260924-FOLLOWUP/",
+      "limits": "Own attempt workspace only. Source reads from winning pinned evidence. No GPU, training, process termination, live checkout edits, model/mesh copying or unapproved threshold changes."
+    },
+    {
+      "id": "D-FOREST-RUNTIME-20260924-FOLLOWUP",
+      "planning_ids": [
+        "F02",
+        "F03",
+        "F04"
+      ],
+      "kind": "bounded_implementation",
+      "objective": "Prepare the scoped native contact implementation from the accepted interface brief",
+      "depends_on": [
+        "D-FOREST-RUNTIME-20260924"
+      ],
+      "source_edit_allowed": true,
+      "production_edit_allowed": false,
+      "gpu_allowed": false,
+      "max_new_output_bytes": 16777216,
+      "owned_files": [
+        "implementation.py",
+        "test_implementation.py",
+        "proposed.patch",
+        "report.md",
+        "PREREGISTRATION.md"
+      ],
+      "required_artifacts": [
+        "report.md"
+      ],
+      "read_first": [
+        "Winning merged PR, source references and inbox of D-FOREST-RUNTIME-20260924"
+      ],
+      "steps": [
+        "Freeze derivation, expected behavior and falsifier before edits; derive all physical quantities from the accepted source chain.",
+        "Read the winning native collision brief and its exact source interfaces, units, lineage and falsifiers.",
+        "Derive and implement the smallest native terrain/trunk contact change in an isolated patch against that pinned source. Use the existing solver; no invisible support forces or new physics framework. Publish the patch and independent geometric/contact checks.",
+        "CPU compilation and analytic checks must be bounded by actual broker/build capacity. Native/GPU gameplay checks remain pending unless separately admitted and actually observed. A patch artifact is not integrated W10 readiness."
+      ],
+      "falsifier": "A missing predecessor fact is fabricated, a fixture is labeled native acceptance, or the patch changes unscoped physics/thresholds.",
+      "completion": "Lead-reviewed merged PR containing actual implementation/patch and relevant tests; preserve runtime/visual gates not yet exercised.",
+      "pr_destination": "tools/monkey_campaign/contributions/D-FOREST-RUNTIME-20260924-FOLLOWUP/",
+      "limits": "Own attempt workspace only. Source reads from winning pinned evidence. No GPU, training, process termination, live checkout edits, model/mesh copying or unapproved threshold changes."
+    },
+    {
+      "id": "R5-forest-review-FOLLOWUP",
+      "planning_ids": [
+        "F01",
+        "F02",
+        "F03",
+        "F04",
+        "F07",
+        "F08",
+        "W10"
+      ],
+      "kind": "bounded_implementation",
+      "objective": "Implement the scene-readiness smoke-test runner from the accepted forest review",
+      "depends_on": [
+        "R5-forest-review"
+      ],
+      "source_edit_allowed": true,
+      "production_edit_allowed": false,
+      "gpu_allowed": false,
+      "max_new_output_bytes": 16777216,
+      "owned_files": [
+        "implementation.py",
+        "test_implementation.py",
+        "proposed.patch",
+        "report.md",
+        "PREREGISTRATION.md"
+      ],
+      "required_artifacts": [
+        "report.md"
+      ],
+      "read_first": [
+        "Winning merged PR, source references and inbox of R5-forest-review"
+      ],
+      "steps": [
+        "Freeze derivation, expected behavior and falsifier before edits; derive all physical quantities from the accepted source chain.",
+        "Read the winning R5 verdict and distinguish declared geometry from missing native contact and walking prerequisites.",
+        "Implement a configurable readiness runner against documented runtime endpoints with bounded timeouts, pinned scene/build IDs and named missing-capability failures. Do not invent new endpoints; use an injected transport for CPU regression cases.",
+        "Test unavailable engine, mismatched scene, missing native collision and supported responses; preserve the requirement for an actual controlled native run and visual capture."
+      ],
+      "falsifier": "A missing predecessor fact is fabricated, a fixture is labeled native acceptance, or the patch changes unscoped physics/thresholds.",
+      "completion": "Lead-reviewed merged PR containing actual implementation/patch and relevant tests; preserve runtime/visual gates not yet exercised.",
+      "pr_destination": "tools/monkey_campaign/contributions/R5-forest-review-FOLLOWUP/",
+      "limits": "Own attempt workspace only. Source reads from winning pinned evidence. No GPU, training, process termination, live checkout edits, model/mesh copying or unapproved threshold changes."
+    },
+    {
+      "id": "I-R06-FAILURE-SEQUENCES-FOLLOWUP",
+      "planning_ids": [
+        "R06"
+      ],
+      "kind": "bounded_implementation",
+      "objective": "Integrate the accepted failure-sequence runner into product regression entry points",
+      "depends_on": [
+        "I-R06-FAILURE-SEQUENCES"
+      ],
+      "source_edit_allowed": true,
+      "production_edit_allowed": false,
+      "gpu_allowed": false,
+      "max_new_output_bytes": 16777216,
+      "owned_files": [
+        "implementation.py",
+        "test_implementation.py",
+        "proposed.patch",
+        "report.md",
+        "PREREGISTRATION.md"
+      ],
+      "required_artifacts": [
+        "report.md"
+      ],
+      "read_first": [
+        "Winning merged PR, source references and inbox of I-R06-FAILURE-SEQUENCES"
+      ],
+      "steps": [
+        "Freeze derivation, expected behavior and falsifier before edits; derive all physical quantities from the accepted source chain.",
+        "Read the winning runner, recorded counterexamples and actual existing product test entry points.",
+        "Implement the smallest test-entry adapter invoking the accepted runner and real pinned product classes. Fix a production behavior only if a retained failing counterexample demonstrates the defect, and include the minimal scoped patch.",
+        "Show injected-counterexample detection and clean existing cases; avoid arbitrary new fuzz volume or claiming actual device testing."
+      ],
+      "falsifier": "A missing predecessor fact is fabricated, a fixture is labeled native acceptance, or the patch changes unscoped physics/thresholds.",
+      "completion": "Lead-reviewed merged PR containing actual implementation/patch and relevant tests; preserve runtime/visual gates not yet exercised.",
+      "pr_destination": "tools/monkey_campaign/contributions/I-R06-FAILURE-SEQUENCES-FOLLOWUP/",
+      "limits": "Own attempt workspace only. Source reads from winning pinned evidence. No GPU, training, process termination, live checkout edits, model/mesh copying or unapproved threshold changes."
+    },
+    {
+      "id": "I-S02-PACKAGE-PREFLIGHT-FOLLOWUP",
+      "planning_ids": [
+        "S02"
+      ],
+      "kind": "bounded_implementation",
+      "objective": "Connect package preflight to the existing packaging manifest producer",
+      "depends_on": [
+        "I-S02-PACKAGE-PREFLIGHT"
+      ],
+      "source_edit_allowed": true,
+      "production_edit_allowed": false,
+      "gpu_allowed": false,
+      "max_new_output_bytes": 16777216,
+      "owned_files": [
+        "implementation.py",
+        "test_implementation.py",
+        "proposed.patch",
+        "report.md",
+        "PREREGISTRATION.md"
+      ],
+      "required_artifacts": [
+        "report.md"
+      ],
+      "read_first": [
+        "Winning merged PR, source references and inbox of I-S02-PACKAGE-PREFLIGHT"
+      ],
+      "steps": [
+        "Freeze derivation, expected behavior and falsifier before edits; derive all physical quantities from the accepted source chain.",
+        "Read the winning package-preflight module and identified current packager entry point.",
+        "Implement a manifest producer/adapter using the packager actual declared inputs, relative paths and file hashes. Keep license/admission decisions explicit and external; never include unapproved assets.",
+        "Test relocation, missing assets and undeclared development paths in a synthetic minimal package. Do not publish a game package or claim commercial rights."
+      ],
+      "falsifier": "A missing predecessor fact is fabricated, a fixture is labeled native acceptance, or the patch changes unscoped physics/thresholds.",
+      "completion": "Lead-reviewed merged PR containing actual implementation/patch and relevant tests; preserve runtime/visual gates not yet exercised.",
+      "pr_destination": "tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT-FOLLOWUP/",
+      "limits": "Own attempt workspace only. Source reads from winning pinned evidence. No GPU, training, process termination, live checkout edits, model/mesh copying or unapproved threshold changes."
+    },
+    {
+      "id": "I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP",
+      "planning_ids": [
+        "S04"
+      ],
+      "kind": "bounded_implementation",
+      "objective": "Connect accepted player diagnostics to current feedback responses",
+      "depends_on": [
+        "I-S04-PLAYER-DIAGNOSTICS"
+      ],
+      "source_edit_allowed": true,
+      "production_edit_allowed": false,
+      "gpu_allowed": false,
+      "max_new_output_bytes": 16777216,
+      "owned_files": [
+        "implementation.py",
+        "test_implementation.py",
+        "proposed.patch",
+        "report.md",
+        "PREREGISTRATION.md"
+      ],
+      "required_artifacts": [
+        "report.md"
+      ],
+      "read_first": [
+        "Winning merged PR, source references and inbox of I-S04-PLAYER-DIAGNOSTICS"
+      ],
+      "steps": [
+        "Freeze derivation, expected behavior and falsifier before edits; derive all physical quantities from the accepted source chain.",
+        "Read the winning diagnostics module and current state_feedback/session/input error paths.",
+        "Implement a narrow adapter from actual product errors to the accepted player messages, preserving unknown/error correlation and supported-action checks. Avoid rewriting the vocabulary or claiming unsupported movement.",
+        "Test exact source-derived known failures and path-bearing unknown errors, and publish a scoped integration patch plus user-visible samples for later human review."
+      ],
+      "falsifier": "A missing predecessor fact is fabricated, a fixture is labeled native acceptance, or the patch changes unscoped physics/thresholds.",
+      "completion": "Lead-reviewed merged PR containing actual implementation/patch and relevant tests; preserve runtime/visual gates not yet exercised.",
+      "pr_destination": "tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/",
+      "limits": "Own attempt workspace only. Source reads from winning pinned evidence. No GPU, training, process termination, live checkout edits, model/mesh copying or unapproved threshold changes."
+    }
+  ]
+}

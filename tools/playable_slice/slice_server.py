@@ -32,6 +32,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import scene_boot as sb  # noqa: E402
+import push_channel as pchan  # noqa: E402  (lane/push-channel-20260920; the
+# push transport -- additive: new routes only, every legacy route untouched)
 
 NEVER_PORT = 8127
 DEFAULT_EXE = HERE.parent.parent / ".tmp/slice_build/Release/chimera_engine.exe"
@@ -44,6 +46,29 @@ SETTLE_VY = 0.05                  # the engine's own "settled means settled" bar
 # -(m*g/k) below the floor, so the settled ROOT is -(m*g/k) - ymin with ymin
 # the import's own authored lowest -- the attractor, derived, any body.
 SETTLE_SINK_M = 13824.5 * 9.81 / 1.3562e7    # 0.010000 m
+
+# ── THE THIN-CLIENT SNAPSHOT TRANSPORT (lane/thin-client-pilot-20260920) ────
+# Astra round-5 Decision 2, camera clause: timestamped snapshots -> client
+# interpolation -> local rendering. The engine (frozen core) serves /verts and
+# /tick_state but stamps NEITHER into the vertex payload (engine-service gap
+# E1, prereg thin_client_pilot_20260920/record.md) -- so THIS server composes
+# the two engine pulls into one framed snapshot. The authoritative timestamp is
+# the engine's OWN monotonic ts_us (steady clock, read under the same tick lock
+# as the state fields); the verts pull precedes the state pull, so ts postdates
+# the geometry by the measured inter-pull gap (gap_us travels in every header:
+# the E1 ambiguity is measured per snapshot, never hidden).
+#
+# Header (52 B, little-endian):
+#   u32 magic 'THS1' | u64 ts_us | u32 ticks | f32 root_y | f32 root_vy
+#   f32 P_lower | f32 P_upper | f32 dimple_m | u64 gap_us | u32 fmt | u32 n
+# Payload fmt codes: 0 FULL36 (legacy [36 B/vert], pos+nrm+col), 1 POS12
+# (positions f32x3; normals recomputed client-side), 2 POS16 (f16 pos+nrm,
+# 12 B/vert), 3 Z12 (zlib-9 of the POS12 payload), 4 DELTA (the engine's own
+# C3 run-compressed chain frame, engine-space: the carry mock's XY offset is
+# NOT applied -- named here, and in the receipt).
+SNAP_MAGIC = 0x31534854           # 'THS1' little-endian
+SNAP_HDR = "<IQIfffffQII"         # 4+8+4+5*4+8+4+4 = 52 B
+SNAP_FMT = {"FULL36": 0, "POS12": 1, "POS16": 2, "Z12": 3, "DELTA": 4}
 
 
 class World:
@@ -156,8 +181,8 @@ class World:
             self.proc = None
 
     # ── engine proxies ───────────────────────────────────────────────────
-    def verts(self) -> bytes:
-        raw = sb.http_get_raw(self.url, "/verts")
+    def verts(self, timeout: int = 60) -> bytes:
+        raw = sb.http_get_raw(self.url, "/verts", timeout=timeout)
         with self.lock:
             carry = dict(self.mock_carry)
         if not (carry["active"] or carry["x"] or carry["z"]):
@@ -173,11 +198,70 @@ class World:
         arr[2::9] += _np.float32(carry["z"])
         return raw[:4] + arr.tobytes()
 
+    # ── thin-client snapshot composition (the pilot's transport) ─────────
+    def snapshot(self, fmt: str = "FULL36", delta_key: bool = False,
+                 timeout: int = 60) -> tuple:
+        """One timestamped snapshot: engine /verts (carry-applied) then engine
+        /tick_state, framed under SNAP_HDR. Returns (bytes, fmt, n). The
+        measured verts->state gap rides every header (E1 ambiguity, honest).
+        `timeout` bounds each engine pull (the push broadcaster uses a short
+        bound so a hung engine pull cannot wedge composition; legacy routes
+        keep the default)."""
+        import struct as _s
+        t0 = time.perf_counter()
+        if fmt == "DELTA":
+            path = "/verts?delta=key" if delta_key else "/verts?delta=1"
+            vraw = sb.http_get_raw(self.url, path, timeout=timeout)
+            n = _s.unpack_from("<I", vraw, 4)[0] if len(vraw) >= 8 else 0
+        else:
+            vraw = self.verts(timeout=timeout)
+            n = int.from_bytes(vraw[:4], "little")
+        t1 = time.perf_counter()
+        state = sb.http_get_json(self.url, "/tick_state", timeout=timeout)
+        t2 = time.perf_counter()
+        gap_us = int((t2 - t1) * 1e6)
+        # verts arrived before state: ts postdates the geometry by gap_us.
+        # A second smaller ambiguity (the verts pull's own transit) is bounded
+        # by gap_us too -- both live inside one measured number.
+        if fmt == "DELTA":
+            payload = vraw           # the C3 chain frame, intact (16 B head)
+        elif fmt == "POS12":
+            payload = bytearray(12 * n)
+            for i in range(n):
+                payload[12 * i:12 * i + 12] = vraw[4 + 36 * i:4 + 36 * i + 12]
+            payload = bytes(payload)
+        elif fmt == "POS16":
+            import numpy as _np
+            V = _np.frombuffer(vraw, dtype=_np.float32, count=9 * n,
+                               offset=4).reshape(n, 9)
+            half = _np.empty((n, 6), dtype=_np.float16)
+            half[:, 0:3] = V[:, 0:3]
+            half[:, 3:6] = V[:, 3:6]
+            payload = half.tobytes()
+        elif fmt == "Z12":
+            import zlib as _z
+            pos = bytearray(12 * n)
+            for i in range(n):
+                pos[12 * i:12 * i + 12] = vraw[4 + 36 * i:4 + 36 * i + 12]
+            payload = _z.compress(bytes(pos), 9)
+        else:
+            fmt = "FULL36"
+            payload = vraw[4:] if n else vraw
+        hdr = _s.pack(SNAP_HDR, SNAP_MAGIC,
+                      int(state.get("ts_us", 0)), int(state.get("ticks", 0)),
+                      float(state.get("root_y", 0.0)),
+                      float(state.get("root_vy", 0.0)),
+                      float(state.get("P_lower", 0.0)),
+                      float(state.get("P_upper", 0.0)),
+                      float(state.get("dimple_m", 0.0)),
+                      gap_us, SNAP_FMT[fmt], n)
+        return hdr + payload, fmt, n
+
     def topology(self) -> bytes:
         return sb.http_get_raw(self.url, "/topology")
 
-    def tick_state(self) -> dict:
-        return sb.http_get_json(self.url, "/tick_state")
+    def tick_state(self, timeout: int = 60) -> dict:
+        return sb.http_get_json(self.url, "/tick_state", timeout=timeout)
 
     def press(self, payload: bytes) -> dict:
         # REALITY: the engine's own closed-loop press (the web-kernel form:
@@ -215,6 +299,15 @@ class World:
     def stop(self) -> dict:
         with self.lock:
             self.mock_carry["active"] = False
+            return {"ok": True}
+
+    def carry_reset(self) -> dict:
+        """MOCK[mock_carry] home: the slide's persisted XY offset returns to
+        zero (stop does not reset it -- arrival parks the body at the marker).
+        The pilot's CARRY scenario needs a fresh slide from the start pose."""
+        with self.lock:
+            self.mock_carry = {"active": False, "x": 0.0, "z": 0.0,
+                               "arrived": False}
             return {"ok": True}
 
     def drop_test(self) -> dict:
@@ -296,7 +389,27 @@ class World:
 
 
 WORLD: World | None = None
+CHANNEL: pchan.Channel | None = None   # THE PUSH CHANNEL (lane/push-channel-20260920)
 CARRIER = threading.Timer
+
+# wire-truth counters (the pilot's bandwidth table cross-check): bytes OUT per
+# route family, requests, and the running gap_us distribution (E1).
+STATS_LOCK = threading.Lock()
+STATS: dict = {"snapshot_req": 0, "snapshot_bytes": 0, "frame_req": 0,
+               "frame_bytes": 0, "verts_req": 0, "verts_bytes": 0,
+               "gap_us_max": 0, "gap_us_hist": []}
+
+
+def stat(route: str, nbytes: int, gap_us: int | None = None) -> None:
+    with STATS_LOCK:
+        STATS[route + "_req"] += 1
+        STATS[route + "_bytes"] += nbytes
+        if gap_us is not None:
+            STATS["gap_us_max"] = max(STATS["gap_us_max"], gap_us)
+            h = STATS["gap_us_hist"]
+            h.append(gap_us)
+            if len(h) > 4096:
+                del h[:len(h) - 4096]
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -350,6 +463,61 @@ class Handler(BaseHTTPRequestHandler):
             # the browser asks once; a 404 here is a console error on an
             # otherwise clean page
             self._send(204, b"", "image/x-icon")
+        elif p == "/api/snapshot":
+            # THE THIN-CLIENT SNAPSHOT (timestamped, composed server-side; see
+            # SNAP_HDR above). fmt via query; DELTA resync via &key=1.
+            q = self.path.split("?", 1)
+            query = q[1] if len(q) > 1 else ""
+            fmt = "FULL36"
+            for tok in query.split("&"):
+                if tok.upper().startswith("FMT="):
+                    fmt = tok[4:].upper()
+            if fmt not in SNAP_FMT:
+                self._json({"error": "unknown fmt: %s" % fmt}, 400)
+                return
+            try:
+                body, f, n = WORLD.snapshot(fmt, delta_key="key=1" in query)
+                stat("snapshot", len(body), gap_us=int.from_bytes(
+                    body[36:44], "little"))
+                self._send(200, body, "application/octet-stream")
+            except OSError as e:
+                self._json({"error": str(e)}, 502)
+        elif p == "/api/frame":
+            # the pixel family through the slice door (engine /frame passthru)
+            q = self.path.split("?", 1)
+            eng_path = "/frame?" + (q[1] if len(q) > 1 else "")
+            try:
+                body = sb.http_get_raw(WORLD.url, eng_path)
+                stat("frame", len(body))
+                ctype = ("image/jpeg" if body[:3] == b"\xff\xd8\xff"
+                         else "image/png" if body[:4] == b"\x89PNG"
+                         else "application/json")
+                self._send(200, body, ctype)
+            except OSError as e:
+                self._json({"error": str(e)}, 502)
+        elif p == "/api/channel":
+            # THE PUSH CHANNEL's own wire truth (counters, profiles, drops).
+            self._json(CHANNEL.stats() if CHANNEL else {"error": "no channel"})
+        elif p == "/api/stream":
+            # THE PUSH TRANSPORT (lane/push-channel-20260920): one long-lived
+            # GET, server-paced binary records; see push_channel.py. Blocks
+            # THIS client's handler thread only (ThreadingHTTPServer).
+            q = self.path.split("?", 1)
+            pchan.serve_stream(self, WORLD, CHANNEL, q[1] if len(q) > 1 else "")
+        elif p == "/push":
+            # the push CLIENT page (a separate page; index.html untouched --
+            # the rendertruth lane owns it). Served from the pilot dir.
+            pc = HERE.parent / "thin_client_pilot" / "push_client.html"
+            self._send(200, pc.read_bytes(), "text/html")
+        elif p == "/api/stats":
+            with STATS_LOCK:
+                out = dict(STATS)
+                h = sorted(out.pop("gap_us_hist") or [0])
+                out["gap_us_median"] = h[len(h) // 2]
+                out["gap_us_p95"] = h[min(len(h) - 1, int(0.95 * len(h)))]
+                out["gap_us_n"] = len(h)
+                out["gap_us_hist_tail"] = h[-64:]
+            self._json(out)
         else:
             self._json({"error": "not found"}, 404)
 
@@ -361,6 +529,8 @@ class Handler(BaseHTTPRequestHandler):
             self._json(WORLD.send())
         elif p == "/api/stop":
             self._json(WORLD.stop())
+        elif p == "/api/carry_reset":
+            self._json(WORLD.carry_reset())
         elif p == "/api/press":
             try:
                 self._json(WORLD.press(body))
@@ -390,7 +560,7 @@ def main() -> int:
                     help="never open a browser (automated lanes, CI); "
                          "the launcher scripts open the page themselves")
     a = ap.parse_args()
-    global WORLD
+    global WORLD, CHANNEL
     engine_exe = a.engine_exe
     if not engine_exe.is_file():
         cand = shutil.which("chimera_engine.exe")
@@ -400,6 +570,7 @@ def main() -> int:
             return 1
         engine_exe = Path(cand)
     WORLD = World(engine_exe)
+    CHANNEL = pchan.Channel(WORLD)
     spec = WORLD.boot()
     print("scene booted: scene %s" % spec["scene_sha256"][:16])
     print("standing start: settling in the background (real physics)")

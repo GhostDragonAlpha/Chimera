@@ -54,3 +54,13 @@ tools/science_funnel/data/visible_monkey/** -text -whitespace
 # lesson; lane slice-real-body-20260920).
 tools/playable_slice/*.obj -text -whitespace
 tools/playable_slice/*.glb -text -whitespace
+
+# Preserve the historical AGPL license bytes.
+LICENSES/AGPL-3.0-historical.txt -text
+
+# Preserve the catalog-pinned ontology raw bytes on Windows checkouts.
+/tools/membrane_ontology/ontology.json -text
+/tools/monkey_campaign/plans/material-first-v2/*.json -text
+/tools/monkey_campaign/monkey_completion_map.json -text
+/tools/monkey_campaign/EXECUTION_SERGEANT.md -text
+/tools/monkey_campaign/EXECUTION_SERGEANT.sha256 -text

@@ -1,0 +1,657 @@
+{
+ "tile": "P1_x1_y1",
+ "pass": "A",
+ "strategy": "row-wise muscle-major, forward panel order",
+ "reader": "vtrans",
+ "crop_sha256": "5149588492733a3f176e5d0fdfa851e3eae0c90aa2ae674bebc5e0ae1aa9ad72",
+ "header": {
+  "columns_seen": [
+   "Muscle group",
+   "Muscle",
+   "Mm1",
+   "mass (g)",
+   "FL (mm)",
+   "PCSA (mm2)"
+  ],
+  "legibility": "CLEAR",
+  "note": "Mm1 is a narrow gray specimen-label column; value fields follow it"
+ },
+ "cells": [
+  {
+   "m": "APB",
+   "g": "Thenar",
+   "s": "Mm1",
+   "f": "mass_g",
+   "v": "1.4",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": {
+    "span": [
+     "APB",
+     "FPB"
+    ],
+    "role": "anchor"
+   }
+  },
+  {
+   "m": "APB",
+   "g": "Thenar",
+   "s": "Mm1",
+   "f": "fl_mm",
+   "v": "10.2",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": {
+    "span": [
+     "APB",
+     "FPB"
+    ],
+    "role": "anchor"
+   }
+  },
+  {
+   "m": "APB",
+   "g": "Thenar",
+   "s": "Mm1",
+   "f": "pcsa_mm2",
+   "v": "120.4",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": {
+    "span": [
+     "APB",
+     "FPB"
+    ],
+    "role": "anchor"
+   }
+  },
+  {
+   "m": "FPB",
+   "g": "Thenar",
+   "s": "Mm1",
+   "f": "mass_g",
+   "v": null,
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": {
+    "span": [
+     "APB",
+     "FPB"
+    ],
+    "role": "covered"
+   }
+  },
+  {
+   "m": "FPB",
+   "g": "Thenar",
+   "s": "Mm1",
+   "f": "fl_mm",
+   "v": null,
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": {
+    "span": [
+     "APB",
+     "FPB"
+    ],
+    "role": "covered"
+   }
+  },
+  {
+   "m": "FPB",
+   "g": "Thenar",
+   "s": "Mm1",
+   "f": "pcsa_mm2",
+   "v": null,
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": {
+    "span": [
+     "APB",
+     "FPB"
+    ],
+    "role": "covered"
+   }
+  },
+  {
+   "m": "ADP",
+   "g": "Thenar",
+   "s": "Mm1",
+   "f": "mass_g",
+   "v": "1.2",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "ADP",
+   "g": "Thenar",
+   "s": "Mm1",
+   "f": "fl_mm",
+   "v": "11.9",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "ADP",
+   "g": "Thenar",
+   "s": "Mm1",
+   "f": "pcsa_mm2",
+   "v": "82.8",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "OPP",
+   "g": "Thenar",
+   "s": "Mm1",
+   "f": "mass_g",
+   "v": "0.6",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "OPP",
+   "g": "Thenar",
+   "s": "Mm1",
+   "f": "fl_mm",
+   "v": "6.0",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "OPP",
+   "g": "Thenar",
+   "s": "Mm1",
+   "f": "pcsa_mm2",
+   "v": "84.7",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "ADM",
+   "g": "Hypothenar",
+   "s": "Mm1",
+   "f": "mass_g",
+   "v": "0.8",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "ADM",
+   "g": "Hypothenar",
+   "s": "Mm1",
+   "f": "fl_mm",
+   "v": "10.4",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "ADM",
+   "g": "Hypothenar",
+   "s": "Mm1",
+   "f": "pcsa_mm2",
+   "v": "66.6",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "FDM",
+   "g": "Hypothenar",
+   "s": "Mm1",
+   "f": "mass_g",
+   "v": "0.5",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "FDM",
+   "g": "Hypothenar",
+   "s": "Mm1",
+   "f": "fl_mm",
+   "v": "16.6",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "FDM",
+   "g": "Hypothenar",
+   "s": "Mm1",
+   "f": "pcsa_mm2",
+   "v": "27.9",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "ODM",
+   "g": "Hypothenar",
+   "s": "Mm1",
+   "f": "mass_g",
+   "v": "0.4",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "ODM",
+   "g": "Hypothenar",
+   "s": "Mm1",
+   "f": "fl_mm",
+   "v": "26.4",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "ODM",
+   "g": "Hypothenar",
+   "s": "Mm1",
+   "f": "pcsa_mm2",
+   "v": "12.7",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "LUMB",
+   "g": "Intermediate",
+   "s": "Mm1",
+   "f": "mass_g",
+   "v": "0.8",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "LUMB",
+   "g": "Intermediate",
+   "s": "Mm1",
+   "f": "fl_mm",
+   "v": "38.1",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "LUMB",
+   "g": "Intermediate",
+   "s": "Mm1",
+   "f": "pcsa_mm2",
+   "v": "20.1",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "IOD",
+   "g": "Intermediate",
+   "s": "Mm1",
+   "f": "mass_g",
+   "v": "2.6",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "IOD",
+   "g": "Intermediate",
+   "s": "Mm1",
+   "f": "fl_mm",
+   "v": "7.8",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "IOD",
+   "g": "Intermediate",
+   "s": "Mm1",
+   "f": "pcsa_mm2",
+   "v": "297.4",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "IOP",
+   "g": "Intermediate",
+   "s": "Mm1",
+   "f": "mass_g",
+   "v": "0.8",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "IOP",
+   "g": "Intermediate",
+   "s": "Mm1",
+   "f": "fl_mm",
+   "v": "7.5",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "IOP",
+   "g": "Intermediate",
+   "s": "Mm1",
+   "f": "pcsa_mm2",
+   "v": "90.7",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "C5",
+   "g": "Intermediate",
+   "s": "Mm1",
+   "f": "mass_g",
+   "v": "0.2",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "C5",
+   "g": "Intermediate",
+   "s": "Mm1",
+   "f": "fl_mm",
+   "v": "5.8",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "C5",
+   "g": "Intermediate",
+   "s": "Mm1",
+   "f": "pcsa_mm2",
+   "v": "31.3",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "FDS",
+   "g": "Flexor",
+   "s": "Mm1",
+   "f": "mass_g",
+   "v": "13.0",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "FDS",
+   "g": "Flexor",
+   "s": "Mm1",
+   "f": "fl_mm",
+   "v": "26.6",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "FDS",
+   "g": "Flexor",
+   "s": "Mm1",
+   "f": "pcsa_mm2",
+   "v": "445.5",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "FCR",
+   "g": "Flexor",
+   "s": "Mm1",
+   "f": "mass_g",
+   "v": "10.2",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "FCR",
+   "g": "Flexor",
+   "s": "Mm1",
+   "f": "fl_mm",
+   "v": "30.5",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "FCR",
+   "g": "Flexor",
+   "s": "Mm1",
+   "f": "pcsa_mm2",
+   "v": "304.1",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "PL",
+   "g": "Flexor",
+   "s": "Mm1",
+   "f": "mass_g",
+   "v": "3.4",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "PL",
+   "g": "Flexor",
+   "s": "Mm1",
+   "f": "fl_mm",
+   "v": "18.0",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "PL",
+   "g": "Flexor",
+   "s": "Mm1",
+   "f": "pcsa_mm2",
+   "v": "171.7",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "FCU",
+   "g": "Flexor",
+   "s": "Mm1",
+   "f": "mass_g",
+   "v": "17.3",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "FCU",
+   "g": "Flexor",
+   "s": "Mm1",
+   "f": "fl_mm",
+   "v": "27.1",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "FCU",
+   "g": "Flexor",
+   "s": "Mm1",
+   "f": "pcsa_mm2",
+   "v": "580.7",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "FDP",
+   "g": "Flexor",
+   "s": "Mm1",
+   "f": "mass_g",
+   "v": "33.2",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "FDP",
+   "g": "Flexor",
+   "s": "Mm1",
+   "f": "fl_mm",
+   "v": "50.5",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "FDP",
+   "g": "Flexor",
+   "s": "Mm1",
+   "f": "pcsa_mm2",
+   "v": "598.4",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "conn. FDS-FDP",
+   "g": "Flexor",
+   "s": "Mm1",
+   "f": "mass_g",
+   "v": "3.0",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "conn. FDS-FDP",
+   "g": "Flexor",
+   "s": "Mm1",
+   "f": "fl_mm",
+   "v": "44.6",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "conn. FDS-FDP",
+   "g": "Flexor",
+   "s": "Mm1",
+   "f": "pcsa_mm2",
+   "v": "60.7",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "ECRL",
+   "g": "Extensor",
+   "s": "Mm1",
+   "f": "mass_g",
+   "v": "8.0",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "ECRL",
+   "g": "Extensor",
+   "s": "Mm1",
+   "f": "fl_mm",
+   "v": "73.9",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "ECRL",
+   "g": "Extensor",
+   "s": "Mm1",
+   "f": "pcsa_mm2",
+   "v": "98.5",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "ECRB",
+   "g": "Extensor",
+   "s": "Mm1",
+   "f": "mass_g",
+   "v": "8.7",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "ECRB",
+   "g": "Extensor",
+   "s": "Mm1",
+   "f": "fl_mm",
+   "v": "37.3",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "ECRB",
+   "g": "Extensor",
+   "s": "Mm1",
+   "f": "pcsa_mm2",
+   "v": "211.2",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "ED",
+   "g": "Extensor",
+   "s": "Mm1",
+   "f": "mass_g",
+   "v": "6.0",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "ED",
+   "g": "Extensor",
+   "s": "Mm1",
+   "f": "fl_mm",
+   "v": "36.7",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "ED",
+   "g": "Extensor",
+   "s": "Mm1",
+   "f": "pcsa_mm2",
+   "v": "147.9",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  }
+ ]
+}

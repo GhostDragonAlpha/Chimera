@@ -1,0 +1,174 @@
+{
+ "suite_pass": true,
+ "checks": {
+  "TIMEOUTS_three_states_F3": {
+   "pass": true,
+   "seconds": 1.35,
+   "detail": {
+    "capture_admitted_first": true,
+    "A_state": "queue_deadline_exceeded",
+    "A_label": "deferred: queue wait exceeded its deadline before admission (never admitted; no GPU work was started)",
+    "B_state": "model_load_timeout",
+    "B_label": "failed: model load stalled past the load budget AFTER admission (server-side stall timeout is OLLAMA_LOAD_TIMEOUT, default 5m)",
+    "C_state": "inference_timeout",
+    "C_label": "failed: inference exceeded the per-request budget AFTER the model was ready",
+    "backend_loads_when_A_expired": 0,
+    "B_infer_calls": 1,
+    "f3_scan": "PASS"
+   }
+  },
+  "MIXED_overlaps_F1_latency": {
+   "pass": true,
+   "seconds": 0.65,
+   "detail": {
+    "grants": 8,
+    "overlapping_pairs": 0,
+    "ordering": "PASS",
+    "completed": 14,
+    "submitted": 14,
+    "queue_latency_percentiles_BY_KIND_SCRIPTED": {
+     "capture": {
+      "n": 6,
+      "p50_s": 0.115,
+      "p95_s": 0.304,
+      "max_s": 0.304
+     },
+     "judge": {
+      "n": 8,
+      "p50_s": 0.53,
+      "p95_s": 0.53,
+      "max_s": 0.53
+     }
+    },
+    "wall_s": 0.652
+   }
+  },
+  "BATCH_amortization_M2": {
+   "pass": true,
+   "seconds": 2.34,
+   "detail": {
+    "loads_per_judge_SCRIPTED": {
+     "unbatched": 1.0,
+     "batched": 0.25
+    },
+    "amortization_factor": 4.0,
+    "batch_walls_s_cap_0.6": [
+     0.147,
+     0.148
+    ],
+    "capture_wait_s": 0.328
+   }
+  },
+  "AGING_starvation_bound": {
+   "pass": true,
+   "seconds": 0.2,
+   "detail": {
+    "aged_judge_wait_s": 59.04999999999878,
+    "unaged_judge_wait_s": 118.04999999999544,
+    "aged_expired": false,
+    "unaged_expired": false,
+    "note": "gain 1.0 bound = (judge_slack - capture_slack)/2 = (120-2)/2 = 59; gain 0 drifts to (deadline - capture_slack) and ANY tick past 120 with a competing lower score expires it"
+   }
+  },
+  "GAMING_defer_and_abort_order": {
+   "pass": true,
+   "seconds": 0.06,
+   "detail": {
+    "pump_result": "gaming",
+    "status_label": "deferred: waiting in the GPU broker queue (position 1, waited 0.0s, deadline in 30.0s)",
+    "model_calls_while_gaming": 0,
+    "abort_unloaded_model": true,
+    "abort_events": [
+     "gaming_abort",
+     "model_unloaded",
+     "reservation_released"
+    ],
+    "requeued": [
+     "judge-2edcbab5"
+    ]
+   }
+  },
+  "KEEPER_reconnect_F4_expired": {
+   "pass": true,
+   "seconds": 4.99,
+   "detail": {
+    "keeper": {
+     "keeper_id": "keeper-run-R1-5c6ccb",
+     "pid": 39900
+    },
+    "reservation_while_training": "keeper-run-R1-5c6ccb",
+    "pump_while_training": "deferred",
+    "broker2_actions": [
+     "adopt",
+     "adopt",
+     "adopt",
+     "adopt"
+    ],
+    "state_after_expected_end": "expired_pending",
+    "competitor_admitted_after_expected_end": false,
+    "competitor_why": "refused: GPU ownership EXPIRED_PENDING (Astra: never auto-free, never a competing job); owner='keeper-run-R1-5c6ccb'",
+    "after_broker_kill": {
+     "identity_unchanged": true,
+     "keeper_alive": true,
+     "heartbeat_advanced": true
+    },
+    "broker3_actions": [
+     "adopt",
+     "adopt"
+    ],
+    "keeper_records_for_run": 1,
+    "keeper_state_final": "done",
+    "reservation_final": "released",
+    "keeper_completed_event": true,
+    "judge_after_training": "completed"
+   }
+  },
+  "UNCERTAIN_kill_and_corrupt_F2": {
+   "pass": true,
+   "seconds": 8.67,
+   "detail": {
+    "keeper_killed_by_identity": true,
+    "reconcile_after_kill": {
+     "lost": 1,
+     "uncertain": 0,
+     "adopted": 0
+    },
+    "reservation_state_after_kill": "uncertain",
+    "second_owner_admitted": false,
+    "second_owner_why": "refused: GPU ownership UNCERTAIN (Astra: never auto-free, never a competing job); owner='keeper-run-K-b13b14'",
+    "registry_alerts": [
+     "keeper_lost"
+    ],
+    "trainer_marker_absent": true,
+    "duplicate_start_refused": true,
+    "after_admin_release": "released",
+    "corrupted_reconcile": {
+     "uncertain": 1,
+     "reservation_state": "uncertain"
+    },
+    "healed_by_heartbeat": true
+   }
+  },
+  "CPUAFFINITY_measured_alternative": {
+   "pass": true,
+   "seconds": 5.43,
+   "detail": {
+    "pinned_to_2_of_32_LPs": {
+     "wall_s": 4.213,
+     "cpu_s": 6.906,
+     "cores_effective": 1.79
+    },
+    "unpinned_8_threads": {
+     "wall_s": 1.201,
+     "cpu_s": 8.203,
+     "cores_effective": 9.64
+    },
+    "note": "create_job verified the affinity by READBACK before use (the phase-1 wrong-class trap); 1 s at below-normal priority"
+   }
+  },
+  "environment": {
+   "note": "CPU-only suite; zero fleet GPU work (operator may be gaming)",
+   "game_like_processes_seen": []
+  }
+ }
+}

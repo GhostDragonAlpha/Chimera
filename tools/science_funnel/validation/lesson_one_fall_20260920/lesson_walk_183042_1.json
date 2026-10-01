@@ -1,0 +1,17 @@
+{
+ "base": "http://127.0.0.1:8912",
+ "at": "2026-09-22T23:30:43.577Z",
+ "timeline": {
+  "t_launch": 0
+ },
+ "trace": [
+  {
+   "t": 0.11,
+   "stage": "launch"
+  }
+ ],
+ "stage": "launch",
+ "channel": "chromium-bundled (MACHINE_FINDINGS: installed Chrome cannot navigate on this machine)",
+ "session_error": "page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:8912/\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:8912/\", waiting until \"load\"\u001b[22m\n",
+ "failed_at_stage": "launch"
+}

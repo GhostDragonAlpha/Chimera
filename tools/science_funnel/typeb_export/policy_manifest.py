@@ -25,6 +25,19 @@ import sys
 
 MANIFEST_VERSION = "typeb-policy-manifest/1.0.0"
 
+# THE DEPLOYMENT-INFERENCE FREEZE (ADDED by lane/policy-interface-freeze-20260920;
+# purely additive and BACKWARD-COMPATIBLE: an optional `inference_freeze` block,
+# validated ONLY when present -- existing manifests (without the block) validate
+# exactly as before and their canonical manifest_hash is byte-identical (pinned:
+# the P3 manifest's 9ca7e976...). A NEW manifest that will feed skill #1 training
+# MUST carry the block: it pins the deployment-side facts the training side is
+# entitled to assume -- deterministic action selection, the compute precision,
+# the exported-graph pinning, and the normalization constants' digest -- so a
+# deployment runtime cannot drift from the trained contract without moving the
+# manifest hash (F-CPU-POLICY-BYTES discipline, extended to the runtime).
+DEPLOYMENT_INFERENCE_VERSION = "deployment-inference/1.0.0"
+_PRECISION_STORAGE = "float32"
+
 _REQUIRED_TOP = [
     "manifest_version", "kind", "claim", "named_falsifiers", "cpu_reference",
     "horizon_and_ticks", "scene_and_receipts", "body", "reflex_set", "physics_version",
@@ -34,6 +47,100 @@ _REQUIRED_TOP = [
 
 _REQUIRED_POLICY = ["architecture", "activation", "weights_format", "weights_sha256",
                     "param_count", "mac_count", "seed", "training_backend"]
+
+_REQUIRED_INFERENCE_FREEZE = [
+    "deployment_inference_version", "deterministic_action_selection", "precision",
+    "exported_graph", "normalization_constants", "action_selection",
+]
+
+
+def inference_freeze_block(weights_bytes: bytes, norm_mean, norm_std, clip: float,
+                           clock: dict) -> dict:
+    """Assemble the optional block deterministically (for future manifests).
+    digest laws: graph_sha256 = sha256(weights_bytes); normalization digest =
+    sha256 over canonical JSON of {mean, std, clip} -- the SAME law
+    build_policy_manifest.py's normalization.digest uses."""
+    import numpy as np
+    return {
+        "deployment_inference_version": DEPLOYMENT_INFERENCE_VERSION,
+        "deterministic_action_selection": True,
+        "precision": {"storage": _PRECISION_STORAGE, "compute": _PRECISION_STORAGE,
+                      "accumulate": _PRECISION_STORAGE, "batch": 1},
+        "exported_graph": {
+            "format": "numpy-npz/float32/c-contiguous",
+            "graph_sha256": hashlib.sha256(weights_bytes).hexdigest(),
+            "op_set": ["matvec", "tanh", "add", "mul", "clip"],
+            "graph_pinned": True,
+        },
+        "normalization_constants": {
+            "source": "manifest.normalization (mean/std/clip)",
+            "digest_sha256": hashlib.sha256(json.dumps(
+                {"mean": [float(v) for v in np.asarray(norm_mean, dtype=np.float32)],
+                 "std": [float(v) for v in np.asarray(norm_std, dtype=np.float32)],
+                 "clip": float(clip)}, sort_keys=True).encode("utf-8")).hexdigest(),
+            "mean_fill_semantics": "unavailable channel -> mean fill (exactly 0.0 "
+                                   "in normalized space); the mask is observed",
+            "clip": float(clip),
+        },
+        "action_selection": {
+            "rule": "raw deterministic map; no sampling, no argmax",
+            "mapping": "applied = clip(center + scale * raw_activation, bounds_lo, bounds_hi)",
+            "sampling": "none",
+        },
+        "clock": {"policy_hz": int(clock["policy_hz"]),
+                  "physics_hz": int(clock["physics_hz"]),
+                  "hold_ticks": int(clock["hold_ticks"]),
+                  "zero_order_hold": True},
+    }
+
+
+def _validate_inference_freeze(manifest: dict, weights_bytes: bytes | None) -> list[str]:
+    """The freeze-block validator (called only when the block is present)."""
+    errs = []
+    blk = manifest["inference_freeze"]
+    for k in _REQUIRED_INFERENCE_FREEZE:
+        if k not in blk:
+            errs.append(f"inference_freeze missing: {k}")
+    if errs:
+        return errs
+    if blk["deployment_inference_version"] != DEPLOYMENT_INFERENCE_VERSION:
+        errs.append(f"inference_freeze.deployment_inference_version != "
+                    f"{DEPLOYMENT_INFERENCE_VERSION}")
+    if blk["deterministic_action_selection"] is not True:
+        errs.append("inference_freeze.deterministic_action_selection must be true "
+                    "(the deployment freeze exists to pin determinism)")
+    prec = blk["precision"]
+    if not isinstance(prec, dict) or prec.get("storage") != _PRECISION_STORAGE:
+        errs.append(f"inference_freeze.precision.storage must be {_PRECISION_STORAGE}")
+    g = blk["exported_graph"]
+    if not isinstance(g, dict) or not g.get("graph_pinned"):
+        errs.append("inference_freeze.exported_graph.graph_pinned must be true")
+    if isinstance(g, dict):
+        sha = g.get("graph_sha256")
+        if not isinstance(sha, str) or len(sha) != 64:
+            errs.append("inference_freeze.exported_graph.graph_sha256 must be a "
+                        "sha256 hex digest")
+        elif weights_bytes is not None and \
+                hashlib.sha256(weights_bytes).hexdigest() != sha:
+            errs.append("inference_freeze.exported_graph.graph_sha256 does not "
+                        "match the weights bytes")
+    nc = blk["normalization_constants"]
+    norm = manifest["normalization"]
+    if isinstance(nc, dict):
+        want = hashlib.sha256(json.dumps(
+            {"mean": [float(v) for v in norm.get("mean", [])],
+             "std": [float(v) for v in norm.get("std", [])],
+             "clip": float(nc.get("clip", norm.get("clip", 8.0)))},
+            sort_keys=True).encode("utf-8")).hexdigest()
+        if nc.get("digest_sha256") != want:
+            errs.append("inference_freeze.normalization_constants.digest_sha256 "
+                        "does not match manifest.normalization")
+    clk = blk.get("clock", {})
+    act_clk = manifest["action"].get("clock", {})
+    for k in ("policy_hz", "physics_hz", "hold_ticks"):
+        if k in clk and act_clk.get(k) is not None and clk[k] != act_clk[k]:
+            errs.append(f"inference_freeze.clock.{k} != action.clock.{k}")
+    return errs
 
 
 def canonical_json(obj: dict) -> bytes:
@@ -117,6 +224,11 @@ def validate_manifest(manifest: dict, weights_bytes: bytes | None = None) -> lis
         got = hashlib.sha256(weights_bytes).hexdigest()
         if got != pol["weights_sha256"]:
             errs.append(f"weights sha256 mismatch: manifest {pol['weights_sha256']} vs file {got}")
+
+    # THE DEPLOYMENT-INFERENCE FREEZE (additive, optional): validated ONLY when
+    # the block is present; manifests without it behave exactly as before.
+    if "inference_freeze" in manifest:
+        errs += _validate_inference_freeze(manifest, weights_bytes)
     return errs
 
 

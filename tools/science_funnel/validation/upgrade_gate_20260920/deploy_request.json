@@ -1,0 +1,51 @@
+{
+  "body_domain": {
+    "body_digest": "UNBOUND_dummy (P3 manifest body: status UNBOUND -- binds automatically when the real actor exists)",
+    "domain_tag": "cpu-walk-scene/hind-pad-surrogate"
+  },
+  "physics_build": {
+    "build_id": "cpu-walk-scene-build-N",
+    "params_sha256": "3e770bef8b8707c99cdae2f2b2f4a8afb8d12430d987217016e6720a6d232036",
+    "scene_module": "tools/policy_compat/scene_cpu.py",
+    "scene_module_sha256": "ce12faee34dfdcf2a7c256e91b183c62fe33815898c52aa7e90174d8d38e47b4",
+    "scene_version": "cpu-walk-scene/1.0.0",
+    "timestep_s": 0.0033333333333333335
+  },
+  "policy_bundle": {
+    "activation": "tanh",
+    "architecture": [
+      64,
+      128,
+      128,
+      8
+    ],
+    "loader": "typeb_export.policy_manifest.load_manifest (frozen)",
+    "manifest_file_sha256": "aa5334f797b50c2ac3950cec5b82b439f982c1090dd66827754a1acbb8a26b6f",
+    "manifest_hash": "9ca7e976dfb0dedd3f56dfa404673ee77c00801acb2753cdfd83604c480c35b7",
+    "normalization_clip": 8.0,
+    "weights_file_sha256": "5fb2b7857d872fccc0bb89d6733582647da04d11d636e84c266912ce9c027f0f",
+    "weights_sha256": "5fb2b7857d872fccc0bb89d6733582647da04d11d636e84c266912ce9c027f0f"
+  },
+  "runtime_profile": {
+    "hold_ticks": 15,
+    "inference_recipe": [
+      "project trace record -> x[64] via observation_schema.project_trace",
+      "x = clip((x - mean)/std, -8, +8)",
+      "h1 = tanh(x @ W0 + b0); h2 = tanh(h1 @ W1 + b1); a = tanh(h2 @ W2 + b2)",
+      "applied = clip(center + scale*a, lo, hi)",
+      "decision iff tick % 15 == 0, else hold previous applied"
+    ],
+    "machine": "AMD64",
+    "numpy": "2.2.6",
+    "os": "Windows-11-10.0.26200-SP0",
+    "physics_hz": 300,
+    "policy_hz": 20,
+    "python": "3.14.3"
+  },
+  "test_suite": {
+    "corpus": "frozen P3 900-tick/60-decision sequence",
+    "event_stride": 15,
+    "id": "upgrade_gate_20260920/registered_cases_v1",
+    "prereg_registered_cases_sha256": "d6fa74bd89d14f2e49b4d196a974e00f7a19d167e516122e790f5b564937dea7"
+  }
+}

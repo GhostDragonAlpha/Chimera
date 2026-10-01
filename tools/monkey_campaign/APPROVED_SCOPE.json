@@ -1,0 +1,9 @@
+{
+  "algorithm": "sha256-chimera-json-v1",
+  "scope_sha256": "cb5475f8486197a973edc4360b177fc31a629c4f0979ebf80dd76aae57996097",
+  "raw_file_sha256": "8fa2e1409a2da1e3cbe70a84f59f7620a61d3eed12519171190e9c61543cb272",
+  "date": "2026-09-27",
+  "task_count": 95,
+  "authority": "Captain approved material-first plan and confirmed all agents stopped for migration; see MATERIAL_PLAN_ADOPTION.md",
+  "changes": "Only lead/operator changes the sealed scope; historical qualifications retain original identities."
+}

@@ -1,0 +1,18 @@
+{
+  "schema": "chimera.scope_amendment.v1",
+  "date": "2026-09-24",
+  "instruction_revision": "astra-0007",
+  "operator_authorization": "Training may interrupt gaming too; subsequent authorization to refine the overall plan.",
+  "previous_scope_sha256": "33a8fb7204e20bf71f563014c57d772dd111a198cd1d6b212fd053653858f863",
+  "scope_sha256": "5b07ce0c49c6a8cae42bc4f04ebce8d2835104d5591df4f1feecf7fa0dc56a00",
+  "changes": [
+    {
+      "task_id": "P04",
+      "field": "done_when",
+      "before": "Every launched job uses existing ownership/broker rules; no fleet GPU jobs during gaming",
+      "after": "Every launched job uses existing ownership/broker rules; admitted training may interrupt gaming and local inference through a verified supervisor handoff, while already-running protected training retains ownership until confirmed release"
+    }
+  ],
+  "scope_boundary": "Only this P04 field changed. All 83 task IDs, 76 default selections, dependencies, calculation contracts and game acceptance requirements preserved.",
+  "verification": "Reverting this one field reconstructs the previous canonical scope digest exactly."
+}

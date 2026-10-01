@@ -1,0 +1,37 @@
+{
+ "schema": "chimera.integration_pass8.v1",
+ "date": "2026-09-23",
+ "agent": "integ8 (the lead, direct \u2014 quota-exhaustion mode: agents frozen, lead works alone)",
+ "base": "88da85bc",
+ "merges": [
+  {
+   "branch": "lane/fleet-supervisor-20260922",
+   "tip": "248704d8",
+   "result": "clean"
+  },
+  {
+   "branch": "lane/gpu-broker2-20260922",
+   "tip": "549ad5a4",
+   "result": "clean (contains supervisor, ancestry-verified)"
+  },
+  {
+   "branch": "lane/push-channel-20260920",
+   "tip": "8bb5f0d3",
+   "result": "clean textual merge; the pass-7 semantic fixes verified by named check (uploadWork count-header absent)"
+  }
+ ],
+ "dag_verified": {
+  "broker2_contains_supervisor": true,
+  "pushchan_contains_master": false
+ },
+ "checks": {
+  "walk_anchors": "ALL GREEN \u2014 scene f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342; stdout 8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc (plain==trace); trace c6f9b6c0...; headline WALK refused_tick=302 worst_ledger_J=30.970714 (harness: integ7 verify_walk adapted to this tree)",
+  "training_gate": "PASS exit 0",
+  "typeb_export": "43 passed 1 skipped (the declared ephemeral-trace skip)",
+  "policy_compat": "39 passed 3 skipped 0 failed AFTER the declared cert environment setup (scene regen + both instrument builds; the fresh-tree failure without it is the documented boundary, passes 5-7 identical)",
+  "semantic_named_check": "the pass-7 count-header fix holds on the merged tree (0 header reads in uploadWork)",
+  "scope_audit": "47 files +12139/-11; zero ChimeraEngine/ or Chimera/ bytes; zero gait_* mutations"
+ },
+ "notes": "Quota-exhaustion pass: merges + verification executed directly by the lead; the engine_cert x3 determinism leg NOT re-run this pass (one environment setup only) \u2014 the lanes own receipts carry their F4 triples; the typeb walk_v1-guard skip per pass-7 precedent.",
+ "receipt_commit": "0b3b22a5"
+}

@@ -1,1 +1,0 @@
-raw server on 8247 ticks=302 verts=249743 stride=8990752

@@ -1,0 +1,975 @@
+{
+  "schema": "chimera.material_plan_source_extract.v1",
+  "source_path": "E:\\PythonChimera\\tools\\creature_graph\\data\\creature_graph.json",
+  "source_raw_sha256": "eeaace01160f7a585e3c57fb4a7b2fbe19e2067cd59e1834fb86c972c33eca56",
+  "meaning": "Lossless selected object records inspected locally. This graph file is absent from this master checkout; these records do not establish deployment, implementation or experimental success.",
+  "objects": [
+    {
+      "id": "concept.elasticity",
+      "kind": "capability",
+      "name": "Stretch, shear, bend and anisotropy",
+      "status": "specified",
+      "priority": "P1",
+      "dependencies": [],
+      "project_spec": {
+        "schema": "chimera.project_spec.v1",
+        "admission": "active_specification",
+        "category": "concept",
+        "origin_id": "source.operator_direction.6f8dcd03591b401d27a4c721556bc5d46caa28edc91e3582a619274ebfe5cfbd",
+        "admitted_utc": "2026-09-16T19:08:38.001115+00:00",
+        "authorization": "operator request in this conversation",
+        "authority_scope": "repository specification; no deployed-controller admission claimed"
+      },
+      "physical": {
+        "statement": "Select membrane/shell/bulk energy with thickness and material directions.",
+        "prediction": "A composed object exercises this capability within its declared conditions and exposes its named counterfactual.",
+        "contract": {
+          "layer": "Materials",
+          "law_or_interface": "Select membrane/shell/bulk energy with thickness and material directions.",
+          "required_slots": [
+            "state/ownership",
+            "SI quantities or declared nonphysical interface types",
+            "inputs/outputs",
+            "source/material/model conditions",
+            "connection/boundary semantics",
+            "numerical validity",
+            "observable result",
+            "evidence"
+          ],
+          "composition": "Common contract, selected applicable law. Explicit unknowns block unsupported claims.",
+          "spatial_binding": "Semantic concept; no invented measured point. Physical instances bind real engine frames.",
+          "qualification": "Not established by this inventory; link prior implementation/evidence only at actual scope."
+        }
+      },
+      "falsifier": {
+        "statement": "Liquid surface tension is silently reused as solid skin elasticity.",
+        "status": "untested"
+      },
+      "unknowns": [
+        "Implementation coverage audit",
+        "Selected instance parameters and approved executable acceptance checklist"
+      ],
+      "catalog_order": 21
+    },
+    {
+      "id": "req.body_environment_interface",
+      "kind": "requirement",
+      "name": "Creature and planet share reusable interaction ports",
+      "status": "specified",
+      "priority": "P0",
+      "dependencies": [
+        "req.creature_assembly",
+        "req.teddy_gpu_matter_kernel"
+      ],
+      "evidence": [],
+      "physical": {
+        "statement": "Expose environment conditions and reciprocal interactions through typed kernel ports independent of creature identity.",
+        "prediction": "The same body can run under Earth or another declared environment profile without rewriting anatomy or using hidden support forces.",
+        "contract": {
+          "inputs": [
+            "reference frame and length/time units",
+            "gravity vector or eligible spatial field",
+            "terrain geometry and material identity",
+            "pairwise friction, compliance and adhesion if physically present",
+            "ambient pressure and liquid availability at openings",
+            "temperature and heat exchange conditions",
+            "fluid density and drag model where enabled"
+          ],
+          "interactions": "Sum contact forces and torques, enforce unilateral nonadhesive contact and the selected friction law; account for reciprocal reactions or explicit infinite-reservoir boundaries. Toe/hand deformation, active stiffness and wrapping change contact geometry and pressure distribution; they do not authorize an unlimited weld.",
+          "contact_primitive": [
+            "establish contact",
+            "carry load",
+            "transfer load",
+            "release",
+            "slip or fail"
+          ],
+          "walking_climbing": "Share the contact/actuator framework. Climbing introduces reachable grips, opposing contacts, hanging loads and different task/control requirements; walking success does not prove climbing. Tail curl alone does not establish a supporting contact.",
+          "earth": "Initial gravity reference 9.80665 m/s^2 in a declared frame. Terrain/material and atmosphere conditions must be sourced or explicit scenario inputs, never silently inferred from the word Earth.",
+          "space": "Different gravity, vacuum and thermal conditions use the same boundary interfaces. Declared model domains still limit applicability; an Earth-trained policy need not work in low gravity without adaptation.",
+          "clock": "Fixed 300 Hz simulation ticks with numerical substeps where justified, independent of render cadence or Internet wall-clock time.",
+          "falsifiers": [
+            "remove support and observe the resulting passive motion",
+            "reduce friction and expose grip/slip limits",
+            "remove active drive without freezing momentum",
+            "change gravity with the same body and account for load changes",
+            "no ghost contacts through empty space"
+          ]
+        }
+      },
+      "falsifier": {
+        "statement": "A creature that cannot lose support cannot demonstrate physically supported walking or climbing.",
+        "status": "untested"
+      },
+      "project_spec": {
+        "schema": "chimera.project_spec.v1",
+        "admission": "active_specification",
+        "category": "inventory",
+        "origin_id": "source.operator.creature_assembly_20260916",
+        "admitted_utc": "2026-09-17T01:12:04+00:00",
+        "authorization": "Operator directs reusable membrane assembly and integrated monkey experience through scientific data and the existing GPU kernel.",
+        "authority_scope": "Repository specification and candidate implementation; no controller admission or physical qualification."
+      }
+    },
+    {
+      "id": "req.creature_assembly",
+      "kind": "requirement",
+      "name": "Reusable database-to-membrane creature assembly",
+      "status": "specified",
+      "priority": "P0",
+      "dependencies": [
+        "req.teddy_gpu_matter_kernel"
+      ],
+      "evidence": [],
+      "physical": {
+        "statement": "Assemble the selected monkey and other humanoids through one versioned anatomy/material/binding contract.",
+        "prediction": "Every rendered vertex, physical boundary and anatomical attachment resolves to compatible source geometry and body state; changing a body profile does not require another handwritten physics system.",
+        "contract": {
+          "pipeline": [
+            "pinned source adapters",
+            "typed property assertions and conflicts",
+            "mesh/frame/anatomy fitting",
+            "material cells and oriented boundaries",
+            "mechanical/signal/transport attachments",
+            "resident kernel compilation",
+            "physical actuation and contact",
+            "render solved state",
+            "scoped evidence returned to the graph"
+          ],
+          "identity": "Stable graph IDs connect mesh vertices/faces, anatomical segments, compartments, joints, sensors and actuators. Engine spatial coordinates remain separate from graph roadmap layout.",
+          "geometry": "Canonical mesh checksum and vertex/topology ordering are required. World frame, handedness, length units, rest pose, pivot frames and joint axes are explicit. Two endpoint anchors need an explicit transverse direction to resolve roll. Mesh features are fitting observations, not a guarantee of internal anatomical centers.",
+          "coverage": "Every render component must have a declared mechanical attachment or independently simulated body, including eyes, face, tail and digits. A normalized skin weight is not proof of anatomical correctness, closed cells or coupled dynamics. Skeleton joints may drive descendants without directly owning vertices.",
+          "ownership": "One physical state owner. Rendering, pressure volumes, surface contacts and attachments read that state. Kinematic reference skinning does not qualify force-driven motion. Remove alternate pose writers from the accepted runtime path.",
+          "membranes": "A membrane identifies its oriented boundary and regions on both sides. Contact, bonding, sealing, sliding, permeability and signal transport are distinct connections. Spatial overlap never implies a bond; shared walls and material volume must not be counted twice.",
+          "scaling": "Fit segment lengths and frames to this asset; derive masses and inertias from its material geometry. Uniform geometric scaling s at fixed density gives mass s^3 and inertia s^5. Do not silently copy human strength, joint ranges or mass to the approximately 10-world-unit asset. Shape fitting is not biomechanical identification.",
+          "effectors": "Use capability-bearing endpoint sets rather than hardcoded two-foot support. The operator target has four grasp-capable extremities and a tail; actual digit count, joints, axes, limits and grip strength require explicit mapping. Tail balancing, support and prehensile gripping are separate capabilities.",
+          "kernel": "Use req.teddy_gpu_matter_kernel. Boundary triangles reference shared cell, material and body state; all interactions need not be inverse-square forces. Preserve mass, momentum, energy and history through LOD.",
+          "motion_prerequisite": "Begin control training only after body propagation, passive dynamics, bounded drives and contact limits are executable and checked.",
+          "current_asset": {
+            "mesh": "Saved/meshes/monkey_birth.bin",
+            "mesh_sha256": "550a5b3ec927ea13614ad250963b23e2948e76a238ac110da9889f339aabfa3c",
+            "binding": "Saved/meshes/monkey_joints.bin",
+            "binding_sha256": "74b3ab044b7adaed4a0f9349a81f5d3c87441084b2ec8981f4e0afaba50c1662",
+            "vertices": 18459,
+            "triangles": 36630,
+            "joint_pins": 28,
+            "observation": "Saved asset inspected, not live scene identity. Positions and topology exactly match this worktree engine snapshot. Named wrists/ankles and tail_base/mid/tip exist; separate finger/toe joints do not exist in this pack."
+          },
+          "controls": [
+            "global rigid transform carries every attached component",
+            "parent motion carries distal descendants",
+            "mixed-axis multi-joint composition preserves segment geometry",
+            "rest input reproduces rest geometry",
+            "invalid bindings refuse without replacing prior state",
+            "shared membrane volumes/contact surfaces follow the same body state",
+            "second humanoid profile uses the same assembly path"
+          ],
+          "completion": "One integrated monkey interaction/locomotion experience, then a second morphology using the same path; neither imported data nor a binding test alone closes this requirement."
+        }
+      },
+      "falsifier": {
+        "statement": "A body whose fingertips or tail remain behind under ancestor motion is not assembled; a cosmetic skin over an unrelated solver cannot qualify membrane coupling.",
+        "status": "untested"
+      },
+      "project_spec": {
+        "schema": "chimera.project_spec.v1",
+        "admission": "active_specification",
+        "category": "inventory",
+        "origin_id": "source.operator.creature_assembly_20260916",
+        "admitted_utc": "2026-09-17T01:12:04+00:00",
+        "authorization": "Operator directs reusable membrane assembly and integrated monkey experience through scientific data and the existing GPU kernel.",
+        "authority_scope": "Repository specification and candidate implementation; no controller admission or physical qualification."
+      }
+    },
+    {
+      "id": "req.layered_anatomy",
+      "kind": "requirement",
+      "name": "Layered anatomical reference fitted into reusable membrane bodies",
+      "status": "specified",
+      "priority": "P0",
+      "dependencies": [
+        "req.creature_assembly",
+        "model.interface.sensing"
+      ],
+      "evidence": [],
+      "physical": {
+        "statement": "Use identified anatomical geometry plus separately sourced constitutive, actuator and sensor models to assemble the game body.",
+        "prediction": "A force applied to skin can pass through compliant tissues and attachments to the skeleton; sensory observations can cause bounded, delayed actuator responses through that same body.",
+        "contract": {
+          "pipeline": [
+            "pin anatomy identities, part membership and mesh/scan artifacts",
+            "segment where needed and validate frame, scale, topology and coverage",
+            "fit articulated anatomy to the target mesh with explicit human-to-creature mappings",
+            "assign bulk regions, boundary membranes and sliding/bonded/transport interfaces",
+            "source tissue and actuator parameters with units, conditions and uncertainty",
+            "compile selected model fidelity into existing resident kernel buffers",
+            "drive and sense the single physical state used for rendering and contact"
+          ],
+          "layers": [
+            {
+              "layer": "bone",
+              "representation": "Cortical/trabecular regions as rigid or elastic segments at selected fidelity; boundaries and attachment sites.",
+              "required_data": [
+                "geometry",
+                "density/inertia",
+                "anisotropic stiffness if deformable",
+                "failure law if breakable"
+              ],
+              "limit": "A sealed bone compartment is not a water-filled bag by default."
+            },
+            {
+              "layer": "joint cartilage and capsule",
+              "representation": "Articular surfaces, unilateral contact/sliding and capsular constraints; optional fluid region with a declared law.",
+              "required_data": [
+                "axes and surfaces",
+                "range of motion",
+                "contact/friction law",
+                "capsular stiffness"
+              ]
+            },
+            {
+              "layer": "tendon and ligament",
+              "representation": "Tension-bearing paths/regions with insertions, slack, wrapping and strain-dependent response.",
+              "required_data": [
+                "origin/insertion frames",
+                "path routing",
+                "rest length",
+                "force-extension and failure parameters"
+              ]
+            },
+            {
+              "layer": "muscle",
+              "representation": "Finite-volume contractile regions or reduced muscle-tendon actuators; activation changes active tension within force, rate and energy limits.",
+              "required_data": [
+                "attachments and wrapping",
+                "fiber direction",
+                "physiological cross-section",
+                "optimal fiber and slack length",
+                "force-length-velocity curves",
+                "activation time constants"
+              ],
+              "limit": "A muscle surface mesh alone does not determine its fiber architecture or motor control."
+            },
+            {
+              "layer": "fat, fascia and skin",
+              "representation": "Compliant bulk plus enclosing/contact surfaces; declared attachments permit appropriate sliding and transmit pressure/shear.",
+              "required_data": [
+                "thickness/volume",
+                "density",
+                "bulk and shear/viscoelastic response",
+                "boundary tension or prestress where applicable",
+                "attachment or friction law"
+              ],
+              "limit": "A single surface-tension scalar does not specify all solid mechanics."
+            },
+            {
+              "layer": "sensory structures",
+              "representation": "Eyes, ears, skin receptors, joint sensing and balance observations use req.embodied_senses.",
+              "required_data": [
+                "position and orientation",
+                "sampling domain",
+                "latency",
+                "resolution and uncertainty",
+                "signal routes"
+              ]
+            },
+            {
+              "layer": "other organs",
+              "representation": "Anatomical geometry/mass can be present while function is reduced to explicit storage, pressure, flow, power or thermal variables according to gameplay.",
+              "required_data": [
+                "volume/mass",
+                "attachments",
+                "enabled functional law"
+              ],
+              "limit": "Heart, lung or gut meshes do not require cellular simulation to supply game-scale effects; omitted physiology stays labeled."
+            }
+          ],
+          "boundaries": "Bodies contain regions as well as surfaces. A shared interface has two sides and one accounted physical interaction. Compartment nesting and sliding/bonding are explicit; overlapping reference meshes are not automatically valid nested sealed cells.",
+          "energy": "Account for actuator work and passive storage/dissipation. Muscle activation is not free injected motion. Parameters for density, stiffness, viscosity, strength and active tension remain distinct even when their contributions enter the same momentum update.",
+          "data_joins": "Use source release, FMA/other anatomy identity, laterality, specimen, frame and representation identity. IS-A is classification; PART-OF is anatomy membership; neither creates a physical bond. Missing tissue is an explicit gap, not silently filled by a guessed dataset match.",
+          "lod": "Separate visible surface resolution, mechanical resolution and control/sensor update rates. Preserve masses, inertias, attachments and declared conservation when reducing detail; 24 GB capacity alone does not guarantee frame time.",
+          "product_subset": "No exposed genital geometry or sexual simulation. Preserve the raw scientific sources and make game export an explicit subset. Keep the selected monkey as the first integrated target; a human reference is not a species-identical physical calibration.",
+          "build_order": "Finish one shared render/contact/hydraulic body state, then exercise a complete skin-fat-muscle-tendon-bone limb chain on that body and add causal sensing. Expand anatomy by the same assembly contract; importing the full atlas is not a prerequisite for resolving the current ownership defect.",
+          "completion": "One coherent creature supports pressing, delayed response, force-limited motion and loss of support; a second morphology uses the same assembly. Anatomical completeness and validated physiological fidelity are reported separately."
+        }
+      },
+      "falsifier": {
+        "statement": "A body whose muscles move its appearance but cannot transmit loads through tendons into bone is not mechanically assembled.",
+        "status": "untested"
+      },
+      "project_spec": {
+        "schema": "chimera.project_spec.v1",
+        "admission": "active_specification",
+        "category": "inventory",
+        "origin_id": "source.operator.layered_anatomy_20260916",
+        "admitted_utc": "2026-09-17T01:24:12+00:00",
+        "authorization": "Operator requests anatomical data and sensory structures for reusable physical game creatures.",
+        "authority_scope": "Repository specification, source intake and scoped observations; no live controller admission or biological qualification."
+      }
+    },
+    {
+      "id": "req.material_catalog",
+      "kind": "requirement",
+      "name": "Game material inventory and phase-aware data intake",
+      "status": "specified",
+      "priority": "P0",
+      "dependencies": [],
+      "project_spec": {
+        "schema": "chimera.project_spec.v1",
+        "admission": "active_specification",
+        "category": "inventory",
+        "origin_id": "source.operator_material_direction.29facaab418de39bd82217bd95ef83ae616a38b424ad83db7d09ecd1ec7e0956",
+        "admitted_utc": "2026-09-16T19:56:22.867306+00:00",
+        "authorization": "operator direction in this conversation",
+        "authority_scope": "repository specification; no live controller or engine implementation claimed"
+      },
+      "physical": {
+        "statement": "Select material identities and relevant phases before importing values; route each property into the appropriate shared response model.",
+        "prediction": "Existing qualified model families accept additional well-scoped material profiles without repeating a full bespoke demonstration per material.",
+        "contract": {
+          "inventory": [
+            {
+              "id": "material.catalog.water",
+              "name": "Water / ice / water vapor",
+              "family": "fluid",
+              "scope": "baseline",
+              "player_moment": "Liquid-vapor comparison, cell inventory, later freezing/boiling"
+            },
+            {
+              "id": "material.catalog.ethanol",
+              "name": "Ethanol",
+              "family": "fluid",
+              "scope": "reference",
+              "player_moment": "Existing contrast to water"
+            },
+            {
+              "id": "material.catalog.air",
+              "name": "Ambient air",
+              "family": "gas",
+              "scope": "baseline",
+              "player_moment": "External pressure and gas-filled cells"
+            },
+            {
+              "id": "material.catalog.skin",
+              "name": "Skin and septum tissue",
+              "family": "soft_solid",
+              "scope": "baseline",
+              "player_moment": "Press, recover, hold cell boundaries"
+            },
+            {
+              "id": "material.catalog.soft_tissue",
+              "name": "Bulk soft tissue / fat",
+              "family": "soft_solid",
+              "scope": "candidate",
+              "player_moment": "Interior support beneath skin"
+            },
+            {
+              "id": "material.catalog.muscle",
+              "name": "Contractile muscle tissue",
+              "family": "active_solid",
+              "scope": "baseline",
+              "player_moment": "Powered withdrawal and stance"
+            },
+            {
+              "id": "material.catalog.tendon",
+              "name": "Tendon and ligament tissue",
+              "family": "fiber_solid",
+              "scope": "baseline",
+              "player_moment": "Load transfer and joint limits"
+            },
+            {
+              "id": "material.catalog.bone",
+              "name": "Bone tissue",
+              "family": "composite_solid",
+              "scope": "baseline",
+              "player_moment": "Skeleton supports and breaks"
+            },
+            {
+              "id": "material.catalog.cartilage",
+              "name": "Cartilage and joint lubrication",
+              "family": "porous_solid",
+              "scope": "candidate",
+              "player_moment": "Compliant load-bearing joints"
+            },
+            {
+              "id": "material.catalog.silicone",
+              "name": "Silicone elastomer or gel",
+              "family": "soft_solid",
+              "scope": "reference",
+              "player_moment": "Known deformable-solid comparison"
+            },
+            {
+              "id": "material.catalog.steel",
+              "name": "Steel tool or fixture",
+              "family": "solid",
+              "scope": "baseline",
+              "player_moment": "Press/cut/contact tool and rigid reference"
+            },
+            {
+              "id": "material.catalog.glass",
+              "name": "Soda-lime glass",
+              "family": "solid",
+              "scope": "candidate",
+              "player_moment": "Transparent vessel and brittle fracture"
+            },
+            {
+              "id": "material.catalog.stone",
+              "name": "Rock or stone",
+              "family": "composite_solid",
+              "scope": "candidate",
+              "player_moment": "Ground and breakable objects"
+            },
+            {
+              "id": "material.catalog.wood",
+              "name": "Wood",
+              "family": "fiber_solid",
+              "scope": "candidate",
+              "player_moment": "Directional bend/split and world props"
+            },
+            {
+              "id": "material.catalog.polymer",
+              "name": "Thermoplastic",
+              "family": "solid",
+              "scope": "candidate",
+              "player_moment": "Flexible containers or props"
+            },
+            {
+              "id": "material.catalog.cloth",
+              "name": "Fiber cloth",
+              "family": "fiber_solid",
+              "scope": "candidate",
+              "player_moment": "Drape, stretch and tear"
+            },
+            {
+              "id": "material.catalog.oil",
+              "name": "Specified oil",
+              "family": "fluid",
+              "scope": "candidate",
+              "player_moment": "Viscous flow and wetting contrast"
+            },
+            {
+              "id": "material.catalog.surfactant",
+              "name": "Water with surfactant",
+              "family": "mixture",
+              "scope": "candidate",
+              "player_moment": "Changing interfacial tension and foam"
+            },
+            {
+              "id": "material.catalog.foam",
+              "name": "Gas/liquid foam",
+              "family": "cellular",
+              "scope": "reference",
+              "player_moment": "Emergent rigidity from film networks"
+            },
+            {
+              "id": "material.catalog.sand",
+              "name": "Granular sand",
+              "family": "granular",
+              "scope": "candidate",
+              "player_moment": "Ground yields and piles"
+            },
+            {
+              "id": "material.catalog.clay",
+              "name": "Clay or mud",
+              "family": "mixture",
+              "scope": "candidate",
+              "player_moment": "Yielding ground and plastic shaping"
+            },
+            {
+              "id": "material.catalog.adhesive",
+              "name": "Curing adhesive",
+              "family": "reactive_mixture",
+              "scope": "candidate",
+              "player_moment": "Bond, cure, debond and repair"
+            },
+            {
+              "id": "material.catalog.wax",
+              "name": "Paraffin wax",
+              "family": "phase_change",
+              "scope": "candidate",
+              "player_moment": "Selected visible melting/freezing lesson"
+            }
+          ],
+          "scope": "Initial candidate inventory. Baseline/reference label means proposed role, not operator-selected final demo scope or verified material.",
+          "selection_owner": "work.encapsulation.demo_objective selects the minimum set; optional materials and phases do not gate the first engine release.",
+          "profile_slots": [
+            "stable composition/grade/species identity",
+            "phase and interface pair",
+            "SI quantities and source revisions",
+            "temperature/pressure/rate range",
+            "rest state/geometry and scale",
+            "uncertainty and applicability",
+            "energy and damage laws",
+            "runtime model binding"
+          ],
+          "phase_rules": [
+            "Room-temperature periodic-table labels are reference conditions, not immutable material types.",
+            "Thermodynamic state, composition and history select the model/phase fractions; mixtures and polymers may have intervals, hysteresis or decomposition.",
+            "Heat can change phase at essentially constant temperature under fixed-pressure equilibrium coexistence; include latent energy.",
+            "Liquid-vapor tension tends to zero at the critical endpoint, not at ordinary boiling.",
+            "Solid surface stress, bulk shear response and fracture properties are distinct quantities even when computed through common interaction machinery.",
+            "Current CoolProp adapter only accepts 298.15 K. Temperature curves require independently sourced applicability intervals before expanding it."
+          ],
+          "validation_reuse": "Qualify each implemented law family and representative numerical envelope. Per added profile verify source hash, identity, units, applicability, parameter sanity and a lightweight regression. A change of phase, topology law or model family opens new relevant checks.",
+          "database_policy": "Prefer existing pinned/reusable sources; acquisition-route links are not downloaded, licensed parameter bundles. No broad scraping or automatic equivalence by name.",
+          "current": "Only the existing Water/Ethanol constant-tension experiment is qualified at its recorded scope. This inventory adds no native material model.",
+          "unification": "concept.reduced_cell_state supplies the common interface; model.hypothesis.molecular_tension_unification stays a hypothesis."
+        }
+      },
+      "falsifier": {
+        "statement": "A material is declared ready from a name, a single tension value or an unqualified source; a new law family bypasses its necessary solver checks.",
+        "status": "untested"
+      }
+    },
+    {
+      "id": "req.matter_variables_lod",
+      "kind": "requirement",
+      "name": "Matter variable dictionary and physics LOD contract",
+      "status": "specified",
+      "priority": "P0",
+      "dependencies": [],
+      "project_spec": {
+        "schema": "chimera.project_spec.v1",
+        "admission": "active_specification",
+        "category": "inventory",
+        "origin_id": "source.operator_material_direction.29facaab418de39bd82217bd95ef83ae616a38b424ad83db7d09ecd1ec7e0956",
+        "admitted_utc": "2026-09-16T19:56:22.867306+00:00",
+        "authorization": "operator direction in this conversation",
+        "authority_scope": "repository specification; no live controller or engine implementation claimed"
+      },
+      "physical": {
+        "statement": "Every matter model uses declared owned state, material parameters and exchanges, with independently controlled physical and numerical resolution.",
+        "prediction": "The selected observable response survives permitted LOD changes within its measured envelope at bounded cost.",
+        "contract": {
+          "variable_dictionary": {
+            "core": [
+              {
+                "field": "id, material_profile_id, model_version, topology_revision",
+                "unit": "identifiers",
+                "owner": "registry",
+                "meaning": "Stable identity and exact constitutive interpretation."
+              },
+              {
+                "field": "frame_id, geometry_dof_ids, rest_geometry, current_geometry",
+                "unit": "m, m2, m3, dimensionless orientation",
+                "owner": "declared geometry/DOF store",
+                "meaning": "Local coordinates, shape, faces and reference state; avoid duplicate authoritative shared vertices."
+              },
+              {
+                "field": "mass or species_mass[]",
+                "unit": "kg",
+                "owner": "cell inventory",
+                "meaning": "Choose independent mass inventory; if species masses exist their sum defines total mass."
+              },
+              {
+                "field": "linear_momentum, angular_momentum/internal_modes as needed",
+                "unit": "kg m/s, kg m2/s",
+                "owner": "selected cell/rigid/nodal DOF layout",
+                "meaning": "Retain motion and rotational/subcell content required by the model; velocity is derived."
+              },
+              {
+                "field": "energy_state",
+                "unit": "J",
+                "owner": "declared energy account",
+                "meaning": "Thermodynamic energy and mechanical stored energy under an explicit convention; no double accounting."
+              },
+              {
+                "field": "material_orientation, constitutive_history",
+                "unit": "dimensionless / model-specific SI",
+                "owner": "cell/model",
+                "meaning": "Grain axes, rest metric, elastic/plastic/viscous history and internal variables used by the law."
+              },
+              {
+                "field": "simulation_time, event_revision",
+                "unit": "s, revision",
+                "owner": "scheduler",
+                "meaning": "State time and causality, independent of render frames."
+              }
+            ],
+            "derived": [
+              {
+                "field": "density",
+                "unit": "kg/m3",
+                "formula": "mass/current_volume"
+              },
+              {
+                "field": "velocity",
+                "unit": "m/s",
+                "formula": "momentum/mass where mass is nonzero and the selected layout permits this relation"
+              },
+              {
+                "field": "temperature, pressure, phase fractions",
+                "unit": "K, Pa, dimensionless",
+                "formula": "Selected thermodynamic closure from independent state; do not store inconsistent duplicate values"
+              },
+              {
+                "field": "stress, force, impulse, flux",
+                "unit": "Pa, N, N s, quantity/s",
+                "formula": "Constitutive and interface evaluations, with declared cache invalidation"
+              },
+              {
+                "field": "strain, wave speed, local error estimate",
+                "unit": "dimensionless, m/s, observable-specific",
+                "formula": "Geometry/model response and qualification estimates"
+              }
+            ],
+            "optional_extensions": {
+              "thermal": [
+                "heat capacity J/(kg K)",
+                "conductivity W/(m K)",
+                "thermal expansion 1/K",
+                "enthalpy/phase model",
+                "reservoir and exchange boundary conditions"
+              ],
+              "phase_and_chemistry": [
+                "species inventories kg or mol with one convention",
+                "phase fractions/order parameters",
+                "free-energy/reaction model",
+                "latent energy J/kg",
+                "reaction extents and rates",
+                "porosity/saturation where needed"
+              ],
+              "damage_and_repair": [
+                "damage/crack connectivity",
+                "plastic strain/history",
+                "failure stress Pa",
+                "fracture energy J/m2",
+                "repair matter and energy supplies"
+              ],
+              "active_biology": [
+                "activation state",
+                "contractile length/rate",
+                "fiber architecture",
+                "available chemical free energy",
+                "signal arrival times and fatigue where modeled"
+              ],
+              "electrical": [
+                "charge C",
+                "potential V as derived/constrained state",
+                "capacitance F",
+                "conductivity S/m",
+                "ionic species and electrochemical law"
+              ],
+              "magnetic": [
+                "magnetization A/m and field coupling model when selected"
+              ],
+              "optical_and_radiative": [
+                "spectral refractive/absorptive response",
+                "emissivity",
+                "surface microstructure",
+                "radiant energy exchange; display color stays a separate diagnostic if unmeasured"
+              ],
+              "fluid_porous_granular": [
+                "viscosity Pa s",
+                "permeability m2",
+                "packing and grain distribution",
+                "contact/friction and rheological history"
+              ],
+              "unresolved_dynamics": [
+                "internal modal state or response memory required by a reduced model; acoustic response cannot be inferred from exterior shape alone"
+              ]
+            },
+            "interfaces": {
+              "identity": "two region/cell IDs, oriented face and one exchange owner",
+              "geometry": "normal, area and contact gap",
+              "laws": [
+                "mechanical traction/contact/friction",
+                "surface or interface energy",
+                "cohesive separation",
+                "heat/species/charge transfer as selected"
+              ],
+              "state": [
+                "interface history, opening/damage, wetting/adsorption when needed"
+              ],
+              "accounting": "Paired transfers and consistent torque; coarse/fine faces synchronize accumulated exchanges."
+            },
+            "material_parameters": "Referenced by a versioned profile. Constants, functions and history-dependent laws are distinct; coefficients are not necessarily constant with temperature or phase.",
+            "ownership": "Every authoritative quantity has one owner. Cell mass may allocate nodal mass contributions; the derived nodal sum is not a second physical inventory.",
+            "extension_rule": "A selected model must declare all inputs, outputs, state, units, update law and source/applicability. Unused extensions need not consume per-cell memory."
+          },
+          "lod": {
+            "independent_axes": [
+              "spatial resolution (cell size and topology)",
+              "model resolution (retained physical processes/internal state)",
+              "temporal resolution (physical step/update cadence)",
+              "numeric precision (representation/roundoff budget)"
+            ],
+            "candidate_tiers": [
+              {
+                "tier": "aggregate",
+                "representation": "Rigid or reduced region plus bulk inventory and thermal/damage state needed for its allowed interactions"
+              },
+              {
+                "tier": "coarse_cells",
+                "representation": "Homogenized local cells retaining bulk response and selected histories"
+              },
+              {
+                "tier": "interaction_refinement",
+                "representation": "Smaller cells near contact, stress/thermal gradients, fronts, cracks or sensed response"
+              },
+              {
+                "tier": "selected_microstructure",
+                "representation": "Explicit fibers/grains only where source data and the validated model support them"
+              }
+            ],
+            "precision": "Use local coordinates and scale-aware units. FP32 state and FP64 reference/accounting reductions are candidates to measure, not a universal mandate. FP16/quantization requires its own error budget; changing float width does not create missing physics.",
+            "error_contract": {
+              "per_observable": [
+                "quantity and unit",
+                "absolute/relative tolerance",
+                "comparison/reference method",
+                "input regime and spatial/frequency range",
+                "resource budget",
+                "preregistered acceptance identity"
+              ],
+              "current": "Tolerances are not selected by this specification; no generic all-material accuracy or minimum cell size is claimed."
+            },
+            "refine_triggers": [
+              "contact footprint not resolved",
+              "stress/strain/temperature gradient error",
+              "crack or phase-front approach",
+              "sensor-visible response error",
+              "constitutive regime violation"
+            ],
+            "coarsen_conditions": [
+              "declared response/error bounds satisfied",
+              "mass/species/charge and total momentum retained",
+              "energy and angular/subcell content accounted for",
+              "damage and irreversible history retained",
+              "no erased crack or forbidden topology change",
+              "stable transition without visible force impulse"
+            ],
+            "time": "A changed cell size can change stable/accurate timestep. Bounded projection is not proof of wave or modal fidelity. Derive the step bound for the selected solver/law.",
+            "autonomy": "Cells compute local state; coupled pressure, stiff constraints, contact, long-range fields and wave propagation may require synchronization or a coupled solve. Local ownership does not mean independent physics.",
+            "irreducibility": "Exact unresolved microstate cannot generally be reconstructed from aggregates. Refinement uses declared reconstruction assumptions and uncertainty, and must not invent measured microstructure.",
+            "release_scope": "Qualify the selected demo processes and observable envelope; microscopic simulation of all matter is not a release prerequisite."
+          },
+          "current": "Architecture specification only; no adaptive tetrahedral solver or all-material response is implemented by these records."
+        }
+      },
+      "falsifier": {
+        "statement": "An LOD change creates matter/energy, erases damage, invents microscopic truth or changes a player-visible response beyond its declared bound.",
+        "status": "untested"
+      }
+    },
+    {
+      "id": "req.teddy_gpu_matter_kernel",
+      "kind": "requirement",
+      "name": "Teddy uses resident GPU matter kernels and measured frame-time budgets",
+      "status": "specified",
+      "priority": "P0",
+      "dependencies": [],
+      "evidence": [],
+      "physical": {
+        "statement": "Implement teddy locomotion inside Chimera's GPU-resident, multi-kernel matter architecture.",
+        "prediction": "Source-derived material changes affect the same GPU state that produces motion and high-resolution rendering, within measured accuracy and performance limits.",
+        "contract": {
+          "architecture": "Database -> typed graph profile -> generated/admitted GPU law parameters -> resident matter state and spatial hierarchy -> field/local/constraint passes -> shared render snapshot.",
+          "kernel_identity": "Extend the existing multi-field Barnes-Hut/DSL architecture. Reuse existing membrane-port and articulated formulations as reference material for GPU integration; an independent external character simulator is not the accepted teddy runtime.",
+          "residency": {
+            "resident": [
+              "active positions/orientations and momenta",
+              "rest geometry and cell/face/attachment identities",
+              "material profiles and needed state/history",
+              "mass, energy, composition and pressure state as required",
+              "spatial tree and per-kernel aggregates",
+              "local adjacency/contact data and constraint state",
+              "renderable geometry or GPU derivation inputs"
+            ],
+            "host": "Graph provenance, source archives, compilation/admission, user commands and bounded asynchronous telemetry can remain on the host. GPU residency concerns the working simulation set, not fitting every scientific archive in VRAM.",
+            "update": "GPU tree build/refit or another qualified GPU hierarchy update, interaction evaluation, constraints, integration and rendering share versioned resident buffers with explicit synchronization.",
+            "steady_state": "No full-state CPU readback/reupload or CPU tree rebuild dependency per physics tick/frame. Telemetry/snapshots are separately budgeted asynchronous consumers.",
+            "capacity": "Declare VRAM working-set capacity, transient buffers and scene bounds. Preserve inventories and history during explicit LOD/streaming; never silently drop matter on overflow."
+          },
+          "law_families": {
+            "shared": "Reuse spatial indexing, dispatch generation, reductions, typed exchanges, state ownership and render buffers.",
+            "far_field": "Barnes-Hut aggregates eligible distant interactions under a per-kernel error criterion; nearby interactions descend or use a direct/local path.",
+            "local": "Bonds, strain, pressure/volume constraints, contact/friction and joints use appropriate local adjacency/constraint passes on the same GPU state. A far-field monopole cannot substitute for local constitutive history or contact constraints.",
+            "physics": "Gravity is one force law. Conservative mechanical forces can use F=-gradient(U); dissipation, actuator work and heat/species transport require explicit additional laws and accounts. Heat rate or a sampled scalar field is not automatically a force.",
+            "units": "Every source coefficient declares units, frame, reference state and applicability; importing a float is not permission to reinterpret its dimension.",
+            "examples": {
+              "gravity": "U=-G*m_i*m_j/r under the selected point-mass approximation",
+              "elastic_edge": "U=0.5*k*(length-rest_length)^2 within the selected elastic model",
+              "sealed_volume": "U=(V-V0)^2/(2*kappa*V0) gives P=-(V-V0)/(kappa*V0) in the stated linear regime"
+            },
+            "spacetime": "State evolves at physical time t over 3D spatial coordinates. Additional material channels are state dimensions; time does not become an ordinary octree distance coordinate."
+          },
+          "mechanical_contract": {
+            "ownership": "One physical owner per degree of freedom; no duplicate masses or hidden pose writers.",
+            "attachment": "Boundary force and moment enter the same body's momentum/constraint solve; skeleton and membrane exchanges work both ways.",
+            "reduction": "Rigid or reduced bone models are permitted when their mass/inertia and boundary response represent the underlying material once.",
+            "controller": "Balance/walking submit bounded intent or effort; actual motion follows solved forces, reactions and supplied energy.",
+            "external": "MuJoCo/OpenSim and other simulators are data/reference sources or offline checks. Any borrowed numerical code must operate under the resident kernel's ownership and exchange contracts."
+          },
+          "timing_and_quality": {
+            "simulation": "Fixed 300 Hz physical tick; choose coupled substeps from measured stiffness/frequency/contact error, independent of display cadence.",
+            "rendering": "Render GPU-solved snapshots directly or interpolate consistently between them. Render resolution and physical refinement are separately budgeted.",
+            "target": "Predictable frame delivery at declared scene, resolution, hardware and refresh rate. Zero stutter is an aspiration to test, not a consequence of residency alone.",
+            "benchmark_fields": [
+              "hardware/driver",
+              "scene/material/profile hashes",
+              "active cells/contacts/constraints",
+              "render resolution and refresh",
+              "VRAM peak",
+              "GPU tree/local solve/integration/render times",
+              "CPU submission and present times",
+              "p50/p95/p99/p99.9 and maximum frame time",
+              "missed frame deadlines",
+              "simulation backlog and accuracy residuals",
+              "full-state readback/upload bytes"
+            ],
+            "scenarios": [
+              "steady walking",
+              "dense foot/body contact and fall",
+              "camera/LOD transition",
+              "topology or material update",
+              "asset loading and cold shader compilation separately reported",
+              "telemetry/readback enabled and disabled"
+            ],
+            "accuracy": "Do not conceal deadline misses by advancing less physical time, reducing contacts or changing stiffness without a declared LOD/fidelity change. Report backlog and resulting limits."
+          },
+          "falsifier_controls": [
+            "Disable routine CPU physics readback; walking and rendering must continue from resident state.",
+            "Change one admitted material parameter and observe its selected GPU law response without a second hand-maintained physics profile.",
+            "A boundary impulse changes total momentum and moment once; internal exchanges do not manufacture either.",
+            "Remove kernel contact support: the teddy can fall; no display-stage clamp or external simulator preserves support.",
+            "Compare near contacts and far-field approximation against direct/small reference cases with declared tolerances.",
+            "Test frame-time tails and missed deadlines while increasing detail; GPU residency alone cannot mark this performance test passed.",
+            "Pause kernel physical time: no separate walker continues advancing physical state."
+          ],
+          "source_inspection": {
+            "commit": "ab9b00f52e7f086fb4ade7d5e22159be3c5ce453",
+            "method": "read-only code inspection; no new runtime qualification",
+            "files": [
+              {
+                "path": "ChimeraEngine/engine/kernel_dsl.py",
+                "sha256": "a720099b74c380c72dd902b8ec9d15a7b20c5a943991392950e4e9db10688341"
+              },
+              {
+                "path": "ChimeraEngine/engine/spiace_phase6.html",
+                "sha256": "9b560055d5e587ca3fd449517716464bdced86a1ba8c66ab9fcc7a82e0cb6f96"
+              },
+              {
+                "path": "ChimeraEngine/engine/shaders/joints.comp",
+                "sha256": "cb8b5fc3f59e8e90f2ad576a21604ecb75a76d126d7adbdf5fee04fec0aeee4f"
+              },
+              {
+                "path": "ChimeraEngine/physics_articulated.py",
+                "sha256": "e691352c80e9f335a11d9458109a2fb757044437368558ccf61c0505db4410c7"
+              },
+              {
+                "path": "ChimeraEngine/physics_floating.py",
+                "sha256": "7e30ec6a5af38b0025fd550eb6205df076d7ca2d7330d6c9f09abcae347e41d7"
+              }
+            ],
+            "findings": [
+              "kernel_dsl.py generates different per-quantity laws for one traversal, including outputs that are fields rather than forces.",
+              "spiace_phase6.html gpuBarnesHut builds/serializes a CPU tree, uploads particle arrays and maps readbacks each frame; that inspected prototype does not yet meet full residency.",
+              "Native joints.comp matter_step relaxes edges and clamps surface y; this alone does not establish momentum-accounted whole-body contact.",
+              "Existing Python articulated/floating models are candidate reusable formulations, not evidence of current native GPU teddy integration."
+            ]
+          },
+          "status": "Adopted architecture and acceptance requirements only. No GPU migration, new source import or walking implementation in this change.",
+          "gpu_force_channels": {
+            "layout": "A logical matrix/tensor of typed numerical channels indexed by stable physical entity IDs; GPU buffers may use structure-of-arrays packing. It need not be one dense N-by-N matrix of all pair interactions.",
+            "coordinates": "Spatial vectors use declared Cartesian engine/local frames, transforms and SI units. Gaussian coordinates here means the operator's spatial-coordinate concept; no Gaussian probability distribution is implied.",
+            "gravity": {
+              "state": "Mass and position plus selected field/source aggregates",
+              "mechanical_output": "F=m*g, or qualified pair/tree gravitational force",
+              "scope": "Uniform near-surface Earth g is a declared local reduction, not an extra force."
+            },
+            "electromagnetism": {
+              "state": "E and B vectors where explicitly resolved; charge/current and constitutive material state as selected",
+              "mechanical_output": "q*(E+v cross B) for a selected particle model, or consistent effective continuum stress/force",
+              "scope": "Atomic-scale electromagnetic effects are usually represented by elasticity, contact, friction, transport and bonding laws. Avoid adding a second microscopic force to an already effective material response."
+            },
+            "strong_nuclear": {
+              "state": "Selected isotope binding and evaluated reaction-channel data with product/energy inventory",
+              "mechanical_output": "Reaction-product impulses/recoil if resolved",
+              "scope": "Game-scale reduced nuclear processes; not a universal long-range inverse-square field or a claim of QCD simulation."
+            },
+            "weak_nuclear": {
+              "state": "Decay rates, branching and parent/daughter inventories with deposited/escaped energy",
+              "mechanical_output": "Decay-product impulses/recoil if resolved",
+              "scope": "Species/state transitions cannot be encoded only as a net force vector."
+            },
+            "common_results": [
+              "mechanical force or time-integrated impulse",
+              "moment/torque when applicable",
+              "energy transfer/storage/dissipation",
+              "mass/species/product inventory updates",
+              "material history and phase updates"
+            ],
+            "conservation": "Sum only compatible mechanical quantities in a common frame; keep energy and species exchanges in their own accounts. Forces are contributions evaluated from state, not sufficient independent state variables for every process.",
+            "teddy_scope": "Earth gravity and effective electromagnetic material/mechanical behavior are immediate. Nuclear descriptors are available as data categories and do not require nuclear updates for ordinary teddy walking.",
+            "falsifier": "A decay changes only velocity with no daughter/energy accounting, or heat/current is added numerically to force despite incompatible units."
+          },
+          "lod_budget": {
+            "priority": "Use available GPU memory as the primary spatial/state-resolution budget. Compute, bandwidth and frame deadlines remain independent feasibility checks; fitting in VRAM does not by itself imply real-time performance.",
+            "target": {
+              "adapter": "RTX 4090",
+              "nominal_vram_label": "24 GB, operator-stated",
+              "accounting_unit": "bytes",
+              "actual_capacity": "Query the actual selected adapter and per-heap budgets; do not hard-code the label as fully available simulation memory."
+            },
+            "memory_source": {
+              "api": "VK_EXT_memory_budget / VkPhysicalDeviceMemoryBudgetPropertiesEXT",
+              "url": "https://docs.vulkan.org/refpages/latest/refpages/source/VkPhysicalDeviceMemoryBudgetPropertiesEXT.html",
+              "semantics": "heapBudget estimates total process allowance including existing allocations; heapUsage estimates existing process use. Budget can change with other applications and operating-system activity; it is not a guarantee.",
+              "rule": "For each relevant device-local heap, projected usage + explicitly reserved headroom must stay within current budget. Use projected allocation deltas for replacements; do not add existing usage twice.",
+              "fallback": "If dynamic budget queries are unsupported, record a conservative explicit budget and unknown availability; do not label nominal capacity as measured free VRAM."
+            },
+            "accounting": [
+              "vertex/particle state and precision/alignment",
+              "triangle faces/indices and face-local state",
+              "cell volumes, inventory and constitutive history",
+              "shared material/profile tables",
+              "skeleton/attachment mappings and constraint state",
+              "tree nodes, leaf lists and per-kernel aggregates",
+              "contact/neighbor queues and capacities",
+              "solver ping-pong/scratch/reduction buffers",
+              "render targets/textures/meshes in the same heap",
+              "transient peaks during tree rebuild, topology or LOD transitions",
+              "allocator fragmentation and safety reserve"
+            ],
+            "cost_model": "B_total = sum(entity_count_i * measured_stride_i) + shared_tables + allocated_capacities + render_allocations + transition_peak; use actual allocator/heap observations to reconcile estimates. Count actual buffers once, including shared render/physics allocations only once.",
+            "representation": "Measure bytes per active representation and its error/cost. A triangle references shared vertex, cell, material and attachment state; it need not duplicate all fields. Evaluate/reduce compatible force contributions rather than retaining a dense all-pairs force matrix. Keep history or individual interactions only where a selected law/solver requires them.",
+            "selection": "Refine where local contacts, joint/membrane loads, deformation or field gradients demand accuracy. Coarsen eligible regions with declared reduced laws. Compare expected error improvement per additional byte while respecting measured compute cost.",
+            "conservation": "Refinement/coarsening transfers mass, linear/angular momentum, energy, composition and damage/history consistently with the chosen representation. An irreversible cut or failure must not be erased by LOD.",
+            "stability": "Preallocate bounded working pools where practical; budget old+new overlap during transitions, use hysteresis to avoid LOD oscillation, and preserve physically necessary contact/constraint detail. An over-budget state triggers explicit reduction/refusal, not silent paging as the routine physics path.",
+            "rendering": "Physics resolution and pixel/visual mesh resolution are related but separately controlled. Higher display resolution consumes render memory and compute without necessarily requiring identical physical refinement.",
+            "telemetry": [
+              "per-heap budget and usage",
+              "live versus reserved bytes by subsystem",
+              "bytes per vertex/face/cell/tree/constraint profile",
+              "contact high-water marks",
+              "temporary transition peak",
+              "selected physical LOD and error estimator",
+              "frame-time tails/missed deadlines/simulation backlog"
+            ],
+            "controls": [
+              "Increase active detail until the declared budget boundary: adaptation/refusal occurs before knowingly exceeding reserved capacity.",
+              "Shrink the available budget while running: material inventories and damage survive the response.",
+              "Switch LOD repeatedly under a known load: force/work response stays within preregistered tolerance and no energy/material is manufactured.",
+              "Hold memory use fixed while increasing contacts: report solve-time limits instead of treating VRAM fit as proof of smoothness.",
+              "Compare estimated costs to measured allocator/heap usage and account for all material discrepancies."
+            ],
+            "status": "Architecture requirement only; no new allocator, memory telemetry or adaptive LOD implementation in this edit."
+          }
+        }
+      },
+      "falsifier": {
+        "statement": "The walker bypasses kernel state, requires per-frame CPU physics round trips, treats incompatible physics as gravity, or claims stutter-free detail without frame-time evidence.",
+        "status": "untested"
+      },
+      "project_spec": {
+        "schema": "chimera.project_spec.v1",
+        "admission": "active_specification",
+        "category": "inventory",
+        "origin_id": "source.operator.gpu_kernel_residency_20260916",
+        "admitted_utc": "2026-09-17T00:12:12+00:00",
+        "authorization": "Operator explicitly identifies the GPU Barnes-Hut kernel and its intended residency/performance role.",
+        "authority_scope": "Repository requirements; no runtime or controller qualification."
+      }
+    }
+  ]
+}
