@@ -52,6 +52,10 @@ def canonical(value):
                       separators=(",", ":"), allow_nan=False).encode("utf-8")
 
 
+def fmt_demand(x):
+    return ("%.8f" % x)
+
+
 # ---------------------------------------------------------------- stage 1-2
 def stage_pins():
     pins = vi.verify()
@@ -399,17 +403,40 @@ def evaluate(res1, res2, res3, bounds, gate):
     require(sat_every, "prediction_failed:P5_seam_max_saturation")
 
     # ---- P6 decay step -------------------------------------------------------
+    # D2 correction (record accuracy): the receipt reports the MEASURED
+    # emitted demand from the port's own decision row; the prereg nominal is
+    # a declared constant and is kept alongside, with the deviation flagged.
+    mid_rows = [d for d in dec if d["issued_tick"] == cm.TICK_DECAY_MID_ISSUED]
+    require(mid_rows, "prediction_failed:P6_mid_row_missing")
+    mid_measured = mid_rows[0]["v_forward_m_s"]
+    a_mid = mid_measured * bounds["d_nom_per_s"]
+    band_mid_measured = [a_mid / bounds["d_hi_per_s"],
+                         a_mid / bounds["d_lo_per_s"]]
     mid_v = [v[t] for t in range(cm.TICK_DECAY_MID_ISSUED + 1,
                                  cm.TICK_ZERO_ISSUED + 1)]
     strictly_down = all(b < a for a, b in zip(mid_v, mid_v[1:]))
+    deviation = (mid_measured != bounds["v_cmd_decay_mid_m_s"])
     ev["P6_speed_step_decay"] = {
         "mid_block_ticks": len(mid_v),
-        "mid_demand_m_s": bounds["v_cmd_decay_mid_m_s"],
+        "mid_demand_measured_m_s": mid_measured,
+        "mid_demand_nominal_m_s": bounds["v_cmd_decay_mid_m_s"],
+        "measured_vs_nominal_deviation": deviation,
+        "deviation_cause": ("the injected clock floors the release event to "
+                            "ms 18023 (tick 5407); the port's own decay law "
+                            "samples elapsed 27 ms at the 18050 boundary: "
+                            "0.763625*(1-27/100) = %s m/s — the MEASURED "
+                            "record; the prereg nominal 0.57271875 m/s "
+                            "assumed release at exactly ms 18025"
+                            % fmt_demand(mid_measured)),
+        "decay_mid_band_measured_m_s": band_mid_measured,
+        "decay_mid_band_nominal_m_s": bounds["decay_mid_band_m_s"],
+        "v_start_above_measured_band_top": mid_v[0] > band_mid_measured[1],
         "v_at_block_start_m_s": mid_v[0], "v_at_block_end_m_s": mid_v[-1],
         "strictly_decreasing": strictly_down,
-        "decay_mid_band_m_s": bounds["decay_mid_band_m_s"],
     }
     require(strictly_down, "prediction_failed:P6_monotone_decay")
+    require(mid_v[0] > band_mid_measured[1],
+            "prediction_failed:P6_measured_band")
 
     # ---- P7 stop floor settle ------------------------------------------------
     flo_lo, flo_hi = bounds["floor_band_m_s"]
@@ -565,6 +592,9 @@ def main() -> int:
          "stability": "P8 bars green; saturation named ch0/ch4",
          "wrong_command_probe": "n/a (saturating row is itself the named clip)"},
         {"command": "speed_step_decay_mid", "issued_tick": cm.TICK_DECAY_MID_ISSUED,
+         "mid_demand_measured_m_s": ev["P6_speed_step_decay"]["mid_demand_measured_m_s"],
+         "mid_demand_nominal_m_s": ev["P6_speed_step_decay"]["mid_demand_nominal_m_s"],
+         "measured_vs_nominal_deviation": ev["P6_speed_step_decay"]["measured_vs_nominal_deviation"],
          "measured": {"v_start_m_s": ev["P6_speed_step_decay"]["v_at_block_start_m_s"],
                       "v_end_m_s": ev["P6_speed_step_decay"]["v_at_block_end_m_s"]},
          "stability": "P8 bars green; strictly decreasing",

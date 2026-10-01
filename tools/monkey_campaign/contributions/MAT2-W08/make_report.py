@@ -109,9 +109,11 @@ def main() -> int:
          str(cvr["registry"]["registry_revision"])))
     w("- Base: `%s` (the file package's base; the MAT2-W07 merge, PR #%s)."
       % (cvr["base_sha256"], "301"))
-    w("- Preregistration sha256 `%s` (committed separate-first BEFORE any")
-    w("  sealed run — the M03/P04 law; the dev-run refusals and prereg")
-    w("  amendments that preceded it are disclosed in the prereg itself).")
+    w("- Preregistration sha256 `%s` (committed separate-first BEFORE any"
+      % (cvr["preregistration_sha256"],))
+    w("  sealed run — the M03/P04 law; the dev-run refusal codes are")
+    w("  recorded in `DEV_RUN_REFUSALS.md` (the frozen prereg narrates the")
+    w("  amendments and names the P4 segment-range refusal).")
     w("- Certificate: the pinned W04 certificate re-validated by the")
     w("  machinery's own validator: %s; deploy gate %s."
       % (gate["validator"]["verdict"], gate["deploy_decision"]))
@@ -158,9 +160,13 @@ def main() -> int:
          fmt(p5["seam_max_achieved_rad_s"], 1),
          fmt(p5["seam_max_residual_rad_s"], 1),
          fmt(p5["declared_saturation_residual_rad_s"], 1)))
-    w("| speed step (decay mid sample) | %d (one block) | v %s -> %s m/s, strictly decreasing | P8 bars green | P9 class at the stop boundary |"
+    w("| speed step (decay mid sample) | %d (one block) | MEASURED demand %s m/s at tick %d (prereg nominal %s m/s; deviation flagged — see the receipt's deviation_cause); v %s -> %s m/s, strictly decreasing above the measured band top %s | P8 bars green | P9 class at the stop boundary |"
       % (cvr["command_table"][4]["issued_tick"],
-         fmt(p6["v_at_block_start_m_s"], 6), fmt(p6["v_at_block_end_m_s"], 6)))
+         fmt(p6["mid_demand_measured_m_s"], 8),
+         cvr["command_table"][4]["issued_tick"],
+         fmt(p6["mid_demand_nominal_m_s"], 8),
+         fmt(p6["v_at_block_start_m_s"], 6), fmt(p6["v_at_block_end_m_s"], 6),
+         fmt(p6["decay_mid_band_measured_m_s"][1], 6)))
     w("| stop / zero-advance floor | %d (+ live zero %d..%d) | v at the settle end %s m/s in [%s, %s]; entry measured at tick %s (recorded informationally) | P8 bars green; stride saturation NAMED on channels 1,5 at every zero/floor row | P9 MUST-FIRE injected at this boundary |"
       % (cvr["command_table"][5]["issued_tick"], 6000, 6885,
          fmt(p7["v_at_settle_end_m_s"], 6), fmt(flo_lo, 6),
@@ -233,10 +239,11 @@ def main() -> int:
     w("  ticks; R1 final state `%s`; %d port records, %d adapter decisions."
       % (cvr["runs"]["R1_final_state_sha256"][:16],
          cvr["runs"]["port_records"], cvr["runs"]["adapter_decisions"]))
-    w("- Dev-run disclosure: the prereg was amended TWICE before any sealed")
-    w("  run (the P4/P7 entry-time bounds and the wrong-key script) with the")
-    w("  refusals preserved in the attempt record; both amendments are")
-    w("  disclosed inside the frozen prereg itself.")
+    w("- Dev-run disclosure: the prereg was amended in five recorded editing")
+    w("  rounds BEFORE any sealed run; all refusal codes with their")
+    w("  derivations are recorded in `DEV_RUN_REFUSALS.md` (the frozen")
+    w("  prereg narrates the amendments and names the P4 segment-range")
+    w("  refusal; it does not repeat the other three codes).")
     w("")
     text = "\n".join(lines) + "\n"
     (HERE / "REPORT.md").write_bytes(text.encode("utf-8"))

@@ -32,11 +32,12 @@ implemented and bite-tested (FB10).
 - Card MAT2-W08 (planning id W08, wave 8, slot 2), agent
   `wk-w08b-arrival-1`, attempt `c38b22e505874601aa3f3a3ba9035e4d`.
 - Criteria sha256 `f38c2c96ef22cca080accba4b71b3370ca5b0272b824975c650cd543db9821ea` (join == registry read-only re-read; card
-  state at load time: OPEN, registry revision 1660).
+  state at load time: REVIEW, registry revision 1667).
 - Base: `8b285ee4301a8ed42be54a1924af5db019f9fb20` (the file package's base; the MAT2-W07 merge, PR #301).
-- Preregistration sha256 `%s` (committed separate-first BEFORE any
-  sealed run — the M03/P04 law; the dev-run refusals and prereg
-  amendments that preceded it are disclosed in the prereg itself).
+- Preregistration sha256 `00a04e08411ed079aee9e0ef43f9221c69abc84612f66311e4db4822f6c8412a` (committed separate-first BEFORE any
+  sealed run — the M03/P04 law; the dev-run refusal codes are
+  recorded in `DEV_RUN_REFUSALS.md` (the frozen prereg narrates the
+  amendments and names the P4 segment-range refusal).
 - Certificate: the pinned W04 certificate re-validated by the
   machinery's own validator: VALID; deploy gate ALLOW.
 - Physics build: `cpu-walk-scene-build-N`, params sha `3e770bef8b8707c9`, timestep 0.0033333333333333 s.
@@ -60,7 +61,7 @@ implemented and bite-tested (FB10).
 | turn left in-range | 3600..4035 | yaw residual max 0.000000011921 rad/s (bound 1e-6) | P8 bars green | FB7 bite fires on mirrored sign |
 | turn right in-range | 4050..4485 | yaw residual max 0.000000011921 rad/s (bound 1e-6) | P8 bars green | FB7 bite fires on mirrored sign |
 | turn left seam-max (+1.6) | 4500..4935 | achieved 1.0 rad/s, residual 0.0 (the declared saturation residual 0.6; limiter clip NAMED on channels 0,4 at every tick) | P8 bars green | the saturating row is itself the named clip |
-| speed step (decay mid sample) | 5415 (one block) | v 0.745540 -> 0.742367 m/s, strictly decreasing | P8 bars green | P9 class at the stop boundary |
+| speed step (decay mid sample) | 5415 (one block) | MEASURED demand 0.55744625 m/s at tick 5415 (prereg nominal 0.57271875 m/s; deviation flagged — see the receipt's deviation_cause); v 0.745540 -> 0.742367 m/s, strictly decreasing above the measured band top 0.586786 | P8 bars green | P9 class at the stop boundary |
 | stop / zero-advance floor | 5430 (+ live zero 6000..6885) | v at the settle end 0.313959 m/s in [0.299320, 0.339577]; entry measured at tick 7910 (recorded informationally) | P8 bars green; stride saturation NAMED on channels 1,5 at every zero/floor row | P9 MUST-FIRE injected at this boundary |
 | wrong-command probe (R3) | injected 5430 | clean 0.529942 vs wrong 0.747213 m/s at tick 5999 (brackets 0.734785 / 0.549869) | zero-control bit-identical | FIRED at 5431 |
 
@@ -101,16 +102,17 @@ implemented and bite-tested (FB10).
   pixel-exact on all 60 frames, order-sensitivity pass; validator CAMERA_METADATA_STRUCTURE_ONLY
   (True; visual_acceptance stays False — independent visual review is
   the Sergeant's).
-- Capture sha256 `3d991a8b7a0af276`; trace sha256 `ee3413d19a812374`; subject receipt
-  `capture/capture_receipt.json` sha256 `32f56d59f164572a`.
+- Capture sha256 `3d991a8b7a0af276`; trace sha256 `239624319fc0dda8`; subject receipt
+  `capture/capture_receipt.json` sha256 `c5e23720d9434750`.
 
 ## Accounting
 
 - Named checks: 19 executed, 0 skipped (test_w08_commands.py (unittest discover -p test_*.py)).
 - Runs: R1/R2 at 10500 ticks (zero-control bit-identical: True), R3 at 6000
   ticks; R1 final state `2ade03d79d565ff9`; 403 port records, 404 adapter decisions.
-- Dev-run disclosure: the prereg was amended TWICE before any sealed
-  run (the P4/P7 entry-time bounds and the wrong-key script) with the
-  refusals preserved in the attempt record; both amendments are
-  disclosed inside the frozen prereg itself.
+- Dev-run disclosure: the prereg was amended in five recorded editing
+  rounds BEFORE any sealed run; all refusal codes with their
+  derivations are recorded in `DEV_RUN_REFUSALS.md` (the frozen
+  prereg narrates the amendments and names the P4 segment-range
+  refusal; it does not repeat the other three codes).
 

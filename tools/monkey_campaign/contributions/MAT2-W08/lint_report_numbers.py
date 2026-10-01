@@ -104,6 +104,18 @@ def _half_unit(token):
 NUMBER_RE = re.compile(
     r'(?<![\w.=/-])(-?\d+\.\d+(?:[eE][+-]?\d+)?|-?\d+)(?![\w.=])')
 
+PLACEHOLDER_RE = re.compile(r'%[sdf]|%[-0-9.]*[sdf]')
+
+
+def check_placeholders(text):
+    """Unsubstituted printf placeholders are RED (the D3 class): a report
+    line carrying '%s'/'%d' is a broken generation, not prose."""
+    hits = []
+    for no, line in enumerate(text.splitlines(), 1):
+        if PLACEHOLDER_RE.search(line):
+            hits.append((no, line.strip()[:120]))
+    return hits
+
 
 def check_text(text, artifacts=None):
     """Return the list of untraceable numeric literals."""
@@ -143,13 +155,17 @@ def check_text(text, artifacts=None):
 
 
 def selftest():
-    """Prove the lint still flags planted defect literals (the B05 class)."""
+    """Prove the lint still flags planted defect literals (the B05 class)
+    AND planted unsubstituted placeholders (the D3 class)."""
     planted = ['3.14159', '44.7', '10.0381', '2.9775']
     sample = ('phantom radius r = 3.14159 m and stale gap 44.7 mm; '
               'perturbed total 10.0381 kg; invented envelope 2.9775 m/s')
     flagged = check_text(sample, artifacts={'none.txt': 'no numbers here'})
     ok = all(p in flagged for p in planted)
     print('selftest: planted %r -> flagged %r' % (planted, flagged))
+    ph = check_placeholders('fine line\nbroken sha `%s` here\nalso %d bad')
+    ok = ok and ph == [(2, 'broken sha `%s` here'), (3, 'also %d bad')]
+    print('selftest: planted placeholders -> %r' % (ph,))
     return ok and len(flagged) == len(planted)
 
 
@@ -164,15 +180,23 @@ def main():
             return 1
         print('selftest OK: detector still flags planted defect literals')
     text = report.read_text(encoding='utf-8')
+    placeholders = check_placeholders(text)
     untraceable = check_text(text)
-    if untraceable:
-        print('LINT RED: %d untraceable numeric literal(s):' % len(
-            untraceable))
-        for token in untraceable:
-            print('  UNTRACEABLE ' + token)
+    if placeholders or untraceable:
+        if placeholders:
+            print('LINT RED: %d unsubstituted placeholder line(s):'
+                  % len(placeholders))
+            for no, line in placeholders:
+                print('  PLACEHOLDER line %d: %s' % (no, line))
+        if untraceable:
+            print('LINT RED: %d untraceable numeric literal(s):' % len(
+                untraceable))
+            for token in untraceable:
+                print('  UNTRACEABLE ' + token)
         return 1
-    print('lint OK: every numeric literal in REPORT.md traces to a bound '
-          'artifact at its printed precision or a whitelisted reason')
+    print('lint OK: no unsubstituted placeholders; every numeric literal in '
+          'REPORT.md traces to a bound artifact at its printed precision or '
+          'a whitelisted reason')
     return 0
 
 

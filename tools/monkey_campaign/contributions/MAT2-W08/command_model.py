@@ -139,7 +139,7 @@ def derived_bounds(scene_const: dict, manifest: dict) -> dict:
     track_bound = max(v_cmd - band_ceil[0],
                       band_ceil[1] - v_cmd) + 1e-9
     return {
-        "d_lo_per_s": d_lo, "d_hi_per_s": d_hi,
+        "d_lo_per_s": d_lo, "d_hi_per_s": d_hi, "d_nom_per_s": d,
         "v_cmd_ceiling_m_s": v_cmd, "v_cmd_decay_mid_m_s": v_mid,
         "stride_setpoint_ceiling": v_cmd * d / g,
         "stride_setpoint_decay_mid": v_mid * d / g,
@@ -155,12 +155,19 @@ def derived_bounds(scene_const: dict, manifest: dict) -> dict:
         "velocity_envelope_m_s": (g * hi[1]) / d_lo,
         "yaw_representable_rad_s": 2.0 * (hi[0] - lo[0]),
         "formulas": {
-            "stride_setpoint": "s = v_cmd * d_hi / STRIDE_GAIN (clip to bounds)",
+            "stride_setpoint": "s = v_cmd * damping / STRIDE_GAIN (clip to bounds; "
+                               "the NOMINAL-damping inversion is a declared "
+                               "constant; the port's EMITTED demand is a "
+                               "measured record and may differ)",
             "yaw_phase_off": "off_l = clip(-yaw/4, lo0, hi0); off_r = clip(+yaw/4, lo4, hi4)",
             "band": "[a/d_hi, a/d_lo] (the scene drive law's fixed-point span)",
-            "segment_range": "two-sided comparison bound: v_t - a/d in "
-                             "[(v0-a/d)(1-dt*d_hi)^t, (v0-a/d)(1-dt*d_lo)^t]",
-            "tracking_bound": "plant spread v_cmd*(d_hi/d_lo - 1) + float guard",
+            "segment_range": "two-sided comparison bound, CONTINUOUS form (the "
+                             "form the values use): v_t in "
+                             "[a/d_hi + (v0-a/d_hi)*exp(-d_hi*ticks/300), "
+                             "a/d_lo + (v0-a/d_lo)*exp(-d_lo*ticks/300)]",
+            "tracking_bound": "largest distance from the demand to the derived "
+                              "band edges max(v_cmd - a/d_hi, a/d_lo - v_cmd) "
+                              "+ float guard",
         },
     }
 
