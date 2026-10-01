@@ -1,0 +1,1 @@
+{"attempt_id":"682fec627d7a413cb0fff77388436868","card":"MAT2-G01","command":"python -B -m unittest test_g01_checks -v","criteria_sha256":"c79a569f7259084e948d60058ccd850ccb671af30e61062c59295d152b9f0374","executed":18,"known_skips":"none (zero skips by design; no KNOWN_SKIPS entries)","schema":"chimera.g01.checks_accounting.v1","skipped":0}
