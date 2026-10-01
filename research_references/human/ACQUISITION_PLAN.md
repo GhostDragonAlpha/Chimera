@@ -38,12 +38,12 @@
 | membrane | the physics it must know | training data (measured) | status |
 |---|---|---|---|
 | **theHuman** (dimensions) | segment lengths, breadths, mass — distributions, not averages | ANSUR II 93 measures × 6,068 subjects | **IN REPO** (`ansur_anchors.json`) |
-| **theHuman** (gait) | joint angles/moments/GRF per % of cycle, by sex and decade | Van Criekinge 2023, 246 adults, OSF CC BY 4.0 | **IN REPO** (`story/data/gait_normative.json`; deleted by 2fb2f75f 2026-08-06, restored 2026-09-30, blob `ea801b08`) |
+| **theHuman** (gait) | joint angles/moments/GRF per % of cycle, by sex and decade | Van Criekinge 2023, 246 adults, OSF CC BY 4.0 | **IN REPO** (`story/data/gait_normative.json`) |
 | **theHuman** (muscles) | 290 Hill-type muscles, measured fibre lengths/forces | MyoSuite + OpenSim (Rajagopal 2016, Hamner 2010) | **IN REPO** (`external/myo_sim`, `opensim/`) |
 | **theSkin** | melanin filter + blood-bearing collagen, subsurface transport | OMLC Jacques model + Prahl hemoglobin + van Veen fat + Hale water | **IN REPO** (fat/water added today) |
 | **theBreath** | lung volumes, pressures, ventilation vs exertion | standard physiology (cited in chapter) + Compendium METs (Tier B) | built; deepen from METs |
 | **theSweep** | metabolic heat, insulation, radiation; skin emissivity 0.98±0.01 (8–14 µm) | Villaseñor-Mora 2009 (measured emissivity compilation) | built; emissivity archived today |
-| **theAnkle** | rocker radius, stance GRF, τ/F lever | gait_normative (derived lever 0.071; source table deleted by 2fb2f75f 2026-08-06, restored 2026-09-30, blob `ea801b08`) | **built** |
+| **theAnkle** | rocker radius, stance GRF, τ/F lever | gait_normative (derived lever 0.071) | **built** |
 | **theBalance** | lateral inverted-pendulum sway, COM vs COP, per-foot load split | HBEDB 1,930 quiet-stance trials (CC BY 4.0); dos Santos 2017 dual-plate GRF + whole-body kinematics | **DOWNLOADING** |
 | **theEye** | photopic/scotopic V(λ), cone LMS fundamentals, dark adaptation, pupil vs luminance/age, retinal image formation | CVRL CIE 1924/1951/1931 + Stockman-Sharpe (today); Hecht 1937 + Haig 1941 tables (PMC, digitize); Watson-Yellott 2012 formula (open); Navarro 2009 CC review (today) | **DATA IN REPO** — membrane still stub |
 | **theGrip** | grip-force norms by age/sex, skin/glove friction μ, contact on arbitrary normal | NHANES grip XPT n≈7,800 (public domain, today); Mathiowetz tables (today); Zhang & Mak 1999 skin μ tables (today); Carré 2017 glove μ (today) | **DATA IN REPO** — membrane still stub |

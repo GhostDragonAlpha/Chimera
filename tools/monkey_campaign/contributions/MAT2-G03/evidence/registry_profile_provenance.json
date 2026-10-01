@@ -1,6 +1,0 @@
-{
- "db_path": "E:/ChimeraWork/monkey-coordination/agent_slots.sqlite3",
- "extractor": "sqlite3 mode=ro single query at capture time",
- "note": "profile object read READ-ONLY; never hand-copied",
- "row_path": "kanban.cards[MAT2-G03].spec.ontology_qualification.task.verification_profile"
-}

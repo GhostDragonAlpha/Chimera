@@ -1,0 +1,152 @@
+{
+  "schema": "chimera.surface.recipe.v1",
+  "sources": [
+    {
+      "fluid": "Water",
+      "material_id": "material.science_surface.water"
+    },
+    {
+      "fluid": "Ethanol",
+      "material_id": "material.science_surface.ethanol"
+    }
+  ],
+  "objects": [
+    {
+      "id": "model.science_surface_area",
+      "kind": "model",
+      "name": "Constant-tension area energy",
+      "status": "specified",
+      "priority": "P0",
+      "physical": {
+        "energy": "gamma * sum(A_triangle) + F * sum(w_i h_i)",
+        "force": "negative gradient of energy",
+        "boundary": "pinned rim; interior heights free",
+        "scope": "quasistatic height field; zero gravity; equal bulk pressures; no bulk flow"
+      }
+    },
+    {
+      "id": "surface.science_interface",
+      "kind": "surface",
+      "name": "Pressable scientific interface",
+      "status": "specified",
+      "priority": "P0",
+      "spatial": {
+        "frame": "world_SI_right_handed_Y_up",
+        "anchors_m": [
+          [
+            -0.01,
+            0,
+            0.01
+          ],
+          [
+            0.01,
+            0,
+            0.01
+          ],
+          [
+            -0.01,
+            0,
+            -0.01
+          ]
+        ]
+      },
+      "geometry": {
+        "shape": "triangulated_rectangle",
+        "subdivisions": 20,
+        "render_m_to_units": 100.0,
+        "render_translation_units": [
+          0,
+          1.2,
+          0
+        ],
+        "camera": [
+          2.8,
+          0.25,
+          0.72,
+          0,
+          1.15,
+          0,
+          0,
+          0
+        ]
+      },
+      "physical": {
+        "law": "constant_surface_tension",
+        "materials": [
+          "material.science_surface.water",
+          "material.science_surface.ethanol"
+        ],
+        "temperature_K": 298.15,
+        "probe_sigma_m": 0.003,
+        "default_force_N": 0.00025,
+        "max_force_N": 0.0004,
+        "scope": "authored zero-gravity apparatus; reference liquid-vapor coefficient; not biological skin"
+      },
+      "falsifier": {
+        "statement": "Source gamma produces geometry and reaction from one native state",
+        "test": "energy derivative, force balance, release, material switch and real frame difference"
+      },
+      "unknowns": [
+        "physical_transient",
+        "bulk_fluid_motion",
+        "creature_integration"
+      ]
+    },
+    {
+      "id": "work.science_surface_visible",
+      "kind": "work",
+      "name": "Compile scientific data into visible mechanics",
+      "status": "specified",
+      "priority": "P0",
+      "notes": "STATEMENT: Pinned CoolProp surface-tension correlations can bind through the creature graph to a triangulated, pinned-boundary interface whose native equilibrium geometry supplies its rendered light.\nPREDICTION: At fixed geometry reaction and area energy scale with source gamma; under equal load ethanol deflects more than water; releasing load returns a flat surface; native analytic gradient matches a finite-difference energy oracle; imported temperature outside declared bounds refuses compilation.\nFALSIFIERS: changed source bytes accepted under old hashes; missing graph material edge compiles; collinear anchors compile; derivative relative error > 1e-5; force-balance residual > 1e-7 N at a settled state; release depth > 1e-7 m; source gamma change has no mechanical effect; observed frame remains pixel-identical across loaded/unloaded states; rendered mesh differs from accepted native state. Numerical tolerances are verification bounds, not fitted physical parameters.\nMODEL: U = gamma sum(A_triangle) + F sum(w_i h_i), with the frame normal pointing upward and positive F pressing down. Every interior height is a free coordinate; rim heights are fixed. Minimize this convex height-field area energy using Newton-CG and energy-decreasing backtracking. No inertia or elapsed-time interpretation. Surface tension correlation gamma(T)=sum(a_i(1-T/Tc)^n_i) comes from pinned upstream JSON. Pure liquid-vapor equilibrium coefficient; virtual zero-gravity, equal-pressure, fixed-rim interface. No claim of skin law, full liquid flow, or biological creature qualification.\nGEOMETRY: three non-collinear anchors define local plane; dimensions, mesh resolution, probe footprint and imposed load are explicitly authored apparatus settings. No material property is chosen for appearance. Native C++ runs mechanics; Python downloads/imports/compiles once only; the existing Vulkan engine renders accepted vertices.\n",
+      "dependencies": [
+        "surface.science_interface"
+      ],
+      "unknowns": [
+        "independent_runtime_evidence",
+        "human_visual_acceptance"
+      ],
+      "execution": {
+        "launch": "powershell -File tools/science_funnel/run_surface.ps1",
+        "compile": "python -m tools.science_funnel.surface_scene",
+        "validate": "python -m unittest discover -s tools/science_funnel/tests -p test_*.py",
+        "native_oracle": "tools/science_funnel/tests/surface_native.cpp",
+        "checklist": [
+          "verify pinned artifacts",
+          "admit source assertions",
+          "compile graph geometry and law",
+          "build native engine",
+          "run native oracles",
+          "verify browser controls and rendered frame differences",
+          "append scoped evidence without status promotion"
+        ]
+      }
+    }
+  ],
+  "relations": [
+    {
+      "src": "surface.science_interface",
+      "rel": "uses_model",
+      "dst": "model.science_surface_area",
+      "note": ""
+    },
+    {
+      "src": "surface.science_interface",
+      "rel": "uses_material",
+      "dst": "material.science_surface.water",
+      "note": ""
+    },
+    {
+      "src": "surface.science_interface",
+      "rel": "uses_material",
+      "dst": "material.science_surface.ethanol",
+      "note": ""
+    },
+    {
+      "src": "work.science_surface_visible",
+      "rel": "requires_implementation",
+      "dst": "surface.science_interface",
+      "note": ""
+    }
+  ]
+}

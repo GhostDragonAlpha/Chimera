@@ -44,7 +44,15 @@ def prepare(source,allocation):
         raise ValueError('invalid_sparse_contribution_path')
     git(checkout,'config','core.sparseCheckout','true')
     git(checkout,'config','core.sparseCheckoutCone','false')
-    (checkout/'.git/info/sparse-checkout').write_text('/'+path+'/\n',encoding='utf-8')
+    sparse=['/'+path+'/']
+    # P8 regression closure: the M07 suite subprocess-runs the M01-M06
+    # suites, whose loaders byte-verify upstream data (M03 needs M02's
+    # mesh blob; M04/M06 execute M02 scripts; M03 imports M01's
+    # material_state). Without these dirs every MAT2-M* attempt checkout
+    # fails P8 on provisioning (observed: m02_mesh_blob_missing, 2026-09-29).
+    if allocation['task_id'].startswith('MAT2-M'):
+        sparse+= ['/tools/monkey_campaign/contributions/MAT2-M%02d/'%n for n in range(1,8)]
+    (checkout/'.git/info/sparse-checkout').write_text('\n'.join(dict.fromkeys(sparse))+'\n',encoding='utf-8')
     git(checkout,'checkout','--no-track','-b',branch,head)
     if git(checkout,'branch','--show-current')!=branch:raise ValueError('checkout_branch_verification_failed')
     saved={**identity,'head_sha':git(checkout,'rev-parse','HEAD'),'sparse_path':path,'remote':remote}

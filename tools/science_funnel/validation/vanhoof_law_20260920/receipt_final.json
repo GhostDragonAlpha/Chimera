@@ -1,0 +1,91 @@
+{
+ "schema": "chimera.rule0.lane_receipt.v1",
+ "lane": "vanhoof_law_20260920",
+ "branch": "lane/vanhoof-law-20260920 @ base f59bd87377feccc65c4fb3c8141c0058e088ca3a",
+ "agent": "GLM 5.3 (Agent: vlaw)",
+ "run_utc_date": "2026-09-22",
+ "prereg": "receipt.json in this directory (frozen, commit 038aebd8; written before any derivation and before the re-run)",
+ "constant_registration": {
+  "route": "stated_cited",
+  "registered_rho_g_cm3": 1.1,
+  "as_printed_in_source": "0.0011 g/mm3",
+  "rho_kg_m3_equivalent": 1100.0,
+  "evidence": "Vanhoof et al. 2021 (PMC7812139, doi 10.1111/joa.13314) Methods 2.3, Equations (1)-(2): 'For both gibbons and macaques, the average muscle density is 0.0011 g/mm3 (SD <0.0001 g/mm3), which is almost equal to the density defined for human muscles (0.00106 g/mm3) (Ward and Lieber, 2005). ... Therefore, the density value of 0.0011 g/mm3 is used in the calculation of the PCSA for all muscles in this study.' PCSA = mass/(FL x density); density measured per Eq. 2 (extrinsic muscles only); pennation omitted by the authors' stated omission (cos 0-30 deg = 1-0.87); multi-belly PCSA = sum of bellies.",
+  "registration_artifact": "constants.json (commit 956af9b8; written BEFORE the re-run)",
+  "key_connection": "the funnel's inherited 1060 kg/m3 is the paper's CITED HUMAN constant (Ward & Lieber 2005); the paper measured and used its own 1.1 g/cm3 for these very specimens -- the funnel had registered the citation, not the source's arithmetic",
+  "independent_cross_check": "the landed implied-density median 1.1004 g/cm3 (IQR 1.095-1.115, n=218) sits 0.04% from the stated 1.1",
+  "route_decision_rule": "prereg constant_derivation_pre_commitment: stated-cited first; measured-declared (median implied 1.1004) only as fallback -- fallback not needed",
+  "fit_to_pass_guard": "no pass rate was seen at this or any constant before constants.json was committed (F2)"
+ },
+ "law_rerun": {
+  "artifact": "laws_registered.json sha256 9d9a40cee863217286f60f2f49374651881fb8fedd9feb9d24b636ea816cf414",
+  "inputs": "pinned reconciliation.json (sha verified every run) + constants.json; 654 TENTATIVE pins; zero image reads, zero value edits",
+  "n_checkable_rows": 218,
+  "n_pass": 146,
+  "law_pass_rate": 0.6697,
+  "floor": 0.9,
+  "floor_met": false,
+  "dev_percentiles": {"5": 0.000295, "25": 0.001897, "50": 0.008828, "75": 0.033833, "95": 0.13883},
+  "implied_rho_g_cm3": {"n": 218, "min": 0.7824, "p25": 1.0946, "median": 1.1004, "p75": 1.115, "max": 1.4992},
+  "what_the_constant_fixed": "dev p50 0.88% (was 3.77% at the inherited 1060); p25 0.19%; 202/218 rows (92.7%) within the 10% descriptive band",
+  "comparison_to_landed_inherited_run": {"landed_rho_kg_m3": 1060.0, "landed_n_pass": 19, "landed_pass_rate": 0.0872,
+    "rows_passing_both": 4, "rows_passing_only_at_registered": 142, "rows_passing_only_at_inherited": 15,
+    "inherited_only_note": "the 15 inherited-only rows have implied rho 1.045-1.077 -- the funnel's 1060 was fitting the print-register rounding tail of small muscles, not the source's arithmetic"}
+ },
+ "residual_structure_the_source_truth": {
+  "headline": "67 of the 72 failing rows have mass < 2 g -- the small intrinsic hand muscles (APB, ODM, ADM, Anc, C5, LUMB, OPP, FPB, FDM, IOP, EPL, EDST, EDQQ, ADP, PQ, IOD, FDM, conn. FDS-FDP); only 5 large-mass rows fail (B 11.7 g, Bb 34.1 g, DET 8.6 g, ECU 4.6 g, CB 1.5 g; 4 of them Mm2 upper-arm/shoulder rows, implied rho 0.87-1.07)",
+  "mechanism_named": "the paper itself: 'For the small intrinsic hand muscles we were not able to accurately determine the muscle volume using the submersion method. Therefore, we calculated the muscle density only for the extrinsic muscles' -- the density SD (<0.0001 g/mm3) was measured over extrinsic muscles; the intrinsic muscles' printed 1-decimal register (mass +-0.05 g on 0.1-2.0 g) cannot carry 2%-closure arithmetic. This is a source data-quality structure (print register), not transcription noise: double-entry agreement was 1.0 (654/654)",
+  "deviation_classes": {"law_pass": 146, "moderate_register_unrounded (0.02 < dev <= 0.10)": 56, "large_per_row_structure (dev > 0.10)": 16},
+  "per_specimen_pass": {"Mm1": "25/34", "Mm2": "16/35", "Mm3": "27/34", "Mm4": "27/33", "Mm5": "18/28", "Mm6": "19/27", "Mm7": "14/27"},
+  "named_suspects": "16 large-band rows named individually with printed values + implied rho in laws_registered.json -> named_suspects; values UNCHANGED (F3 pin holds); no image re-read"
+ },
+ "admission": {
+  "tiers_executed": "prereg admission_tiers_original (the pre-registered tier disposition; F1's consequence -- STOP tuning, report structure -- honored: constant/tolerance/floors unchanged)",
+  "admitted_cells": 438,
+  "admitted_rows": 146,
+  "refused_cells_total": 336,
+  "refused_row_closure_violation": 216,
+  "refused_by_deviation_class": {"moderate_register_unrounded": 168, "large_per_row_structure": 48},
+  "refused_source_markers": {"marker_absent_plain": 45, "marker_absent_cfr": 42, "marker_crossref_APB": 6, "marker_crossref_FDP": 12},
+  "merged_cell_covered_positions": 15,
+  "count_identity": "774 = 438 admitted + 336 refused(weighted), zero silent drops; internally 774 = 654 TENTATIVE + 105 MARKER_AGREED + 15 BLANK_AGREED (landed, re-verified)",
+  "record_shape": "batch.property.measurement v1 drafts via tools.science_funnel.common.draft + units.convert (SI: g->kg, mm->m, mm2->m2); external ids vanhoof:s002:{muscle}:{spec}:{field} (prestage RUNBOOK step 6 idempotent-replay shape); record_set_digest 45e09d845f6cda3f49ddf8b1d2a13105a11269538ee960a4e75cb66d1379c58c",
+  "provenance_per_record": "tiff sha256 + sheet + panel + both-pass tile crop sha256s + both-pass printed values + legibility classes + muscle/group/specimen + row_closure_law {form, rho 1.1, route stated_cited, rel_dev, verdict PASS} + manifest note (3-field source) + license tension note",
+  "artifacts": {"admission.json": "sha256 a5e3ccd2dde3089215e94d51fc81a1f60ed1d227541f3cb6a96ccc9641f01b82",
+                "records_vanhoof_s2.json": "sha256 5c67642fad4d5d1a4a51eef1c5c6ddb692f7148e143ea72861788f81289cb006"}
+ },
+ "funnel_admission_honesty": {
+  "admit_vanhoof_admit": "NOT modified, NOT forced: its row-law block requires all 7 canonical fields; the measured manifest carries 3 (mass_g/fl_mm/pcsa_mm2) -- the intake's F-MANIFEST named branch. The lane driver emits the SAME contract shapes from the lane dir and registers the manifest honestly as a 3-field source (admission.json -> manifest, schema chimera.rule0.manifest_registration.v1).",
+  "graph_apply": "NOT run from this lane (shared state; F5): the funnel's own mode 'proposals are reviewable files; generating one is not a claim of admission' is the honest ceiling. The record set is downstream-consumable from records_vanhoof_s2.json; graph apply + controller admission + fleet qualification are the consumer's steps, on the consumer's side of the lane boundary.",
+  "training_gate": "NOT applicable as-named: tools/training_gate.py gates TRAINER TARGETS (Froude/stride/world consistency) before GPU-hours, not data batches; no training is proposed by this lane. The RUNBOOK's gate step belongs to the downstream consumer's training run, where the gate actually binds.",
+  "not_qualified": ["admitted cells are law-VERIFIED, not independently TRUE: the law checks internal closure of the source's own arithmetic at the source's own stated constant", "the 216 row_closure_violation cells are the source's print-register structure, named not repaired", "no pennation exists in this source (authors' stated omission); PCSA here is the non-pennated definition"]
+ },
+ "cross_specimen_summary": {
+  "artifact": "cross_specimen_summary.json sha256 b223d39c5748744ea4c4f7753610d421d50a272b82216ac16921a0ad38c0276a + cross_specimen_summary.csv sha256 326062eba2b84893f96687c656d54dcc17a18ca60b899a56156366752f96ad81",
+  "shape": "35 source muscle keys x 3 fields x {n of Mm1-Mm7, mean, min, max, specimens} + law verdict counts riding along; ALL 654 TENTATIVE cells summarized (admitted and refused alike -- the summary is the extraction, not an admission filter); no smoothing, no imputation",
+  "highlights": [
+   "FDP (flexor digitorum profundus): n=7, mass mean 30.43 g (16.3-42.9), FL mean 44.23 mm (38.1-54.2)",
+   "FDS (flexor digitorum superficialis): n=7, mass mean 11.13 g (6.8-14.0), FL mean 33.46 mm (25.5-48.3)",
+   "APB (abductor pollicis brevis): n=7, mass mean 0.87 g (0.4-1.4), FL mean 14.0 mm (10.2-23.7)",
+   "Bb (biceps brachii): n=4 (Mm1-Mm4 only -- the upper-arm group exists only in panel 1), mass mean 40.85 g (34.1-45.8), FL mean 85.4 mm (67.5-118.3)",
+   "conn. FDS-FDP (the source's connector row, values identified by position after FDP): n=3 (Mm1, Mm2, Mm5), mass mean 2.23 g (1.5-3.0)"
+  ]
+ },
+ "determinism": {
+  "verdict": "GREEN",
+  "detail": "laws_registered.py, admit_law.py, cross_specimen.py each 3-run byte-identical on the frozen inputs (stdout + artifacts cmp-verified); canonical JSON (sort_keys, fixed rounding), no timestamps in derived artifacts"
+ },
+ "tests": "test_lane.py: 9/9 OK (value pins, constant consistency, law-run agreement, count identity, no-guess, provenance completeness + units, replay digest, mutation probe, summary closure)",
+ "falsifier_verdicts": {
+  "F1_LAW_STILL_FAILS": "FIRED -- the prereg's headline statement (>= 90% of checkable rows at the derived constant) is MEASURED FALSE: 146/218 = 66.97% << 90% at the paper's own stated-and-used constant. Honored: STOP tuning; the constant, tolerance, floors, and law form were not moved; the residual is reported as structure (which muscles/animals, deviation classes, named suspects) -- a data-quality finding about the SOURCE.",
+  "F2_FIT_TO_PASS": "HELD -- the constant was registered by the pre-committed evidence order (route a stated-cited succeeded; fallback b unused) BEFORE any pass rate existed; tolerance 0.02, floors 0.90/0.80, law form, and the 0.02/0.10 descriptive bands were all fixed in the prereg; the successor's 'tolerance from the measured residual distribution' option was DECLINED in the prereg as fit-to-pass by construction. The one post-run edit (gate verdict string in laws_registered.py) changed a report string only -- measured numbers identical pre/post (146/218 = 0.6697) -- and is documented in record.md.",
+  "F3_NO_RETRANSCRIBE": "HELD -- the 654 TENTATIVE values are pins: every run verifies the reconciliation sha256 AND the canonical grid sha256 (efbd3aefc6711e66b6461ea5b9af6abb646a99ed5aedd0b6d30945d9ca21f4b7) before computing; the admission driver additionally asserts every pass-file value Decimal-equals the reconciled value; suspects are NAMED, never changed, never re-read from images.",
+  "F4_DETERMINISM": "GREEN -- 3-run byte-identical for all three lane scripts (see determinism).",
+  "F5_SCOPE": "HELD -- all source changes are inside tools/science_funnel/validation/vanhoof_law_20260920/; the transcription lane's files are read-only inputs; admit_vanhoof.py, adapters_muscle.py, batch/, the graph store, S1, gait_*, first_skill_prestage_20260922_, and master are untouched.",
+  "P_CONST_PREDICTION": "MEASURED TRUE (at the band edge): the paper states exactly 0.0011 g/mm3 = 1.10 g/cm3 (predicted 1.10-1.112).",
+  "P_RATE_PREDICTION": "MEASURED FALSE: pass rate 66.97% vs predicted 90-98%. Reported, not tuned around.",
+  "P_RESIDUAL_PREDICTION": "MEASURED TRUE: the failing minority is structured (67/72 rows are small intrinsic hand muscles; worst specimens Mm2 16/35 and Mm7 14/27), not uniform."
+ },
+ "successor_scope_named": "the source cannot support a 2%-closure admission floor beyond 66.97% at its own stated constant -- that is the honest ceiling of this arithmetic and this print register. Two DERIVED (not fitted) doors exist for a successor, each requiring a NEW prereg: (a) a print-register error model from the paper's own declared precision (mass +-0.05 g, FL +-0.05 mm, PCSA +-0.05 mm2 propagate analytically into a per-row deviation envelope; a row passes iff its deviation is inside ITS envelope and the implied density is inside the paper's measured SD band) -- this re-derives the instrument instead of widening the tolerance; (b) consumers use the 438 law-verified cells + the per-muscle summary as-is, carrying the law-verdict conditions. Under no successor door may the constant be re-chosen against a pass rate.",
+ "commits": ["038aebd8 prereg", "956af9b8 constant registration", "b227eff law re-run (F1 fired)", "bae5ef0a admission + manifest", "this commit: tests + cross-specimen summary + receipt_final"]
+}

@@ -1,0 +1,28 @@
+{
+ "retrieved_utc": "2026-09-18T15:46:25+00:00",
+ "files": [
+  {
+   "path": "PMC7940622_fulltext.xml",
+   "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/fullTextXML",
+   "resolved_url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/fullTextXML",
+   "bytes": 252950,
+   "sha256": "fcf9fff5df51f6608724039726575dd41ca32e7a026824d3564e91803b55131d",
+   "role_note": "article full text (PMC version of record): Table 1 markup, caption, footnotes and the verbatim CC BY 4.0 license sentence; the digit-for-digit parse target"
+  },
+  {
+   "path": "20260917_dbhunt_motion.md",
+   "url": "repo:docs/research/20260917_dbhunt_motion.md (banked 2026-09-17 dossier, commit 5a180eb4)",
+   "resolved_url": "repo:docs/research/20260917_dbhunt_motion.md",
+   "bytes": 17902,
+   "sha256": "b90e6362d37efc2e5681516403d691e5736fe5cc4e8b763822d4d97f7a1ddd59",
+   "role_note": "banked dossier (C7 lineage); its copy on master predates digit-level Table 1 banking, so the live page is the admission authority and the banked values were verified against it"
+  }
+ ],
+ "source": "Oku, Ide & Ogihara 2021 (Communications Biology 4:1831, DOI 10.1038/s42003-021-01831-w), Table 1 'Dimensions and inertial parameters of the limb segments' as published in the article full text (PMC7940622), via the EuropePMC fullTextXML endpoint",
+ "license": "CC BY 4.0 (article permissions block, quoted verbatim from the page: 'Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.' (c) The Author(s) 2021)",
+ "verification": {
+  "nature_endpoint": "https://www.nature.com/articles/s42003-021-01831-w/tables/1 does NOT serve content authlessly: UA-less fetchers receive 406/303, and a browser-UA fetch returns a JavaScript 'Client Challenge' page (3038 bytes, no article content). The brief's fallback applies: the banked dossier section carries the values, and the pinned live artifact is the article's own full text (PMC version of record), which contains the identical Table 1 markup plus the license sentence.",
+  "digit_for_digit": "all 20 banked values match the live page after one recorded normalization (exponent separator case E->e, U+2212 minus, exponent zero-padding; mantissa digits untouched); per-cell results in tools/creature_graph/validation/batch_paper_inertia_20260918/verification.json",
+  "provenance_consistency": "the pinned XML sha256 fcf9fff5...3b55131d byte-matches the fulltext.xml pin of the oku_bipedal lane (same article, same endpoint) recorded in tools/science_funnel/data/oku_bipedal/download_receipt.json"
+ }
+}

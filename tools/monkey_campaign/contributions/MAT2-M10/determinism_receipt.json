@@ -1,9 +1,0 @@
-{
- "X2_pass": true,
- "X2_trace_byte_identical": true,
- "criteria_sha256": "5e7560caa9efae9ec819c9127ab6ee6e7016e134bdf97e525f06cfedee31190c",
- "declared_determinism_unit": "the canonical dynamic_run subtree of experiment_trace.json (two fresh subprocess-equivalent runs at the same revision)",
- "dynamic_run_sha256_main": "cbc033448c40765ec89d9253d1c92f328373452c27519dfca8ccf76cb6c06cde",
- "dynamic_run_sha256_rerun": "cbc033448c40765ec89d9253d1c92f328373452c27519dfca8ccf76cb6c06cde",
- "schema": "chimera.m10.determinism_receipt.v1"
-}

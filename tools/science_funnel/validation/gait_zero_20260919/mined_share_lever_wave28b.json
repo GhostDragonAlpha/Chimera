@@ -1,0 +1,16 @@
+{
+ "schema": "chimera.share_lever.v1",
+ "state": "tick-100 measured pose of the reproduced w27 run",
+ "pang_rad": -0.11977374351688645,
+ "com_x_at_pang_m": 0.03798091537342058,
+ "h_lever_m_per_rad": -0.14871503472514538,
+ "h_lever_mm_per_rad": -148.7150347251454,
+ "com_swing_full_guard_m": 0.17193293423824363,
+ "note": "nose-up (theta+) moves the CoM WEST: the lever is NEGATIVE -- the wave-8 vault climb is the DESIGNED fore-to-hind load transfer; the sign is the pre-registered derivation measured",
+ "map_x_hind_m": 0.130115,
+ "map_x_fore_m": 0.234922,
+ "static_share_slope_per_rad": -1.4189418142408943,
+ "delivered_gain": 0.02401,
+ "delivered_share_slope_pp_per_rad": -3.406879295992387,
+ "source_script": "derive_share_lever_wave28b.py"
+}

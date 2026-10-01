@@ -1,0 +1,45 @@
+{
+  "schema": "chimera-rule0-prereg/L8",
+  "lane": "agent/cl-L8-shared-20260921",
+  "pin": "7181b8ce9d2b78c93eb96df8d288e0697a398a12 (agent/cl-L0-baseline-20260921, both L0 falsifiers green)",
+  "banked_at": "2026-09-21",
+  "prerun_toolchain_measurement": {
+    "finding": "the linked exe is NOT byte-reproducible on this toolchain: g++ 15.2.0 MinGW-w64 emits PE timestamp fields -- exactly 2 bytes differ between two same-flag rebuilds of the same TU (cmp -l offsets 137 and 217 octal); the compiled OBJECT FILE is byte-reproducible (0 differing bytes across rebuilds, sha256 a759557e... == a759557e...).",
+    "design_consequence": "cache ENVELOPE integrity verifies the published bytes themselves (digest in meta); REBUILD reproducibility (F-CROSS-RUN-WRITE solo verification) compares the deterministic .o projection recorded in meta as determinism_digest, never the linked exe bytes."
+  },
+  "amendment_windows_sharing": {
+    "measured_during_validation": "Windows refuses os.replace(staging, entry) while a reader holds the entry open (WinError 5), and a reader can see a transient sharing violation while a swap is in flight -- POSIX rename has neither behavior. Surfaced as a near-fire of F-PARTIAL-PUBLISH in the publish/read race (a reader crashed on PermissionError before the hardening).",
+    "protocol_consequence": "get() retries the open bounded (6x) and records 'io-contention' as a refusal (a miss -- never partial bytes); publish() retries os.replace bounded (8x) and fails CLEANLY on exhaustion. A reader still only ever observes: old complete entry, new complete entry, or miss.",
+    "amended": "2026-09-21, before the receipt-bearing run"
+  },
+  "theory": {
+    "statement": "Concurrent jobs need ZERO source-tree clones: one shared object store (the canonical sparse clone) serves N simultaneous jobs as sparse READ-ONLY git worktrees; each job owns private writable build/generated/trace/temp dirs; completed artifacts publish ATOMICALLY into a content-addressed cache keyed by (input hashes + flags + toolchain digest).",
+    "prediction_a": "3 simultaneous real engine-build jobs (g++ compile of tools/constraint_ledger/trace_harness.cpp against the checked-out engine headers) complete with per-job source cost ~= working tree only -- the object store is paid ONCE; a per-lane full clone pays objects+tree per lane.",
+    "prediction_b": "A second wave of identical requests is a 100% cache hit (published artifact byte-identical to the fresh build, no recompile).",
+    "prediction_c": "All four falsifiers stay green under real concurrency."
+  },
+  "falsifiers": {
+    "F-CROSS-RUN-WRITE": {
+      "fires_if": "any job observed mutating ANOTHER job's outputs or the SHARED SOURCE, verified by (i) the construction guards (SourceView exposes no write API; view files OS-read-only 0o444; JobWorkspace.resolve refuses path escape; outputs sealed read-only on completion), (ii) an actual write attempt during the concurrent wave (must raise PermissionError/ValueError), (iii) post-wave re-hash of every view's tracked files vs pre-wave git blob ids and of every job's artifact vs its solo-run digest.",
+      "measurement": "real concurrent builds: 3 simultaneous g++ jobs over their own sparse worktrees"
+    },
+    "F-CACHE-COLLISION": {
+      "fires_if": "any semantically different request (different input bytes, different flags, or different toolchain digest) resolves to a SHARED cache artifact -- i.e. two distinct canonical requests produce the same key, or a key lookup returns bytes matching the OTHER request's build.",
+      "measurement": "pairwise key distinctness across (-O0 vs -O2 flags), (original vs mutated input), (g++ vs different toolchain digest); artifact bytes must differ for distinct requests"
+    },
+    "F-PARTIAL-PUBLISH": {
+      "fires_if": "an interrupted publication is accepted by a reader: (i) a truncated envelope planted at the final cache name returns PARTIAL bytes or True on get(); (ii) an orphaned .tmp staging file is readable as an entry; (iii) a publisher killed mid-write leaves a readable entry; (iv) any digest mismatch in an envelope is returned to the caller instead of refused-and-rebuilt.",
+      "measurement": "get() must return miss + record a refusal event for every partial form; atomic protocol = tmp staging dir (same volume) + fsync + re-read digest verify + os.replace"
+    },
+    "F-SOURCE-CLONE": {
+      "fires_if": "the tested workflow REQUIRES a per-lane duplicate source tree -- measured by byte census: bytes of (a) the shared object store, (b) one sparse read-only worktree view, (c) a real full clone; the 3-job workflow must complete with exactly ONE object store and per-job cost ~= view only, and build-dir reuse economics (wave-2 hits) reported.",
+      "measurement": "du census + git count-objects; duplication factor = per-lane clone cost / shared-store per-job cost"
+    }
+  },
+  "cache_key_schema": {
+    "key": "sha256(canonical_json({schema:'cl-cache-key/1', inputs:{path_or_private:content_sha256}, flags:sorted_flag_list, toolchain_digest}))",
+    "inputs": "the REAL dependency closure from `g++ -MM` over the job's own view; private (generated) inputs hashed by content with a 'private:' prefix, repo files by repo-relative path",
+    "toolchain_digest": "sha256(g++ --version output + g++ -dumpmachine)",
+    "collision_resistance_note": "distinct semantic requests -> distinct canonical JSON -> distinct keys; equality requires either identical semantics or a sha256 collision"
+  }
+}

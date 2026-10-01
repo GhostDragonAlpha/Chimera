@@ -1,0 +1,33 @@
+@prefix c: <urn:chimera:ontology:> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Selected structural constraints only; not a full replacement for model.validate.
+c:MembraneShape a sh:NodeShape ; sh:targetClass c:Membrane ;
+    sh:property [ sh:path c:kind ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:sparql [ sh:message "containment_cycle" ; sh:select """
+      PREFIX c: <urn:chimera:ontology:>
+      SELECT $this WHERE { $this c:parent+ $this }
+    """ ] .
+c:RootShape a sh:NodeShape ; sh:targetClass c:Root ;
+    sh:property [ sh:path c:parent ; sh:maxCount 0 ] .
+c:ContainedShape a sh:NodeShape ; sh:targetClass c:ContainedMembrane ;
+    sh:property [ sh:path c:parent ; sh:minCount 1 ; sh:maxCount 1 ; sh:class c:Membrane ] .
+c:PortShape a sh:NodeShape ; sh:targetClass c:Port ;
+    sh:property [ sh:path c:owner ; sh:minCount 1 ; sh:maxCount 1 ; sh:class c:Membrane ] ;
+    sh:property [ sh:path c:protocol ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path c:unit ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ] ;
+    sh:property [ sh:path c:delegatesTo ; sh:maxCount 1 ; sh:class c:Port ] .
+c:ConnectionShape a sh:NodeShape ; sh:targetClass c:Connection ;
+    sh:property [ sh:path c:endpoint ; sh:minCount 2 ; sh:maxCount 64 ; sh:class c:Port ] ;
+    sh:sparql [ sh:message "port_contract_mismatch" ; sh:select """
+      PREFIX c: <urn:chimera:ontology:>
+      SELECT $this WHERE {
+        $this c:endpoint ?a, ?b .
+        ?a c:protocol ?pa ; c:unit ?ua .
+        ?b c:protocol ?pb ; c:unit ?ub .
+        FILTER (?pa != ?pb || ?ua != ?ub)
+      }
+    """ ] .
+c:MatterShape a sh:NodeShape ; sh:targetClass c:MatterIdentity ;
+    sh:property [ sh:path [ sh:inversePath c:ownsMatter ] ; sh:maxCount 1 ] .

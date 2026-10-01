@@ -1,9 +1,0 @@
-{
- "criteria_sha256_attempt": "f784d613aaebc3c2c24350a6cd4a5fb103f72f929f83b5fd9926395b55a040e8",
- "criteria_sha256_card": "f784d613aaebc3c2c24350a6cd4a5fb103f72f929f83b5fd9926395b55a040e8",
- "db_path": "E:\\ChimeraWork\\monkey-coordination\\agent_slots.sqlite3",
- "extractor": "sqlite3 mode=ro; json payload; card+attempt criteria asserted",
- "mode": "READ_ONLY (G7/P7)",
- "note": "CANONICAL_LAYERS tripwire present and empty: the records/offline profile declares no diagnostic layers; a shape change fails loudly instead of silently projecting",
- "row_path": "state[id=1].kanban.cards.MAT2-A08.spec.ontology_qualification.task.verification_profile"
-}

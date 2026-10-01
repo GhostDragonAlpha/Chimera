@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CHIMERA — press it and the water answers</title>
+<meta name="description" content="CHIMERA is a living creature of sealed water cells: press it anywhere and the pressure answers; let go and watch it heal. Ten short lessons, free in your browser.">
+<meta property="og:title" content="CHIMERA — press it and the water answers">
+<meta property="og:description" content="A living creature of sealed water cells. Press it anywhere and the pressure answers; let go and watch it heal. Ten short lessons, free in your browser.">
+<meta property="og:type" content="website">
+<!-- og:image is the REAL store capsule (R7, B2 art) served beside this file --
+     the URL is relative so the page stays honest wherever it is deployed. -->
+<meta property="og:image" content="store_art/capsule_616x353.png">
+<meta property="og:image:width" content="616">
+<meta property="og:image:height" content="353">
+<meta property="og:image:alt" content="CHIMERA — touch the living physics">
+<meta property="og:image" content="store_art/capsule_460x215.png">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M16 3C16 3 7 14.5 7 21a9 9 0 0 0 18 0C25 14.5 16 3 16 3Z' fill='%23c9a227'/><circle cx='12.5' cy='20' r='2' fill='%230a0e15'/></svg>">
+<style>
+  :root {
+    --bg: #0e131b;
+    --bg-deep: #0a0e15;
+    --panel: #141b26;
+    --line: #24303f;
+    --ink: #dde4ee;
+    --dim: #8d99ab;
+    --gold: #c9a227;
+    --gold-bright: #e7c766;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    background-image: radial-gradient(ellipse 90% 60% at 50% -10%, #16202e 0%, var(--bg) 60%);
+    color: var(--ink);
+    font-family: Georgia, "Palatino Linotype", "Times New Roman", serif;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 24px; }
+  .kicker {
+    color: var(--gold);
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+  }
+  a { color: var(--gold-bright); }
+
+  /* -- hero ---------------------------------------------------------- */
+  /* .wrap's padding shorthand (0,1,0) would beat a bare `header` rule
+     (0,0,1) and flatten the hero -- match the class to win. */
+  header.wrap {
+    text-align: center;
+    padding: 110px 24px 90px;
+  }
+  header .kicker { display: block; margin-bottom: 26px; }
+  h1 {
+    font-size: clamp(52px, 10vw, 96px);
+    font-weight: normal;
+    letter-spacing: 0.22em;
+    text-indent: 0.22em; /* balance the tracking */
+    color: var(--ink);
+  }
+  .rule {
+    width: 72px; height: 1px;
+    background: var(--gold);
+    margin: 34px auto;
+  }
+  .tagline {
+    font-style: italic;
+    color: var(--dim);
+    font-size: 20px;
+    max-width: 34em;
+    margin: 0 auto 46px;
+  }
+  .btn {
+    display: inline-block;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 15px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--gold-bright);
+    border: 1px solid var(--gold);
+    background: transparent;
+    padding: 18px 44px;
+    cursor: pointer;
+    transition: background 0.25s, color 0.25s;
+  }
+  .btn:hover { background: var(--gold); color: var(--bg-deep); }
+  .play-sub {
+    margin-top: 20px;
+    font-size: 15px;
+    color: var(--dim);
+  }
+  .play-note {
+    margin-top: 12px;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--dim);
+  }
+
+  /* -- how it works --------------------------------------------------- */
+  section { padding: 70px 0; border-top: 1px solid var(--line); }
+  h2 {
+    font-weight: normal;
+    font-size: 26px;
+    letter-spacing: 0.08em;
+    margin: 10px 0 36px;
+  }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 18px;
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-top: 1px solid var(--gold);
+    padding: 26px 22px;
+  }
+  .card h3 {
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    color: var(--gold-bright);
+    margin-bottom: 12px;
+  }
+  .card p { color: var(--dim); font-size: 16px; }
+
+  /* -- signup ---------------------------------------------------------- */
+  .signup-inner { max-width: 460px; margin: 0 auto; text-align: center; }
+  .signup-inner p.lead { color: var(--dim); margin: 0 0 30px; }
+  form { display: grid; gap: 14px; }
+  input {
+    font: inherit;
+    color: var(--ink);
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    padding: 14px 16px;
+  }
+  input:focus { outline: none; border-color: var(--gold); }
+  input::placeholder { color: #5b6678; }
+  #join { width: 100%; margin-top: 6px; }
+  #note { min-height: 1.6em; font-style: italic; color: var(--dim); }
+  #note.good { color: var(--gold-bright); }
+
+  /* -- footer ---------------------------------------------------------- */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 36px 0 44px;
+    text-align: center;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 13px;
+    color: var(--dim);
+    letter-spacing: 0.06em;
+  }
+  footer .count { color: var(--gold); display: block; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <span class="kicker">a serious indie physics game</span>
+  <h1>CHIMERA</h1>
+  <div class="rule"></div>
+  <p class="tagline">a creature of sealed water cells. press it anywhere and the pressure answers — let go, and watch it heal.</p>
+  <!-- W7: the play-door region -- button, note, and the demoUrl derivation
+       + unit harness in the script below. -->
+  <button class="btn" id="play">Play the demo</button>
+  <p class="play-sub">free in your browser, nothing to install — ten short lessons, every answer given by touch. sound on.</p>
+  <p class="play-note" id="play-note" hidden>the demo opens on its own door: <span id="play-host"></span></p>
+</header>
+
+<section class="wrap">
+  <span class="kicker">how it works</span>
+  <h2>one creature, shared by everyone</h2>
+  <div class="cards">
+    <div class="card">
+      <h3>One world</h3>
+      <p>one world runs, and every player joins it as another camera. there is only one creature, and it keeps its memory between visits.</p>
+    </div>
+    <div class="card">
+      <h3>Real water</h3>
+      <p>the body is sealed cells of water. squeeze one and its pressure rises by the compressibility law of water — and its neighbours feel it.</p>
+    </div>
+    <div class="card">
+      <h3>Real healing</h3>
+      <p>let go and the body returns to rest on the relaxation clock of real tissue — exactly.</p>
+    </div>
+    <div class="card">
+      <h3>Ten lessons</h3>
+      <p>ten short lessons, each one question you answer by touching — and the physics, not a quiz, decides when you have passed.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="signup-inner">
+    <span class="kicker">keep in touch</span>
+    <h2>join the list</h2>
+    <p class="lead">leave your name and email and we shall write when there is news worth reading. no noise, no fuss.</p>
+    <form id="signup">
+      <input id="name" type="text" name="name" placeholder="your name" autocomplete="name" maxlength="32" required>
+      <input id="email" type="email" name="email" placeholder="your email" autocomplete="email" required>
+      <button class="btn" id="join" type="submit">Join</button>
+    </form>
+    <p id="note"></p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    built by hand, measured, and alive.
+    <span class="count">join <span id="n">…</span> explorers</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  // THE PLAY DOOR. A membrane in three parts: STATEMENT -- the demo door is
+  // a pure function of where this page was served from, never a constant;
+  // PREDICTION -- one file yields a different door for localhost, 127.0.0.1,
+  // www.chimera.game, chimera.game and a bare intranet host, resolved before
+  // any click; FALSIFIER -- selfTestDemoUrl() below warns on any mismatch.
+  // Locally the demo is the game shell on port 8206 of this very host;
+  // publicly, docs/DEPLOY_RUNBOOK.md Option A routes play.<domain> to the
+  // same 8206 beside www.<domain> (swap the www alias for "play", prepend
+  // "play." to any other multi-label host); a single-label host has no
+  // domain to rewrite, so the only honest door is same-origin /play.
+  function demoUrl(hostname) {
+    var h = hostname !== undefined ? hostname : (window.location.hostname || "");
+    if (h === "" || h === "localhost" || /^127\./.test(h) ||
+        h === "::1" || h === "[::1]") {
+      // D4 (H6 funnel audit): the game shell binds IPv4 only -- a [::1]:8206
+      // door is REFUSED. A v6-served page therefore names the shell's real
+      // IPv4 door; loopback is one machine, so 127.0.0.1 reaches it.
+      return "http://127.0.0.1:8206";
+    }
+    var labels = h.split(".");
+    if (labels.length < 2) {
+      return "/play"; // single-label host: same-origin /play is all we can say
+    }
+    // The runbook ingress is play.<domain> beside www.<domain>: swap the
+    // leftmost label ONLY when it is the www alias, prepend otherwise --
+    // naive leftmost-swap would send chimera.game to the FOREIGN play.game.
+    if (labels[0] === "www") { labels[0] = "play"; }
+    else { labels.unshift("play"); }
+    return "https://" + labels.join(".");
+  }
+
+  var playTarget = demoUrl();
+  document.getElementById("play").addEventListener("click", function () {
+    window.open(playTarget, "_blank", "noopener");
+  });
+  // the dim note names the resolved door, PUBLIC CASE ONLY: a local visitor
+  // already knows their door (and a single-label intranet host has none to
+  // name), while a stranger on www.<domain> is told where the demo lives
+  // before they click.
+  if (playTarget.indexOf("https://play.") === 0) {
+    document.getElementById("play-host").textContent = playTarget;
+    document.getElementById("play-note").hidden = false;
+  }
+
+  // THE UNIT HARNESS (fleet G6). The door law is pure, so its five mission
+  // cases are asserted on every load: quiet when all pass, one console line
+  // naming host, got and want for each failure. No DOM footprint.
+  function selfTestDemoUrl() {
+    var cases = [
+      ["localhost",        "http://localhost:8206"],
+      ["127.0.0.1",        "http://127.0.0.1:8206"],
+      ["::1",              "http://127.0.0.1:8206"],
+      ["[::1]",            "http://127.0.0.1:8206"],
+      ["www.chimera.game", "https://play.chimera.game"],
+      ["chimera.game",     "https://play.chimera.game"],
+      ["intranet-host",    "/play"]
+    ];
+    var bad = [];
+    cases.forEach(function (c) {
+      var got = demoUrl(c[0]);
+      if (got !== c[1]) { bad.push(c[0] + " -> " + got + " (want " + c[1] + ")"); }
+    });
+    if (bad.length) {
+      console.warn("demoUrl self-test FAILED:", bad.join(" | "));
+    }
+    return bad.length === 0;
+  }
+  selfTestDemoUrl();
+
+  function showCount() {
+    var line = document.querySelector(".count");
+    fetch("/api/signups/count").then(function (r) { return r.json(); }).then(function (d) {
+      var n = d && typeof d.count === "number" && isFinite(d.count) ? d.count : null;
+      if (n === null) { line.hidden = true; return; } // no number, no line
+      document.getElementById("n").textContent = String(n);
+      line.hidden = false;
+    }).catch(function () {
+      line.hidden = true; // the count is decoration; never fake it
+    });
+  }
+  showCount();
+
+  document.getElementById("signup").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var note = document.getElementById("note");
+    note.className = "";
+    note.textContent = "";
+    var body = {
+      name: document.getElementById("name").value,
+      email: document.getElementById("email").value
+    };
+    fetch("/api/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    }).then(function (r) { return r.json(); }).then(function (d) {
+      if (d.ok) {
+        note.className = "good";
+        note.textContent = "you're on the list. the creature will be waiting.";
+        document.getElementById("signup").reset();
+        showCount();
+      } else {
+        note.textContent = d.error || "that did not go through — do try again.";
+      }
+    }).catch(function () {
+      note.textContent = "the door seems stuck — do try again in a moment.";
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

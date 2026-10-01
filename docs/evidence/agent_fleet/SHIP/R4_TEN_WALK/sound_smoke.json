@@ -1,0 +1,25 @@
+{
+ "url": "http://127.0.0.1:8206",
+ "at": "2026-09-14T12:26:00.872Z",
+ "main": {
+  "booted": true,
+  "audioContextsAtLoad": 0,
+  "audioContextsAfterGesture": 1,
+  "playScreenOn": true,
+  "allMethodsCallClean": true,
+  "judgeLineMidPress": "judge: wake_the_cell phase=release goalMet=true passed=false touchTarget=set lastTouchForce=20000 holding=true",
+  "pressHolds": true,
+  "torsoPaDuringPress": 1089880,
+  "pressMovedPhysics": true,
+  "consoleErrors": [],
+  "zeroConsoleErrors": true
+ },
+ "blocked": {
+  "booted": true,
+  "chimeraSoundAbsent": true,
+  "pressHolds": true,
+  "uncaughtPageErrors": [],
+  "zeroUncaughtErrors": true
+ },
+ "pass": true
+}

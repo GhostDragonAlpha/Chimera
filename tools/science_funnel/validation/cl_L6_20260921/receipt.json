@@ -1,0 +1,170 @@
+{
+ "base": "agent/cl-L0-baseline-20260921 @ 7181b8ce",
+ "date": "2026-09-21",
+ "falsifiers": {
+  "F-CORE-NONMINIMAL": {
+   "members_rechecked": 11,
+   "violations": 0
+  },
+  "F-CORE-UNSOUND": {
+   "cores_rechecked": 4,
+   "violations": 0
+  },
+  "F-FALSE-CLEARANCE": {
+   "false_clearances": 0,
+   "sealed_unsat_fixtures": 4,
+   "unknown_clearance_attempts": 0
+  }
+ },
+ "falsifiers_all_green": true,
+ "fixtures": [
+  {
+   "core": null,
+   "expect": "sat",
+   "expect_core": null,
+   "fixture": "l6_sat_band",
+   "horizon": "single-state-snapshot@0",
+   "n_records": 3,
+   "notes": [],
+   "raw_core": null,
+   "sealed_digest": "f5ee5217ee3b7e76cafbf4ec6e9a1d3c1970a74a14b7589bca11d94179ef83d7",
+   "status": "sat",
+   "witness_checked": true
+  },
+  {
+   "core": [
+    "l6_pair_r1_lo",
+    "l6_pair_r2_hi"
+   ],
+   "core_direct_conjunction_unsat": true,
+   "every_member_indispensable": true,
+   "expect": "unsat",
+   "expect_core": [
+    "l6_pair_r1_lo",
+    "l6_pair_r2_hi"
+   ],
+   "fixture": "l6_pair_bound",
+   "horizon": "single-state-snapshot@0",
+   "identity": "534dcac3c4fec185d269e83aba4325a88c171b97d62bf57ccbfee260a7ed0b22",
+   "n_records": 2,
+   "notes": [],
+   "raw_core": [
+    "l6_pair_r1_lo",
+    "l6_pair_r2_hi"
+   ],
+   "sealed_digest": "e66073968b1205d0668a9aefae5c03673f0ad68c0095f53e0b0992a79b20f01b",
+   "status": "unsat",
+   "witness_checked": false
+  },
+  {
+   "core": [
+    "l6_triple_r1_xy",
+    "l6_triple_r2_yz",
+    "l6_triple_r3_xneqz"
+   ],
+   "core_direct_conjunction_unsat": true,
+   "every_member_indispensable": true,
+   "expect": "unsat",
+   "expect_core": [
+    "l6_triple_r1_xy",
+    "l6_triple_r2_yz",
+    "l6_triple_r3_xneqz"
+   ],
+   "fixture": "l6_triple_eq_neq",
+   "horizon": "single-state-snapshot@0",
+   "identity": "eee7527b3e2d8d0d2833393daf7b448989f3a336c97ab720a5aab5d3d56e8401",
+   "n_records": 3,
+   "notes": [],
+   "raw_core": [
+    "l6_triple_r1_xy",
+    "l6_triple_r2_yz",
+    "l6_triple_r3_xneqz"
+   ],
+   "sealed_digest": "8aa5f4409c62587c9787ea9207f798ac8ba8b9cf0f9090c371c1702ce131bcd3",
+   "status": "unsat",
+   "witness_checked": false
+  },
+  {
+   "core": [
+    "l6_herr_r2_lo",
+    "l6_herr_r3_hi"
+   ],
+   "core_direct_conjunction_unsat": true,
+   "every_member_indispensable": true,
+   "expect": "unsat",
+   "expect_core": [
+    "l6_herr_r2_lo",
+    "l6_herr_r3_hi"
+   ],
+   "fixture": "l6_herring",
+   "horizon": "single-state-snapshot@0",
+   "identity": "e424136c9c267c06e49fd96908706f03bbffba2d3a4c9f886d71c9f0d88d8bd1",
+   "n_records": 3,
+   "notes": [],
+   "raw_core": [
+    "l6_herr_r2_lo",
+    "l6_herr_r3_hi"
+   ],
+   "sealed_digest": "becc6c58f1e1d864469cf5d0f1d3132cebffb0aa515d1512947449a57447b7aa",
+   "status": "unsat",
+   "witness_checked": false
+  },
+  {
+   "core": [
+    "l6_gap_d1_tsum",
+    "l6_gap_i1_a",
+    "l6_gap_i2_b",
+    "l6_gap_i3_t"
+   ],
+   "core_direct_conjunction_unsat": true,
+   "every_member_indispensable": true,
+   "expect": "unsat",
+   "expect_core": [
+    "l6_gap_d1_tsum",
+    "l6_gap_i1_a",
+    "l6_gap_i2_b",
+    "l6_gap_i3_t"
+   ],
+   "fixture": "l6_def_gap",
+   "horizon": "single-state-snapshot@0",
+   "identity": "fea90c92de53b849e9aa9507864afb4a022a193611502bcca022a80d710e85ca",
+   "n_records": 4,
+   "notes": [],
+   "raw_core": [
+    "l6_gap_d1_tsum",
+    "l6_gap_i1_a",
+    "l6_gap_i2_b",
+    "l6_gap_i3_t"
+   ],
+   "sealed_digest": "a48364686a65c839bb3fce35f93b936035ede4c911b4766a73ea68245d39d706",
+   "status": "unsat",
+   "witness_checked": false
+  }
+ ],
+ "lane": "L6",
+ "lane_branch": "agent/cl-L6-cores-20260921",
+ "prediction_held": true,
+ "prereg": {
+  "falsifiers": {
+   "F-CORE-NONMINIMAL": "a claimed minimal core stays unsat after removing a member (every member must be indispensable: core-minus-member SAT)",
+   "F-CORE-UNSOUND": "a reported core is satisfiable in the exact background (direct conjunction, no activation literals, fresh solver) \u2014 VOID if it fires",
+   "F-FALSE-CLEARANCE": "an infeasible fixture marked feasible; unknown is never clearance"
+  },
+  "prediction": "the triple fixture (x=y ^ y=z ^ x!=z) minimizes to exactly {r1,r2,r3} \u2014 every pair sat, the triple unsat \u2014 and the shrunk core rechecks unsat; satisfiable fixtures are never reported as cores",
+  "statement": "encoding each record as enabled_X => constraint_X under activation-literal assumptions makes every unsat explainable by an inclusion-minimal named set of record IDs whose constraints alone are unsat in the exact background theory"
+ },
+ "protocol": "chimera-record-pilot-v1",
+ "scope": "numeric quantities are an exact-Real relaxation of f64/int; every SAT verdict is bridge-checked in true float64 via expr.evaluate (inexact models refuse the witness); UNSAT cores are rechecked by DIRECT conjunction in the exact background; unknown is never clearance",
+ "solver": {
+  "dpll_fallback": "NOT NEEDED and NOT USED \u2014 z3 installed; stating so per spec",
+  "engine": "z3 (z3-solver)",
+  "installed_for_lane": true,
+  "version": "5.1.0"
+ },
+ "trailer": "Agent: GLM 5.3",
+ "triple_pair_satisfiability": {
+  "l6_triple_r1_xy+l6_triple_r2_yz": "sat",
+  "l6_triple_r1_xy+l6_triple_r3_xneqz": "sat",
+  "l6_triple_r2_yz+l6_triple_r3_xneqz": "sat"
+ }
+}

@@ -1,0 +1,105 @@
+{
+ "schema": "chimera.rule0.preregistration.v1",
+ "lane": "vanhoof_law_20260920",
+ "branch": "lane/vanhoof-law-20260920",
+ "base": "f59bd87377feccc65c4fb3c8141c0058e088ca3a (lane/vanhoof-transcription-20260920 tip, 'VTRANS lane close: F1 STOP FLOOR FIRED, zero admission')",
+ "agent": "GLM 5.3 (Agent: vlaw) -- the law re-registration lane named by the VTRANS stop receipt",
+ "written_before": "any constant derivation (web or local full-text) AND any law pass re-run; this file pins the decision rule, the floors, the falsifiers, and the value pins",
+
+ "inherits": {
+  "transcription_lane": "tools/science_funnel/validation/vanhoof_transcription_20260920/ @ f59bd873 (record.md + receipt.json prereg + receipt_final.json verdicts)",
+  "successor_scope_quoted_from_vtrans_receipt": "re-register the closure law at the source's own arithmetic: (a) rho = 1.10 g/cm3 (measured implied median 1.1004, IQR 1.095-1.115) or the paper's stated constant if obtainable from the article PDFs (named-not-obtained by the intake); (b) tolerance sized from the measured residual distribution (p95 13.5%), or per-row pennation modeling; (c) the double-entry transcription in this lane (654 TENTATIVE values, 100% agreement) is the ready input -- no re-reading needed",
+  "how_this_lane_honors_it": "this lane executes (a) via the paper's own text (route STATED-CITED) or, failing a stated constant, via the landed measured estimator (route MEASURED-DECLARED); the tolerance and both floors stay INHERITED at 0.02 / 0.90 / 0.80 -- successor option (b) (tolerance re-sizing) is DECLINED by this prereg because a tolerance sized from the residual distribution is fit-to-pass by construction (Rule 1); per-row pennation modeling is likewise declined (it repairs what the source states, and the source omits pennation by the authors' own omission)"
+ },
+
+ "target": {
+  "sheet": "JOA-238-321-s002.tif (THE MACAQUE TABLE, S2-only; S1 gibbon table never opened)",
+  "tiff_sha256": "cb9e91be3d2345182b6d2b956245b76905243d4bbf37fff79c3d96a802e5debe",
+  "manifest_3_fields": ["mass_g", "fl_mm", "pcsa_mm2"],
+  "frozen_inputs": {
+   "reconciliation.json": "bed1def5ff3891d16b044b0f6815266223446affea0e9bffaa869cd7ea847903",
+   "crops_manifest.json": "2e59db7a1b4e89bdcd0d3ef9929db17ed03c5aa40a03e8c4a2796ac8c0583559",
+   "laws.json_landed_inherited_run": "94dc0e18b1b7ec273f64eff6d366f51378cca2a198248498b4a56482fda0f85c",
+   "vtrans_prereg_receipt.json": "1311ec116c6c71689554f8e59f70ff9fa8f91774d398af2b4a868ce88f756b2d",
+   "vtrans_receipt_final.json": "6b3e40e7c5bf38346cfcbb06111bb43ec8f8819102477d6b7dea2eeeacdff60e",
+   "passA_passB_tile_files": "24 files, sha256s pinned in crops_manifest.json + landed lane receipts; re-reading them for per-cell tile provenance is mechanical, never for values"
+  },
+  "value_pin": {
+   "what": "canonical sha256 of the sorted [muscle, specimen, field, printed-string] list of every TENTATIVE cell (json, separators (',',':'), sort_keys, utf-8)",
+   "sha256": "efbd3aefc6711e66b6461ea5b9af6abb646a99ed5aedd0b6d30945d9ca21f4b7",
+   "n_cells": 654,
+   "n_complete_rows": 218,
+   "n_muscle_keys": 35,
+   "specimens": ["Mm1", "Mm2", "Mm3", "Mm4", "Mm5", "Mm6", "Mm7"]
+  }
+ },
+
+ "rule0": {
+  "statement": "The source's own arithmetic constant is derivable -- either STATED in the paper (PMC7812139, Vanhoof et al., Part II) or, if the paper states none, MEASURED from the source's own arithmetic by the landed lane's declared estimator -- and the pcsa_closure law re-registered at that one constant (tolerance, floors, and law form unchanged) passes >= 90% of the 218 checkable rows.",
+  "prediction": [
+   "P-CONST: the paper states (or cites its density source for) rho ~= 1.10-1.112 g/cm3 -- the standard primate-muscle density used in that literature; if it states none, the measured estimator (median implied density 1.1004 g/cm3, IQR 1.095-1.115, n=218) is the registered constant",
+   "P-RATE: at the registered constant the law pass rate lands 90-98% of the 218 checkable rows -- the landed residual structure at rho=1060 (dev p5/p50/p95 = 1.2%/3.8%/13.5%, median dev == 1.1004/1.060-1 = 3.81%) is dominated by the constant itself, with a minority tail of per-row effects",
+   "P-RESIDUAL: the failing minority concentrates in specific muscles/animals with known source structure (merged muscles: APB+FPB, FDP heads, conn. FDS-FDP; marker-heavy rows), not uniformly -- a uniform spread would indicate transcription noise, which the 1.0 double-entry agreement already weighs against"
+  ],
+  "falsifier": [
+   "F1 LAW-STILL-FAILS: pass rate < 0.90 at the derived constant -- STOP honestly; the residual is per-row source inconsistency; report its structure (which muscles/animals deviate, deviation classes) as a data-quality finding about the source, never a tuning invitation",
+   "F2 FIT-TO-PASS: any constant chosen AFTER seeing a pass rate at it, or chosen to maximize passes rather than by the pre-committed evidence order (stated-cited first, measured-declared second) -- fired; the tolerance, the floors, and the law form are inherited, and any change to them after a run is also F2",
+   "F3 NO-RETRANSCRIBE: any value in this lane's outputs differing from the landed 654 TENTATIVE cells (value pin above) -- fired; the pins are absolute; if a law verdict exposes a genuine transcription suspect it is NAMED in the receipt, never silently changed and never re-read from the TIFFs",
+   "F4 DETERMINISM: every lane script (laws_registered.py, admit_law.py, cross_specimen.py) must be 3-run byte-identical on the frozen inputs -- fired on any byte difference",
+   "F5 SCOPE: any source change outside tools/science_funnel/validation/vanhoof_law_20260920/ (lane dir) plus the funnel's declared admission paths this lane writes through (none: the shared batch/ connectors, the graph store, and all other validation lanes are read-only to this lane) -- fired; no S1, no gait_*, no first_skill_prestage_20260922_, no master, no shared tooling"
+  ],
+  "constant_derivation_pre_commitment": {
+   "order": [
+    "(a) STATED-CITED: WebSearch/WebFetch the source paper (PMC7812139, Vanhoof et al., macaque forearm architecture) for its STATED muscle density or its PCSA computation method; also check the intake's staged, sha-pinned full-text XML of the same article (tools/science_funnel/data/vanhoof_forearm/PMC7812139_fulltext.xml, sha256 47cc6b836d0a9b44d8a1ab35dba1c91114291f63721c2db44175de001c1ce8f8) and cross-check any local hit against the live web. If the paper states its constant, THAT is the law, cited (quote + url + the density citation it names).",
+    "(b) MEASURED-DECLARED: only if (a) finds no stated constant and no stated PCSA method constant: register the derived-from-source estimator the landed lane already measured -- median implied density 1.1004 g/cm3, method implied_rho_g_cm3 = 1000*mass_g/(PCSA_mm2*fl_mm) per checkable row, median over n=218, IQR 1.095-1.115 carried, method declared."
+   ],
+   "registration_artifact": "constants.json in this lane, written BEFORE the law re-run, carrying: route taken, the evidence (quote/citation/url or estimator + distribution), the constant, and the unchanged inherited tolerance/floors; the re-run script consumes constants.json and refuses to run if it is absent or internally inconsistent",
+   "which_route_note_recorded_where": "constants.json.route + record.md ledger"
+  },
+  "laws_predeclared_constants_inherited_not_tuned": {
+   "rho_kg_m3": "REGISTERED by the derivation above (stated-cited preferred; measured-declared fallback) -- the ONE constant this lane re-registers",
+   "law_tolerance_rel": 0.02,
+   "tolerance_source": "adapters_muscle.py / admit_vanhoof.py / vtrans prereg -- inherited verbatim, NOT re-sized (successor option (b) declined, see inherits)",
+   "law_form": "PCSA_mm2_pred = 1e6 * (mass_g/1000) / (rho_g_cm3 * fl_mm/1000); checkable iff mass_g, fl_mm, pcsa_mm2 all TENTATIVE; PASS iff |PCSA_table - PCSA_pred|/PCSA_pred <= 0.02; verdict JOINT for the row-triple",
+   "floors": {"double_entry_agreement": 0.80, "law_pass_on_checkable_rows": 0.90},
+   "floor_source": "vtrans prereg stop_floors -- inherited verbatim",
+   "not_runnable_laws_unchanged": ["mass_additivity_dev (no belly/tendon mass columns)", "density law (no volume column)", "mtu additivity (no MTU/tendon columns)"]
+  },
+  "admission_tiers_original": [
+   "ADMITTED: every TENTATIVE cell of a row-triple whose pcsa_closure verdict at the registered constant is PASS -- carries its existing provenance (panel + tile crop sha256 + (muscle, specimen, field) identity + both pass values + legibility classes) plus the new law verdict (constant + route + rel_dev)",
+   "REFUSED row_closure_violation: every TENTATIVE cell of a FAIL row-triple, with its deviation class reported (descriptive classes only, declared now, never admitters): dev <= 0.02 pass; 0.02 < dev <= 0.10 class moderate_register_unrounded (print-register rounding and unrounded intermediates); dev > 0.10 class large_per_row_structure (per-row source structure: merged muscles, measurement spread, pennation-class effects) -- the source's truth is NAMED, not repaired",
+   "REFUSED markers unchanged: marker_absent (45), marker_absent_cfr (42), marker_crossref_APB (6), marker_crossref_FDP (12) -- the source's own text markers stay named refusals",
+   "REFUSED merged_cell_covered: 15 positions -- unchanged",
+   "a genuine transcription suspect, if a law verdict exposes one, is NAMED in the receipt (suspect list) and the pin HOLDS -- never silently changed (F3)"
+  ],
+  "count_identity": "774 = admitted + refused(weighted by named code), zero silent drops; internally 774 = 654 TENTATIVE + 105 MARKER_AGREED + 15 BLANK_AGREED (landed, re-verified by this lane from the pinned reconciliation.json)"
+ },
+
+ "funnel_admission_plan": {
+  "named_by": "vanhoof_prestage_20260921 RUNBOOK steps 5-6 (the quantitative part) as pointed through by vanhoof_intake_20260920 record.md",
+  "record_class": "batch.property.measurement v1 via tools.science_funnel.common.draft + tools.science_funnel.units.convert (SI: g->kg, mm->m, mm2->m2), one record per (muscle, specimen, field) of an ADMITTED cell",
+  "external_id_shape": "vanhoof:s002:{muscle}:{specimen}:{field} (RUNBOOK step 6's content-derived idempotent-replay shape)",
+  "provenance_fields_per_record": ["tiff_sha256", "sheet", "panel", "tile_crop_sha256s (both passes)", "both pass values", "legibility classes", "muscle", "specimen", "field", "law verdict {constant, route, rel_dev, run}", "source marker none (admitted cells are numeric)"],
+  "manifest_registered_honestly": "the prestage machinery (admit_vanhoof.admit) requires all 7 canonical fields; the measured manifest carries 3 (mass_g/fl_mm/pcsa_mm2) -- the intake's F-MANIFEST named branch applies: admit_vanhoof.py is NOT modified and NOT forced; this lane registers the 3-field manifest honestly (connector-style manifest in the lane dir, same schema fields as batch/connectors_*.py: connector_id, adapter (lane), data pins, classes) and drives the same contract shapes from the lane dir; the density/mtu laws stay named not-runnable",
+  "idempotent_replay": "3 independent admission runs over the identical frozen inputs produce byte-identical records+rejections (F4); record ids re-propose as no-ops by construction",
+  "gates": "tools/training_gate.py is run read-only if it accepts a lane-scoped invocation; any step that would WRITE shared state outside the lane (graph store apply, controller admission) is NOT run from this lane -- the funnel's own mode 'proposals are reviewable files; generating one is not a claim of admission' is the honest ceiling for a lane whose record set exists as files; the graph apply + fleet qualify stay the downstream consumer's step, named in the receipt"
+ },
+
+ "cross_specimen_summary_plan": {
+  "what": "per-muscle n / mean / min / max for mass_g, fl_mm, pcsa_mm2 across the 7 animals Mm1-Mm7, from ALL 654 TENTATIVE cells (admitted and refused-alike: the summary is the extraction the forearm/hand books consume; each row's law verdict rides along as a condition, never a filter)",
+  "artifacts": "cross_specimen_summary.json + cross_specimen_summary.csv in the lane dir",
+  "no_smoothing": "no outlier removal, no normalization, no imputation: the source's values as printed, the source's structure as named"
+ },
+
+ "work_plan": [
+  "1. THIS prereg committed (milestone 1) before any derivation",
+  "2. constant derivation per the pre-committed order: web research on PMC7812139 (+ local sha-pinned full-text XML cross-check); route + evidence + constant written to constants.json BEFORE the re-run (milestone 2 commit)",
+  "3. laws_registered.py: byte-consume reconciliation.json (pin verified), re-run the 218-row law pass at the registered constant; 3-run byte-identical (milestone 3 commit)",
+  "4. admit_law.py: admission tiers per rule0.admission_tiers_original; records + rejections + count identity + manifest registration; 3-run byte-identical (milestone 4 commit)",
+  "5. cross_specimen.py: the per-muscle summary; 3-run byte-identical",
+  "6. receipt_final.json per-falsifier verdicts + record.md ledger append + lane tests (if the admission pattern carries them: count identity, no-guess, provenance completeness, determinism, mutation probe) + commit 'Agent: vlaw' + push lane branch"
+ ],
+
+ "determinism_plan": "all lane scripts read ONLY frozen inputs (pinned above) and write canonical JSON (sort_keys, fixed rounding, newline='\\n'); 3 consecutive runs must be byte-identical (sha256 compared); no timestamps inside derived artifacts (wall-clock lives only in receipts)",
+ "no_tuning_clause": "no constant in this lane is chosen to lift a pass rate; the ONE registered constant is chosen by the pre-committed evidence order; 0.02 tolerance, 0.90/0.80 floors, the law form, the deviation-class bands (0.02/0.10), and the value pin are all fixed by this file BEFORE any run; if the law under-performs, the rate is REPORTED and the residual structure is named -- the constant is not moved (F1/F2)"
+}

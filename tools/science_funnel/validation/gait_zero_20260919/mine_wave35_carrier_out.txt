@@ -1,0 +1,127 @@
+=== A. THE EXCHANGE CALENDAR (first walk run) ===
+fire R@98 slot phi=0.683 from_x=0.015 to_x=0.361 xoff=0.1437 v=0.593 -> td 107 era=9
+fire L@142 alt phi=0.390 from_x=0.201 to_x=0.546 xoff=0.2283 v=0.942 -> td 160 era=18
+fire R@160 alt phi=0.254 from_x=0.256 to_x=0.527 xoff=0.1772 v=0.731 -> td 175 era=15
+fire L@175 alt phi=0.070 from_x=0.330 to_x=0.520 xoff=0.1242 v=0.512 -> td 184 era=9
+fire R@184 alt phi=0.042 from_x=0.317 to_x=0.582 xoff=0.1798 v=0.742 -> td 193 era=9
+fire L@193 alt phi=0.155 from_x=0.324 to_x=0.631 xoff=0.1905 v=0.786 -> td 202 era=9
+fire R@202 alt phi=0.127 from_x=0.317 to_x=0.646 xoff=0.1972 v=0.813 -> td 211 era=9
+fire L@211 alt phi=0.239 from_x=0.319 to_x=0.666 xoff=0.1766 v=0.728 -> td 220 era=9
+fire R@220 alt phi=0.028 from_x=0.331 to_x=0.718 xoff=0.2192 v=0.904 -> td 229 era=9
+fire L@229 alt phi=0.009 from_x=0.317 to_x=0.782 xoff=0.2389 v=0.985 -> td 238 era=9
+fire R@238 alt phi=0.113 from_x=0.341 to_x=0.818 xoff=0.2584 v=1.066 -> td 247 era=9
+fire L@247 alt phi=0.005 from_x=0.337 to_x=0.890 xoff=0.2857 v=1.178 -> td 262 era=15
+
+=== R1. era length vs xoff (Pearson) ===
+n=12 Pearson r(era,xoff)=0.3587   (FRONT-2 R1 threshold >= 0.70)
+   xoff=0.1437 era=9
+   xoff=0.2283 era=18
+   xoff=0.1772 era=15
+   xoff=0.1242 era=9
+   xoff=0.1798 era=9
+   xoff=0.1905 era=9
+   xoff=0.1972 era=9
+   xoff=0.1766 era=9
+   xoff=0.2192 era=9
+   xoff=0.2389 era=9
+   xoff=0.2584 era=9
+   xoff=0.2857 era=15
+
+=== B. per-era CARRIER share (the other leg) ===
+era R@98 [98,107) carrier=L rxn0=33.056 peak=77.191 rxn<0.5@None rxn0@None
+era L@142 [142,160) carrier=R rxn0=35.316 peak=35.316 rxn<0.5@160 rxn0@160
+era R@160 [160,175) carrier=L rxn0=16.160 peak=32.686 rxn<0.5@None rxn0@None
+era L@175 [175,184) carrier=R rxn0=23.403 peak=23.403 rxn<0.5@None rxn0@None
+era R@184 [184,193) carrier=L rxn0=5.451 peak=7.542 rxn<0.5@None rxn0@None
+era L@193 [193,202) carrier=R rxn0=10.120 peak=10.120 rxn<0.5@None rxn0@None
+era R@202 [202,211) carrier=L rxn0=9.710 peak=9.716 rxn<0.5@None rxn0@None
+era L@211 [211,220) carrier=R rxn0=16.504 peak=16.504 rxn<0.5@None rxn0@None
+era R@220 [220,229) carrier=L rxn0=6.735 peak=7.640 rxn<0.5@None rxn0@None
+era L@229 [229,238) carrier=R rxn0=12.055 peak=12.055 rxn<0.5@None rxn0@None
+era R@238 [238,247) carrier=L rxn0=11.218 peak=13.221 rxn<0.5@251 rxn0@251
+era L@247 [247,262) carrier=R rxn0=4.648 peak=4.648 rxn<0.5@249 rxn0@250
+
+=== R2. the REAL eras: the drain onset, geometric vs era-relative ===
+era L@142 [142,160): onset t=155 (era-rel 13) com_x=0.4322 carrier_pad_x=0.3063 com-pad=0.1259
+era R@160: no onset (carrier held)
+era L@247 [247,262): onset t=249 (era-rel 2) com_x=0.7522 carrier_pad_x=0.3698 com-pad=0.3824
+geometric agreement |0.1259 vs 0.3824| within 15%: False; era-rel 13 vs 2 differ>2: True => R2=False
+
+=== C. haul delivery: pad x at TD vs to_x (the under-delivery) ===
+era R@98 to_x=0.361 pad_x@td=0.085 under=0.2763 m
+era L@142 to_x=0.546 pad_x@td=0.345 under=0.2009 m
+era R@160 to_x=0.527 pad_x@td=0.332 under=0.1953 m
+era L@175 to_x=0.520 pad_x@td=0.364 under=0.1556 m
+era R@184 to_x=0.582 pad_x@td=0.349 under=0.2332 m
+era L@193 to_x=0.631 pad_x@td=0.360 under=0.2713 m
+era R@202 to_x=0.646 pad_x@td=0.359 under=0.2870 m
+era L@211 to_x=0.666 pad_x@td=0.353 under=0.3124 m
+era R@220 to_x=0.718 pad_x@td=0.359 under=0.3583 m
+era L@229 to_x=0.782 pad_x@td=0.355 under=0.4262 m
+era R@238 to_x=0.818 pad_x@td=0.368 under=0.4492 m
+era L@247 to_x=0.890 pad_x@td=0.428 under=0.4624 m
+
+=== D. the twelfth era deep dive [247,295) ===
+t com_x bx Rpad_x Rrxn Rgapmin Lrxn Rtouching
+247 0.7455 0.6034 0.3684 4.648 8.526e-06 3.299 1
+248 0.7489 0.6074 0.3691 4.415 8.207e-06 4.845 1
+249 0.7522 0.6114 0.3698 0.309 1.317e-05 10.814 0
+250 0.7555 0.6154 0.3709 0.000 6.702e-05 13.221 0
+251 0.7588 0.6195 0.3720 0.000 2.340e-04 0.000 0
+252 0.7621 0.6237 0.3731 0.000 4.911e-04 0.000 0
+253 0.7654 0.6278 0.3744 0.000 7.593e-04 0.000 0
+254 0.7687 0.6319 0.3758 0.000 9.444e-04 0.000 0
+255 0.7719 0.6362 0.3776 0.000 1.045e-03 0.000 0
+256 0.7752 0.6405 0.3796 0.000 1.132e-03 0.000 0
+257 0.7785 0.6449 0.3818 0.000 1.266e-03 0.000 0
+258 0.7818 0.6494 0.3843 0.000 1.500e-03 0.000 0
+259 0.7851 0.6541 0.3870 0.000 1.916e-03 0.000 0
+260 0.7883 0.6587 0.3899 0.000 2.641e-03 0.000 0
+261 0.7915 0.6635 0.3931 0.000 3.549e-03 15.920 0
+262 0.7946 0.6684 0.3966 0.000 4.641e-03 47.717 0
+263 0.7977 0.6735 0.4004 0.000 5.933e-03 49.485 0
+264 0.8009 0.6787 0.4045 0.000 7.428e-03 46.656 0
+265 0.8040 0.6841 0.4091 0.000 9.120e-03 46.179 0
+266 0.8071 0.6896 0.4140 0.000 1.100e-02 43.427 0
+267 0.8103 0.6953 0.4194 0.000 1.304e-02 41.480 0
+268 0.8134 0.7010 0.4252 0.000 1.521e-02 37.611 0
+269 0.8165 0.7070 0.4315 0.000 1.748e-02 35.606 0
+270 0.8196 0.7130 0.4382 0.000 1.981e-02 35.437 0
+271 0.8227 0.7192 0.4454 0.000 2.221e-02 35.054 0
+272 0.8258 0.7255 0.4530 0.000 2.465e-02 34.749 0
+273 0.8289 0.7319 0.4612 0.000 2.711e-02 34.461 0
+274 0.8319 0.7384 0.4699 0.000 2.958e-02 34.241 0
+275 0.8350 0.7450 0.4791 0.000 3.204e-02 33.960 0
+276 0.8380 0.7516 0.4888 0.000 3.445e-02 33.469 0
+277 0.8410 0.7583 0.4990 0.000 3.677e-02 32.727 0
+278 0.8440 0.7649 0.5098 0.000 3.897e-02 31.824 0
+279 0.8469 0.7716 0.5210 0.000 4.099e-02 30.927 0
+280 0.8499 0.7783 0.5328 0.000 4.277e-02 30.237 0
+281 0.8528 0.7851 0.5451 0.000 4.426e-02 29.920 0
+282 0.8557 0.7918 0.5578 0.000 4.543e-02 30.117 0
+283 0.8586 0.7985 0.5710 0.000 4.623e-02 30.920 0
+284 0.8614 0.8053 0.5846 0.000 4.663e-02 32.368 0
+285 0.8642 0.8121 0.5987 0.000 4.659e-02 34.400 0
+286 0.8671 0.8189 0.6131 0.000 4.611e-02 37.004 0
+287 0.8698 0.8257 0.6280 0.000 4.514e-02 40.190 0
+288 0.8726 0.8325 0.6432 0.000 4.368e-02 43.981 0
+289 0.8753 0.8393 0.6588 0.000 4.171e-02 48.344 0
+290 0.8780 0.8461 0.6747 0.000 3.921e-02 53.467 0
+291 0.8807 0.8529 0.6909 0.000 3.619e-02 59.474 0
+292 0.8833 0.8596 0.7074 0.000 3.263e-02 66.504 0
+293 0.8859 0.8664 0.7242 0.000 2.852e-02 74.767 0
+294 0.8884 0.8731 0.7413 0.000 2.387e-02 84.553 0
+
+=== D2. the R candidate-fire ticks [248,262): the gates ===
+hindgate t=247 leg=1 live=0 gated=1 floor=0 dl=238 v=1.178 rxnR=4.648 gapR=8.526e-06
+hindgate t=248 leg=1 live=0 gated=1 floor=0 dl=238 v=1.198 rxnR=4.415 gapR=8.207e-06
+hindgate t=249 leg=1 live=0 gated=1 floor=0 dl=238 v=1.209 rxnR=0.309 gapR=1.317e-05
+
+=== E. refusals seen ===
+WALK REFUSED tick 295: gait_positional_correction_budget | y=-0.2603 x=0.8781
+[refusal] tick=295 refusal=gait_positional_correction_budget com=(0.8902,-0.1314) base=(0.8781,-0.2603,-0.1155)
+
+=== THE DECISION (rule fixed a priori in the header) ===
+R1 haul~lead r=0.3587 -> FRONT-1
+R2 geometric-onset -> FRONT-1
+THE WAVE-35 FRONT IS: FRONT 1 (the carrier self-unload fire deadline)

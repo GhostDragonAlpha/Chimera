@@ -1,0 +1,233 @@
+{
+  "runtime": {
+    "pid": 122496,
+    "exe": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\coupled-native-engine\\Release\\chimera_engine.exe",
+    "exe_sha256": "87901C6294C740756CFDC8AC6FB9E66FF56A0EBA8B8D0180716B5EE352D443ED",
+    "scene": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\coupled-native\\scene.json",
+    "scene_file_sha256": "2C783D583F073F5A76F89D0CF1D4399FD82FEC61BCB14BA045CFC6263FCBB5D4",
+    "graph_hash": "e8197294a8a0c8421af9fba687ccdc3e4f1a3a31a22befee7c107817a8822b67",
+    "scene_sha256": "12da8259b36480e87d0192647760b0ae11357fbe101eaf2f482c34cdbe1dd103",
+    "port": 8127,
+    "launched_utc": "2026-09-17T15:19:06.7648352Z"
+  },
+  "checks": [
+    {
+      "name": "owned_runtime_identity",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "name": "command_contact_enabled",
+      "pass": true,
+      "details": {
+        "error": ""
+      }
+    },
+    {
+      "name": "command_paused",
+      "pass": true,
+      "details": {
+        "error": ""
+      }
+    },
+    {
+      "name": "command_shoulder_target_deg",
+      "pass": true,
+      "details": {
+        "error": ""
+      }
+    },
+    {
+      "name": "targets_are_intent",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "name": "command_reset",
+      "pass": true,
+      "details": {
+        "error": ""
+      }
+    },
+    {
+      "name": "cut_power_preserves_passive_motion",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "name": "command_contact_enabled",
+      "pass": true,
+      "details": {
+        "error": ""
+      }
+    },
+    {
+      "name": "undriven_elbow_moves",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "name": "command_contact_enabled",
+      "pass": true,
+      "details": {
+        "error": ""
+      }
+    },
+    {
+      "name": "both_coordinates_actually_move",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "name": "torque_cap_0",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "name": "torque_cap_1",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "name": "contact_default_off",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "name": "command_paused",
+      "pass": true,
+      "details": {
+        "error": ""
+      }
+    },
+    {
+      "name": "contact_toggle_without_reset_refused",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "name": "command_paused",
+      "pass": true,
+      "details": {
+        "error": ""
+      }
+    },
+    {
+      "name": "command_contact_enabled",
+      "pass": true,
+      "details": {
+        "error": ""
+      }
+    },
+    {
+      "name": "contact_mode_engaged",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "name": "command_shoulder_target_deg",
+      "pass": true,
+      "details": {
+        "error": ""
+      }
+    },
+    {
+      "name": "contact_presses_plane",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "name": "contact_obstructed_target_stalls",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "name": "contact_energy_accounts",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "name": "contact_plane_rendered_at_recipe_height",
+      "pass": true,
+      "details": {
+        "vertices_on_plane": 32
+      }
+    },
+    {
+      "name": "rendered_bones_match_independent_source_FK",
+      "pass": true,
+      "details": {
+        "max_vertex_error_m": 4.236157225001591e-08,
+        "vertices": 2761
+      }
+    },
+    {
+      "name": "force_marker_matches_native_hand",
+      "pass": true,
+      "details": {
+        "max_error_m": 1.930001380934243e-09
+      }
+    },
+    {
+      "name": "contact_gap_matches_fk_hand",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "name": "command_power",
+      "pass": true,
+      "details": {
+        "error": ""
+      }
+    },
+    {
+      "name": "contact_powercut_lands_and_settles",
+      "pass": true,
+      "details": {
+        "worst_gap_m": 4.0245584642661925e-15
+      }
+    },
+    {
+      "name": "contact_passive_no_created_energy",
+      "pass": true,
+      "details": {
+        "contact_impact_heat_J": 0.06647668381851098
+      }
+    },
+    {
+      "name": "command_contact_enabled",
+      "pass": true,
+      "details": {
+        "error": ""
+      }
+    },
+    {
+      "name": "contact_restore_free_mode",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "name": "honest_contact_scope",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "name": "energy_accounts",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "name": "command_paused",
+      "pass": true,
+      "details": {
+        "error": ""
+      }
+    },
+    {
+      "name": "direct_pose_refused_atomically",
+      "pass": true,
+      "details": {}
+    }
+  ],
+  "scope": "Two coupled native coordinates, force intent, finite ideal actuator store, actual source geometry, fixed mount and an optional frictionless rigid hand contact plane (off by default; toggle resets). No friction, grasp, free root or whole-animal claim."
+}

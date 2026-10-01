@@ -1,0 +1,16 @@
+===== TEN-LESSON VERDICT TABLE (this session) =====
+ 1. wake_the_cell   PASS  phase=release goalMet=true  cell0=0 Pa cell1=2135680 Pa cell2=0 Pa cell3=0 Pa
+ 2. the_gentle_hand PASS  phase=release goalMet=true  cell0=6772550 Pa cell1=0 Pa cell2=0 Pa cell3=0 Pa
+ 3. the_healing     PASS  phase=release goalMet=true  cell0=0 Pa cell1=2135680 Pa cell2=0 Pa cell3=0 Pa
+ 4. bend_the_knee   PASS  phase=goal goalMet=true  cell0=89701800 Pa cell1=0 Pa cell2=37426900 Pa cell3=23929500 Pa
+ 5. the_whole_body  PASS  phase=release goalMet=true  cell0=0 Pa cell1=2135680 Pa cell2=0 Pa cell3=87496300 Pa
+ 6. the_balance     PASS  phase=goal goalMet=true  cell0=6009940 Pa cell1=0 Pa cell2=8788 Pa cell3=715501 Pa
+ 7. the_heavy_hand  PASS  phase=release goalMet=true  cell0=0 Pa cell1=5850160 Pa cell2=0 Pa cell3=0 Pa
+ 8. the_cascade     PASS  phase=release goalMet=true  cell0=0 Pa cell1=2135680 Pa cell2=0 Pa cell3=0 Pa
+ 9. the_stand       PASS  phase=goal goalMet=true  cell0=0 Pa cell1=0 Pa cell2=0 Pa cell3=0 Pa
+ 10. the_graduation  PASS  phase=release goalMet=true  cell0=51632700 Pa cell1=1929170 Pa cell2=0 Pa cell3=79194400 Pa
+FRESH PASSES THIS SESSION: 10 of 10
+PROGRESS FILE: 10 of 10 -> wake_the_cell, the_gentle_hand, the_healing, bend_the_knee, the_whole_body, the_balance, the_heavy_hand, the_cascade, the_stand, the_graduation
+PAGE ERRORS: 0 (zero)
+driver: tools/game_shell/walk_lessons10.js http://127.0.0.1:8207 (scratch chain, isolated world)
+page under test: tools/game_shell/index.html @ this commit (W2 fixes in)

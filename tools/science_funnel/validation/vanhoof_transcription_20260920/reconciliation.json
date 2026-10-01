@@ -1,0 +1,7621 @@
+{
+ "agreement": {
+  "BLANK_AGREED": 15,
+  "DISPUTED": 0,
+  "MARKER_AGREED": 105,
+  "MARKER_DISPUTED": 0,
+  "TENTATIVE": 654,
+  "cells_total_classified": 774,
+  "exact_agreement_rate_on_legible_numeric": 1.0,
+  "legible_numeric_cells": 654
+ },
+ "cells": [
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ADM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "10.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ADM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "0.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ADM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "66.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ADP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "11.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ADP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "1.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ADP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "82.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "APB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "10.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "APB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "1.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "APB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "120.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "APL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "23.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "APL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "4.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "APL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "174.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "Anc",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "33.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "Anc",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "0.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "Anc",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "17.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "B",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "55.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "B",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "18.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "B",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "295.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "BR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "154.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "BR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "28.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "BR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "169.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "Bb",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "76.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "Bb",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "41.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "Bb",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "487.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "C5",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "5.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "C5",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "0.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "C5",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "31.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "CB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "12.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "CB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "3.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "CB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "238.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "DET",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "92.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "DET",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "10.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "DET",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "99.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ECRB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "37.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ECRB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "8.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ECRB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "211.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ECRL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "73.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ECRL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "8.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ECRL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "98.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ECU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "27.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ECU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "6.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ECU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "201.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ED",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "36.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ED",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "6.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ED",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "147.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_absent_cfr",
+   "muscle": "EDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_absent_cfr",
+   "muscle": "EDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_absent_cfr",
+   "muscle": "EDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "EDQQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "24.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "EDQQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "1.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "EDQQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "56.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "EDST",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "26.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "EDST",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "1.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "EDST",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "44.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_absent_cfr",
+   "muscle": "EI",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_absent_cfr",
+   "muscle": "EI",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_absent_cfr",
+   "muscle": "EI",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_absent",
+   "muscle": "EPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_absent",
+   "muscle": "EPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_absent",
+   "muscle": "EPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "EPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "22.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "EPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "1.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "EPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "39.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FCR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "30.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FCR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "10.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FCR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "304.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FCU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "27.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FCU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "17.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FCU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "580.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "16.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "0.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "27.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "50.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "33.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "598.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FDS",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "26.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FDS",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "13.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FDS",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "445.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "muscle": "FPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "verdict": "BLANK_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "muscle": "FPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "verdict": "BLANK_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "muscle": "FPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "verdict": "BLANK_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_absent",
+   "muscle": "FPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_absent",
+   "muscle": "FPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_absent",
+   "muscle": "FPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "IOD",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "7.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "IOD",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "2.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "IOD",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "297.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "IOP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "7.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "IOP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "0.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "IOP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "90.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "LUMB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "38.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "LUMB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "0.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "LUMB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "20.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ODM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "26.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ODM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "0.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ODM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "12.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "OPP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "6.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "OPP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "0.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "OPP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "84.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "PL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "18.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "PL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "3.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "PL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "171.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "PQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "45.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "PQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "1.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "PQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "37.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "PT",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "28.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "PT",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "7.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "PT",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "237.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "SUP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "20.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "SUP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "4.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "SUP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "176.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "Tb",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "59.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "Tb",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "114.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "Tb",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "1755.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "conn. FDS-FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "44.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "conn. FDS-FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "3.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "conn. FDS-FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm1",
+   "value": "60.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ADM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "14.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ADM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "0.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ADM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "26.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ADP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "12.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ADP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "0.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ADP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "46.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "APB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "12.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "APB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "0.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "APB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "30.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "APL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "25.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "APL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "3.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "APL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "121.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "Anc",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "12.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "Anc",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "0.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "Anc",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "18.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "B",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "31.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "B",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "11.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "B",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "350.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "BR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "139.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "BR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "14.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "BR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "93.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "Bb",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "67.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "Bb",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "34.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "Bb",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "473.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "C5",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "10.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "C5",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "0.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "C5",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "7.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "CB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "13.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "CB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "1.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "CB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "75.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "DET",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "81.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "DET",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "8.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "DET",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "121.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ECRB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "29.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ECRB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "6.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ECRB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "201.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ECRL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "82.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ECRL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "5.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ECRL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "63.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ECU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "25.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ECU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "4.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ECU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "156.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ED",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "24.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ED",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "3.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ED",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "138.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_absent_cfr",
+   "muscle": "EDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_absent_cfr",
+   "muscle": "EDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_absent_cfr",
+   "muscle": "EDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "EDQQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "15.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "EDQQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "1.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "EDQQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "66.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "EDST",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "17.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "EDST",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "0.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "EDST",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "42.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_absent_cfr",
+   "muscle": "EI",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_absent_cfr",
+   "muscle": "EI",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_absent_cfr",
+   "muscle": "EI",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_absent",
+   "muscle": "EPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_absent",
+   "muscle": "EPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_absent",
+   "muscle": "EPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "EPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "30.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "EPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "0.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "EPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "18.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FCR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "28.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FCR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "5.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FCR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "187.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FCU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "19.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FCU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "12.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FCU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "574.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "16.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "0.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "16.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "39.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "24.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "565.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FDS",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "27.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FDS",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "10.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FDS",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "343.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "13.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "0.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "28.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_absent",
+   "muscle": "FPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_absent",
+   "muscle": "FPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_absent",
+   "muscle": "FPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "IOD",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "9.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "IOD",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "1.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "IOD",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "143.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "IOP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "9.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "IOP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "0.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "IOP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "62.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "LUMB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "26.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "LUMB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "0.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "LUMB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "19.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ODM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "8.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ODM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "0.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ODM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "23.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "OPP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "7.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "OPP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "0.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "OPP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "40.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "PL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "19.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "PL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "3.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "PL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "163.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "PQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "20.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "PQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "1.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "PQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "72.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "PT",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "24.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "PT",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "5.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "PT",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "202.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "SUP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "15.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "SUP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "2.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "SUP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "160.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "Tb",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "38.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "Tb",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "83.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "Tb",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "1996.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "conn. FDS-FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "41.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "conn. FDS-FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "1.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "conn. FDS-FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm2",
+   "value": "36.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ADM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "14.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ADM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "0.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ADM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "41.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ADP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "22.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ADP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "1.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ADP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "66.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "APB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "23.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "APB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "0.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "APB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "34.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "APL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "30.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "APL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "5.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "APL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "165.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "Anc",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "15.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "Anc",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "0.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "Anc",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "21.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "B",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "103.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "B",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "21.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "B",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "188.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "BR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "177.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "BR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "25.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "BR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "129.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "Bb",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "118.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "Bb",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "42.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "Bb",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "326.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "C5",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "30.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "C5",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "0.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "C5",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "4.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "CB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "38.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "CB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "2.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "CB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "47.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "DET",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "75.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "DET",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "8.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "DET",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "96.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ECRB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "42.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ECRB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "10.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ECRB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "219.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ECRL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "91.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ECRL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "9.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ECRL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "93.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ECU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "75.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ECU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "7.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ECU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "88.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ED",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "47.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ED",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "5.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ED",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "111.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_absent_cfr",
+   "muscle": "EDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "DEGRADED",
+   "specimen": "Mm3",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_absent_cfr",
+   "muscle": "EDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "DEGRADED",
+   "specimen": "Mm3",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_absent_cfr",
+   "muscle": "EDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "EDQQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "30.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "EDQQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "1.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "EDQQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "51.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "EDST",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "28.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "EDST",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "0.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "EDST",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "30.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_absent_cfr",
+   "muscle": "EI",
+   "passA_leg": "CLEAR",
+   "passB_leg": "DEGRADED",
+   "specimen": "Mm3",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_absent_cfr",
+   "muscle": "EI",
+   "passA_leg": "CLEAR",
+   "passB_leg": "DEGRADED",
+   "specimen": "Mm3",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_absent_cfr",
+   "muscle": "EI",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_absent",
+   "muscle": "EPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "DEGRADED",
+   "specimen": "Mm3",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_absent",
+   "muscle": "EPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "DEGRADED",
+   "specimen": "Mm3",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_absent",
+   "muscle": "EPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "EPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "26.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "EPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "1.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "EPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "40.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FCR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "45.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FCR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "10.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FCR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "216.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FCU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "29.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FCU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "19.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FCU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "578.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "11.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "0.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "40.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "54.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "42.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "719.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FDS",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "41.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FDS",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "13.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FDS",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "297.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "17.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "0.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "25.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_absent",
+   "muscle": "FPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "DEGRADED",
+   "specimen": "Mm3",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_absent",
+   "muscle": "FPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "DEGRADED",
+   "specimen": "Mm3",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_absent",
+   "muscle": "FPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "IOD",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "28.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "IOD",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "3.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "IOD",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "96.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "IOP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "25.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "IOP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "0.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "IOP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "24.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "LUMB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "43.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "LUMB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "0.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "LUMB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "14.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ODM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "13.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ODM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "0.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ODM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "29.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "OPP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "15.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "OPP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "0.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "OPP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "24.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "PL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "23.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "PL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "4.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "PL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "172.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "PQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "13.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "PQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "2.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "PQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "169.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "PT",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "19.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "PT",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "7.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "PT",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "321.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "SUP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "37.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "SUP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "3.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "SUP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "78.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "Tb",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "54.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "Tb",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "118.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "Tb",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "value": "1999.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_crossref_FDP",
+   "muscle": "conn. FDS-FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_crossref_FDP",
+   "muscle": "conn. FDS-FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_crossref_FDP",
+   "muscle": "conn. FDS-FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm3",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ADM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "15.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ADM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "0.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ADM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "45.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ADP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "18.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ADP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "1.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ADP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "63.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "APB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "16.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "APB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "1.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "APB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "76.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "APL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "24.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "APL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "4.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "APL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "177.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "Anc",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "12.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "Anc",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "0.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "Anc",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "42.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "B",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "57.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "B",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "19.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "B",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "306.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "BR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "154.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "BR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "24.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "BR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "145.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "Bb",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "79.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "Bb",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "45.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "Bb",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "524.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "C5",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "21.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "C5",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "0.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "C5",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "7.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "CB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "16.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "CB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "3.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "CB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "175.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "DET",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "73.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "DET",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "9.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "DET",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "115.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ECRB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "44.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ECRB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "9.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ECRB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "195.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ECRL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "70.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ECRL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "6.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ECRL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "86.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ECU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "29.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ECU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "6.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ECU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "200.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ED",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "39.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ED",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "6.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ED",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "147.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_absent_cfr",
+   "muscle": "EDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_absent_cfr",
+   "muscle": "EDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_absent_cfr",
+   "muscle": "EDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "EDQQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "31.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "EDQQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "1.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "EDQQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "49.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "EDST",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "27.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "EDST",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "1.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "EDST",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "39.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_absent_cfr",
+   "muscle": "EI",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_absent_cfr",
+   "muscle": "EI",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_absent_cfr",
+   "muscle": "EI",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_absent",
+   "muscle": "EPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_absent",
+   "muscle": "EPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_absent",
+   "muscle": "EPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "EPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "29.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "EPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "1.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "EPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "36.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FCR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "35.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FCR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "9.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FCR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "243.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FCU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "36.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FCU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "18.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FCU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "452.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "18.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "0.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "25.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "44.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "36.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "742.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FDS",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "34.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FDS",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "13.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FDS",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "347.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "muscle": "FPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "verdict": "BLANK_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "muscle": "FPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "verdict": "BLANK_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "muscle": "FPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "verdict": "BLANK_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_absent",
+   "muscle": "FPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_absent",
+   "muscle": "FPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_absent",
+   "muscle": "FPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "IOD",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "10.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "IOD",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "2.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "IOD",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "256.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "IOP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "11.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "IOP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "0.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "IOP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "71.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "LUMB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "30.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "LUMB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "0.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "LUMB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "25.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ODM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "11.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ODM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "0.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ODM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "26.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "OPP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "8.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "OPP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "0.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "OPP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "44.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "PL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "23.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "PL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "3.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "PL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "144.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "PQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "14.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "PQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "1.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "PQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "100.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "PT",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "31.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "PT",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "8.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "PT",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "243.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "SUP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "9.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "SUP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "4.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "SUP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "484.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "Tb",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "49.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "Tb",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "134.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "Tb",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "value": "2451.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_crossref_FDP",
+   "muscle": "conn. FDS-FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_crossref_FDP",
+   "muscle": "conn. FDS-FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_crossref_FDP",
+   "muscle": "conn. FDS-FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm4",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ADM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "14.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ADM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "0.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ADM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "58.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ADP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "12.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ADP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "0.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ADP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "63.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "APB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "12.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "APB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "0.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "APB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "28.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "APL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "19.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "APL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "2.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "APL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "135.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "Anc",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "17.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "Anc",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "0.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "Anc",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "11.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "BR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "123.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "BR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "8.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "BR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "65.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_absent",
+   "muscle": "C5",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_absent",
+   "muscle": "C5",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_absent",
+   "muscle": "C5",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ECRB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "32.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ECRB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "5.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ECRB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "146.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ECRL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "69.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ECRL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "4.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ECRL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "63.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ECU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "23.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ECU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "3.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ECU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "128.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ED",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "40.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ED",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "3.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ED",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "74.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_absent_cfr",
+   "muscle": "EDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_absent_cfr",
+   "muscle": "EDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_absent_cfr",
+   "muscle": "EDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "EDQQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "30.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "EDQQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "0.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "EDQQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "22.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "EDST",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "26.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "EDST",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "0.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "EDST",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "22.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_absent_cfr",
+   "muscle": "EI",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_absent_cfr",
+   "muscle": "EI",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_absent_cfr",
+   "muscle": "EI",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_absent",
+   "muscle": "EPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_absent",
+   "muscle": "EPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_absent",
+   "muscle": "EPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "EPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "31.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "EPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "0.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "EPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "19.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FCR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "25.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FCR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "5.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FCR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "205.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FCU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "19.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FCU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "9.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FCU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "412.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "muscle": "FDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "verdict": "BLANK_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "muscle": "FDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "verdict": "BLANK_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "muscle": "FDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "verdict": "BLANK_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "38.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "20.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "482.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FDS",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "30.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FDS",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "7.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FDS",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "207.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "16.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "0.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "29.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_absent",
+   "muscle": "FPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_absent",
+   "muscle": "FPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_absent",
+   "muscle": "FPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "IOD",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "9.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "IOD",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "1.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "IOD",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "162.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "IOP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "9.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "IOP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "0.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "IOP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "57.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "LUMB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "24.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "LUMB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "0.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "LUMB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "17.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ODM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "7.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ODM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "0.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ODM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "31.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "OPP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "6.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "OPP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "0.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "OPP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "30.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "PL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "16.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "PL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "2.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "PL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "116.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "PQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "15.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "PQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "1.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "PQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "68.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "PT",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "27.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "PT",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "4.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "PT",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "138.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "SUP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "10.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "SUP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "2.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "SUP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "226.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "conn. FDS-FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "38.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "DEGRADED",
+   "muscle": "conn. FDS-FDP",
+   "passA_leg": "DEGRADED",
+   "passB_leg": "DEGRADED",
+   "specimen": "Mm5",
+   "value": "2.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "conn. FDS-FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm5",
+   "value": "51.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ADM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "14.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ADM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "0.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ADM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "29.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ADP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "19.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ADP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "0.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ADP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "36.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "APB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "11.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "APB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "0.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "APB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "43.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "APL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "21.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "APL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "4.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "APL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "175.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "Anc",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "14.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "Anc",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "0.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "Anc",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "6.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "BR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "139.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "BR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "18.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "BR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "122.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "C5",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "7.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "C5",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "0.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "C5",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "17.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ECRB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "43.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ECRB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "7.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ECRB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "165.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ECRL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "70.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ECRL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "6.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ECRL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "84.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ECU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "27.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ECU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "4.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ECU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "136.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ED",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "71.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ED",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "5.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ED",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "73.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_absent_cfr",
+   "muscle": "EDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_absent_cfr",
+   "muscle": "EDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_absent_cfr",
+   "muscle": "EDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "EDQQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "50.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "EDQQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "1.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "EDQQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "29.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "EDST",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "21.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "EDST",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "0.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "EDST",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "33.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_absent_cfr",
+   "muscle": "EI",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_absent_cfr",
+   "muscle": "EI",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_absent_cfr",
+   "muscle": "EI",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_absent",
+   "muscle": "EPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_absent",
+   "muscle": "EPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_absent",
+   "muscle": "EPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "EPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "39.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "EPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "1.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "EPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "22.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FCR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "39.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FCR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "8.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FCR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "191.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FCU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "23.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FCU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "13.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FCU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "534.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "9.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "0.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "59.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "42.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "39.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "837.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FDS",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "48.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FDS",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "14.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FDS",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "263.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "17.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "0.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "48.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_absent",
+   "muscle": "FPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_absent",
+   "muscle": "FPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_absent",
+   "muscle": "FPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "IOD",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "10.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "IOD",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "2.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "IOD",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "207.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "IOP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "9.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "IOP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "0.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "IOP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "86.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "LUMB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "37.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "LUMB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "0.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "LUMB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "12.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "muscle": "ODM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "verdict": "BLANK_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "muscle": "ODM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "verdict": "BLANK_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "muscle": "ODM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "verdict": "BLANK_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_crossref_APB",
+   "muscle": "OPP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_crossref_APB",
+   "muscle": "OPP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_crossref_APB",
+   "muscle": "OPP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "PL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "17.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "PL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "2.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "PL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "142.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "PQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "6.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "PQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "1.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "PQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "190.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "PT",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "23.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "PT",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "6.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "PT",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "248.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "SUP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "10.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "SUP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "3.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "SUP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "value": "326.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_crossref_FDP",
+   "muscle": "conn. FDS-FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_crossref_FDP",
+   "muscle": "conn. FDS-FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_crossref_FDP",
+   "muscle": "conn. FDS-FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm6",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ADM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "13.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ADM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "0.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ADM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "29.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ADP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "13.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ADP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "0.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ADP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "44.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "APB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "10.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "APB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "1.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "APB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "100.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "APL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "23.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "APL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "1.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "APL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "75.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "Anc",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "5.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "Anc",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "0.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "Anc",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "40.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "BR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "128.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "BR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "8.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "BR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "58.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "C5",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "7.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "C5",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "0.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "C5",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "16.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ECRB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "40.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ECRB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "4.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ECRB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "92.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ECRL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "74.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ECRL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "2.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ECRL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "27.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ECU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "28.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ECU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "2.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ECU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "88.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ED",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "36.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ED",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "2.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ED",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "54.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_absent_cfr",
+   "muscle": "EDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_absent_cfr",
+   "muscle": "EDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_absent_cfr",
+   "muscle": "EDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "EDQQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "26.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "EDQQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "0.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "EDQQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "21.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "EDST",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "23.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "EDST",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "0.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "EDST",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "25.0",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_absent_cfr",
+   "muscle": "EI",
+   "passA_leg": "CLEAR",
+   "passB_leg": "DEGRADED",
+   "specimen": "Mm7",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_absent_cfr",
+   "muscle": "EI",
+   "passA_leg": "CLEAR",
+   "passB_leg": "DEGRADED",
+   "specimen": "Mm7",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_absent_cfr",
+   "muscle": "EI",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_absent",
+   "muscle": "EPB",
+   "passA_leg": "DEGRADED",
+   "passB_leg": "DEGRADED",
+   "specimen": "Mm7",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_absent",
+   "muscle": "EPB",
+   "passA_leg": "DEGRADED",
+   "passB_leg": "DEGRADED",
+   "specimen": "Mm7",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_absent",
+   "muscle": "EPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "EPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "22.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "EPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "0.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "EPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "18.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FCR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "27.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FCR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "4.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FCR",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "146.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FCU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "30.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FCU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "7.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FCU",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "218.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "16.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "0.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FDM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "23.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "39.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "16.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "371.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "FDS",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "25.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "FDS",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "6.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "FDS",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "242.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "muscle": "FPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "verdict": "BLANK_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "muscle": "FPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "verdict": "BLANK_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "muscle": "FPB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "verdict": "BLANK_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_absent",
+   "muscle": "FPL",
+   "passA_leg": "DEGRADED",
+   "passB_leg": "DEGRADED",
+   "specimen": "Mm7",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_absent",
+   "muscle": "FPL",
+   "passA_leg": "DEGRADED",
+   "passB_leg": "DEGRADED",
+   "specimen": "Mm7",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_absent",
+   "muscle": "FPL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "IOD",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "8.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "IOD",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "1.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "IOD",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "157.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "IOP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "10.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "IOP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "0.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "IOP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "45.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "LUMB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "43.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "LUMB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "0.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "LUMB",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "10.5",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "ODM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "10.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "ODM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "0.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "ODM",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "24.6",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_crossref_APB",
+   "muscle": "OPP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_crossref_APB",
+   "muscle": "OPP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_crossref_APB",
+   "muscle": "OPP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "PL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "19.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "PL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "1.7",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "PL",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "79.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "PQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "32.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "PQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "1.1",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "PQ",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "30.2",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "PT",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "19.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "PT",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "3.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "PT",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "157.9",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "legibility": "CLEAR",
+   "muscle": "SUP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "14.8",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "mass_g",
+   "legibility": "CLEAR",
+   "muscle": "SUP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "2.4",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "pcsa_mm2",
+   "legibility": "CLEAR",
+   "muscle": "SUP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "value": "147.3",
+   "verdict": "TENTATIVE"
+  },
+  {
+   "field": "fl_mm",
+   "marker": "marker_crossref_FDP",
+   "muscle": "conn. FDS-FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "mass_g",
+   "marker": "marker_crossref_FDP",
+   "muscle": "conn. FDS-FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "verdict": "MARKER_AGREED"
+  },
+  {
+   "field": "pcsa_mm2",
+   "marker": "marker_crossref_FDP",
+   "muscle": "conn. FDS-FDP",
+   "passA_leg": "CLEAR",
+   "passB_leg": "CLEAR",
+   "specimen": "Mm7",
+   "verdict": "MARKER_AGREED"
+  }
+ ],
+ "passA_files": 12,
+ "passB_files": 12
+}

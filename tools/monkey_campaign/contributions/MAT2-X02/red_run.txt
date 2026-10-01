@@ -1,5 +1,0 @@
-Traceback (most recent call last):
-  File "E:\ChimeraWork\monkey-coordination\kanban-attempts\MAT2-X02\74bc0ad345074c429272982299a76f4e\checkout\tools\monkey_campaign\contributions\MAT2-X02\test_session_app.py", line 44, in <module>
-    import session_app  # noqa: E402
-    ^^^^^^^^^^^^^^^^^^
-ModuleNotFoundError: No module named 'session_app'

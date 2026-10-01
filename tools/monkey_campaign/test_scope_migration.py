@@ -64,6 +64,6 @@ class ScopeMigrationTests(unittest.TestCase):
                  bundle_sha256='a'*64,coordinator_id='prior-worker',native_checkpoint='saved',
                  acknowledged_at_utc='2026-09-27T00:00:00+00:00')
         self.assertEqual(inspect(HERE.parents[1],ack)['state'],'UPDATED_READ_AND_ACK_REQUIRED')
-        self.assertNotEqual(current['revision_id'],'astra-0030')
+        self.assertEqual(current['revision_id'],'astra-0031')
 
 if __name__=='__main__':unittest.main()

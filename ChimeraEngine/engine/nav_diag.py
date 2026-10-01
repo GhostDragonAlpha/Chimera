@@ -1,7 +1,7 @@
 
 import sys, json, math, subprocess
 from pathlib import Path
-NATIVE = Path('E:/PythonChimera/ChimeraEngine/native')
+NATIVE = Path(__file__).resolve().parent.parent / 'native'
 def read_chimera(path):
     gd = {}
     for line in open(path):
@@ -27,7 +27,7 @@ def gen_terrain_py(gd):
     return terr,_,_
 gg=read_chimera(NATIVE/'genomes'/'beargoal.chimera')
 ter8,_,_=gen_terrain_py(gg); TSC8=int(gg['terrainScale'])
-p2=subprocess.Popen([str(NATIVE/'ca_core.exe'),str(NATIVE/'genomes'/'bearhill.chimera'),'selftest'],stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True)
+p2=subprocess.Popen([str(NATIVE/'ca_core.exe'),'0',str(NATIVE/'genomes'/'bearhill.chimera'),'selftest'],stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True)
 lines2=[]
 for line in p2.stdout:
     lines2.append(line.strip())
@@ -97,7 +97,7 @@ print(f'arrivals={arrivals} first30={first30:.3f} last30={last30:.3f}')
 for s in range(12):
     if visits[s]>0:
         greedy=max(range(5),key=lambda i:Q[s][i])
-        print(f'  s{s} v={visits[s]} Q={[round(q,4) for q in Q[s]]} greedy=verb{greedy}')
+        print(f'  s{s} v={visits[s]} Q={[round(q,4) for q in Q[s]]} greedy={greedy}')
 def greedy_rollout(bx0):
     bx=float(bx0); y=ground_at(bx)-loY; v=0.0; contact=True; gt=0
     for tick in range(1,budget+1):

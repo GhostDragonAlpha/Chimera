@@ -1,0 +1,1012 @@
+[
+ {
+  "id": "material.water",
+  "kind": "material",
+  "name": "Sealed water (creature fluid)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": "B13",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "P = -(V - V0)/(kappa * V0), kappa = 4.6e-10 Pa^-1 (alpha = kappa*V0 in the coupled XPBD form C = V - V0)",
+   "carries": [
+    "pressure",
+    "mass"
+   ]
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [
+   "ev.band_seal_conservation"
+  ],
+  "falsifier": {},
+  "unknowns": [
+   "temperature/viscosity conditions unspecified"
+  ],
+  "notes": "V_whole = 13.8246 m^3 live => 13,824.6 kg at 1000 kg/m^3, matching the reported 13,824.5 kg material inventory (preserved on repartition)",
+  "provenance": {
+   "source": "GET http://127.0.0.1:8107/tick_state (light poll, no /frame)",
+   "fetched_utc": "2026-09-15T13:47:00Z",
+   "engine_ticks": 731615,
+   "note": "live state belongs to the ENGINE; the graph stores this snapshot read-only"
+  }
+ },
+ {
+  "id": "material.skin_membrane",
+  "kind": "material",
+  "name": "Skin membrane material",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": 2,
+  "inventory_anchor": "A2",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "qualified reduced: tension sigma = 4000 N/m; NOT a universal indentation law",
+   "carries": [
+    "tension"
+   ]
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [
+   "E, thickness, nu UNKNOWN (no shell model yet)"
+  ],
+  "notes": "the 4000 N/m tension is NOT water's surface tension (C24 warning)",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "material.glue",
+  "kind": "material",
+  "name": "Glue (third material)",
+  "classification": null,
+  "status": "specified",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": "B14",
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "cure strength + traction-separation (approved model, scratch prototype exists)"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [
+   "cure kinetics parameters",
+   "separation work"
+  ],
+  "notes": "approved third-material glue model; cure strength recorded as work-in-progress",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "model.water_compressibility",
+  "kind": "model",
+  "name": "Water compressibility law",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "P = -(V - V0)/(kappa * V0), kappa = 4.6e-10 Pa^-1 (alpha = kappa*V0 in the coupled XPBD form C = V - V0)"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [
+   "ev.band_seal_conservation"
+  ],
+  "falsifier": {},
+  "unknowns": [],
+  "notes": "couples volume constraint C = V - V0 with alpha = kappa*V0 into the XPBD stack",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "model.xpbd_coupled",
+  "kind": "model",
+  "name": "Coupled XPBD stack (volume+joint+servo+contact)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "outer tick 300 Hz, 2 Gauss-Seidel iterations per substep, n=4 substeps for cost; reportedly bounded across tested substep counts"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [
+   "ev.xpbd_fidelity_gap"
+  ],
+  "falsifier": {},
+  "unknowns": [
+   "frequency, amplitude, damping, and output sampling need separate evidence"
+  ],
+  "notes": "the verified current solver is the BASELINE; integrator replacement is a separate experiment",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "model.press_indentation",
+  "kind": "model",
+  "name": "Press indentation (qualified reduced)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "delta = F/(4 pi sigma), sigma = 4000 N/m"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [
+   "assumed support/contact geometry UNKNOWN"
+  ],
+  "notes": "existing press approximation; the coefficient DEPENDS ON ASSUMPTIONS that are undocumented (e.g. annular membrane gives delta = F ln(R/a)/(2 pi T))",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "model.exponential_recovery",
+  "kind": "model",
+  "name": "Exponential recovery (NOT healing)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "shape recovery exp decay, tau = 0.5 s"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [],
+  "notes": "recovery is viscoelastic relaxation; it is NOT material healing -- returning shape does not restore broken material, lost water, or consumed energy",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "model.contact_spring",
+  "kind": "model",
+  "name": "Ground contact spring",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "contact spring k = 1.3562e7 N/m"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [
+   "transient contact behavior unvalidated"
+  ],
+  "notes": "stated contact spring; material/geometry interpretation needs qualification (matching mg at equilibrium does not validate transient contact behavior)",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "model.breath_allometry",
+  "kind": "model",
+  "name": "Autonomic breath (volume-target oscillation)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "law": "torso cell volume TARGET oscillates: rate from Stahl respiratory allometry f = 53.5 * M^-0.26 => 4.485/min (period 13.38 s); tidal volume 6.2 mL/kg * M^1.01 => 0.0940 m^3 => 1.45 mm mean swell"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "unknowns": [
+   "a model choice requiring a biological reference; does NOT validate a water-volume oscillator; a real gas compartment remains an explicit future requirement (type.A10)"
+  ],
+  "notes": "applied as the LAST surface pass; the pressure law/conservation/gait measurements are structurally blind to it (the honest derivation shows a water-stiff sealed cell CANNOT breathe: the tidal swell, if the kappa law saw it, answers 14.9 MPa = 99% of skin yield)",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "param.kappa",
+  "kind": "parameter",
+  "name": "kappa (water compressibility)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "value": 4.6e-10,
+   "selection_status": "in_use"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "units": "Pa^-1",
+  "value": 4.6e-10,
+  "source": "operator brief 2026-09-15 / engine water law; specimen: the creature's water inventory; temperature/strain-rate conditions UNKNOWN",
+  "applicability": "sealed liquid water cells of this creature",
+  "validation": "unchecked against independent reference",
+  "unknowns": [],
+  "notes": "SELECTED parameter (not a reference assertion): selecting it for the creature was an explicit adaptation decision; the reference side (Uberon/RO/QUDT/OpenSim) never auto-becomes a creature parameter",
+  "provenance": {
+   "source": "operator brief 2026-09-15 / engine water law; specimen: the creature's water inventory; temperature/strain-rate conditions UNKNOWN"
+  }
+ },
+ {
+  "id": "param.sigma_skin",
+  "kind": "parameter",
+  "name": "sigma (skin tension coefficient)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "value": 4000.0,
+   "selection_status": "in_use"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "units": "N/m",
+  "value": 4000.0,
+  "source": "engine constant (brief 2026-09-15); assumed contact/support geometry UNKNOWN -- qualified reduced model",
+  "applicability": "the press approximation delta = F/(4 pi sigma) on this creature's skin",
+  "validation": "unchecked against independent reference",
+  "unknowns": [],
+  "notes": "SELECTED parameter (not a reference assertion): selecting it for the creature was an explicit adaptation decision; the reference side (Uberon/RO/QUDT/OpenSim) never auto-becomes a creature parameter",
+  "provenance": {
+   "source": "engine constant (brief 2026-09-15); assumed contact/support geometry UNKNOWN -- qualified reduced model"
+  }
+ },
+ {
+  "id": "param.tau_recovery",
+  "kind": "parameter",
+  "name": "tau (skin recovery)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "value": 0.5,
+   "selection_status": "in_use"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "units": "s",
+  "value": 0.5,
+  "source": "engine constant; NOT a healing timescale",
+  "applicability": "exponential shape recovery after unload",
+  "validation": "unchecked against independent reference",
+  "unknowns": [],
+  "notes": "SELECTED parameter (not a reference assertion): selecting it for the creature was an explicit adaptation decision; the reference side (Uberon/RO/QUDT/OpenSim) never auto-becomes a creature parameter",
+  "provenance": {
+   "source": "engine constant; NOT a healing timescale"
+  }
+ },
+ {
+  "id": "param.contact_spring_k",
+  "kind": "parameter",
+  "name": "ground contact spring",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "value": 13562000.0,
+   "selection_status": "in_use"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "units": "N/m",
+  "value": 13562000.0,
+  "source": "engine constant; interpretation of material/geometry needs qualification",
+  "applicability": "ground contact under the creature's feet",
+  "validation": "unchecked against independent reference",
+  "unknowns": [],
+  "notes": "SELECTED parameter (not a reference assertion): selecting it for the creature was an explicit adaptation decision; the reference side (Uberon/RO/QUDT/OpenSim) never auto-becomes a creature parameter",
+  "provenance": {
+   "source": "engine constant; interpretation of material/geometry needs qualification"
+  }
+ },
+ {
+  "id": "param.mass_inventory",
+  "kind": "parameter",
+  "name": "creature mass from material inventory",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "value": 13824.5,
+   "selection_status": "in_use"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "units": "kg",
+  "value": 13824.5,
+  "source": "derived from the material inventory (brief); live V_whole 13.8246 m^3 x 1000 kg/m^3 agrees to 13,824.6 kg",
+  "applicability": "whole creature; MUST be preserved when repartitioning",
+  "validation": "unchecked against independent reference",
+  "unknowns": [],
+  "notes": "SELECTED parameter (not a reference assertion): selecting it for the creature was an explicit adaptation decision; the reference side (Uberon/RO/QUDT/OpenSim) never auto-becomes a creature parameter",
+  "provenance": {
+   "source": "derived from the material inventory (brief); live V_whole 13.8246 m^3 x 1000 kg/m^3 agrees to 13,824.6 kg"
+  }
+ },
+ {
+  "id": "param.breath_period",
+  "kind": "parameter",
+  "name": "autonomic breath period",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": {
+   "value": 13.38,
+   "selection_status": "in_use"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "units": "s",
+  "value": 13.38,
+  "source": "Stahl respiratory allometry at the engine's own mass (C1r derivation); MODEL CHOICE requiring a biological reference -- it does NOT validate a water-volume oscillator (the 1% volume strain at kappa implies ~21.7 MPa)",
+  "applicability": "torso volume-target oscillation (reflex breathing)",
+  "validation": "unchecked against independent reference",
+  "unknowns": [],
+  "notes": "SELECTED parameter (not a reference assertion): selecting it for the creature was an explicit adaptation decision; the reference side (Uberon/RO/QUDT/OpenSim) never auto-becomes a creature parameter",
+  "provenance": {
+   "source": "Stahl respiratory allometry at the engine's own mass (C1r derivation); MODEL CHOICE requiring a biological reference -- it does NOT validate a water-volume oscillator (the 1% volume strain at kappa implies ~21.7 MPa)"
+  }
+ },
+ {
+  "id": "actuator.joint_servos",
+  "kind": "actuator",
+  "name": "Joint actuators (force/torque-limited servos)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": 2,
+  "inventory_anchor": "A7",
+  "spatial": {
+   "anchored_to": "the 28 measured joint pins",
+   "frame": "engine world frame"
+  },
+  "geometry": {
+   "shape": "servo constraints at pins",
+   "is_placeholder": false
+  },
+  "physical": {
+   "law": "force/torque-limited servo intents through /tick_pose; NOT implemented contractile tissue (labeled accurately per the brief)"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A muscle that cannot stall under load cannot demonstrate contraction.",
+   "acceptance_test": "obstruct motion; respect the force/torque cap; measure the reaction load (acceptance 5)",
+   "status": "untested"
+  },
+  "unknowns": [
+   "no activation/contractile state",
+   "no explicit energy reservoir yet"
+  ],
+  "notes": "REUSE for the first causal demonstration (brief: reuse them for the first causal demonstration).",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "sensor.scalar_cell_pressure",
+  "kind": "sensor",
+  "name": "Per-cell scalar pressure telemetry",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": null,
+  "inventory_anchor": "D29",
+  "spatial": {
+   "anchored_to": "one sensor per sealed cell (no sub-cell location)",
+   "frame": "engine world frame"
+  },
+  "geometry": {
+   "shape": "scalar per cell",
+   "is_placeholder": false
+  },
+  "physical": {
+   "law": "reports cell pressure P each tick (300 Hz outer tick; tick period 3.33 ms); /tick_state exposes it"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "A touch response that survives disconnecting its touch sensor cannot demonstrate sensing.",
+   "acceptance_test": "disconnect pathway.pressure_to_intent; the active response must vanish while passive mechanical response remains (acceptance 4)",
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "LIMITATION: one uniform cell pressure cannot identify WHERE on the cell the touch occurred (brief). Local receptor patches are the type.D29 fix and remain SPECIFIED.",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "pathway.pressure_to_intent",
+  "kind": "pathway",
+  "name": "Pressure-to-intent pathway (the reflex 'nerve')",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": "P0",
+  "build_rank": 3,
+  "inventory_anchor": "D31",
+  "spatial": {
+   "anchored_to": "cell -> controller -> same-limb drive pins",
+   "frame": "engine world frame"
+  },
+  "geometry": {
+   "shape": "disconnectable connection",
+   "is_placeholder": false
+  },
+  "physical": {
+   "law": "per-cell pressure crossing -> binding-derived strut pin intent; FINITE delay: one outer tick (3.33 ms); DISCONNECTABLE via the pressure_coupling route flag (the battery's built-in negative control)"
+  },
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [
+   "ev.reflex_controls_fail"
+  ],
+  "falsifier": {
+   "statement": "A nerve that transmits across a cut cannot demonstrate a nerve.",
+   "acceptance_test": "cut the pathway; signal contribution gone, passive mechanics remain (C1r: prev_p tracks truth through a cut so reconnect never synthesizes a spike)",
+   "status": "untested"
+  },
+  "unknowns": [],
+  "notes": "exists (C1r plumbing) but the REFLEX CONTROLS fail (see ev.reflex_controls_fail): their existence is not verification.",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "ev.band_seal_conservation",
+  "kind": "evidence",
+  "name": "4-band seal conservation (live session)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": null,
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "validation": "passing",
+  "last_result": null,
+  "deps": [
+   "inst.band.feet",
+   "inst.band.shins",
+   "inst.band.thighs",
+   "inst.band.torso",
+   "memb.skin",
+   "memb.septum.feet_shins",
+   "memb.septum.shins_thighs",
+   "memb.septum.thighs_torso",
+   "material.water"
+  ],
+  "captured": {},
+  "captured_utc": "2026-09-15T13:47:00Z",
+  "engine": {
+   "ticks": 731615,
+   "sealed": true,
+   "n_cells": 4,
+   "conserve_pct": -0.000117273,
+   "V_whole_m3": 13.8246,
+   "url": "GET 127.0.0.1:8107/tick_state"
+  },
+  "acceptance": "sealed=true, no seal refusal, |conserve_pct| < 0.01, sum of per-cell v0 == V_whole, all cells non-degenerate",
+  "unknowns": [],
+  "notes": "VALIDATION state (passing) is independent of implementation state; a physics-relevant change to any dep stales this conservatively (the result stays visible in last_result).",
+  "provenance": {
+   "source": "GET http://127.0.0.1:8107/tick_state (light poll, no /frame)",
+   "fetched_utc": "2026-09-15T13:47:00Z",
+   "engine_ticks": 731615,
+   "note": "live state belongs to the ENGINE; the graph stores this snapshot read-only"
+  }
+ },
+ {
+  "id": "ev.reflex_controls_fail",
+  "kind": "evidence",
+  "name": "Reflex plumbing fails its controls (current)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": null,
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "validation": "failing",
+  "last_result": null,
+  "deps": [
+   "pathway.pressure_to_intent",
+   "sensor.scalar_cell_pressure",
+   "actuator.joint_servos"
+  ],
+  "captured": {},
+  "captured_utc": "2026-09-15T13:47:00Z",
+  "engine": {
+   "note": "brief: 'Reflex plumbing exists but fails its controls: volume-target breathing, pressure-triggered flinch, and pressure-rate startle. Their existence is not verification.'"
+  },
+  "acceptance": "each reflex must pass its own negative control (severed path => no active response, passive mechanics remain)",
+  "unknowns": [],
+  "notes": "A FAILED CURRENT TEST STAYS VISIBLE. This is exactly the record that must not silently vanish when the pathway is edited.",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "ev.xpbd_fidelity_gap",
+  "kind": "evidence",
+  "name": "XPBD convergence does not establish modal fidelity",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": null,
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "validation": "failing",
+  "last_result": null,
+  "deps": [
+   "model.xpbd_coupled"
+  ],
+  "captured": {},
+  "captured_utc": "2026-09-15T13:47:00Z",
+  "engine": {
+   "measured": "converged n=4 XPBD: 1222.7 rad/s; true ring mode: 1949 rad/s (synthetic prototype, not the creature's identified model)"
+  },
+  "acceptance": "frequency, amplitude, damping, and output sampling each carry separate evidence",
+  "unknowns": [],
+  "notes": "Reported context from the brief; a synthetic comparison lives at Tools/modal_fidelity_ring.py when present. Failing stays visible.",
+  "provenance": {
+   "source": "operator mission brief of record, 2026-09-15 (pasted-text-20260915-084209-ee5dd0b0.txt)"
+  }
+ },
+ {
+  "id": "ev.limb_restore_recipes_20260915",
+  "kind": "evidence",
+  "name": "Limb recipe/state restore contracts hold in the full engine (34 checks)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": null,
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "validation": "passing",
+  "last_result": null,
+  "deps": [
+   "work.partition_leg_l",
+   "inst.comp.thigh_l",
+   "inst.comp.shin_l",
+   "inst.comp.foot_l"
+  ],
+  "captured": {},
+  "captured_utc": "2026-09-15T19:01:23Z",
+  "engine": {
+   "window": "isolated full Vulkan engine, port 8093, pid 40572 (round2)",
+   "n_cells": 11,
+   "volumes_m3": {
+    "thigh_l": 0.347067,
+    "shin_l": 0.167423,
+    "foot_l": 0.143259
+   },
+   "piece_counts": {
+    "thigh_l": 2894,
+    "shin_l": 1052,
+    "foot_l": 2766
+   },
+   "coverage_pct": -0.000110374,
+   "coverage_gate_abs_pct": 0.01,
+   "euler_characteristics": "6/2/6 component-wise ledger (multi-sheet cells legitimate)",
+   "checks_file": "corrected_run/checks.jsonl (34/34 pass, sha256 51cd1863)"
+  },
+  "acceptance": "all 34 corrected_run checks pass: partition report exactly unchanged on repeat; late limb/registry failures transactional (prior state preserved); LMB1 56-byte sensor records round-trip; PAT2 continues the sensor subsystem; strict state JSON (no duplicate cells key)",
+  "unknowns": [],
+  "notes": "Ordered recipe replay, not a crash-atomic multi-file snapshot. NOT proven here: whole-engine continuation, force-limited actuation, landed XPBD, every-bone compartmentalization (req.every_bone_sealed context only). work.septa_leg_l (load-bearing septa) is context, not measured by this record. Full partition report equals the previously CPU-tested native report.",
+  "provenance": {
+   "source": "codex isolated full-engine qualification window (branch codex/limb-state-fixes), bundle E:\\PythonChimera\\agent_logs\\codex\\limb_runtime_20260915",
+   "source_revision": "a12bfbcc494a273b4739f86a83e19001343ee70c",
+   "source_base": "63805f4174cfdb666552dfdac9b5d290789b73e0",
+   "commit_tree": "8259c29fa27291656dda4316b3c276b7211a0f5e",
+   "exe_sha256": "e907e46423df5d028cb3d29ff29e0caae1410f6b41fec74824f7a54e16808170",
+   "bundle_manifest": "MANIFEST.json: 148 files, every sha256 re-verified by F1 2026-09-15 (0 mismatches, 0 missing, 0 extra)",
+   "attachment_proposal": "graph_attachment_proposal.json sha256 bb4e1c00820f49459fbd0792e51c99fa0fab7bb4c3a870f15b9b1c0baf0b3502",
+   "identity_verified_by": "F1-identity-evidence 2026-09-15: worktree clean at a12bfbcc, 3 changed sources match source_identity.json (raw+LF), on-disk exe hash matches both runtime windows",
+   "attached_by": "F1-identity-evidence (authorized graph writer)",
+   "attached_utc": "2026-09-15T20:30:00Z",
+   "scope": "scoped measurement records only; does NOT verify req.every_bone_sealed, any experience, work.septa_leg_l load-bearing walls, or pay25; no object implementation status changed by this attachment"
+  }
+ },
+ {
+  "id": "ev.limb_live_control_20260915",
+  "kind": "evidence",
+  "name": "Live sensory-path control passes its severed-path negative control (19 checks)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": null,
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "validation": "passing",
+  "last_result": null,
+  "deps": [
+   "inst.comp.shin_l",
+   "work.causal_demo_leg_l"
+  ],
+  "captured": {},
+  "captured_utc": "2026-09-15T19:01:23Z",
+  "engine": {
+   "window": "isolated full Vulkan engine, port 8093, pid 40572 (round2)",
+   "stimulus": "20,000 N press at an actual shin receptor vertex (persisted region, nearest to derived anchor); no stimulus tuning",
+   "transport_delay_s": 0.042257461696863174,
+   "connected": {
+    "max_flinch_env_l": 0.986737,
+    "max_delivered_shin_signal_m": 0.03,
+    "max_dimple_m": 0.397887,
+    "max_pressed_cell_Pa": 20940200.0
+   },
+   "cut": {
+    "max_flinch_env_l": 0,
+    "max_delivered_shin_signal_m": 0,
+    "max_dimple_m": 0.397887,
+    "max_pressed_cell_Pa": 17915000.0
+   },
+   "checks_file": "causal_run/checks.jsonl (19/19 pass, sha256 46b2cf03)"
+  },
+  "acceptance": "connected path delivers through the shin receptor at the configured transport delay; severed path delivers 0 signal and 0 flinch envelope while passive dimple/pressure remain; reconnection at rest causes no stale flinch",
+  "unknowns": [],
+  "notes": "This is the pressure TRANSPORT path's negative control, NOT the reflex controls: ev.reflex_controls_fail (volume-target breathing / pressure-triggered flinch / pressure-rate startle) remains validation=failing and was neither fixed nor re-stamped by this patch or this attachment. Delivery-timing continuity remains scoped to the controlled native CPU test: HTTP sampling did not establish deterministic delivery timing. Passive pressure trajectories are not identical across connected/cut because the active pose response also loads the cells.",
+  "provenance": {
+   "source": "codex isolated full-engine qualification window (branch codex/limb-state-fixes), bundle E:\\PythonChimera\\agent_logs\\codex\\limb_runtime_20260915",
+   "source_revision": "a12bfbcc494a273b4739f86a83e19001343ee70c",
+   "source_base": "63805f4174cfdb666552dfdac9b5d290789b73e0",
+   "commit_tree": "8259c29fa27291656dda4316b3c276b7211a0f5e",
+   "exe_sha256": "e907e46423df5d028cb3d29ff29e0caae1410f6b41fec74824f7a54e16808170",
+   "bundle_manifest": "MANIFEST.json: 148 files, every sha256 re-verified by F1 2026-09-15 (0 mismatches, 0 missing, 0 extra)",
+   "attachment_proposal": "graph_attachment_proposal.json sha256 bb4e1c00820f49459fbd0792e51c99fa0fab7bb4c3a870f15b9b1c0baf0b3502",
+   "identity_verified_by": "F1-identity-evidence 2026-09-15: worktree clean at a12bfbcc, 3 changed sources match source_identity.json (raw+LF), on-disk exe hash matches both runtime windows",
+   "attached_by": "F1-identity-evidence (authorized graph writer)",
+   "attached_utc": "2026-09-15T20:30:00Z",
+   "scope": "scoped measurement records only; does NOT verify req.every_bone_sealed, any experience, work.septa_leg_l load-bearing walls, or pay25; no object implementation status changed by this attachment"
+  }
+ },
+ {
+  "id": "ev.limb_cold_restart_20260915",
+  "kind": "evidence",
+  "name": "Cold process restart retains limb/sensor state (4 checks)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": null,
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "validation": "passing",
+  "last_result": null,
+  "deps": [
+   "work.partition_leg_l",
+   "inst.comp.thigh_l",
+   "inst.comp.shin_l",
+   "inst.comp.foot_l"
+  ],
+  "captured": {},
+  "captured_utc": "2026-09-15T19:04:00Z",
+  "engine": {
+   "window": "isolated full Vulkan engine, port 8093, pid 25156 (cold, --restore)",
+   "n_cells": 11,
+   "snapshot_check": "cold_run/snapshot_hashes.json: saved snapshots byte-identical after restore",
+   "checks_file": "cold_run/checks.json (4/4 pass, sha256 d944a8bd)"
+  },
+  "acceptance": "cold boot restores 11 cells, preserves the saved cut and disarmed state, and does not rewrite saved snapshots (byte-identical hashes)",
+  "unknowns": [],
+  "notes": "PAT2 sensor-subsystem continuation only. Mechanical/global-clock/gait/reflex/input continuation and crash-safe coordinated checkpoint publication remain open (Stage 4). Cut/fire stamps are retained as historical values, not rebased to a different run's global clock.",
+  "provenance": {
+   "source": "codex isolated full-engine qualification window (branch codex/limb-state-fixes), bundle E:\\PythonChimera\\agent_logs\\codex\\limb_runtime_20260915",
+   "source_revision": "a12bfbcc494a273b4739f86a83e19001343ee70c",
+   "source_base": "63805f4174cfdb666552dfdac9b5d290789b73e0",
+   "commit_tree": "8259c29fa27291656dda4316b3c276b7211a0f5e",
+   "exe_sha256": "e907e46423df5d028cb3d29ff29e0caae1410f6b41fec74824f7a54e16808170",
+   "bundle_manifest": "MANIFEST.json: 148 files, every sha256 re-verified by F1 2026-09-15 (0 mismatches, 0 missing, 0 extra)",
+   "attachment_proposal": "graph_attachment_proposal.json sha256 bb4e1c00820f49459fbd0792e51c99fa0fab7bb4c3a870f15b9b1c0baf0b3502",
+   "identity_verified_by": "F1-identity-evidence 2026-09-15: worktree clean at a12bfbcc, 3 changed sources match source_identity.json (raw+LF), on-disk exe hash matches both runtime windows",
+   "attached_by": "F1-identity-evidence (authorized graph writer)",
+   "attached_utc": "2026-09-15T20:30:00Z",
+   "scope": "scoped measurement records only; does NOT verify req.every_bone_sealed, any experience, work.septa_leg_l load-bearing walls, or pay25; no object implementation status changed by this attachment"
+  }
+ },
+ {
+  "id": "ev.limb_seal_history_20260915",
+  "kind": "evidence",
+  "name": "Seal history journal restores under current and legacy trees (7 checks)",
+  "classification": null,
+  "status": "geometry_built",
+  "priority": null,
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {},
+  "validation": "passing",
+  "last_result": null,
+  "deps": [
+   "work.partition_leg_l"
+  ],
+  "captured": {},
+  "captured_utc": "2026-09-15T19:04:00Z",
+  "engine": {
+   "window": "isolated full Vulkan engine, port 8093, pid 25156 (cold window)",
+   "fixture": "original lane's 60-line seal history read read-only from slot-01 .an2_scratch; legacy tree from the limb_state_fix fixtures",
+   "checks_file": "history_run/checks.json (7/7 pass, sha256 1d844199)"
+  },
+  "acceptance": "current and legacy seal trees both restore ok, the cut is retained, the journal is byte-unchanged, and a no-op restore leaves snapshot bytes unchanged; 11 cells + disconnected shin patch after each restore",
+  "unknowns": [],
+  "notes": "The original 60-line seal journal was read from the slot-01 lane's .an2_scratch as a READ-ONLY fixture source; the lane's files and its engine (pid 40976) were not touched (window_closed.json).",
+  "provenance": {
+   "source": "codex isolated full-engine qualification window (branch codex/limb-state-fixes), bundle E:\\PythonChimera\\agent_logs\\codex\\limb_runtime_20260915",
+   "source_revision": "a12bfbcc494a273b4739f86a83e19001343ee70c",
+   "source_base": "63805f4174cfdb666552dfdac9b5d290789b73e0",
+   "commit_tree": "8259c29fa27291656dda4316b3c276b7211a0f5e",
+   "exe_sha256": "e907e46423df5d028cb3d29ff29e0caae1410f6b41fec74824f7a54e16808170",
+   "bundle_manifest": "MANIFEST.json: 148 files, every sha256 re-verified by F1 2026-09-15 (0 mismatches, 0 missing, 0 extra)",
+   "attachment_proposal": "graph_attachment_proposal.json sha256 bb4e1c00820f49459fbd0792e51c99fa0fab7bb4c3a870f15b9b1c0baf0b3502",
+   "identity_verified_by": "F1-identity-evidence 2026-09-15: worktree clean at a12bfbcc, 3 changed sources match source_identity.json (raw+LF), on-disk exe hash matches both runtime windows",
+   "attached_by": "F1-identity-evidence (authorized graph writer)",
+   "attached_utc": "2026-09-15T20:30:00Z",
+   "scope": "scoped measurement records only; does NOT verify req.every_bone_sealed, any experience, work.septa_leg_l load-bearing walls, or pay25; no object implementation status changed by this attachment"
+  }
+ },
+ {
+  "id": "ev.graph_contracts_20260915",
+  "kind": "evidence",
+  "name": "Graph contract repair checks, isolated worktree",
+  "status": "specified",
+  "validation": "passing",
+  "deps": [
+   "work.graph_contract_repairs_20260915"
+  ],
+  "captured_utc": "2026-09-15T21:26:57.199423+00:00",
+  "physical": {
+   "source_hashes": {
+    "schema.py": "3d710d1d3dd31ca7ecd5ff6429eff497bf75705686a4ae8e54dbd8ab8fe397c7",
+    "store.py": "0dedc8e579c33ee94287491a2269d7fdb4f262e9f2f34eed8b2330867f39b4bd",
+    "build_graph.py": "5612a8a3af72f101d4ed0a38745fbba77aae779920c2f7ad340d218dd7880b96",
+    "engine_live.py": "913c32fe850ef0d798ceecea6d6518afa7b362cf450a34e81dfeb0ad54099ada",
+    "gaps.py": "5022007a28a4f6f4d5de268ae7e179686fb555b46fce8ffdebecb7e5230ef4da",
+    "graphify_projection.py": "234ed6194e1b375f4ccec34857c6b41a21cd00f7fa7bdefd8d8746440d54a820",
+    "graphify_consumer.py": "fb122da8426d44d87e3cf2da01e3e95d98885569d2cc5733ee91b8fc4aefa5fe",
+    "acceptance.py": "d4fc41802a1fb17910fc43ba4aa194cf7b2d566559bc6078a7593f8ea4cdd6f8",
+    "tests/test_contracts.py": "e87875b704aeb83c0f5b9197a7d91532280c38fa14fb3cc485331208458376d0"
+   }
+  },
+  "provenance": {
+   "evidence_directory": "agent_logs/codex/graph_contracts_20260915",
+   "artifact_sha256": {
+    "contracts_recorded_measurement.log": "e0029ea055f776e8ddc053f07b3b65af5602bf0994857672ebfef505bc39cc7b",
+    "acceptance_results.json": "a4a43edc1f0f98d606e8858c82b8500aaf51cf8af023b97b8105e9baddbdf27f",
+    "bridge_final_1.json": "044b9bc532be7df9cc8a50c829bcee79e50207d96d8984adc2d1e915fd6a1057",
+    "bridge_final_2.json": "4d2fa04eaeece6166878c679ac87b119f027ee53bf241976da911985adeea2f5"
+   }
+  },
+  "notes": "19 positive contract tests; 25 offline acceptance checks with live block NOT_TESTED; two private Graphify seven-check round trips. Historical captures were not repaired retroactively.",
+  "capture_contract": 1,
+  "captured": {
+   "work.graph_contract_repairs_20260915": "af1b4d5034c9c00d"
+  },
+  "captured_dependencies": [
+   "work.graph_contract_repairs_20260915"
+  ],
+  "captured_relations": {},
+  "last_result": "passing"
+ },
+ {
+  "id": "ev.partition_reconciliation_20260915",
+  "kind": "evidence",
+  "name": "Partition acceptance reconciliation: delivered native limb bundle verified against today's checkout",
+  "status": "specified",
+  "validation": "passing",
+  "deps": [
+   "work.partition_leg_l",
+   "req.every_bone_sealed",
+   "inst.comp.thigh_l",
+   "inst.comp.shin_l",
+   "inst.comp.foot_l"
+  ],
+  "captured_utc": "2026-09-15T22:32:45.606738+00:00",
+  "physical": {
+   "source_hash_policy": "SHA256 of UTF-8 source bytes with CRLF normalized to LF",
+   "source_hashes": {
+    "ChimeraEngine/engine/main.cpp": "433b5887cabc472bc7634cfc9e6bf6022531e019e8694a61eaafe04722ad1004",
+    "ChimeraEngine/engine/membrane_tick.cpp": "ceca5cfde318744426c2d44c12cb76b6fcc718842635eb8d9774e5ddc56013e4",
+    "ChimeraEngine/engine/membrane_tick.hpp": "82624f82cb612ab844a252b84ba64abd7a7cd1e52bdd56508b19c9920908d16d"
+   }
+  },
+  "provenance": {
+   "evidence_directory": "agent_logs/codex/limb_runtime_20260915 (+ limb_state_fix_20260915 CPU fixture)",
+   "artifact_sha256": {
+    "REPORT.md": "86e3d2ff9f98146374bf3e76f7efea992f810a0010c054b6389b1781379559cc",
+    "source_identity.json": "e64bd75d3821aa64b97a730ab9039c3c199a76245c2172acb841f5600ee01579",
+    "graph_attachment_proposal.json": "bb4e1c00820f49459fbd0792e51c99fa0fab7bb4c3a870f15b9b1c0baf0b3502",
+    "corrected_run/checks.jsonl": "51cd1863f46df69376389483281219ba5ff1ee6cee8b03e0b4074a0d7dd1a72e",
+    "causal_run/checks.jsonl": "46b2cf0372ab9801c507182677e5da92d87c493bde91fddf5a8bf8bb41a5defd",
+    "causal_run/summary.json": "0356efbe81e49c2dc9fd4066cf6a0913221c97b47a974741dfacffe5e8a1df81",
+    "cold_run/checks.json": "d944a8bd353118dae0248fb45f7d6ad3bfd1622a426b34f8de47b9171a77236e",
+    "history_run/checks.json": "1d844199dee0732f83c3cf3bfad590da079b0d9ae74103c387fd1fabbd86f232",
+    "limb_state_fix_20260915/results/patched/partition.json": "8867911fd16171f245c3ed3a0fdf76dbfe9bbf10a60450842cb6b81b244912f6",
+    "limb_state_fix_20260915/results/patched/state.json": "d2c04272382b6c4dbe2a77509d6efc3b825569aebc3dc9cee7d5fe29bce68c95",
+    "limb_state_fix_20260915/results/patched/summary.json": "855c7be669ae4bd3b53d6b744b3c3a105e21a457b2694b742258766541613808",
+    "limb_state_fix_20260915/results/regression_comparison.json": "f7ecc234461ad7fd67cedaa3026138001ee894a3af66a17fe966406f18ba32c4",
+    "limb_state_fix_20260915/tests/run_tests.py": "3a489daa978e7eff262e9a7fe50c85e2b4a2031d5d3d448cd02465bc160d342e"
+   }
+  },
+  "notes": "Artifact-verification measurement made 2026-09-15 against checkout 75a938e2 (clean, a12bfbcc ancestor): all three tested engine sources hash-match after CRLF-to-LF normalization; delivered check files re-verified in place (34/34, 19/19, 4/4, 7/7; FAILURES 0). The physical experiment was NOT re-run; partition numbers are historical delivered results. Attachments: press-answer clause measured on the shin bone only; 0.0001 percent conservation, whole-creature sealing, open-wound transfer, force-limited actuation, DYAD acceptance not claimed.",
+  "capture_contract": 1,
+  "captured": {
+   "work.partition_leg_l": "b85c477aa99d28dc",
+   "req.every_bone_sealed": "fefea63b5ce39f38",
+   "inst.comp.thigh_l": "8d27d9f6f0267e47",
+   "inst.comp.shin_l": "6f5ba5a0270968c2",
+   "inst.comp.foot_l": "ab03b7775428a778"
+  },
+  "captured_dependencies": [
+   "inst.comp.foot_l",
+   "inst.comp.shin_l",
+   "inst.comp.thigh_l",
+   "req.every_bone_sealed",
+   "work.partition_leg_l"
+  ],
+  "captured_relations": {
+   "r_aa98c3e2831ee0e22f126f36e606a25a1a5ab56cbcfdbe0e61217df84758fa67_0": {
+    "rid": "r_aa98c3e2831ee0e22f126f36e606a25a1a5ab56cbcfdbe0e61217df84758fa67_0",
+    "src": "inst.comp.thigh_l",
+    "rel": "uses_material",
+    "dst": "material.water",
+    "note": "planned fluid inventory"
+   },
+   "r_16142d7bd488c48e5ddd51be182554421a1f87bc23ffa4db13301ff583858f16_0": {
+    "rid": "r_16142d7bd488c48e5ddd51be182554421a1f87bc23ffa4db13301ff583858f16_0",
+    "src": "inst.comp.thigh_l",
+    "rel": "uses_model",
+    "dst": "model.water_compressibility",
+    "note": "per-region pressure law"
+   },
+   "r_6efdc36dad53a27f0348a5aa0a5e2f7ef0742bc6ba1f680d6bd412cae8e826fe_0": {
+    "rid": "r_6efdc36dad53a27f0348a5aa0a5e2f7ef0742bc6ba1f680d6bd412cae8e826fe_0",
+    "src": "inst.comp.shin_l",
+    "rel": "uses_material",
+    "dst": "material.water",
+    "note": "planned fluid inventory"
+   },
+   "r_3283dbc7d278afe6557364a595c756e8a881c9b8eba4289319b56c5f167f5cb1_0": {
+    "rid": "r_3283dbc7d278afe6557364a595c756e8a881c9b8eba4289319b56c5f167f5cb1_0",
+    "src": "inst.comp.shin_l",
+    "rel": "uses_model",
+    "dst": "model.water_compressibility",
+    "note": "per-region pressure law"
+   },
+   "r_32095a66452c2bccd01564a28ef4d690ce13cbd423ee51e69b66caca711c5add_0": {
+    "rid": "r_32095a66452c2bccd01564a28ef4d690ce13cbd423ee51e69b66caca711c5add_0",
+    "src": "inst.comp.foot_l",
+    "rel": "uses_material",
+    "dst": "material.water",
+    "note": "planned fluid inventory"
+   },
+   "r_aa4345d7882da7a12e37933cba391ea5e32b3216242146f85c99255bc35cf4b3_0": {
+    "rid": "r_aa4345d7882da7a12e37933cba391ea5e32b3216242146f85c99255bc35cf4b3_0",
+    "src": "inst.comp.foot_l",
+    "rel": "uses_model",
+    "dst": "model.water_compressibility",
+    "note": "per-region pressure law"
+   }
+  },
+  "last_result": "passing"
+ }
+]

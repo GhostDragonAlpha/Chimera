@@ -1,2 +1,0 @@
-
-**F9 BUDGET SUPERSESSION ON MASTER (2026-09-19, dbe2db82):** Free-root performance gate resolved. Profiled: waste (44 evaluates vs 16 needed), not n=8 scaling. Optimized bitwise-neutrally (44->32). Superseded the 0.5ms absolute clause (mounted runs 0.70ms = box calibration error). New budget: <=5x single, <=3.33ms absolute, <=3x sustained median. Final: ratio 2.72/2.73/2.75, median 2.73 < 3x. F9 gate UNBLOCKED. Free-root solver can merge without the performance gate blocking it.

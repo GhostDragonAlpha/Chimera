@@ -1,0 +1,44 @@
+{
+ "what": "C1r reproduction of the window-8 bugs on the lead-built binary (.tmp/build_tick/Release, 2026-09-15 00:41, the window-8 build), scratch ports 8166/8167, snapshot-copied isolated cwd, killed by PID after the runs",
+ "bug1_pin_lifecycle": {
+  "scratch": 8166,
+  "steps": [
+   "POST /tick_reflex {\"on\":true} at boot (gait never run) -> ok:true, flinch pins -1/-1, block 'flinch:no_drive_resolution (...)' (the named refusal, by design)",
+   "gravity on -> stance on -> gait on (ok) -> gait off",
+   "GET /tick_state: reflex_flinch_pin_l/r STILL -1/-1, block unchanged -- BUG 1 REPRODUCED: the reflex reader resolved only at arm time and never re-looked",
+   "POST /tick_reflex {\"on\":false} then {\"on\":true} (re-arm AFTER gait)",
+   "GET /tick_state: pins 17/18, block '' -- the gait machine's resolution store PERSISTED; the arm-time-only link was the whole gap"
+  ],
+  "fix": "lazy adoption in reflex_detect_locked_: every tick with the flinch armed and pins unresolved, adopt the gait machine's resolution when it exists and strip the flinch component from reflex_block",
+  "battery_field_names": {
+   "tick_state_canonical": [
+    "reflex_on", "reflex_breathing", "reflex_breath_cell", "reflex_breath_period_s",
+    "reflex_breath_amp_frac", "reflex_breath_disp_m", "reflex_breath_phase_deg",
+    "reflex_flinch", "reflex_flinch_pin_l", "reflex_flinch_pin_r",
+    "reflex_flinch_env_l", "reflex_flinch_env_r", "reflex_flinch_last_cell",
+    "reflex_flinch_last_tick", "reflex_startle", "reflex_startle_env",
+    "reflex_startle_bias_deg", "reflex_startle_last_tick", "reflex_p_coupling",
+    "reflex_quiet_s", "reflex_block"
+   ],
+   "route_echo_now_also_exposes": ["flinch_env_l", "flinch_env_r", "startle_env", "quiet_s"]
+  }
+ },
+ "bug2_v10": {
+  "scratch": 8167,
+  "finding": "fresh boot -> arm reflexes -> gait_verify ARMED as the first and only post-arm activity: 15/15 PASS (gait_verify_armed_fresh_scratch8167.json); V10 root back at +0.00950 exactly; V1c rest pressures exactly 0",
+  "window8_artifact_explained": "the window-8 armed run's OWN state0 shows gravity_on=True, stance_on=True, gait_on=True, root_vy=-0.175 (B7-B9 left the world live; B10 launched into a mid-stride, stance-held body). V1b/V1c measured the stance servo still converging its earned lean term (contact 4.2% off, P 2.04 MPa = the BY-DESIGN held-pose dP, root mid-drift -0.00726). V10 then tore down correctly and the run's final_state is the exact home: root_y +0.00950712, contact exactly m*g, max|P| 0, ankles 0 -- the bar failed against a polluted REFERENCE, not a moved body",
+  "fixes": [
+   "BATTERY.md B10 prelude: tear down to quiet rest before gait_verify (the sequencing was C1r's doc bug)",
+   "hardening (lead-blessed option B anyway): the breath pass moved AFTER the FALL law's root read -- the root home is breath-blind by construction"
+  ]
+ },
+ "detector_deadlock_found_while_reproducing": {
+  "observation": "after any re-arm, BOTH triggers went permanently dead: a 0 -> 430914 Pa touch step (dP/dt ~1.3e8 Pa/s) fired neither flinch nor startle; startle_last_tick frozen at 3273; quiet_s kept accumulating (the detector ran) but the trigger loop never did",
+  "root_cause": "set_reflex sets prev_p_valid=false expecting a reseed, but the reseed branch was gated by the SIZE check only. First arm on fresh boot: sizes 0 != 4 -> reseed ran (the startle fired at tick 3273). Any later arm: sizes 4 == 4 -> prev_p_valid stayed false -> reflex_detect_locked_ returned early EVERY tick, prev_p frozen",
+  "fix": "reseed condition now includes !reflex_.prev_p_valid"
+ },
+ "bonus_measurement": {
+  "breath_amplitude_check": "final_state reflex_breath_disp_m -0.000904332 at phase 218.353 deg -> mean disp 1.47 mm vs the derived 1.45 mm -- the build's breathing amplitude matches the allometric derivation exactly",
+  "startle_corollary_gate": "the one startle fire (tick 3273) was the stance-arm transient with no external stimulus -- the startle now requires the stance rung settled >= 1 s (self-generated transients do not startle)"
+ }
+}

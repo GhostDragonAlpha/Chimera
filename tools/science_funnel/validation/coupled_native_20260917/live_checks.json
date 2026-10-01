@@ -1,0 +1,130 @@
+{
+  "runtime": {
+    "pid": 104208,
+    "exe": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\coupled-native-engine\\Release\\chimera_engine.exe",
+    "exe_sha256": "98CCEADA8F728BBB730C8800B479D95D254822377F27AD61F42F15363C1A16C9",
+    "scene": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\coupled-native\\scene.json",
+    "scene_file_sha256": "0D942EDABCF0C4F3AAE541B1F9B4F8449BEABDD2AA459B32A9DC4F43F4FB9312",
+    "graph_hash": "e5324edee6193fb8bac75bc6aea9e3e2885f8befca1235b2d2562626307c671b",
+    "scene_sha256": "e0276e4a5124b5d19ac00986f73876edb526f6583bee3b70f19e752abe44d888",
+    "port": 8127,
+    "launched_utc": "2026-09-17T07:04:07.3769371Z"
+  },
+  "checks": [
+    {
+      "name": "owned_runtime_identity",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "name": "command_elbow_drive",
+      "pass": true,
+      "details": {
+        "error": ""
+      }
+    },
+    {
+      "name": "command_paused",
+      "pass": true,
+      "details": {
+        "error": ""
+      }
+    },
+    {
+      "name": "command_shoulder_target_deg",
+      "pass": true,
+      "details": {
+        "error": ""
+      }
+    },
+    {
+      "name": "targets_are_intent",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "name": "command_reset",
+      "pass": true,
+      "details": {
+        "error": ""
+      }
+    },
+    {
+      "name": "cut_power_preserves_passive_motion",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "name": "command_elbow_drive",
+      "pass": true,
+      "details": {
+        "error": ""
+      }
+    },
+    {
+      "name": "undriven_elbow_moves",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "name": "command_elbow_drive",
+      "pass": true,
+      "details": {
+        "error": ""
+      }
+    },
+    {
+      "name": "both_coordinates_actually_move",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "name": "torque_cap_0",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "name": "torque_cap_1",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "name": "rendered_bones_match_independent_source_FK",
+      "pass": true,
+      "details": {
+        "max_vertex_error_m": 5.1118313582065866e-08,
+        "vertices": 2761
+      }
+    },
+    {
+      "name": "force_marker_matches_native_hand",
+      "pass": true,
+      "details": {
+        "max_error_m": 6.883608960617238e-10
+      }
+    },
+    {
+      "name": "honest_contact_scope",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "name": "energy_accounts",
+      "pass": true,
+      "details": {}
+    },
+    {
+      "name": "command_paused",
+      "pass": true,
+      "details": {
+        "error": ""
+      }
+    },
+    {
+      "name": "direct_pose_refused_atomically",
+      "pass": true,
+      "details": {}
+    }
+  ],
+  "scope": "Two coupled native coordinates, force intent, finite ideal actuator store, actual source geometry; fixed mount and no environment collision."
+}

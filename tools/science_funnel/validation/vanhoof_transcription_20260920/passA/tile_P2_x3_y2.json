@@ -1,0 +1,202 @@
+{
+ "tile": "P2_x3_y2",
+ "pass": "A",
+ "strategy": "row-wise muscle-major, forward panel order",
+ "reader": "vtrans",
+ "columns_seen": [
+  "[Mm7 FL sliver]",
+  "Mm7 PCSA (mm2)"
+ ],
+ "notes": [
+  "Mm7 EDM marker fully resolved here: 'absent (cfr. EDQQ)'; FPL/EPB 'absent' full; NO 'damaged' text anywhere in panel 2 bottom (overview impression at 0.35 scale was wrong)"
+ ],
+ "cells": [
+  {
+   "m": "EDST",
+   "g": "Extensor",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": "25.0",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null,
+   "note": "dup of tile P2_x3_y1, identical"
+  },
+  {
+   "m": "EDM",
+   "g": "Extensor",
+   "s": "Mm7",
+   "f": "mass_g",
+   "v": null,
+   "leg": "CLEAR",
+   "marker": "absent (cfr. EDQQ)",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "anchor"
+   }
+  },
+  {
+   "m": "EDM",
+   "g": "Extensor",
+   "s": "Mm7",
+   "f": "fl_mm",
+   "v": null,
+   "leg": "CLEAR",
+   "marker": "absent (cfr. EDQQ)",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "covered"
+   }
+  },
+  {
+   "m": "EDM",
+   "g": "Extensor",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": null,
+   "leg": "CLEAR",
+   "marker": "absent (cfr. EDQQ)",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "covered"
+   }
+  },
+  {
+   "m": "EDQQ",
+   "g": "Extensor",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": "21.6",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "ECU",
+   "g": "Extensor",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": "88.3",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "Anc",
+   "g": "Extensor",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": "40.0",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "BR",
+   "g": "Rotator",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": "58.8",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "PT",
+   "g": "Rotator",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": "157.9",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "SUP",
+   "g": "Rotator",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": "147.3",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "PQ",
+   "g": "Rotator",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": "30.2",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "FPL",
+   "g": "Ext. Thumb",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": null,
+   "leg": "CLEAR",
+   "marker": "absent",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "covered"
+   }
+  },
+  {
+   "m": "EPL",
+   "g": "Ext. Thumb",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": "18.9",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "EPB",
+   "g": "Ext. Thumb",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": null,
+   "leg": "CLEAR",
+   "marker": "absent",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "covered"
+   }
+  },
+  {
+   "m": "APL",
+   "g": "Ext. Thumb",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": "75.1",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  }
+ ],
+ "crop_sha256": "92fca891395e6f4555e290e104a65fc6007dfb597509f8683ce7293dc7427237"
+}

@@ -1,0 +1,16 @@
+# Graph contract repair — 2026-09-15
+
+Operator-relayed F1/F2/F3 packet. Isolated PythonChimera worktree codex-graph-contracts-20260915; integrated F1 at 1f3c062c plus cherry-picked F2/F3. No other worktree, live engine or production DNA store is a write target.
+
+STATEMENT: an immutable measurement must cease to assert current validity when its selected physical inputs or measured relationships change; the absence of capture is unknown, not freshness. Graph projection and live joins must preserve identity or explicitly refuse ambiguity. Repeated wall registrations cannot create physical support.
+
+PREDICTIONS: all nine supplied defect probes reproduce before repair. After repair, independent positive contract tests cover selected values/units/source/applicability, preserved historical capture across rebuilds, missing/incomplete captures, relationship direction/removal/addition/multiplicity, foreign-version refusal with supported round-trip fidelity, collision refusal before export, ambiguous runtime matches without double-booking, exact zero/missing/nonfinite conservation, and distinct wall support. Unchanged inputs do not stale complete captures. Historical evidence without a valid capture becomes stale with its previous result retained; it is never silently recaptured.
+
+FALSIFIERS: any false-freshness, lost prior result, rewritten historical timestamp/capture, false staleness on unrelated or cosmetic edits, unsupported schema accepted, identity collision or duplicate live assignment, zero conservation rejected, missing data accepted, duplicate wall support, or production Graphify write. Original defect probes remain historical diagnostics; a probe crashing on its old assumed behavior is not proof of a repair. New positive assertions decide repaired behavior.
+
+Capture policy: a new evidence ID records an explicit nonempty object dependency set and its incident physical/provenance relation multiset at measurement time. Record raw relation IDs and full relation content to preserve direction/multiplicity. Builders do not create captures. Stable generated relation IDs must not depend on unrelated insertion order. Legacy incomplete captures remain stale-by-unknown; source checksums and measured results stay intact. No retroactive claim that old simulations captured this new graph contract.
+
+Bridge policy: this assignment qualifies a private SQLite projection only. Reject inherited production-store environment paths; compare a projection to its authoritative graph before ingestion, not only after writing. Relation IDs and reverse node identity survive. No redesign of the production DNA store is authorized or necessary.
+
+## D9 physical interpretation amendment before final implementation
+The packet's distinct-two-wall threshold is not a closure theorem: a sphere has one boundary, and two disconnected planes do not enclose a volume. The deduplication prediction stands. The stronger query contract must report distinct registered support while leaving actual closure unverified, even with two built walls and an authored verified label. Additional falsifier: any wall count alone sets closed_by_built_walls true or reports physically bounded. This explicitly supersedes that one proposed packet expectation; geometric/load-bearing proof is not fabricated by the graph.

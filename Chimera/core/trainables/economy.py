@@ -39,7 +39,11 @@ def _pair(a: str, b: str) -> str:
     return "|".join(sorted((a, b)))
 
 
-def seed() -> dict:
+def seed(rng=None) -> dict:
+    # protocol alignment 2026-09-18: the trainer passes seed(rng); this
+    # domain is a deterministic live-value fixture, so the rng is accepted
+    # and intentionally unused (a fixed point, not a random draw).
+    del rng  # noqa: F841
     """The live DSL numbers. Verbatim where the spec gives them; the gaps filled at
     the same order of magnitude, because a 3-station market needs a full price grid
     and the spec only prices some pairs."""

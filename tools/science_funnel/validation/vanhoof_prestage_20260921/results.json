@@ -1,0 +1,410 @@
+{
+ "schema": "chimera.vanhoof_prestage.results.v1",
+ "receipt_sha256": "a78a6e978e68e6f8c7ec7fbce083f1e8d6f829c0f780a8db960874ffda017fdf",
+ "fonts": [
+  "times.ttf",
+  "arial.ttf",
+  "cambria.ttc",
+  "calibri.ttf"
+ ],
+ "tiers": {
+  "clean_seed1": {
+   "numeric_exact": 1500,
+   "numeric_wrong_admitted": 0,
+   "numeric_low_flagged": 0,
+   "numeric_refused": 0,
+   "name_exact": 29,
+   "name_wrong_admitted": 0,
+   "name_refused": 1,
+   "numeric_fetched": 1500,
+   "name_fetched": 30,
+   "row_offset": 1,
+   "n_rows_extracted": 31,
+   "true_cell_conf_min_p01": 0.8856,
+   "true_cell_conf_mean_p01": 0.9428,
+   "admitted_records": 1450,
+   "rejected_records": 2,
+   "count_identity_closed": true
+  },
+  "realistic_seed1": {
+   "numeric_exact": 1447,
+   "numeric_wrong_admitted": 0,
+   "numeric_low_flagged": 0,
+   "numeric_refused": 53,
+   "name_exact": 11,
+   "name_wrong_admitted": 0,
+   "name_refused": 19,
+   "numeric_fetched": 1500,
+   "name_fetched": 30,
+   "row_offset": 2,
+   "n_rows_extracted": 32,
+   "true_cell_conf_min_p01": 0.8765,
+   "true_cell_conf_mean_p01": 0.942,
+   "admitted_records": 452,
+   "rejected_records": 119,
+   "count_identity_closed": true
+  },
+  "hostile_seed1": {
+   "numeric_exact": 1435,
+   "numeric_wrong_admitted": 0,
+   "numeric_low_flagged": 116,
+   "numeric_refused": 65,
+   "name_exact": 24,
+   "name_wrong_admitted": 0,
+   "name_refused": 6,
+   "numeric_fetched": 1500,
+   "name_fetched": 30,
+   "row_offset": 3,
+   "n_rows_extracted": 33,
+   "true_cell_conf_min_p01": 0.7948,
+   "true_cell_conf_mean_p01": 0.8821,
+   "admitted_records": 435,
+   "rejected_records": 774,
+   "count_identity_closed": true
+  },
+  "clean_seed2": {
+   "numeric_exact": 1500,
+   "numeric_wrong_admitted": 0,
+   "numeric_low_flagged": 0,
+   "numeric_refused": 0,
+   "name_exact": 25,
+   "name_wrong_admitted": 0,
+   "name_refused": 5,
+   "numeric_fetched": 1500,
+   "name_fetched": 30,
+   "row_offset": 1,
+   "n_rows_extracted": 31,
+   "true_cell_conf_min_p01": 0.9284,
+   "true_cell_conf_mean_p01": 0.9642,
+   "admitted_records": 1250,
+   "rejected_records": 6,
+   "count_identity_closed": true
+  },
+  "realistic_seed2": {
+   "numeric_exact": 1447,
+   "numeric_wrong_admitted": 0,
+   "numeric_low_flagged": 3,
+   "numeric_refused": 53,
+   "name_exact": 24,
+   "name_wrong_admitted": 0,
+   "name_refused": 6,
+   "numeric_fetched": 1500,
+   "name_fetched": 30,
+   "row_offset": 3,
+   "n_rows_extracted": 33,
+   "true_cell_conf_min_p01": 0.8541,
+   "true_cell_conf_mean_p01": 0.9101,
+   "admitted_records": 912,
+   "rejected_records": 297,
+   "count_identity_closed": true
+  },
+  "hostile_seed2": {
+   "numeric_exact": 1260,
+   "numeric_wrong_admitted": 0,
+   "numeric_low_flagged": 647,
+   "numeric_refused": 240,
+   "name_exact": 15,
+   "name_wrong_admitted": 0,
+   "name_refused": 15,
+   "numeric_fetched": 1500,
+   "name_fetched": 30,
+   "row_offset": 3,
+   "n_rows_extracted": 33,
+   "true_cell_conf_min_p01": 0.7839,
+   "true_cell_conf_mean_p01": 0.8633,
+   "admitted_records": 4,
+   "rejected_records": 764,
+   "count_identity_closed": true
+  },
+  "clean_seed3": {
+   "numeric_exact": 1500,
+   "numeric_wrong_admitted": 0,
+   "numeric_low_flagged": 0,
+   "numeric_refused": 0,
+   "name_exact": 30,
+   "name_wrong_admitted": 0,
+   "name_refused": 0,
+   "numeric_fetched": 1500,
+   "name_fetched": 30,
+   "row_offset": 1,
+   "n_rows_extracted": 31,
+   "true_cell_conf_min_p01": 0.9134,
+   "true_cell_conf_mean_p01": 0.9567,
+   "admitted_records": 1500,
+   "rejected_records": 1,
+   "count_identity_closed": true
+  },
+  "realistic_seed3": {
+   "numeric_exact": 1266,
+   "numeric_wrong_admitted": 0,
+   "numeric_low_flagged": 66,
+   "numeric_refused": 234,
+   "name_exact": 18,
+   "name_wrong_admitted": 0,
+   "name_refused": 12,
+   "numeric_fetched": 1500,
+   "name_fetched": 30,
+   "row_offset": 2,
+   "n_rows_extracted": 32,
+   "true_cell_conf_min_p01": 0.7964,
+   "true_cell_conf_mean_p01": 0.8818,
+   "admitted_records": 222,
+   "rejected_records": 692,
+   "count_identity_closed": true
+  },
+  "hostile_seed3": {
+   "numeric_exact": 1233,
+   "numeric_wrong_admitted": 0,
+   "numeric_low_flagged": 95,
+   "numeric_refused": 267,
+   "name_exact": 15,
+   "name_wrong_admitted": 0,
+   "name_refused": 15,
+   "numeric_fetched": 1500,
+   "name_fetched": 30,
+   "row_offset": 3,
+   "n_rows_extracted": 33,
+   "true_cell_conf_min_p01": 0.7982,
+   "true_cell_conf_mean_p01": 0.8811,
+   "admitted_records": 128,
+   "rejected_records": 640,
+   "count_identity_closed": true
+  }
+ },
+ "plates": {
+  "glyph_merge": {
+   "expected_code": "glyph_merge",
+   "fired": true,
+   "emitted_value": false,
+   "pass": true,
+   "observed": [
+    {
+     "class": "REFUSED",
+     "code": "glyph_merge",
+     "text": ""
+    }
+   ]
+  },
+  "decimal_ambiguous": {
+   "expected_code": "decimal_ambiguous",
+   "fired": true,
+   "emitted_value": false,
+   "pass": true,
+   "observed": [
+    {
+     "class": "REFUSED",
+     "code": "decimal_ambiguous",
+     "text": "249"
+    }
+   ]
+  },
+  "ambiguous_glyph": {
+   "expected_code": "ambiguous_glyph",
+   "fired": true,
+   "emitted_value": false,
+   "pass": true,
+   "observed": [
+    {
+     "class": "REFUSED",
+     "code": "ambiguous_glyph",
+     "text": ""
+    }
+   ]
+  },
+  "low_contrast": {
+   "expected_code": "low_contrast",
+   "fired": true,
+   "emitted_value": false,
+   "pass": true,
+   "observed": [
+    {
+     "class": "REFUSED",
+     "code": "low_contrast",
+     "text": ""
+    }
+   ]
+  },
+  "grid_collision": {
+   "expected_code": "grid_collision",
+   "fired": true,
+   "emitted_value": false,
+   "pass": true,
+   "observed": [
+    {
+     "class": "REFUSED",
+     "code": "grid_collision",
+     "text": ""
+    }
+   ]
+  },
+  "cell_clipped": {
+   "expected_code": "cell_clipped",
+   "fired": true,
+   "emitted_value": false,
+   "pass": true,
+   "observed": [
+    {
+     "class": "REFUSED",
+     "code": "blank_cell",
+     "text": ""
+    },
+    {
+     "class": "REFUSED",
+     "code": "cell_clipped",
+     "text": ""
+    }
+   ]
+  }
+ },
+ "corruption": {
+  "mass_g_+5pct": {
+   "expect_quarantine": true,
+   "quarantined_exactly": true,
+   "victim_rejections": 7,
+   "collateral_rejections": 0,
+   "victim_records_admitted": 0,
+   "pass": true,
+   "codes": [
+    "density_closure_violation"
+   ]
+  },
+  "volume_cm3_+5pct": {
+   "expect_quarantine": true,
+   "quarantined_exactly": true,
+   "victim_rejections": 7,
+   "collateral_rejections": 0,
+   "victim_records_admitted": 0,
+   "pass": true,
+   "codes": [
+    "density_closure_violation"
+   ]
+  },
+  "fl_mm_+5pct": {
+   "expect_quarantine": true,
+   "quarantined_exactly": true,
+   "victim_rejections": 7,
+   "collateral_rejections": 0,
+   "victim_records_admitted": 0,
+   "pass": true,
+   "codes": [
+    "pcsa_closure_violation"
+   ]
+  },
+  "tendon_ext_mm_+5pct": {
+   "expect_quarantine": true,
+   "quarantined_exactly": true,
+   "victim_rejections": 7,
+   "collateral_rejections": 0,
+   "victim_records_admitted": 0,
+   "pass": true,
+   "codes": [
+    "mtu_additivity_violation"
+   ]
+  },
+  "pcsa_mm2_+5pct": {
+   "expect_quarantine": true,
+   "quarantined_exactly": true,
+   "victim_rejections": 7,
+   "collateral_rejections": 0,
+   "victim_records_admitted": 0,
+   "pass": true,
+   "codes": [
+    "pcsa_closure_violation"
+   ]
+  },
+  "mtu_mm_+5pct": {
+   "expect_quarantine": true,
+   "quarantined_exactly": true,
+   "victim_rejections": 7,
+   "collateral_rejections": 0,
+   "victim_records_admitted": 0,
+   "pass": true,
+   "codes": [
+    "mtu_additivity_violation"
+   ]
+  },
+  "mass_g_+1pct_floor": {
+   "expect_quarantine": false,
+   "quarantined_exactly": false,
+   "victim_rejections": 0,
+   "collateral_rejections": 0,
+   "victim_records_admitted": 7,
+   "pass": true,
+   "codes": []
+  }
+ },
+ "determinism": {
+  "law": "two extraction+admission passes over identical TIFF bytes produce byte-identical canonical JSON",
+  "pass": true,
+  "bytes": [
+   854531,
+   854531
+  ]
+ },
+ "provenance": {
+  "records_checked": 1902,
+  "records_missing_provenance": 0,
+  "required_fields": [
+   "tiff_sha256",
+   "sheet",
+   "row",
+   "col",
+   "cell_bbox",
+   "conf_min",
+   "conf_mean",
+   "route"
+  ]
+ },
+ "tiers_rollup": {
+  "clean": {
+   "numeric_exact_recovery": 1.0,
+   "numeric_wrong_admitted": 0,
+   "name_exact_recovery": 0.9333,
+   "numeric_nonexact_flagged_or_refused_fraction": 0.0,
+   "bands": {
+    "numeric": 0.99,
+    "name": 0.98,
+    "wrong_and_admitted": 0
+   },
+   "numeric_band_pass": true,
+   "name_band_pass": false,
+   "wrong_admitted_pass": true
+  },
+  "realistic": {
+   "numeric_exact_recovery": 0.9244,
+   "numeric_wrong_admitted": 0,
+   "name_exact_recovery": 0.5889,
+   "numeric_nonexact_flagged_or_refused_fraction": 1.0,
+   "bands": {
+    "numeric": 0.96,
+    "name": 0.95,
+    "wrong_and_admitted": 0
+   },
+   "numeric_band_pass": false,
+   "name_band_pass": false,
+   "wrong_admitted_pass": true
+  },
+  "hostile": {
+   "numeric_exact_recovery": 0.8729,
+   "numeric_wrong_admitted": 0,
+   "name_exact_recovery": 0.6,
+   "numeric_nonexact_flagged_or_refused_fraction": 1.0,
+   "bands": {
+    "numeric": 0.88,
+    "name": 0.98,
+    "wrong_and_admitted": 0
+   },
+   "numeric_band_pass": false,
+   "name_band_pass": true,
+   "wrong_admitted_pass": true
+  }
+ },
+ "plates_pass": "6/6",
+ "reds": [
+  "clean: name exact recovery 0.9333 < band 0.98",
+  "realistic: numeric exact recovery 0.9244 < band 0.96",
+  "realistic: name exact recovery 0.5889 < band 0.95",
+  "hostile: numeric exact recovery 0.8729 < band 0.88"
+ ],
+ "verdict": "4 PRE-REGISTERED BAND(S) MISSED -- reds reported, not tuned"
+}

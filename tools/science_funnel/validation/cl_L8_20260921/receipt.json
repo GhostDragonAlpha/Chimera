@@ -1,0 +1,298 @@
+{
+ "generated_utc": "2026-09-21T18:47:43.487263+00:00",
+ "lane": "agent/cl-L8-shared-20260921",
+ "pin": "7181b8ce9d2b78c93eb96df8d288e0697a398a12",
+ "results": {
+  "F-CACHE-COLLISION": {
+   "all_distinct": true,
+   "determinism_digests_differ": true,
+   "entries": 2,
+   "real_variant_keys": {
+    "base": "e545af0f299a2ec3f687a3d770ee62b81d7d178921ec2fcf4f0d2c0b313afda3",
+    "variant": "1a2a10a91f8b2777d989cf726d4e96cc2db821e40d6e179367935393058800cc"
+   },
+   "schema_pairs_checked": 4
+  },
+  "F-PARTIAL-PUBLISH": {
+   "killed_publisher": {
+    "final_after_kill": false,
+    "key": "b13c953da593a45136a6730bbb99114c9b81e95e105625a947fd26a99cd67078",
+    "staging_orphans_left": 1
+   },
+   "orphan_staging_invisible": true,
+   "planted_corrupt_refused": true,
+   "planted_truncated_refused": true,
+   "race_bad_reads": 0,
+   "race_hits": 292,
+   "race_reads": 292,
+   "refusal_reasons": [
+    "truncated-payload",
+    "digest-mismatch"
+   ]
+  },
+  "cross_run_write": {
+   "concurrent_jobs": 3,
+   "cross_output_write_refused": true,
+   "guard_probes": {
+    "wave1-0": {
+     "escape_refused": true,
+     "sealed_output_refused": true,
+     "view_write_refused": true
+    },
+    "wave1-1": {
+     "escape_refused": true,
+     "sealed_output_refused": true,
+     "view_write_refused": true
+    },
+    "wave1-2": {
+     "escape_refused": true,
+     "sealed_output_refused": true,
+     "view_write_refused": true
+    }
+   },
+   "solo_verification_matches": [
+    {
+     "determinism_digest": "6ece099db7755590ce2da2f5d2aafa87ee41b7e04205644cb41fff8c266b9bba",
+     "job_id": "solo-wave1-0",
+     "key": "e545af0f299a2ec3f687a3d770ee62b81d7d178921ec2fcf4f0d2c0b313afda3"
+    },
+    {
+     "determinism_digest": "7016df2b61dd1e0022613f75b5876dfdc86881065977c92315be911d499f965b",
+     "job_id": "solo-wave1-1",
+     "key": "df9ec1741f1539e4c60b7fe1fe4902e84e47ff3516c33072ff967161919bf9b0"
+    },
+    {
+     "determinism_digest": "f85ebbaf0f637a65750c8a8175fb52e6560da35e77a58922c21d0518d1ae7bd2",
+     "job_id": "solo-wave1-2",
+     "key": "6d239f4988784c4764d739b377bceab016c74434b7c52facffe6cec5660a95f3"
+    }
+   ],
+   "specs": [
+    {
+     "flags": [
+      "-O2"
+     ],
+     "job_id": "wave1-0"
+    },
+    {
+     "flags": [
+      "-O1"
+     ],
+     "job_id": "wave1-1"
+    },
+    {
+     "flags": [
+      "-O0"
+     ],
+     "job_id": "wave1-2"
+    }
+   ],
+   "views_unmutated": true,
+   "wave1": {
+    "cache_stats": {
+     "hits": 0,
+     "misses": 3,
+     "publishes": 3,
+     "refusals": 0
+    },
+    "footprint": {
+     "final_bytes": 12553172397,
+     "n_samples": 12,
+     "peak_bytes": 12553172397
+    },
+    "jobs": [
+     {
+      "artifact_bytes": 571916,
+      "artifact_sha256": "8ac6a7970a7045bb20277cb4a5d7213106a0eefbd2aebde6c259829cbbd390df",
+      "cache": "miss",
+      "compile_s": 6.724,
+      "determinism_digest": "6ece099db7755590ce2da2f5d2aafa87ee41b7e04205644cb41fff8c266b9bba",
+      "elapsed_s": 44.577,
+      "job_id": "wave1-0",
+      "key": "e545af0f299a2ec3f687a3d770ee62b81d7d178921ec2fcf4f0d2c0b313afda3",
+      "link_s": 0.124,
+      "n_inputs": 6,
+      "sealed_outputs": 3,
+      "view_bytes": 1791036672,
+      "view_files": 5539,
+      "view_materialize_s": 37.516,
+      "workspace_bytes": 1220015
+     },
+     {
+      "artifact_bytes": 658051,
+      "artifact_sha256": "dac3581e5708c9767ff7675ff47843e2a1e69cea9c82aca9c5eec527aa3effb7",
+      "cache": "miss",
+      "compile_s": 4.481,
+      "determinism_digest": "7016df2b61dd1e0022613f75b5876dfdc86881065977c92315be911d499f965b",
+      "elapsed_s": 42.341,
+      "job_id": "wave1-1",
+      "key": "df9ec1741f1539e4c60b7fe1fe4902e84e47ff3516c33072ff967161919bf9b0",
+      "link_s": 0.128,
+      "n_inputs": 6,
+      "sealed_outputs": 3,
+      "view_bytes": 1791036672,
+      "view_files": 5539,
+      "view_materialize_s": 37.516,
+      "workspace_bytes": 1467005
+     },
+     {
+      "artifact_bytes": 2646462,
+      "artifact_sha256": "dcdfbe60e64197b36c5ff3818768c780126c9e677ebb800d8e43cfd597d42d0b",
+      "cache": "miss",
+      "compile_s": 3.009,
+      "determinism_digest": "f85ebbaf0f637a65750c8a8175fb52e6560da35e77a58922c21d0518d1ae7bd2",
+      "elapsed_s": 40.946,
+      "job_id": "wave1-2",
+      "key": "6d239f4988784c4764d739b377bceab016c74434b7c52facffe6cec5660a95f3",
+      "link_s": 0.166,
+      "n_inputs": 6,
+      "sealed_outputs": 3,
+      "view_bytes": 1791036672,
+      "view_files": 5539,
+      "view_materialize_s": 37.516,
+      "workspace_bytes": 6910198
+     }
+    ],
+    "sum_job_s": 127.864,
+    "wall_s": 48.892
+   },
+   "wave2": {
+    "cache_stats": {
+     "hits": 3,
+     "misses": 3,
+     "publishes": 3,
+     "refusals": 0
+    },
+    "footprint": {
+     "final_bytes": 17926282413,
+     "n_samples": 7,
+     "peak_bytes": 17926282413
+    },
+    "jobs": [
+     {
+      "artifact_bytes": 571916,
+      "artifact_sha256": "8ac6a7970a7045bb20277cb4a5d7213106a0eefbd2aebde6c259829cbbd390df",
+      "cache": "hit",
+      "compile_s": null,
+      "determinism_digest": "6ece099db7755590ce2da2f5d2aafa87ee41b7e04205644cb41fff8c266b9bba",
+      "elapsed_s": 39.15,
+      "job_id": "wave2-0",
+      "key": "e545af0f299a2ec3f687a3d770ee62b81d7d178921ec2fcf4f0d2c0b313afda3",
+      "link_s": null,
+      "n_inputs": 6,
+      "sealed_outputs": 0,
+      "view_bytes": 1791036672,
+      "view_files": 5539,
+      "view_materialize_s": 38.965,
+      "workspace_bytes": 0
+     },
+     {
+      "artifact_bytes": 658051,
+      "artifact_sha256": "dac3581e5708c9767ff7675ff47843e2a1e69cea9c82aca9c5eec527aa3effb7",
+      "cache": "hit",
+      "compile_s": null,
+      "determinism_digest": "7016df2b61dd1e0022613f75b5876dfdc86881065977c92315be911d499f965b",
+      "elapsed_s": 39.148,
+      "job_id": "wave2-1",
+      "key": "df9ec1741f1539e4c60b7fe1fe4902e84e47ff3516c33072ff967161919bf9b0",
+      "link_s": null,
+      "n_inputs": 6,
+      "sealed_outputs": 0,
+      "view_bytes": 1791036672,
+      "view_files": 5539,
+      "view_materialize_s": 38.966,
+      "workspace_bytes": 0
+     },
+     {
+      "artifact_bytes": 2646462,
+      "artifact_sha256": "dcdfbe60e64197b36c5ff3818768c780126c9e677ebb800d8e43cfd597d42d0b",
+      "cache": "hit",
+      "compile_s": null,
+      "determinism_digest": "f85ebbaf0f637a65750c8a8175fb52e6560da35e77a58922c21d0518d1ae7bd2",
+      "elapsed_s": 39.152,
+      "job_id": "wave2-2",
+      "key": "6d239f4988784c4764d739b377bceab016c74434b7c52facffe6cec5660a95f3",
+      "link_s": null,
+      "n_inputs": 6,
+      "sealed_outputs": 0,
+      "view_bytes": 1791036672,
+      "view_files": 5539,
+      "view_materialize_s": 38.965,
+      "workspace_bytes": 0
+     }
+    ],
+    "sum_job_s": 117.45,
+    "wall_s": 44.836
+   },
+   "wave2_hits": 3,
+   "wave2_of": 3
+  },
+  "source_clone": {
+   "build_reuse_economics": {
+    "hits_total": 3,
+    "misses_total": 3,
+    "wave1_cold_wall_s": 48.892,
+    "wave1_peak_footprint_bytes": 12553172397,
+    "wave1_sum_build_s": 127.864,
+    "wave2_hit_rate": "100%",
+    "wave2_hit_wall_s": 44.836,
+    "wave2_peak_footprint_bytes": 17926282413,
+    "wave2_speedup_x": 1.09
+   },
+   "bytes_saved_vs_clones": 3422723260,
+   "cache_bytes": 3877945,
+   "cache_entries": 3,
+   "canonical_worktree_bytes": 1791155634,
+   "duplication_factor_per_job": 1.36,
+   "full_clone_census": {
+    "clone_git_dir_bytes": 659347623,
+    "clone_source": "git@github.com-fleetdeploy:GhostDragonAlpha/Chimera.git",
+    "clone_total_bytes": 2450384240,
+    "clone_worktree_bytes": 1791036617
+   },
+   "n_job_scenario": 9,
+   "n_lanes_as_clones_bytes": 22053458160,
+   "n_lanes_shared_store_bytes": 18630734900,
+   "n_views_materialized": 9,
+   "per_job_bytes_shared_store_max": 1797946875,
+   "per_view_bytes": {
+    "solo-wave1-0": 1791036677,
+    "solo-wave1-1": 1791036677,
+    "solo-wave1-2": 1791036677,
+    "wave1-0": 1791036672,
+    "wave1-1": 1791036672,
+    "wave1-2": 1791036672,
+    "wave2-0": 1791036672,
+    "wave2-1": 1791036672,
+    "wave2-2": 1791036672
+   },
+   "per_workspace_bytes": {
+    "solo-wave1-0": 1220015,
+    "solo-wave1-1": 1467005,
+    "solo-wave1-2": 6910198,
+    "wave1-0": 1220015,
+    "wave1-1": 1467005,
+    "wave1-2": 6910198,
+    "wave2-0": 0,
+    "wave2-1": 0,
+    "wave2-2": 0
+   },
+   "shared_object_store_bytes": 658057391,
+   "view_git_is_pointer_file": true
+  }
+ },
+ "schema": "chimera-receipt/L8",
+ "toolchain": {
+  "compiler": "g++",
+  "digest": "fb2f4b884bbd7aa17aad5115d062a87df5c451dd1cfcdf5a4266701fbb237ba2",
+  "target": "x86_64-w64-mingw32",
+  "version_banner": "g++ (x86_64-posix-seh-rev0, Built by MinGW-Builds project) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+ },
+ "total_runtime_s": 373.1,
+ "verdicts": {
+  "F-CACHE-COLLISION": "GREEN",
+  "F-CROSS-RUN-WRITE": "GREEN",
+  "F-PARTIAL-PUBLISH": "GREEN",
+  "F-SOURCE-CLONE": "GREEN"
+ }
+}

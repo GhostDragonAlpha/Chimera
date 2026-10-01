@@ -152,6 +152,8 @@ add_executable(chimera_engine
     engine.cpp
     physics.cpp
     http_server.cpp
+    membrane_tick.cpp
+    importer.cpp
     ui.cpp
     ${CHIMERA_PLATFORM_SRCS}
 )
@@ -160,6 +162,22 @@ target_include_directories(chimera_engine PRIVATE
     "${VULKAN_SDK}/Include"
     "${CMAKE_CURRENT_SOURCE_DIR}"
 )
+
+# R1 double-click launch: the launcher lives NEXT TO the exe
+add_custom_command(TARGET chimera_engine POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${CMAKE_CURRENT_SOURCE_DIR}/launch_chimera.bat
+        $<TARGET_FILE_DIR:chimera_engine>/launch_chimera.bat)
+
+# Crash offsets must be symbolizable: /Zi does not change codegen, so
+# Release offsets map 1:1 to the map file + PDB (two unsymbolizable
+# access violations on 2026-09-13 taught this).
+if(MSVC)
+    target_compile_options(chimera_engine PRIVATE /Zi)
+    target_link_options(chimera_engine PRIVATE
+        /DEBUG:fastlink
+        /MAP:${CMAKE_CURRENT_BINARY_DIR}/chimera_engine.map)
+endif()
 
 target_link_libraries(chimera_engine PRIVATE
     "${VULKAN_SDK}/Lib/vulkan-1.lib"

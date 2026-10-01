@@ -22,16 +22,32 @@ layout(set = 0, binding = 0) uniform Ubo {
     float uFloorY;        // the same plane the shadow pins to
     float uShadowAlpha;
     float uShadowH0;
-    vec4 uLightDir;
+    vec3 uLightDir;       // std140: 160..171 (vec3 aligns like the C struct's
+                          // float[3]; uMeshR then lands at 172 EXACTLY — the old
+                          // vec4 pushed it to 176, past the 176-byte C block:
+                          // an out-of-bounds undefined read (NaN-ish vMeshR)
+                          // that killed the whole plane's ink — the fix measured
+                          // 2026-09-20, lane agent/triangle-monkey-grid
     float uMeshR;         // the cyclorama's inner radius (0 pre-mesh)
 } ubo;
 
-layout(location = 0) out float vDist;
+layout(location = 0) out vec2 vXZ;    // FLOOR-VISIBILITY FIX (2026-09-20,
+                                      // lane agent/triangle-monkey-grid): the
+                                      // distance is computed in the FRAGMENT
+                                      // stage from the interpolated position.
+                                      // The old per-VERTEX `length(aPos.xz)`
+                                      // interpolated the CORNER distances
+                                      // (424 on the R=300 quad) — every
+                                      // fragment read ~283, t saturated at 1
+                                      // and the whole plane inked to the
+                                      // background: an INVISIBLE plane that
+                                      // still depth-wrote and occluded (the
+                                      // operator's Defect B).
 layout(location = 1) out float vMeshR;
 
 void main() {
     vec3 wp = vec3(aPos.x, ubo.uFloorY, aPos.z);
     gl_Position = ubo.uProj * ubo.uView * vec4(wp, 1.0);
-    vDist   = length(aPos.xz);
+    vXZ     = aPos.xz;
     vMeshR  = max(ubo.uMeshR, 1.0);   // pre-mesh: fade starts at 1 wu, floor flat near origin
 }

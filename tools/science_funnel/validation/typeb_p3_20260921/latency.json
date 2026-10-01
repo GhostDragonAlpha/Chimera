@@ -1,0 +1,31 @@
+{
+ "falsifier": "F-INFERENCE-BUDGET",
+ "fires": false,
+ "pass": true,
+ "protocol": {
+  "n_warmup": 200,
+  "n_timed": 3000,
+  "batch": 1,
+  "clock": "20 Hz decisions, 15-tick hold (decision every 15th tick)",
+  "scope": "end-to-end act(): projection+normalization+forward+action map+clock",
+  "runtime": "numpy 2.2.6 / python 3.14.3"
+ },
+ "budget": {
+  "latency_ms_per_decision": 50.0,
+  "peak_memory_mb": 256.0
+ },
+ "prereg_prediction_ms": 0.5,
+ "measured": {
+  "p50_ms": 0.000800006091594696,
+  "p95_ms": 0.0646000262349844,
+  "p99_ms": 0.06740004755556583,
+  "max_ms": 0.646500033326447,
+  "mean_ms": 0.0055792664643377066,
+  "decisions_per_s_20hz_duty": 14836.784783802737,
+  "peak_rss_mb": 29.1796875,
+  "mac_count": 25600,
+  "macs_per_s_at_p99": 379821690.46535003
+ },
+ "margin_vs_budget_x": 741.8392391901368,
+ "detail": "batch-one numpy per-decision latency p50=0.000800 ms p95=0.064600 ms p99=0.067400 ms (budget 50.0 ms, margin 742x; prereg prediction <= 0.5 ms: HELD); peak RSS 29.2 MB (budget 256.0 MB)"
+}

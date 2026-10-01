@@ -1,0 +1,142 @@
+{
+ "artifact": "tools/science_funnel/data/oku_paper_table/PMC7940622_fulltext.xml",
+ "artifact_sha256": "fcf9fff5df51f6608724039726575dd41ca32e7a026824d3564e91803b55131d",
+ "banked_dossier": "docs/research/20260917_dbhunt_motion.md (pinned copy)",
+ "banked_dossier_sha256": "b90e6362d37efc2e5681516403d691e5736fe5cc4e8b763822d4d97f7a1ddd59",
+ "table_label": "",
+ "table_title": "",
+ "table_header": [
+  "",
+  "Mass (kg)",
+  "Length (m)",
+  "COM (%)",
+  "M of I (kgm²)"
+ ],
+ "table_footnotes": [
+  "Center of mass (COM) is represented as a fraction of segment length from the proximal end. M of I = moment of inertia about the COM. Parameters were taken from Ogihara et al.62, but the values were recalculated for the foot and phalangeal segments based on the CT-scanned surface data of the Japanese macaque88."
+ ],
+ "cells": [
+  {
+   "segment": "HAT",
+   "banked": [
+    "8.184",
+    "0.482",
+    "52",
+    "2.07e-2"
+   ],
+   "page_raw": [
+    "8.184",
+    "0.482",
+    "52",
+    "2.07E−02"
+   ],
+   "page_normalized": [
+    "8.184",
+    "0.482",
+    "52",
+    "2.07e-2"
+   ],
+   "status": "MATCH",
+   "mismatches": []
+  },
+  {
+   "segment": "thigh",
+   "banked": [
+    "0.557",
+    "0.163",
+    "41",
+    "1.61e-3"
+   ],
+   "page_raw": [
+    "0.557",
+    "0.163",
+    "41",
+    "1.61E−03"
+   ],
+   "page_normalized": [
+    "0.557",
+    "0.163",
+    "41",
+    "1.61e-3"
+   ],
+   "status": "MATCH",
+   "mismatches": []
+  },
+  {
+   "segment": "shank",
+   "banked": [
+    "0.269",
+    "0.182",
+    "40",
+    "7.01e-4"
+   ],
+   "page_raw": [
+    "0.269",
+    "0.182",
+    "40",
+    "7.01E−04"
+   ],
+   "page_normalized": [
+    "0.269",
+    "0.182",
+    "40",
+    "7.01e-4"
+   ],
+   "status": "MATCH",
+   "mismatches": []
+  },
+  {
+   "segment": "foot",
+   "banked": [
+    "0.080",
+    "0.074",
+    "62",
+    "5.49e-5"
+   ],
+   "page_raw": [
+    "0.080",
+    "0.074",
+    "62",
+    "5.49E−05"
+   ],
+   "page_normalized": [
+    "0.080",
+    "0.074",
+    "62",
+    "5.49e-5"
+   ],
+   "status": "MATCH",
+   "mismatches": []
+  },
+  {
+   "segment": "phalanges",
+   "banked": [
+    "0.021",
+    "0.045",
+    "50",
+    "6.26e-6"
+   ],
+   "page_raw": [
+    "0.021",
+    "0.045",
+    "50",
+    "6.26E−06"
+   ],
+   "page_normalized": [
+    "0.021",
+    "0.045",
+    "50",
+    "6.26e-6"
+   ],
+   "status": "MATCH",
+   "mismatches": []
+  }
+ ],
+ "normalization": "exponent separator case (E->e), U+2212 -> ASCII minus, exponent zero-padding stripped; mantissa digits untouched",
+ "caption_title_in_xml": true,
+ "license_sentence_verified": true,
+ "license_ref_verified": true,
+ "license_quote": "Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made.",
+ "mismatched": false,
+ "verdict": "CLOSED"
+}

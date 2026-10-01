@@ -1,0 +1,27 @@
+refusal: (302, 'gait_positional_correction_budget')  fires: 18  tds: 17
+======================================================================================================================
+ERA TABLE: fire->compl leg class FORM rxnF drain0 drainTick drainRate L_pred held foreL(f->c) foreR(f->c) foreRise hindDecay
+    98-> 107 leg=1 slot none   rxnF= 58.206 dr0=41.298 drT=never rate= 0.000 L=  INF held=2 fL= 1.537-> 0.912 fR= 0.521-> 0.350 rise= -0.796 decay= -0.591
+   142-> 160 leg=0 alt  fold   rxnF= 32.183 dr0=35.473 drT= 160 rate= 1.867 L= 17.2 held=1 fL= 0.000-> 0.000 fR= 0.000-> 0.000 rise= +0.000 decay=+51.495
+   160-> 174 leg=1 alt  unload rxnF=  3.795 dr0= 3.996 drT=never rate= 0.000 L=  INF held=1 fL= 0.000-> 0.249 fR= 0.000-> 0.000 rise= +0.249 decay=-36.315
+   161-> 170 leg=0 alt  unload rxnF= 16.160 dr0= 0.000 drT= 160 rate= 0.000 L=  INF held=9 fL= 0.000-> 0.219 fR= 0.000-> 0.000 rise= +0.219 decay= +8.572
+   175-> 184 leg=0 alt  unload rxnF= 15.864 dr0=28.243 drT=never rate= 0.000 L=  INF held=9 fL= 0.249-> 0.000 fR= 0.000-> 1.345 rise= +1.096 decay=+27.950
+   184-> 193 leg=1 alt  unload rxnF=  7.485 dr0= 7.592 drT=never rate= 0.000 L=  INF held=9 fL= 0.000-> 1.513 fR= 1.332-> 0.000 rise= +0.182 decay= -6.092
+   193-> 202 leg=0 alt  unload rxnF=  9.739 dr0= 7.869 drT=never rate= 0.000 L=  INF held=9 fL= 1.320-> 1.380 fR= 0.673-> 1.150 rise= +0.538 decay= -2.627
+   202-> 211 leg=1 alt  unload rxnF=  8.271 dr0= 9.359 drT=never rate= 0.000 L=  INF held=8 fL= 1.326-> 0.000 fR= 0.908-> 0.259 rise= -1.975 decay=-21.813
+   211-> 220 leg=0 alt  unload rxnF=  9.614 dr0=18.705 drT=never rate= 0.000 L=  INF held=8 fL= 0.000-> 0.000 fR= 0.000-> 0.000 rise= +0.000 decay= +2.051
+   220-> 229 leg=1 alt  unload rxnF=  3.694 dr0=11.972 drT=never rate= 0.000 L=  INF held=9 fL= 0.000-> 0.000 fR= 0.000-> 0.000 rise= +0.000 decay= +0.340
+   229-> 238 leg=0 alt  unload rxnF=  8.044 dr0= 3.181 drT=never rate= 0.000 L=  INF held=9 fL= 0.000-> 0.000 fR= 0.000-> 0.000 rise= +0.000 decay= -2.563
+   238-> 247 leg=1 alt  unload rxnF=  4.159 dr0= 6.687 drT=never rate= 0.000 L=  INF held=9 fL= 0.000-> 0.000 fR= 0.000-> 0.000 rise= +0.000 decay= +1.812
+   247-> 256 leg=0 alt  unload rxnF=  7.982 dr0= 1.502 drT=never rate= 0.000 L=  INF held=9 fL= 0.000-> 0.000 fR= 0.000-> 0.408 rise= +0.408 decay= +0.037
+   256-> 265 leg=1 alt  unload rxnF=  5.504 dr0= 7.852 drT=never rate= 0.000 L=  INF held=9 fL= 0.000-> 0.000 fR= 1.294-> 0.000 rise= -1.294 decay= -9.159
+   265-> 274 leg=0 alt  unload rxnF= 27.122 dr0= 0.754 drT= 265 rate= 0.754 L= 36.0 held=9 fL= 0.000-> 0.000 fR= 0.000-> 0.000 rise= +0.000 decay= -8.553
+   274-> 291 leg=1 alt  unload rxnF=  0.000 dr0=19.974 drT=never rate= 0.000 L=  0.0 held=1 fL= 0.000-> 0.000 fR= 0.000-> 0.000 rise= +0.000 decay=-15.490
+   291-> 300 leg=0 alt  unload rxnF= 22.235 dr0= 3.885 drT=never rate= 0.000 L=  INF held=9 fL= 0.000->14.253 fR= 0.000-> 3.553 rise=+17.807 decay=-730.354
+   300-> 301 leg=1 alt  unload rxnF=315.835 dr0=174.869 drT=never rate= 0.000 L=  INF held=1 fL=10.667-> 0.000 fR=37.870-> 0.000 rise=-48.538 decay=-416.721
+----------------------------------------------------------------------------------------------------------------------
+UNLOAD-FORM ALT FIRES: 16  with INF latency: 14  [ticks: 160,161,175,184,193,202,211,220,229,238,247,256,291,300 ]
+SUM LATENCY (ticks): 36.0   SUM HELD-TICK SAVING (ticks): 102
+THE SELECTION RULE (fixed in receipt_wave41.json): CANDIDATE 1 THE CARRIER'S SHARE ACCEPTANCE
+----------------------------------------------------------------------------------------------------------------------
+THE RESIDUAL TRAIL over all eras: total fore rise -32.106 N vs total hind decay -1158.021 N (the fore absorbed 2.8% of the decay)

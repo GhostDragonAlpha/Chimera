@@ -170,3 +170,38 @@ movie is the path via `splat_appearance.project_movie`. The human dyad and splat
 `docs/THE_WORKFLOW.md` (the one sequence) · `THE_FORMULA.md` (S0–S7) · `THE_STORY.md` (the seed) ·
 `THE_LINE.md` (program/train/decide). The engine is those documents made un-skippable.
 Agent onboarding: `ChimeraEngine/ONBOARDING.md`.
+
+## The workflow commands (added 2026-09-20, lane agent/workflow-mcp-20260920)
+
+The operator's directive: "these are complicated issues that an agent cannot keep
+straight on its own; we need tools to guide an agent through our workflow, like
+repeatable commands running on an MCP server." THE_CHECKLIST's gates became
+executable: seven ADDITIVE tools on THIS server (every tool above is untouched;
+the diff is append-only), each a thin wrapper over
+`tools/science_funnel/workflow_commands.py` returning MEASURED NUMBERS (one JSON
+object), never a prose verdict.
+
+| Tool | Wraps | Returns |
+|---|---|---|
+| `render_creature` | the TRIANGLE path ONLY (`ct_skeleton_triangle` -> `/mesh_bin`; NO splat route is reachable — AST- and wire-conformance-tested) | the render path + pixel_truth numbers for the stills (grain, coverages, clip scan) |
+| `verify_visual` | `pixel_truth.py` end-to-end | the metric table with the PRE-ENCODED thresholds as pass/fail per gate, each gate carrying its provenance; absent instruments reported `not_measured` with the reason |
+| `adjudicate` | `tools/creature_graph/reality_gate.py`, RESOLVED AT RUNTIME | `{category, violations[]}` — or the STRUCTURED honest absence (`reality_gate not on this lineage; integrated on master pending`, branch named): never a crash, never a silent pass |
+| `bio_stage` | the bundle manifest's stage fields | the stage label + evidence, or FAILED as unadmittable (missing stage = failed, like a missing sha256) |
+| `bio_check` | the gate's classify (L1–L4) | `{category, violations}`; honest absence off-lineage |
+| `bio_fantasy_acknowledge` | the developer-driven construction mode | records the manifest acknowledgment, THEN the gate admits to fantasy |
+| `checklist` | `docs/THE_CHECKLIST.md` (branch agent/workflow-checklist-20260920, e9c8b394) | the machine-readable walk: step id, law home pointer, the command that satisfies it — or an honestly-named `needs_judgment` |
+
+Laws this surface enforces by construction: thresholds are pre-encoded from
+BANKED measurements (midbands derived, no taste numbers — receipt
+`tools/science_funnel/validation/workflow_mcp_20260920/receipt.json`); a
+self-started engine binds a bind-tested free port and 8127 is refused BY CODE;
+the engine launches with the port argument plus its own `--no-restore` opt-out
+(argc == 3 is safe: the window-override guard reads argv[3]/argv[4] only under
+argc > 3) because the MEASURED boot-restore thread (`/cameras {"op":"fit"}` at
+~1.5–3.5 s) races the first capture otherwise; only processes the command
+started are ever stopped; `render_creature`/`verify_visual` are wrap-only —
+`pixel_truth.py`, the render path, and `reality_gate.py` are not modified.
+
+Same CLI without MCP: `python -B tools/science_funnel/workflow_commands.py
+{render-creature,verify-visual,adjudicate,bio-stage,bio-check,
+bio-fantasy-acknowledge,checklist}` (`verify-visual` exits 1 on any RED gate).
