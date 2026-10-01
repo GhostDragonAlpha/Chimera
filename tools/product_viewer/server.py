@@ -7,6 +7,7 @@ stdlib http.server only — no third-party server dependencies.
 from __future__ import annotations
 
 import collections
+import hashlib
 import json
 import math
 import sys
@@ -672,7 +673,198 @@ function setOrbit(){fetch('/api/camera',{method:'POST',
   }).then(r=>r.json()).then(d=>{
     document.getElementById('cam').textContent=JSON.stringify(d).slice(0,300);});}
 tick(); tickGlass(); setInterval(state,1000); state();
-</script></body></html>"""
+</script>
+<!--WALKFILM_PLAYLIST-->
+</body></html>"""
+
+
+# ---------------------------------------------------------------------------
+# WALKFILM PLAYLIST (wk-liveviewer-d02): the sealed 202-frame W03 walk as a
+# browsable playlist. SEALED CAPTURE REPLAY ONLY — a client-side image cycler
+# over sha-pinned PNGs; ZERO engine work, zero physics claims, the sealed
+# trace strictly read-only. Semantics mirror the certified-frame contract
+# (sha256 + size verified at load AND re-verified at serve; refused frames
+# are NAMED, never silently dropped; served bytes are byte-exact).
+# ---------------------------------------------------------------------------
+
+WALKFILM_PLAYLIST_PATH = Path(__file__).resolve().parent / "walkfilm_playlist.json"
+
+
+def _sha256_file(path: Path) -> tuple[str, int]:
+    h = hashlib.sha256()
+    n = 0
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+            n += len(chunk)
+    return h.hexdigest(), n
+
+
+def load_walkfilm_playlist(manifest_path: Path = WALKFILM_PLAYLIST_PATH) -> dict:
+    """Read + verify the sealed walkfilm playlist. NEVER raises.
+
+    Each frame gains verified:bool + refusal:str|None. A frame is verified
+    only when its file exists AND sha256 AND byte size match the pin. A
+    missing/malformed playlist is an honest entry-less state, not a crash.
+    """
+    result = {"schema": "chimera.viewer.walkfilm_playlist.v1",
+              "manifest": str(manifest_path), "loaded": False,
+              "declared_limits": [], "pins": {}, "counts": {}, "frames": []}
+    try:
+        raw = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError, ValueError) as e:
+        result["refusal"] = f"playlist manifest unreadable: {e}"
+        return result
+    result["loaded"] = True
+    result["declared_limits"] = list(raw.get("declared_limits", []))
+    result["pins"] = dict(raw.get("pins", {}))
+    result["counts"] = dict(raw.get("counts", {}))
+    for ent in raw.get("frames", []):
+        e = dict(ent)
+        try:
+            f = Path(ent["file"])
+            if not f.is_file():
+                e["verified"], e["refusal"] = False, "file missing"
+            else:
+                sha, n = _sha256_file(f)
+                if sha != ent.get("sha256"):
+                    e["verified"] = False
+                    e["refusal"] = (f"sha256 mismatch (pinned "
+                                    f"{str(ent.get('sha256'))[:16]}, on disk {sha[:16]})")
+                elif n != int(ent.get("bytes", -1)):
+                    e["verified"] = False
+                    e["refusal"] = (f"byte size mismatch (pinned {ent.get('bytes')}, "
+                                    f"on disk {n})")
+                else:
+                    e["verified"], e["refusal"] = True, None
+        except (OSError, KeyError, TypeError, ValueError) as ex:
+            e["verified"], e["refusal"] = False, f"entry fault: {ex}"
+        result["frames"].append(e)
+    return result
+
+
+# The client-side cycler. Play/pause/scrub are LOCAL UI CONTROLS over this
+# frame playlist ONLY: they never POST anything, never touch the engine, and
+# never change any mode (the goal never leaves play mode). All failures are
+# caught and SHOWN - zero page-error tolerance per T0.
+WALKFILM_JS = """
+(function(){
+  var img=document.getElementById('wfimg');
+  var playBtn=document.getElementById('wfplay');
+  var prevBtn=document.getElementById('wfprev');
+  var nextBtn=document.getElementById('wfnext');
+  var scrub=document.getElementById('wfscrub');
+  var count=document.getElementById('wfcount');
+  var stateEl=document.getElementById('wfstate');
+  var frames=[], i=0, playing=false, timer=null, FPS=10;
+  function src(f){ return '/api/world/walkfilm/frame?name='+encodeURIComponent(f.name); }
+  function show(k){
+    if(!frames.length) return;
+    i=((k%frames.length)+frames.length)%frames.length;
+    var f=frames[i];
+    img.alt='walkfilm '+f.name+' tick '+f.tick+' ('+f.shot+')';
+    img.src=src(f);
+    scrub.value=String(i);
+    count.textContent=(i+1)+'/'+frames.length+' - tick '+f.tick+' ('+f.shot+')'
+      +' - sha256 '+String(f.sha256).slice(0,16)+'...';
+    for(var d=1; d<=6; d++){
+      var nf=frames[(i+d)%frames.length];
+      var pre=new Image(); pre.src=src(nf);
+    }
+  }
+  function play(){
+    if(playing||!frames.length) return;
+    playing=true; playBtn.textContent='pause';
+    timer=setInterval(function(){ if(frames.length) show(i+1); }, Math.round(1000/FPS));
+  }
+  function pause(){
+    playing=false;
+    if(timer){ clearInterval(timer); timer=null; }
+    playBtn.textContent='play';
+  }
+  if(playBtn) playBtn.onclick=function(){ if(playing){ pause(); } else { play(); } };
+  if(prevBtn) prevBtn.onclick=function(){ pause(); show(i-1); };
+  if(nextBtn) nextBtn.onclick=function(){ pause(); show(i+1); };
+  if(scrub) scrub.oninput=function(){
+    pause();
+    var k=Number(scrub.value);
+    if(Number.isFinite(k)) show(k);
+  };
+  if(img) img.onerror=function(){ stateEl.textContent='frame load REFUSED by the server (named refusal in /api/world/walkfilm)'; };
+  fetch('/api/world/walkfilm').then(function(r){ return r.json(); }).then(function(d){
+    if(!d || !d.ok){ stateEl.textContent='playlist unavailable'; return; }
+    frames=(d.frames||[]).filter(function(f){ return f.verified; });
+    var refused=(d.frames||[]).length - frames.length;
+    scrub.max=String(Math.max(0, frames.length-1));
+    if(frames.length){
+      show(0);
+      stateEl.textContent=frames.length+' frames verified, sealed replay at '
+        +FPS+' fps (sealed film authored at 24 fps)'
+        +(refused? (' - '+refused+' REFUSED, named in the page') : '');
+    } else {
+      stateEl.textContent='no verified frames - nothing to cycle';
+    }
+  }).catch(function(e){
+    stateEl.textContent='playlist load failed (shown, not thrown): '+e;
+  });
+})();
+"""
+
+
+def walkfilm_section(pl: dict) -> str:
+    """Server-built HTML for the sealed walkfilm playlist: the declared
+    limits, the identity line, the cycler player, and EVERY refused frame
+    NAMED (never silently dropped). The playlist data itself is fetched by
+    the cycler from /api/world/walkfilm."""
+    if not pl.get("loaded"):
+        return ("<fieldset><legend>WALKFILM PLAYLIST</legend>"
+                "<div style=\"font-size:12px;color:#ef476f\">sealed playlist "
+                f"not loaded: {pl.get('refusal', 'unknown')}</div></fieldset>")
+    frames = pl.get("frames", [])
+    refused = [e for e in frames if not e.get("verified")]
+    lim = "".join("<div style=\"font-size:11px;color:#9aa4af\">&bull; "
+                  f"{s}</div>" for s in pl.get("declared_limits", []))
+    pins = pl.get("pins", {})
+    ident = (f"sealed trace {str(pins.get('trace_sha256_file', ''))[:16]}&hellip; "
+             f"&middot; render job {pins.get('render_job', '?')} &middot; "
+             f"seed {pins.get('seed', '?')} &middot; authored "
+             f"{pins.get('fps', '?')} fps &middot; "
+             f"{len(frames)} frames, ticks {pins.get('stride_ticks', '?')}-strided")
+    ref = "".join(
+        f"<div style=\"font-size:11px;color:#ef476f\">{e.get('name', '?')}: "
+        f"NOT SERVED &mdash; {e.get('refusal', 'unverified')}</div>"
+        for e in refused)
+    refblock = (f"<div style=\"margin-top:6px\"><b style=\"font-size:12px;"
+                f"color:#ef476f\">{len(refused)} of {len(frames)} frames REFUSED:</b>{ref}</div>"
+                if refused else
+                f"<div style=\"font-size:11px;color:#9aa4af\">all {len(frames)} "
+                "frames sha-verified at load; re-verified at every serve</div>")
+    return (
+        "<fieldset style=\"margin-top:10px\"><legend>WALKFILM PLAYLIST &mdash; "
+        "the sealed W03 302-tick walk (SEALED CAPTURE REPLAY: the engine is NOT "
+        "rendering these; NOT interactive control, NOT live pixels, NOT new "
+        "physics)</legend>"
+        f"<div style=\"font-size:11px;color:#9aa4af\">{ident}</div>"
+        + lim
+        + "<div style=\"margin:8px 0\">"
+          "<img id=\"wfimg\" alt=\"walkfilm playlist (idle)\" "
+          "style=\"max-width:100%;border:1px solid #2a3138\" loading=\"lazy\">"
+          "</div>"
+          "<div>"
+          "<button id=\"wfplay\">play</button> "
+          "<button id=\"wfprev\">prev</button> "
+          "<button id=\"wfnext\">next</button> "
+          "<input id=\"wfscrub\" type=\"range\" min=\"0\" max=\"0\" step=\"1\" value=\"0\" "
+          "style=\"width:60%;vertical-align:middle\"> "
+          "<span id=\"wfcount\" style=\"font-size:11px;color:#9aa4af\">playlist loading&hellip;</span>"
+          "</div>"
+          "<div id=\"wfstate\" style=\"font-size:11px;color:#9aa4af;margin-top:2px\"></div>"
+          "<div style=\"font-size:11px;color:#9aa4af;margin-top:2px\">play/pause/scrub "
+          "are LOCAL UI CONTROLS over this sealed frame playlist only &mdash; they never "
+          "touch the engine and never change any mode (the goal never leaves play mode)</div>"
+        + refblock
+        + "<script>" + WALKFILM_JS + "</script>"
+        + "</fieldset>")
 
 
 # ---------------------------------------------------------------------------
@@ -721,7 +913,9 @@ class ViewerHandler(BaseHTTPRequestHandler):
         query = self.path.split("?")[1] if "?" in self.path else ""
         try:
             if path == "/" or path == "/index.html":
-                self._send(200, PAGE.encode("utf-8"), "text/html; charset=utf-8")
+                html = PAGE.replace("<!--WALKFILM_PLAYLIST-->",
+                                    walkfilm_section(H.walkfilm))
+                self._send(200, html.encode("utf-8"), "text/html; charset=utf-8")
             elif path == "/api/live/glass":
                 st, png, ctype = H.engine.get("/glass")
                 if st == 200 and ctype.startswith("image/png"):
@@ -787,6 +981,38 @@ class ViewerHandler(BaseHTTPRequestHandler):
                             "take_mode": H.take_mode["on"],
                             "capture": capture.snapshot_stats() if capture else {},
                             "uptime_s": round(time.time() - H.started, 1)})
+            elif path == "/api/world/walkfilm":
+                self._json({"ok": True, "schema": H.walkfilm.get("schema"),
+                            "manifest": H.walkfilm.get("manifest"),
+                            "loaded": H.walkfilm.get("loaded", False),
+                            "refusal": H.walkfilm.get("refusal"),
+                            "declared_limits": H.walkfilm.get("declared_limits", []),
+                            "pins": H.walkfilm.get("pins", {}),
+                            "counts": H.walkfilm.get("counts", {}),
+                            "frames": [{k: e.get(k) for k in
+                                        ("name", "frame", "tick", "shot", "sha256",
+                                         "bytes", "verified", "refusal")}
+                                       for e in H.walkfilm.get("frames", [])]})
+            elif path == "/api/world/walkfilm/frame":
+                name = None
+                for kv in query.split("&"):
+                    if kv.startswith("name="):
+                        name = kv[5:]
+                rec = next((e for e in H.walkfilm.get("frames", [])
+                            if e.get("name") == name), None)
+                if rec is None:
+                    self._json({"ok": False,
+                                "error": f"unknown walkfilm frame '{name}'"}, 404)
+                elif not rec.get("verified"):
+                    self._json({"ok": False,
+                                "error": f"frame not served: {rec.get('refusal')}"}, 502)
+                else:
+                    sha, _ = _sha256_file(Path(rec["file"]))  # re-verify at serve time
+                    if sha != rec["sha256"]:
+                        self._json({"ok": False,
+                                    "error": "sha256 mismatch at serve time; refusing"}, 502)
+                    else:
+                        self._send(200, Path(rec["file"]).read_bytes(), "image/png")
             else:
                 self._json({"ok": False, "error": "unknown route"}, 404)
         except EngineError as e:
@@ -973,6 +1199,7 @@ def make_server(engine_url: str, port: int, history: int = 240) -> ThreadingHTTP
         "engine": engine, "ring": ring, "camera": CameraPanel(engine),
         "started": time.time(), "capture_thread": capture,
         "mirror": EngineWindowMirror(engine_url, int(engine_port)),
+        "walkfilm": load_walkfilm_playlist(),
     })
     server = ThreadingHTTPServer(("127.0.0.1", port), handler)
     server.daemon_threads = True
