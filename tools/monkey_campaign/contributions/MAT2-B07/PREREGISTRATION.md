@@ -177,3 +177,27 @@ receipts — zero hand-transcribed numbers)
   300 Hz budget (TC-9/TC-10/TC-11 stay open by law).
 - Any port qualification; any mass admission; any body replacement in the
   runtime; any certificate forgery for a body that cannot yet run.
+
+## Amendment A1 (recorded BEFORE the integration commit; no experiment of
+this attempt ran between the freeze and this amendment)
+
+The two separately-dispatched authorized lanes landed their evidence in the
+evidence store mid-attempt (both dated 2026-09-30, both citing this card's
+inbox authorization): wk-rown04-fitting (R-OWN-04: measured fits for the 8
+outside placements, FITTING_RECEIPTS.md + fitting_receipt.json) and
+wk-rown05-stiffness (R-OWN-05: the measured attachment-interface source
+matrix + the bounded admission questions, MEASURED_SOURCES.md +
+ADMISSION_PROPOSAL.md). Both lanes state the B07 attempt worker integrates.
+
+A1.1: the per-row closure-class vocabulary gains one class:
+`lane_evidence_delivered` - the row's evidence half was delivered by a
+separately-dispatched authorized lane with receipts; the consuming decision,
+admission or sealed-row flip remains the named rank's lawful act. This class
+is used ONLY for R-OWN-04 and R-OWN-05, citing the lane receipts pinned in
+adoption_record.json.
+
+A1.2: this attempt records NO admission (the R-OWN-05 lane's own
+recommendation is to admit nothing today; the Lieutenant admits) and adopts
+NO fitted placement candidate (the fitting lane's fits are measured
+correspondence evidence; the outside placements keep their sealed
+statuses).
