@@ -1,0 +1,4 @@
+{"do":"shot","name":"01_landing"}
+{"do":"wait","ms":5000}
+{"do":"shot","name":"02_landing_settled"}
+{"do":"text","max":4000}

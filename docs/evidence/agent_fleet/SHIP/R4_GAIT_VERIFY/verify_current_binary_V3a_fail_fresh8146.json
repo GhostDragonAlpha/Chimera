@@ -1,0 +1,146 @@
+{
+ "base": "http://127.0.0.1:8146",
+ "mode": "armed",
+ "routes": {
+  "/tick_state": "200 1415B",
+  "/state": "200 104950B",
+  "/verts": "200 664528B",
+  "/topology": "200 439564B",
+  "/health": "200 9B BUT BODY 'Not found' -> NO ROUTE"
+ },
+ "log_replay": [],
+ "ts": "2026-09-14 13:50:28",
+ "state0": {
+  "ticks": 220759,
+  "enabled": true,
+  "cells": [
+   {
+    "v0": 0.287914,
+    "V": 0.287914,
+    "P": 0,
+    "pieces": 5396,
+    "caps": 126,
+    "ylo": -0.019507,
+    "yhi": 0.338,
+    "degenerate": false
+   },
+   {
+    "v0": 12.5091,
+    "V": 12.5091,
+    "P": 0,
+    "pieces": 26442,
+    "caps": 380,
+    "ylo": 3.415,
+    "yhi": 9.97118,
+    "degenerate": false
+   },
+   {
+    "v0": 0.693006,
+    "V": 0.693006,
+    "P": 0,
+    "pieces": 5604,
+    "caps": 104,
+    "ylo": 1.903,
+    "yhi": 3.415,
+    "degenerate": false
+   },
+   {
+    "v0": 0.334578,
+    "V": 0.334578,
+    "P": 0,
+    "pieces": 1668,
+    "caps": 126,
+    "ylo": 0.338,
+    "yhi": 1.903,
+    "degenerate": false
+   }
+  ],
+  "force_l": 0,
+  "force_r": 0,
+  "load_l": 0,
+  "load_r": 0,
+  "damage_sum": 0,
+  "failed": 0,
+  "capacity_sum": 1346990000.0,
+  "flex_l_deg": 0,
+  "flex_r_deg": 0,
+  "sealed": true,
+  "n_cells": 4,
+  "V_lower": 0.287914,
+  "V_upper": 12.5091,
+  "P_lower": 0,
+  "P_upper": 0,
+  "v0_lower": 0.287914,
+  "v0_upper": 12.5091,
+  "V_whole": 13.8246,
+  "conserve_pct": -0.000117273,
+  "seal_split": 130,
+  "seal_cuts": 130,
+  "seal_loops": 2,
+  "seal_caps": 126,
+  "seal_refusal": "",
+  "dimple_m": 0,
+  "gravity_on": true,
+  "root_y": 0.00950712,
+  "root_vy": -3.72196e-08,
+  "g_contact_n": 135618,
+  "stance_on": true,
+  "stance_ankle_deg": 0,
+  "stance_kp": 3.53082,
+  "stance_lean_x": 0,
+  "stance_lean_z": 0,
+  "gait_on": false,
+  "gait_l": "STANCE",
+  "gait_r": "STANCE",
+  "gait_stride": 0,
+  "gait_depth_l": 0,
+  "gait_depth_r": 0,
+  "gait_clear_l": 0,
+  "gait_clear_r": 0,
+  "gait_lean_x": 0,
+  "gait_lean_z": 0,
+  "gait_p_max": 0,
+  "gait_hip_l_deg": 0,
+  "gait_hip_r_deg": 0,
+  "gait_knee_l_deg": 0,
+  "gait_knee_r_deg": 0,
+  "gait_feet_cell": -1,
+  "gait_enable_block": "",
+  "gait_block_l": "",
+  "gait_block_r": "",
+  "gait_log": [],
+  "has_scene": true
+ },
+ "bars": [
+  [
+   "V0",
+   "body live: has_scene=True sealed=True feetCell=0 (yhi=0.338) n_cells=4",
+   true
+  ],
+  [
+   "V1a",
+   "/tick_gravity arms (gravity_on=True)",
+   true
+  ],
+  [
+   "V1b",
+   "settled=True (worst |root_vy| 3.72e-08); g_contact_n 135618 N vs m*g 135618 N (dev 0.000% <= 0.5%)",
+   true
+  ],
+  [
+   "V1c",
+   "rest pressures exactly 0 (max 0.00e+00 Pa), root_y +0.00951 m (the derived +9.5 mm rise branch)",
+   true
+  ],
+  [
+   "V2",
+   "/tick_stance arms (stance_on=True); kp=3.531 rad/(m s) -> |S| ~ 0.283 m/rad (prereg 0.283)",
+   true
+  ],
+  [
+   "V3a",
+   "/tick_gait arms (gait_on=False, feetCell=-1)",
+   false
+  ]
+ ]
+}

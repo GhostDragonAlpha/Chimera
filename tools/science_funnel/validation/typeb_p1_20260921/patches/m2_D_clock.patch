@@ -1,0 +1,15 @@
+diff --git a/ChimeraEngine/engine/gait_controller.hpp b/ChimeraEngine/engine/gait_controller.hpp
+index 8e189c80..e1b1ac99 100644
+--- a/ChimeraEngine/engine/gait_controller.hpp
++++ b/ChimeraEngine/engine/gait_controller.hpp
+@@ -2598,7 +2598,9 @@ class GaitWalker {
+     if(i==2)continue; // the trunk-pitch posture drive: admitted source architecture (the paper's theta_HAT musculature)
+     require(trial.work[i]==0,"gait_base_actuator_work");require(tau[i]==0,"gait_base_torque");}
+    s_=std::move(trial);}
+-  last_torque_=impulse_torque;++ticks_;}
++  last_torque_=impulse_torque;
++  if(ticks_==150)phi_[0]+=0.25; //TYPEB-P1 M2 DECLARED COMMAND D: one-shot phase-clock command +0.25 cycle, left leg
++  ++ticks_;}
+  J status()const{
+   auto e=evaluate(s_);
+   double kinetic=.5*inner(s_.v,multiply(e.mass,s_.v)),u=e.potential; // absolute; the ledger works in deltas below

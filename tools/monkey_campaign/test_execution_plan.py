@@ -14,8 +14,8 @@ class ExecutionPlanTests(unittest.TestCase):
         before = copy.deepcopy(self.catalog)
         result = build_plan(self.catalog)
         self.assertEqual(self.catalog, before)
-        self.assertEqual(result['task_count'], 83)
-        self.assertEqual(result['selected_count'], 76)
+        self.assertEqual(result['task_count'], 95)
+        self.assertEqual(result['selected_count'], 95)
         packets = {p['id']: p for p in result['tasks']}
         calculations = {c['id']: c for c in self.catalog['calculations']}
         for source in self.catalog['tasks']:
@@ -26,7 +26,7 @@ class ExecutionPlanTests(unittest.TestCase):
             self.assertEqual([p['id'] for p in packet['phases']], ['reconcile', 'decide', 'implement', 'verify', 'runtime', 'visual', 'review', 'integrate'])
             self.assertFalse(packet['assignment_authorized'])
         inactive = [p for p in packets.values() if not p['selected']]
-        self.assertEqual(len(inactive), 7)
+        self.assertEqual(len(inactive), 0)
         self.assertTrue(all(p['initial_state'] == 'CONDITIONAL_INACTIVE' for p in inactive))
         self.assertFalse(result['goal_complete'])
 

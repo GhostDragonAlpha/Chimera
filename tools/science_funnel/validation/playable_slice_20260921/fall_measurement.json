@@ -1,0 +1,34 @@
+{
+ "falsifier": "F-SLICE-FALL",
+ "engine_url": "http://127.0.0.1:63417",
+ "authored_lowest_m": -0.265293002,
+ "transient": {
+  "samples": 1024,
+  "window_s": 13.15,
+  "peak_root_y_m": 2.9999,
+  "descent_samples": 677
+ },
+ "i1_clamp": {
+  "derived_m": 3.0,
+  "measured_peak_root_y_m": 2.9999,
+  "abs_error_m": 0.0001,
+  "within_1cm": true
+ },
+ "i2_terminal_descent": {
+  "derived_vt_mps": 0.223719,
+  "measured_median_vt_mps": 0.223719,
+  "rel_error": 1e-06,
+  "within_5pct": true,
+  "tau_derived_s": 0.022805,
+  "note": "vt = m*g/c; g is identified through the terminal velocity"
+ },
+ "i3_equilibrium_sink": {
+  "derived_m": 0.01,
+  "measured_lowest_m": -0.010019,
+  "abs_error_m": 1.9e-05,
+  "within_10pct": true
+ },
+ "pass": true,
+ "preregistered_branch_prediction": "gentle damped rise, no F=0 window -- FALSIFIED by this measurement: the spring's stored energy launches the body to the root clamp and the law's vertical damping gives a ~12 s terminal descent; the prereg's own falsifier named this case ('fit g directly') -- recorded, not tuned",
+ "law": "y'' = min(50*m*g, k*max(0,-y) + c*max(0,-vy))/m - g; k=1.3562e7, c=6.062e5, m=13824.5, g=9.81; damping acts whenever vy<0, airborne included (membrane_tick.cpp)"
+}

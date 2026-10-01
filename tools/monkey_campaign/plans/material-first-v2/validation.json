@@ -1,0 +1,187 @@
+{
+  "validation": "STRUCTURAL_PASS_NOT_PHYSICS_QUALIFICATION",
+  "task_count": 95,
+  "selected_count": 95,
+  "scope_sha256": "b972c38caa121c00c28666af1fa92460f25fb7e4c35017cf8f1e1ec7de7a7a18",
+  "parent_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+  "dependency_layers": [
+    [
+      "P01"
+    ],
+    [
+      "F01",
+      "P02",
+      "P03",
+      "P06",
+      "X01",
+      "X02"
+    ],
+    [
+      "A01",
+      "A04",
+      "B01",
+      "M01",
+      "P04",
+      "P05",
+      "S01",
+      "U01",
+      "U02",
+      "W01",
+      "W02"
+    ],
+    [
+      "A02",
+      "A05",
+      "B02",
+      "B04",
+      "M02",
+      "U03",
+      "U04",
+      "U05",
+      "W03"
+    ],
+    [
+      "A03",
+      "B03",
+      "M03",
+      "M04"
+    ],
+    [
+      "M05",
+      "M06"
+    ],
+    [
+      "A06",
+      "B05",
+      "F02",
+      "F03",
+      "M07"
+    ],
+    [
+      "A07",
+      "B06",
+      "F04",
+      "M08"
+    ],
+    [
+      "F07",
+      "M09",
+      "M10"
+    ],
+    [
+      "A08",
+      "F08",
+      "M11"
+    ],
+    [
+      "A09",
+      "B07",
+      "M12"
+    ],
+    [
+      "G02",
+      "G03",
+      "W04"
+    ],
+    [
+      "G01",
+      "W05"
+    ],
+    [
+      "G04",
+      "W06"
+    ],
+    [
+      "F05",
+      "G05",
+      "G07",
+      "W07"
+    ],
+    [
+      "G06",
+      "W08",
+      "W09"
+    ],
+    [
+      "G08",
+      "W10"
+    ],
+    [
+      "F06",
+      "K01",
+      "U07",
+      "X04",
+      "X05"
+    ],
+    [
+      "K02"
+    ],
+    [
+      "K03"
+    ],
+    [
+      "K04"
+    ],
+    [
+      "K05"
+    ],
+    [
+      "K06"
+    ],
+    [
+      "K07",
+      "R01",
+      "U06"
+    ],
+    [
+      "K08",
+      "R02",
+      "X03"
+    ],
+    [
+      "R03",
+      "X06"
+    ],
+    [
+      "R04",
+      "X07"
+    ],
+    [
+      "R05"
+    ],
+    [
+      "R06"
+    ],
+    [
+      "R07"
+    ],
+    [
+      "S02"
+    ],
+    [
+      "S03",
+      "S04"
+    ],
+    [
+      "S05"
+    ],
+    [
+      "S06"
+    ]
+  ],
+  "checks": [
+    "all 83 prior IDs preserved",
+    "12 distinct new IDs",
+    "task dependency DAG",
+    "ontology node and connection references",
+    "checkpoint DAG and bidirectional task links",
+    "camera profile fields retained",
+    "graph references found in inspected source snapshot"
+  ],
+  "deployment": "NOT_DEPLOYED",
+  "negative_controls": {
+    "dependency_cycle": "REFUSED dependency_cycle:P01",
+    "missing_dependency": "REFUSED unknown_dependency:Z99",
+    "missing_camera_fields": "REFUSED camera_requirements_missing"
+  }
+}

@@ -1,0 +1,60 @@
+   L7 click (651,283) -> torso 104414 Pa
+   L7 click (659,291) -> torso 89498 Pa
+   L7 click (659,275) -> torso 11837600 Pa
+   calm=true after 8.1s  final |P| Pa: 0 0 0 0
+L7 judge: {"id":"the_heavy_hand","phase":"release","goalMet":true,"passed":true}
+L7 line  : judge: the_heavy_hand phase=release goalMet=true passed=true touchTarget=set lastTouchForce=50000 holding=false
+L7 goal  : {"type":"pressure_above","cell":1,"threshold_pa":3000000}
+L7 peaks : cell0=0 Pa cell1=11837600 Pa cell2=0 Pa cell3=0 Pa
+L8 pre-press: judge: the_heavy_hand phase=release goalMet=true passed=true touchTarget=set lastTouchForce=50000 holding=false
+L8 pre-press cells: feet=0 torso=0 thighs=0 shins=0 Pa
+   trace 0.5s: feet=0 torso=2135680 thighs=0 shins=0 Pa  |  judge: the_cascade phase=release goalMet=true passed=false touchTarget=set lastTouchForce=50000 holding=true
+   trace 1.0s: feet=0 torso=2135680 thighs=0 shins=0 Pa
+   trace 1.5s: feet=0 torso=2135680 thighs=0 shins=0 Pa
+   trace 2.1s: feet=0 torso=2135680 thighs=0 shins=0 Pa
+   trace 2.6s: feet=0 torso=2135680 thighs=0 shins=0 Pa
+   trace 3.1s: feet=0 torso=2135680 thighs=0 shins=0 Pa
+   trace 3.6s: feet=0 torso=2135680 thighs=0 shins=0 Pa
+   calm=true after 8.1s  final |P| Pa: 0 0 0 0
+L8 judge: {"id":"the_cascade","phase":"release","goalMet":true,"passed":true}
+L8 line  : judge: the_cascade phase=release goalMet=true passed=true touchTarget=set lastTouchForce=50000 holding=false
+L8 goal  : {"type":"pressure_isolation","cell":1,"threshold_pa":15000,"quiet_cells":[0,3],"quiet_max_pa":100}
+L8 peaks : cell0=0 Pa cell1=2135680 Pa cell2=0 Pa cell3=0 Pa
+L9 armed=true  world: gravity_on=true root_y=0.0095 root_vy=0.0000
+L9 settling: gravity_on=true root_y=0.0095 root_vy=-0.0000
+L9 judge: {"id":"the_stand","phase":"goal","goalMet":true,"passed":true}
+L9 line  : judge: the_stand phase=goal goalMet=true passed=true touchTarget=null lastTouchForce=0 holding=false armed=true
+L9 goal  : {"type":"gravity_on"}  root: gravity_on=true root_y=0.0095 root_vy=-0.0000
+L9 peaks : cell0=0 Pa cell1=0 Pa cell2=0 Pa cell3=0 Pa
+   mid-press: judge: the_graduation phase=goal goalMet=false passed=false touchTarget=set lastTouchForce=50000 holding=true woken=1/3
+   mid-press cells: feet=0 torso=1929170 thighs=0 shins=0 Pa
+   mid-press: judge: the_graduation phase=goal goalMet=false passed=false touchTarget=set lastTouchForce=50000 holding=true woken=2/3
+   mid-press cells: feet=25817000 torso=1929170 thighs=0 shins=0 Pa
+   mid-press: judge: the_graduation phase=goal goalMet=false passed=false touchTarget=set lastTouchForce=50000 holding=true woken=2/3
+   mid-press cells: feet=51632700 torso=1929170 thighs=0 shins=0 Pa
+   mid-press: judge: the_graduation phase=release goalMet=true passed=false touchTarget=set lastTouchForce=50000 holding=true woken=3/3
+   mid-press cells: feet=51566500 torso=1914590 thighs=0 shins=79194400 Pa
+   calm=true after 8.1s  final |P| Pa: 0 0 0 0
+L10 judge: {"id":"the_graduation","phase":"release","goalMet":true,"passed":true}
+L10 line  : judge: the_graduation phase=release goalMet=true passed=true touchTarget=set lastTouchForce=50000 holding=false woken=3/3
+L10 goal  : {"type":"cells_woken","count":3}
+L10 peaks : cell0=51632700 Pa cell1=1929170 Pa cell2=0 Pa cell3=79194400 Pa
+L10 payoff overlay: dismissed through #payoff-save (real save flow)
+payoff overlay: not shown -- saving through the sidebar button
+SAVED PROGRESS: ["wake_the_cell","the_gentle_hand","the_healing","bend_the_knee","the_whole_body","the_balance","the_heavy_hand","the_cascade","the_stand","the_graduation"]
+WORLD AFTER: gravity_on=true root_y=0.0095 root_vy=-0.0000
+
+===== TEN-LESSON VERDICT TABLE (this session) =====
+ 1. wake_the_cell   PASS  phase=release goalMet=true  cell0=0 Pa cell1=2135680 Pa cell2=0 Pa cell3=0 Pa
+ 2. the_gentle_hand PASS  phase=release goalMet=true  cell0=6772550 Pa cell1=0 Pa cell2=0 Pa cell3=0 Pa
+ 3. the_healing     PASS  phase=release goalMet=true  cell0=0 Pa cell1=2135680 Pa cell2=0 Pa cell3=0 Pa
+ 4. bend_the_knee   PASS  phase=goal goalMet=true  cell0=89701800 Pa cell1=0 Pa cell2=37426900 Pa cell3=23929500 Pa
+ 5. the_whole_body  PASS  phase=release goalMet=true  cell0=0 Pa cell1=2135680 Pa cell2=0 Pa cell3=87496300 Pa
+ 6. the_balance     PASS  phase=goal goalMet=true  cell0=6009940 Pa cell1=0 Pa cell2=8788 Pa cell3=715501 Pa
+ 7. the_heavy_hand  PASS  phase=release goalMet=true  cell0=0 Pa cell1=11837600 Pa cell2=0 Pa cell3=0 Pa
+ 8. the_cascade     PASS  phase=release goalMet=true  cell0=0 Pa cell1=2135680 Pa cell2=0 Pa cell3=0 Pa
+ 9. the_stand       PASS  phase=goal goalMet=true  cell0=0 Pa cell1=0 Pa cell2=0 Pa cell3=0 Pa
+ 10. the_graduation  PASS  phase=release goalMet=true  cell0=51632700 Pa cell1=1929170 Pa cell2=0 Pa cell3=79194400 Pa
+FRESH PASSES THIS SESSION: 10 of 10
+PROGRESS FILE: 10 of 10 -> wake_the_cell, the_gentle_hand, the_healing, bend_the_knee, the_whole_body, the_balance, the_heavy_hand, the_cascade, the_stand, the_graduation
+PAGE ERRORS: 0 (zero)

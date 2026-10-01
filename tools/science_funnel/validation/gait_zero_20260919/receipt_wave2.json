@@ -1,0 +1,35 @@
+{
+ "lane": "in-session (codex/force-data-runtime-20260916), wave 2",
+ "date": "2026-09-19",
+ "agent": "GLM 5.3",
+ "deliverable": "The walk's remaining blocker chain, measured end to end: the no-skid entry speed derived (0.764 m/s, halving the transient ledger 2.58 -> 1.33 J), the stop-priority tier law implemented in the walker's projection (retained as a law; falsified as the tick-40 fix), and the double-support seating gap identified as the root of the residual transient.",
+ "no_skid_entry_speed": {
+  "derivation": "the paper's 1.01 m/s is the cycle AVERAGE (stride 0.72 m / T 0.71 s); the periodic entry at TD requires the stance contact point's ground-relative horizontal velocity to be ZERO -- composed from the zero-mapped tables by the rolling-contact law: contact vx relative hip at phi=0 is -0.764 m/s, so the entry base speed is +0.764 m/s. Entering at the average left the foot skidding forward at +0.246 m/s.",
+  "measured": "transient ledger 2.58 -> 1.33 J (the skid impulse gone); gait_scene.py derives it from the tables at compile time (never hardcoded)"
+ },
+ "tier_law": {
+  "statement": "when an armed joint stop coexists with arriving contacts, a hard stop is never sacrificed while a stop-holding projection exists: stop-inclusive masks (plus the no-op mask) are enumerated first in project_rows.",
+  "outcome": "IMPLEMENTED and RETAINED as the correct enumeration law, but it did NOT resolve tick 40: the winning masks were already stop-inclusive (falsifier outcome #1 -- the chatter is not the enumeration order; recorded honestly). Backward compatible (n_stops=0 callers unchanged); F-G5/F-G7 still green; determinism preserved."
+ },
+ "blocker_chain_measured": {
+  "1_double_support_seating_gap": "at the entry instant both legs are in stance (duty 0.68) but the tables' 5.8 mm closure residual appears as a 2.96 mm height gap between the left TD heel (-298.84 mm, the seated contact) and the right mid-stance MP head (-295.88 mm): the LOADED leg starts 3 mm in the air. The runtime's require(gap>0) at reset forces this seating -- base_y must clear the lowest point -- so the gap cannot be initialized away; it is a table-level residual the controller must absorb dynamically.",
+  "2_the_drop": "the loaded right leg falls ~3 mm (~0.02 s), delivering ~1 J into the hip/trunk (worst ledger 1.33 J).",
+  "3_the_hip_slam": "the hip runs from its 0.765 target onto the +1.1 stop (63 deg flexion), absorbing -12.3 J at the cap.",
+  "4_the_knee_collapse": "with the hip pinned, gravity collapses the leg: the knee extends at +3.77 rad/s against its -0.93 target (measured at the deadlock).",
+  "5_the_MP_jam": "the driving knee stuffs the MP head 0.58 mm under the floor while the heel sits at +5e-10 and the hip is on its wall.",
+  "6_the_deadlock": "heel contact + arriving MP + hip stop are geometrically infeasible (the foot would have to compress); every velocity-level projection leaves a residual that re-violates the wall by 36 um per substep; the clamp loop burns 64 iterations and the budget refuses LOUDLY. With zero initial hip velocity, downward PD torque, and the stop armed, the free_step STILL ends 3.6e-5 past the wall -- the contact reaction relieving the MP penetration is what pushes it (measured with GAIT_EVENT_TRACE clamp2)."
+ },
+ "named_next_membranes": [
+  "POSITIONAL correction at impact: when a crossing is localized and the impact state carries a penetrated point (geometric infeasibility with another point at the plane), a velocity projection cannot restore feasibility -- a derived positional (constraint-stabilization) term is owed, e.g. project q onto the intersection of active constraint manifolds at the event (the BPM/coordinate-projection the free-root class uses for stops, lifted to contacts).",
+  "OR remove the transient's source: the double-support entry discrepancy is the closure residual of fitting one ride level C to 14 nodes; a least-squares C per leg pair (two-level ride: C_left/C_right coupled through the pelvis) would shrink the 2.96 mm gap at the entry instant -- but it CANNOT close it (the tables are one-leg data; the pair composition is where the residual concentrates).",
+  "The tier law stays (correct regardless); the no-skid entry stays (measured better)."
+ ],
+ "suite_state": "F-G5 green x2, F-G7 green, walk refuses at tick 40 with the fully-diagnosed chain above; worst ledger 1.33 J (was 2.58 at the average-speed entry, unbounded in the pre-zero era).",
+ "reproduce": [
+  "python -B -m tools.science_funnel.gait_scene",
+  ".tmp/gait-tests/Release/gait_unit.exe .tmp/gait-walker/scene.json",
+  ".tmp/gait-tests/Release/gait_unit_trace.exe .tmp/gait-walker/scene.json  # the [clamp]/[clamp2] instrumentation"
+ ],
+ "pass": false,
+ "honest_summary": "Three membranes this wave: the no-skid entry (derived, measured better, kept), the stop-priority tier law (implemented, kept as a law, honestly did not fix tick 40), and the blocker chain itself -- now measured from the 2.96 mm double-support seating gap through the hip slam, knee collapse, and MP jam to the 36-um-per-substep deadlock that no velocity projection can resolve. The next derivation is named: positional correction at the impact event."
+}

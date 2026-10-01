@@ -1,0 +1,45 @@
+{
+ "lane": "agent/gait-wave27-sinking-shoulder",
+ "derived_by": "derive_height_hold.py (wave 27)",
+ "fore_chain": {
+  "L1": 0.125,
+  "rho": 0.136324,
+  "beta": -1.3413908051455417,
+  "mount": [
+   0.2689,
+   -0.1331
+  ],
+  "wall": 1.6,
+  "branch": -1,
+  "dmax": 0.261324
+ },
+ "h_crit_m": 0.055939,
+ "tau_settle_s": 0.0497359197162173,
+ "tau_settle_ticks": 14.920775914865189,
+ "kSinkRateMax_m_per_tick": 0.002349000000000004,
+ "floor_m": 0.03974690262401839,
+ "validation": {
+  "march_first_viol": {
+   "L": {
+    "tick": 104,
+    "sh_m": 0.043546,
+    "m1": 0.14141438147432273,
+    "m2": 1.3705974137763695,
+    "md_m": -0.0017659999999999898
+   },
+   "R": {
+    "tick": 98,
+    "sh_m": 0.055939,
+    "m1": 0.18867615228907741,
+    "m2": 1.3705974137763695,
+    "md_m": -0.0009480000000000044
+   }
+  },
+  "f_g23_measured": {
+   "L": 104,
+   "R": 98,
+   "min_annulus_margin_m": -0.00177
+  }
+ },
+ "predicted_fire_tick": 75
+}

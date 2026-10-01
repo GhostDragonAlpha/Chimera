@@ -1,0 +1,123 @@
+{
+  "schema": "chimera.rule0.integration_receipt.v1",
+  "pass": "integration_pass7_20260920",
+  "agent_trailer": "Agent: integ7",
+  "date_utc": "2026-09-22",
+  "base": {
+    "pinned": "2c7f9b088820d05075a2fe219f1cf768dde7fcd4",
+    "identity": "integration pass 6 receipt commit (pass3-integ master head, verified before worktree add; subject 'INTEGRATION PASS 6 receipt: six lane tips merged behind full verification -- ALL GREEN')"
+  },
+  "dag_verified_before_any_merge": {
+    "method": "the standing rule: every ancestry claim measured by this agent (git merge-base --is-ancestor, git merge-base, git log base..tip, git ls-remote origin per-branch); the brief treated as a hint, the DAG as the law",
+    "tips": [
+      {"branch": "lane/slice-stranger-20260920", "pinned": "ae1b4599", "full": "ae1b459987492ab845926b570ec1e7cd4867a308", "remote_tip_matches_pin": true, "already_in_master": false, "commits_past_merge_base": 4, "merge_base": "7d7868d3 (the mesh-parse receipt tip, itself an ancestor of master -- measured)", "external_lane": true},
+      {"branch": "lane/render-truth-20260920", "pinned": "f89cab4e", "full": "f89cab4eb4c4258917aaf78ba951f51eaf6433f1", "remote_tip_matches_pin": true, "already_in_master": false, "commits_past_merge_base": 3, "merge_base": "ae1b4599 (STACK ON STRANGER CONFIRMED: merge-base(stranger, rendertruth) == stranger tip, measured with merge-base --is-ancestor)"},
+      {"branch": "lane/thin-client-pilot-20260920", "pinned": "d0a2ff28", "full": "d0a2ff28188980e9c1d8a8d7125a40e195ffe6ef", "remote_tip_matches_pin": true, "already_in_master": false, "commits_past_merge_base": 5, "merge_base": "bd4bf630 (the merged agent/playable-slice-20260921 merge commit; measured an ancestor of master)"},
+      {"branch": "lane/lesson-one-fall-20260920", "pinned": "571bf03f", "full": "571bf03f84a0c1545099762aefc2b8f55f2403bb", "remote_tip_matches_pin": true, "already_in_master": false, "commits_past_merge_base": 2, "merge_base": "2c7f9b08 (master itself: contains-master measured true)", "external_lane": true}
+    ],
+    "measured_deviations_from_brief": [
+      "BRIEF GAP (the pass-6 lesson applied): the brief anticipated collisions only between stranger/rendertruth (same page, stacked) and named lesson-one's new dir; it did NOT flag lane/thin-client-pilot-20260920. MEASURED: thincli modifies the SAME two files (tools/playable_slice/index.html, tools/playable_slice/slice_server.py) from its older base bd4bf630 -- the merge CONFLICTED on exactly those two files (resolved, see merges[2]) and carried THREE semantic conflicts the textual merge could not see (also resolved and documented in the merge commit).",
+      "thincli/lessonone disjointness: ancestry-disjoint from the stranger strand is CONFIRMED at the commit level (pairwise merge-bases measured: thincli-lessonone bd4bf630, thincli-stranger bd4bf630, lessonone-stranger 7d7868d3), but FILE-disjointness is FALSE for thincli vs the stranger strand (the two page/server files) -- lesson-one IS fully file-disjoint (pure additive: 44 files, 9264 insertions, 0 deletions, all under tools/lesson_shell/ + its validation dir).",
+      "BRIEF PREMISE FALSE (doc-truth): the brief says the frontpage's 2026-09-20 sections name the 'judge read floating parts' finding. MEASURED: that finding appears NOWHERE in README.md or docs/ (exhaustive grep for floating/tangle/chaotic/realbody/movie -- zero relevant hits; the frontpage predates the realbody-movie lane). render-truth's resolution of it therefore requires NO doc amendment; recorded here instead."
+    ],
+    "unlisted_tip_scan": {
+      "namespace_scanned": "refs/heads/lane/* and refs/heads/agent/* on origin (full ls-remote) plus local branch/worktree census",
+      "declared_in_flight_checked": {
+        "agent/typeb-gpu-finish-20260922 [portclose3]": "EXISTS on origin and MOVED during this pass (386e6152..30c89a88 at fetch time) -- in flight, NOT merged, untouched",
+        "lane/push-channel-20260920": "NO ref on origin; exists only as the pushchan-agent worktree's local branch at fa5c7995 -- not landed, NOT merged, worktree untouched",
+        "lane/demo-packager-20260920": "NO ref on origin -- not landed, NOT merged"
+      },
+      "finding": "no other 2026-09-20+ lane tip with a green landed verdict found beyond the four named; the remaining not-in-master origin branches are the pre-pass-4 stale-era lanes and the in-flight agent/* work, consistent with the pass-6 scan"
+    }
+  },
+  "merges": [
+    {"order": 1, "branch": "lane/slice-stranger-20260920", "sha": "ae1b459987492ab845926b570ec1e7cd4867a308", "merge_commit": "fc358d6096cce9becb35cc73e38d84af028641de", "parents": "2c7f9b088820d05075a2fe219f1cf768dde7fcd4 ae1b459987492ab845926b570ec1e7cd4867a308", "conflicts": 0},
+    {"order": 2, "branch": "lane/render-truth-20260920", "sha": "f89cab4eb4c4258917aaf78ba951f51eaf6433f1", "merge_commit": "8dfd33456b3e0bd8a57014b973ea669d86935917", "parents": "fc358d6096cce9becb35cc73e38d84af028641de f89cab4eb4c4258917aaf78ba951f51eaf6433f1", "conflicts": 0},
+    {"order": 3, "branch": "lane/thin-client-pilot-20260920", "sha": "d0a2ff28188980e9c1d8a8d7125a40e195ffe6ef", "merge_commit": "e8b35c86a632afebf44cf62f80d8c61060f159f2", "parents": "8dfd33456b3e0bd8a57014b973ea669d86935917 d0a2ff28188980e9c1d8a8d7125a40e195ffe6ef", "conflicts": 2,
+     "conflict_resolution": {
+      "textual": [
+        "tools/playable_slice/slice_server.py do_GET: UNION -- the stranger lane's /favicon.ico 204 route AND the pilot's /api/snapshot + /api/frame + /api/stats routes all stand (both additive elif chains; every pilot symbol measured present in the auto-merged regions: SNAP_FMT/SNAP_HDR/WORLD.snapshot/STATS_LOCK/STATS/stat/carry_reset/sb.http_get_raw)",
+        "tools/playable_slice/index.html pollStatus status line: NESTED UNION -- the pilot's F3 gate (!window.__THIN_ENABLED__: the snapshot stream owns the state line) wraps the stranger's root_y/restarting rule (engine numbers, or the honest restarting text), so each mode keeps its lane's declared behavior"
+      ],
+      "semantic_not_visible_to_git": [
+        "uploadWork: the pilot's one-time topology path PREPENDED the synthetic 4-byte count header to the vertex bytes (the OLD payload convention of its base). The merged page's convention is render-truth's BANKED fix (the header-as-vertex-zero shift it caught BY NAME: '249743 vs 249743.111'): the thin path now calls meshFromTopo(topoBufGlobal, work9.buf) with NO header. Without this the thin client's topology fallback would have silently re-created that named bug (the GLB/live parity check would NOT have fired: liveVerts=work9.f32 count matches).",
+        "gate default: ?thin now defaults OFF. The plain URL stays the stranger page the slice-stranger/render-truth receipts verified (the on-page keys card and the boot bar speak of THAT page); the thin client is the explicit pilot path ?thin=1&rate=..&fmt=..&pilot=1 -- the exact form every thincli instrument already passes (run_suite.py:366, smoke_thin.py:26), so no measured run changes.",
+        "keyboard ownership: exactly one owner per mode -- thin mode: the thin HUD's named keys (the legacy KEYLIST handler yields); legacy mode: the keys card's 13 verified keys (the thin block is gated off). Prevents double-firing /api/restart, /api/drop_test and double 300 N presses in the union page."
+      ],
+      "verification_of_resolution": "node --check on all three page script blocks (SYNTAX-OK); py_compile on the server (OK); the merged page then passed the FULL committed stranger walkthrough (5/5 falsifiers) and the thincli suite (5/5) -- see verification"
+     }
+    },
+    {"order": 4, "branch": "lane/lesson-one-fall-20260920", "sha": "571bf03f84a0c1545099762aefc2b8f55f2403bb", "merge_commit": "cd83b3f6097df8db89ab66dc9e3a48f11c43dc17", "parents": "e8b35c86a632afebf44cf62f80d8c61060f159f2 571bf03f84a0c1545099762aefc2b8f55f2403bb", "conflicts": 0}
+  ],
+  "verification": {
+    "tree_verified_on": "the fully merged integ/pass7-20260920 tree (head cd83b3f6, before the doc-truth commit)",
+    "walk_byte_exactness": {
+      "scene_file_sha256": {"expected": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342", "measured": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342", "verdict": "EXACT"},
+      "stdout_trace_sha256": {"expected": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc", "measured": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc", "bytes": 22530, "verdict": "EXACT"},
+      "stdout_notrace_sha256": {"expected": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc", "measured": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc", "verdict": "EXACT (plain==trace byte-equal)"},
+      "stderr_trace_sha256": {"expected": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481", "measured": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481", "lines": 65870, "verdict": "EXACT"},
+      "headline": {"expected": "WALK refused_tick=302 worst_ledger_J=30.970714", "measured": "WALK refused_tick=302 worst_ledger_J=30.970714", "verdict": "EXACT"}
+    },
+    "training_gate": {"command": "python tools/training_gate.py", "exit": 0, "verdict_line": "PASS -- every target is Froude-consistent with the world this body stands in."},
+    "lane_suites": {
+      "policy_compat": {"expected": "42/42", "harness": "the cert-dryrun lane's DECLARED environment, built fresh in this tree: gait_scene regen (sha == walk anchor f6844eeae) + out-of-tree instrument builds A/B (EXE_A ec838a90fd3b40ce839c300256bdeb11b1f14cf17a728fb89c2d5e92a46c0a0e, EXE_B cf77c7cc2fae077e685470af3d381146a8d5b6e0c4a578ed1f274d62386b11ce; build-machine-dependent bytes, F4 only requires the triple's self-identity) + python -m tools.policy_compat.engine_cert runs 1/2/3 (exit 0 x3; run1 327 s) + F4 determinism", "F4_payload_sha256_run1_run2_run3": "e2d9539b1f54b7105c637997eb230476893fb9d428e12af62fcb53432c3c8327 (x3 byte-identical)", "final": "42 passed, exit 0", "verdict": "GREEN"},
+      "tickcost": {"expected": 8, "measured": "8 passed", "verdict": "GREEN"},
+      "kfill": {"expected": 13, "measured": "Ran 13 tests, OK", "verdict": "GREEN"},
+      "ankle": {"expected": 12, "measured": "Ran 12 tests, OK", "verdict": "GREEN"},
+      "hip": {"expected": 12, "measured": "Ran 12 tests, OK", "verdict": "GREEN"},
+      "hqr": {"expected": 8, "measured": "Ran 8 tests, OK", "verdict": "GREEN"},
+      "typeb_export": {"expected": "44/0/0 (collected/failed/errors)", "measured": "43 passed, 1 skipped, 0 failed, 0 errors -- byte-identical to integ5/integ6 green runs", "verdict": "GREEN"},
+      "matter_kernel": {"expected": "full package", "measured": "46 passed", "verdict": "GREEN"},
+      "fk_reduction": {"expected": "7/7 (lane receipt)", "measured": "7 passed", "verdict": "GREEN"},
+      "vanhoof_law": {"expected": "9/9 (lane receipt)", "measured": "Ran 9 tests, OK", "verdict": "GREEN"},
+      "vanhoof_determinism": {"script": "blob_verify pins parsed from the committed vanhoof-intake lane script (never retyped)", "measured": "6/6 committed-blob == checkout == sha256 pin; -text attr unset (in force) on tools/science_funnel/data/**", "verdict": "GREEN"},
+      "mesh_parse_fast_fences": {"expected": "12/12 (check_caches.py, CPU-only headless)", "measured": "exit 0, 12/12 fences true, pass:true; regenerated check_caches_receipt.json byte-identical to committed (git blob 6babda4549700a1e8f4ba24f3099f8f7fd22fb9e before == after); all 12 legs ran headless", "verdict": "GREEN"},
+      "creature_graph": {"expected": "both roots", "measured": "root1 (PYTHONPATH=tools;tools/creature_graph) Ran 19 tests OK; root2 (PYTHONPATH=.) Ran 19 tests OK", "verdict": "GREEN"},
+      "thin_client_pilot": {"expected": "5/5 (lane receipt)", "first_run": "2 passed (the offline legs) / 3 failed -- the live legs could not boot a slice: a fresh tree has NO engine binary (RuntimeError: slice never became healthy, 3x120 s); environment gap, not merged-code failure", "engine_staging": "the thincli lane's own prebuilt chimera_engine.exe staged into this tree's .tmp/slice_build per the lane's stage_engine.ps1 provenance law, VERIFIED for this head: git diff e96eb943..cd83b3f6 -- ChimeraEngine/engine/ touches only gait_controller.hpp (included by NO chimera_engine target file -- measured: grep over engine sources matches only the header itself and tests_coupled_arm/gait_unit.cpp, the walk-harness target) and tests_coupled_arm/; binary sha256 prefix 218ba99cf20da840 (the exact binary the lane's 5/5 receipt ran against)", "final": "5 passed in 7.79 s, exit 0", "headless_legs": "ALL 5 legs ran headless in this pass (the F3 live leg self-boots the slice + private bundled chromium via playwright; framing and interpolation-mirror legs offline)", "verdict": "GREEN"},
+      "slice_stranger_walkthrough": {"note": "RE-RUN on the MERGED page (the strongest verification of the pass-7 union): the COMMITTED stranger walkthrough (slice_stranger_20260920/walkthrough.js, byte-unmodified) driven through the render-truth lane's run mechanic re-targeted to this tree; server booted the staged engine, browser channel 'chrome' (canary PASSED in this environment -- the F-ENV-CHROME deviation was not needed)", "falsifiers": {"F-STRANGER-60": "PASS (page load 0.26 s, first motion 1.64 s, understood 1.72 s, FIRST ACTION 2.87 s vs the 60 s bar; the page itself told the stranger to press 1)", "F-EVERY-NAMED-KEY": "PASS (13/13 by key path)", "F-BEACON-SILENT": "PASS (beacon 0, harness 0)", "F-RESTART-CLEAN": "PASS (boot counter 1->2, scene pin bc9033bf... stable across restart, world back 1.85 s, re-settled, carry cleared)", "F-TIMELINE-HONEST": "PASS"}, "artifact": "E:/ChimeraWork/integ7-scripts/walkthrough_integ7.json (exit 0)", "verdict": "GREEN -- this run also exercises the pass-7 union directly: the boot tail, the gated status line, the keys guard and the server's favicon+snapshot routes"},
+      "render_truth": {"note": "the walkthrough leg (F-STRANGER-REGRESSION's instrument) is the slice_stranger_walkthrough run above -- GREEN on the merged page; the judge leg (ollama qwen3.8, the finding's prompt byte-for-byte) and the 530-frame capture leg are live-server legs per the lane's own committed records (judgement.json verbatim verdict, four infrastructure-500 attempts kept, capture 26.37 fps) -- NOT re-run here, exactly as pass 6 treated the movie lane's live legs", "mp4_byte_audit": "real_body_slice_v2.mp4 committed in the lane dir; sha256 a60a7058571c1ef9ce8f8951e9e04da059b2a61a132074410d602e745b84a7b0, 602012 bytes -- == the lane receipt's pin, under the 5 MB archive rule", "verdict": "WALKTHROUGH GREEN (re-run) + JUDGE/CAPTURE RECEIPT-BACKED + mp4 BYTE-AUDITED"},
+      "lesson_one_fall": {"note": "the lesson shell is byte-additive and disjoint from every other lane's files (scope audit), so no merge-induced risk exists; its falsifier legs are live-browser. Re-run ATTEMPTED twice in this integration environment with the lane's own root-portable runner (-Runs 1): BOTH attempts FAILED at the first-gl stage with environment-class browser errors (attempt 1: STAGE-TIMEOUT page.evaluate >10 s; attempt 2: 'Target crashed' -- the bundled-chromium tab crashed at WebGL init; the same machine had just passed the stranger walkthrough on channel chrome). Artifacts kept OUTSIDE the lane dir: E:/ChimeraWork/integ7-scripts/lesson_walk_205233_1_INTEG7_ENV.json, lesson_walk_205421_1_INTEG7_ENV.json. The lane's 3/3 receipt stands as lane-run in its own environment", "verdict": "RECEIPT-BACKED (live-browser legs lane-run; honest RED in the integration environment recorded with artifacts, mechanism named: bundled-chromium WebGL init crash, not reproducible on channel chrome which the stranger run used seconds earlier)"}
+    }
+  },
+  "doc_truth_amendment": {
+    "commit": "c09345d4aa8424b6c1e37e8489334337046387b5",
+    "trailer": "Agent: integ7",
+    "principle": "amend ONLY statements the four landings make stale, each citing this receipt; nothing else in the docs touched",
+    "diff": "exactly 1 file (docs/THE_SHIP_GOAL.md), +4/-1; captured at E:/ChimeraWork/integ7-scripts/doctruth_amendment.diff",
+    "statements_amended": [
+      {"file": "docs/THE_SHIP_GOAL.md (THE REDS, STATED PLAINLY)", "was": "The slice's boot bar is red (135.73 s vs 10 s).", "now": "the uncached red stands at its own receipt (135.73 s vs 10 s) -- and the merged slice boots through the cached admission path at 2.08-2.10 s vs the same bar (pass 6), re-measured at 2.13 s boot t_first_verts by both the slice-stranger and render-truth boots (integration_pass7_20260920/receipt.json)"}
+    ],
+    "statements_measured_NOT_stale": [
+      "README.md slice passage: already carries BOTH boot truths (the 135.73 s red of the receipt AND the pass-6 cached 2.08-2.10 s resolution) -- untouched",
+      "THE_SHIP_GOAL EVIDENCE block + ledger row: dated receipt statements; the ledger row already carries the pass-6 resolution clause -- untouched",
+      "the brief's 'judge read floating parts' candidate: the finding is named NOWHERE in README.md or docs/ (measured, exhaustive grep) -- nothing to amend; render-truth's resolution is recorded in this receipt instead"
+    ],
+    "cited_numbers_provenance": "2.13 s = slice-stranger boot measurement (t_first_verts 2.13 s, committed in the lane receipt and re-measured by this pass's walkthrough server boot) and render-truth's F-BUDGETS (boot t_first_verts 2.13 s 'identical to pre-change'); 2.08-2.10 s = mesh_parse_20260920 verdict"
+  },
+  "scope_audit": {
+    "range": "2c7f9b088820d05075a2fe219f1cf768dde7fcd4..c09345d4aa8424b6c1e37e8489334337046387b5",
+    "changed_paths": 189,
+    "insertions": 36626,
+    "deletions": 64,
+    "non_additive_files": {
+      "measured": ["docs/THE_SHIP_GOAL.md", "tools/playable_slice/index.html", "tools/playable_slice/slice_server.py"],
+      "pre_registered": ["docs/THE_SHIP_GOAL.md (doc-truth amendment)", "tools/playable_slice/index.html (stranger+rendertruth+thincli declared)", "tools/playable_slice/slice_server.py (stranger+rendertruth+thincli declared)"],
+      "verdict": "exactly the pre-registered exceptions; all 64 deletions live in the two page/server files (the union + render-truth's fix of the base page) and the one doc paragraph",
+      "line_by_line": {
+        "tools/playable_slice/index.html": "reviewed hunk by hunk: the stranger layer (guide/keys/beacon/settle/boot hardening), render-truth's fix + GLB index path + culling, and the thin-client union (3 script blocks, node --check each); the 5 deletions vs the rendertruth blob are the gate-default flip and the resolved hunks",
+        "tools/playable_slice/slice_server.py": "reviewed in full vs base 44cccb00: the pilot's snapshot transport (constants, World.snapshot, carry_reset, stats, three routes), the stranger's boot_count/serialized-polling/favicon, render-truth's GLB route -- all declared lane work",
+        "docs/THE_SHIP_GOAL.md": "the single doc-truth paragraph (+4/-1)"
+      }
+    },
+    "forbidden_prefixes": {"ChimeraEngine/": 0, "Chimera/": 0, "gait_*": 0},
+    "top_dirs": {"tools": 188, "docs": 1},
+    "validation_lane_census": {"lesson_one_fall_20260920": 41, "render_truth_20260920": 55, "slice_stranger_20260920": 45, "thin_client_pilot_20260920": 20},
+    "mp4": {"path": "tools/science_funnel/validation/render_truth_20260920/real_body_slice_v2.mp4", "bytes": 602012, "limit_bytes": 5242880, "under_archive_rule": true, "sha256": "a60a7058571c1ef9ce8f8951e9e04da059b2a61a132074410d602e745b84a7b0", "matches_lane_receipt_sha": true}
+  },
+  "push": {
+    "method": "the established flow: ff-only update of pass3-integ local master to the integ branch tip (this receipt commit), then ONE push by explicit pinned-sha refspec '<head>:refs/heads/master' -- never force; auth probed read-only first; post-push ls-remote must equal the pinned head",
+    "pre_push_remote_master_expected": "2c7f9b088820d05075a2fe219f1cf768dde7fcd4",
+    "pinned_push_head": "the integ/pass7-20260920 tip == this receipt commit",
+    "result": "executed immediately after this commit by push_master_integ7.ps1; its log (E:/ChimeraWork/integ7-scripts/push_git.log) and the post-push ls-remote equality check are the verdict of record"
+  }
+}

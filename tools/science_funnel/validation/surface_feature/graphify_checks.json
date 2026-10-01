@@ -1,0 +1,133 @@
+{
+  "pass": true,
+  "qualified_graph_hash": "f0a90ad1f5e7b2c9c54b820029d56487fa2eae5b279d71101181f3805fe9167f",
+  "nodes": 1566,
+  "edges": 236,
+  "checks": [
+    {
+      "check": "node_identity_round_trip",
+      "expected": "all 1566 objects reversible + full record/spatial payload equal",
+      "observed": "1566/1566 ok",
+      "pass": true,
+      "evidence": {
+        "mismatches": []
+      }
+    },
+    {
+      "check": "edge_identity_round_trip",
+      "expected": "all 236 relations with direction+note intact",
+      "observed": "missing=0 extra=0",
+      "pass": true,
+      "evidence": {
+        "missing_sample": [],
+        "extra_sample": []
+      }
+    },
+    {
+      "check": "multiplicity_preserved",
+      "expected": "no parallel groups in store (all pairs single-edged)",
+      "observed": "no parallel groups in store",
+      "pass": true
+    },
+    {
+      "check": "traversal_parity_2hop",
+      "expected": [
+        "frame.ankle_l",
+        "frame.knee_l",
+        "ref.osim.leg6dof9musc.body.calcn_r",
+        "ref.osim.leg6dof9musc.body.talus_r",
+        "ref.osim.leg6dof9musc.body.tibia_r",
+        "ref.osim.leg6dof9musc.body.toes_r",
+        "ref.uberon.UBERON_0000313",
+        "ref.uberon.UBERON_0000979",
+        "ref.uberon.UBERON_0001436",
+        "ref.uberon.UBERON_0001446",
+        "ref.uberon.UBERON_0001447",
+        "ref.uberon.UBERON_0001448",
+        "ref.uberon.UBERON_0001449",
+        "ref.uberon.UBERON_0001450",
+        "ref.uberon.UBERON_0001452",
+        "ref.uberon.UBERON_0002395",
+        "ref.uberon.UBERON_0003650",
+        "ref.uberon.UBERON_0004388",
+        "ref.uberon.UBERON_0015180",
+        "ref.uberon.UBERON_1200015",
+        "ref.uberon.UBERON_1200018",
+        "ref.uberon.UBERON_1200020",
+        "region.leg_l",
+        "region.seg.foot_l",
+        "region.seg.shin_l",
+        "region.seg.thigh_l",
+        "seg.shin_l",
+        "seg.thigh_l"
+      ],
+      "observed": [
+        "frame.ankle_l",
+        "frame.knee_l",
+        "ref.osim.leg6dof9musc.body.calcn_r",
+        "ref.osim.leg6dof9musc.body.talus_r",
+        "ref.osim.leg6dof9musc.body.tibia_r",
+        "ref.osim.leg6dof9musc.body.toes_r",
+        "ref.uberon.UBERON_0000313",
+        "ref.uberon.UBERON_0000979",
+        "ref.uberon.UBERON_0001436",
+        "ref.uberon.UBERON_0001446",
+        "ref.uberon.UBERON_0001447",
+        "ref.uberon.UBERON_0001448",
+        "ref.uberon.UBERON_0001449",
+        "ref.uberon.UBERON_0001450",
+        "ref.uberon.UBERON_0001452",
+        "ref.uberon.UBERON_0002395",
+        "ref.uberon.UBERON_0003650",
+        "ref.uberon.UBERON_0004388",
+        "ref.uberon.UBERON_0015180",
+        "ref.uberon.UBERON_1200015",
+        "ref.uberon.UBERON_1200018",
+        "ref.uberon.UBERON_1200020",
+        "region.leg_l",
+        "region.seg.foot_l",
+        "region.seg.shin_l",
+        "region.seg.thigh_l",
+        "seg.shin_l",
+        "seg.thigh_l"
+      ],
+      "pass": true,
+      "evidence": {
+        "start": "seg.foot_l",
+        "out_degree": 18
+      }
+    },
+    {
+      "check": "graphify_query_health",
+      "expected": 1566,
+      "observed": 1566,
+      "pass": true,
+      "evidence": {
+        "mutations": 0,
+        "pathways": 0,
+        "features": 0,
+        "note": "creature objects must not pollute the DNA families"
+      }
+    },
+    {
+      "check": "because_of_honest_empty",
+      "expected": [],
+      "observed": [],
+      "pass": true
+    },
+    {
+      "check": "fts_search_finds_ingested",
+      "expected": "seg_foot_l",
+      "observed": [
+        "seg_foot_l",
+        "source_document_f8bcf74493a5cecd3b6c0c2983b9baa0ffedaa9ab734a759dd660ef510b09be5_238725fcc72637ce51a220da3fa73815fd44c7bd8505735f19a8f1a14f5b0e72"
+      ],
+      "pass": true,
+      "evidence": {
+        "query": "Left foot segment (terminal)",
+        "n_hits": 2
+      }
+    }
+  ],
+  "consumer_storage": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\surface-feature\\graphify"
+}

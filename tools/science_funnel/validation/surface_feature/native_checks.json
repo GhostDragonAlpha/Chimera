@@ -1,0 +1,76 @@
+{
+  "checks": [
+    {
+      "pass": true,
+      "test": "energy_derivative",
+      "value": 5.933018278735909e-07
+    },
+    {
+      "pass": true,
+      "test": "fixed_geometry_gamma_energy",
+      "value": 2.0
+    },
+    {
+      "pass": true,
+      "test": "fixed_geometry_gamma_force",
+      "value": 2.0
+    },
+    {
+      "pass": true,
+      "test": "water_settles",
+      "value": 5.093564789444989e-13
+    },
+    {
+      "pass": true,
+      "test": "water_force_balance",
+      "value": 4.206150401933617e-12
+    },
+    {
+      "pass": true,
+      "test": "pinned_boundary",
+      "value": 0.0
+    },
+    {
+      "pass": true,
+      "test": "ethanol_settles",
+      "value": 1.3853066727732366e-14
+    },
+    {
+      "pass": true,
+      "test": "ethanol_force_balance",
+      "value": 1.0180387349095765e-14
+    },
+    {
+      "pass": true,
+      "test": "pinned_boundary",
+      "value": 0.0
+    },
+    {
+      "pass": true,
+      "test": "material_changes_deformation",
+      "value": 3.3787813834567118
+    },
+    {
+      "pass": true,
+      "test": "advertised_max_load_settles",
+      "value": 2.834135641219238e-13
+    },
+    {
+      "pass": true,
+      "test": "bad_control_is_atomic",
+      "value": 1.0
+    },
+    {
+      "pass": true,
+      "test": "release_returns_flat",
+      "value": 4.502090562260449e-13
+    },
+    {
+      "pass": true,
+      "test": "render_uses_physical_positions",
+      "value": 4.772873677034402e-10
+    }
+  ],
+  "ethanol_depth_m": 0.0023037346139026297,
+  "water_depth_m": 0.000681824111255686
+}

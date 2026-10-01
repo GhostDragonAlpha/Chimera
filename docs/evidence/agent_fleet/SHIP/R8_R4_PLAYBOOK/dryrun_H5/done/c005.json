@@ -1,0 +1,5 @@
+{"do":"text","max":400}
+{"do":"click","x":1390,"y":109}
+{"do":"wait","ms":1200}
+{"do":"shot","name":"10_lesson2"}
+{"do":"text","max":2500}

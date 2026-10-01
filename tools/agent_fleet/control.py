@@ -62,6 +62,8 @@ class Control:
         Path(db).parent.mkdir(parents=True,exist_ok=True)
         con=self.connect()
         try:
+            gated=con.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='workflow_config'").fetchone()
+            require(not gated or getattr(self, 'graph_workflow_enforced', False), 'graph_workflow_service_required')
             con.execute('CREATE TABLE IF NOT EXISTS state (id INTEGER PRIMARY KEY CHECK(id=1), body TEXT NOT NULL)')
             con.execute('CREATE TABLE IF NOT EXISTS events (seq INTEGER PRIMARY KEY, kind TEXT NOT NULL, body TEXT NOT NULL)')
             initial={'schema':1,'revision':0,'root':root,'supervisor_hash':self.supervisor,'enrollment_hash':self.enrollment,
@@ -343,7 +345,7 @@ class Control:
             p['_resolved_instance']=instance_id
             result=self._dispatch(s,actor,op,p)
             # Catalogue reads are pure reads: no revision bump, no event.
-            if op not in ('snapshot','events','catalogue_read','catalogue_next'):
+            if op not in ('snapshot','events','catalogue_read','catalogue_next', *getattr(self, 'graph_read_operations', ())):
                 s['revision']+=1
                 # Do not persist credentials or arbitrary request text in audit events.
                 event={k:p[k] for k in ('task','agent','generation','epoch','reason','request','slot') if k in p}

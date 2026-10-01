@@ -1,0 +1,32 @@
+{
+ "PB1_fall_30_full": {
+  "n_frames": 1622,
+  "median_ms": 16.6,
+  "p95_ms": 17.7,
+  "p99_ms": 18.2,
+  "max_ms": 18.8,
+  "long_frames_gt25ms": 0,
+  "trace": "TRACE-CLEAN",
+  "rate": 30
+ },
+ "PB2_fall_30_z12": {
+  "n_frames": 1622,
+  "median_ms": 16.6,
+  "p95_ms": 17.7,
+  "p99_ms": 18.1,
+  "max_ms": 18.8,
+  "long_frames_gt25ms": 0,
+  "trace": "TRACE-CLEAN",
+  "rate": 30
+ },
+ "PB3_carry_30_full": {
+  "n_frames": 1070,
+  "median_ms": 16.7,
+  "p95_ms": 17.8,
+  "p99_ms": 18.3,
+  "max_ms": 18.8,
+  "long_frames_gt25ms": 0,
+  "trace": "TRACE-CLEAN",
+  "rate": 30
+ }
+}

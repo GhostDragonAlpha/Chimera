@@ -1,0 +1,14 @@
+[
+  {
+    "id": "synthetic_axial_spring_definition",
+    "equations": "F = k * (L - L0)",
+    "ports": [
+      {"name": "F", "quantity": "force", "unit": "N"},
+      {"name": "k", "quantity": "stiffness", "unit": "N/m"},
+      {"name": "L", "quantity": "length", "unit": "m"},
+      {"name": "L0", "quantity": "length", "unit": "m"}
+    ],
+    "assumptions": ["linear axial elastic response", "synthetic demonstration only"],
+    "validity_domain": "synthetic static bar; not a tissue property or a shipped engine rule"
+  }
+]

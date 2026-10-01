@@ -1,0 +1,75 @@
+{
+ "summary": {
+  "base": "http://127.0.0.1:8206",
+  "playerName": "h16selfplay",
+  "lessonsPassed": "3/3",
+  "gentleUnder8000": true,
+  "expectationMet": true,
+  "pageErrors": []
+ },
+ "rows": [
+  {
+   "lesson": "wake_the_cell",
+   "index": 1,
+   "aimPixel": {
+    "x": 635.6,
+    "y": 462.6
+   },
+   "occluder": "gl",
+   "targetSnapped": [
+    0,
+    4.444,
+    0.7
+   ],
+   "forceSlider": 20000,
+   "maxForcePosted": 20000,
+   "presses": 1,
+   "pressOk": true,
+   "goalMet": true,
+   "passed": true,
+   "verdict": "PASSED — you pressed, the cell woke, and the water healed itself. the world is real."
+  },
+  {
+   "lesson": "the_gentle_hand",
+   "index": 2,
+   "aimPixel": {
+    "x": 642.2,
+    "y": 604.1
+   },
+   "occluder": "gl",
+   "targetSnapped": [
+    0.474,
+    0.198,
+    0.31
+   ],
+   "forceSlider": 6000,
+   "maxForcePosted": 6000,
+   "presses": 1,
+   "pressOk": true,
+   "goalMet": true,
+   "passed": true,
+   "verdict": "PASSED — a gentle hand: the small water answered a small touch."
+  },
+  {
+   "lesson": "the_healing",
+   "index": 3,
+   "aimPixel": {
+    "x": 635.6,
+    "y": 462.6
+   },
+   "occluder": "gl",
+   "targetSnapped": [
+    0,
+    4.444,
+    0.7
+   ],
+   "forceSlider": 20000,
+   "maxForcePosted": 20000,
+   "presses": 1,
+   "pressOk": true,
+   "goalMet": true,
+   "passed": true,
+   "verdict": "PASSED — you let go, and the body healed itself. it never needed you."
+  }
+ ]
+}

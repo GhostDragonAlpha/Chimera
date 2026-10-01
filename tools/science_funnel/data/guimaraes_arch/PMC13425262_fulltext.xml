@@ -1,0 +1,1144 @@
+
+<!DOCTYPE article
+  PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD with MathML3 v1.4 20241031//EN" "JATS-archivearticle1-4-mathml3.dtd">
+<article id="ajpa70329" xml:lang="en" article-type="research-article" dtd-version="1.4"><?da-xref-anchor-style autodetect?><processing-meta base-tagset="archiving" mathml-version="3.0" table-model="xhtml" tagset-family="jats"><restricted-by>pmc</restricted-by></processing-meta><front><journal-meta><journal-id journal-id-type="nlm-ta">Am J Biol Anthropol</journal-id><journal-id journal-id-type="iso-abbrev">Am J Biol Anthropol</journal-id><journal-id journal-id-type="pmc-domain-id">379</journal-id><journal-id journal-id-type="pmc-domain">blackwellopen</journal-id><journal-id journal-id-type="nlm-id">101770171</journal-id><journal-id journal-id-type="publisher-id">AJPA</journal-id><journal-title-group><journal-title>American Journal of Biological Anthropology</journal-title></journal-title-group><issn pub-type="epub">2692-7691</issn><?publisher_abbrev blackwell?><custom-meta-group><custom-meta><meta-name>pmc-is-collection-domain</meta-name><meta-value>yes</meta-value></custom-meta><custom-meta><meta-name>pmc-collection-title</meta-name><meta-value>Wiley Open Access Collection</meta-value></custom-meta></custom-meta-group></journal-meta><article-meta><article-id pub-id-type="pmcid">PMC13425262</article-id><article-id pub-id-type="pmcid-ver">PMC13425262.1</article-id><article-id pub-id-type="pmcaid">13425262</article-id><article-id pub-id-type="pmcaiid">13425262</article-id><article-id pub-id-type="pmid">42535273</article-id><article-id pub-id-type="doi">10.1002/ajpa.70329</article-id><article-id pub-id-type="publisher-id">AJPA70329</article-id><article-id pub-id-type="other">AJPA-2026-00055</article-id><article-version article-version-type="pmc-version">1</article-version><article-categories><subj-group subj-group-type="overline"><subject>Research Article</subject></subj-group><subj-group subj-group-type="heading"><subject>Research Article</subject></subj-group></article-categories><title-group><article-title>Functional Differences in Muscle Architecture Across the Pelvis and Hind Limb of Primates</article-title></title-group><contrib-group><contrib id="ajpa70329-cr-0001" contrib-type="author"><name name-style="western"><surname>Guimaraes</surname><given-names initials="E">Emma</given-names></name><contrib-id contrib-id-type="orcid" authenticated="false">https://orcid.org/0009-0009-7418-642X</contrib-id><xref rid="ajpa70329-aff-0001" ref-type="aff">
+<sup>1</sup>
+</xref></contrib><contrib id="ajpa70329-cr-0002" contrib-type="author"><name name-style="western"><surname>Vereecke</surname><given-names initials="E">Evie</given-names></name><contrib-id contrib-id-type="orcid" authenticated="false">https://orcid.org/0000-0002-1312-9124</contrib-id><xref rid="ajpa70329-aff-0002" ref-type="aff">
+<sup>2</sup>
+</xref></contrib><contrib id="ajpa70329-cr-0003" contrib-type="author" corresp="yes"><name name-style="western"><surname>Wiseman</surname><given-names initials="AL">Ashleigh L.</given-names></name><contrib-id contrib-id-type="orcid" authenticated="false">https://orcid.org/0000-0002-9575-4387</contrib-id><xref rid="ajpa70329-aff-0001" ref-type="aff">
+<sup>1</sup>
+</xref><xref rid="ajpa70329-aff-0003" ref-type="aff">
+<sup>3</sup>
+</xref><address><email>alw96@cam.ac.uk</email></address></contrib></contrib-group><aff id="ajpa70329-aff-0001">
+<label>
+<sup>1</sup>
+</label>
+<named-content content-type="organisation-division">Department of Anthropology</named-content>
+<institution>University College London</institution>
+<city>London</city>
+<country country="GB">UK</country>
+</aff><aff id="ajpa70329-aff-0002">
+<label>
+<sup>2</sup>
+</label>
+<named-content content-type="organisation-division">Department of Development and Regeneration</named-content>
+<institution>KU Leuven Campus Kulak</institution>
+<city>Kortrijk</city>
+<country country="BE">Belgium</country>
+</aff><aff id="ajpa70329-aff-0003">
+<label>
+<sup>3</sup>
+</label>
+<named-content content-type="organisation-division">McDonald Institute for Archaeological Research</named-content>
+<institution>University of Cambridge</institution>
+<city>Cambridge</city>
+<country country="GB">UK</country>
+</aff><author-notes><corresp id="correspondenceTo">
+<label>*</label>
+<bold>Correspondence:</bold>
+<break/>
+Ashleigh L. Wiseman (<email>alw96@cam.ac.uk</email>)<break/>
+</corresp></author-notes><pub-date pub-type="epub"><day>31</day><month>7</month><year>2026</year></pub-date><pub-date pub-type="ppub"><month>8</month><year>2026</year></pub-date><volume>190</volume><issue seq="340">4</issue><issue-id pub-id-type="pmc-issue-id">518743</issue-id><issue-id pub-id-type="doi">10.1002/ajpa.v190.4</issue-id><elocation-id>e70329</elocation-id><history>
+<date date-type="rev-recd"><day>13</day><month>7</month><year>2026</year></date>
+<date date-type="received"><day>26</day><month>2</month><year>2026</year></date>
+<date date-type="accepted"><day>22</day><month>7</month><year>2026</year></date>
+</history><pub-history><event event-type="pmc-release"><date><day>31</day><month>07</month><year>2026</year></date></event><event event-type="pmc-live"><date><day>01</day><month>08</month><year>2026</year></date></event><event event-type="pmc-last-change"><date iso-8601-date="2026-08-23 05:25:16.980"><day>23</day><month>08</month><year>2026</year></date></event></pub-history><permissions><copyright-statement content-type="article-copyright">© 2026 The Author(s). <italic toggle="yes">American Journal of Biological Anthropology</italic> published by Wiley Periodicals LLC.</copyright-statement><license><ali:license_ref xmlns:ali="http://www.niso.org/schemas/ali/1.0/" specific-use="textmining" content-type="ccbylicense">https://creativecommons.org/licenses/by/4.0/</ali:license_ref><license-p>This is an open access article under the terms of the <ext-link xmlns:xlink="http://www.w3.org/1999/xlink" ext-link-type="uri" xlink:href="https://creativecommons.org/licenses/by/4.0/">http://creativecommons.org/licenses/by/4.0/</ext-link> License, which permits use, distribution and reproduction in any medium, provided the original work is properly cited.</license-p></license></permissions><self-uri xmlns:xlink="http://www.w3.org/1999/xlink" content-type="pmc-pdf" xlink:href="AJPA-190-e70329.pdf"><?pdf-name AJPA-190-e70329.pdf?><?pdf-size 2424166?><?pdf-md5 448eb090cf300a7078fb1f954042ca5c?><?pdf-image-server-status NEVER_LOAD?><?pdf-cloudpmc-urn urn:app:077f/13425262/448eb090cf30/AJPA-190-e70329.pdf?></self-uri><self-uri xmlns:xlink="http://www.w3.org/1999/xlink" content-type="pdf" xlink:href="file:AJPA-190-e70329.pdf"/><abstract><title>ABSTRACT</title><sec id="ajpa70329-sec-0001"><title>Objectives</title><p>Understanding the architectural diversity of primate musculature is essential for interpreting locomotor function and reconstructing evolutionary adaptations. This study examines whether interspecific differences in pelvic and hind limb muscle architecture reflect functional differentiation among major muscle groups.</p></sec><sec id="ajpa70329-sec-0002"><title>Materials and Methods</title><p>We present detailed dissection data from six primate species, alongside a large sample of additional specimens collected from previous studies. We quantify fascicle length, pennation angle, muscle mass, and physiological cross‐sectional area across the hind limb and pelvis in each species. We assessed whether differences in muscle architecture were consistent across functional groups and taxa. Differences in muscle architecture were analyzed across functional groups, muscles, and species, with architectural specialization interpreted in functional terms, e.g., reflecting relative emphasis on force, power, displacement, or generalist/stabilizing roles.</p></sec><sec id="ajpa70329-sec-0003"><title>Results</title><p>Our results reveal conserved configurations in load‐bearing muscles, but marked divergence in others, particularly in knee and hip musculature. Notably, muscle specialization was more conserved between species with similarity in their ecology/locomotor mode than between those who are closely related, indicating that muscle architecture is closely linked to habitual hind limb function.</p></sec><sec id="ajpa70329-sec-0004"><title>Discussion</title><p>These findings suggest that patterns of pelvic and hind limb muscle specialization across primates are driven primarily by ecological and locomotor function, rather than evolutionary relatedness. The dataset provides a detailed, anatomically grounded resource for future comparative and biomechanical studies of primate hind limb function.</p></sec></abstract><kwd-group kwd-group-type="author-generated"><kwd id="ajpa70329-kwd-0001">dissection</kwd><kwd id="ajpa70329-kwd-0002">locomotion</kwd><kwd id="ajpa70329-kwd-0003">muscle architecture</kwd><kwd id="ajpa70329-kwd-0004">musculoskeletal</kwd><kwd id="ajpa70329-kwd-0005">primates</kwd></kwd-group><funding-group><award-group id="funding-0001"><funding-source>
+<institution-wrap><institution>American Association of Biological Anthropologists</institution><institution-id institution-id-type="doi">10.13039/100020832</institution-id></institution-wrap>
+</funding-source></award-group><award-group id="funding-0002"><funding-source>
+<institution-wrap><institution>Leverhulme Trust</institution><institution-id institution-id-type="doi">10.13039/501100000275</institution-id></institution-wrap>
+</funding-source><award-id>ECF‐2021‐054</award-id></award-group><award-group id="funding-0003"><funding-source>
+<institution-wrap><institution>Isaac Newton Trust</institution><institution-id institution-id-type="doi">10.13039/501100004815</institution-id></institution-wrap>
+</funding-source><award-id>Project_21.08(a)</award-id></award-group><award-group id="funding-0004"><funding-source>
+<institution-wrap><institution>European Research Council</institution></institution-wrap>
+</funding-source><award-id>101219207</award-id></award-group></funding-group><counts><fig-count count="5"/><table-count count="4"/><page-count count="16"/><word-count count="10500"/></counts><custom-meta-group><custom-meta><meta-name>pmc-status-qastatus</meta-name><meta-value>0</meta-value></custom-meta><custom-meta><meta-name>pmc-status-live</meta-name><meta-value>yes</meta-value></custom-meta><custom-meta><meta-name>pmc-status-embargo</meta-name><meta-value>no</meta-value></custom-meta><custom-meta><meta-name>pmc-status-released</meta-name><meta-value>yes</meta-value></custom-meta><custom-meta><meta-name>pmc-prop-open-access</meta-name><meta-value>yes</meta-value></custom-meta><custom-meta><meta-name>pmc-prop-olf</meta-name><meta-value>no</meta-value></custom-meta><custom-meta><meta-name>pmc-prop-manuscript</meta-name><meta-value>no</meta-value></custom-meta><custom-meta><meta-name>pmc-prop-legally-suppressed</meta-name><meta-value>no</meta-value></custom-meta><custom-meta><meta-name>pmc-prop-has-pdf</meta-name><meta-value>yes</meta-value></custom-meta><custom-meta><meta-name>pmc-prop-has-supplement</meta-name><meta-value>yes</meta-value></custom-meta><custom-meta><meta-name>pmc-prop-pdf-only</meta-name><meta-value>no</meta-value></custom-meta><custom-meta><meta-name>pmc-prop-suppress-copyright</meta-name><meta-value>no</meta-value></custom-meta><custom-meta><meta-name>pmc-prop-is-real-version</meta-name><meta-value>no</meta-value></custom-meta><custom-meta><meta-name>pmc-prop-is-scanned-article</meta-name><meta-value>no</meta-value></custom-meta><custom-meta><meta-name>pmc-prop-preprint</meta-name><meta-value>no</meta-value></custom-meta><custom-meta><meta-name>pmc-prop-in-epmc</meta-name><meta-value>yes</meta-value></custom-meta><custom-meta><meta-name>pmc-license-ref</meta-name><meta-value>CC BY</meta-value></custom-meta><custom-meta><meta-name>source-schema-version-number</meta-name><meta-value>2.0</meta-value></custom-meta><custom-meta><meta-name>cover-date</meta-name><meta-value>August 2026</meta-value></custom-meta><custom-meta><meta-name>details-of-publishers-convertor</meta-name><meta-value>Converter:WILEY_ML3GV2_TO_JATSPMC version:6.8.4 mode:remove_FC converted:31.07.2026</meta-value></custom-meta></custom-meta-group></article-meta></front><body id="ajpa70329-body-0001"><sec id="ajpa70329-sec-0005"><label>1</label><title>Introduction</title><p>Understanding muscle architecture is key to interpreting how animals generate and control movement. Primates are especially interesting in this regard, as they employ a diverse range of locomotor modes, from suspensory climbing and brachiation to terrestrial quadrupedalism. This diversity in movement is reflected in the architecture of their limb muscles, which provides a framework for investigating functional specialization and the mechanical basis of locomotor behavior. In this study, we focus primarily on hominoid primates, with macaques included as a cercopithecoid outgroup to provide comparative context. Although all hominoids, except for modern humans, are capable of generalized arboreality (Crompton et al. <xref rid="ajpa70329-bib-0014" ref-type="bibr">2010</xref>, <xref rid="ajpa70329-bib-0015" ref-type="bibr">2008</xref>), differences in locomotor ecology (Aerts et al. <xref rid="ajpa70329-bib-0001" ref-type="bibr">2018</xref>; Channon et al. <xref rid="ajpa70329-bib-0008" ref-type="bibr">2009</xref>; Granatosky <xref rid="ajpa70329-bib-0028" ref-type="bibr">2018</xref>; King et al. <xref rid="ajpa70329-bib-0033" ref-type="bibr">2026</xref>; Myatt et al. <xref rid="ajpa70329-bib-0044" ref-type="bibr">2012</xref>; Thorpe and Crompton <xref rid="ajpa70329-bib-0058" ref-type="bibr">2005</xref>) suggest that architectural specializations in muscles may vary between predominantly terrestrial taxa, such as chimpanzees, bonobos and gorillas (Hunt et al. <xref rid="ajpa70329-bib-0032" ref-type="bibr">1996</xref>), and those that are predominantly arboreal, such as orangutans and gibbons (Thorpe and Crompton <xref rid="ajpa70329-bib-0059" ref-type="bibr">2006</xref>; Vereecke et al. <xref rid="ajpa70329-bib-0064" ref-type="bibr">2005</xref>). Based on these ecological distinctions, one might expect more terrestrial species to exhibit muscle architectures that are optimized for force production and postural support, whilst arboreal species favor configurations that enhance velocity and range of motion (also referred to as displacement). Such patterns have been documented across mammals, where terrestrial taxa have muscles with relatively greater force‐generating capacity, and arboreal taxa exhibit architectural features associated with increased excursion and mobility (Böhmer et al. <xref rid="ajpa70329-bib-0004" ref-type="bibr">2018</xref>; Leischner et al. <xref rid="ajpa70329-bib-0035" ref-type="bibr">2018</xref>; Taverne et al. <xref rid="ajpa70329-bib-0057" ref-type="bibr">2018</xref>). Despite these general patterns, quantitative data comparing muscle architecture across different hominoid species remain limited, particularly for hind limb muscles, making it difficult to link architecture to locomotor specialization.</p><p>The primate musculoskeletal system exhibits a conserved structural plan (Diogo et al. <xref rid="ajpa70329-bib-0024" ref-type="bibr">2010</xref>; Diogo et al. <xref rid="ajpa70329-bib-0072" ref-type="bibr">2019</xref>; Diogo et al. <xref rid="ajpa70329-bib-0021" ref-type="bibr">2017</xref>; Molnar and Diogo <xref rid="ajpa70329-bib-0043" ref-type="bibr">2021</xref>); yet, within this framework there is considerable variation in muscle dimensions, fiber lengths, physical cross‐sectional area (PCSA), and pennation angles across taxa (Payne et al. <xref rid="ajpa70329-bib-0049" ref-type="bibr">2006a</xref>). It is the composition of these elements within a muscle that directly determines a muscle's capacity for force production, contraction velocity, and range of motion (Granatosky and Ross <xref rid="ajpa70329-bib-0029" ref-type="bibr">2020</xref>; Nagano et al. <xref rid="ajpa70329-bib-0046" ref-type="bibr">2005</xref>; Rome et al. <xref rid="ajpa70329-bib-0053" ref-type="bibr">1988</xref>; Seth et al. <xref rid="ajpa70329-bib-0054" ref-type="bibr">2018</xref>, <xref rid="ajpa70329-bib-0055" ref-type="bibr">2011</xref>). Long, parallel‐fibred muscles typically favor rapid or large‐range movements, while short, pennate muscle with a large PCSA is optimized for force production (Charles et al. <xref rid="ajpa70329-bib-0009" ref-type="bibr">2022</xref>; Zajac <xref rid="ajpa70329-bib-0070" ref-type="bibr">1989</xref>). Such variation reflects the tuning of muscle function to meet differing biomechanical demands, depending on their functional role (Thorpe et al. <xref rid="ajpa70329-bib-0061" ref-type="bibr">1999</xref>).</p><p>Muscle pennation plays a key role in determining a muscle's force‐generating capacity (Zajac <xref rid="ajpa70329-bib-0070" ref-type="bibr">1989</xref>). Pennate muscles pack more fibers into a given volume, increasing a muscle's PCSA and thus maximal force, but this comes at the cost of reduced fiber length and excursion (Eng et al. <xref rid="ajpa70329-bib-0026" ref-type="bibr">2018</xref>; Gans <xref rid="ajpa70329-bib-0027" ref-type="bibr">1982</xref>). In contrast, parallel‐fibred muscles, with fibers running largely along the muscle's line of action, favor longer fibers and greater shortening velocity, supporting rapid or large‐range movements. Across hominoids, most hind limb muscles exhibit low pennation angles, typically &lt; 30° (Ledoux et al. <xref rid="ajpa70329-bib-0034" ref-type="bibr">2001</xref>; Payne et al. <xref rid="ajpa70329-bib-0049" ref-type="bibr">2006a</xref>; Thorpe et al. <xref rid="ajpa70329-bib-0061" ref-type="bibr">1999</xref>; Vereecke et al. <xref rid="ajpa70329-bib-0064" ref-type="bibr">2005</xref>). Historically, variation in pennation has had a relatively modest effect on PCSA estimates for comparative studies with limited species (Lieber <xref rid="ajpa70329-bib-0037" ref-type="bibr">2022</xref>; Martin et al. <xref rid="ajpa70329-bib-0040" ref-type="bibr">2020</xref>; Rockenfeller et al. <xref rid="ajpa70329-bib-0052" ref-type="bibr">2024</xref>). Because PCSA is calculated as muscle mass divided by fiber length, scaled by the cosine of the pennation angle (Zajac <xref rid="ajpa70329-bib-0070" ref-type="bibr">1989</xref>), angles below ~20° result in cos(θ) values close to 1 and therefore have only a minor influence on PCSA estimates, whereas larger pennation angles substantially increase force‐generating capacity. New research with a larger comparative sample quantifying pennation alongside fascicle length and muscle volume can therefore provide unexplored insight into the functional specialization of individual muscles and the mechanical strategies underlying locomotor diversity.</p><p>Comparative analyses of muscle architecture have revealed that certain muscle groups are subject to stronger functional and evolutionary influences than others (Polk <xref rid="ajpa70329-bib-0051" ref-type="bibr">2002</xref>). For example, distal limb muscles often exhibit greater specialization linked to substrate contact and propulsion (Payne et al. <xref rid="ajpa70329-bib-0049" ref-type="bibr">2006a</xref>), and this higher specialization is associated with greater interspecific variability, whereas proximal limb muscles are largely similar across taxa and are more conserved (Charles et al. <xref rid="ajpa70329-bib-0010" ref-type="bibr">2016</xref>; Deane et al. <xref rid="ajpa70329-bib-0018" ref-type="bibr">2024</xref>, <xref rid="ajpa70329-bib-0019" ref-type="bibr">2020</xref>; Leischner et al. <xref rid="ajpa70329-bib-0035" ref-type="bibr">2018</xref>; Myatt et al. <xref rid="ajpa70329-bib-0044" ref-type="bibr">2012</xref>). A similar proximal–distal pattern is also observed in limb segment proportions, with proximal elements tending to be more constant and distal elements more variable (Molnar et al. <xref rid="ajpa70329-bib-0042" ref-type="bibr">2017</xref>). Although several studies have quantified hind limb muscle architecture in hominoids (Aerts et al. <xref rid="ajpa70329-bib-0001" ref-type="bibr">2018</xref>; Marchi et al. <xref rid="ajpa70329-bib-0039" ref-type="bibr">2018</xref>; Payne et al. <xref rid="ajpa70329-bib-0049" ref-type="bibr">2006a</xref>, <xref rid="ajpa70329-bib-0050" ref-type="bibr">2006b</xref>; Vereecke et al. <xref rid="ajpa70329-bib-0064" ref-type="bibr">2005</xref>), broad comparative datasets spanning multiple lineages remain limited, and few have explicitly tested how variation in muscle form translates into differences in mechanical function.</p><p>Here, we build upon these previous comparative efforts by examining the relationship between muscle architecture and functional specialization, testing whether architectural parameters, such as fiber length, pennation angle, and PCSA, correspond to adaptations for force‐ or velocity‐based performance. Understanding these links is critical because it allows us to move beyond descriptive anatomy to evaluate the mechanical roles that muscles play in shaping locomotor capabilities. By identifying whether specific muscle groups are tuned for generating high forces or for facilitating rapid limb excursions, we can better understand how muscle design supports the diverse locomotor strategies observed across hominoid species.</p><p>In this study, we test three predictions derived from functional interpretations of muscle architecture. First, if pennation angle materially affects estimates of force‐generating capacity, then incorporating pennation should significantly alter PCSA estimates relative to calculations assuming parallel fibers. Second, if muscle architecture reflects locomotor specialization, then species occupying different ecological niches should exhibit systematic differences in architectural traits (fiber length, PCSA, and pennation angle). Third, if functional specialization is reflected in architectural design, then muscles should show associations between fiber length and PCSA consistent with force‐, velocity‐, or displacement‐biased roles across taxa.</p></sec><sec sec-type="materials-and-methods" id="ajpa70329-sec-0006"><label>2</label><title>Materials and Methods</title><sec id="ajpa70329-sec-0007"><label>2.1</label><title>Extant Data Collection</title><p>The right leg and pelvis of six fresh‐frozen primate species were dissected at the Jan Palfijn Anatomy Lab, KU Leuven, Belgium (Table <xref rid="ajpa70329-tbl-0001" ref-type="table">1</xref>). All specimens were opportunistically collected post‐mortem from European zoos, with no animals sacrificed for the study. Ethical approval was provided by the Animal Ethics Committee of the KU Leuven, Belgium (approval codes M005/2023, M006/2023), and all procedures complied with EU regulations. All specimens were frozen shortly after death and stored at −20°C. The specimens were thawed at room temperature for 1–3 days prior to the dissections. Some specimens underwent several freeze–thaw cycles due to data collection for multiple research projects (i.e., Van Beesel et al. <xref rid="ajpa70329-bib-0062" ref-type="bibr">2025</xref>).</p><table-wrap position="float" id="ajpa70329-tbl-0001" content-type="TABLE" orientation="portrait"><label>TABLE 1</label><caption><p>Details of specimens included in the study.</p></caption><table frame="hsides" rules="groups"><col align="left" span="1"/><col align="center" span="1"/><col align="center" span="1"/><col align="center" span="1"/><col align="center" span="1"/><col align="center" span="1"/><col align="center" span="1"/><col align="center" span="1"/><col align="center" span="1"/><thead valign="bottom"><tr style="border-bottom:solid 1px #000000"><th align="left" valign="bottom" rowspan="1" colspan="1">Family</th><th align="center" valign="bottom" rowspan="1" colspan="1">Species</th><th align="center" valign="bottom" rowspan="1" colspan="1">
+<italic toggle="yes">n</italic>
+</th><th align="center" valign="bottom" rowspan="1" colspan="1">Specimen ID</th><th align="center" valign="bottom" rowspan="1" colspan="1">Source</th><th align="center" valign="bottom" rowspan="1" colspan="1">Sex</th><th align="center" valign="bottom" rowspan="1" colspan="1">Age</th><th align="center" valign="bottom" rowspan="1" colspan="1">Information available</th><th align="center" valign="bottom" rowspan="1" colspan="1">Analyses performed</th></tr></thead><tbody valign="top"><tr><td align="left" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">Cercopithecidae</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">
+<styled-content style="fixed-case" toggle="no">
+<italic toggle="no">Macaca mulatta</italic>
+</styled-content>
+</td><td align="center" valign="top" rowspan="1" colspan="1">1</td><td align="center" valign="top" rowspan="1" colspan="1">
+<p>127</p>
+<p>[KU Leuven, Belgium]</p>
+</td><td align="center" valign="top" rowspan="1" colspan="1">This study</td><td align="center" valign="top" rowspan="1" colspan="1">M</td><td align="center" valign="top" rowspan="1" colspan="1">Adult</td><td align="center" rowspan="3" valign="top" colspan="1">Full pelvis and limb dissected; all parameters measured</td><td align="center" rowspan="3" valign="top" colspan="1">Comparisons of pennation, tendon parameters, and functional differences in architecture</td></tr><tr><td align="left" rowspan="2" valign="top" colspan="1">
+<italic toggle="yes">Hylobatidae</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">
+<styled-content style="fixed-case" toggle="no">
+<italic toggle="no">Symphalangus syndactylus</italic>
+</styled-content>
+</td><td align="center" valign="top" rowspan="1" colspan="1">1</td><td align="center" valign="top" rowspan="1" colspan="1">22NL302953/20 [Diergaarde Amersfoort]</td><td align="center" valign="top" rowspan="1" colspan="1">This study</td><td align="center" valign="top" rowspan="1" colspan="1">M</td><td align="center" valign="top" rowspan="1" colspan="1">26.2</td></tr><tr><td align="center" rowspan="3" valign="top" colspan="1">
+<styled-content style="fixed-case" toggle="no">
+<italic toggle="no">Hylobates lar</italic>
+</styled-content>
+</td><td align="center" rowspan="3" valign="top" colspan="1">3</td><td align="center" valign="top" rowspan="1" colspan="1">FR2101100017‐K [Sigean, France]</td><td align="center" valign="top" rowspan="1" colspan="1">This study</td><td align="center" valign="top" rowspan="1" colspan="1">M</td><td align="center" valign="top" rowspan="1" colspan="1">44.7</td></tr><tr><td align="left" rowspan="2" valign="top" colspan="1"/><td align="center" valign="top" rowspan="1" colspan="1">Mo</td><td align="center" valign="top" rowspan="1" colspan="1">Vereecke et al. (<xref rid="ajpa70329-bib-0064" ref-type="bibr">2005</xref>)</td><td align="center" valign="top" rowspan="1" colspan="1">M</td><td align="center" valign="top" rowspan="1" colspan="1">25</td><td align="center" rowspan="3" valign="top" colspan="1">PCSA and fiber lengths only</td><td align="center" rowspan="3" valign="top" colspan="1">Comparisons of functional differences in architecture</td></tr><tr><td align="center" valign="top" rowspan="1" colspan="1">Haf</td><td align="center" valign="top" rowspan="1" colspan="1">Payne et al. (<xref rid="ajpa70329-bib-0050" ref-type="bibr">2006b</xref>)</td><td align="center" valign="top" rowspan="1" colspan="1">F</td><td align="center" valign="top" rowspan="1" colspan="1">16</td></tr><tr><td align="left" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">Hominidae</italic>
+</td><td align="center" rowspan="2" valign="top" colspan="1">
+<styled-content style="fixed-case" toggle="no">
+<italic toggle="no">Pongo abelii</italic>
+</styled-content>
+</td><td align="center" rowspan="2" valign="top" colspan="1">2</td><td align="center" valign="top" rowspan="1" colspan="1">Oaf</td><td align="center" valign="top" rowspan="1" colspan="1">Myatt et al. (<xref rid="ajpa70329-bib-0045" ref-type="bibr">2011</xref>)</td><td align="center" valign="top" rowspan="1" colspan="1">F</td><td align="center" valign="top" rowspan="1" colspan="1">45</td></tr><tr><td align="left" rowspan="2" valign="top" colspan="1"/><td align="center" valign="top" rowspan="1" colspan="1">129: EAZA/2953 [Planckendael, Belgium]</td><td align="center" valign="top" rowspan="1" colspan="1">This study</td><td align="center" valign="top" rowspan="1" colspan="1">F</td><td align="center" valign="top" rowspan="1" colspan="1">23</td><td align="center" rowspan="2" valign="top" colspan="1">Full pelvis and limb dissected; all parameters measured</td><td align="center" rowspan="2" valign="top" colspan="1">Comparisons of pennation, tendon parameters, and functional differences in architecture</td></tr><tr><td align="center" rowspan="5" valign="top" colspan="1">
+<italic toggle="yes">Gorilla g. gorilla</italic>
+</td><td align="center" rowspan="5" valign="top" colspan="1">5</td><td align="center" valign="top" rowspan="1" colspan="1">131: 23NL320497/20 [Blijdorp, Rotterdam]</td><td align="center" valign="top" rowspan="1" colspan="1">This study</td><td align="center" valign="top" rowspan="1" colspan="1">M</td><td align="center" valign="top" rowspan="1" colspan="1">27.1</td></tr><tr><td align="left" rowspan="10" valign="top" colspan="1"/><td align="center" valign="top" rowspan="1" colspan="1">Gam</td><td align="center" valign="top" rowspan="1" colspan="1">Myatt et al. (<xref rid="ajpa70329-bib-0045" ref-type="bibr">2011</xref>)</td><td align="center" valign="top" rowspan="1" colspan="1">M</td><td align="center" valign="top" rowspan="1" colspan="1">30</td><td align="center" rowspan="9" valign="top" colspan="1">PCSA and fiber lengths only</td><td align="center" rowspan="9" valign="top" colspan="1">Comparisons of functional differences in architecture</td></tr><tr><td align="center" valign="top" rowspan="1" colspan="1">Gsm</td><td align="center" valign="top" rowspan="1" colspan="1">Myatt et al. (<xref rid="ajpa70329-bib-0045" ref-type="bibr">2011</xref>)</td><td align="center" valign="top" rowspan="1" colspan="1">M</td><td align="center" valign="top" rowspan="1" colspan="1">18</td></tr><tr><td align="center" valign="top" rowspan="1" colspan="1">Oishi_gorilla</td><td align="center" valign="top" rowspan="1" colspan="1">Oishi et al. (<xref rid="ajpa70329-bib-0047" ref-type="bibr">2009</xref>)</td><td align="center" valign="top" rowspan="1" colspan="1">F</td><td align="center" valign="top" rowspan="1" colspan="1">40</td></tr><tr><td align="center" valign="top" rowspan="1" colspan="1">Gm</td><td align="center" valign="top" rowspan="1" colspan="1">Payne et al. (<xref rid="ajpa70329-bib-0050" ref-type="bibr">2006b</xref>)</td><td align="center" valign="top" rowspan="1" colspan="1">M</td><td align="center" valign="top" rowspan="1" colspan="1">33</td></tr><tr><td align="center" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">Gorilla g. graueri</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">1</td><td align="center" valign="top" rowspan="1" colspan="1">Gj</td><td align="center" valign="top" rowspan="1" colspan="1">Payne et al. (<xref rid="ajpa70329-bib-0050" ref-type="bibr">2006b</xref>)</td><td align="center" valign="top" rowspan="1" colspan="1">M</td><td align="center" valign="top" rowspan="1" colspan="1">30</td></tr><tr><td align="center" rowspan="4" valign="top" colspan="1">
+<styled-content style="fixed-case" toggle="no">
+<italic toggle="no">Pan paniscus</italic>
+</styled-content>
+</td><td align="center" rowspan="4" valign="top" colspan="1">4</td><td align="center" valign="top" rowspan="1" colspan="1">Ppam</td><td align="center" valign="top" rowspan="1" colspan="1">Myatt et al. (<xref rid="ajpa70329-bib-0045" ref-type="bibr">2011</xref>)</td><td align="center" valign="top" rowspan="1" colspan="1">M</td><td align="center" valign="top" rowspan="1" colspan="1">22</td></tr><tr><td align="center" valign="top" rowspan="1" colspan="1">Pp</td><td align="center" valign="top" rowspan="1" colspan="1">Payne et al. (<xref rid="ajpa70329-bib-0050" ref-type="bibr">2006b</xref>)</td><td align="center" valign="top" rowspan="1" colspan="1">M</td><td align="center" valign="top" rowspan="1" colspan="1">29.6</td></tr><tr><td align="center" valign="top" rowspan="1" colspan="1">De</td><td align="center" valign="top" rowspan="1" colspan="1">Vereecke et al. (<xref rid="ajpa70329-bib-0064" ref-type="bibr">2005</xref>)</td><td align="center" valign="top" rowspan="1" colspan="1">M</td><td align="center" valign="top" rowspan="1" colspan="1">29</td></tr><tr><td align="center" valign="top" rowspan="1" colspan="1">Dz</td><td align="center" valign="top" rowspan="1" colspan="1">Vereecke et al. (<xref rid="ajpa70329-bib-0064" ref-type="bibr">2005</xref>)</td><td align="center" valign="top" rowspan="1" colspan="1">F</td><td align="center" valign="top" rowspan="1" colspan="1">31</td></tr><tr><td align="center" rowspan="2" valign="top" colspan="1">
+<styled-content style="fixed-case" toggle="no">
+<italic toggle="no">Pan troglodytes</italic>
+</styled-content>
+</td><td align="center" rowspan="2" valign="top" colspan="1">2</td><td align="center" valign="top" rowspan="1" colspan="1">130: 22NL302953/20 [Zoo Antwerp, Belgium]</td><td align="center" valign="top" rowspan="1" colspan="1">This study</td><td align="center" valign="top" rowspan="1" colspan="1">F</td><td align="center" valign="top" rowspan="1" colspan="1">40.5</td><td align="center" valign="top" rowspan="1" colspan="1">Lower limb dissected; pelvis unavailable</td><td align="center" valign="top" rowspan="1" colspan="1">Comparisons of pennation, tendon parameters, and functional differences in architecture</td></tr><tr><td align="left" rowspan="11" valign="top" colspan="1"/><td align="center" valign="top" rowspan="1" colspan="1">Ptsm</td><td align="center" valign="top" rowspan="1" colspan="1">Myatt et al. (<xref rid="ajpa70329-bib-0045" ref-type="bibr">2011</xref>)</td><td align="center" valign="top" rowspan="1" colspan="1">M</td><td align="center" valign="top" rowspan="1" colspan="1">11</td><td align="center" rowspan="11" valign="top" colspan="1">PCSA and fiber lengths only</td><td align="center" rowspan="11" valign="top" colspan="1">Comparisons of functional differences in architecture</td></tr><tr><td align="center" rowspan="10" valign="top" colspan="1">
+<styled-content style="fixed-case" toggle="no">
+<italic toggle="no">Homo sapiens</italic>
+</styled-content>
+</td><td align="center" rowspan="10" valign="top" colspan="1">10</td><td align="center" valign="top" rowspan="1" colspan="1">Subject01</td><td align="center" valign="top" rowspan="1" colspan="1">Charles et al. (<xref rid="ajpa70329-bib-0012" ref-type="bibr">2019</xref>)</td><td align="center" valign="top" rowspan="1" colspan="1">M</td><td align="center" valign="top" rowspan="1" colspan="1">23</td></tr><tr><td align="center" valign="top" rowspan="1" colspan="1">Subject02</td><td align="center" valign="top" rowspan="1" colspan="1">Charles et al. (<xref rid="ajpa70329-bib-0012" ref-type="bibr">2019</xref>)</td><td align="center" valign="top" rowspan="1" colspan="1">M</td><td align="center" valign="top" rowspan="1" colspan="1">26</td></tr><tr><td align="center" valign="top" rowspan="1" colspan="1">Subject03</td><td align="center" valign="top" rowspan="1" colspan="1">Charles et al. (<xref rid="ajpa70329-bib-0012" ref-type="bibr">2019</xref>)</td><td align="center" valign="top" rowspan="1" colspan="1">M</td><td align="center" valign="top" rowspan="1" colspan="1">29</td></tr><tr><td align="center" valign="top" rowspan="1" colspan="1">Subject04</td><td align="center" valign="top" rowspan="1" colspan="1">Charles et al. (<xref rid="ajpa70329-bib-0012" ref-type="bibr">2019</xref>)</td><td align="center" valign="top" rowspan="1" colspan="1">F</td><td align="center" valign="top" rowspan="1" colspan="1">26</td></tr><tr><td align="center" valign="top" rowspan="1" colspan="1">Subject05</td><td align="center" valign="top" rowspan="1" colspan="1">Charles et al. (<xref rid="ajpa70329-bib-0012" ref-type="bibr">2019</xref>)</td><td align="center" valign="top" rowspan="1" colspan="1">F</td><td align="center" valign="top" rowspan="1" colspan="1">23</td></tr><tr><td align="center" valign="top" rowspan="1" colspan="1">Subject06</td><td align="center" valign="top" rowspan="1" colspan="1">Charles et al. (<xref rid="ajpa70329-bib-0012" ref-type="bibr">2019</xref>)</td><td align="center" valign="top" rowspan="1" colspan="1">F</td><td align="center" valign="top" rowspan="1" colspan="1">35</td></tr><tr><td align="center" valign="top" rowspan="1" colspan="1">Subject07</td><td align="center" valign="top" rowspan="1" colspan="1">Charles et al. (<xref rid="ajpa70329-bib-0012" ref-type="bibr">2019</xref>)</td><td align="center" valign="top" rowspan="1" colspan="1">F</td><td align="center" valign="top" rowspan="1" colspan="1">25</td></tr><tr><td align="center" valign="top" rowspan="1" colspan="1">Subject08</td><td align="center" valign="top" rowspan="1" colspan="1">Charles et al. (<xref rid="ajpa70329-bib-0012" ref-type="bibr">2019</xref>)</td><td align="center" valign="top" rowspan="1" colspan="1">F</td><td align="center" valign="top" rowspan="1" colspan="1">26</td></tr><tr><td align="center" valign="top" rowspan="1" colspan="1">Subject09</td><td align="center" valign="top" rowspan="1" colspan="1">Charles et al. (<xref rid="ajpa70329-bib-0012" ref-type="bibr">2019</xref>)</td><td align="center" valign="top" rowspan="1" colspan="1">M</td><td align="center" valign="top" rowspan="1" colspan="1">26</td></tr><tr><td align="center" valign="top" rowspan="1" colspan="1">Subject10</td><td align="center" valign="top" rowspan="1" colspan="1">Charles et al. (<xref rid="ajpa70329-bib-0012" ref-type="bibr">2019</xref>)</td><td align="center" valign="top" rowspan="1" colspan="1">M</td><td align="center" valign="top" rowspan="1" colspan="1">34</td></tr></tbody></table><table-wrap-foot id="ajpa70329-ntgp-0001"><fn id="ajpa70329-note-0001"><p>
+<italic toggle="yes">Note:</italic>
+<italic toggle="yes">N</italic> represents the total number of specimens per species.</p></fn></table-wrap-foot></table-wrap><p>Additional data were obtained from published sources (Charles et al. <xref rid="ajpa70329-bib-0012" ref-type="bibr">2019</xref>; Myatt et al. <xref rid="ajpa70329-bib-0045" ref-type="bibr">2011</xref>; Oishi et al. <xref rid="ajpa70329-bib-0047" ref-type="bibr">2009</xref>; Payne et al. <xref rid="ajpa70329-bib-0050" ref-type="bibr">2006b</xref>) (Table <xref rid="ajpa70329-tbl-0001" ref-type="table">1</xref>). In total, our sample includes 30 specimens, spanning nine species, primarily in the <italic toggle="yes">Homininidae</italic> family with some from the <italic toggle="yes">Hylobatidae</italic> (lesser apes) and a cercopithecid (<styled-content style="fixed-case" toggle="no">
+<italic toggle="no">Macaca mulatta</italic>
+</styled-content>), which is included as an outgroup in this study. This sample is also previously described in Wiseman et al. (<xref rid="ajpa70329-bib-0066" ref-type="bibr">2026</xref>).</p><p>Body mass could not be recorded for all dissected specimens because the upper limb and torso had been dissected for previous studies (Van Beesel et al. <xref rid="ajpa70329-bib-0062" ref-type="bibr">2025</xref>). Only <styled-content style="fixed-case" toggle="no">
+<italic toggle="no">Gorilla gorilla</italic>
+</styled-content> (gorilla) had a known body mass at death (180 kg); the remaining masses were estimated (see below). Dissections focused on the right hind limb, except in <styled-content style="fixed-case" toggle="no">
+<italic toggle="no">Hylobates lar</italic>
+</styled-content> (gibbon) and <styled-content style="fixed-case" toggle="no">
+<italic toggle="no">Pan troglodytes</italic>
+</styled-content> (chimpanzee), for which the left hind limb was also examined. The gibbon right hind limb was affected by a pre‐mortem pathology, necessitating left hind limb dissection to obtain representative measurements. In the chimpanzee specimen, hip musculature was unavailable due to prior dissection, reducing the available musculature for this specimen. Variation in the number of muscles measured across specimens reflected genuine anatomical differences as detailed.</p><p>Muscles were identified by two observers using standard anatomical atlases and photographed in situ before removal. Origin and insertion homology was further determined according to species‐specific anatomical atlases (Diogo et al. <xref rid="ajpa70329-bib-0023" ref-type="bibr">2013</xref>; Diogo et al. <xref rid="ajpa70329-bib-0024" ref-type="bibr">2010</xref>, <xref rid="ajpa70329-bib-0021" ref-type="bibr">2017</xref>; Diogo et al. <xref rid="ajpa70329-bib-0072" ref-type="bibr">2019</xref>) and is extensively described in Supporting Information <xref rid="ajpa70329-supitem-0003" ref-type="supplementary-material">S2</xref>, as well as previously described in Wiseman et al. (<xref rid="ajpa70329-bib-0066" ref-type="bibr">2026</xref>). A single observer then measured and weighed each muscle, and architectural parameters, such as muscle and tendon length, muscle mass, fascicle length (FL), and pennation angle (θ), were recorded. FL was measured with calipers to an accuracy of ±0.01 mm, and muscle masses with precision scales to ±0.01 g. θ was measured using protractors as the angle between the fascicles and the line of action of the tendon. For each muscle, multiple FL and θ measurements (≈10 per muscle) were taken at different locations along the muscle, and the average was calculated to account for intramuscular variation (Charles et al. <xref rid="ajpa70329-bib-0009" ref-type="bibr">2022</xref>; Cuff et al. <xref rid="ajpa70329-bib-0016" ref-type="bibr">2023</xref>; Martin et al. <xref rid="ajpa70329-bib-0040" ref-type="bibr">2020</xref>). These data were used to calculate muscle volume and PCSA. Muscle and tendon mass were initially measured together as a single dissected unit and then were physically separated and re‐measured as two units (tendon and belly). In total, we measured 48 muscles per hind limb (Table <xref rid="ajpa70329-tbl-0002" ref-type="table">2</xref>).</p><table-wrap position="float" id="ajpa70329-tbl-0002" content-type="TABLE" orientation="portrait"><label>TABLE 2</label><caption><p>Pelvis and hind limb muscles included in this study.</p></caption><table frame="hsides" rules="groups"><col align="left" span="1"/><col align="center" span="1"/><col align="center" span="1"/><col align="center" span="1"/><thead valign="bottom"><tr style="border-bottom:solid 1px #000000"><th align="left" valign="bottom" rowspan="1" colspan="1">Muscle name</th><th align="center" valign="bottom" rowspan="1" colspan="1">Abbrev.</th><th align="center" valign="bottom" rowspan="1" colspan="1">Muscle name (cont.)</th><th align="center" valign="bottom" rowspan="1" colspan="1">Abbrev. (cont.)</th></tr></thead><tbody valign="top"><tr><td align="left" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. adductor magnus</italic>
+<xref rid="ajpa70329-note-0002" ref-type="table-fn">
+<sup>a</sup>
+</xref>
+</td><td align="center" valign="top" rowspan="1" colspan="1">AM<xref rid="ajpa70329-note-0002" ref-type="table-fn">
+<sup>a</sup>
+</xref>
+</td><td align="center" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. biceps femoris</italic> (<italic toggle="yes">long head</italic>)</td><td align="center" valign="top" rowspan="1" colspan="1">BFL</td></tr><tr><td align="left" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. adductor brevis</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">AB</td><td align="center" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. biceps femoris</italic> (<italic toggle="yes">short head</italic>)</td><td align="center" valign="top" rowspan="1" colspan="1">BFS</td></tr><tr><td align="left" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. adductor longus</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">AL</td><td align="center" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. semimembranosus</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">SM</td></tr><tr><td align="left" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. adductor minimus</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">AMin</td><td align="center" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. semitendinosus</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">ST</td></tr><tr><td align="left" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. pectineus</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">PECT</td><td align="center" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. popliteus</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">POP</td></tr><tr><td align="left" valign="top" rowspan="1" colspan="1">
+<styled-content style="fixed-case" toggle="no">
+<italic toggle="no">M. gracilis</italic>
+</styled-content>
+</td><td align="center" valign="top" rowspan="1" colspan="1">GRA</td><td align="center" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. lateral gastrocnemius</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">LG</td></tr><tr><td align="left" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. obturator externus</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">ObtExt</td><td align="center" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. medial gastrocnemius</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">MG</td></tr><tr><td align="left" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. obturator internus</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">ObtInt</td><td align="center" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. vastus intermedius</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">VI</td></tr><tr><td align="left" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. gluteus maximus</italic>
+<xref rid="ajpa70329-note-0003" ref-type="table-fn">
+<sup>b</sup>
+</xref>
+</td><td align="center" valign="top" rowspan="1" colspan="1">GMax<xref rid="ajpa70329-note-0003" ref-type="table-fn">
+<sup>b</sup>
+</xref>
+</td><td align="center" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. vastus lateralis</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">VL</td></tr><tr><td align="left" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. gluteus medius</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">GMed</td><td align="center" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. vastus medialis</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">VM</td></tr><tr><td align="left" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. gluteus minimus</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">GMin</td><td align="center" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">
+<styled-content style="fixed-case" toggle="no">M. tibialis</styled-content> anterior</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">TA</td></tr><tr><td align="left" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. gemellus superior</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">GemSup</td><td align="center" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">
+<styled-content style="fixed-case" toggle="no">M. tibialis</styled-content> posterior</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">TP</td></tr><tr><td align="left" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. gemellus inferior</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">GemInf</td><td align="center" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. extensor hallucis longus</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">EHL</td></tr><tr><td align="left" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">
+<styled-content style="fixed-case" toggle="no">M. quadratus</styled-content> femoris</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">QF</td><td align="center" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. extensor hallucis brevis</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">EHB</td></tr><tr><td align="left" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. tensor fasciae latae</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">TFL</td><td align="center" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. flexor hallucis longus</italic>
+<xref rid="ajpa70329-note-0004" ref-type="table-fn">
+<sup>c</sup>
+</xref>
+</td><td align="center" valign="top" rowspan="1" colspan="1">FHL<xref rid="ajpa70329-note-0004" ref-type="table-fn">
+<sup>c</sup>
+</xref>
+</td></tr><tr><td align="left" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. piriformis</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">PIRI</td><td align="center" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. flexor hallucis brevis</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">FHB</td></tr><tr><td align="left" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. iliacus</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">ILI</td><td align="center" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. flexor digitorum longus</italic>
+<xref rid="ajpa70329-note-0004" ref-type="table-fn">
+<sup>c</sup>
+</xref>
+</td><td align="center" valign="top" rowspan="1" colspan="1">FDL<xref rid="ajpa70329-note-0004" ref-type="table-fn">
+<sup>c</sup>
+</xref>
+</td></tr><tr><td align="left" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">
+<styled-content style="fixed-case" toggle="no">M. rectus</styled-content> femoris</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">RF</td><td align="center" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. flexor digitorum brevis</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">FDB</td></tr><tr><td align="left" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. sartorius</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">SAR</td><td align="center" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. extensor digitorum longus</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">EDL</td></tr><tr><td align="left" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. psoas major</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">PMaj</td><td align="center" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. extensor digitorum brevis</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">EDB</td></tr><tr><td align="left" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. psoas minor</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">P<sub>Min</sub>
+</td><td align="center" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. adductor hallucis</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">AH</td></tr><tr><td align="left" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. abductor hallucis</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">AbH</td><td align="center" valign="top" rowspan="1" colspan="1">
+<styled-content style="fixed-case" toggle="no">
+<italic toggle="no">M. plantaris</italic>
+</styled-content>
+</td><td align="center" valign="top" rowspan="1" colspan="1">PLANT</td></tr><tr><td align="left" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. soleus</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">SOL</td><td align="center" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. peroneus/fibularis brevis</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">PB</td></tr><tr><td align="left" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. peroneus/fibularis longus</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">PL</td><td align="center" valign="top" rowspan="1" colspan="1">
+<italic toggle="yes">M. abductor digiti minimi</italic>
+</td><td align="center" valign="top" rowspan="1" colspan="1">AbDm</td></tr></tbody></table><table-wrap-foot id="ajpa70329-ntgp-0002"><fn id="ajpa70329-note-0002"><label>
+<sup>a</sup>
+</label><p>Note that the AM had two bellies in some species (see: Section <xref rid="ajpa70329-sec-0012" ref-type="sec">3</xref>): the AMinf (inferior head) and AMsup (superior head).</p></fn><fn id="ajpa70329-note-0003"><label>
+<sup>b</sup>
+</label><p>The macaque gluteus superficialis was treated as homologous to the human gluteus maximus.</p></fn><fn id="ajpa70329-note-0004"><label>
+<sup>c</sup>
+</label><p>The m. flexor fibularis and m. flexor tibialis in some of the non‐human primates were mapped to the human FHL (digit 1) and FDL (digits 2–5) based on anatomy/function (see: Section <xref rid="ajpa70329-sec-0012" ref-type="sec">3</xref>).</p></fn></table-wrap-foot></table-wrap><p>Not all muscles and measurements were available across all species due to musculoskeletal differences, methodological constraints or were not made available in published literature (i.e., reports of tendons lengths for the human dataset were unavailable). Where data were not available, species or muscles are excluded from analysis (Table <xref rid="ajpa70329-tbl-0002" ref-type="table">2</xref>), and only available data are reported.</p></sec><sec id="ajpa70329-sec-0008"><label>2.2</label><title>Body Mass Calculations for Missing Data</title><p>With the exception of the gorilla, for which body mass at death was recorded, body mass for the remaining dissected specimens was estimated using one of two approaches:
+<list list-type="order" id="ajpa70329-list-0001"><list-item id="ajpa70329-li-0001"><p>Convex hull estimation. For specimens with full‐body CT scans, body mass was estimated from the convex hull of segmented body regions following established protocols (Brassey and Sellers <xref rid="ajpa70329-bib-0005" ref-type="bibr">2014</xref>; Coatham et al. <xref rid="ajpa70329-bib-0013" ref-type="bibr">2021</xref>). This method was applied to the <styled-content style="fixed-case" toggle="no">
+<italic toggle="no">Macaca mulatta</italic>
+</styled-content> (macaque), <styled-content style="fixed-case" toggle="no">
+<italic toggle="no">Symphalangus syndactylus</italic>
+</styled-content> (siamang), gibbon, and <styled-content style="fixed-case" toggle="no">
+<italic toggle="no">Pongo abelii</italic>
+</styled-content> (orangutan) specimens.</p></list-item><list-item id="ajpa70329-li-0002"><p>Long‐bone scaling. For the chimpanzee specimen, only a partial CT scan was conducted. Body mass was estimated using femoral and humeral measurements according to established allometric scaling relationships (Burgess et al. <xref rid="ajpa70329-bib-0006" ref-type="bibr">2018</xref>).</p></list-item></list>
+</p></sec><sec id="ajpa70329-sec-0009"><label>2.3</label><title>Calculation of Muscle Parameters</title><p>Normalized muscle mass (M<sub>norm</sub>) and FL (<italic toggle="yes">L</italic>
+<sub>
+<italic toggle="yes">f</italic>
+</sub>) were calculated as follows (Alexander et al. <xref rid="ajpa70329-bib-0002" ref-type="bibr">1981</xref>):<disp-formula id="ajpa70329-disp-0001">
+<label>(1)</label>
+<mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-2" display="block" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi mathvariant="normal">M</mml:mi><mml:mi>norm</mml:mi></mml:msub><mml:mo linebreak="goodbreak">=</mml:mo><mml:msub><mml:mi>m</mml:mi><mml:mtext>muscle</mml:mtext></mml:msub><mml:mo>/</mml:mo><mml:mtext>Body mass</mml:mtext></mml:mrow></mml:mrow></mml:math>
+</disp-formula>
+<disp-formula id="ajpa70329-disp-0002">
+<label>(2)</label>
+<mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-3" display="block" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub><mml:mo linebreak="goodbreak">=</mml:mo><mml:mi>FL</mml:mi><mml:mo>/</mml:mo><mml:msup><mml:mtext>Body mass</mml:mtext><mml:mrow><mml:mn>1</mml:mn><mml:mo>/</mml:mo><mml:mn>3</mml:mn></mml:mrow></mml:msup></mml:mrow></mml:mrow></mml:math>
+</disp-formula>M<sub>norm</sub> was subsequently compared between species. Next, each muscle's PCSA was calculated as (Zajac <xref rid="ajpa70329-bib-0070" ref-type="bibr">1989</xref>):<disp-formula id="ajpa70329-disp-0003">
+<label>(3)</label>
+<mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-4" display="block" overflow="scroll"><mml:mrow><mml:mrow><mml:mtext>PCSA</mml:mtext><mml:mo linebreak="goodbreak">=</mml:mo><mml:mfrac><mml:mrow><mml:mi>cos</mml:mi><mml:mfenced close=")" open="("><mml:mi>θ</mml:mi></mml:mfenced><mml:mo>·</mml:mo><mml:msub><mml:mi>m</mml:mi><mml:mtext>muscle</mml:mtext></mml:msub></mml:mrow><mml:mrow><mml:mi>ρ</mml:mi><mml:mo>·</mml:mo><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mfrac></mml:mrow></mml:mrow></mml:math>
+</disp-formula>Normalized PCSA (PCSA<sub>norm</sub>) was subsequently calculated as follows:<disp-formula id="ajpa70329-disp-0004">
+<label>(4)</label>
+<mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-5" display="block" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mtext>PCSA</mml:mtext><mml:mi>norm</mml:mi></mml:msub><mml:mo linebreak="goodbreak">=</mml:mo><mml:mtext>PCSA</mml:mtext><mml:mo>/</mml:mo><mml:msup><mml:mtext>Body mass</mml:mtext><mml:mrow><mml:mn>2</mml:mn><mml:mo>/</mml:mo><mml:mn>3</mml:mn></mml:mrow></mml:msup></mml:mrow></mml:mrow></mml:math>
+</disp-formula>where <italic toggle="yes">ρ</italic> is tissue density of 1.060 kg m<sup>−3</sup> (Mendez and Keys <xref rid="ajpa70329-bib-0041" ref-type="bibr">1960</xref>), and <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-6" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>m</mml:mi><mml:mtext>muscle</mml:mtext></mml:msub></mml:mrow></mml:mrow></mml:math> is the muscle belly mass. Muscles were then grouped according to their main function (Charles et al. <xref rid="ajpa70329-bib-0012" ref-type="bibr">2019</xref>, <xref rid="ajpa70329-bib-0011" ref-type="bibr">2020</xref>; Herrel et al. <xref rid="ajpa70329-bib-0030" ref-type="bibr">2025</xref>) (Table <xref rid="ajpa70329-tbl-0003" ref-type="table">3</xref>). Each muscle was assigned to a single functional category according to its primary action, ensuring that functional group masses summed to total hindlimb muscle mass and that categories were mutually exclusive. Body mass–normalized variables were used to enable interspecific comparison of relative muscle architectural traits across taxa differing in overall body size. While regression‐ or allometry‐based approaches can be used to explicitly model scaling relationships, these require substantially larger and more evenly distributed samples than are available in the present comparative dataset.</p><table-wrap position="float" id="ajpa70329-tbl-0003" content-type="TABLE" orientation="portrait"><label>TABLE 3</label><caption><p>Muscle functional groups for each joint in the primate hind limb, and constituent muscles.</p></caption><table frame="hsides" rules="groups"><col align="left" span="1"/><col align="center" span="1"/><col align="center" span="1"/><thead valign="bottom"><tr style="border-bottom:solid 1px #000000"><th align="left" valign="bottom" rowspan="1" colspan="1">Joint</th><th align="center" valign="bottom" rowspan="1" colspan="1">Functional group</th><th align="center" valign="bottom" rowspan="1" colspan="1">Muscles</th></tr></thead><tbody valign="top"><tr><td align="left" rowspan="5" valign="top" colspan="1">Hip</td><td align="center" valign="top" rowspan="1" colspan="1">Hip extensors</td><td align="center" valign="top" rowspan="1" colspan="1">GMax, BFL, SM, ST</td></tr><tr><td align="center" valign="top" rowspan="1" colspan="1">Hip flexors</td><td align="center" valign="top" rowspan="1" colspan="1">ILI, SAR, PMaj, P<sub>Min</sub>
+</td></tr><tr><td align="center" valign="top" rowspan="1" colspan="1">Hip abductors</td><td align="center" valign="top" rowspan="1" colspan="1">GMed, GMin, TFL, PIRI</td></tr><tr><td align="center" valign="top" rowspan="1" colspan="1">Hip adductors</td><td align="center" valign="top" rowspan="1" colspan="1">AM<xref rid="ajpa70329-note-0006" ref-type="table-fn">
+<sup>a</sup>
+</xref>, AB<xref rid="ajpa70329-note-0007" ref-type="table-fn">
+<sup>b</sup>
+</xref>, AL, PECT, Amin, GRA</td></tr><tr><td align="center" valign="top" rowspan="1" colspan="1">Hip rotators</td><td align="center" valign="top" rowspan="1" colspan="1">GemSup, GemInf, ObtInt, ObtExt, PIRI, QF</td></tr><tr><td align="left" rowspan="2" valign="top" colspan="1">Knee</td><td align="center" valign="top" rowspan="1" colspan="1">Knee extensors</td><td align="center" valign="top" rowspan="1" colspan="1">VI, VL, VM, RF</td></tr><tr><td align="center" valign="top" rowspan="1" colspan="1">Knee flexors</td><td align="center" valign="top" rowspan="1" colspan="1">POP, BFS, BFL, GRA, PLANT</td></tr><tr><td align="left" rowspan="2" valign="top" colspan="1">Ankle</td><td align="center" valign="top" rowspan="1" colspan="1">Ankle dorsiflexors</td><td align="center" valign="top" rowspan="1" colspan="1">TA, EHL, EDL</td></tr><tr><td align="center" valign="top" rowspan="1" colspan="1">Ankle plantarflexors</td><td align="center" valign="top" rowspan="1" colspan="1">SOL, MG, LG, TP, PB, PL</td></tr><tr><td align="left" rowspan="2" valign="top" colspan="1">Toe</td><td align="center" valign="top" rowspan="1" colspan="1">MTP flexors</td><td align="center" valign="top" rowspan="1" colspan="1">AbDm<xref rid="ajpa70329-note-0008" ref-type="table-fn">
+<sup>c</sup>
+</xref>, AbH<xref rid="ajpa70329-note-0008" ref-type="table-fn">
+<sup>c</sup>
+</xref>, FDB<xref rid="ajpa70329-note-0008" ref-type="table-fn">
+<sup>c</sup>
+</xref>, FDL, FHL</td></tr><tr><td align="center" valign="top" rowspan="1" colspan="1">MTP extensors</td><td align="center" valign="top" rowspan="1" colspan="1">EHL, EHB, EDB</td></tr></tbody></table><table-wrap-foot id="ajpa70329-ntgp-0003"><fn id="ajpa70329-note-0005"><p>
+<italic toggle="yes">Note:</italic> Each muscle appears only once within a functional group, as each specimen provides a single set of architectural measurements (i.e., FL and PCSA) per muscle. Muscles are grouped according to their primary function, but for visualization purposes some distal muscles (e.g., EDL, FDL) may appear within broader functional categories rather than strict muscle antagonistic pairs.</p></fn><fn id="ajpa70329-note-0006"><label>
+<sup>a</sup>
+</label><p>AM had two bellies in the chimpanzee and the gorilla.</p></fn><fn id="ajpa70329-note-0007"><label>
+<sup>b</sup>
+</label><p>AB had two bellies in the gibbon. For visualization, both AM and AB bellies are plotted as separate data points but are labeled as AM or AB (<italic toggle="yes">n</italic> = 2 points per individual for these muscles).</p></fn><fn id="ajpa70329-note-0008"><label>
+<sup>c</sup>
+</label><p>AbDm and AbH were measurable only in the chimpanzee, gorilla, gibbon, and bonobo specimens, and FDB only in the gorilla and orangutan, due to dissection constraints in the remaining taxa. They were retained in functional space analyses but excluded from muscle mass and pennation statistics to maintain a consistent muscle set across species. For visualization purposes only, AbDm and AbH are displayed within the MTP flexor category.</p></fn></table-wrap-foot></table-wrap></sec><sec id="ajpa70329-sec-0010"><label>2.4</label><title>Assessing Muscle Function From Architectural Parameters</title><p>Muscles were grouped according to primary function (Table <xref rid="ajpa70329-tbl-0003" ref-type="table">3</xref>).</p><p>Next, we used the ratio of <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-7" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math> to PCSA<sub>norm</sub> to investigate the differences in muscle specializations between species. By doing so, muscles can be categorized according to their functional emphasis: force‐oriented (short fibers with large PCSA; plots in top left quadrant), displacement‐oriented (long fibers with small PCSA; plots in bottom right quadrant), or power‐oriented (intermediate to long fibers with moderate to high PCSA; plots in top right quadrant). Although it is not possible to define strict quantitative thresholds separating different regions of architectural space, broad functional patterns can be interpreted from the overall distribution of muscles within the <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-8" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math>:PCSA<sub>norm</sub> morphospace (e.g., Charles et al. <xref rid="ajpa70329-bib-0009" ref-type="bibr">2022</xref>; De Ridder et al. <xref rid="ajpa70329-bib-0017" ref-type="bibr">2025</xref>). Minor shifts in position within this space are expected due to methodological variation and biological noise in architectural measurements across specimens and estimation approaches. However, larger shifts in relative position reflect meaningful differences in inferred muscle function. In particular, substantial separation along the <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-9" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math> or PCSA<sub>norm</sub> axes indicates a change in the balance between force‐ and displacement‐related specialization, with intermediate positions representing more generalized or power‐oriented architectural configurations. To allow direct comparison across data sources where pennation data were not available, pennation angle was omitted (assumed to be 0) when calculating PCSA<sub>norm</sub> in all specimens. Functional space analyses combine muscle architectural data from our dataset and other published sources (Table <xref rid="ajpa70329-tbl-0001" ref-type="table">1</xref>). Importantly, these datasets differ in their treatment of pennation angle in PCSA estimation, with our dataset incorporating pennation angle and some sources (Payne et al. <xref rid="ajpa70329-bib-0049" ref-type="bibr">2006a</xref>; Myatt et al. <xref rid="ajpa70329-bib-0045" ref-type="bibr">2011</xref>) reporting PCSA under a parallel‐fibered assumption. All analyses therefore reflect broad comparative patterns in muscle architectural organization.</p><p>Tendon architecture was quantified using tendon length ratio. Tendon length ratio was defined as tendon length divided by total muscle–tendon unit (MTU) length. This ratio was included to characterize the relative contribution of tendinous versus contractile tissue along the limb and to capture proximal–distal variation in elastic versus contractile investment.</p></sec><sec id="ajpa70329-sec-0011"><label>2.5</label><title>Statistical Analysis</title><p>Species differences in grouped mean pennation angles were tested using a one‐way ANOVA with species as a fixed effect. Post hoc pairwise comparisons were conducted using Tukey's HSD test to adjust for multiple comparisons. Analyses were performed in R (version 2025.09.2).</p><p>To evaluate the influence of pennation angle on PCSA, we compared values calculated assuming parallel fibers (i.e., no pennation correction) with those incorporating measured pennation angles. Accordingly, two PCSA values were calculated for each muscle: PCSA according to Equation (<xref rid="ajpa70329-disp-0003" ref-type="disp-formula">3</xref>), and parallel PCSA, assuming θ = 0. To assess the impact of including pennation on PCSA estimates, paired <italic toggle="yes">t</italic>‐tests were performed for each species dissected in this study (<italic toggle="yes">N</italic> = 6).</p><p>Tendon length ratios were analyzed using two‐way ANOVAs with species and joint as fixed effects, followed by Tukey's HSD tests for post hoc comparisons. All analyses were conducted in R (version 2025.09.2).</p></sec></sec><sec sec-type="results" id="ajpa70329-sec-0012"><label>3</label><title>Results</title><sec id="ajpa70329-sec-0013"><label>3.1</label><title>Muscle Homology</title><p>Muscle attachment sites were broadly conserved across taxa, although several differences in presence and morphology were observed (Supporting Information <xref rid="ajpa70329-supitem-0003" ref-type="supplementary-material">S2</xref>; also see Wiseman et al. <xref rid="ajpa70329-bib-0066" ref-type="bibr">2026</xref>), particularly at the hip and within the foot. Homology was determined through anatomical position and inferred function, supplemented by published descriptions when direct observation was ambiguous (Casteleyn et al. <xref rid="ajpa70329-bib-0007" ref-type="bibr">2023</xref>; Channon et al. <xref rid="ajpa70329-bib-0008" ref-type="bibr">2009</xref>; Diogo et al. <xref rid="ajpa70329-bib-0072" ref-type="bibr">2019</xref>; Diogo et al. <xref rid="ajpa70329-bib-0024" ref-type="bibr">2010</xref>; Diogo et al. <xref rid="ajpa70329-bib-0072" ref-type="bibr">2019</xref>; Diogo et al. <xref rid="ajpa70329-bib-0021" ref-type="bibr">2017</xref>; Molnar and Diogo <xref rid="ajpa70329-bib-0043" ref-type="bibr">2021</xref>; Payne et al. <xref rid="ajpa70329-bib-0049" ref-type="bibr">2006a</xref>, <xref rid="ajpa70329-bib-0050" ref-type="bibr">2006b</xref>; Vereecke et al. <xref rid="ajpa70329-bib-0064" ref-type="bibr">2005</xref>; Ziermann et al. <xref rid="ajpa70329-bib-0071" ref-type="bibr">2021</xref>). In cases where exact homology was uncertain or questionable (e.g., GMax in hominoids and <italic toggle="yes">M. gluteus superficialis</italic> in macaques), homology was assumed based on anatomical and functional similarity (Diogo et al. <xref rid="ajpa70329-bib-0072" ref-type="bibr">2019</xref>; Diogo et al. <xref rid="ajpa70329-bib-0024" ref-type="bibr">2010</xref>; Diogo et al. <xref rid="ajpa70329-bib-0072" ref-type="bibr">2019</xref>; Diogo et al. <xref rid="ajpa70329-bib-0021" ref-type="bibr">2017</xref>). In non‐human primates, the digital flexors include <italic toggle="yes">m. flexor fibularis</italic> and <italic toggle="yes">m. flexor tibialis</italic>, which arise from the fibula and tibia, respectively, and insert via multiple tendons onto digits 1–5. These muscles are functionally equivalent to the human FHL (digit 1) and FDL (digits 2–5), and are referred to as such here, assuming direct homology based on their shared path and action (digital flexion and ankle plantarflexion).</p><p>Deep hip musculature showed the greatest variability: for instance, the <italic toggle="yes">Mm. obturator</italic> (ObtInt, ObtExt) and <italic toggle="yes">gemelli</italic> (GemSup, GemInf) complex differed in composition among species, with ObtInt occasionally absent or exhibiting additional bellies, and GemSup absent in some great apes (Supporting Information <xref rid="ajpa70329-supitem-0003" ref-type="supplementary-material">S2</xref>). The QF was sometimes fused with the deep portion of AM, suggesting a continuum in their functional role as lateral rotators.</p><p>Variation was also pronounced within the adductor compartment: the AB ranged from having a single to multiple bellies, and an additional AMin was present in some species (e.g., gorilla, chimpanzee) but missing in others, indicating possible lineage‐specific differentiation. The PECT was variably expressed or fused with AL, consistent with previous observations of its phylogenetic lability (Sigmon <xref rid="ajpa70329-bib-0056" ref-type="bibr">1974</xref>).</p><p>In contrast, the superficial gluteal complex was relatively conserved in topology but differed in size and origin extent. The GMed exhibited broad variation in the dimensions of the tendon footprint at its attachment at the femoral head (greater trochanter). In macaques, the <italic toggle="yes">m. gluteus superficialis</italic> (homologous to the GMax of hominoids) was relatively small, whereas humans exhibited a marked posterior expansion in muscle belly. Overall, patterns of similarity in the deep and superficial hip musculature broadly reflected phylogenetic relatedness, with closer affinities between congeneric taxa (chimpanzees and gorillas) and greater divergence from the more distantly related (humans and macaques) (Supporting Information <xref rid="ajpa70329-supitem-0003" ref-type="supplementary-material">S2</xref>).</p><p>
+<italic toggle="yes">M. scansorius</italic> and <italic toggle="yes">M. ischiofemoralis</italic> were present only in select taxa, namely, chimpanzees, orangutans, gibbons, and siamangs, consistent with their known phylogenetic variability within Hominoidea. These muscles were not included in the assessments.</p><p>In general, muscle attachments to the greater and lesser trochanters and trochanteric fossa were identical in all species.</p><p>The muscles crossing the knee and ankle were generally conserved in overall morphology and attachment sites, although PLANT was variably absent in several species, in keeping with its known evolutionary reduction (Diogo et al. <xref rid="ajpa70329-bib-0024" ref-type="bibr">2010</xref>, <xref rid="ajpa70329-bib-0025" ref-type="bibr">2012</xref>, <xref rid="ajpa70329-bib-0021" ref-type="bibr">2017</xref>, <xref rid="ajpa70329-bib-0072" ref-type="bibr">2019</xref>; Diogo et al. <xref rid="ajpa70329-bib-0023" ref-type="bibr">2013</xref>). In contrast, the foot and ankle musculature exhibited substantial variability, particularly among the digital flexors and extensors. The FHL and FDL showed variable patterns of fusion and tendon insertion, consistent with differing functional demands for pedal grasping in arboreal taxa versus propulsive force generation in more terrestrial forms (Supporting Information <xref rid="ajpa70329-supitem-0003" ref-type="supplementary-material">S2</xref>). Similarly, FDB and FHB displayed considerable morphological diversity and occasional fusion, underscoring the high degree of developmental plasticity in intrinsic foot muscles. The FDB was comparatively consistent in its proximal attachment, arising from the calcaneus in all examined taxa. However, distal morphology was less uniform: in chimpanzees and bonobos, its tendons showed partial fusion with FDL and/or FHL. Although FHL most commonly inserted onto the distal phalanx of the hallux, additional slips to digits II–IV were frequently observed in the great apes. Moreover, fusion between FHL and FDL occurred in chimpanzees, bonobos, siamangs, and gibbons. In some taxa, the FHL and FDL remained distinct, whereas in others they were partially or extensively fused, with insertion patterns varying across digits. For example, in gorillas, macaques, orangutans, and humans, the FDL inserted onto digits II–V. By comparison, both gibbons and siamangs lacked a tendon to digit V. Chimpanzees and bonobos exhibited clear fascial integration between FHL and FDL, indicating a degree of functional and/or developmental coupling between these muscles.</p><p>In the gibbon and siamang, the muscle bellies of the <italic toggle="yes">Mm. peronei</italic> were fused. However, there were two separate tendons inserting homologously with the other taxa.</p><p>Regarding the distribution of muscle mass, M<sub>norm</sub> values were broadly comparable across species for the hip adductors, abductors, rotators, knee extensors and flexors, and for all ankle and foot musculature (Figure <xref rid="ajpa70329-fig-0001" ref-type="fig">1</xref>). Differences between species were generally small. Notable exceptions included an intraspecific variation of ankle dorsiflexor muscle mass in chimpanzees and siamangs, and in the mass of knee flexors in orangutans and macaques.</p><fig position="float" fig-type="FIGURE" id="ajpa70329-fig-0001" orientation="portrait"><label>FIGURE 1</label><caption><p>Normalized muscle mass of each muscle group. Only specimens dissected in this study are included (<italic toggle="yes">n</italic> = 6) due to availability of data.</p></caption><graphic xmlns:xlink="http://www.w3.org/1999/xlink" position="anchor" id="jats-graphic-1" orientation="portrait" xlink:href="AJPA-190-e70329-g001.jpg"><?image-name AJPA-190-e70329-g001.jpg?><?image-size 66996?><?image-md5 dc42312760603e72fddc8534ab492c75?><?image-image-server-status LOAD_COMPLETED?><?image-original-height 606?><?image-original-width 1064?><?image-scaled-height 404?><?image-scaled-width 709?><?image-cloudpmc-urn urn:cdn:blobs/077f/13425262/dc4231276060/AJPA-190-e70329-g001.jpg?><?thumb-name AJPA-190-e70329-g001.gif?><?thumb-size 5207?><?thumb-md5 124893d3e7faf5b33185ddaec184c7e7?><?thumb-image-server-status NEVER_LOAD?><?thumb-scaled-height 80?><?thumb-scaled-width 140?><?thumb-cloudpmc-urn urn:cdn:blobs/077f/13425262/124893d3e7fa/AJPA-190-e70329-g001.gif?></graphic></fig><p>In contrast, the hip flexors and extensors showed clear interspecific divergence. Hip flexor normalized mass was substantially larger in chimpanzees and gibbons, and lowest in macaques. For the hip extensors, gorillas exhibited the largest normalized mass, while both gibbons and siamangs displayed wide ranges spanning relatively small to relatively large values.</p></sec><sec id="ajpa70329-sec-0014"><label>3.2</label><title>Differences in Muscle Architecture</title><p>Across the sampled primates (<italic toggle="yes">n</italic> = 6), pennation angle varied significantly among species when all muscles were considered together (one‐way ANOVA: <italic toggle="yes">n</italic> = 217 observations, df = 5, 211, <italic toggle="yes">F</italic> = 30.63, <italic toggle="yes">p</italic> &lt; 2 × 10<sup>−16</sup>; Figure <xref rid="ajpa70329-fig-0002" ref-type="fig">2</xref>). Chimpanzees showed the highest overall pennation angles (mean 25.0° ± 9.33, <italic toggle="yes">n</italic> = 46) and were significantly more pennate than every other species (Tukey HSD: all <italic toggle="yes">p</italic> ≤ 0.01; e.g., chimpanzee–gorilla: Δ = 14.69°, 95% CI = [9.93, 19.45], <italic toggle="yes">p</italic> &lt; 0.0001). When grouped by primary function, significant among‐species differences were observed, particularly in distal limb muscles. Species effects were detected in hip adductors (<italic toggle="yes">F</italic> = 4.58, <italic toggle="yes">p</italic> = 0.0051), hip abductors (<italic toggle="yes">F</italic> = 4.48, <italic toggle="yes">p</italic> = 0.034), knee extensors (<italic toggle="yes">F</italic> = 3.21, <italic toggle="yes">p</italic> = 0.024), ankle dorsiflexors (<italic toggle="yes">F</italic> = 8.62, <italic toggle="yes">p</italic> = 0.0003), ankle plantarflexors (<italic toggle="yes">F</italic> = 5.33, <italic toggle="yes">p</italic> = 0.0013), and MTP flexors (<italic toggle="yes">F</italic> = 3.32, <italic toggle="yes">p</italic> = 0.038), whereas hip flexors (<italic toggle="yes">F</italic> = 2.05, <italic toggle="yes">p</italic> = 0.353), hip extensors (<italic toggle="yes">F</italic> = 1.77, <italic toggle="yes">p</italic> = 0.164), hip rotators (<italic toggle="yes">F</italic> = 1.31, <italic toggle="yes">p</italic> = 0.308), and knee flexors (<italic toggle="yes">F</italic> = 1.69, <italic toggle="yes">p</italic> = 0.242) showed no statistically detectable species differences. In line with the overall pattern, chimpanzees tended to show the highest mean pennation in ankle plantarflexors (29.4° ± 12.1°; <italic toggle="yes">n</italic> = 10) and ankle dorsiflexors (24.5° ± 7.89°; <italic toggle="yes">n</italic> = 6), while orangutans remained lowest across most groups, including ankle dorsiflexors (3.77° ± 2.93°; <italic toggle="yes">n</italic> = 3) and knee extensors (8.78° ± 1.81°; <italic toggle="yes">n</italic> = 4).</p><fig position="float" fig-type="FIGURE" id="ajpa70329-fig-0002" orientation="portrait"><label>FIGURE 2</label><caption><p>Boxplot comparing pennation angle across the primate hind limb in a sample of 19 homologous muscles (see: Supporting Information <xref rid="ajpa70329-supitem-0001" ref-type="supplementary-material">S1</xref>). Only specimens dissected in this study are included (<italic toggle="yes">n</italic> = 6). Data for chimpanzee pelvis is not available due to missing soft tissue during dissection. MTP extensors are grouped here with the ankle dorsiflexors due to small sample sizes.</p></caption><graphic xmlns:xlink="http://www.w3.org/1999/xlink" position="anchor" id="jats-graphic-3" orientation="portrait" xlink:href="AJPA-190-e70329-g003.jpg"><?image-name AJPA-190-e70329-g003.jpg?><?image-size 45220?><?image-md5 db5f13c2df15ed05362162a36128912d?><?image-image-server-status LOAD_COMPLETED?><?image-original-height 477?><?image-original-width 1064?><?image-scaled-height 318?><?image-scaled-width 709?><?image-cloudpmc-urn urn:cdn:blobs/077f/13425262/db5f13c2df15/AJPA-190-e70329-g003.jpg?><?thumb-name AJPA-190-e70329-g003.gif?><?thumb-size 4930?><?thumb-md5 f00c3668200aa03a02d1eca7419a63fc?><?thumb-image-server-status NEVER_LOAD?><?thumb-scaled-height 80?><?thumb-scaled-width 178?><?thumb-cloudpmc-urn urn:cdn:blobs/077f/13425262/f00c3668200a/AJPA-190-e70329-g003.gif?></graphic></fig><p>Next, we included (assuming parallel fibers) and excluded pennation (assuming pennated fibers) in our PCSA estimates (Table <xref rid="ajpa70329-tbl-0004" ref-type="table">4</xref>). Including pennation angle in PCSA calculations significantly reduced PCSA estimates in all species except the orangutan, indicating that fiber orientation exerts a measurable effect on muscle architecture. Orangutans and chimpanzees showed no significant difference between parallel and pennate PCSAs estimates. Although the absolute differences in PCSA values were small, the consistent and taxon‐dependent pattern indicates that pennation angle exerts a systematic influence on architectural estimates rather than introducing random variation.</p><table-wrap position="float" id="ajpa70329-tbl-0004" content-type="TABLE" orientation="portrait"><label>TABLE 4</label><caption><p>
+<italic toggle="no">T</italic>‐tests comparing PCSA with and without pennation angle.</p></caption><table frame="hsides" rules="groups"><col align="left" span="1"/><col align="center" span="1"/><col align="center" span="1"/><col align="center" span="1"/><col align="center" span="1"/><col align="center" span="1"/><thead valign="bottom"><tr style="border-bottom:solid 1px #000000"><th align="left" valign="bottom" rowspan="1" colspan="1">Species</th><th align="center" valign="bottom" rowspan="1" colspan="1">
+<italic toggle="yes">N</italic>
+</th><th align="center" valign="bottom" rowspan="1" colspan="1">Parallel PCSA Mdn (IQR)</th><th align="center" valign="bottom" rowspan="1" colspan="1">Full PCSA Mdn (IQR)</th><th align="center" valign="bottom" rowspan="1" colspan="1">95% CI</th><th align="center" valign="bottom" rowspan="1" colspan="1">
+<italic toggle="yes">p</italic>
+</th></tr></thead><tbody valign="top"><tr><td align="left" valign="top" rowspan="1" colspan="1">Gorilla</td><td align="center" valign="top" rowspan="1" colspan="1">37</td><td align="center" valign="top" rowspan="1" colspan="1">6.11 (3.90)</td><td align="center" valign="top" rowspan="1" colspan="1">6.09 (3.90)</td><td align="center" valign="top" rowspan="1" colspan="1">8.26e‐07 to 2.40e‐06</td><td align="center" valign="top" rowspan="1" colspan="1">
+<bold>&lt; 0.001</bold>
+</td></tr><tr><td align="left" valign="top" rowspan="1" colspan="1">Orangutan</td><td align="center" valign="top" rowspan="1" colspan="1">33</td><td align="center" valign="top" rowspan="1" colspan="1">3.70 (2.70)</td><td align="center" valign="top" rowspan="1" colspan="1">3.67 (2.70)</td><td align="center" valign="top" rowspan="1" colspan="1">−8.91e‐07 to 5.11e‐06</td><td align="center" valign="top" rowspan="1" colspan="1">0.16</td></tr><tr><td align="left" valign="top" rowspan="1" colspan="1">Siamang</td><td align="center" valign="top" rowspan="1" colspan="1">28</td><td align="center" valign="top" rowspan="1" colspan="1">5.75 (5.20)</td><td align="center" valign="top" rowspan="1" colspan="1">5.55 (5.10)</td><td align="center" valign="top" rowspan="1" colspan="1">7.13e‐07 to 3.22e‐06</td><td align="center" valign="top" rowspan="1" colspan="1">
+<bold>0.003</bold>
+</td></tr><tr><td align="left" valign="top" rowspan="1" colspan="1">Gibbon</td><td align="center" valign="top" rowspan="1" colspan="1">27</td><td align="center" valign="top" rowspan="1" colspan="1">6.84 (8.80)</td><td align="center" valign="top" rowspan="1" colspan="1">6.28 (7.80)</td><td align="center" valign="top" rowspan="1" colspan="1">4.49e‐06 to 1.94e‐05</td><td align="center" valign="top" rowspan="1" colspan="1">
+<bold>0.003</bold>
+</td></tr><tr><td align="left" valign="top" rowspan="1" colspan="1">Chimpanzee</td><td align="center" valign="top" rowspan="1" colspan="1">25</td><td align="center" valign="top" rowspan="1" colspan="1">5.19 (8.30)</td><td align="center" valign="top" rowspan="1" colspan="1">4.73 (7.80)</td><td align="center" valign="top" rowspan="1" colspan="1">2.03e‐06 to 1.86e‐05</td><td align="center" valign="top" rowspan="1" colspan="1">0.017</td></tr><tr><td align="left" valign="top" rowspan="1" colspan="1">Macaque</td><td align="center" valign="top" rowspan="1" colspan="1">31</td><td align="center" valign="top" rowspan="1" colspan="1">4.78 (7.70)</td><td align="center" valign="top" rowspan="1" colspan="1">4.57 (7.70)</td><td align="center" valign="top" rowspan="1" colspan="1">2.08e‐06 to 8.22e‐06</td><td align="center" valign="top" rowspan="1" colspan="1">
+<bold>0.002</bold>
+</td></tr></tbody></table><table-wrap-foot id="ajpa70329-ntgp-0004"><fn id="ajpa70329-note-0009"><p>
+<italic toggle="yes">Note:</italic>
+<italic toggle="yes">p</italic>‐values in bold are statistically significant.</p></fn></table-wrap-foot></table-wrap></sec><sec id="ajpa70329-sec-0015"><label>3.3</label><title>Differences in Muscle Function/Specialization</title><p>We examined the relationship between <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-10" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math> and PCSA<sub>norm</sub> to assess how muscles are functionally adapted (Figures <xref rid="ajpa70329-fig-0003" ref-type="fig">3</xref> and <xref rid="ajpa70329-fig-0004" ref-type="fig">4</xref>). Muscles with a large PCSA<sub>norm</sub> and short <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-11" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math> are typically specialized for force production, while those with both large PCSA<sub>norm</sub> and long <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-12" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math> are suited for power generation. A small PCSA<sub>norm</sub> combined with long <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-13" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math> suggests a bias toward specialization for range of motion (displacement), and muscles with both small PCSA<sub>norm</sub> and short <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-14" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math> are less strongly differentiated along the force‐velocity axes and may function as stabilizers or generalists (Charles et al. <xref rid="ajpa70329-bib-0011" ref-type="bibr">2020</xref>; Payne et al. <xref rid="ajpa70329-bib-0049" ref-type="bibr">2006a</xref>; Charles et al. <xref rid="ajpa70329-bib-0009" ref-type="bibr">2022</xref>; Wiseman et al. <xref rid="ajpa70329-bib-0068" ref-type="bibr">2024</xref>). “Displacement‐oriented” is used interchangeably with velocity‐oriented architecture, as both reflect increased fiber length and associated capacity for greater muscle shortening velocity and excursion.</p><fig position="float" fig-type="FIGURE" id="ajpa70329-fig-0003" orientation="portrait"><label>FIGURE 3</label><caption><p>Functional space plots of the muscles that predominantly cross the hip, demonstrating the relationship between normalized <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-15" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi mathvariant="normal">L</mml:mi><mml:mi mathvariant="normal">f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math> and PCSA<sub>norm</sub>. Muscles are grouped according to primary function. Available muscle data from all specimens (Table <xref rid="ajpa70329-tbl-0001" ref-type="table">1</xref>) are included (<italic toggle="yes">n</italic> = 30).</p></caption><graphic xmlns:xlink="http://www.w3.org/1999/xlink" position="anchor" id="jats-graphic-5" orientation="portrait" xlink:href="AJPA-190-e70329-g002.jpg"><?image-name AJPA-190-e70329-g002.jpg?><?image-size 125823?><?image-md5 353627f7dbf30fa9b8c040173a12591c?><?image-image-server-status LOAD_COMPLETED?><?image-original-height 1295?><?image-original-width 1064?><?image-scaled-height 863?><?image-scaled-width 709?><?image-cloudpmc-urn urn:cdn:blobs/077f/13425262/353627f7dbf3/AJPA-190-e70329-g002.jpg?><?thumb-name AJPA-190-e70329-g002.gif?><?thumb-size 5990?><?thumb-md5 87215f22f803083523c38b71ac023c43?><?thumb-image-server-status NEVER_LOAD?><?thumb-scaled-height 122?><?thumb-scaled-width 100?><?thumb-cloudpmc-urn urn:cdn:blobs/077f/13425262/87215f22f803/AJPA-190-e70329-g002.gif?></graphic></fig><fig position="float" fig-type="FIGURE" id="ajpa70329-fig-0004" orientation="portrait"><label>FIGURE 4</label><caption><p>Functional space plots of the muscles that predominantly cross the knee, ankle and metatarsophalangeal joints, demonstrating the relationship between normalized <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-16" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math> and PCSA<sub>norm</sub>. Muscles are grouped according to primary function. Available muscle data from all specimens (Table <xref rid="ajpa70329-tbl-0001" ref-type="table">1</xref>) are included (<italic toggle="yes">n</italic> = 29).</p></caption><graphic xmlns:xlink="http://www.w3.org/1999/xlink" position="anchor" id="jats-graphic-7" orientation="portrait" xlink:href="AJPA-190-e70329-g005.jpg"><?image-name AJPA-190-e70329-g005.jpg?><?image-size 139947?><?image-md5 b92940673d9eaa5fac4187aebebddc87?><?image-image-server-status LOAD_COMPLETED?><?image-original-height 1301?><?image-original-width 1064?><?image-scaled-height 867?><?image-scaled-width 709?><?image-cloudpmc-urn urn:cdn:blobs/077f/13425262/b92940673d9e/AJPA-190-e70329-g005.jpg?><?thumb-name AJPA-190-e70329-g005.gif?><?thumb-size 6631?><?thumb-md5 02e9f29fc27ab4b16f1b1e8faa1d76c7?><?thumb-image-server-status NEVER_LOAD?><?thumb-scaled-height 122?><?thumb-scaled-width 100?><?thumb-cloudpmc-urn urn:cdn:blobs/077f/13425262/02e9f29fc27a/AJPA-190-e70329-g005.gif?></graphic></fig><p>Across the dataset, most muscles showed broadly conserved specialization patterns. For example, the QF, PLANT, PB, and AB muscles exhibited relatively short <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-17" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math> and low PCSA<sub>norm</sub> across all species. These muscles appeared functionally stable, with only minor interspecies variation in architectural scaling. Similarly, hip adductors (AM, AB, AL, GRA; Figure <xref rid="ajpa70329-fig-0003" ref-type="fig">3A</xref>) clustered tightly in functional space, indicating that these muscles have been evolutionarily conserved and maintain similar functional roles across primates. The AB and AL exhibited generalist architecture in all species (low <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-18" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math> and low PCSA<sub>norm</sub>). The GRA was displacement‐specialized in the gibbon, orangutan and chimpanzee, and acted more generally in the other species.</p><p>The hip abductors showed comparable organization: the GMin were generalists apart from the chimpanzee who was characterized as having a larger PCSA<sub>norm</sub> (Figure <xref rid="ajpa70329-fig-0003" ref-type="fig">3B</xref>). The GMed tended toward displacement specialization in the gibbon, siamang, bonobo, and orangutan, but was instead power‐specialized in the gorilla.</p><p>In the hip flexors (Figure <xref rid="ajpa70329-fig-0003" ref-type="fig">3C</xref>), the SAR was displacement‐specialized in all taxa except chimpanzees, where it shifted slightly toward force production; PMaj was more generalist, and ILI was force‐specialized. Among hip extensors (Figure <xref rid="ajpa70329-fig-0003" ref-type="fig">3D</xref>), BFL, SM and ST were typically more displacement‐specialized, while GMax was generally intermediate with small PCSA<sub>norm</sub> and short <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-19" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math> across most species, but was more force‐specialized (i.e., larger PCSA<sub>norm</sub> with short <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-20" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math>) in gorillas and gibbons.</p><p>Deep hip rotators were primarily displacement‐specialized in gibbons, gorillas, and orangutans with longer <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-21" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math> and smaller PCSA<sub>norm</sub>, but force‐specialized in siamangs with larger PCSA<sub>norm</sub> and short <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-22" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math> (Figure <xref rid="ajpa70329-fig-0003" ref-type="fig">3E</xref>).</p><p>Among the knee extensors, there were few differences between species. Gibbons showed notably higher <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-23" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math> values for the VI and VL (Figure <xref rid="ajpa70329-fig-0004" ref-type="fig">4A</xref>), whilst chimpanzees were generally characterized by smaller <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-24" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math> values. Humans generally had slightly elevated PCSA<sub>norm</sub> values across all knee extensors, with orangutans generally exhibiting smaller PCSA<sub>norm</sub>. No clear trends in species‐specific muscle function were evident in this muscle group.</p><p>The knee flexors displayed some interspecific variation (Figure <xref rid="ajpa70329-fig-0004" ref-type="fig">4B</xref>). BFS and POP were more force‐specialized in humans, bonobos and gorilla. In the other species, these muscles typically have smaller <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-25" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math> and smaller PCSA<sub>norm</sub>. The PLANT had small <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-26" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math> and PCSA<sub>norm</sub> values across all species.</p><p>In the ankle dorsiflexors, the EDL exhibits longer <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-27" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math> with smaller PCSA<sub>norm</sub> in orangutans versus the other species (Figure <xref rid="ajpa70329-fig-0004" ref-type="fig">4C</xref>). Gorillas have a force‐specialized TA (small <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-28" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math> and large PCSA<sub>norm</sub>), whilst the other species vary in the lengths of their TA with some species having a longer <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-29" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math> and others shorter <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-30" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub><mml:mo>.</mml:mo></mml:mrow></mml:mrow></mml:math>
+</p><p>In the ankle plantarflexors, the PB, PL, and TP had small PCSA<sub>norm</sub> and short <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-31" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math> across all species, whilst the LG, MG and SOL (triceps surae group) had elevated PCSA<sub>norm</sub> (Figure <xref rid="ajpa70329-fig-0004" ref-type="fig">4D</xref>). There was large intra‐variability in the <italic toggle="yes">Mm. triceps surae</italic> of humans, but these human muscles did tend to have an elevated PCSA<sub>norm</sub> versus the other species. Macaques, on the other hand, exhibited low PCSA<sub>norm</sub> with long <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-32" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math> in the <italic toggle="yes">Mm. triceps surae</italic>, suited for velocity‐production. The gibbon and siamang had a similar configuration in only the LG and MG muscles, not the SOL.</p><p>Few observable differences between species were observed in the MTP extensors (Figure <xref rid="ajpa70329-fig-0004" ref-type="fig">4E</xref>). The EHL in orangutans was characterized by longer <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-33" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math> with small PCSA<sub>norm</sub>, whilst siamangs and macaques had the opposite pattern. Gorilla EHLs were generally intermediate, consistent with generalist function, while gibbon EHLs displayed traits indicative of displacement‐specialization.</p><p>In the FDL, gibbons, macaques and chimpanzees have a large PCSA<sub>norm</sub> and short <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-34" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math>, whilst the other species all have the opposite (Figure <xref rid="ajpa70329-fig-0004" ref-type="fig">4F</xref>). <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-35" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math> remains short in all species in the FHL, but PCSA<sub>norm</sub> varies from small (macaques) to large (chimpanzees). All other muscles acting around the toes (AbDm, AbH, FDB) have both small PCSA<sub>norm</sub> and short <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-36" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math>.</p><p>When architectural distributions are visualized at the species level (Figure <xref rid="ajpa70329-supitem-0001" ref-type="supplementary-material">S1</xref>), several broad patterns emerge. African apes (including <styled-content style="fixed-case" toggle="no">
+<italic toggle="no">Homo sapiens</italic>
+</styled-content>) show a consistent shift of ankle plantarflexors toward the high‐PCSA, short fascicle length region of morphospace, indicative of greater force‐oriented architecture, relative to other primates. In contrast, macaques tend to exhibit more generalized ankle plantarflexor configurations.</p><p>Across all taxa, hip flexors are positioned toward longer fascicle lengths and lower PCSA, consistent with a velocity‐oriented architectural profile. A distinct shift toward more force‐oriented knee extensor architecture is observed only in <styled-content style="fixed-case" toggle="no">
+<italic toggle="no">Homo sapiens</italic>
+</styled-content>, whereas other species retain more generalized or velocity‐biased configurations.</p><p>Macaques and siamangs do not exhibit clear clustering in the force‐dominated region for any functional group, instead occupying predominantly generalized or velocity‐oriented areas of morphospace. Finally, gorillas, bonobos, and gibbons display a comparatively broader spread of hip extensor architectures, indicating greater within‐group architectural diversity.</p></sec><sec id="ajpa70329-sec-0016"><label>3.4</label><title>Differences in Relative Tendon Length Across the Hind Limb</title><p>Across all species, tendon length ratios increased distally, with the highest values observed in the ankle and foot muscles (Figure <xref rid="ajpa70329-fig-0005" ref-type="fig">5</xref>). Hip muscles consistently exhibited the lowest ratios, reflecting short tendons in proximal limb segments, whereas distal muscles are characterized by having relatively longer tendons. This distal increase was supported statistically, with a significant main effect of joint (two‐way ANOVA: df = 3, <italic toggle="yes">F</italic> = 5.89, <italic toggle="yes">p</italic> = 0.0007), and post hoc tests confirming that the foot had significantly higher tendon length ratios than the hip (<italic toggle="yes">p</italic> = 0.001), knee (<italic toggle="yes">p</italic> = 0.0015), and ankle (<italic toggle="yes">p</italic> = 0.0048).</p><fig position="float" fig-type="FIGURE" id="ajpa70329-fig-0005" orientation="portrait"><label>FIGURE 5</label><caption><p>Relationship of tendon length to muscle length. Only specimens dissected in this study are included (<italic toggle="yes">n</italic> = 6) due to data availability.</p></caption><graphic xmlns:xlink="http://www.w3.org/1999/xlink" position="anchor" id="jats-graphic-9" orientation="portrait" xlink:href="AJPA-190-e70329-g004.jpg"><?image-name AJPA-190-e70329-g004.jpg?><?image-size 56688?><?image-md5 33216cada3ccd53d26623294aabd0490?><?image-image-server-status LOAD_COMPLETED?><?image-original-height 829?><?image-original-width 997?><?image-scaled-height 552?><?image-scaled-width 664?><?image-cloudpmc-urn urn:cdn:blobs/077f/13425262/33216cada3cc/AJPA-190-e70329-g004.jpg?><?thumb-name AJPA-190-e70329-g004.gif?><?thumb-size 3300?><?thumb-md5 e99028a4da56ff1d02f0aa9df00e1ef0?><?thumb-image-server-status NEVER_LOAD?><?thumb-scaled-height 83?><?thumb-scaled-width 100?><?thumb-cloudpmc-urn urn:cdn:blobs/077f/13425262/e99028a4da56/AJPA-190-e70329-g004.gif?></graphic></fig><p>Species differences were comparatively modest (species: df = 5, <italic toggle="yes">F</italic> = 2.34, <italic toggle="yes">p</italic> = 0.043), and no species × joint interaction was detected (<italic toggle="yes">F</italic> = 0.63, <italic toggle="yes">p</italic> = 0.85), indicating that species did not differ systematically at specific joints. Most pairwise contrasts were non‐significant after correction, with the only detected difference being slightly lower tendon length ratios in macaques compared with gibbons (Δ = −0.39, <italic toggle="yes">p</italic> = 0.030). Accordingly, visually elevated ankle ratios (Figure <xref rid="ajpa70329-fig-0005" ref-type="fig">5</xref>) in gibbons and siamangs were not found to be statistically different after correcting for multiple comparisons. The overall species effect was weak (ANOVA: <italic toggle="yes">F</italic> = 2.34, <italic toggle="yes">p</italic> = 0.043), and only one pairwise contrast (macaques &lt; gibbons) reached significance. Overall, these results indicate that tendon length variation is driven primarily by joint‐level (proximal–distal) differences rather than strong species‐specific specializations.</p></sec></sec><sec sec-type="discussion" id="ajpa70329-sec-0017"><label>4</label><title>Discussion</title><sec id="ajpa70329-sec-0018"><label>4.1</label><title>Functional Adaptation of Muscle Architecture</title><p>Comparative analyses of muscle morphology across the hind limb reveal a clear mosaic of functional adaptations. Generally, muscle origins and insertions are broadly conserved across species, which likely reflects strong biomechanical constraints on joint function, as the geometry of the major hip extensors, abductors, and rotators underpins effective joint stabilization across diverse locomotor regimes (Aerts et al. <xref rid="ajpa70329-bib-0001" ref-type="bibr">2018</xref>; Hogervorst and Vereecke <xref rid="ajpa70329-bib-0031" ref-type="bibr">2015</xref>; Payne et al. <xref rid="ajpa70329-bib-0050" ref-type="bibr">2006b</xref>; Vereecke et al. <xref rid="ajpa70329-bib-0064" ref-type="bibr">2005</xref>). However, the variability observed in the deep hip rotators and adductor complex, including the inconsistent presence of <italic toggle="yes">Mm. obturator</italic>, <italic toggle="yes">gemelli</italic>, and AMin, suggests that these smaller stabilizers are developmentally and functionally less constrained, likely adapting to subtle shifts in habitual posture and limb loading. Proximal muscles associated with hip stabilization and force transmission were largely conserved in their architectural profiles, whereas distal muscles showed greater interspecific variability in both muscle and tendon composition. This distal flexibility was most evident in gibbons, which exhibited high tendon ratios and velocity‐biased muscle architectures, consistent with enhanced elastic and displacement‐oriented function necessary for a highly arboreal lifestyle (Channon et al. <xref rid="ajpa70329-bib-0008" ref-type="bibr">2009</xref>; Granatosky <xref rid="ajpa70329-bib-0028" ref-type="bibr">2018</xref>).</p><p>Importantly, our findings underscore the importance of incorporating pennation angle into biomechanical analyses of primate musculature, especially in comparative contexts, in contrast to a few studies that have suggested pennation angle may be redundant in force‐production estimates (Lieber <xref rid="ajpa70329-bib-0037" ref-type="bibr">2022</xref>; Martin et al. <xref rid="ajpa70329-bib-0040" ref-type="bibr">2020</xref>). While some models have assumed that fascicle length and PCSA alone sufficiently capture a muscle's mechanical potential (Leischner et al. <xref rid="ajpa70329-bib-0035" ref-type="bibr">2018</xref>), our comparative data reveal that pennation angle can substantially alter architectural interpretation, particularly in species with high pennation and short <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-37" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math>, such as chimpanzees who exhibit consistently large pennation angles across both thigh and shank muscles, coupled with short <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-38" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math>. This configuration suggests a mechanical bias toward maximizing force output through increased fiber packing, at the expense of contraction velocity or range (Zajac <xref rid="ajpa70329-bib-0070" ref-type="bibr">1989</xref>). High pennation may serve as a compensatory mechanism for supporting large body mass and generating powerful hind limb extension during climbing and/or terrestrial locomotion. Notably, these architectural traits are not mirrored in the large‐bodied gorillas or orangutans which show lower pennation and longer <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-39" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math>, thus reflecting divergent mechanical strategies aligned with increased reliance on other locomotory behaviors, such as, for example, suspensory locomotion in the orangutan (e.g., Granatosky <xref rid="ajpa70329-bib-0028" ref-type="bibr">2018</xref>). While many muscles show conserved configurations, others diverge markedly in <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-40" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math> and PCSA<sub>norm</sub> reflecting functional specialization. Muscles involved in postural support and load‐bearing (e.g., GMax, PECT, VM, GRA) consistently exhibited small <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-41" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi>L</mml:mi><mml:mi>f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math> and larger PCSA<sub>norm</sub> across species, suggesting evolutionary stability in force‐specialized roles. In contrast, SAR exhibited a tendency toward displacement‐speciality, indicating adaptation to large range of motion in all species.</p><p>One of the most striking findings in this study is the presence of architectural similarities in different taxa, such as similar properties in ankle musculature. Whilst there were a few species that were more suited for force or displacement activities in select muscles (i.e., more force‐producing <italic toggle="yes">triceps surae</italic> in gorillas), generally most species overlapped in muscle function. Despite their divergent phylogenetic positions and locomotor ecologies (i.e., Granatosky <xref rid="ajpa70329-bib-0028" ref-type="bibr">2018</xref>), these species share common functional demands (Aerts et al. <xref rid="ajpa70329-bib-0001" ref-type="bibr">2018</xref>; Channon et al. <xref rid="ajpa70329-bib-0008" ref-type="bibr">2009</xref>; Manduell et al. <xref rid="ajpa70329-bib-0038" ref-type="bibr">2011</xref>; Payne et al. <xref rid="ajpa70329-bib-0050" ref-type="bibr">2006b</xref>; Thorpe and Crompton <xref rid="ajpa70329-bib-0058" ref-type="bibr">2005</xref>, <xref rid="ajpa70329-bib-0059" ref-type="bibr">2006</xref>; Thorpe et al. <xref rid="ajpa70329-bib-0060" ref-type="bibr">2007</xref>; Vereecke et al. <xref rid="ajpa70329-bib-0063" ref-type="bibr">2006</xref>, <xref rid="ajpa70329-bib-0064" ref-type="bibr">2005</xref>), such as the need for controlled limb support, balance, and versatile movement across different substrates, which likely contributed to convergent muscle specialization. This convergence supports the hypothesis that locomotor ecology exerts a stronger influence on muscle architecture than phylogenetic relatedness alone (Marchi et al. <xref rid="ajpa70329-bib-0039" ref-type="bibr">2018</xref>), although phylogeny and function covary in these lineages, making their relative contributions difficult to discern. Marchi et al. (<xref rid="ajpa70329-bib-0039" ref-type="bibr">2018</xref>) found that hind limb muscle configuration in primates aligns more closely with locomotor demands, such as leaping and climbing, than with evolutionary lineage. However, because phylogeny and function covary in these lineages, their relative contributions cannot be fully separated.</p><p>Such convergence has important implications for reconstructing the soft tissues of fossil hominoids and understanding their functional capacities from an evolutionary perspective. For example, the frequent use of human and chimpanzee muscle data as proxies for ancestral states in the reconstruction of hominin locomotion (Bates et al. <xref rid="ajpa70329-bib-0003" ref-type="bibr">2025</xref>; O'Neill et al. <xref rid="ajpa70329-bib-0048" ref-type="bibr">2024</xref>; Wiseman <xref rid="ajpa70329-bib-0067" ref-type="bibr">2023</xref>; Wiseman et al. <xref rid="ajpa70329-bib-0068" ref-type="bibr">2024</xref>) has provided valuable biomechanical baselines, especially given their well‐characterized anatomy and locomotor repertoires. However, our results suggest that these models may not fully capture the diversity of ancestral muscle function, particularly if architectural traits are more plastic and ecologically driven than previously assumed. For example, we propose that the smaller PCSA<sub>norm</sub> in the knee extensors in chimpanzees relative to humans may reflect differences in locomotor ecology, with humans showing adaptations for sustained terrestrial bipedalism and chimpanzees retaining traits supportive of greater arboreal behaviors (i.e., Crompton et al. <xref rid="ajpa70329-bib-0015" ref-type="bibr">2008</xref>, <xref rid="ajpa70329-bib-0014" ref-type="bibr">2010</xref>). However, the architectural configurations observed in humans and chimpanzees do not necessarily reflect the ancestral condition of early bipeds, who may have instead had combined intermediate features to accommodate a mix of terrestrial and arboreal locomotor behaviors, consistent with interpretations of their skeletal function. This highlights the importance of considering both derived adaptations and functional convergence when interpreting muscle architecture in an evolutionary context.</p><p>Our findings advocate for a more ecologically contextualized comparative framework for reconstructing soft tissues in fossil specimens. We propose that muscle architecture should not be constrained to just one or two analogous ‘brackets’ (Demuth et al. <xref rid="ajpa70329-bib-0020" ref-type="bibr">2023</xref>; Molnar and Diogo <xref rid="ajpa70329-bib-0043" ref-type="bibr">2021</xref>; Wiseman et al. <xref rid="ajpa70329-bib-0068" ref-type="bibr">2024</xref>; Witmer <xref rid="ajpa70329-bib-0069" ref-type="bibr">1995</xref>), but should also consider potential ecological analogues. Our results highlight that locomotor ecology, rather than phylogenetic relatedness alone, strongly influences muscle architecture. In the case of muscle reconstructions in fossil hominins, reliance on a limited phylogenetic bracket may obscure ecologically structured variation; instead, a broader and more ecologically representative comparative sample is required. Expanding comparative datasets to include additional locomotor strategies and taxa could further test and refine this ecological signal.</p></sec><sec id="ajpa70329-sec-0019"><label>4.2</label><title>Limitations</title><p>Not all muscles were dissected in every specimen for a variety of aforementioned reasons, limiting the completeness of some functional group analyses. Nevertheless, our results support the view that muscle properties vary substantially within and between groups.</p><p>Muscle architecture is influenced by a range of individual factors, including age, activity level, and pathology (Létocart et al. <xref rid="ajpa70329-bib-0036" ref-type="bibr">2021</xref>). The specimens included in this study provide a unique opportunity to explore variation in muscle architecture across life histories and loading regimes. By combining these novel data with published measurements from the literature, we begin to build a more comprehensive picture of primate muscle architecture. Moving forward, openly sharing muscle data using consistent collection protocols will allow different research groups to compile larger comparative datasets, enhancing our understanding of how age, sex, and ecological factors shape musculoskeletal variation.</p><p>Recent work has shown that hominoids may exhibit different scaling relationships between body mass and muscle cross‐sectional area (Warrener <xref rid="ajpa70329-bib-0065" ref-type="bibr">2024</xref>), likely reflecting differences in habitual loading regimes associated with locomotor behavior. As all extant hominoids are locomotor specialists to varying degrees, some interspecific differences observed here may reflect lineage‐specific scaling trajectories in addition to functional adaptation. Although architectural variables were normalized to facilitate comparison, the limited sample sizes available for rare primate cadavers prevented explicit modeling of lineage‐specific allometric relationships. Future studies with larger within‐species samples will be necessary to disentangle the relative contributions of body size, locomotor ecology, and phylogenetic history.</p></sec></sec><sec sec-type="conclusions" id="ajpa70329-sec-0020"><label>5</label><title>Conclusion</title><p>Our study highlights the importance of a broader comparative framework for understanding primate locomotor diversity. By presenting new detailed dissection data from six primate species and integrating comparative results across multiple studies (Charles et al. <xref rid="ajpa70329-bib-0012" ref-type="bibr">2019</xref>; Myatt et al. <xref rid="ajpa70329-bib-0044" ref-type="bibr">2012</xref>; Oishi et al. <xref rid="ajpa70329-bib-0047" ref-type="bibr">2009</xref>; Payne et al. <xref rid="ajpa70329-bib-0049" ref-type="bibr">2006a</xref>; Vereecke et al. <xref rid="ajpa70329-bib-0064" ref-type="bibr">2005</xref>), we demonstrate that locomotor ecology plays a key role in shaping hind limb muscle architecture, both among closely and distantly related taxa. Our findings suggest that ecological factors, such as substrate use and locomotor repertoire, likely exert a strong influence on muscular design.</p></sec><sec id="ajpa70329-sec-0027"><title>Author Contributions</title><p>
+<bold>Emma Guimaraes:</bold> investigation, writing – original draft, writing – review and editing, visualization, methodology, formal analysis. <bold>Evie Vereecke:</bold> investigation, writing – original draft, writing – review and editing, resources, data curation, methodology. <bold>Ashleigh L. Wiseman:</bold> conceptualization, investigation, funding acquisition, writing – original draft, writing – review and editing, visualization, methodology, supervision.</p></sec><sec id="ajpa70329-sec-0025"><title>Funding</title><p>This work was supported by the AABA Cobb Professional Development Grant, a Leverhulme Trust Early Career Fellowship (grant no. ECF‐2021‐054), and the Isaac Newton Trust (Project_21.08(a)) at the University of Cambridge, and further supported by the STEPS project (ERC, Grant No. 101219207), awarded to A.L.W.</p></sec><sec id="ajpa70329-sec-0022"><title>Ethics Statement</title><p>Ethical approval for primate dissections was provided by the Animal Ethics Committee of the KU Leuven, Belgium (approval codes M005/2023, M006/2023), and all procedures complied with EU regulations.</p></sec><sec sec-type="COI-statement" id="ajpa70329-sec-0026"><title>Conflicts of Interest</title><p>The authors declare no conflicts of interest.</p></sec><sec sec-type="supplementary-material"><title>Supporting information</title><supplementary-material id="ajpa70329-supitem-0001" position="float" content-type="local-data" orientation="portrait"><caption><p>
+<bold>Figure S1:</bold> Functional space plots of all pelvic and hind limb muscles within each species, illustrating the relationship between <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" id="jats-math-1" display="inline" overflow="scroll"><mml:mrow><mml:mrow><mml:msub><mml:mi mathvariant="normal">L</mml:mi><mml:mi mathvariant="normal">f</mml:mi></mml:msub></mml:mrow></mml:mrow></mml:math> and PCSA<sub>norm</sub>. Muscles are grouped according to primary function (Table <xref rid="ajpa70329-tbl-0003" ref-type="table">3</xref>). Muscle data from all specimens (Table <xref rid="ajpa70329-tbl-0001" ref-type="table">1</xref>) are included.</p></caption><media xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="AJPA-190-e70329-s003.tif" position="float" orientation="portrait"><?suppdata-name AJPA-190-e70329-s003.tif?><?suppdata-size 2964290?><?suppdata-md5 ca4380c0cae2ca9a48b3b22e866d581c?><?suppdata-image-server-status NEVER_LOAD?><?suppdata-mime-type image?><?suppdata-mime-sub-type tiff?><?suppdata-cloudpmc-urn urn:app:077f/13425262/ca4380c0cae2/AJPA-190-e70329-s003.tif?></media></supplementary-material><supplementary-material id="ajpa70329-supitem-0002" position="float" content-type="local-data" orientation="portrait"><caption><p>
+<bold>Data S1:</bold> ajpa70329‐sup‐0002‐DataS1.xlsx.</p></caption><media xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="AJPA-190-e70329-s001.xlsx" position="float" orientation="portrait"><?suppdata-name AJPA-190-e70329-s001.xlsx?><?suppdata-size 321899?><?suppdata-md5 0de6ae77281afac67a6aa041a9ed88d8?><?suppdata-image-server-status NEVER_LOAD?><?suppdata-mime-type application?><?suppdata-mime-sub-type vnd.openxmlformats-officedocument.spreadsheetml.sheet?><?suppdata-cloudpmc-urn urn:app:077f/13425262/0de6ae77281a/AJPA-190-e70329-s001.xlsx?></media></supplementary-material><supplementary-material id="ajpa70329-supitem-0003" position="float" content-type="local-data" orientation="portrait"><caption><p>
+<bold>Data S2:</bold> ajpa70329‐sup‐0003‐DataS2.docx.</p></caption><media xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="AJPA-190-e70329-s002.docx" position="float" orientation="portrait"><?suppdata-name AJPA-190-e70329-s002.docx?><?suppdata-size 37901?><?suppdata-md5 c9512a89bfc6234c85be5c672423ebc6?><?suppdata-image-server-status NEVER_LOAD?><?suppdata-mime-type application?><?suppdata-mime-sub-type vnd.openxmlformats-officedocument.wordprocessingml.document?><?suppdata-cloudpmc-urn urn:app:077f/13425262/c9512a89bfc6/AJPA-190-e70329-s002.docx?></media></supplementary-material></sec></body><back><ack id="ajpa70329-sec-0021"><title>Acknowledgments</title><p>We thank the staff of the Jan Palfijn Anatomy Lab at KU Leuven, Belgium for their assistance. Julia van Beesel, Océane Cluzeau, Pasha van Biljert, Simon Debusschere, and Arthur Arie are especially thanked for assistance in dissections. We also express our gratitude to the collaborating zoos who provided access to unique primate specimens: the Réserve Africaine de Sigean in France, DierenPark Amersfoort, and Diergaarde Blijdorp in the Netherlands, and Zoo Antwerp and Planckendael in Belgium. Without their contribution this study would not have been possible.</p></ack><sec sec-type="data-availability" id="ajpa70329-sec-0024"><title>Data Availability Statement</title><p>Measured dissection parameters are provided in the <xref rid="ajpa70329-supitem-0001" ref-type="supplementary-material">Supporting Information</xref>.</p></sec><ref-list content-type="cited-references" id="ajpa70329-bibl-0001"><title>References</title><ref id="ajpa70329-bib-0001"><mixed-citation publication-type="journal" id="ajpa70329-cit-0001">
+<string-name name-style="western">
+<surname>Aerts</surname>, <given-names>P.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>K.</given-names>
+<surname>D'Août</surname>
+</string-name>, <string-name name-style="western">
+<given-names>S.</given-names>
+<surname>Thorpe</surname>
+</string-name>, <string-name name-style="western">
+<given-names>G.</given-names>
+<surname>Berillon</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>E.</given-names>
+<surname>Vereecke</surname>
+</string-name>. <year>2018</year>. “<article-title>The Gibbon's Achilles Tendon Revisited: Consequences for the Evolution of the Great Apes?</article-title>” <source>Proceedings of the Royal Society B: Biological Sciences</source>
+<volume>285</volume>, no. <issue>1880</issue>: <elocation-id>20180859</elocation-id>. <pub-id pub-id-type="doi">10.1098/rspb.2018.0859</pub-id>.<pub-id pub-id-type="pmcid">PMC6015853</pub-id><pub-id pub-id-type="pmid">29899076</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0002"><mixed-citation publication-type="journal" id="ajpa70329-cit-0002">
+<string-name name-style="western">
+<surname>Alexander</surname>, <given-names>R. M. N.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>A. S.</given-names>
+<surname>Jayes</surname>
+</string-name>, <string-name name-style="western">
+<given-names>G. M. O.</given-names>
+<surname>Maloiy</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>E. M.</given-names>
+<surname>Wathuta</surname>
+</string-name>. <year>1981</year>. “<article-title>Allometry of the Leg Muscles of Mammals</article-title>.” <source>Journal of Zoology</source>
+<volume>194</volume>, no. <issue>4</issue>: <fpage>539</fpage>–<lpage>552</lpage>. <pub-id pub-id-type="doi">10.1111/j.1469-7998.1981.tb04600.x</pub-id>.</mixed-citation></ref><ref id="ajpa70329-bib-0003"><mixed-citation publication-type="journal" id="ajpa70329-cit-0003">
+<string-name name-style="western">
+<surname>Bates</surname>, <given-names>K. T.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>S.</given-names>
+<surname>McCormack</surname>
+</string-name>, <string-name name-style="western">
+<given-names>E.</given-names>
+<surname>Donald</surname>
+</string-name>, et al. <year>2025</year>. “<article-title>Running Performance in <italic toggle="yes">Australopithecus Afarensis</italic>
+</article-title>.” <source>Current Biology</source>
+<volume>35</volume>, no. <issue>1</issue>: <fpage>224</fpage>–<lpage>230.e4</lpage>. <pub-id pub-id-type="doi">10.1016/j.cub.2024.11.025</pub-id>.<pub-id pub-id-type="pmid">39701094</pub-id>
+</mixed-citation></ref><ref id="ajpa70329-bib-0004"><mixed-citation publication-type="journal" id="ajpa70329-cit-0004">
+<string-name name-style="western">
+<surname>Böhmer</surname>, <given-names>C.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>A.</given-names>
+<surname>Fabre</surname>
+</string-name>, <string-name name-style="western">
+<given-names>M.</given-names>
+<surname>Herbin</surname>
+</string-name>, <string-name name-style="western">
+<given-names>S.</given-names>
+<surname>Peigné</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>A.</given-names>
+<surname>Herrel</surname>
+</string-name>. <year>2018</year>. “<article-title>Anatomical Basis of Differences in Locomotor Behavior in Martens: A Comparison of the Forelimb Musculature Between Two Sympatric Species of <italic toggle="yes">Martes</italic>
+</article-title>.” <source>Anatomical Record</source>
+<volume>301</volume>, no. <issue>3</issue>: <fpage>449</fpage>–<lpage>472</lpage>. <pub-id pub-id-type="doi">10.1002/ar.23742</pub-id>.<pub-id pub-id-type="pmid">29418114</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0005"><mixed-citation publication-type="journal" id="ajpa70329-cit-0005">
+<string-name name-style="western">
+<surname>Brassey</surname>, <given-names>C. A.</given-names>
+</string-name>, and <string-name name-style="western">
+<given-names>W. I.</given-names>
+<surname>Sellers</surname>
+</string-name>. <year>2014</year>. “<article-title>Scaling of Convex Hull Volume to Body Mass in Modern Primates, Non‐Primate Mammals and Birds</article-title>.” <source>PLoS One</source>
+<volume>9</volume>, no. <issue>3</issue>: <elocation-id>e91691</elocation-id>. <pub-id pub-id-type="doi">10.1371/journal.pone.0091691</pub-id>.<pub-id pub-id-type="pmid">24618736</pub-id>
+<pub-id pub-id-type="pmcid">PMC3950251</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0006"><mixed-citation publication-type="journal" id="ajpa70329-cit-0006">
+<string-name name-style="western">
+<surname>Burgess</surname>, <given-names>M. L.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>S. C.</given-names>
+<surname>McFarlin</surname>
+</string-name>, <string-name name-style="western">
+<given-names>A.</given-names>
+<surname>Mudakikwa</surname>
+</string-name>, <string-name name-style="western">
+<given-names>M. R.</given-names>
+<surname>Cranfield</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>C. B.</given-names>
+<surname>Ruff</surname>
+</string-name>. <year>2018</year>. “<article-title>Body Mass Estimation in Hominoids: Age and Locomotor Effects</article-title>.” <source>Journal of Human Evolution</source>
+<volume>115</volume>: <fpage>36</fpage>–<lpage>46</lpage>. <pub-id pub-id-type="doi">10.1016/j.jhevol.2017.07.004</pub-id>.<pub-id pub-id-type="pmid">28802725</pub-id>
+</mixed-citation></ref><ref id="ajpa70329-bib-0007"><mixed-citation publication-type="journal" id="ajpa70329-cit-0007">
+<string-name name-style="western">
+<surname>Casteleyn</surname>, <given-names>C.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>N.</given-names>
+<surname>Robin</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>J.</given-names>
+<surname>Bakker</surname>
+</string-name>. <year>2023</year>. “<article-title>Topographical Anatomy of the Rhesus Monkey (<styled-content style="fixed-case" toggle="no">
+<italic toggle="no">Macaca mulatta</italic>
+</styled-content>)—Part II: Pelvic Limb</article-title>.” <source>Veterinary Sciences</source>
+<volume>10</volume>, no. <issue>3</issue>: <elocation-id>172</elocation-id>. <pub-id pub-id-type="doi">10.3390/vetsci10030172</pub-id>.<pub-id pub-id-type="pmid">36977211</pub-id>
+<pub-id pub-id-type="pmcid">PMC10051720</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0008"><mixed-citation publication-type="journal" id="ajpa70329-cit-0008">
+<string-name name-style="western">
+<surname>Channon</surname>, <given-names>A. J.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>M. M.</given-names>
+<surname>Günther</surname>
+</string-name>, <string-name name-style="western">
+<given-names>R. H.</given-names>
+<surname>Crompton</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>E. E.</given-names>
+<surname>Vereecke</surname>
+</string-name>. <year>2009</year>. “<article-title>Mechanical Constraints on the Functional Morphology of the Gibbon Hind Limb</article-title>.” <source>Journal of Anatomy</source>
+<volume>215</volume>, no. <issue>4</issue>: <fpage>383</fpage>–<lpage>400</lpage>. <pub-id pub-id-type="doi">10.1111/j.1469-7580.2009.01123.x</pub-id>.<pub-id pub-id-type="pmid">19627388</pub-id>
+<pub-id pub-id-type="pmcid">PMC2766056</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0009"><mixed-citation publication-type="journal" id="ajpa70329-cit-0009">
+<string-name name-style="western">
+<surname>Charles</surname>, <given-names>J.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>R.</given-names>
+<surname>Kissane</surname>
+</string-name>, <string-name name-style="western">
+<given-names>T.</given-names>
+<surname>Hoehfurtner</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>K. T.</given-names>
+<surname>Bates</surname>
+</string-name>. <year>2022</year>. “<article-title>From Fibre to Function: Are We Accurately Representing Muscle Architecture and Performance?</article-title>” <source>Biological Reviews</source>
+<volume>97</volume>, no. <issue>4</issue>: <fpage>1640</fpage>–<lpage>1676</lpage>. <pub-id pub-id-type="doi">10.1111/brv.12856</pub-id>.<pub-id pub-id-type="pmid">35388613</pub-id>
+<pub-id pub-id-type="pmcid">PMC9540431</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0010"><mixed-citation publication-type="journal" id="ajpa70329-cit-0010">
+<string-name name-style="western">
+<surname>Charles</surname>, <given-names>J. P.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>O.</given-names>
+<surname>Cappellari</surname>
+</string-name>, <string-name name-style="western">
+<given-names>A. J.</given-names>
+<surname>Spence</surname>
+</string-name>, <string-name name-style="western">
+<given-names>D. J.</given-names>
+<surname>Wells</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>J. R.</given-names>
+<surname>Hutchinson</surname>
+</string-name>. <year>2016</year>. “<article-title>Muscle Moment Arms and Sensitivity Analysis of a Mouse Hindlimb Musculoskeletal Model</article-title>.” <source>Journal of Anatomy</source>
+<volume>229</volume>, no. <issue>4</issue>: <fpage>514</fpage>–<lpage>535</lpage>. <pub-id pub-id-type="doi">10.1111/joa.12461</pub-id>.<pub-id pub-id-type="pmid">27173448</pub-id>
+<pub-id pub-id-type="pmcid">PMC5013061</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0011"><mixed-citation publication-type="journal" id="ajpa70329-cit-0011">
+<string-name name-style="western">
+<surname>Charles</surname>, <given-names>J. P.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>B.</given-names>
+<surname>Grant</surname>
+</string-name>, <string-name name-style="western">
+<given-names>K.</given-names>
+<surname>D'Août</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>K. T.</given-names>
+<surname>Bates</surname>
+</string-name>. <year>2020</year>. “<article-title>Subject‐Specific Muscle Properties From Diffusion Tensor Imaging Significantly Improve the Accuracy of Musculoskeletal Models</article-title>.” <source>Journal of Anatomy</source>
+<volume>237</volume>, no. <issue>5</issue>: <fpage>941</fpage>–<lpage>959</lpage>. <pub-id pub-id-type="doi">10.1111/joa.13261</pub-id>.<pub-id pub-id-type="pmid">32598483</pub-id>
+<pub-id pub-id-type="pmcid">PMC7542200</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0012"><mixed-citation publication-type="journal" id="ajpa70329-cit-0012">
+<string-name name-style="western">
+<surname>Charles</surname>, <given-names>J. P.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>C.‐H.</given-names>
+<surname>Moon</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>W. J.</given-names>
+<surname>Anderst</surname>
+</string-name>. <year>2019</year>. “<article-title>Determining Subject‐Specific Lower‐Limb Muscle Architecture Data for Musculoskeletal Models Using Diffusion Tensor Imaging</article-title>.” <source>Journal of Biomechanical Engineering</source>
+<volume>141</volume>, no. <issue>6</issue>: <elocation-id>060905</elocation-id>. <pub-id pub-id-type="doi">10.1115/1.4040946</pub-id>.<pub-id pub-id-type="pmid">30098157</pub-id>
+</mixed-citation></ref><ref id="ajpa70329-bib-0013"><mixed-citation publication-type="journal" id="ajpa70329-cit-0013">
+<string-name name-style="western">
+<surname>Coatham</surname>, <given-names>S. J.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>W. I.</given-names>
+<surname>Sellers</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>T. A.</given-names>
+<surname>Püschel</surname>
+</string-name>. <year>2021</year>. “<article-title>Convex Hull Estimation of Mammalian Body Segment Parameters</article-title>.” <source>Royal Society Open Science</source>
+<volume>8</volume>, no. <issue>6</issue>: <elocation-id>210836</elocation-id>. <pub-id pub-id-type="doi">10.1098/rsos.210836</pub-id>.<pub-id pub-id-type="pmid">34234959</pub-id>
+<pub-id pub-id-type="pmcid">PMC8242930</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0014"><mixed-citation publication-type="journal" id="ajpa70329-cit-0014">
+<string-name name-style="western">
+<surname>Crompton</surname>, <given-names>R. H.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>W. I.</given-names>
+<surname>Sellers</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>S. K. S.</given-names>
+<surname>Thorpe</surname>
+</string-name>. <year>2010</year>. “<article-title>Arboreality, Terrestriality and Bipedalism</article-title>.” <source>Philosophical Transactions of the Royal Society, B: Biological Sciences</source>
+<volume>365</volume>, no. <issue>1556</issue>: <fpage>3301</fpage>–<lpage>3314</lpage>. <pub-id pub-id-type="doi">10.1098/rstb.2010.0035</pub-id>.<pub-id pub-id-type="pmcid">PMC2981953</pub-id><pub-id pub-id-type="pmid">20855304</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0015"><mixed-citation publication-type="journal" id="ajpa70329-cit-0015">
+<string-name name-style="western">
+<surname>Crompton</surname>, <given-names>R. H.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>E. E.</given-names>
+<surname>Vereecke</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>S. K. S.</given-names>
+<surname>Thorpe</surname>
+</string-name>. <year>2008</year>. “<article-title>Locomotion and Posture From the Common Hominoid Ancestor to Fully Modern Hominins, With Special Reference to the Last Common Panin/Hominin Ancestor</article-title>.” <source>Journal of Anatomy</source>
+<volume>212</volume>, no. <issue>4</issue>: <fpage>501</fpage>–<lpage>543</lpage>. <pub-id pub-id-type="doi">10.1111/j.1469-7580.2008.00870.x</pub-id>.<pub-id pub-id-type="pmid">18380868</pub-id>
+<pub-id pub-id-type="pmcid">PMC2409101</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0016"><mixed-citation publication-type="journal" id="ajpa70329-cit-0016">
+<string-name name-style="western">
+<surname>Cuff</surname>, <given-names>A. R.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>A. L. A.</given-names>
+<surname>Wiseman</surname>
+</string-name>, <string-name name-style="western">
+<given-names>P. J.</given-names>
+<surname>Bishop</surname>
+</string-name>, <string-name name-style="western">
+<given-names>K. B.</given-names>
+<surname>Michel</surname>
+</string-name>, <string-name name-style="western">
+<given-names>R.</given-names>
+<surname>Gaignet</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>J. R.</given-names>
+<surname>Hutchinson</surname>
+</string-name>. <year>2023</year>. “<article-title>Anatomically Grounded Estimation of Hindlimb Muscle Sizes in Archosauria</article-title>.” <source>Journal of Anatomy</source>
+<volume>242</volume>, no. <issue>2</issue>: <fpage>289</fpage>–<lpage>311</lpage>. <pub-id pub-id-type="doi">10.1111/joa.13767</pub-id>.<pub-id pub-id-type="pmid">36206401</pub-id>
+<pub-id pub-id-type="pmcid">PMC9877486</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0017"><mixed-citation publication-type="journal" id="ajpa70329-cit-0017">
+<string-name name-style="western">
+<surname>De Ridder</surname>, <given-names>T.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>P.</given-names>
+<surname>Aerts</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>J. A.</given-names>
+<surname>MacLaren</surname>
+</string-name>. <year>2025</year>. “<article-title>Could “Wild Horses” Drag You Away? Quantifying Muscular Architecture in the Forelimbs of Extant, Non‐Domestic Equids (Perissodactyla: Equidae)</article-title>.” <source>Anatomical Record</source>: <fpage>1</fpage>–<lpage>28</lpage>. <pub-id pub-id-type="doi">10.1002/ar.70092</pub-id>.<pub-id pub-id-type="pmid">41267484</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0018"><mixed-citation publication-type="journal" id="ajpa70329-cit-0018">
+<string-name name-style="western">
+<surname>Deane</surname>, <given-names>A. S.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>M. N.</given-names>
+<surname>Muchlinski</surname>
+</string-name>, <string-name name-style="western">
+<given-names>J. M.</given-names>
+<surname>Organ</surname>
+</string-name>, et al. <year>2024</year>. “<article-title>The Comparative and Functional Anatomy of the Forelimb Muscle Architecture of <sc>h</sc>umboldt's Woolly Monkey (<styled-content style="fixed-case" toggle="no">
+<italic toggle="no">Lagothrix lagotricha</italic>
+</styled-content>)</article-title>.” <source>Anatomical Record</source>
+<volume>307</volume>, no. <issue>12</issue>: <fpage>3850</fpage>–<lpage>3869</lpage>. <pub-id pub-id-type="doi">10.1002/ar.25514</pub-id>.<pub-id pub-id-type="pmid">38938152</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0019"><mixed-citation publication-type="journal" id="ajpa70329-cit-0019">
+<string-name name-style="western">
+<surname>Deane</surname>, <given-names>A. S.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>J.</given-names>
+<surname>Organ</surname>
+</string-name>, <string-name name-style="western">
+<given-names>E.</given-names>
+<surname>Vereecke</surname>
+</string-name>, <string-name name-style="western">
+<given-names>M. N.</given-names>
+<surname>Muchlinski</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>T.</given-names>
+<surname>Butterfield</surname>
+</string-name>. <year>2020</year>. “<article-title>New Insights Into Ape and Human Evolution From a (Mediocre) Suspensory Platyrrhine: The Muscle‐Tendon Architecture of <italic toggle="yes">Lagothrix lagotricha</italic> and the Origins of Anthropoid Suspension</article-title>.” <source>FASEB Journal</source>
+<volume>34</volume>, no. <issue>S1</issue>: <fpage>1</fpage>. <pub-id pub-id-type="doi">10.1096/fasebj.2020.34.s1.05709</pub-id>.</mixed-citation></ref><ref id="ajpa70329-bib-0020"><mixed-citation publication-type="journal" id="ajpa70329-cit-0020">
+<string-name name-style="western">
+<surname>Demuth</surname>, <given-names>O. E.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>E.</given-names>
+<surname>Herbst</surname>
+</string-name>, <string-name name-style="western">
+<given-names>D. T.</given-names>
+<surname>Polet</surname>
+</string-name>, <string-name name-style="western">
+<given-names>A. L. A.</given-names>
+<surname>Wiseman</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>J. R.</given-names>
+<surname>Hutchinson</surname>
+</string-name>. <year>2023</year>. “<article-title>Modern Three‐Dimensional Digital Methods for Studying Locomotor Biomechanics in Tetrapods</article-title>.” <source>Journal of Experimental Biology</source>
+<volume>226</volume>, no. <issue>Suppl_1</issue>: <elocation-id>jeb245132</elocation-id>. <pub-id pub-id-type="doi">10.1242/jeb.245132</pub-id>.<pub-id pub-id-type="pmid">36810943</pub-id>
+<pub-id pub-id-type="pmcid">PMC10042237</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0021"><mixed-citation publication-type="book" id="ajpa70329-cit-0021">
+<string-name name-style="western">
+<surname>Diogo</surname>, <given-names>R.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>J.</given-names>
+<surname>Arias‐Martorell</surname>
+</string-name>, <string-name name-style="western">
+<given-names>F. J.</given-names>
+<surname>de Paz</surname>
+</string-name>, et al. <year>2017</year>. <source>Photographic and Descriptive Musculoskeletal Atlas of Bonobos: With Notes on the Weight, Attachments, Variations, and Innervation of the Muscles and Comparisons With Common Chimpanzees and Humans</source>. <edition designator="1">1st ed</edition>. <publisher-name>Springer</publisher-name>. <pub-id pub-id-type="doi">10.1007/978-3-319-54106-8</pub-id>.</mixed-citation></ref><ref id="ajpa70329-bib-0024"><mixed-citation publication-type="book" id="ajpa70329-cit-0024">
+<string-name name-style="western">
+<surname>Diogo</surname>, <given-names>R.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>J. M.</given-names>
+<surname>Potau</surname>
+</string-name>, <string-name name-style="western">
+<given-names>J. F.</given-names>
+<surname>Pastor</surname>
+</string-name>, et al. <year>2010</year>. <source>Photographic and Descriptive Musculoskeletal Atlas of Gorilla: With Notes on the Attachments, Variations, Innervation, Synonymy and Weight of the Muscles</source>, edited by <person-group person-group-type="editor">
+<string-name name-style="western">
+<given-names>B. A.</given-names>
+<surname>Wood</surname>
+</string-name>
+</person-group>. <publisher-name>CRC Press</publisher-name>. <pub-id pub-id-type="doi">10.1201/b10299</pub-id>.</mixed-citation></ref><ref id="ajpa70329-bib-0025"><mixed-citation publication-type="book" id="ajpa70329-cit-0025">
+<string-name name-style="western">
+<surname>Diogo</surname>, <given-names>R.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>J. M.</given-names>
+<surname>Potau</surname>
+</string-name>, <string-name name-style="western">
+<given-names>J. F.</given-names>
+<surname>Pastor</surname>
+</string-name>, et al. <year>2012</year>. <source>Photographic and Descriptive Musculoskeletal Atlas of Gibbons and Siamangs (Hylobates): With Notes on the Attachments, Variations, Innervation, Synonymy and Weight of the Muscles</source>. <edition designator="1">1st ed</edition>. <publisher-name>CRC Press</publisher-name>. <pub-id pub-id-type="doi">10.1201/b11936</pub-id>.</mixed-citation></ref><ref id="ajpa70329-bib-0023"><mixed-citation publication-type="book" id="ajpa70329-cit-0023">
+<string-name name-style="western">
+<surname>Diogo</surname>, <given-names>R.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>J. M.</given-names>
+<surname>Potau</surname>
+</string-name>, <string-name name-style="western">
+<given-names>J. F.</given-names>
+<surname>Pastor</surname>
+</string-name>, et al. <year>2013</year>. <source>Photographic and Descriptive Musculoskeletal Atlas of Orangutans: With Notes on the Attachments, Variations, Innervations, Function and Synonymy and Weight of the Muscles</source>. <publisher-name>CRC Press</publisher-name>. <pub-id pub-id-type="doi">10.1201/b14983</pub-id>.</mixed-citation></ref><ref id="ajpa70329-bib-0072"><mixed-citation publication-type="book" id="ajpa70329-cit-0072">
+<string-name name-style="western">
+<surname>Diogo</surname>, <given-names>R.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>J. M.</given-names>
+<surname>Potau</surname>
+</string-name>, <string-name name-style="western">
+<given-names>J. F.</given-names>
+<surname>Pastor</surname>
+</string-name>, et al. <year>2019</year>. “<part-title>Photographic and Descriptive Musculoskeletal Atlas of Chimpanzees</part-title>.” In <source>With Notes on the Attachments, Variations, Innervation, Function and Synonymy and Weight of the Muscles</source>, edited by <person-group person-group-type="editor">
+<string-name name-style="western">
+<given-names>R.</given-names>
+<surname>Diogo</surname>
+</string-name>
+</person-group>. <publisher-name>Taylor &amp; Francis Group, LLC</publisher-name>.</mixed-citation></ref><ref id="ajpa70329-bib-0026"><mixed-citation publication-type="journal" id="ajpa70329-cit-0026">
+<string-name name-style="western">
+<surname>Eng</surname>, <given-names>C. M.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>E.</given-names>
+<surname>Azizi</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>T. J.</given-names>
+<surname>Roberts</surname>
+</string-name>. <year>2018</year>. “<article-title>Structural Determinants of Muscle Gearing During Dynamic Contractions</article-title>.” <source>Integrative and Comparative Biology</source>
+<volume>58</volume>, no. <issue>2</issue>: <fpage>207</fpage>–<lpage>218</lpage>. <pub-id pub-id-type="doi">10.1093/icb/icy054</pub-id>.<pub-id pub-id-type="pmid">29889236</pub-id>
+<pub-id pub-id-type="pmcid">PMC6104701</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0027"><mixed-citation publication-type="journal" id="ajpa70329-cit-0027">
+<string-name name-style="western">
+<surname>Gans</surname>, <given-names>C.</given-names>
+</string-name>
+<year>1982</year>. “<article-title>Fiber Architecture and Muscle Function</article-title>.” <source>Exercise and Sport Sciences Reviews</source>
+<volume>10</volume>: <fpage>160</fpage>–<lpage>207</lpage>.<pub-id pub-id-type="pmid">6749514</pub-id>
+</mixed-citation></ref><ref id="ajpa70329-bib-0028"><mixed-citation publication-type="journal" id="ajpa70329-cit-0028">
+<string-name name-style="western">
+<surname>Granatosky</surname>, <given-names>M. C.</given-names>
+</string-name>
+<year>2018</year>. “<article-title>A Review of Locomotor Diversity in Mammals With Analyses Exploring the Influence of Substrate Use, Body Mass and Intermembral Index in Primates</article-title>.” <source>Journal of Zoology</source>
+<volume>306</volume>, no. <issue>4</issue>: <fpage>207</fpage>–<lpage>216</lpage>. <pub-id pub-id-type="doi">10.1111/jzo.12608</pub-id>.</mixed-citation></ref><ref id="ajpa70329-bib-0029"><mixed-citation publication-type="journal" id="ajpa70329-cit-0029">
+<string-name name-style="western">
+<surname>Granatosky</surname>, <given-names>M. C.</given-names>
+</string-name>, and <string-name name-style="western">
+<given-names>C. F.</given-names>
+<surname>Ross</surname>
+</string-name>. <year>2020</year>. “<article-title>Differences in Muscle Mechanics Underlie Divergent Optimality Criteria Between Feeding and Locomotor Systems</article-title>.” <source>Journal of Anatomy</source>
+<volume>237</volume>, no. <issue>6</issue>: <fpage>1072</fpage>–<lpage>1086</lpage>. <pub-id pub-id-type="doi">10.1111/joa.13279</pub-id>.<pub-id pub-id-type="pmid">32671858</pub-id>
+<pub-id pub-id-type="pmcid">PMC7704237</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0030"><mixed-citation publication-type="journal" id="ajpa70329-cit-0030">
+<string-name name-style="western">
+<surname>Herrel</surname>, <given-names>A.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>J.</given-names>
+<surname>Theil</surname>
+</string-name>, <string-name name-style="western">
+<given-names>L.</given-names>
+<surname>Faure</surname>
+</string-name>, <string-name name-style="western">
+<given-names>F.</given-names>
+<surname>Druelle</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>G.</given-names>
+<surname>Berillon</surname>
+</string-name>. <year>2025</year>. “<article-title>Age‐ and Size‐Related Changes in Hind Limb Muscles in Two Baboon Species (<italic toggle="yes">Papio anubis</italic> and <styled-content style="fixed-case" toggle="no">
+<italic toggle="no">P. papio</italic>
+</styled-content>)</article-title>.” <source>Journal of Anatomy</source>
+<volume>246</volume>, no. <issue>1</issue>: <fpage>108</fpage>–<lpage>119</lpage>. <pub-id pub-id-type="doi">10.1111/joa.14140</pub-id>.<pub-id pub-id-type="pmid">39313987</pub-id>
+<pub-id pub-id-type="pmcid">PMC11684377</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0031"><mixed-citation publication-type="journal" id="ajpa70329-cit-0031">
+<string-name name-style="western">
+<surname>Hogervorst</surname>, <given-names>T.</given-names>
+</string-name>, and <string-name name-style="western">
+<given-names>E. E.</given-names>
+<surname>Vereecke</surname>
+</string-name>. <year>2015</year>. “<article-title>Evolution of the Human Hip. Part 2: Muscling the Double Extension</article-title>.” <source>Journal of Hip Preservation Surgery</source>
+<volume>2</volume>, no. <issue>1</issue>: <fpage>3</fpage>–<lpage>14</lpage>. <pub-id pub-id-type="doi">10.1093/jhps/hnu014</pub-id>.<pub-id pub-id-type="pmid">27011809</pub-id>
+<pub-id pub-id-type="pmcid">PMC4718477</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0032"><mixed-citation publication-type="journal" id="ajpa70329-cit-0032">
+<string-name name-style="western">
+<surname>Hunt</surname>, <given-names>K. D.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>J. G. H.</given-names>
+<surname>Cant</surname>
+</string-name>, <string-name name-style="western">
+<given-names>D. L.</given-names>
+<surname>Gebo</surname>
+</string-name>, <string-name name-style="western">
+<given-names>M. D.</given-names>
+<surname>Rose</surname>
+</string-name>, <string-name name-style="western">
+<given-names>S. E.</given-names>
+<surname>Walker</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>D.</given-names>
+<surname>Youlatos</surname>
+</string-name>. <year>1996</year>. “<article-title>Standardized Descriptions of Primate Locomotor and Postural Modes</article-title>.” <source>Primates</source>
+<volume>37</volume>, no. <issue>4</issue>: <fpage>363</fpage>–<lpage>387</lpage>. <pub-id pub-id-type="doi">10.1007/BF02381373</pub-id>.</mixed-citation></ref><ref id="ajpa70329-bib-0033"><mixed-citation publication-type="journal" id="ajpa70329-cit-0033">
+<string-name name-style="western">
+<surname>King</surname>, <given-names>C. A.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>J.</given-names>
+<surname>Chappell</surname>
+</string-name>, <string-name name-style="western">
+<given-names>M. M.</given-names>
+<surname>Robbins</surname>
+</string-name>, <string-name name-style="western">
+<given-names>R. H.</given-names>
+<surname>Crompton</surname>
+</string-name>, <string-name name-style="western">
+<given-names>W. I.</given-names>
+<surname>Sellers</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>S. K. S.</given-names>
+<surname>Thorpe</surname>
+</string-name>. <year>2026</year>. “<article-title>The Locomotor Ecology of Wild Western Lowland Gorillas: How Does the Largest Ape Exploit Complex Arboreal Environments?</article-title>” <source>Journal of Anatomy</source>
+<volume>248</volume>, no. <issue>2</issue>: <fpage>197</fpage>–<lpage>221</lpage>. <pub-id pub-id-type="doi">10.1111/joa.14277</pub-id>.<pub-id pub-id-type="pmid">40346012</pub-id>
+<pub-id pub-id-type="pmcid">PMC12779408</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0034"><mixed-citation publication-type="journal" id="ajpa70329-cit-0034">
+<string-name name-style="western">
+<surname>Ledoux</surname>, <given-names>W. R.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>B. E.</given-names>
+<surname>Hirsch</surname>
+</string-name>, <string-name name-style="western">
+<given-names>T.</given-names>
+<surname>Church</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>M.</given-names>
+<surname>Caunin</surname>
+</string-name>. <year>2001</year>. “<article-title>Pennation Angles of the Intrinsic Muscles of the Foot</article-title>.” <source>Journal of Biomechanics</source>
+<volume>34</volume>, no. <issue>3</issue>: <fpage>399</fpage>–<lpage>403</lpage>. <pub-id pub-id-type="doi">10.1016/S0021-9290(00)00194-9</pub-id>.<pub-id pub-id-type="pmid">11182133</pub-id>
+</mixed-citation></ref><ref id="ajpa70329-bib-0035"><mixed-citation publication-type="journal" id="ajpa70329-cit-0035">
+<string-name name-style="western">
+<surname>Leischner</surname>, <given-names>C. L.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>M.</given-names>
+<surname>Crouch</surname>
+</string-name>, <string-name name-style="western">
+<given-names>K. L.</given-names>
+<surname>Allen</surname>
+</string-name>, <string-name name-style="western">
+<given-names>D.</given-names>
+<surname>Marchi</surname>
+</string-name>, <string-name name-style="western">
+<given-names>F.</given-names>
+<surname>Pastor</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>A.</given-names>
+<surname>Hartstone‐Rose</surname>
+</string-name>. <year>2018</year>. “<article-title>Scaling of Primate Forearm Muscle Architecture as It Relates to Locomotion and Posture</article-title>.” <source>Anatomical Record</source>
+<volume>301</volume>, no. <issue>3</issue>: <fpage>484</fpage>–<lpage>495</lpage>. <pub-id pub-id-type="doi">10.1002/ar.23747</pub-id>.<pub-id pub-id-type="pmid">29418111</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0036"><mixed-citation publication-type="journal" id="ajpa70329-cit-0036">
+<string-name name-style="western">
+<surname>Létocart</surname>, <given-names>A. J.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>F.</given-names>
+<surname>Mabesoone</surname>
+</string-name>, <string-name name-style="western">
+<given-names>F.</given-names>
+<surname>Charleux</surname>
+</string-name>, et al. <year>2021</year>. “<article-title>Muscles Adaptation to Aging and Training: Architectural Changes—A Randomised Trial</article-title>.” <source>BMC Geriatrics</source>
+<volume>21</volume>, no. <issue>1</issue>: <fpage>48</fpage>. <pub-id pub-id-type="doi">10.1186/s12877-020-02000-0</pub-id>.<pub-id pub-id-type="pmid">33441116</pub-id>
+<pub-id pub-id-type="pmcid">PMC7807501</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0037"><mixed-citation publication-type="journal" id="ajpa70329-cit-0037">
+<string-name name-style="western">
+<surname>Lieber</surname>, <given-names>R. L.</given-names>
+</string-name>
+<year>2022</year>. “<article-title>Can We Just Forget About Pennation Angle?</article-title>” <source>Journal of Biomechanics</source>
+<volume>132</volume>: <elocation-id>110954</elocation-id>. <pub-id pub-id-type="doi">10.1016/j.jbiomech.2022.110954</pub-id>.<pub-id pub-id-type="pmid">35074689</pub-id>
+</mixed-citation></ref><ref id="ajpa70329-bib-0038"><mixed-citation publication-type="journal" id="ajpa70329-cit-0038">
+<string-name name-style="western">
+<surname>Manduell</surname>, <given-names>K. L.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>H. C.</given-names>
+<surname>Morrogh‐Bernard</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>S. K. S.</given-names>
+<surname>Thorpe</surname>
+</string-name>. <year>2011</year>. “<article-title>Locomotor Behavior of Wild Orangutans (<styled-content style="fixed-case" toggle="no">
+<italic toggle="no">pongo pygmaeus wurmbii</italic>
+</styled-content> ) in Disturbed Peat Swamp Forest, Sabangau, Central Kalimantan, Indonesia</article-title>.” <source>American Journal of Physical Anthropology</source>
+<volume>145</volume>, no. <issue>3</issue>: <fpage>348</fpage>–<lpage>359</lpage>. <pub-id pub-id-type="doi">10.1002/ajpa.21495</pub-id>.<pub-id pub-id-type="pmid">21469074</pub-id>
+</mixed-citation></ref><ref id="ajpa70329-bib-0039"><mixed-citation publication-type="journal" id="ajpa70329-cit-0039">
+<string-name name-style="western">
+<surname>Marchi</surname>, <given-names>D.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>C. L.</given-names>
+<surname>Leischner</surname>
+</string-name>, <string-name name-style="western">
+<given-names>F.</given-names>
+<surname>Pastor</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>A.</given-names>
+<surname>Hartstone‐Rose</surname>
+</string-name>. <year>2018</year>. “<article-title>Leg Muscle Architecture in Primates and Its Correlation With Locomotion Patterns</article-title>.” <source>Anatomical Record</source>
+<volume>301</volume>, no. <issue>3</issue>: <fpage>515</fpage>–<lpage>527</lpage>. <pub-id pub-id-type="doi">10.1002/ar.23745</pub-id>.<pub-id pub-id-type="pmid">29418119</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0040"><mixed-citation publication-type="journal" id="ajpa70329-cit-0040">
+<string-name name-style="western">
+<surname>Martin</surname>, <given-names>M. L.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>K. J.</given-names>
+<surname>Travouillon</surname>
+</string-name>, <string-name name-style="western">
+<given-names>P. A.</given-names>
+<surname>Fleming</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>N. M.</given-names>
+<surname>Warburton</surname>
+</string-name>. <year>2020</year>. “<article-title>Review of the Methods Used for Calculating Physiological Cross‐Sectional Area (PCSA) for Ecological Questions</article-title>.” <source>Journal of Morphology</source>
+<volume>281</volume>, no. <issue>7</issue>: <fpage>778</fpage>–<lpage>789</lpage>. <pub-id pub-id-type="doi">10.1002/jmor.21139</pub-id>.<pub-id pub-id-type="pmid">32374505</pub-id>
+</mixed-citation></ref><ref id="ajpa70329-bib-0041"><mixed-citation publication-type="journal" id="ajpa70329-cit-0041">
+<string-name name-style="western">
+<surname>Mendez</surname>, <given-names>J.</given-names>
+</string-name>, and <string-name name-style="western">
+<given-names>A.</given-names>
+<surname>Keys</surname>
+</string-name>. <year>1960</year>. “<article-title>Density and Composition of Mammalian Muscle</article-title>.” <source>Metabolism, Clinical and Experimental</source>
+<volume>9</volume>: <fpage>184</fpage>–<lpage>188</lpage>.</mixed-citation></ref><ref id="ajpa70329-bib-0042"><mixed-citation publication-type="journal" id="ajpa70329-cit-0042">
+<string-name name-style="western">
+<surname>Molnar</surname>, <given-names>J.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>B.</given-names>
+<surname>Esteve‐Altava</surname>
+</string-name>, <string-name name-style="western">
+<given-names>C.</given-names>
+<surname>Rolian</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>R.</given-names>
+<surname>Diogo</surname>
+</string-name>. <year>2017</year>. “<article-title>Comparison of Musculoskeletal Networks of the Primate Forelimb</article-title>.” <source>Scientific Reports</source>
+<volume>7</volume>, no. <issue>1</issue>: <elocation-id>10520</elocation-id>. <pub-id pub-id-type="doi">10.1038/s41598-017-09566-7</pub-id>.<pub-id pub-id-type="pmid">28874673</pub-id>
+<pub-id pub-id-type="pmcid">PMC5585202</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0043"><mixed-citation publication-type="journal" id="ajpa70329-cit-0043">
+<string-name name-style="western">
+<surname>Molnar</surname>, <given-names>J. L.</given-names>
+</string-name>, and <string-name name-style="western">
+<given-names>R.</given-names>
+<surname>Diogo</surname>
+</string-name>. <year>2021</year>. “<article-title>Evolution, Homology, and Development of Tetrapod Limb Muscles</article-title>.” <source>Diversity</source>
+<volume>13</volume>, no. <issue>8</issue>: <elocation-id>393</elocation-id>. <pub-id pub-id-type="doi">10.3390/d13080393</pub-id>.</mixed-citation></ref><ref id="ajpa70329-bib-0044"><mixed-citation publication-type="journal" id="ajpa70329-cit-0044">
+<string-name name-style="western">
+<surname>Myatt</surname>, <given-names>J. P.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>R. H.</given-names>
+<surname>Crompton</surname>
+</string-name>, <string-name name-style="western">
+<given-names>R. C.</given-names>
+<surname>Payne‐Davis</surname>
+</string-name>, et al. <year>2012</year>. “<article-title>Functional Adaptations in the Forelimb Muscles of Non‐Human Great Apes</article-title>.” <source>Journal of Anatomy</source>
+<volume>220</volume>, no. <issue>1</issue>: <fpage>13</fpage>–<lpage>28</lpage>. <pub-id pub-id-type="doi">10.1111/j.1469-7580.2011.01443.x</pub-id>.<pub-id pub-id-type="pmid">22034995</pub-id>
+<pub-id pub-id-type="pmcid">PMC3248660</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0045"><mixed-citation publication-type="journal" id="ajpa70329-cit-0045">
+<string-name name-style="western">
+<surname>Myatt</surname>, <given-names>J. P.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>R. H.</given-names>
+<surname>Crompton</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>S. K. S.</given-names>
+<surname>Thorpe</surname>
+</string-name>. <year>2011</year>. “<article-title>Hindlimb Muscle Architecture in Non‐Human Great Apes and a Comparison of Methods for Analysing Inter‐Species Variation: Comparing Hindlimb Muscle Architecture in Non‐Human Great Apes</article-title>.” <source>Journal of Anatomy</source>
+<volume>219</volume>, no. <issue>2</issue>: <fpage>150</fpage>–<lpage>166</lpage>. <pub-id pub-id-type="doi">10.1111/j.1469-7580.2011.01383.x</pub-id>.<pub-id pub-id-type="pmid">21507000</pub-id>
+<pub-id pub-id-type="pmcid">PMC3162236</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0046"><mixed-citation publication-type="journal" id="ajpa70329-cit-0046">
+<string-name name-style="western">
+<surname>Nagano</surname>, <given-names>A.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>B. R.</given-names>
+<surname>Umberger</surname>
+</string-name>, <string-name name-style="western">
+<given-names>M. W.</given-names>
+<surname>Marzke</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>K. G. M.</given-names>
+<surname>Gerritsen</surname>
+</string-name>. <year>2005</year>. “<article-title>Neuromusculoskeletal Computer Modeling and Simulation of Upright, Straight‐Legged, Bipedal Locomotion of <italic toggle="yes">Australopithecus afarensis</italic> (A.L. 288‐1)</article-title>.” <source>American Journal of Physical Anthropology</source>
+<volume>126</volume>, no. <issue>1</issue>: <fpage>2</fpage>–<lpage>13</lpage>. <pub-id pub-id-type="doi">10.1002/ajpa.10408</pub-id>.<pub-id pub-id-type="pmid">15386246</pub-id>
+</mixed-citation></ref><ref id="ajpa70329-bib-0047"><mixed-citation publication-type="journal" id="ajpa70329-cit-0047">
+<string-name name-style="western">
+<surname>Oishi</surname>, <given-names>M.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>N.</given-names>
+<surname>Ogihara</surname>
+</string-name>, <string-name name-style="western">
+<given-names>H.</given-names>
+<surname>Endo</surname>
+</string-name>, et al. <year>2009</year>. “<article-title>Dimensions of the Foot Muscles in the Lowland Gorilla</article-title>.” <source>Journal of Veterinary Medical Science</source>
+<volume>71</volume>, no. <issue>6</issue>: <fpage>821</fpage>–<lpage>824</lpage>. <pub-id pub-id-type="doi">10.1292/jvms.71.821</pub-id>.<pub-id pub-id-type="pmid">19578296</pub-id>
+</mixed-citation></ref><ref id="ajpa70329-bib-0048"><mixed-citation publication-type="journal" id="ajpa70329-cit-0048">
+<string-name name-style="western">
+<surname>O'Neill</surname>, <given-names>M. C.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>A.</given-names>
+<surname>Nagano</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>B. R.</given-names>
+<surname>Umberger</surname>
+</string-name>. <year>2024</year>. “<article-title>A Three‐Dimensional Musculoskeletal Model of the Pelvis and Lower Limb of <italic toggle="yes">Australopithecus afarensis</italic>
+</article-title>.” <source>American Journal of Biological Anthropology</source>
+<volume>183</volume>, no. <issue>3</issue>: <elocation-id>e24845</elocation-id>. <pub-id pub-id-type="doi">10.1002/ajpa.24845</pub-id>.<pub-id pub-id-type="pmid">37671481</pub-id>
+</mixed-citation></ref><ref id="ajpa70329-bib-0050"><mixed-citation publication-type="journal" id="ajpa70329-cit-0050">
+<string-name name-style="western">
+<surname>Payne</surname>, <given-names>R. C.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>R. H.</given-names>
+<surname>Crom‐pton</surname>
+</string-name>, <string-name name-style="western">
+<given-names>K.</given-names>
+<surname>Isler</surname>
+</string-name>, et al. <year>2006b</year>. “<article-title>Morphological Analysis of the Hindlimb in Apes and Humans. II. Moment Arms</article-title>.” <source>Journal of Anatomy</source>
+<volume>208</volume>, no. <issue>6</issue>: <fpage>725</fpage>–<lpage>742</lpage>. <pub-id pub-id-type="doi">10.1111/j.1469-7580.2006.00564.x</pub-id>.<pub-id pub-id-type="pmid">16761974</pub-id>
+<pub-id pub-id-type="pmcid">PMC2100229</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0049"><mixed-citation publication-type="journal" id="ajpa70329-cit-0049">
+<string-name name-style="western">
+<surname>Payne</surname>, <given-names>R. C.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>R. H.</given-names>
+<surname>Crompton</surname>
+</string-name>, <string-name name-style="western">
+<given-names>K.</given-names>
+<surname>Isler</surname>
+</string-name>, et al. <year>2006a</year>. “<article-title>Morphological Analysis of the Hindlimb in Apes and Humans. I. Muscle Architecture</article-title>.” <source>Journal of Anatomy</source>
+<volume>208</volume>, no. <issue>6</issue>: <fpage>709</fpage>–<lpage>724</lpage>. <pub-id pub-id-type="doi">10.1111/j.1469-7580.2005.00433.x-i1</pub-id>.<pub-id pub-id-type="pmid">16761973</pub-id>
+<pub-id pub-id-type="pmcid">PMC2100225</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0051"><mixed-citation publication-type="journal" id="ajpa70329-cit-0051">
+<string-name name-style="western">
+<surname>Polk</surname>, <given-names>J. D.</given-names>
+</string-name>
+<year>2002</year>. “<article-title>Adaptive and Phylogenetic Influences on Musculoskeletal Design in Cercopithecine Primates</article-title>.” <source>Journal of Experimental Biology</source>
+<volume>205</volume>, no. <issue>21</issue>: <fpage>3399</fpage>–<lpage>3412</lpage>. <pub-id pub-id-type="doi">10.1242/jeb.205.21.3399</pub-id>.<pub-id pub-id-type="pmid">12324549</pub-id>
+</mixed-citation></ref><ref id="ajpa70329-bib-0052"><mixed-citation publication-type="journal" id="ajpa70329-cit-0052">
+<string-name name-style="western">
+<surname>Rockenfeller</surname>, <given-names>R.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>M.</given-names>
+<surname>Günther</surname>
+</string-name>, <string-name name-style="western">
+<given-names>C. J.</given-names>
+<surname>Clemente</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>T. J. M.</given-names>
+<surname>Dick</surname>
+</string-name>. <year>2024</year>. “<article-title>Rethinking the Physiological Cross‐Sectional Area of Skeletal Muscle Reveals the Mechanical Advantage of Pennation</article-title>.” <source>Royal Society Open Science</source>
+<volume>11</volume>, no. <issue>9</issue>: <elocation-id>240037</elocation-id>. <pub-id pub-id-type="doi">10.1098/rsos.240037</pub-id>.<pub-id pub-id-type="pmid">39678384</pub-id>
+<pub-id pub-id-type="pmcid">PMC11639153</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0053"><mixed-citation publication-type="journal" id="ajpa70329-cit-0053">
+<string-name name-style="western">
+<surname>Rome</surname>, <given-names>L. C.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>R. P.</given-names>
+<surname>Funke</surname>
+</string-name>, <string-name name-style="western">
+<given-names>R. M.</given-names>
+<surname>Alexander</surname>
+</string-name>, et al. <year>1988</year>. “<article-title>Why Animals Have Different Muscle Fibre Types</article-title>.” <source>Nature</source>
+<volume>335</volume>, no. <issue>6193</issue>: <fpage>824</fpage>–<lpage>827</lpage>. <pub-id pub-id-type="doi">10.1038/335824a0</pub-id>.<pub-id pub-id-type="pmid">3185712</pub-id>
+</mixed-citation></ref><ref id="ajpa70329-bib-0054"><mixed-citation publication-type="journal" id="ajpa70329-cit-0054">
+<string-name name-style="western">
+<surname>Seth</surname>, <given-names>A.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>J. L.</given-names>
+<surname>Hicks</surname>
+</string-name>, <string-name name-style="western">
+<given-names>T. K.</given-names>
+<surname>Uchida</surname>
+</string-name>, et al. <year>2018</year>. “<article-title>OpenSim: Simulating Musculoskeletal Dynamics and Neuromuscular Control to Study Human and Animal Movement</article-title>.” <source>PLoS Computational Biology</source>
+<volume>14</volume>, no. <issue>7</issue>: <elocation-id>e1006223</elocation-id>. <pub-id pub-id-type="doi">10.1371/journal.pcbi.1006223</pub-id>.<pub-id pub-id-type="pmid">30048444</pub-id>
+<pub-id pub-id-type="pmcid">PMC6061994</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0055"><mixed-citation publication-type="journal" id="ajpa70329-cit-0055">
+<string-name name-style="western">
+<surname>Seth</surname>, <given-names>A.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>M.</given-names>
+<surname>Sherman</surname>
+</string-name>, <string-name name-style="western">
+<given-names>J. A.</given-names>
+<surname>Reinbolt</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>S. L.</given-names>
+<surname>Delp</surname>
+</string-name>. <year>2011</year>. “<article-title>OpenSim: A Musculoskeletal Modeling and Simulation Framework for In Silico Investigations and Exchange</article-title>.” <source>Procedia IUTAM</source>
+<volume>2</volume>: <fpage>212</fpage>–<lpage>232</lpage>. <pub-id pub-id-type="doi">10.1016/j.piutam.2011.04.021</pub-id>.<pub-id pub-id-type="pmid">25893160</pub-id>
+<pub-id pub-id-type="pmcid">PMC4397580</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0056"><mixed-citation publication-type="journal" id="ajpa70329-cit-0056">
+<string-name name-style="western">
+<surname>Sigmon</surname>, <given-names>B. A.</given-names>
+</string-name>
+<year>1974</year>. “<article-title>A Functional Analysis of Pongid Hip and Thigh Musculature</article-title>.” <source>Journal of Human Evolution</source>
+<volume>3</volume>, no. <issue>2</issue>: <fpage>161</fpage>–<lpage>185</lpage>. <pub-id pub-id-type="doi">10.1016/0047-2484(74)90197-3</pub-id>.</mixed-citation></ref><ref id="ajpa70329-bib-0057"><mixed-citation publication-type="journal" id="ajpa70329-cit-0057">
+<string-name name-style="western">
+<surname>Taverne</surname>, <given-names>M.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>A.‐C.</given-names>
+<surname>Fabre</surname>
+</string-name>, <string-name name-style="western">
+<given-names>M.</given-names>
+<surname>Herbin</surname>
+</string-name>, et al. <year>2018</year>. “<article-title>Convergence in the Functional Properties of Forelimb Muscles in Carnivorans: Adaptations to an Arboreal Lifestyle?</article-title>” <source>Biological Journal of the Linnean Society</source>
+<volume>125</volume>, no. <issue>2</issue>: <fpage>250</fpage>–<lpage>263</lpage>. <pub-id pub-id-type="doi">10.1093/biolinnean/bly123</pub-id>.</mixed-citation></ref><ref id="ajpa70329-bib-0058"><mixed-citation publication-type="journal" id="ajpa70329-cit-0058">
+<string-name name-style="western">
+<surname>Thorpe</surname>, <given-names>S. K. S.</given-names>
+</string-name>, and <string-name name-style="western">
+<given-names>R. H.</given-names>
+<surname>Crompton</surname>
+</string-name>. <year>2005</year>. “<article-title>Locomotor Ecology of Wild Orangutans (<italic toggle="yes">
+<styled-content style="fixed-case" toggle="no">Pongo pygmaeus</styled-content> Abelii</italic>) in the Gunung Leuser Ecosystem, Sumatra, Indonesia: A Multivariate Analysis Using Log‐Linear Modelling</article-title>.” <source>American Journal of Physical Anthropology</source>
+<volume>127</volume>, no. <issue>1</issue>: <fpage>58</fpage>–<lpage>78</lpage>. <pub-id pub-id-type="doi">10.1002/ajpa.20151</pub-id>.<pub-id pub-id-type="pmid">15386279</pub-id>
+</mixed-citation></ref><ref id="ajpa70329-bib-0059"><mixed-citation publication-type="journal" id="ajpa70329-cit-0059">
+<string-name name-style="western">
+<surname>Thorpe</surname>, <given-names>S. K. S.</given-names>
+</string-name>, and <string-name name-style="western">
+<given-names>R. H.</given-names>
+<surname>Crompton</surname>
+</string-name>. <year>2006</year>. “<article-title>Orangutan Positional Behavior and the Nature of Arboreal Locomotion in Hominoidea</article-title>.” <source>American Journal of Physical Anthropology</source>
+<volume>131</volume>, no. <issue>3</issue>: <fpage>384</fpage>–<lpage>401</lpage>. <pub-id pub-id-type="doi">10.1002/ajpa.20422</pub-id>.<pub-id pub-id-type="pmid">16617429</pub-id>
+</mixed-citation></ref><ref id="ajpa70329-bib-0060"><mixed-citation publication-type="journal" id="ajpa70329-cit-0060">
+<string-name name-style="western">
+<surname>Thorpe</surname>, <given-names>S. K. S.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>R. H.</given-names>
+<surname>Crompton</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>R. M.</given-names>
+<surname>Alexander</surname>
+</string-name>. <year>2007</year>. “<article-title>Orangutans Use Compliant Branches to Lower the Energetic Cost of Locomotion</article-title>.” <source>Biology Letters</source>
+<volume>3</volume>, no. <issue>3</issue>: <fpage>253</fpage>–<lpage>256</lpage>. <pub-id pub-id-type="doi">10.1098/rsbl.2007.0049</pub-id>.<pub-id pub-id-type="pmid">17439848</pub-id>
+<pub-id pub-id-type="pmcid">PMC2464692</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0061"><mixed-citation publication-type="journal" id="ajpa70329-cit-0061">
+<string-name name-style="western">
+<surname>Thorpe</surname>, <given-names>S. K. S.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>R. H.</given-names>
+<surname>Crompton</surname>
+</string-name>, <string-name name-style="western">
+<given-names>M. M.</given-names>
+<surname>Günther</surname>
+</string-name>, <string-name name-style="western">
+<given-names>R. F.</given-names>
+<surname>Ker</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>R.</given-names>
+<surname>McNeill Alexander</surname>
+</string-name>. <year>1999</year>. “<article-title>Dimensions and Moment Arms of the Hind‐ and Forelimb Muscles of Common Chimpanzees (<styled-content style="fixed-case" toggle="no">
+<italic toggle="no">Pan troglodytes</italic>
+</styled-content>)</article-title>.” <source>American Journal of Physical Anthropology</source>
+<volume>110</volume>, no. <issue>2</issue>: <fpage>179</fpage>–<lpage>199</lpage>. <pub-id pub-id-type="doi">10.1002/(SICI)1096-8644(199910)110:2&lt;179::AID-AJPA5&gt;3.0.CO;2-Z</pub-id>.<pub-id pub-id-type="pmid">10502242</pub-id>
+</mixed-citation></ref><ref id="ajpa70329-bib-0062"><mixed-citation publication-type="journal" id="ajpa70329-cit-0062">
+<string-name name-style="western">
+<surname>Van Beesel</surname>, <given-names>J.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>S.</given-names>
+<surname>Melillo</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>E.</given-names>
+<surname>Vereecke</surname>
+</string-name>. <year>2025</year>. “<article-title>
+<sc>3d</sc> Reconstruction of Shoulder Muscles in Hominoid Primates: Correlating Scapular Attachment Areas With Muscle Volume</article-title>.” <source>Journal of Anatomy</source>
+<volume>246</volume>, no. <issue>5</issue>: <fpage>709</fpage>–<lpage>723</lpage>. <pub-id pub-id-type="doi">10.1111/joa.14199</pub-id>.<pub-id pub-id-type="pmid">39755939</pub-id>
+<pub-id pub-id-type="pmcid">PMC11996712</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0063"><mixed-citation publication-type="journal" id="ajpa70329-cit-0063">
+<string-name name-style="western">
+<surname>Vereecke</surname>, <given-names>E. E.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>K.</given-names>
+<surname>D'Août</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>P.</given-names>
+<surname>Aerts</surname>
+</string-name>. <year>2006</year>. “<article-title>The Dynamics of Hylobatid Bipedalism: Evidence for an Energy‐Saving Mechanism?</article-title>” <source>Journal of Experimental Biology</source>
+<volume>209</volume>, no. <issue>15</issue>: <fpage>2829</fpage>–<lpage>2838</lpage>. <pub-id pub-id-type="doi">10.1242/jeb.02316</pub-id>.<pub-id pub-id-type="pmid">16857866</pub-id>
+</mixed-citation></ref><ref id="ajpa70329-bib-0064"><mixed-citation publication-type="journal" id="ajpa70329-cit-0064">
+<string-name name-style="western">
+<surname>Vereecke</surname>, <given-names>E. E.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>K.</given-names>
+<surname>D'Août</surname>
+</string-name>, <string-name name-style="western">
+<given-names>R.</given-names>
+<surname>Payne</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>P.</given-names>
+<surname>Aerts</surname>
+</string-name>. <year>2005</year>. “<article-title>Functional Analysis of the Foot and Ankle Myology of Gibbons and Bonobos</article-title>.” <source>Journal of Anatomy</source>
+<volume>206</volume>, no. <issue>5</issue>: <fpage>453</fpage>–<lpage>476</lpage>. <pub-id pub-id-type="doi">10.1111/j.1469-7580.2005.00412.x</pub-id>.<pub-id pub-id-type="pmid">15857366</pub-id>
+<pub-id pub-id-type="pmcid">PMC1571504</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0065"><mixed-citation publication-type="journal" id="ajpa70329-cit-0065">
+<string-name name-style="western">
+<surname>Warrener</surname>, <given-names>A.</given-names>
+</string-name>
+<year>2024</year>. “<article-title>Human Lower Limb Muscle Cross Sectional Area Scales With Positive Allometry Reflecting Bipedal Evolutionary History</article-title>.” <source>Frontiers in Earth Science</source>
+<volume>11</volume>: <elocation-id>1301411</elocation-id>. <pub-id pub-id-type="doi">10.3389/feart.2023.1301411</pub-id>.</mixed-citation></ref><ref id="ajpa70329-bib-0066"><mixed-citation publication-type="journal" id="ajpa70329-cit-0066">
+<string-name name-style="western">
+<surname>Wiseman</surname>, <given-names>A. L.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>J. B.</given-names>
+<surname>van Beesel</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>E.</given-names>
+<surname>Vereecke</surname>
+</string-name>. <year>2026</year>. “<article-title>Comparative Analysis of Primate Hind Limb Muscle Moment Arms Using Subject‐Specific Three‐Dimensional Musculoskeletal Models</article-title>.” <source>Royal Society Open Science</source>
+<volume>13</volume>, no. <issue>4</issue>. <pub-id pub-id-type="doi">10.1098/rsos.260107</pub-id>.</mixed-citation></ref><ref id="ajpa70329-bib-0067"><mixed-citation publication-type="journal" id="ajpa70329-cit-0067">
+<string-name name-style="western">
+<surname>Wiseman</surname>, <given-names>A. L. A.</given-names>
+</string-name>
+<year>2023</year>. “<article-title>Three‐Dimensional Volumetric Muscle Reconstruction of the <italic toggle="yes">Australopithecus afarensis</italic> Pelvis and Limb, With Estimations of Limb Leverage</article-title>.” <source>Royal Society Open Science</source>
+<volume>10</volume>, no. <issue>6</issue>: <elocation-id>230356</elocation-id>. <pub-id pub-id-type="doi">10.1098/rsos.230356</pub-id>.<pub-id pub-id-type="pmid">37325588</pub-id>
+<pub-id pub-id-type="pmcid">PMC10265029</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0068"><mixed-citation publication-type="journal" id="ajpa70329-cit-0068">
+<string-name name-style="western">
+<surname>Wiseman</surname>, <given-names>A. L. A.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>J. P.</given-names>
+<surname>Charles</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>J. R.</given-names>
+<surname>Hutchinson</surname>
+</string-name>. <year>2024</year>. “<article-title>Static Versus Dynamic Muscle Modelling in Extinct Species: A Biomechanical Case Study of the <italic toggle="yes">Australopithecus afarensis</italic> Pelvis and Lower Extremity</article-title>.” <source>PeerJ</source>
+<volume>12</volume>: <elocation-id>e16821</elocation-id>. <pub-id pub-id-type="doi">10.7717/peerj.16821</pub-id>.<pub-id pub-id-type="pmid">38313026</pub-id>
+<pub-id pub-id-type="pmcid">PMC10838096</pub-id></mixed-citation></ref><ref id="ajpa70329-bib-0069"><mixed-citation publication-type="book" id="ajpa70329-cit-0069">
+<string-name name-style="western">
+<surname>Witmer</surname>, <given-names>L. M.</given-names>
+</string-name>
+<year>1995</year>. “<part-title>The Extant Phylogenetic Bracket and the Importance of Reconstructing Soft Tissues in Fossils</part-title>.” In <source>Functional Morphology in Vertebrate Paleontology</source>, edited by <person-group person-group-type="editor">
+<string-name name-style="western">
+<given-names>J.</given-names>
+<surname>Thomason</surname>
+</string-name>
+</person-group>, <fpage>19</fpage>–<lpage>33</lpage>. <publisher-name>Cambridge University Press</publisher-name>.</mixed-citation></ref><ref id="ajpa70329-bib-0070"><mixed-citation publication-type="journal" id="ajpa70329-cit-0070">
+<string-name name-style="western">
+<surname>Zajac</surname>, <given-names>F. E.</given-names>
+</string-name>
+<year>1989</year>. “<article-title>Muscle and Tendon: Properties, Models, Scaling, and Application to Biomechanics and Motor Control</article-title>.” <source>Critical Reviews in Biomedical Engineering</source>
+<volume>17</volume>, no. <issue>4</issue>: <fpage>359</fpage>–<lpage>411</lpage>.<pub-id pub-id-type="pmid">2676342</pub-id>
+</mixed-citation></ref><ref id="ajpa70329-bib-0071"><mixed-citation publication-type="journal" id="ajpa70329-cit-0071">
+<string-name name-style="western">
+<surname>Ziermann</surname>, <given-names>J. M.</given-names>
+</string-name>, <string-name name-style="western">
+<given-names>J. C.</given-names>
+<surname>Boughner</surname>
+</string-name>, <string-name name-style="western">
+<given-names>B.</given-names>
+<surname>Esteve‐Altava</surname>
+</string-name>, and <string-name name-style="western">
+<given-names>R.</given-names>
+<surname>Diogo</surname>
+</string-name>. <year>2021</year>. “<article-title>Anatomical Comparison Across Heads, Fore‐ and Hindlimbs in Mammals Using Network Models</article-title>.” <source>Journal of Anatomy</source>
+<volume>239</volume>, no. <issue>1</issue>: <fpage>12</fpage>–<lpage>31</lpage>. <pub-id pub-id-type="doi">10.1111/joa.13409</pub-id>.<pub-id pub-id-type="pmid">33629373</pub-id>
+<pub-id pub-id-type="pmcid">PMC8197956</pub-id></mixed-citation></ref></ref-list></back></article>

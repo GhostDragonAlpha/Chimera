@@ -1,0 +1,100 @@
+﻿{
+    "plain_stderr_sha256":  "b505bb65652c2b796c163899ec51b7e5268342e5d31f28a9603fc2ab6c2d72ab",
+    "base":  "4a241439",
+    "lane_fence_stdout_sha256":  "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+    "runs":  [
+                 {
+                     "stdout_bytes":  22530,
+                     "name":  "plain1",
+                     "exe":  "gait_unit_plain",
+                     "wall_s":  50.5,
+                     "stdout_sha":  "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+                     "stderr_sha":  "b505bb65652c2b796c163899ec51b7e5268342e5d31f28a9603fc2ab6c2d72ab"
+                 },
+                 {
+                     "stdout_bytes":  22530,
+                     "name":  "reduce1",
+                     "exe":  "fkred_reduce",
+                     "wall_s":  45.6,
+                     "stdout_sha":  "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+                     "stderr_sha":  "b505bb65652c2b796c163899ec51b7e5268342e5d31f28a9603fc2ab6c2d72ab"
+                 },
+                 {
+                     "stdout_bytes":  22530,
+                     "name":  "plain2",
+                     "exe":  "gait_unit_plain",
+                     "wall_s":  62.7,
+                     "stdout_sha":  "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+                     "stderr_sha":  "b505bb65652c2b796c163899ec51b7e5268342e5d31f28a9603fc2ab6c2d72ab"
+                 },
+                 {
+                     "stdout_bytes":  22530,
+                     "name":  "reduce2",
+                     "exe":  "fkred_reduce",
+                     "wall_s":  44.5,
+                     "stdout_sha":  "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+                     "stderr_sha":  "b505bb65652c2b796c163899ec51b7e5268342e5d31f28a9603fc2ab6c2d72ab"
+                 },
+                 {
+                     "stdout_bytes":  22530,
+                     "name":  "plain3",
+                     "exe":  "gait_unit_plain",
+                     "wall_s":  55.6,
+                     "stdout_sha":  "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+                     "stderr_sha":  "b505bb65652c2b796c163899ec51b7e5268342e5d31f28a9603fc2ab6c2d72ab"
+                 },
+                 {
+                     "stdout_bytes":  22530,
+                     "name":  "reduce3",
+                     "exe":  "fkred_reduce",
+                     "wall_s":  38.4,
+                     "stdout_sha":  "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+                     "stderr_sha":  "b505bb65652c2b796c163899ec51b7e5268342e5d31f28a9603fc2ab6c2d72ab"
+                 },
+                 {
+                     "note":  "F1 evidence: the frozen table missed line 1909\u0027s evaluate; C_FS_CON measured exactly the 6216 deficit",
+                     "name":  "census1",
+                     "exe":  "fkred_census (pre-amendment instrument)",
+                     "wall_s":  56.7,
+                     "stdout_sha":  "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+                     "site_sum":  80333
+                 },
+                 {
+                     "note":  "identical counts: census determinism",
+                     "name":  "census2",
+                     "exe":  "fkred_census (pre-amendment instrument)",
+                     "wall_s":  69.7,
+                     "stdout_sha":  "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+                     "site_sum":  80333
+                 },
+                 {
+                     "exe":  "gait_unit_plain_trace (GAIT_EVENT_TRACE)",
+                     "name":  "plain_trace",
+                     "note":  "stdout 10759f409ddd (12471 B), stderr eaaf68b79e9b (3014934 B): the harness 120 s WALL-CLOCK guard fired (machine-state); c6f9b6c0 anchor machine-state-bound, carried",
+                     "wall_s":  504
+                 },
+                 {
+                     "exe":  "fkred_reduce_trace (GAIT_EVENT_TRACE)",
+                     "name":  "reduce_trace",
+                     "note":  "stdout 8480a977c32f (12763 B), stderr 0c57f9229b14 (3535214 B): guard cut later (faster binary); stderr common prefix with plain_trace = 1177780 bytes BYTE-IDENTICAL, split exactly at the guard message",
+                     "wall_s":  497.4
+                 },
+                 {
+                     "stdout_sha":  "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+                     "exe":  "fkred_census2 (AMENDED instrument, +S_BISECT_GAP)",
+                     "name":  "census3",
+                     "note":  "EXACT reconciliation",
+                     "site_sum":  86549
+                 },
+                 {
+                     "stdout_sha":  "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+                     "exe":  "fkred_census2 (AMENDED instrument, +S_BISECT_GAP)",
+                     "name":  "census4",
+                     "note":  "EXACT reconciliation, identical counts",
+                     "site_sum":  86549
+                 }
+             ],
+    "lane":  "lane/fk-reduction-20260920",
+    "date":  "2026-09-22",
+    "scene_sha256":  "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342"
+}

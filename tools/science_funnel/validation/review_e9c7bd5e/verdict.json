@@ -1,0 +1,96 @@
+{
+ "schema": "chimera.review_verdict.v1",
+ "base": "a6e6acf26dacb37be9f42c2589f4417ae38247d5",
+ "candidate": "e9c7bd5ea7acf5ac98ea3d5054564386321730c3",
+ "candidate_short": "e9c7bd5e",
+ "checklist": "tools\\science_funnel\\review_checklist.json",
+ "checks": [
+  {
+   "id": "frozen_reference",
+   "status": "PASS",
+   "detail": "frozen/bit-exact markers present in 6 added line(s)",
+   "evidence_sample": [
+    {
+     "file": "ChimeraEngine/engine/tests_coupled_arm/native.cpp",
+     "line": 41,
+     "evidence": "// The three frozen metrics are the qualified frictionless receipt values: the"
+    },
+    {
+     "file": "ChimeraEngine/engine/tests_coupled_arm/native.cpp",
+     "line": 42,
+     "evidence": "// mu=0 default must reproduce candidate 8e010738 bit-exactly."
+    },
+    {
+     "file": "ChimeraEngine/engine/tests_coupled_arm/native.cpp",
+     "line": 47,
+     "evidence": "ck(worst_gap==4.147475858029548e-07&&peak_reaction==2.5894018617259906,\"frictionless_slice_bit_exact\");}"
+    }
+   ]
+  },
+  {
+   "id": "falsifier_as_test",
+   "status": "FINDING",
+   "severity": "MINOR",
+   "file": "ChimeraEngine/engine/tests_coupled_arm/native.cpp",
+   "line": 60,
+   "evidence": "for(double mu:{0.05,0.8}){CoupledDynamics d(data,9.81,shift);d.configure({{\"contact_enabled\",true},{\"reset\",true},{\"contact_friction\",mu},{\"shoulder_target_deg\",20.},{\"elbow_target_deg\",20.}});long long stick=0;double settled_bal=0;bool settled=false;",
+   "detail": "F2_critical_mu_unexercised: F2-shape: friction trials use {0.05,0.8} without a critical-mu hold-vs-slide threshold (no mucrit/critical/0.6/travel marker); F3_cone_without_guards: F3-shape: per-tick cone holds by construction but missing: impact-cone guard (friction_impact_cone); J^T force-decomposition guard",
+   "subfindings": [
+    {
+     "sub": "F2_critical_mu_unexercised",
+     "severity": "MINOR",
+     "file": "ChimeraEngine/engine/tests_coupled_arm/native.cpp",
+     "line": 60,
+     "evidence": "for(double mu:{0.05,0.8}){CoupledDynamics d(data,9.81,shift);d.configure({{\"contact_enabled\",true},{\"reset\",true},{\"contact_friction\",mu},{\"shoulder_target_deg\",20.},{\"elbow_target_deg\",20.}});long long stick=0;double settled_bal=0;bool settled=false;",
+     "detail": "F2-shape: friction trials use {0.05,0.8} without a critical-mu hold-vs-slide threshold (no mucrit/critical/0.6/travel marker)"
+    },
+    {
+     "sub": "F3_cone_without_guards",
+     "severity": "MINOR",
+     "file": "ChimeraEngine/engine/tests_coupled_arm/native.cpp",
+     "line": 63,
+     "evidence": "ck(ft<=mu*fn+1e-9,\"friction_cone\");ck(fn>1e-9||ft<1e-12,\"friction_no_pull_without_load\");",
+     "detail": "F3-shape: per-tick cone holds by construction but missing: impact-cone guard (friction_impact_cone); J^T force-decomposition guard"
+    }
+   ],
+   "cannot_verify": {
+    "sub": "F1_exact_rest_sign",
+    "file": "ChimeraEngine/engine/coupled_dynamics.hpp",
+    "line": 85,
+    "evidence": "double s=slip_sign!=0.?slip_sign:(rt>=0.?1.:-1.),den=A-s*mu*B;",
+    "detail": "F1-shape: exact-rest slide-sign fallback present but sign correctness is not statically decidable; needs solver-seam test (friction_unit / opposes_impending)"
+   }
+  },
+  {
+   "id": "receipt_schema",
+   "status": "PASS",
+   "detail": "no receipt in scope (none touched, none claims candidate); schema check not applicable"
+  },
+  {
+   "id": "scope_honesty",
+   "status": "FINDING",
+   "severity": "MINOR",
+   "file": "tools/science_funnel/tests/qualify_coupled_live.py",
+   "line": 69,
+   "evidence": "return {'runtime':info,'checks':checks,'scope':'Two coupled native coordinates, force intent, finite ideal actuator store, actual source geometry, fixed mount and an optional frictionless rigid hand contact plane (off by default; toggle resets). No friction, grasp, free root or whole-animal claim.'}",
+   "detail": "F4-shape: engine adds Coulomb friction but the live qualifier scope string still claims the frictionless era ('No friction'); under-claim recorded verbatim into live_checks.json"
+  },
+  {
+   "id": "evidence_count",
+   "status": "CANNOT-VERIFY",
+   "detail": "graph JSONs touched (tools/creature_graph/data/authored/project_program.json, tools/creature_graph/data/creature_graph.json) but no receipt in scope to pin historical_evidence_unchanged=11; cannot verify statically"
+  },
+  {
+   "id": "graph_merge_replay",
+   "status": "PASS",
+   "detail": "graph JSONs changed in non-merge commit(s) with no conflict markers; no merge replay required"
+  }
+ ],
+ "summary_counts": {
+  "PASS": 3,
+  "FINDING": 2,
+  "CANNOT-VERIFY": 1
+ },
+ "verdict": "FINDINGS",
+ "human_summary": "review e9c7bd5e: FINDINGS — 2 FINDING, 1 CANNOT-VERIFY, 3 PASS (falsifier_as_test FINDING(MINOR); scope_honesty FINDING(MINOR); evidence_count CANNOT-VERIFY)"
+}

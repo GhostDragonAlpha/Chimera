@@ -1,0 +1,1891 @@
+{
+ "a_infant_ct": {
+  "bundle": {
+   "allometry": {
+    "expectation_exclusions": [
+     "000875604"
+    ],
+    "ratios": {
+     "femur:tibia": {
+      "from": [
+       "bundle chains: ranks 2/6",
+       "bundle chains: ranks 3/7"
+      ],
+      "n": 2,
+      "source": "chimera.ct_bone_identification.v3 chain lengths (pose-free within-bundle ratios)",
+      "value": 1.0427019205024053
+     },
+     "forearm:tibia": {
+      "from": [
+       "bundle chains: ranks 10/6",
+       "bundle chains: ranks 11/6",
+       "bundle chains: ranks 10/7",
+       "bundle chains: ranks 11/7"
+      ],
+      "n": 4,
+      "source": "chimera.ct_bone_identification.v3 chain lengths (pose-free within-bundle ratios)",
+      "value": 0.9744264619553624
+     },
+     "humerus:femur": {
+      "from": [
+       "bundle chains: ranks 4/2",
+       "bundle chains: ranks 5/2",
+       "bundle chains: ranks 4/3",
+       "bundle chains: ranks 5/3"
+      ],
+      "n": 4,
+      "source": "chimera.ct_bone_identification.v3 chain lengths (pose-free within-bundle ratios)",
+      "value": 0.9157657262138319
+     },
+     "humerus:forearm": {
+      "from": [
+       "bundle chains: rank 4 vs mean [10, 12]",
+       "bundle chains: rank 5 vs mean [11, 13]"
+      ],
+      "n": 2,
+      "source": "chimera.ct_bone_identification.v3 chain lengths (pose-free within-bundle ratios)",
+      "value": 0.9798941425936143
+     }
+    },
+    "stage": "infant"
+   },
+   "components": [
+    {
+     "confidence": "high",
+     "elongation": 7.01,
+     "id": "000875604_bone_2",
+     "kind": "anatomy",
+     "length_mm": 44.94,
+     "segment_label": "femur",
+     "source": "chimera.ct_bone_identification.v3 (000875604)",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "confidence": "high",
+     "elongation": 7.11,
+     "id": "000875604_bone_3",
+     "kind": "anatomy",
+     "length_mm": 45.16,
+     "segment_label": "femur",
+     "source": "chimera.ct_bone_identification.v3 (000875604)",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "confidence": "high",
+     "elongation": 7.23,
+     "id": "000875604_bone_4",
+     "kind": "anatomy",
+     "length_mm": 41.82,
+     "segment_label": "humerus",
+     "source": "chimera.ct_bone_identification.v3 (000875604)",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "confidence": "high",
+     "elongation": 6.84,
+     "id": "000875604_bone_5",
+     "kind": "anatomy",
+     "length_mm": 40.69,
+     "segment_label": "humerus",
+     "source": "chimera.ct_bone_identification.v3 (000875604)",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "confidence": "high",
+     "elongation": 8.25,
+     "id": "000875604_bone_6",
+     "kind": "anatomy",
+     "length_mm": 43.14,
+     "segment_label": "tibia",
+     "source": "chimera.ct_bone_identification.v3 (000875604)",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "confidence": "high",
+     "elongation": 8.2,
+     "id": "000875604_bone_7",
+     "kind": "anatomy",
+     "length_mm": 43.27,
+     "segment_label": "tibia",
+     "source": "chimera.ct_bone_identification.v3 (000875604)",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "confidence": "high",
+     "elongation": 2.19,
+     "id": "000875604_bone_8",
+     "kind": "anatomy",
+     "length_mm": 24.44,
+     "segment_label": "hand_class",
+     "source": "chimera.ct_bone_identification.v3 (000875604)",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "confidence": "high",
+     "elongation": 2.22,
+     "id": "000875604_bone_9",
+     "kind": "anatomy",
+     "length_mm": 24.62,
+     "segment_label": "hand_class",
+     "source": "chimera.ct_bone_identification.v3 (000875604)",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "confidence": "high",
+     "elongation": 9.57,
+     "id": "000875604_bone_10",
+     "kind": "anatomy",
+     "length_mm": 40.57,
+     "segment_label": "forearm_class",
+     "source": "chimera.ct_bone_identification.v3 (000875604)",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "confidence": "high",
+     "elongation": 9.64,
+     "id": "000875604_bone_11",
+     "kind": "anatomy",
+     "length_mm": 40.2,
+     "segment_label": "forearm_class",
+     "source": "chimera.ct_bone_identification.v3 (000875604)",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "confidence": "high",
+     "elongation": 9.36,
+     "id": "000875604_bone_12",
+     "kind": "anatomy",
+     "length_mm": 43.92,
+     "segment_label": "forearm_class",
+     "source": "chimera.ct_bone_identification.v3 (000875604)",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "confidence": "high",
+     "elongation": 9.47,
+     "id": "000875604_bone_13",
+     "kind": "anatomy",
+     "length_mm": 43.71,
+     "segment_label": "forearm_class",
+     "source": "chimera.ct_bone_identification.v3 (000875604)",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "confidence": "medium(chain+rank, no within-10% homolog)",
+     "elongation": 1.79,
+     "id": "000875604_bone_15",
+     "kind": "anatomy",
+     "length_mm": 14.1,
+     "segment_label": "foot_class",
+     "source": "chimera.ct_bone_identification.v3 (000875604)",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "confidence": "medium(chain+rank, no within-10% homolog)",
+     "elongation": 1.81,
+     "id": "000875604_bone_17",
+     "kind": "anatomy",
+     "length_mm": 14.14,
+     "segment_label": "foot_class",
+     "source": "chimera.ct_bone_identification.v3 (000875604)",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "confidence": "medium(chain+rank, no within-10% homolog)",
+     "elongation": 1.13,
+     "id": "000875604_bone_18",
+     "kind": "anatomy",
+     "length_mm": 12.89,
+     "segment_label": "foot_class",
+     "source": "chimera.ct_bone_identification.v3 (000875604)",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "confidence": "high",
+     "elongation": 13.18,
+     "id": "000875604_bone_20",
+     "kind": "anatomy",
+     "length_mm": 37.97,
+     "segment_label": "fibula",
+     "source": "chimera.ct_bone_identification.v3 (000875604)",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "confidence": "high",
+     "elongation": 14.65,
+     "id": "000875604_bone_21",
+     "kind": "anatomy",
+     "length_mm": 38.08,
+     "segment_label": "fibula",
+     "source": "chimera.ct_bone_identification.v3 (000875604)",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "confidence": "high",
+     "elongation": 2.26,
+     "id": "000875604_bone_22",
+     "kind": "anatomy",
+     "length_mm": 11.17,
+     "segment_label": "foot_class",
+     "source": "chimera.ct_bone_identification.v3 (000875604)",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "confidence": "high",
+     "elongation": 2.26,
+     "id": "000875604_bone_23",
+     "kind": "anatomy",
+     "length_mm": 11.17,
+     "segment_label": "foot_class",
+     "source": "chimera.ct_bone_identification.v3 (000875604)",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "confidence": "high",
+     "elongation": 1.79,
+     "id": "000875604_bone_24",
+     "kind": "anatomy",
+     "length_mm": 8.97,
+     "segment_label": "foot_class",
+     "source": "chimera.ct_bone_identification.v3 (000875604)",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "confidence": "high",
+     "elongation": 1.79,
+     "id": "000875604_bone_25",
+     "kind": "anatomy",
+     "length_mm": 8.98,
+     "segment_label": "foot_class",
+     "source": "chimera.ct_bone_identification.v3 (000875604)",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    }
+   ],
+   "description": "the first reality creature: a stage-true infant Macaca mulatta, measured, not constructed",
+   "name": "infant_ct_specimen_000875604",
+   "schema": "chimera.creature_bundle.v1",
+   "species": [
+    {
+     "name": "Macaca mulatta",
+     "provenance": "mesh_receipt.json source_ct Macaca_mulatta-USNM497136-3-160um-000875604.tif; pinned NCBI taxdmp extract tax_id 9544"
+    }
+   ]
+  },
+  "verdict": {
+   "bundle": "infant_ct_specimen_000875604",
+   "category": "reality",
+   "caveats": [],
+   "checks": [
+    {
+     "law": "stage_consistency",
+     "measured": {
+      "stage_component_counts": {
+       "infant": 21
+      },
+      "unconfirmed_adult_count": 0,
+      "unlabeled_count": 0
+     },
+     "verdict": "pass"
+    },
+    {
+     "law": "allometric_coherence",
+     "measured": {
+      "bones_gated": [],
+      "expectation_exclusions": [
+       "000875604"
+      ],
+      "expectation_source": "two infant CT specimens (tools/science_funnel/validation/mount_reconciliation_20260919/bone_identification_v3.json; meshes manifests)",
+      "per_bone_scales": {},
+      "ratios_gated": [
+       "femur:tibia",
+       "forearm:tibia",
+       "humerus:femur",
+       "humerus:forearm"
+      ],
+      "segments": {
+       "femur:tibia": {
+        "band_frac": 0.15,
+        "deviation_frac": -0.0009460668674628214,
+        "expected_mean": 1.0436893203883495,
+        "from": [
+         "bundle chains: ranks 2/6",
+         "bundle chains: ranks 3/7"
+        ],
+        "value": 1.0427019205024053,
+        "within_band": true
+       },
+       "forearm:tibia": {
+        "band_frac": 0.15,
+        "deviation_frac": -0.08320689124090118,
+        "expected_mean": 1.0628640776699028,
+        "from": [
+         "bundle chains: ranks 10/6",
+         "bundle chains: ranks 11/6",
+         "bundle chains: ranks 10/7",
+         "bundle chains: ranks 11/7"
+        ],
+        "value": 0.9744264619553624,
+        "within_band": true
+       },
+       "humerus:femur": {
+        "band_frac": 0.15,
+        "deviation_frac": -0.0588449754494558,
+        "expected_mean": 0.9730232558139535,
+        "from": [
+         "bundle chains: ranks 4/2",
+         "bundle chains: ranks 5/2",
+         "bundle chains: ranks 4/3",
+         "bundle chains: ranks 5/3"
+        ],
+        "value": 0.9157657262138319,
+        "within_band": true
+       },
+       "humerus:forearm": {
+        "band_frac": 0.15,
+        "deviation_frac": 0.02556320516669128,
+        "expected_mean": 0.9554692852249373,
+        "from": [
+         "bundle chains: rank 4 vs mean [10, 12]",
+         "bundle chains: rank 5 vs mean [11, 13]"
+        ],
+        "value": 0.9798941425936143,
+        "within_band": true
+       }
+      },
+      "stage": "infant"
+     },
+     "verdict": "pass"
+    },
+    {
+     "law": "taxonomic_coherence",
+     "measured": {
+      "component_species": {
+       "000875604_bone_10": "Macaca mulatta",
+       "000875604_bone_11": "Macaca mulatta",
+       "000875604_bone_12": "Macaca mulatta",
+       "000875604_bone_13": "Macaca mulatta",
+       "000875604_bone_15": "Macaca mulatta",
+       "000875604_bone_17": "Macaca mulatta",
+       "000875604_bone_18": "Macaca mulatta",
+       "000875604_bone_2": "Macaca mulatta",
+       "000875604_bone_20": "Macaca mulatta",
+       "000875604_bone_21": "Macaca mulatta",
+       "000875604_bone_22": "Macaca mulatta",
+       "000875604_bone_23": "Macaca mulatta",
+       "000875604_bone_24": "Macaca mulatta",
+       "000875604_bone_25": "Macaca mulatta",
+       "000875604_bone_3": "Macaca mulatta",
+       "000875604_bone_4": "Macaca mulatta",
+       "000875604_bone_5": "Macaca mulatta",
+       "000875604_bone_6": "Macaca mulatta",
+       "000875604_bone_7": "Macaca mulatta",
+       "000875604_bone_8": "Macaca mulatta",
+       "000875604_bone_9": "Macaca mulatta"
+      },
+      "species_named": [
+       "Macaca mulatta"
+      ]
+     },
+     "verdict": "pass"
+    },
+    {
+     "law": "physics_bars",
+     "measured": {
+      "bars_adjudicated": [],
+      "bars_carried": 0,
+      "vocabulary": [
+       "conservation",
+       "pressure",
+       "pose",
+       "touch"
+      ]
+     },
+     "verdict": "pass"
+    }
+   ],
+   "construction": {
+    "fantasy_manifest_acknowledged": null,
+    "mode": "reality"
+   },
+   "laws": [
+    "stage_consistency",
+    "allometric_coherence",
+    "taxonomic_coherence",
+    "physics_bars"
+   ],
+   "reported_not_gated": [
+    "physics_bars"
+   ],
+   "schema": "chimera.reality_gate.v1",
+   "tolerance_frac": 0.15,
+   "violations": []
+  }
+ },
+ "b_h2_mount": {
+  "bundle": {
+   "allometry": {
+    "expectation_exclusions": [
+     "000875604"
+    ],
+    "per_bone_scale_factors": {
+     "h2_bone_18": 6.249079681541482,
+     "h2_bone_2": 3.814326112931454,
+     "h2_bone_24": 8.820653773994831,
+     "h2_bone_25": 8.809011488728324,
+     "h2_bone_3": 3.793330778253154,
+     "h2_bone_6": 4.424029143483223,
+     "h2_bone_7": 4.401207012074293
+    },
+    "reference_uniform_scale": 3.2314822711250724,
+    "reference_uniform_scale_source": "mount_reconciliation_20260919/reconciliation.json scale_conflict: trunk-anchored rigid scale (HAT/trunk_PCA_span)",
+    "stage": "infant"
+   },
+   "components": [
+    {
+     "id": "h2_bone_2",
+     "kind": "anatomy",
+     "length_mm": 44.94,
+     "mount_scale_factor": 3.814326112931454,
+     "segment_label": "femur",
+     "source": "chimera.ct_bone_identification.v3 rank 2; scale from mount_reconciliation_20260919/reconciliation.json h2_per_bone.generalized",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "id": "h2_bone_3",
+     "kind": "anatomy",
+     "length_mm": 45.16,
+     "mount_scale_factor": 3.793330778253154,
+     "segment_label": "femur",
+     "source": "chimera.ct_bone_identification.v3 rank 3; scale from mount_reconciliation_20260919/reconciliation.json h2_per_bone.generalized",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "id": "h2_bone_6",
+     "kind": "anatomy",
+     "length_mm": 43.14,
+     "mount_scale_factor": 4.424029143483223,
+     "segment_label": "tibia",
+     "source": "chimera.ct_bone_identification.v3 rank 6; scale from mount_reconciliation_20260919/reconciliation.json h2_per_bone.generalized",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "id": "h2_bone_7",
+     "kind": "anatomy",
+     "length_mm": 43.27,
+     "mount_scale_factor": 4.401207012074293,
+     "segment_label": "tibia",
+     "source": "chimera.ct_bone_identification.v3 rank 7; scale from mount_reconciliation_20260919/reconciliation.json h2_per_bone.generalized",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "id": "h2_bone_18",
+     "kind": "anatomy",
+     "length_mm": 12.89,
+     "mount_scale_factor": 6.249079681541482,
+     "segment_label": "foot_class",
+     "source": "chimera.ct_bone_identification.v3 rank 18; scale from mount_reconciliation_20260919/reconciliation.json h2_per_bone.generalized",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "id": "h2_bone_24",
+     "kind": "anatomy",
+     "length_mm": 8.97,
+     "mount_scale_factor": 8.820653773994831,
+     "segment_label": "foot_class",
+     "source": "chimera.ct_bone_identification.v3 rank 24; scale from mount_reconciliation_20260919/reconciliation.json h2_per_bone.generalized",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "id": "h2_bone_25",
+     "kind": "anatomy",
+     "length_mm": 8.98,
+     "mount_scale_factor": 8.809011488728324,
+     "segment_label": "foot_class",
+     "source": "chimera.ct_bone_identification.v3 rank 25; scale from mount_reconciliation_20260919/reconciliation.json h2_per_bone.generalized",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "id": "h2_scaffold_shank",
+     "kind": "scaffold_segment",
+     "length_m": 0.182,
+     "segment_label": "shank",
+     "source": "mount_reconciliation_20260919/reconciliation.json h2_per_bone.scaffold (Table-1 derived)",
+     "species": "Macaca fuscata",
+     "stage": {
+      "confirmed": true,
+      "label": "adult",
+      "provenance": "Oku, Ide, Ogihara et al. 2021, Communications Biology PMC7940622: adult female Japanese macaque musculoskeletal model, Table-1 (tools/science_funnel/validation/gait_controller_20260918/derived_numbers.json body_model)"
+     }
+    },
+    {
+     "id": "h2_scaffold_tarsal",
+     "kind": "scaffold_segment",
+     "length_m": 0.074,
+     "segment_label": "tarsal",
+     "source": "mount_reconciliation_20260919/reconciliation.json h2_per_bone.scaffold (Table-1 derived)",
+     "species": "Macaca fuscata",
+     "stage": {
+      "confirmed": true,
+      "label": "adult",
+      "provenance": "Oku, Ide, Ogihara et al. 2021, Communications Biology PMC7940622: adult female Japanese macaque musculoskeletal model, Table-1 (tools/science_funnel/validation/gait_controller_20260918/derived_numbers.json body_model)"
+     }
+    },
+    {
+     "id": "h2_scaffold_thigh",
+     "kind": "scaffold_segment",
+     "length_m": 0.163,
+     "segment_label": "thigh",
+     "source": "mount_reconciliation_20260919/reconciliation.json h2_per_bone.scaffold (Table-1 derived)",
+     "species": "Macaca fuscata",
+     "stage": {
+      "confirmed": true,
+      "label": "adult",
+      "provenance": "Oku, Ide, Ogihara et al. 2021, Communications Biology PMC7940622: adult female Japanese macaque musculoskeletal model, Table-1 (tools/science_funnel/validation/gait_controller_20260918/derived_numbers.json body_model)"
+     }
+    }
+   ],
+   "construction_provenance": "explicit developer construction (agent/mount-reconciliation lane): per-bone scale = adult Table-1 segment length / infant joint span; classified FANTASY would be the honest verdict of the reconciliation itself",
+   "description": "infant CT bones per-bone-scaled onto the adult Table-1 standing scaffold (the mounting lane's H2, the operator's 'adult arms on a baby' case, already measured)",
+   "fantasy_manifest_acknowledged": true,
+   "name": "h2_per_bone_scaffold_mounting",
+   "schema": "chimera.creature_bundle.v1",
+   "species": [
+    {
+     "name": "Macaca mulatta",
+     "provenance": "the CT bones (specimen 000875604)"
+    },
+    {
+     "name": "Macaca fuscata",
+     "provenance": "the Table-1 scaffold (Oku/Ogihara 2021 adult female Japanese macaque model)"
+    }
+   ]
+  },
+  "verdict": {
+   "bundle": "h2_per_bone_scaffold_mounting",
+   "category": "fantasy",
+   "caveats": [],
+   "checks": [
+    {
+     "law": "stage_consistency",
+     "measured": {
+      "stage_component_counts": {
+       "adult": 3,
+       "infant": 7
+      },
+      "unconfirmed_adult_count": 0,
+      "unlabeled_count": 0
+     },
+     "verdict": "violation"
+    },
+    {
+     "law": "allometric_coherence",
+     "measured": {
+      "bones_gated": [
+       "h2_bone_18",
+       "h2_bone_2",
+       "h2_bone_24",
+       "h2_bone_25",
+       "h2_bone_3",
+       "h2_bone_6",
+       "h2_bone_7"
+      ],
+      "expectation_exclusions": [
+       "000875604"
+      ],
+      "expectation_source": "two infant CT specimens (tools/science_funnel/validation/mount_reconciliation_20260919/bone_identification_v3.json; meshes manifests)",
+      "per_bone_scales": {
+       "h2_bone_18": {
+        "deviation_frac": 0.9338121509686648,
+        "reference_scale": 3.2314822711250724,
+        "scale": 6.249079681541482,
+        "within_band": false
+       },
+       "h2_bone_2": {
+        "deviation_frac": 0.1803642393505871,
+        "reference_scale": 3.2314822711250724,
+        "scale": 3.814326112931454,
+        "within_band": false
+       },
+       "h2_bone_24": {
+        "deviation_frac": 1.7295999278138803,
+        "reference_scale": 3.2314822711250724,
+        "scale": 8.820653773994831,
+        "within_band": false
+       },
+       "h2_bone_25": {
+        "deviation_frac": 1.725997158468513,
+        "reference_scale": 3.2314822711250724,
+        "scale": 8.809011488728324,
+        "within_band": false
+       },
+       "h2_bone_3": {
+        "deviation_frac": 0.173867117312845,
+        "reference_scale": 3.2314822711250724,
+        "scale": 3.793330778253154,
+        "within_band": false
+       },
+       "h2_bone_6": {
+        "deviation_frac": 0.36904020270021576,
+        "reference_scale": 3.2314822711250724,
+        "scale": 4.424029143483223,
+        "within_band": false
+       },
+       "h2_bone_7": {
+        "deviation_frac": 0.36197776834528916,
+        "reference_scale": 3.2314822711250724,
+        "scale": 4.401207012074293,
+        "within_band": false
+       }
+      },
+      "ratios_gated": [],
+      "segments": {},
+      "stage": "infant"
+     },
+     "verdict": "violation"
+    },
+    {
+     "law": "taxonomic_coherence",
+     "measured": {
+      "component_species": {
+       "h2_bone_18": "Macaca mulatta",
+       "h2_bone_2": "Macaca mulatta",
+       "h2_bone_24": "Macaca mulatta",
+       "h2_bone_25": "Macaca mulatta",
+       "h2_bone_3": "Macaca mulatta",
+       "h2_bone_6": "Macaca mulatta",
+       "h2_bone_7": "Macaca mulatta",
+       "h2_scaffold_shank": "Macaca fuscata",
+       "h2_scaffold_tarsal": "Macaca fuscata",
+       "h2_scaffold_thigh": "Macaca fuscata"
+      },
+      "species_named": [
+       "Macaca fuscata",
+       "Macaca mulatta"
+      ]
+     },
+     "verdict": "violation"
+    },
+    {
+     "law": "physics_bars",
+     "measured": {
+      "bars_adjudicated": [],
+      "bars_carried": 0,
+      "vocabulary": [
+       "conservation",
+       "pressure",
+       "pose",
+       "touch"
+      ]
+     },
+     "verdict": "pass"
+    }
+   ],
+   "construction": {
+    "fantasy_manifest_acknowledged": true,
+    "mode": "explicit-fantasy"
+   },
+   "laws": [
+    "stage_consistency",
+    "allometric_coherence",
+    "taxonomic_coherence",
+    "physics_bars"
+   ],
+   "reported_not_gated": [
+    "physics_bars"
+   ],
+   "schema": "chimera.reality_gate.v1",
+   "tolerance_frac": 0.15,
+   "violations": [
+    {
+     "code": "stage-mixed",
+     "components_by_stage": {
+      "adult": [
+       "h2_scaffold_shank",
+       "h2_scaffold_tarsal",
+       "h2_scaffold_thigh"
+      ],
+      "infant": [
+       "h2_bone_2",
+       "h2_bone_3",
+       "h2_bone_6",
+       "h2_bone_7",
+       "h2_bone_18",
+       "h2_bone_24",
+       "h2_bone_25"
+      ]
+     },
+     "law": "stage_consistency",
+     "measured": {
+      "stage_component_counts": {
+       "adult": 3,
+       "infant": 7
+      }
+     },
+     "message": "one creature, one life stage: stages mixed inside one bundle"
+    },
+    {
+     "code": "allometric-scale-incoherence",
+     "component": "h2_bone_18",
+     "law": "allometric_coherence",
+     "measured": {
+      "deviation_frac": 0.9338121509686648,
+      "reference_scale": 3.2314822711250724,
+      "scale": 6.249079681541482,
+      "within_band": false
+     },
+     "message": "per-bone scale 6.2491 deviates +93.4% from the assembly's stage-true scale 3.2315 (band 15%): the assembly has no single animal in it"
+    },
+    {
+     "code": "allometric-scale-incoherence",
+     "component": "h2_bone_2",
+     "law": "allometric_coherence",
+     "measured": {
+      "deviation_frac": 0.1803642393505871,
+      "reference_scale": 3.2314822711250724,
+      "scale": 3.814326112931454,
+      "within_band": false
+     },
+     "message": "per-bone scale 3.8143 deviates +18.0% from the assembly's stage-true scale 3.2315 (band 15%): the assembly has no single animal in it"
+    },
+    {
+     "code": "allometric-scale-incoherence",
+     "component": "h2_bone_24",
+     "law": "allometric_coherence",
+     "measured": {
+      "deviation_frac": 1.7295999278138803,
+      "reference_scale": 3.2314822711250724,
+      "scale": 8.820653773994831,
+      "within_band": false
+     },
+     "message": "per-bone scale 8.8207 deviates +173.0% from the assembly's stage-true scale 3.2315 (band 15%): the assembly has no single animal in it"
+    },
+    {
+     "code": "allometric-scale-incoherence",
+     "component": "h2_bone_25",
+     "law": "allometric_coherence",
+     "measured": {
+      "deviation_frac": 1.725997158468513,
+      "reference_scale": 3.2314822711250724,
+      "scale": 8.809011488728324,
+      "within_band": false
+     },
+     "message": "per-bone scale 8.8090 deviates +172.6% from the assembly's stage-true scale 3.2315 (band 15%): the assembly has no single animal in it"
+    },
+    {
+     "code": "allometric-scale-incoherence",
+     "component": "h2_bone_3",
+     "law": "allometric_coherence",
+     "measured": {
+      "deviation_frac": 0.173867117312845,
+      "reference_scale": 3.2314822711250724,
+      "scale": 3.793330778253154,
+      "within_band": false
+     },
+     "message": "per-bone scale 3.7933 deviates +17.4% from the assembly's stage-true scale 3.2315 (band 15%): the assembly has no single animal in it"
+    },
+    {
+     "code": "allometric-scale-incoherence",
+     "component": "h2_bone_6",
+     "law": "allometric_coherence",
+     "measured": {
+      "deviation_frac": 0.36904020270021576,
+      "reference_scale": 3.2314822711250724,
+      "scale": 4.424029143483223,
+      "within_band": false
+     },
+     "message": "per-bone scale 4.4240 deviates +36.9% from the assembly's stage-true scale 3.2315 (band 15%): the assembly has no single animal in it"
+    },
+    {
+     "code": "allometric-scale-incoherence",
+     "component": "h2_bone_7",
+     "law": "allometric_coherence",
+     "measured": {
+      "deviation_frac": 0.36197776834528916,
+      "reference_scale": 3.2314822711250724,
+      "scale": 4.401207012074293,
+      "within_band": false
+     },
+     "message": "per-bone scale 4.4012 deviates +36.2% from the assembly's stage-true scale 3.2315 (band 15%): the assembly has no single animal in it"
+    },
+    {
+     "code": "cross-species-substitution",
+     "law": "taxonomic_coherence",
+     "measured": {
+      "pair": [
+       "Macaca fuscata",
+       "Macaca mulatta"
+      ],
+      "taxonomic_distance_edges": 2
+     },
+     "message": "taxa Macaca fuscata and Macaca mulatta in one bundle: taxonomic distance 2 parent edges (pinned NCBI extract)"
+    }
+   ]
+  }
+ },
+ "c_walker": {
+  "bundle": {
+   "allometry": {
+    "expectation_exclusions": [],
+    "ratios": {
+     "foot:HAT": {
+      "from": [
+       "segments_Table1"
+      ],
+      "source": "derived_numbers.json",
+      "value": 0.15352697095435686
+     },
+     "shank:HAT": {
+      "from": [
+       "segments_Table1"
+      ],
+      "source": "derived_numbers.json",
+      "value": 0.3775933609958506
+     },
+     "shank:thigh": {
+      "from": [
+       "segments_Table1"
+      ],
+      "source": "derived_numbers.json",
+      "value": 1.116564417177914
+     },
+     "thigh:HAT": {
+      "from": [
+       "segments_Table1"
+      ],
+      "source": "derived_numbers.json",
+      "value": 0.3381742738589212
+     },
+     "thigh:shank": {
+      "from": [
+       "segments_Table1"
+      ],
+      "source": "derived_numbers.json",
+      "value": 0.8956043956043956
+     }
+    },
+    "stage": "adult"
+   },
+   "components": [
+    {
+     "id": "walker_segment_HAT",
+     "kind": "anatomy",
+     "length_m": 0.482,
+     "mass_kg": 8.184,
+     "segment_label": "hat",
+     "source": "derived_numbers.json body_model.segments_Table1",
+     "species": "Macaca fuscata",
+     "stage": {
+      "confirmed": true,
+      "label": "adult",
+      "provenance": "Oku, Ide, Ogihara et al. 2021, Communications Biology PMC7940622: adult female Japanese macaque musculoskeletal model, Table-1 (tools/science_funnel/validation/gait_controller_20260918/derived_numbers.json body_model)"
+     }
+    },
+    {
+     "id": "walker_segment_foot",
+     "kind": "anatomy",
+     "length_m": 0.074,
+     "mass_kg": 0.08,
+     "segment_label": "foot",
+     "source": "derived_numbers.json body_model.segments_Table1",
+     "species": "Macaca fuscata",
+     "stage": {
+      "confirmed": true,
+      "label": "adult",
+      "provenance": "Oku, Ide, Ogihara et al. 2021, Communications Biology PMC7940622: adult female Japanese macaque musculoskeletal model, Table-1 (tools/science_funnel/validation/gait_controller_20260918/derived_numbers.json body_model)"
+     }
+    },
+    {
+     "id": "walker_segment_phalanges",
+     "kind": "anatomy",
+     "length_m": 0.045,
+     "mass_kg": 0.021,
+     "segment_label": "phalanges",
+     "source": "derived_numbers.json body_model.segments_Table1",
+     "species": "Macaca fuscata",
+     "stage": {
+      "confirmed": true,
+      "label": "adult",
+      "provenance": "Oku, Ide, Ogihara et al. 2021, Communications Biology PMC7940622: adult female Japanese macaque musculoskeletal model, Table-1 (tools/science_funnel/validation/gait_controller_20260918/derived_numbers.json body_model)"
+     }
+    },
+    {
+     "id": "walker_segment_shank",
+     "kind": "anatomy",
+     "length_m": 0.182,
+     "mass_kg": 0.269,
+     "segment_label": "shank",
+     "source": "derived_numbers.json body_model.segments_Table1",
+     "species": "Macaca fuscata",
+     "stage": {
+      "confirmed": true,
+      "label": "adult",
+      "provenance": "Oku, Ide, Ogihara et al. 2021, Communications Biology PMC7940622: adult female Japanese macaque musculoskeletal model, Table-1 (tools/science_funnel/validation/gait_controller_20260918/derived_numbers.json body_model)"
+     }
+    },
+    {
+     "id": "walker_segment_thigh",
+     "kind": "anatomy",
+     "length_m": 0.163,
+     "mass_kg": 0.557,
+     "segment_label": "thigh",
+     "source": "derived_numbers.json body_model.segments_Table1",
+     "species": "Macaca fuscata",
+     "stage": {
+      "confirmed": true,
+      "label": "adult",
+      "provenance": "Oku, Ide, Ogihara et al. 2021, Communications Biology PMC7940622: adult female Japanese macaque musculoskeletal model, Table-1 (tools/science_funnel/validation/gait_controller_20260918/derived_numbers.json body_model)"
+     }
+    }
+   ],
+   "description": "the walker: the adult Japanese macaque model the physics already uses (Table-1 proportions, literature stage)",
+   "name": "walker_table1_adult",
+   "named_circularity": "the adult allometry table IS this bundle's source (Oku/Ogihara Table-1): this adjudication certifies provenance + coherence, not independent adult replication; an independent adult forelimb reference is OPEN",
+   "physics_bars": [
+    {
+     "falsifier": "per-drive positive work must sum to the banked total positive work within the 15% house band",
+     "law": "conservation",
+     "measured": {
+      "closure_deviation_frac": 0.0,
+      "per_drive_budget_sum_J": 11.5726,
+      "work_positive_total_J": 11.5726
+     },
+     "source": "derived_numbers.json oku_before_alteration.work_positive_total_J + per_drive_budget_check_J",
+     "verdict": "pass"
+    },
+    {
+     "falsifier": "simulated hip excursion must land inside the measured cercopithecoid cohort range (145 wild-primate strides, janisch_kinematics)",
+     "law": "pose",
+     "measured": {
+      "cercopithecoid_cohort_max_deg": 95.027,
+      "cercopithecoid_cohort_mean_deg": 42.998,
+      "cercopithecoid_cohort_min_deg": 1.604,
+      "hip_excursion_deg": 59.95,
+      "n_strides": 131
+     },
+     "source": "derived_numbers.json oku_before_alteration.angles.hip + janisch_cercopithecoids.stats.hipExcur",
+     "verdict": "pass"
+    },
+    {
+     "falsifier": "vertical impulse must equal mean stance force x stance duration within the 15% house band",
+     "law": "touch",
+     "measured": {
+      "closure_deviation_frac": -4.1799078362547704e-05,
+      "grf_v_impulse_Ns": 34.4821,
+      "grf_v_peak_xBW": 1.0823,
+      "mean_stance_N_x_stance_dur_s": 34.4807,
+      "weight_N": 98.439
+     },
+     "source": "derived_numbers.json oku_before_alteration GRF block",
+     "verdict": "pass"
+    }
+   ],
+   "schema": "chimera.creature_bundle.v1",
+   "species": [
+    {
+     "name": "Macaca fuscata",
+     "provenance": "PMC7940622 (Oku/Ide/Ogihara 2021); pinned NCBI taxdmp extract tax_id 9542"
+    }
+   ]
+  },
+  "verdict": {
+   "bundle": "walker_table1_adult",
+   "category": "reality",
+   "caveats": [
+    "the adult allometry table IS this bundle's source (Oku/Ogihara Table-1): this adjudication certifies provenance + coherence, not independent adult replication; an independent adult forelimb reference is OPEN"
+   ],
+   "checks": [
+    {
+     "law": "stage_consistency",
+     "measured": {
+      "stage_component_counts": {
+       "adult": 5
+      },
+      "unconfirmed_adult_count": 0,
+      "unlabeled_count": 0
+     },
+     "verdict": "pass"
+    },
+    {
+     "law": "allometric_coherence",
+     "measured": {
+      "bones_gated": [],
+      "expectation_exclusions": [],
+      "expectation_source": "Oku/Ide/Ogihara 2021 Communications Biology Table-1 (tools/science_funnel/validation/gait_controller_20260918/derived_numbers.json)",
+      "per_bone_scales": {},
+      "ratios_gated": [
+       "foot:HAT",
+       "shank:HAT",
+       "shank:thigh",
+       "thigh:HAT",
+       "thigh:shank"
+      ],
+      "segments": {
+       "foot:HAT": {
+        "band_frac": 0.15,
+        "deviation_frac": 0.0,
+        "expected_mean": 0.15352697095435686,
+        "from": [
+         "segments_Table1"
+        ],
+        "value": 0.15352697095435686,
+        "within_band": true
+       },
+       "shank:HAT": {
+        "band_frac": 0.15,
+        "deviation_frac": 0.0,
+        "expected_mean": 0.3775933609958506,
+        "from": [
+         "segments_Table1"
+        ],
+        "value": 0.3775933609958506,
+        "within_band": true
+       },
+       "shank:thigh": {
+        "band_frac": 0.15,
+        "deviation_frac": 0.0,
+        "expected_mean": 1.116564417177914,
+        "from": [
+         "segments_Table1"
+        ],
+        "value": 1.116564417177914,
+        "within_band": true
+       },
+       "thigh:HAT": {
+        "band_frac": 0.15,
+        "deviation_frac": 0.0,
+        "expected_mean": 0.3381742738589212,
+        "from": [
+         "segments_Table1"
+        ],
+        "value": 0.3381742738589212,
+        "within_band": true
+       },
+       "thigh:shank": {
+        "band_frac": 0.15,
+        "deviation_frac": 0.0,
+        "expected_mean": 0.8956043956043956,
+        "from": [
+         "segments_Table1"
+        ],
+        "value": 0.8956043956043956,
+        "within_band": true
+       }
+      },
+      "stage": "adult"
+     },
+     "verdict": "pass"
+    },
+    {
+     "law": "taxonomic_coherence",
+     "measured": {
+      "component_species": {
+       "walker_segment_HAT": "Macaca fuscata",
+       "walker_segment_foot": "Macaca fuscata",
+       "walker_segment_phalanges": "Macaca fuscata",
+       "walker_segment_shank": "Macaca fuscata",
+       "walker_segment_thigh": "Macaca fuscata"
+      },
+      "species_named": [
+       "Macaca fuscata"
+      ]
+     },
+     "verdict": "pass"
+    },
+    {
+     "law": "physics_bars",
+     "measured": {
+      "bars_adjudicated": [
+       {
+        "law": "conservation",
+        "measured": {
+         "closure_deviation_frac": 0.0,
+         "per_drive_budget_sum_J": 11.5726,
+         "work_positive_total_J": 11.5726
+        },
+        "source": "derived_numbers.json oku_before_alteration.work_positive_total_J + per_drive_budget_check_J",
+        "verdict": "pass"
+       },
+       {
+        "law": "pose",
+        "measured": {
+         "cercopithecoid_cohort_max_deg": 95.027,
+         "cercopithecoid_cohort_mean_deg": 42.998,
+         "cercopithecoid_cohort_min_deg": 1.604,
+         "hip_excursion_deg": 59.95,
+         "n_strides": 131
+        },
+        "source": "derived_numbers.json oku_before_alteration.angles.hip + janisch_cercopithecoids.stats.hipExcur",
+        "verdict": "pass"
+       },
+       {
+        "law": "touch",
+        "measured": {
+         "closure_deviation_frac": -4.1799078362547704e-05,
+         "grf_v_impulse_Ns": 34.4821,
+         "grf_v_peak_xBW": 1.0823,
+         "mean_stance_N_x_stance_dur_s": 34.4807,
+         "weight_N": 98.439
+        },
+        "source": "derived_numbers.json oku_before_alteration GRF block",
+        "verdict": "pass"
+       }
+      ],
+      "bars_carried": 3,
+      "vocabulary": [
+       "conservation",
+       "pressure",
+       "pose",
+       "touch"
+      ]
+     },
+     "verdict": "pass"
+    }
+   ],
+   "construction": {
+    "fantasy_manifest_acknowledged": null,
+    "mode": "reality"
+   },
+   "laws": [
+    "stage_consistency",
+    "allometric_coherence",
+    "taxonomic_coherence",
+    "physics_bars"
+   ],
+   "reported_not_gated": [],
+   "schema": "chimera.reality_gate.v1",
+   "tolerance_frac": 0.15,
+   "violations": []
+  }
+ },
+ "d_chimera": {
+  "bundle": {
+   "allometry": {
+    "expectation_exclusions": [
+     "000875604"
+    ],
+    "ratios": {
+     "femur:tibia": {
+      "from": [
+       "bundle chains: ranks 2/6",
+       "bundle chains: ranks 3/7"
+      ],
+      "n": 2,
+      "source": "chimera.ct_bone_identification.v3 chain lengths (pose-free within-bundle ratios)",
+      "value": 1.0427019205024053
+     },
+     "forearm:tibia": {
+      "from": [
+       "bundle chains: ranks 10/6",
+       "bundle chains: ranks 11/6",
+       "bundle chains: ranks 10/7",
+       "bundle chains: ranks 11/7"
+      ],
+      "n": 4,
+      "source": "chimera.ct_bone_identification.v3 chain lengths (pose-free within-bundle ratios)",
+      "value": 3.7167802989677456
+     },
+     "humerus:femur": {
+      "from": [
+       "bundle chains: ranks 4/2",
+       "bundle chains: ranks 5/2",
+       "bundle chains: ranks 4/3",
+       "bundle chains: ranks 5/3"
+      ],
+      "n": 4,
+      "source": "chimera.ct_bone_identification.v3 chain lengths (pose-free within-bundle ratios)",
+      "value": 3.4930291228250545
+     },
+     "humerus:forearm": {
+      "from": [
+       "bundle chains: rank 4 vs mean [10, 12]",
+       "bundle chains: rank 5 vs mean [11, 13]"
+      ],
+      "n": 2,
+      "source": "chimera.ct_bone_identification.v3 chain lengths (pose-free within-bundle ratios)",
+      "value": 0.9798941425936144
+     }
+    },
+    "stage": "infant"
+   },
+   "components": [
+    {
+     "id": "chimera_bone_2",
+     "kind": "anatomy",
+     "length_mm": 44.94,
+     "segment_label": "femur",
+     "source": "chimera.ct_bone_identification.v3 rank 2",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "id": "chimera_bone_3",
+     "kind": "anatomy",
+     "length_mm": 45.16,
+     "segment_label": "femur",
+     "source": "chimera.ct_bone_identification.v3 rank 3",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "construction": "infant rank 4 stretched x3.8143 and relabeled adult",
+     "id": "chimera_bone_4",
+     "kind": "anatomy",
+     "length_mm": 159.51511804279338,
+     "segment_label": "humerus",
+     "source": "chimera.ct_bone_identification.v3 rank 4, constructed in build_bundles.py",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": false,
+      "label": "adult",
+      "provenance": "developer construction (this lane): forelimb stretched by the committed compiler's own femur mount rule factor 3.8143 (163.0mm Table-1 thigh / 42.7336mm infant femur joint span); no measurement confirms any adult anatomy here"
+     }
+    },
+    {
+     "construction": "infant rank 5 stretched x3.8143 and relabeled adult",
+     "id": "chimera_bone_5",
+     "kind": "anatomy",
+     "length_mm": 155.2049295351808,
+     "segment_label": "humerus",
+     "source": "chimera.ct_bone_identification.v3 rank 5, constructed in build_bundles.py",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": false,
+      "label": "adult",
+      "provenance": "developer construction (this lane): forelimb stretched by the committed compiler's own femur mount rule factor 3.8143 (163.0mm Table-1 thigh / 42.7336mm infant femur joint span); no measurement confirms any adult anatomy here"
+     }
+    },
+    {
+     "id": "chimera_bone_6",
+     "kind": "anatomy",
+     "length_mm": 43.14,
+     "segment_label": "tibia",
+     "source": "chimera.ct_bone_identification.v3 rank 6",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "id": "chimera_bone_7",
+     "kind": "anatomy",
+     "length_mm": 43.27,
+     "segment_label": "tibia",
+     "source": "chimera.ct_bone_identification.v3 rank 7",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "construction": "infant rank 8 stretched x3.8143 and relabeled adult",
+     "id": "chimera_bone_8",
+     "kind": "anatomy",
+     "length_mm": 93.22213020004472,
+     "segment_label": "hand_class",
+     "source": "chimera.ct_bone_identification.v3 rank 8, constructed in build_bundles.py",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": false,
+      "label": "adult",
+      "provenance": "developer construction (this lane): forelimb stretched by the committed compiler's own femur mount rule factor 3.8143 (163.0mm Table-1 thigh / 42.7336mm infant femur joint span); no measurement confirms any adult anatomy here"
+     }
+    },
+    {
+     "construction": "infant rank 9 stretched x3.8143 and relabeled adult",
+     "id": "chimera_bone_9",
+     "kind": "anatomy",
+     "length_mm": 93.90870890037237,
+     "segment_label": "hand_class",
+     "source": "chimera.ct_bone_identification.v3 rank 9, constructed in build_bundles.py",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": false,
+      "label": "adult",
+      "provenance": "developer construction (this lane): forelimb stretched by the committed compiler's own femur mount rule factor 3.8143 (163.0mm Table-1 thigh / 42.7336mm infant femur joint span); no measurement confirms any adult anatomy here"
+     }
+    },
+    {
+     "construction": "infant rank 10 stretched x3.8143 and relabeled adult",
+     "id": "chimera_bone_10",
+     "kind": "anatomy",
+     "length_mm": 154.74721040162905,
+     "segment_label": "forearm_class",
+     "source": "chimera.ct_bone_identification.v3 rank 10, constructed in build_bundles.py",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": false,
+      "label": "adult",
+      "provenance": "developer construction (this lane): forelimb stretched by the committed compiler's own femur mount rule factor 3.8143 (163.0mm Table-1 thigh / 42.7336mm infant femur joint span); no measurement confirms any adult anatomy here"
+     }
+    },
+    {
+     "construction": "infant rank 11 stretched x3.8143 and relabeled adult",
+     "id": "chimera_bone_11",
+     "kind": "anatomy",
+     "length_mm": 153.33590973984442,
+     "segment_label": "forearm_class",
+     "source": "chimera.ct_bone_identification.v3 rank 11, constructed in build_bundles.py",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": false,
+      "label": "adult",
+      "provenance": "developer construction (this lane): forelimb stretched by the committed compiler's own femur mount rule factor 3.8143 (163.0mm Table-1 thigh / 42.7336mm infant femur joint span); no measurement confirms any adult anatomy here"
+     }
+    },
+    {
+     "construction": "infant rank 12 stretched x3.8143 and relabeled adult",
+     "id": "chimera_bone_12",
+     "kind": "anatomy",
+     "length_mm": 167.52520287994943,
+     "segment_label": "forearm_class",
+     "source": "chimera.ct_bone_identification.v3 rank 12, constructed in build_bundles.py",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": false,
+      "label": "adult",
+      "provenance": "developer construction (this lane): forelimb stretched by the committed compiler's own femur mount rule factor 3.8143 (163.0mm Table-1 thigh / 42.7336mm infant femur joint span); no measurement confirms any adult anatomy here"
+     }
+    },
+    {
+     "construction": "infant rank 13 stretched x3.8143 and relabeled adult",
+     "id": "chimera_bone_13",
+     "kind": "anatomy",
+     "length_mm": 166.7241943962338,
+     "segment_label": "forearm_class",
+     "source": "chimera.ct_bone_identification.v3 rank 13, constructed in build_bundles.py",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": false,
+      "label": "adult",
+      "provenance": "developer construction (this lane): forelimb stretched by the committed compiler's own femur mount rule factor 3.8143 (163.0mm Table-1 thigh / 42.7336mm infant femur joint span); no measurement confirms any adult anatomy here"
+     }
+    },
+    {
+     "id": "chimera_bone_15",
+     "kind": "anatomy",
+     "length_mm": 14.1,
+     "segment_label": "foot_class",
+     "source": "chimera.ct_bone_identification.v3 rank 15",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "id": "chimera_bone_17",
+     "kind": "anatomy",
+     "length_mm": 14.14,
+     "segment_label": "foot_class",
+     "source": "chimera.ct_bone_identification.v3 rank 17",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "id": "chimera_bone_18",
+     "kind": "anatomy",
+     "length_mm": 12.89,
+     "segment_label": "foot_class",
+     "source": "chimera.ct_bone_identification.v3 rank 18",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "id": "chimera_bone_20",
+     "kind": "anatomy",
+     "length_mm": 37.97,
+     "segment_label": "fibula",
+     "source": "chimera.ct_bone_identification.v3 rank 20",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "id": "chimera_bone_21",
+     "kind": "anatomy",
+     "length_mm": 38.08,
+     "segment_label": "fibula",
+     "source": "chimera.ct_bone_identification.v3 rank 21",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "id": "chimera_bone_22",
+     "kind": "anatomy",
+     "length_mm": 11.17,
+     "segment_label": "foot_class",
+     "source": "chimera.ct_bone_identification.v3 rank 22",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "id": "chimera_bone_23",
+     "kind": "anatomy",
+     "length_mm": 11.17,
+     "segment_label": "foot_class",
+     "source": "chimera.ct_bone_identification.v3 rank 23",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "id": "chimera_bone_24",
+     "kind": "anatomy",
+     "length_mm": 8.97,
+     "segment_label": "foot_class",
+     "source": "chimera.ct_bone_identification.v3 rank 24",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    },
+    {
+     "id": "chimera_bone_25",
+     "kind": "anatomy",
+     "length_mm": 8.98,
+     "segment_label": "foot_class",
+     "source": "chimera.ct_bone_identification.v3 rank 25",
+     "species": "Macaca mulatta",
+     "stage": {
+      "confirmed": true,
+      "label": "infant",
+      "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+     }
+    }
+   ],
+   "construction_provenance": "explicit developer construction (build_bundles.py): the operator's example class - a half-adult half-baby animal is buildable, and the gate must SAY it violates the laws of nature, itemized",
+   "description": "deliberate chimera: adult-proportioned forelimbs on the stage-true infant bundle (synthesized for this adjudication; the user's RIGHT, classified honestly)",
+   "fantasy_manifest_acknowledged": true,
+   "name": "chimera_adult_forelimb_on_infant",
+   "schema": "chimera.creature_bundle.v1",
+   "species": [
+    {
+     "name": "Macaca mulatta",
+     "provenance": "all bones derive from infant CT specimen 000875604"
+    }
+   ]
+  },
+  "verdict": {
+   "bundle": "chimera_adult_forelimb_on_infant",
+   "category": "fantasy",
+   "caveats": [],
+   "checks": [
+    {
+     "law": "stage_consistency",
+     "measured": {
+      "stage_component_counts": {
+       "adult": 8,
+       "infant": 13
+      },
+      "unconfirmed_adult_count": 8,
+      "unlabeled_count": 0
+     },
+     "verdict": "violation"
+    },
+    {
+     "law": "allometric_coherence",
+     "measured": {
+      "bones_gated": [],
+      "expectation_exclusions": [
+       "000875604"
+      ],
+      "expectation_source": "two infant CT specimens (tools/science_funnel/validation/mount_reconciliation_20260919/bone_identification_v3.json; meshes manifests)",
+      "per_bone_scales": {},
+      "ratios_gated": [
+       "femur:tibia",
+       "forearm:tibia",
+       "humerus:femur",
+       "humerus:forearm"
+      ],
+      "segments": {
+       "femur:tibia": {
+        "band_frac": 0.15,
+        "deviation_frac": -0.0009460668674628214,
+        "expected_mean": 1.0436893203883495,
+        "from": [
+         "bundle chains: ranks 2/6",
+         "bundle chains: ranks 3/7"
+        ],
+        "value": 1.0427019205024053,
+        "within_band": true
+       },
+       "forearm:tibia": {
+        "band_frac": 0.15,
+        "deviation_frac": 2.496947894895436,
+        "expected_mean": 1.0628640776699028,
+        "from": [
+         "bundle chains: ranks 10/6",
+         "bundle chains: ranks 11/6",
+         "bundle chains: ranks 10/7",
+         "bundle chains: ranks 11/7"
+        ],
+        "value": 3.7167802989677456,
+        "within_band": false
+       },
+       "humerus:femur": {
+        "band_frac": 0.15,
+        "deviation_frac": 2.5898721864597833,
+        "expected_mean": 0.9730232558139535,
+        "from": [
+         "bundle chains: ranks 4/2",
+         "bundle chains: ranks 5/2",
+         "bundle chains: ranks 4/3",
+         "bundle chains: ranks 5/3"
+        ],
+        "value": 3.4930291228250545,
+        "within_band": false
+       },
+       "humerus:forearm": {
+        "band_frac": 0.15,
+        "deviation_frac": 0.0255632051666914,
+        "expected_mean": 0.9554692852249373,
+        "from": [
+         "bundle chains: rank 4 vs mean [10, 12]",
+         "bundle chains: rank 5 vs mean [11, 13]"
+        ],
+        "value": 0.9798941425936144,
+        "within_band": true
+       }
+      },
+      "stage": "infant"
+     },
+     "verdict": "violation"
+    },
+    {
+     "law": "taxonomic_coherence",
+     "measured": {
+      "component_species": {
+       "chimera_bone_10": "Macaca mulatta",
+       "chimera_bone_11": "Macaca mulatta",
+       "chimera_bone_12": "Macaca mulatta",
+       "chimera_bone_13": "Macaca mulatta",
+       "chimera_bone_15": "Macaca mulatta",
+       "chimera_bone_17": "Macaca mulatta",
+       "chimera_bone_18": "Macaca mulatta",
+       "chimera_bone_2": "Macaca mulatta",
+       "chimera_bone_20": "Macaca mulatta",
+       "chimera_bone_21": "Macaca mulatta",
+       "chimera_bone_22": "Macaca mulatta",
+       "chimera_bone_23": "Macaca mulatta",
+       "chimera_bone_24": "Macaca mulatta",
+       "chimera_bone_25": "Macaca mulatta",
+       "chimera_bone_3": "Macaca mulatta",
+       "chimera_bone_4": "Macaca mulatta",
+       "chimera_bone_5": "Macaca mulatta",
+       "chimera_bone_6": "Macaca mulatta",
+       "chimera_bone_7": "Macaca mulatta",
+       "chimera_bone_8": "Macaca mulatta",
+       "chimera_bone_9": "Macaca mulatta"
+      },
+      "species_named": [
+       "Macaca mulatta"
+      ]
+     },
+     "verdict": "pass"
+    },
+    {
+     "law": "physics_bars",
+     "measured": {
+      "bars_adjudicated": [],
+      "bars_carried": 0,
+      "vocabulary": [
+       "conservation",
+       "pressure",
+       "pose",
+       "touch"
+      ]
+     },
+     "verdict": "pass"
+    }
+   ],
+   "construction": {
+    "fantasy_manifest_acknowledged": true,
+    "mode": "explicit-fantasy"
+   },
+   "laws": [
+    "stage_consistency",
+    "allometric_coherence",
+    "taxonomic_coherence",
+    "physics_bars"
+   ],
+   "reported_not_gated": [
+    "physics_bars"
+   ],
+   "schema": "chimera.reality_gate.v1",
+   "tolerance_frac": 0.15,
+   "violations": [
+    {
+     "code": "stage-mixed",
+     "components_by_stage": {
+      "adult": [
+       "chimera_bone_4",
+       "chimera_bone_5",
+       "chimera_bone_8",
+       "chimera_bone_9",
+       "chimera_bone_10",
+       "chimera_bone_11",
+       "chimera_bone_12",
+       "chimera_bone_13"
+      ],
+      "infant": [
+       "chimera_bone_2",
+       "chimera_bone_3",
+       "chimera_bone_6",
+       "chimera_bone_7",
+       "chimera_bone_15",
+       "chimera_bone_17",
+       "chimera_bone_18",
+       "chimera_bone_20",
+       "chimera_bone_21",
+       "chimera_bone_22",
+       "chimera_bone_23",
+       "chimera_bone_24",
+       "chimera_bone_25"
+      ]
+     },
+     "law": "stage_consistency",
+     "measured": {
+      "stage_component_counts": {
+       "adult": 8,
+       "infant": 13
+      }
+     },
+     "message": "one creature, one life stage: stages mixed inside one bundle"
+    },
+    {
+     "code": "adult-unconfirmed",
+     "components": [
+      "chimera_bone_4",
+      "chimera_bone_5",
+      "chimera_bone_8",
+      "chimera_bone_9",
+      "chimera_bone_10",
+      "chimera_bone_11",
+      "chimera_bone_12",
+      "chimera_bone_13"
+     ],
+     "law": "stage_consistency",
+     "measured": {
+      "unconfirmed_count": 8
+     },
+     "message": "adult stage label requires confirmation with provenance (adult-CONFIRMED, like sha256)"
+    },
+    {
+     "code": "allometric-deviation",
+     "law": "allometric_coherence",
+     "measured": {
+      "band_frac": 0.15,
+      "deviation_frac": 2.496947894895436,
+      "expected_mean": 1.0628640776699028,
+      "from": [
+       "bundle chains: ranks 10/6",
+       "bundle chains: ranks 11/6",
+       "bundle chains: ranks 10/7",
+       "bundle chains: ranks 11/7"
+      ],
+      "value": 3.7167802989677456,
+      "within_band": false
+     },
+     "message": "segment ratio forearm:tibia deviates 249.7% from the infant scaling table (band 15.0%)",
+     "segment": "forearm:tibia"
+    },
+    {
+     "code": "allometric-deviation",
+     "law": "allometric_coherence",
+     "measured": {
+      "band_frac": 0.15,
+      "deviation_frac": 2.5898721864597833,
+      "expected_mean": 0.9730232558139535,
+      "from": [
+       "bundle chains: ranks 4/2",
+       "bundle chains: ranks 5/2",
+       "bundle chains: ranks 4/3",
+       "bundle chains: ranks 5/3"
+      ],
+      "value": 3.4930291228250545,
+      "within_band": false
+     },
+     "message": "segment ratio humerus:femur deviates 259.0% from the infant scaling table (band 15.0%)",
+     "segment": "humerus:femur"
+    }
+   ]
+  }
+ }
+}

@@ -305,3 +305,23 @@ ChimeraEngine/native/nul
 
 # native relay stdout litter (per-launch logs, never source)
 /ChimeraEngine/native/relay_*.out
+
+# PHYLACINE 1.2.1 release zip (106,362,537 bytes, sha256-pinned in
+# tools/science_funnel/data/phylacine/download_receipt.json) -- exceeds the
+# 100 MB git per-file ceiling; the committed artifacts are the derived trait
+# table + release notes, re-derivable byte-identically from the pinned zip.
+tools/science_funnel/data/phylacine/PHYLACINE_1.2.1.zip
+
+# MorphoSource full-resolution bone meshes (216 MB, sha256-pinned in
+# tools/science_funnel/data/morphosource_ct/mesh_receipt.json) -- committed
+# artifacts are the decimated previews (meshes_preview/), the segmentation
+# manifest, and the MIP projection PNGs. Regenerate full-res via
+# .tmp/segment_bones.py + .tmp/decimate_meshes.py from the pinned CT.
+tools/science_funnel/data/morphosource_ct/meshes/*.obj
+
+# MorphoSource media 000875599 (USNM 497135) full-resolution bone meshes —
+# same sha256-pinning pattern as the 000875604 rule above. Committed artifacts
+# are the decimated previews (meshes_preview_875599/), the segmentation manifest,
+# and the MIP projection PNGs (proj_*_875599.png). Regenerate full-res via
+# .tmp/segment_bones_875599.py + .tmp/decimate_meshes_875599.py from the pinned CT.
+tools/science_funnel/data/morphosource_ct/meshes_875599/*.obj

@@ -1,0 +1,37 @@
+{
+ "schema": "chimera.rule0_preregistration.v1",
+ "written_utc": "2026-09-21T08:20:00+00:00",
+ "written_before_migration": true,
+ "agent": "GLM 5.3",
+ "lane": "data-store-design (design only: no data moves, no tool edits, no existing file changes)",
+ "base": {
+  "canonical_commit": "6ea2702c23c191ff1d3f14bc895ba668f4586dac",
+  "branch": "agent/data-store-design-20260921",
+  "clone": "E:/ChimeraWork/datastore-agent (blob:none sparse: tools, docs, Chimera, ChimeraEngine, core, story)"
+ },
+ "theory": {
+  "statement": "RAW acquired datasets (and bulk extracted model geometry) can live OUTSIDE git in a plain sha256-addressed content store at E:/ChimeraData/store/, with a committed index manifest and a resolution layer honoring CHIMERA_DATA_STORE (in-repo path as default fallback), and the funnel's proofs lose nothing.",
+  "prediction_1": "Pilot (wiseman2026): registering its already-gitignored raw+extracted corpus (273 files, 94,643,527 B, all sha256-pinned by wiseman2026/sha256_manifest.json) into the store, resolving through the new layer, leaves every gate exactly as green as at 6ea2702c: creature_graph suite 69 OK, science_funnel suite OK, matter_kernel test_definition 9/9, training_gate PASS.",
+  "prediction_2": "pin_crosscheck --own <post-pilot> --target <post-pilot> reports zero new collision/stale verdicts versus its 6ea2702c baseline; every wiseman receipt pin verifies against store-resolved bytes.",
+  "prediction_3": "wiseman_osim.py served by the resolution layer verifies all 7 wrapped models byte-for-byte (sha256_manifest.json) and emits receipts whose data_root/sha pins match the pre-pilot form.",
+  "prediction_4": "Phase-3 clone win (measured expectation, NOT assumed): after morphosource + remaining RAW phases, a fresh sparse clone's tools/science_funnel/data checkout drops from 369,762,399 B to <= 70,000,000 B and its pack contribution drops from the measured 259.1 MB by >= 240 MB, because data blobs are the worst-compressing mass in the pack (zips/tifs: 352.6 MB logical -> 259.1 MB packed, 73% ratio, vs docs/evidence 8,712 MB -> 95.4 MB).",
+  "prediction_5": "byte-stability is preserved at every step: store-resolved bytes == committed blob bytes (content addressing makes drift structurally impossible while a path remains in-repo; after removal, the index manifest + download receipts re-fetch and re-pin)"
+ },
+ "falsifier": {
+  "pilot": "If ANY gate that is green at 6ea2702c (creature_graph 69 OK / science_funnel suite OK / matter_kernel test_definition 9/9 / training_gate PASS) turns red on the pilot worktree, OR pin_crosscheck reports any collision or stale pin that its 6ea2702c baseline does not already report, OR wiseman_osim.py refuses with source_pin_drift under store resolution, THE DESIGN IS WRONG: stop, report, no further phases.",
+  "phase3": "If after the morphosource and remaining-RAW phases the measured fresh-clone data checkout is smaller by less than 300,000,000 B, or any receipt in tools/science_funnel/validation/ fails its sha pin re-verification against store bytes, THE CLAIMED WIN IS WRONG: the store stays for future acquisitions only and the migrated blobs return to git (append-only history untouched).",
+  "metric_recording": "each migration step records: bytes in git before/after (ls-tree + cat-file --batch-check with objectsize and objectsize:disk), gate verdicts verbatim, pin_crosscheck verdict table"
+ },
+ "green_baseline_measured_at_base": {
+  "creature_graph_suite": "69 tests OK (python -B -m unittest discover -s tools/creature_graph/tests -p test_*.py)",
+  "matter_kernel_test_definition": "9 tests OK (python -B -m unittest tools.matter_kernel.test_definition)",
+  "training_gate": "PASS (python tools/training_gate.py; theHuman numbers.json staged read-only from the walk lane clone because the sparse checkout lacked story/)",
+  "science_funnel_suite": "running at preregistration time; verdict to be recorded in results_addendum before merge",
+  "pin_crosscheck": "not run at base (needs --own/--target refs at migration time, not design time)"
+ },
+ "honest_limits": [
+  "blobs already in git HISTORY stay there: no history rewrite, the append-only law holds; the win is per-checkout duplication and future acquisitions, not repo size",
+  "the wiseman pilot moves ZERO bytes out of git (its raw corpus is already gitignored); the pilot proves the machinery, phase 2/3 move the mass",
+  "fresh-clone checkout size and pack size are different numbers and both are reported (checkout: full-tree bytes; pack: delta-compressed disk bytes)"
+ ]
+}

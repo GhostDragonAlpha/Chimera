@@ -1,0 +1,4 @@
+id,subject,x,x_quantity,x_unit,value,quantity,unit
+press,synthetic_bar,0,time,ms,0,force,N
+press,synthetic_bar,3,time,ms,1,force,N
+press,synthetic_bar,8,time,ms,0,force,N

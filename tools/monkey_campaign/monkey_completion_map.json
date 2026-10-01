@@ -1,12 +1,12 @@
 {
   "schema": "chimera-monkey-completion-planning-handoff-v1",
-  "date": "2026-09-24",
-  "purpose": "Reviewable completion map and calculation inventory; not a new live task store",
-  "finish_line": "Playable monkey game first; broader Chimera vision later",
+  "date": "2026-09-27",
+  "purpose": "Operator-authorized material-first completion catalog; task dispatch uses the current versioned Kanban scope.",
+  "finish_line": "One playable monkey walks through woods, climbs, holds, descends and releases through composed physical matter; reusable material architecture remains extensible beyond this game.",
   "inspected_working_checkout": "E:/PythonChimera",
   "observed_head": "43b599a7c1f11e789cd414b40d7305b9be05066d",
-  "inspection_limits": "Working files were read during active work, not captured as an atomic checkout. No runtime or physical tests rerun. Live DNA SQLite could not be opened read-only. No graph imports, claims, deployments or project modifications performed.",
-  "operational_owner": "Existing GLM/controller and docs/THE_MASTER_LIST.md; reconcile newer operator instructions",
+  "inspection_limits": "Planning revision grounded in the existing 83-task catalog and local creature-graph contracts. No runtime qualification, existing prototype reproduction, or live queue migration is claimed by this edit.",
+  "operational_owner": "Appointed Lieutenant serially admits the new scope; Sergeant dispatches only admitted task revisions using existing ownership and review machinery.",
   "canonical_existing_catalog": "E:/PythonChimera/docs/roadmap/holodeck_tasks.json",
   "source_classes": {
     "operator": "This conversation through 2026-09-24",
@@ -23,8 +23,8 @@
     "graph_inspection": "planning_inventory.json"
   },
   "status_policy": "Task presence is not evidence of missing implementation. Every item must be reconciled to current receipts before dispatch. UNRECONCILED does not mean not built.",
-  "dependency_policy": "Edges are prerequisites for final acceptance of the task; design/scaffolding can proceed earlier with controlled fixtures. No fixtures may be represented as real-packet acceptance.",
-  "feature_complete_policy": "Core plus selected recommended_product tasks; conditional modernization only if the chosen playable build consumes it. No percent-complete or calendar forecast from task counts.",
+  "dependency_policy": "Edges are prerequisites for final acceptance of the task; design/scaffolding can proceed earlier with controlled fixtures. No fixtures may be represented as real-packet acceptance. Revised requirements never rewrite historical card criteria. New acceptance dependencies refer to the revised plan, not old unversioned DONE flags.",
+  "feature_complete_policy": "Selected tasks plus dependency closure; the new material assembly explicitly consumes B01-B07. Do not use task-count percentage as delivery forecast. Early walking-through-woods acceptance precedes full climbing/release acceptance.",
   "groups": [
     {
       "name": "Scope, identity, and fleet",
@@ -36,6 +36,11 @@
         "GOV-05",
         "SYS-03"
       ]
+    },
+    {
+      "name": "Reusable matter foundation",
+      "scope": "core",
+      "catalog_refs": []
     },
     {
       "name": "Walking foundation",
@@ -157,7 +162,7 @@
       "scope": "core",
       "depends_on": [],
       "calculation_ids": [],
-      "done_when": "One monkey, ground movement, one climbable trunk, return to ground, explicit success/failure behavior; broader features excluded",
+      "done_when": "One monkey, ground movement, one climbable trunk, return to ground, explicit success/failure behavior; broader features excluded. Material-first addition: Reusable matter is the architecture; walking through woods is the first product milestone, followed by the existing climb/return goal. Additional materials remain extensible, not universal-physics prerequisites.",
       "observation": "Operator selected playable monkey first on 2026-09-24",
       "implementation_state": "UNRECONCILED",
       "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
@@ -175,7 +180,7 @@
         "connection_ids": [],
         "verification_profile": "records",
         "checkpoint_ids": [],
-        "scenario_scope": "One monkey, ground movement, one climbable trunk, return to ground, explicit success/failure behavior; broader features excluded"
+        "scenario_scope": "One monkey, ground movement, one climbable trunk, return to ground, explicit success/failure behavior; broader features excluded. Material-first addition: Reusable matter is the architecture; walking through woods is the first product milestone, followed by the existing climb/return goal. Additional materials remain extensible, not universal-physics prerequisites."
       },
       "dependency_reasons": {}
     },
@@ -191,7 +196,7 @@
       "calculation_ids": [
         "C01"
       ],
-      "done_when": "CT monkey, source musculoskeletal model, older forearm/paddle assets, training body, and runtime body are related explicitly or kept separate",
+      "done_when": "CT monkey, source musculoskeletal model, older forearm/paddle assets, training body, and runtime body are related explicitly or kept separate. Material-first addition: Recover and reproduce the operator-observed prototype before replacing any subsystem; pin executable/build recipe/source/body/scene/policy and capture actual behavior. A missing source or behavior is an explicit unresolved gap.",
       "observation": "Reports involve different assets and mass claims; compatibility is not established by their shared name",
       "implementation_state": "UNRECONCILED",
       "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
@@ -217,9 +222,11 @@
         "checkpoint_ids": [
           "V01"
         ],
-        "scenario_scope": "CT monkey, source musculoskeletal model, older forearm/paddle assets, training body, and runtime body are related explicitly or kept separate"
+        "scenario_scope": "CT monkey, source musculoskeletal model, older forearm/paddle assets, training body, and runtime body are related explicitly or kept separate. Material-first addition: Recover and reproduce the operator-observed prototype before replacing any subsystem; pin executable/build recipe/source/body/scene/policy and capture actual behavior. A missing source or behavior is an explicit unresolved gap."
       },
-      "dependency_reasons": {}
+      "dependency_reasons": {
+        "P01": "Required exact-revision input for the revised material-first acceptance."
+      }
     },
     {
       "id": "P03",
@@ -231,7 +238,7 @@
         "P01"
       ],
       "calculation_ids": [],
-      "done_when": "Every active task has one owner, source revision, scoped verdict, and receipt; prior completed work is reused",
+      "done_when": "Every active task has one owner, source revision, scoped verdict, and receipt; prior completed work is reused. Material-first addition: Crosswalk old receipts to revised requirements without promoting old DONE to new acceptance. Search the existing material graph and code before adding work.",
       "observation": "Conversation receipts are newer than the broad catalogue",
       "implementation_state": "UNRECONCILED",
       "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
@@ -249,9 +256,11 @@
         "connection_ids": [],
         "verification_profile": "records",
         "checkpoint_ids": [],
-        "scenario_scope": "Every active task has one owner, source revision, scoped verdict, and receipt; prior completed work is reused"
+        "scenario_scope": "Every active task has one owner, source revision, scoped verdict, and receipt; prior completed work is reused. Material-first addition: Crosswalk old receipts to revised requirements without promoting old DONE to new acceptance. Search the existing material graph and code before adding work."
       },
-      "dependency_reasons": {}
+      "dependency_reasons": {
+        "P01": "Required exact-revision input for the revised material-first acceptance."
+      }
     },
     {
       "id": "P04",
@@ -332,7 +341,7 @@
         "C27",
         "C28"
       ],
-      "done_when": "Supported hardware, controls, terrain/trunk envelope, session duration, latency, frame-time and stability limits are frozen before acceptance trials",
+      "done_when": "Supported hardware, controls, terrain/trunk envelope, session duration, latency, frame-time and stability limits are frozen before acceptance trials. Material-first addition: Freeze numerical/convergence/energy/contact/performance limits and camera-visible player outcomes before experiments. Report first walking-through-woods acceptance separately from later full climbing completion.",
       "observation": "No numeric product-wide limits supplied; do not fabricate them",
       "implementation_state": "UNRECONCILED",
       "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
@@ -350,9 +359,11 @@
         "connection_ids": [],
         "verification_profile": "records",
         "checkpoint_ids": [],
-        "scenario_scope": "Supported hardware, controls, terrain/trunk envelope, session duration, latency, frame-time and stability limits are frozen before acceptance trials"
+        "scenario_scope": "Supported hardware, controls, terrain/trunk envelope, session duration, latency, frame-time and stability limits are frozen before acceptance trials. Material-first addition: Freeze numerical/convergence/energy/contact/performance limits and camera-visible player outcomes before experiments. Report first walking-through-woods acceptance separately from later full climbing completion."
       },
-      "dependency_reasons": {}
+      "dependency_reasons": {
+        "P01": "Required exact-revision input for the revised material-first acceptance."
+      }
     },
     {
       "id": "W01",
@@ -453,7 +464,7 @@
       "calculation_ids": [
         "C09"
       ],
-      "done_when": "Freefall/stand/C1/C2 and scene f6844ee, stdout 8c537cdb, 302 ticks, 30.970714 J reproduce on the training revision",
+      "done_when": "Freefall/stand/C1/C2 and scene f6844ee, stdout 8c537cdb, 302 ticks, 30.970714 J reproduce on the training revision. Material-first addition: Old gait/anchor evidence is baseline evidence only until it is rerun against the selected physical representation; no identity substitution.",
       "observation": "Frozen acceptance anchors supplied by operator",
       "implementation_state": "UNRECONCILED",
       "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
@@ -480,9 +491,12 @@
         ],
         "verification_profile": "parity-replay",
         "checkpoint_ids": [],
-        "scenario_scope": "Freefall/stand/C1/C2 and scene f6844ee, stdout 8c537cdb, 302 ticks, 30.970714 J reproduce on the training revision"
+        "scenario_scope": "Freefall/stand/C1/C2 and scene f6844ee, stdout 8c537cdb, 302 ticks, 30.970714 J reproduce on the training revision. Material-first addition: Old gait/anchor evidence is baseline evidence only until it is rerun against the selected physical representation; no identity substitution."
       },
-      "dependency_reasons": {}
+      "dependency_reasons": {
+        "W01": "Required exact-revision input for the revised material-first acceptance.",
+        "W02": "Required exact-revision input for the revised material-first acceptance."
+      }
     },
     {
       "id": "W04",
@@ -491,7 +505,9 @@
       "group": "Walking foundation",
       "scope": "core",
       "depends_on": [
-        "W03"
+        "W03",
+        "M11",
+        "B07"
       ],
       "calculation_ids": [
         "C10",
@@ -500,7 +516,7 @@
         "C07",
         "C08"
       ],
-      "done_when": "Exact dynamics, observations/actions, model revision, seeds and runbook identity are frozen and checked",
+      "done_when": "Exact dynamics, observations/actions, model revision, seeds and runbook identity are frozen and checked. Material-first addition: Bind the accepted material assembly, active law, observation/action schema and physics tick to both training and runtime. An old policy is reusable only if this contract still matches.",
       "observation": "Certificate system and observation-aliasing fix reported complete",
       "implementation_state": "UNRECONCILED",
       "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
@@ -529,13 +545,17 @@
         "checkpoint_ids": [
           "V01"
         ],
-        "scenario_scope": "Exact dynamics, observations/actions, model revision, seeds and runbook identity are frozen and checked"
+        "scenario_scope": "Exact dynamics, observations/actions, model revision, seeds and runbook identity are frozen and checked. Material-first addition: Bind the accepted material assembly, active law, observation/action schema and physics tick to both training and runtime. An old policy is reusable only if this contract still matches."
       },
-      "dependency_reasons": {}
+      "dependency_reasons": {
+        "W03": "Required exact-revision input for the revised material-first acceptance.",
+        "M11": "Required exact-revision input for the revised material-first acceptance.",
+        "B07": "Required exact-revision input for the revised material-first acceptance."
+      }
     },
     {
       "id": "W05",
-      "title": "Execute unchanged authorized walking runbook",
+      "title": "Execute the walking run qualified for the selected material dynamics",
       "kind": "training",
       "group": "Walking foundation",
       "scope": "core",
@@ -546,7 +566,7 @@
       "calculation_ids": [
         "C10"
       ],
-      "done_when": "All three prescribed seeds execute under the frozen approximately 1M-decision runbook with failures retained",
+      "done_when": "All three prescribed seeds execute under the frozen approximately 1M-decision runbook with failures retained. Material-first addition: The old runbook is unchanged only when W04 demonstrates unchanged dynamics and interfaces. Otherwise create and freeze a revised run with retained baseline, bounded resources and explicit controller changes; no incompatible run by inertia.",
       "observation": "Training authorized conditionally; no reported completed run",
       "implementation_state": "UNRECONCILED",
       "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
@@ -569,9 +589,12 @@
         ],
         "verification_profile": "records",
         "checkpoint_ids": [],
-        "scenario_scope": "All three prescribed seeds execute under the frozen approximately 1M-decision runbook with failures retained"
+        "scenario_scope": "All three prescribed seeds execute under the frozen approximately 1M-decision runbook with failures retained. Material-first addition: The old runbook is unchanged only when W04 demonstrates unchanged dynamics and interfaces. Otherwise create and freeze a revised run with retained baseline, bounded resources and explicit controller changes; no incompatible run by inertia."
       },
-      "dependency_reasons": {}
+      "dependency_reasons": {
+        "W04": "Required exact-revision input for the revised material-first acceptance.",
+        "P04": "Required exact-revision input for the revised material-first acceptance."
+      }
     },
     {
       "id": "W06",
@@ -626,13 +649,14 @@
       "group": "Walking foundation",
       "scope": "core",
       "depends_on": [
-        "W06"
+        "W06",
+        "M08"
       ],
       "calculation_ids": [
         "C10",
         "C11"
       ],
-      "done_when": "Runtime consumes the certified observation/action contract and drives physical actuators",
+      "done_when": "Runtime consumes the certified observation/action contract and drives physical actuators. Material-first addition: The controller supplies bounded activation/pressure/effort to the accepted material system; native solved matter is the only physical pose authority.",
       "observation": "No pose-writing locomotion substitute",
       "implementation_state": "UNRECONCILED",
       "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
@@ -661,9 +685,12 @@
         ],
         "verification_profile": "walking",
         "checkpoint_ids": [],
-        "scenario_scope": "Runtime consumes the certified observation/action contract and drives physical actuators"
+        "scenario_scope": "Runtime consumes the certified observation/action contract and drives physical actuators. Material-first addition: The controller supplies bounded activation/pressure/effort to the accepted material system; native solved matter is the only physical pose authority."
       },
-      "dependency_reasons": {}
+      "dependency_reasons": {
+        "W06": "Required exact-revision input for the revised material-first acceptance.",
+        "M08": "Required exact-revision input for the revised material-first acceptance."
+      }
     },
     {
       "id": "W08",
@@ -775,10 +802,13 @@
         "W08",
         "W09",
         "F04",
-        "U02"
+        "U02",
+        "M12",
+        "U03",
+        "X02"
       ],
       "calculation_ids": [],
-      "done_when": "Player can walk, turn and stop in the scene on a supported surface; numerical and visual receipts match",
+      "done_when": "Player can walk, turn and stop in the scene on a supported surface; numerical and visual receipts match. Material-first addition: Show the existing monkey asset walking under player commands in one pinned forest clearing build, with clean and diagnostic views; no cosmetic skin over an unrelated qualified body.",
       "observation": "Walking demo is a product milestone before climbing",
       "implementation_state": "UNRECONCILED",
       "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
@@ -807,11 +837,20 @@
         ],
         "verification_profile": "walking",
         "checkpoint_ids": [
-          "V03"
+          "V03",
+          "MAT-WOODS"
         ],
-        "scenario_scope": "Player can walk, turn and stop in the scene on a supported surface; numerical and visual receipts match"
+        "scenario_scope": "Player can walk, turn and stop in the scene on a supported surface; numerical and visual receipts match. Material-first addition: Show the existing monkey asset walking under player commands in one pinned forest clearing build, with clean and diagnostic views; no cosmetic skin over an unrelated qualified body."
       },
-      "dependency_reasons": {}
+      "dependency_reasons": {
+        "W08": "Required exact-revision input for the revised material-first acceptance.",
+        "W09": "Required exact-revision input for the revised material-first acceptance.",
+        "F04": "Required exact-revision input for the revised material-first acceptance.",
+        "U02": "Required exact-revision input for the revised material-first acceptance.",
+        "M12": "Required exact-revision input for the revised material-first acceptance.",
+        "U03": "Required exact-revision input for the revised material-first acceptance.",
+        "X02": "Required exact-revision input for the revised material-first acceptance."
+      }
     },
     {
       "id": "U01",
@@ -1089,7 +1128,8 @@
         ],
         "verification_profile": "controls",
         "checkpoint_ids": [
-          "V03"
+          "V03",
+          "MAT-WOODS"
         ],
         "scenario_scope": "End-to-end input response and camera behavior meet P06 limits under repeatable scenes"
       },
@@ -1142,12 +1182,13 @@
       "group": "Small forest environment",
       "scope": "core",
       "depends_on": [
-        "F01"
+        "F01",
+        "M06"
       ],
       "calculation_ids": [
         "C14"
       ],
-      "done_when": "Rendered ground and physical query surfaces agree within frozen geometric tolerance",
+      "done_when": "Rendered ground and physical query surfaces agree within frozen geometric tolerance. Material-first addition: Terrain contact uses the shared material/contact path; surface shape, material identity and collision geometry stay tied to the rendered asset.",
       "observation": "Reuse engine geometry/collision paths",
       "implementation_state": "UNRECONCILED",
       "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
@@ -1173,9 +1214,12 @@
         "checkpoint_ids": [
           "V02"
         ],
-        "scenario_scope": "Rendered ground and physical query surfaces agree within frozen geometric tolerance"
+        "scenario_scope": "Rendered ground and physical query surfaces agree within frozen geometric tolerance. Material-first addition: Terrain contact uses the shared material/contact path; surface shape, material identity and collision geometry stay tied to the rendered asset."
       },
-      "dependency_reasons": {}
+      "dependency_reasons": {
+        "F01": "Required exact-revision input for the revised material-first acceptance.",
+        "M06": "Required exact-revision input for the revised material-first acceptance."
+      }
     },
     {
       "id": "F03",
@@ -1184,12 +1228,13 @@
       "group": "Small forest environment",
       "scope": "core",
       "depends_on": [
-        "F01"
+        "F01",
+        "M06"
       ],
       "calculation_ids": [
         "C15"
       ],
-      "done_when": "Trunk geometry, surface IDs, material provenance and collision representation are explicit",
+      "done_when": "Trunk geometry, surface IDs, material provenance and collision representation are explicit. Material-first addition: The rigid trunk is an explicitly reduced material object using the same contact interfaces. Full wood growth/fracture or all tree rings are not prerequisites.",
       "observation": "Deformable branches and bark damage deferred",
       "implementation_state": "UNRECONCILED",
       "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
@@ -1215,9 +1260,12 @@
         "checkpoint_ids": [
           "V02"
         ],
-        "scenario_scope": "Trunk geometry, surface IDs, material provenance and collision representation are explicit"
+        "scenario_scope": "Trunk geometry, surface IDs, material provenance and collision representation are explicit. Material-first addition: The rigid trunk is an explicitly reduced material object using the same contact interfaces. Full wood growth/fracture or all tree rings are not prerequisites."
       },
-      "dependency_reasons": {}
+      "dependency_reasons": {
+        "F01": "Required exact-revision input for the revised material-first acceptance.",
+        "M06": "Required exact-revision input for the revised material-first acceptance."
+      }
     },
     {
       "id": "F04",
@@ -1322,13 +1370,14 @@
       "depends_on": [
         "F05",
         "W07",
-        "F04"
+        "F04",
+        "W10"
       ],
       "calculation_ids": [
         "C11",
         "C14"
       ],
-      "done_when": "Player walks the declared uneven-ground cases with certified runtime/training agreement",
+      "done_when": "Player walks the declared uneven-ground cases with certified runtime/training agreement. Material-first addition: Qualify player-controlled walking between trees and on the declared uneven-ground envelope in the same build as W10, with actual contacts.",
       "observation": "Any expanded training objective gets a new approved runbook",
       "implementation_state": "UNRECONCILED",
       "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
@@ -1353,12 +1402,16 @@
         ],
         "verification_profile": "walking",
         "checkpoint_ids": [
-          "V04"
+          "V04",
+          "MAT-WOODS"
         ],
-        "scenario_scope": "Player walks the declared uneven-ground cases with certified runtime/training agreement"
+        "scenario_scope": "Player walks the declared uneven-ground cases with certified runtime/training agreement. Material-first addition: Qualify player-controlled walking between trees and on the declared uneven-ground envelope in the same build as W10, with actual contacts."
       },
       "dependency_reasons": {
-        "F04": "Terrain locomotion consumes qualified native render/collision contact."
+        "F05": "Required exact-revision input for the revised material-first acceptance.",
+        "W07": "Required exact-revision input for the revised material-first acceptance.",
+        "F04": "Terrain locomotion consumes qualified native render/collision contact.",
+        "W10": "Required exact-revision input for the revised material-first acceptance."
       }
     },
     {
@@ -1434,7 +1487,8 @@
         "connection_ids": [],
         "verification_profile": "forest",
         "checkpoint_ids": [
-          "V04"
+          "V04",
+          "MAT-WOODS"
         ],
         "scenario_scope": "Scene seed/configuration reproduces assets, collision and initial state with clear failures for missing assets"
       },
@@ -1637,12 +1691,13 @@
       "scope": "core",
       "depends_on": [
         "A03",
-        "A05"
+        "A05",
+        "M05"
       ],
       "calculation_ids": [
         "C17"
       ],
-      "done_when": "Every grasp-relevant endpoint and waypoint has an explicit approved body and role",
+      "done_when": "Every grasp-relevant endpoint and waypoint has an explicit approved body and role. Material-first addition: Represent tissue-to-bone attachments explicitly; ontology containment and conventional rig parentage never silently create a mechanical bond.",
       "observation": "Do not reinterpret waypoints as attachment ports",
       "implementation_state": "UNRECONCILED",
       "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
@@ -1665,9 +1720,13 @@
         ],
         "verification_profile": "anatomy",
         "checkpoint_ids": [],
-        "scenario_scope": "Every grasp-relevant endpoint and waypoint has an explicit approved body and role"
+        "scenario_scope": "Every grasp-relevant endpoint and waypoint has an explicit approved body and role. Material-first addition: Represent tissue-to-bone attachments explicitly; ontology containment and conventional rig parentage never silently create a mechanical bond."
       },
-      "dependency_reasons": {}
+      "dependency_reasons": {
+        "A03": "Required exact-revision input for the revised material-first acceptance.",
+        "A05": "Required exact-revision input for the revised material-first acceptance.",
+        "M05": "Required exact-revision input for the revised material-first acceptance."
+      }
     },
     {
       "id": "A07",
@@ -1715,13 +1774,14 @@
       "group": "Anatomy and grasp prerequisites",
       "scope": "core",
       "depends_on": [
-        "A06"
+        "A06",
+        "M10"
       ],
       "calculation_ids": [
         "C07",
         "C18"
       ],
-      "done_when": "Strength, force-length/velocity, compliance, limits and applicability are defined for the selected animal",
+      "done_when": "Strength, force-length/velocity, compliance, limits and applicability are defined for the selected animal. Material-first addition: Separate source-backed biological parameters from chosen engineering active-pressure material parameters. No inferred density/stiffness/activation law from geometry alone.",
       "observation": "Do not inherit unrelated human or differently scaled masses/strengths",
       "implementation_state": "UNRECONCILED",
       "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
@@ -1743,9 +1803,12 @@
         ],
         "verification_profile": "records",
         "checkpoint_ids": [],
-        "scenario_scope": "Strength, force-length/velocity, compliance, limits and applicability are defined for the selected animal"
+        "scenario_scope": "Strength, force-length/velocity, compliance, limits and applicability are defined for the selected animal. Material-first addition: Separate source-backed biological parameters from chosen engineering active-pressure material parameters. No inferred density/stiffness/activation law from geometry alone."
       },
-      "dependency_reasons": {}
+      "dependency_reasons": {
+        "A06": "Required exact-revision input for the revised material-first acceptance.",
+        "M10": "Required exact-revision input for the revised material-first acceptance."
+      }
     },
     {
       "id": "A09",
@@ -1755,7 +1818,8 @@
       "scope": "core",
       "depends_on": [
         "A07",
-        "A08"
+        "A08",
+        "M09"
       ],
       "calculation_ids": [
         "C01",
@@ -1764,7 +1828,7 @@
         "C05",
         "C06"
       ],
-      "done_when": "One versioned package carries supported mappings, parameters, provenance and explicit gaps",
+      "done_when": "One versioned package carries supported mappings, parameters, provenance and explicit gaps. Material-first addition: Package the skeletal/tissue/interface graph and each explicit reduction; removal of represented tissue must remove its mechanical connection.",
       "observation": "Anatomy completion does not itself prove climbing",
       "implementation_state": "UNRECONCILED",
       "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
@@ -1789,9 +1853,13 @@
         "checkpoint_ids": [
           "V05"
         ],
-        "scenario_scope": "One versioned package carries supported mappings, parameters, provenance and explicit gaps"
+        "scenario_scope": "One versioned package carries supported mappings, parameters, provenance and explicit gaps. Material-first addition: Package the skeletal/tissue/interface graph and each explicit reduction; removal of represented tissue must remove its mechanical connection."
       },
-      "dependency_reasons": {}
+      "dependency_reasons": {
+        "A07": "Required exact-revision input for the revised material-first acceptance.",
+        "A08": "Required exact-revision input for the revised material-first acceptance.",
+        "M09": "Required exact-revision input for the revised material-first acceptance."
+      }
     },
     {
       "id": "G01",
@@ -1846,12 +1914,13 @@
       "group": "Grasp and climbing mechanics",
       "scope": "core",
       "depends_on": [
-        "A09"
+        "A09",
+        "M05"
       ],
       "calculation_ids": [
         "C17"
       ],
-      "done_when": "Actual patch geometry, stiffness and rotational resistance meet declared physical requirements",
+      "done_when": "Actual patch geometry, stiffness and rotational resistance meet declared physical requirements. Material-first addition: Finite-area attachment forces and moments enter both connected material states; physical bond/removal semantics match the limb experiment.",
       "observation": "Synthetic lambda_min=32 result cannot qualify real ports",
       "implementation_state": "UNRECONCILED",
       "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
@@ -1877,9 +1946,12 @@
         "checkpoint_ids": [
           "V05"
         ],
-        "scenario_scope": "Actual patch geometry, stiffness and rotational resistance meet declared physical requirements"
+        "scenario_scope": "Actual patch geometry, stiffness and rotational resistance meet declared physical requirements. Material-first addition: Finite-area attachment forces and moments enter both connected material states; physical bond/removal semantics match the limb experiment."
       },
-      "dependency_reasons": {}
+      "dependency_reasons": {
+        "A09": "Required exact-revision input for the revised material-first acceptance.",
+        "M05": "Required exact-revision input for the revised material-first acceptance."
+      }
     },
     {
       "id": "G03",
@@ -1933,13 +2005,15 @@
         "G01",
         "G02",
         "G03",
-        "F04"
+        "F04",
+        "M06",
+        "M11"
       ],
       "calculation_ids": [
         "C08",
         "C19"
       ],
-      "done_when": "Attachment, friction, reaction loads and release operate through the physical solver without invisible anchors",
+      "done_when": "Attachment, friction, reaction loads and release operate through the physical solver without invisible anchors. Material-first addition: Use the same local contact and material interface implementation as ground locomotion; grasp cannot add a hidden sticky constraint.",
       "observation": "Model choice stays inside approved architecture",
       "implementation_state": "UNRECONCILED",
       "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
@@ -1967,9 +2041,16 @@
         "checkpoint_ids": [
           "V06"
         ],
-        "scenario_scope": "Attachment, friction, reaction loads and release operate through the physical solver without invisible anchors"
+        "scenario_scope": "Attachment, friction, reaction loads and release operate through the physical solver without invisible anchors. Material-first addition: Use the same local contact and material interface implementation as ground locomotion; grasp cannot add a hidden sticky constraint."
       },
-      "dependency_reasons": {}
+      "dependency_reasons": {
+        "G01": "Required exact-revision input for the revised material-first acceptance.",
+        "G02": "Required exact-revision input for the revised material-first acceptance.",
+        "G03": "Required exact-revision input for the revised material-first acceptance.",
+        "F04": "Required exact-revision input for the revised material-first acceptance.",
+        "M06": "Required exact-revision input for the revised material-first acceptance.",
+        "M11": "Required exact-revision input for the revised material-first acceptance."
+      }
     },
     {
       "id": "G05",
@@ -2250,7 +2331,7 @@
         "C10",
         "C21"
       ],
-      "done_when": "Approved runs finish or fail with checkpoints and unchanged acceptance criteria",
+      "done_when": "Approved runs finish or fail with checkpoints and unchanged acceptance criteria. Material-first addition: Reuse admitted walking/material dynamics and train only the distinct climbing behavior; all body, material, contact and control identities must match.",
       "observation": "No seed substitutions or success-driven reruns",
       "implementation_state": "UNRECONCILED",
       "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
@@ -2273,9 +2354,11 @@
         ],
         "verification_profile": "records",
         "checkpoint_ids": [],
-        "scenario_scope": "Approved runs finish or fail with checkpoints and unchanged acceptance criteria"
+        "scenario_scope": "Approved runs finish or fail with checkpoints and unchanged acceptance criteria. Material-first addition: Reuse admitted walking/material dynamics and train only the distinct climbing behavior; all body, material, contact and control identities must match."
       },
       "dependency_reasons": {
+        "K02": "Required exact-revision input for the revised material-first acceptance.",
+        "P04": "Required exact-revision input for the revised material-first acceptance.",
         "W07": "Climbing follows the accepted walking foundation; the existing walking run remains unchanged."
       }
     },
@@ -2625,10 +2708,11 @@
       "scope": "recommended_product",
       "depends_on": [
         "W10",
-        "F08"
+        "F08",
+        "M12"
       ],
       "calculation_ids": [],
-      "done_when": "Connected animal, contact and climbing states are readable in actual captures with no second locomotion pose",
+      "done_when": "Connected animal, contact and climbing states are readable in actual captures with no second locomotion pose. Material-first addition: Deform/render from the actual material state and verified mapping. Debug layers can be invisible in play but cannot be missing from verification.",
       "observation": "Connected CT rendering reported; reuse and check affected paths",
       "implementation_state": "UNRECONCILED",
       "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
@@ -2654,9 +2738,13 @@
         "checkpoint_ids": [
           "V09"
         ],
-        "scenario_scope": "Connected animal, contact and climbing states are readable in actual captures with no second locomotion pose"
+        "scenario_scope": "Connected animal, contact and climbing states are readable in actual captures with no second locomotion pose. Material-first addition: Deform/render from the actual material state and verified mapping. Debug layers can be invisible in play but cannot be missing from verification."
       },
-      "dependency_reasons": {}
+      "dependency_reasons": {
+        "W10": "Required exact-revision input for the revised material-first acceptance.",
+        "F08": "Required exact-revision input for the revised material-first acceptance.",
+        "M12": "Required exact-revision input for the revised material-first acceptance."
+      }
     },
     {
       "id": "X05",
@@ -2714,7 +2802,7 @@
       "calculation_ids": [
         "C25"
       ],
-      "done_when": "Selected lesson or inspector uses runtime quantities with units and explains declared limitations",
+      "done_when": "Selected lesson or inspector uses runtime quantities with units and explains declared limitations. Material-first addition: Inspection exposes live membrane pressure, material directions, load paths and contacts with selectable IDs and camera bookmarks; the graph view links to runtime identity rather than substituting for it.",
       "observation": "Commercial teaching-game intent retained; Lesson One previously reported",
       "implementation_state": "UNRECONCILED",
       "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
@@ -2739,9 +2827,12 @@
         "checkpoint_ids": [
           "V09"
         ],
-        "scenario_scope": "Selected lesson or inspector uses runtime quantities with units and explains declared limitations"
+        "scenario_scope": "Selected lesson or inspector uses runtime quantities with units and explains declared limitations. Material-first addition: Inspection exposes live membrane pressure, material directions, load paths and contacts with selectable IDs and camera bookmarks; the graph view links to runtime identity rather than substituting for it."
       },
-      "dependency_reasons": {}
+      "dependency_reasons": {
+        "X01": "Required exact-revision input for the revised material-first acceptance.",
+        "K08": "Required exact-revision input for the revised material-first acceptance."
+      }
     },
     {
       "id": "X07",
@@ -2805,7 +2896,7 @@
       "calculation_ids": [
         "C26"
       ],
-      "done_when": "Pose, velocity, policy/actuator/contact state, scene, RNG and clocks resume under the existing continuation contract",
+      "done_when": "Pose, velocity, policy/actuator/contact state, scene, RNG and clocks resume under the existing continuation contract. Material-first addition: Include required pressure/volume state, constitutive history, bond topology, activation/energy and solver continuity in the save contract; restoring visible pose alone is insufficient.",
       "observation": "Fresh-process bit-identical restoration reported for prior state; additions need coverage",
       "implementation_state": "UNRECONCILED",
       "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
@@ -2830,9 +2921,11 @@
         "checkpoint_ids": [
           "V08"
         ],
-        "scenario_scope": "Pose, velocity, policy/actuator/contact state, scene, RNG and clocks resume under the existing continuation contract"
+        "scenario_scope": "Pose, velocity, policy/actuator/contact state, scene, RNG and clocks resume under the existing continuation contract. Material-first addition: Include required pressure/volume state, constitutive history, bond topology, activation/energy and solver continuity in the save contract; restoring visible pose alone is insufficient."
       },
-      "dependency_reasons": {}
+      "dependency_reasons": {
+        "K06": "Required exact-revision input for the revised material-first acceptance."
+      }
     },
     {
       "id": "R02",
@@ -2884,12 +2977,14 @@
       "depends_on": [
         "K08",
         "P06",
-        "P05"
+        "P05",
+        "M08",
+        "M12"
       ],
       "calculation_ids": [
         "C27"
       ],
-      "done_when": "Frame-time distribution, simulation-step time, memory, VRAM and stalls measured in reserved windows",
+      "done_when": "Frame-time distribution, simulation-step time, memory, VRAM and stalls measured in reserved windows. Material-first addition: Measure the coupled GPU passes, contact density, active material count, mechanical/render resolution and memory footprint; GPU residency is not proof of real-time performance.",
       "observation": "Contended timing measurements are invalid",
       "implementation_state": "UNRECONCILED",
       "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
@@ -2912,10 +3007,14 @@
         "connection_ids": [],
         "verification_profile": "recovery",
         "checkpoint_ids": [],
-        "scenario_scope": "Frame-time distribution, simulation-step time, memory, VRAM and stalls measured in reserved windows"
+        "scenario_scope": "Frame-time distribution, simulation-step time, memory, VRAM and stalls measured in reserved windows. Material-first addition: Measure the coupled GPU passes, contact density, active material count, mechanical/render resolution and memory footprint; GPU residency is not proof of real-time performance."
       },
       "dependency_reasons": {
-        "P05": "Profiling must identify recoverable run/candidate artifacts."
+        "K08": "Required exact-revision input for the revised material-first acceptance.",
+        "P06": "Required exact-revision input for the revised material-first acceptance.",
+        "P05": "Profiling must identify recoverable run/candidate artifacts.",
+        "M08": "Required exact-revision input for the revised material-first acceptance.",
+        "M12": "Required exact-revision input for the revised material-first acceptance."
       }
     },
     {
@@ -3396,13 +3495,14 @@
       "group": "Material-volume and assembly modernization",
       "scope": "conditional",
       "depends_on": [
-        "P02"
+        "P02",
+        "M02"
       ],
       "calculation_ids": [
         "C02",
         "C03"
       ],
-      "done_when": "Actual geometry, material ownership and density source support a complete input for the selected body",
+      "done_when": "Actual geometry, material ownership and density source support a complete input for the selected body. Material-first addition: Author only the matter required at selected fidelity, with mass/volume ownership and density provenance; static meshes do not implicitly provide interiors.",
       "observation": "Buffy 02: bbox scale/origin/basis do not supply volume or density",
       "implementation_state": "UNRECONCILED",
       "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
@@ -3426,9 +3526,12 @@
         "checkpoint_ids": [
           "V11"
         ],
-        "scenario_scope": "Actual geometry, material ownership and density source support a complete input for the selected body"
+        "scenario_scope": "Actual geometry, material ownership and density source support a complete input for the selected body. Material-first addition: Author only the matter required at selected fidelity, with mass/volume ownership and density provenance; static meshes do not implicitly provide interiors."
       },
-      "dependency_reasons": {}
+      "dependency_reasons": {
+        "P02": "Required exact-revision input for the revised material-first acceptance.",
+        "M02": "Required exact-revision input for the revised material-first acceptance."
+      }
     },
     {
       "id": "B04",
@@ -3437,12 +3540,13 @@
       "group": "Material-volume and assembly modernization",
       "scope": "conditional",
       "depends_on": [
-        "P02"
+        "P02",
+        "M01"
       ],
       "calculation_ids": [
         "C01"
       ],
-      "done_when": "pelvis/thorax/ulna roots and transforms are authored with evidence; no guessed alignment",
+      "done_when": "pelvis/thorax/ulna roots and transforms are authored with evidence; no guessed alignment. Material-first addition: Containment/frame hierarchy is separate from mechanical connection topology; disconnected bone bodies remain explicit.",
       "observation": "Buffy 02 reports four disconnected referenced roots; prepared definition is not authorization",
       "implementation_state": "UNRECONCILED",
       "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
@@ -3466,9 +3570,12 @@
         "checkpoint_ids": [
           "V11"
         ],
-        "scenario_scope": "pelvis/thorax/ulna roots and transforms are authored with evidence; no guessed alignment"
+        "scenario_scope": "pelvis/thorax/ulna roots and transforms are authored with evidence; no guessed alignment. Material-first addition: Containment/frame hierarchy is separate from mechanical connection topology; disconnected bone bodies remain explicit."
       },
-      "dependency_reasons": {}
+      "dependency_reasons": {
+        "P02": "Required exact-revision input for the revised material-first acceptance.",
+        "M01": "Required exact-revision input for the revised material-first acceptance."
+      }
     },
     {
       "id": "B05",
@@ -3477,12 +3584,13 @@
       "group": "Material-volume and assembly modernization",
       "scope": "conditional",
       "depends_on": [
-        "B04"
+        "B04",
+        "M05"
       ],
       "calculation_ids": [
         "C17"
       ],
-      "done_when": "Actual port patch/stiffness/couple/weight/frame inputs qualify or remain blocked",
+      "done_when": "Actual port patch/stiffness/couple/weight/frame inputs qualify or remain blocked. Material-first addition: Use material-law/interface definitions with declared stiffness, pressure limits and attachment area at chosen detail; distinguish engineering assumptions from measured anatomy.",
       "observation": "Eight ports missing parameters; source tendon points are insufficient",
       "implementation_state": "UNRECONCILED",
       "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
@@ -3507,9 +3615,12 @@
         "checkpoint_ids": [
           "V11"
         ],
-        "scenario_scope": "Actual port patch/stiffness/couple/weight/frame inputs qualify or remain blocked"
+        "scenario_scope": "Actual port patch/stiffness/couple/weight/frame inputs qualify or remain blocked. Material-first addition: Use material-law/interface definitions with declared stiffness, pressure limits and attachment area at chosen detail; distinguish engineering assumptions from measured anatomy."
       },
-      "dependency_reasons": {}
+      "dependency_reasons": {
+        "B04": "Required exact-revision input for the revised material-first acceptance.",
+        "M05": "Required exact-revision input for the revised material-first acceptance."
+      }
     },
     {
       "id": "B06",
@@ -3566,13 +3677,14 @@
       "group": "Material-volume and assembly modernization",
       "scope": "conditional",
       "depends_on": [
-        "B06"
+        "B06",
+        "M11"
       ],
       "calculation_ids": [
         "C09",
         "C10"
       ],
-      "done_when": "Architect names why this assembly replaces the current body, then requalifies affected dynamics/policies before use",
+      "done_when": "Architect names why this assembly replaces the current body, then requalifies affected dynamics/policies before use. Material-first addition: Adopt the material assembly only after actual limb load transmission and a compatible runtime/training contract are evidenced; static export is not runtime qualification.",
       "observation": "Conditional branch: do not block existing certified walking merely because a separate compiler packet is incomplete",
       "implementation_state": "UNRECONCILED",
       "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
@@ -3599,9 +3711,476 @@
         "checkpoint_ids": [
           "V11"
         ],
-        "scenario_scope": "Architect names why this assembly replaces the current body, then requalifies affected dynamics/policies before use"
+        "scenario_scope": "Architect names why this assembly replaces the current body, then requalifies affected dynamics/policies before use. Material-first addition: Adopt the material assembly only after actual limb load transmission and a compatible runtime/training contract are evidenced; static export is not runtime qualification."
       },
-      "dependency_reasons": {}
+      "dependency_reasons": {
+        "B06": "Required exact-revision input for the revised material-first acceptance.",
+        "M11": "Required exact-revision input for the revised material-first acceptance."
+      }
+    },
+    {
+      "id": "M01",
+      "title": "Define reusable material state and distinct relation types",
+      "kind": "implement_and_verify",
+      "group": "Reusable matter foundation",
+      "scope": "core",
+      "depends_on": [
+        "P02",
+        "P03"
+      ],
+      "calculation_ids": [],
+      "done_when": "One versioned schema distinguishes regions/shells, rest/current geometry, mass, material direction/history, pressure/deformation law, contact and bond. A known object displays its actual regions and graph relations with stable IDs; no mass double-counting or containment-as-bond.",
+      "observation": "New explicit gate; reconcile existing source and experiments before creating implementation work.",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Operator-approved architectural direction; dispatch requires versioned plan adoption, ownership and frozen experiment limits.",
+      "catalog_refs": [],
+      "falsifier": "Changing containment creates a force, or an undefined parameter is silently inferred from a material name.",
+      "graph_contract_refs": [
+        "req.matter_variables_lod",
+        "req.material_catalog",
+        "req.layered_anatomy"
+      ],
+      "port_contract": "Material profile + region IDs -> typed resident-state layout; explicit units, frames, law/version, validity and missing-data result.",
+      "visible_result": "Select a region and see geometry, state owner and actual connections.",
+      "ontology": {
+        "primary_membrane": "ownership",
+        "related_membranes": [],
+        "connection_ids": [],
+        "verification_profile": "material",
+        "checkpoint_ids": [],
+        "scenario_scope": "One versioned schema distinguishes regions/shells, rest/current geometry, mass, material direction/history, pressure/deformation law, contact and bond. A known object displays its actual regions and graph relations with stable IDs; no mass double-counting or containment-as-bond."
+      },
+      "dependency_reasons": {
+        "P02": "Required upstream physical/data contract for this gate; compare its exact input revision.",
+        "P03": "Required upstream physical/data contract for this gate; compare its exact input revision."
+      }
+    },
+    {
+      "id": "M02",
+      "title": "Compile imported triangles into explicit material regions",
+      "kind": "implement_and_verify",
+      "group": "Reusable matter foundation",
+      "scope": "core",
+      "depends_on": [
+        "M01"
+      ],
+      "calculation_ids": [],
+      "done_when": "Import the pinned monkey mesh and a simple independent shape; check units, orientation, closure for volume regions, shell thickness where used, intersections and region ownership. Separate surface subdivision from semantic material assignment; report absent internal anatomy. Preserve visual mesh and physical mesh mapping.",
+      "observation": "New explicit gate; reconcile existing source and experiments before creating implementation work.",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Operator-approved architectural direction; dispatch requires versioned plan adoption, ownership and frozen experiment limits.",
+      "catalog_refs": [],
+      "falsifier": "An open surface is treated as sealed, overlapping matter is counted twice, or subdivision invents tissue.",
+      "graph_contract_refs": [
+        "req.creature_assembly",
+        "req.layered_anatomy"
+      ],
+      "port_contract": "Source triangles/segmentation -> region surfaces + adjacency + render-to-physics mapping, each with source identity.",
+      "visible_result": "Toggle imported surface, internal regions and mechanical mesh without changing physical state.",
+      "ontology": {
+        "primary_membrane": "skin",
+        "related_membranes": [],
+        "connection_ids": [],
+        "verification_profile": "material",
+        "checkpoint_ids": [],
+        "scenario_scope": "Import the pinned monkey mesh and a simple independent shape; check units, orientation, closure for volume regions, shell thickness where used, intersections and region ownership. Separate surface subdivision from semantic material assignment; report absent internal anatomy. Preserve visual mesh and physical mesh mapping."
+      },
+      "dependency_reasons": {
+        "M01": "Required upstream physical/data contract for this gate; compare its exact input revision."
+      }
+    },
+    {
+      "id": "M03",
+      "title": "Verify pressure on a closed triangulated membrane",
+      "kind": "implement_and_verify",
+      "group": "Reusable matter foundation",
+      "scope": "core",
+      "depends_on": [
+        "M02"
+      ],
+      "calculation_ids": [],
+      "done_when": "Demonstrate pressure difference times area times outward normal, volume closure and pressure-volume work in a closed membrane. Check zero net force/torque from uniform internal pressure, external loading, and refinement consistency against independently derived references. Expose pressure-source power and limits.",
+      "observation": "New explicit gate; reconcile existing source and experiments before creating implementation work.",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Operator-approved architectural direction; dispatch requires versioned plan adoption, ownership and frozen experiment limits.",
+      "catalog_refs": [],
+      "falsifier": "Retriangulation changes net loading, internal uniform pressure propels the free body, or inward loading appears without a declared pressure/tension source.",
+      "graph_contract_refs": [
+        "req.teddy_gpu_matter_kernel",
+        "req.matter_variables_lod"
+      ],
+      "port_contract": "Compartment volume/state + exterior pressure -> pressure traction, nodal/body loads and work; one owner per interface.",
+      "visible_result": "Inflate/deflate a membrane with area-scaled force arrows and pressure/volume/work traces.",
+      "ontology": {
+        "primary_membrane": "muscles",
+        "related_membranes": [],
+        "connection_ids": [],
+        "verification_profile": "material",
+        "checkpoint_ids": [
+          "MAT-PRESSURE"
+        ],
+        "scenario_scope": "Demonstrate pressure difference times area times outward normal, volume closure and pressure-volume work in a closed membrane. Check zero net force/torque from uniform internal pressure, external loading, and refinement consistency against independently derived references. Expose pressure-source power and limits."
+      },
+      "dependency_reasons": {
+        "M02": "Required upstream physical/data contract for this gate; compare its exact input revision."
+      }
+    },
+    {
+      "id": "M04",
+      "title": "Verify passive resistance and directional material response",
+      "kind": "implement_and_verify",
+      "group": "Reusable matter foundation",
+      "scope": "core",
+      "depends_on": [
+        "M02"
+      ],
+      "calculation_ids": [],
+      "done_when": "Implement/reconcile only the rigid, compliant and fiber-reinforced responses needed by the monkey. Declare constitutive equations, parameters, source or synthetic status, rest state, damping and valid strain range. Independent load-extension, relaxation and rotated-fiber experiments meet preregistered limits.",
+      "observation": "New explicit gate; reconcile existing source and experiments before creating implementation work.",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Operator-approved architectural direction; dispatch requires versioned plan adoption, ownership and frozen experiment limits.",
+      "catalog_refs": [],
+      "falsifier": "Density substitutes for stiffness, a rotated fiber has no intended effect, or passive material creates unexplained energy.",
+      "graph_contract_refs": [
+        "concept.elasticity",
+        "req.material_catalog",
+        "req.layered_anatomy"
+      ],
+      "port_contract": "Rest/current geometry + material history -> stress/force + updated history + stored/dissipated energy.",
+      "visible_result": "Same shape with different material profiles compresses, stretches or resists directionally.",
+      "ontology": {
+        "primary_membrane": "musculature",
+        "related_membranes": [],
+        "connection_ids": [],
+        "verification_profile": "material",
+        "checkpoint_ids": [
+          "MAT-PRESSURE"
+        ],
+        "scenario_scope": "Implement/reconcile only the rigid, compliant and fiber-reinforced responses needed by the monkey. Declare constitutive equations, parameters, source or synthetic status, rest state, damping and valid strain range. Independent load-extension, relaxation and rotated-fiber experiments meet preregistered limits."
+      },
+      "dependency_reasons": {
+        "M02": "Required upstream physical/data contract for this gate; compare its exact input revision."
+      }
+    },
+    {
+      "id": "M05",
+      "title": "Make contact, bond and release explicit physical interfaces",
+      "kind": "implement_and_verify",
+      "group": "Reusable matter foundation",
+      "scope": "core",
+      "depends_on": [
+        "M03",
+        "M04"
+      ],
+      "calculation_ids": [],
+      "done_when": "Two bodies exchange pressure/contact and bonded tension/shear through identified interfaces. Bond removal removes its restoring forces and permits separation except for remaining contact. Shared faces and mass are counted once; transfer includes equal/opposite loads and moments.",
+      "observation": "New explicit gate; reconcile existing source and experiments before creating implementation work.",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Operator-approved architectural direction; dispatch requires versioned plan adoption, ownership and frozen experiment limits.",
+      "catalog_refs": [],
+      "falsifier": "A hidden hinge remains after all connecting material is removed, or a spatial neighbor is automatically bonded.",
+      "graph_contract_refs": [
+        "req.layered_anatomy",
+        "req.body_environment_interface"
+      ],
+      "port_contract": "Two region-side ports + interface geometry/history -> reciprocal loads and state; explicit bind/release/failure law.",
+      "visible_result": "Show two objects held by a visible material connection, then visibly separate them after release.",
+      "ontology": {
+        "primary_membrane": "connections",
+        "related_membranes": [],
+        "connection_ids": [],
+        "verification_profile": "material",
+        "checkpoint_ids": [],
+        "scenario_scope": "Two bodies exchange pressure/contact and bonded tension/shear through identified interfaces. Bond removal removes its restoring forces and permits separation except for remaining contact. Shared faces and mass are counted once; transfer includes equal/opposite loads and moments."
+      },
+      "dependency_reasons": {
+        "M03": "Required upstream physical/data contract for this gate; compare its exact input revision.",
+        "M04": "Required upstream physical/data contract for this gate; compare its exact input revision."
+      }
+    },
+    {
+      "id": "M06",
+      "title": "Verify local triangle contact and finite sliding",
+      "kind": "implement_and_verify",
+      "group": "Reusable matter foundation",
+      "scope": "core",
+      "depends_on": [
+        "M02",
+        "M04"
+      ],
+      "calculation_ids": [],
+      "done_when": "Candidate search feeds actual local surface contact, friction and declared thin-feature/high-speed treatment. Native tests cover resting load, oblique contact, sliding and crossing trajectories; compare against exhaustive contact candidates on small fixtures.",
+      "observation": "New explicit gate; reconcile existing source and experiments before creating implementation work.",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Operator-approved architectural direction; dispatch requires versioned plan adoption, ownership and frozen experiment limits.",
+      "catalog_refs": [],
+      "falsifier": "Hierarchy pruning misses contact, render-only triangles support weight, or two-sided loads violate the declared balance.",
+      "graph_contract_refs": [
+        "req.body_environment_interface",
+        "req.teddy_gpu_matter_kernel"
+      ],
+      "port_contract": "Spatial candidates + surface/material IDs -> contact points/normals/gaps + reciprocal impulses; topology remains separate.",
+      "visible_result": "Tagged surfaces collide and slide with matching contact points and rendered geometry.",
+      "ontology": {
+        "primary_membrane": "contact",
+        "related_membranes": [],
+        "connection_ids": [],
+        "verification_profile": "material",
+        "checkpoint_ids": [],
+        "scenario_scope": "Candidate search feeds actual local surface contact, friction and declared thin-feature/high-speed treatment. Native tests cover resting load, oblique contact, sliding and crossing trajectories; compare against exhaustive contact candidates on small fixtures."
+      },
+      "dependency_reasons": {
+        "M02": "Required upstream physical/data contract for this gate; compare its exact input revision.",
+        "M04": "Required upstream physical/data contract for this gate; compare its exact input revision."
+      }
+    },
+    {
+      "id": "M07",
+      "title": "Couple pressure, material and contact through one physical step",
+      "kind": "implement_and_verify",
+      "group": "Reusable matter foundation",
+      "scope": "core",
+      "depends_on": [
+        "M03",
+        "M04",
+        "M05",
+        "M06"
+      ],
+      "calculation_ids": [],
+      "done_when": "One state owner integrates simultaneous pressure/material/contact loads with declared ordering, time step and iterative/substep convergence. Record external work, passive energy and boundary reactions; test timestep refinement and disconnected-component independence.",
+      "observation": "New explicit gate; reconcile existing source and experiments before creating implementation work.",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Operator-approved architectural direction; dispatch requires versioned plan adoption, ownership and frozen experiment limits.",
+      "catalog_refs": [],
+      "falsifier": "Separate passes overwrite motion, expose mixed-tick state, or report stability only at one unexamined timestep.",
+      "graph_contract_refs": [
+        "req.teddy_gpu_matter_kernel"
+      ],
+      "port_contract": "Same-tick force/constraint contributions -> one updated physical snapshot with explicit synchronization.",
+      "visible_result": "A membrane pressing on a loose object moves both through the same solved interaction.",
+      "ontology": {
+        "primary_membrane": "runtime",
+        "related_membranes": [],
+        "connection_ids": [],
+        "verification_profile": "material",
+        "checkpoint_ids": [],
+        "scenario_scope": "One state owner integrates simultaneous pressure/material/contact loads with declared ordering, time step and iterative/substep convergence. Record external work, passive energy and boundary reactions; test timestep refinement and disconnected-component independence."
+      },
+      "dependency_reasons": {
+        "M03": "Required upstream physical/data contract for this gate; compare its exact input revision.",
+        "M04": "Required upstream physical/data contract for this gate; compare its exact input revision.",
+        "M05": "Required upstream physical/data contract for this gate; compare its exact input revision.",
+        "M06": "Required upstream physical/data contract for this gate; compare its exact input revision."
+      }
+    },
+    {
+      "id": "M08",
+      "title": "Run the coupled material passes on resident GPU state",
+      "kind": "implement_and_verify",
+      "group": "Reusable matter foundation",
+      "scope": "core",
+      "depends_on": [
+        "M07",
+        "P04"
+      ],
+      "calculation_ids": [],
+      "done_when": "Reconcile the existing GPU/DSL/hierarchy path. GPU state stays resident during steady-state stepping; CPU supplies bounded commands and asynchronous diagnostics. Validate GPU/direct-reference agreement and work/impulse budgets; profile actual step/frame/VRAM costs. Any Barnes-Hut pass has its own eligible law, error criterion and near-field reference test.",
+      "observation": "New explicit gate; reconcile existing source and experiments before creating implementation work.",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Operator-approved architectural direction; dispatch requires versioned plan adoption, ownership and frozen experiment limits.",
+      "catalog_refs": [],
+      "falsifier": "A local bond/contact is replaced by an unchecked distant aggregate, or claimed GPU dynamics require a full CPU state roundtrip each tick.",
+      "graph_contract_refs": [
+        "req.teddy_gpu_matter_kernel"
+      ],
+      "port_contract": "Versioned resident buffers -> hierarchy/local passes -> synchronized solver/render snapshot; bounded host commands.",
+      "visible_result": "Render the GPU-solved material experiment with timing and residency evidence.",
+      "ontology": {
+        "primary_membrane": "runtime",
+        "related_membranes": [],
+        "connection_ids": [],
+        "verification_profile": "material",
+        "checkpoint_ids": [],
+        "scenario_scope": "Reconcile the existing GPU/DSL/hierarchy path. GPU state stays resident during steady-state stepping; CPU supplies bounded commands and asynchronous diagnostics. Validate GPU/direct-reference agreement and work/impulse budgets; profile actual step/frame/VRAM costs. Any Barnes-Hut pass has its own eligible law, error criterion and near-field reference test."
+      },
+      "dependency_reasons": {
+        "M07": "Required upstream physical/data contract for this gate; compare its exact input revision.",
+        "P04": "Required upstream physical/data contract for this gate; compare its exact input revision."
+      }
+    },
+    {
+      "id": "M09",
+      "title": "Demonstrate loose bones assembled by physical connective matter",
+      "kind": "implement_and_verify",
+      "group": "Reusable matter foundation",
+      "scope": "core",
+      "depends_on": [
+        "M05",
+        "M06",
+        "M08"
+      ],
+      "calculation_ids": [],
+      "done_when": "Two independent bone shapes fall separately, are constrained by authored ligament/capsule/contact material, and become independent again when all connecting material is removed. Any reduced constraints derive from those connections and vanish with them; no free hidden anatomical hinge.",
+      "observation": "New explicit gate; reconcile existing source and experiments before creating implementation work.",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Operator-approved architectural direction; dispatch requires versioned plan adoption, ownership and frozen experiment limits.",
+      "catalog_refs": [],
+      "falsifier": "Removing tissue leaves an unexplained skeletal constraint or joint-axis pose writer.",
+      "graph_contract_refs": [
+        "req.layered_anatomy",
+        "req.creature_assembly"
+      ],
+      "port_contract": "Bone surfaces + tissue interfaces -> emergent allowed motion and load transfer; reductions declare equivalent boundary response.",
+      "visible_result": "An assembled limb segment visibly becomes a pile of independent pieces when connections are removed.",
+      "ontology": {
+        "primary_membrane": "bones",
+        "related_membranes": [],
+        "connection_ids": [],
+        "verification_profile": "material",
+        "checkpoint_ids": [
+          "MAT-ASSEMBLY"
+        ],
+        "scenario_scope": "Two independent bone shapes fall separately, are constrained by authored ligament/capsule/contact material, and become independent again when all connecting material is removed. Any reduced constraints derive from those connections and vanish with them; no free hidden anatomical hinge."
+      },
+      "dependency_reasons": {
+        "M05": "Required upstream physical/data contract for this gate; compare its exact input revision.",
+        "M06": "Required upstream physical/data contract for this gate; compare its exact input revision.",
+        "M08": "Required upstream physical/data contract for this gate; compare its exact input revision."
+      }
+    },
+    {
+      "id": "M10",
+      "title": "Demonstrate active pressurized material with directional reinforcement",
+      "kind": "implement_and_verify",
+      "group": "Reusable matter foundation",
+      "scope": "core",
+      "depends_on": [
+        "M03",
+        "M04",
+        "M05",
+        "M08"
+      ],
+      "calculation_ids": [],
+      "done_when": "A pressure-controlled membrane with authored directional resistance performs bounded work through actual attachments. Measure force-displacement/work against independent expectations, blocked-load reaction, pressure limits and power-off behavior. Classify it as an engineering actuator unless biological equivalence is independently evidenced.",
+      "observation": "New explicit gate; reconcile existing source and experiments before creating implementation work.",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Operator-approved architectural direction; dispatch requires versioned plan adoption, ownership and frozen experiment limits.",
+      "catalog_refs": [],
+      "falsifier": "Activation writes body poses, contraction is claimed from isotropic inflation alone, or work has no source.",
+      "graph_contract_refs": [
+        "req.layered_anatomy",
+        "req.teddy_gpu_matter_kernel"
+      ],
+      "port_contract": "Bounded activation/pressure command + energy supply -> distributed surface/tissue loads, observed strain and power.",
+      "visible_result": "One pressure-driven material bends or shortens as designed and lifts a measured load through its surface attachments.",
+      "ontology": {
+        "primary_membrane": "muscles",
+        "related_membranes": [],
+        "connection_ids": [],
+        "verification_profile": "material",
+        "checkpoint_ids": [
+          "MAT-ASSEMBLY"
+        ],
+        "scenario_scope": "A pressure-controlled membrane with authored directional resistance performs bounded work through actual attachments. Measure force-displacement/work against independent expectations, blocked-load reaction, pressure limits and power-off behavior. Classify it as an engineering actuator unless biological equivalence is independently evidenced."
+      },
+      "dependency_reasons": {
+        "M03": "Required upstream physical/data contract for this gate; compare its exact input revision.",
+        "M04": "Required upstream physical/data contract for this gate; compare its exact input revision.",
+        "M05": "Required upstream physical/data contract for this gate; compare its exact input revision.",
+        "M08": "Required upstream physical/data contract for this gate; compare its exact input revision."
+      }
+    },
+    {
+      "id": "M11",
+      "title": "Reuse the same material rules in a loaded monkey limb",
+      "kind": "implement_and_verify",
+      "group": "Reusable matter foundation",
+      "scope": "core",
+      "depends_on": [
+        "M09",
+        "M10",
+        "B03",
+        "B04",
+        "B05"
+      ],
+      "calculation_ids": [],
+      "done_when": "Demonstrate the same law implementation on two distinct shapes without shape-specific motion code, then on the selected monkey limb. Reconcile real mass/frames/attachments; show tissue-to-bone-to-foot-to-ground load transmission, activation-off and connection-removal controls.",
+      "observation": "New explicit gate; reconcile existing source and experiments before creating implementation work.",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Operator-approved architectural direction; dispatch requires versioned plan adoption, ownership and frozen experiment limits.",
+      "catalog_refs": [],
+      "falsifier": "A new shape needs prescribed animation or limb motion is disconnected from ground reaction.",
+      "graph_contract_refs": [
+        "req.creature_assembly",
+        "req.body_environment_interface"
+      ],
+      "port_contract": "Authored assembly graph + bounded activation -> measured limb movement and environment reaction on one physical state.",
+      "visible_result": "The actual monkey limb supports load and pushes against the ground; a second shape reuses the same laws.",
+      "ontology": {
+        "primary_membrane": "creature",
+        "related_membranes": [],
+        "connection_ids": [],
+        "verification_profile": "material",
+        "checkpoint_ids": [
+          "MAT-REUSE"
+        ],
+        "scenario_scope": "Demonstrate the same law implementation on two distinct shapes without shape-specific motion code, then on the selected monkey limb. Reconcile real mass/frames/attachments; show tissue-to-bone-to-foot-to-ground load transmission, activation-off and connection-removal controls."
+      },
+      "dependency_reasons": {
+        "M09": "Required upstream physical/data contract for this gate; compare its exact input revision.",
+        "M10": "Required upstream physical/data contract for this gate; compare its exact input revision.",
+        "B03": "Required upstream physical/data contract for this gate; compare its exact input revision.",
+        "B04": "Required upstream physical/data contract for this gate; compare its exact input revision.",
+        "B05": "Required upstream physical/data contract for this gate; compare its exact input revision."
+      }
+    },
+    {
+      "id": "M12",
+      "title": "Qualify mechanical detail and render detail independently",
+      "kind": "implement_and_verify",
+      "group": "Reusable matter foundation",
+      "scope": "core",
+      "depends_on": [
+        "M11"
+      ],
+      "calculation_ids": [],
+      "done_when": "Compare at least two mechanical resolutions while preserving declared mass/inertia, interfaces, force response and control meaning within frozen tolerances; render mapping stays attached under large motion. Select the least costly qualified detail for the monkey and record frame-time/VRAM limits.",
+      "observation": "New explicit gate; reconcile existing source and experiments before creating implementation work.",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Operator-approved architectural direction; dispatch requires versioned plan adoption, ownership and frozen experiment limits.",
+      "catalog_refs": [],
+      "falsifier": "Triangle refinement changes material strength/mass without declaration or leaves visible vertices behind.",
+      "graph_contract_refs": [
+        "req.matter_variables_lod",
+        "req.creature_assembly"
+      ],
+      "port_contract": "Physical state at selected fidelity -> mapped render surface; explicit conserved quantities and remapping rules.",
+      "visible_result": "Switch diagnostic mesh detail while preserving the visible object and measured physical behavior.",
+      "ontology": {
+        "primary_membrane": "skin",
+        "related_membranes": [],
+        "connection_ids": [],
+        "verification_profile": "material",
+        "checkpoint_ids": [
+          "MAT-REUSE"
+        ],
+        "scenario_scope": "Compare at least two mechanical resolutions while preserving declared mass/inertia, interfaces, force response and control meaning within frozen tolerances; render mapping stays attached under large motion. Select the least costly qualified detail for the monkey and record frame-time/VRAM limits."
+      },
+      "dependency_reasons": {
+        "M11": "Required upstream physical/data contract for this gate; compare its exact input revision."
+      }
     }
   ],
   "calculations": [
@@ -4070,6 +4649,18 @@
         "HUM-06",
         "FRONT-05"
       ]
+    },
+    {
+      "topic": "Extensible material families",
+      "scope": "Beyond first game unless required by a chosen behavior",
+      "items": [
+        "fluid transport with spatial pressure when needed",
+        "metal yield/plasticity",
+        "wood fracture/growth",
+        "thermal/chemical/electrical laws",
+        "additional creature/asset recipes"
+      ],
+      "rule": "Add response laws, source-backed parameters, state and cross-shape validation through existing interfaces; no promise all reality follows from density alone."
     }
   ],
   "ontology_contract": {
@@ -4631,6 +5222,46 @@
         "falsifier": "A violated task acceptance clause, hidden/clipped required geometry, inconsistent numeric evidence or mismatched clean/diagnostic state fails.",
         "numerical_evidence_required": true,
         "nonvisual_reason": null
+      },
+      {
+        "id": "material",
+        "kind": "motion",
+        "subject": "Actual material state, membrane surfaces and physical interfaces",
+        "scenario": "Show the task-owned material experiment and its negative controls in the same executable; bind render captures to solver state and numerical traces.",
+        "diagnostic_layers": [
+          "stable membrane/triangle/port IDs",
+          "pressure and area-scaled force vectors",
+          "rest/current geometry and material directions",
+          "contact/bond state",
+          "energy/work and simulation tick"
+        ],
+        "views": [
+          "whole experiment at fixed distance",
+          "orthogonal side and front",
+          "oblique close-up of the loaded interface"
+        ],
+        "clean_view_required": true,
+        "camera_required_fields": [
+          "frame_id",
+          "coordinate_unit",
+          "position",
+          "orientation_convention_and_values",
+          "target",
+          "distance_to_target",
+          "projection",
+          "vertical_fov_or_orthographic_span",
+          "near_far_planes",
+          "aspect_ratio",
+          "viewport_resolution",
+          "camera_motion_or_bookmark_sequence",
+          "visibility_layers",
+          "label_ids",
+          "occlusion_or_xray_mode",
+          "state_or_tick_interval"
+        ],
+        "falsifier": "Unbound media, clipped load path, hidden constraint/support, area-independent triangle forces, overlay-driven motion, or unaccounted energy prevents acceptance.",
+        "numerical_evidence_required": true,
+        "nonvisual_reason": null
       }
     ],
     "checkpoints": [
@@ -4861,6 +5492,71 @@
         "profile_id": "anatomy",
         "requires": [],
         "acceptance": "Only if this path is selected: real matter/frame/attachment and runtime bindings qualify, with tagged visual/numerical evidence and no substituted mass."
+      },
+      {
+        "id": "MAT-PRESSURE",
+        "task_ids": [
+          "M03",
+          "M04"
+        ],
+        "membrane_ids": [
+          "muscles",
+          "musculature"
+        ],
+        "requires": [],
+        "profile_id": "material",
+        "acceptance": "One closed membrane shows pressure-area loading and declared passive/directional response."
+      },
+      {
+        "id": "MAT-ASSEMBLY",
+        "task_ids": [
+          "M09",
+          "M10"
+        ],
+        "membrane_ids": [
+          "bones",
+          "muscles"
+        ],
+        "requires": [
+          "MAT-PRESSURE"
+        ],
+        "profile_id": "material",
+        "acceptance": "Loose bones are assembled through removable tissue and driven by distributed active material."
+      },
+      {
+        "id": "MAT-REUSE",
+        "task_ids": [
+          "M11",
+          "M12"
+        ],
+        "membrane_ids": [
+          "creature",
+          "skin"
+        ],
+        "requires": [
+          "MAT-ASSEMBLY"
+        ],
+        "profile_id": "material",
+        "acceptance": "The same laws work across two shapes and the loaded monkey limb at qualified detail."
+      },
+      {
+        "id": "MAT-WOODS",
+        "task_ids": [
+          "W10",
+          "F06",
+          "F08",
+          "U07"
+        ],
+        "membrane_ids": [
+          "creature",
+          "forest",
+          "camera"
+        ],
+        "requires": [
+          "MAT-REUSE"
+        ],
+        "profile_id": "walking",
+        "acceptance": "The operator launches and steers the physical monkey through woods, stops, contacts a trunk and resets in one reproducible build."
       }
     ],
     "visual_instrumentation": {
@@ -4881,5 +5577,49 @@
       ]
     },
     "checkpoint_semantics": "task_ids are contributors to an integration milestone; no contributor task depends on its own milestone. requires orders milestone acceptance only, never independent implementation. S05 is feature acceptance; selected-list completion also requires downstream S06."
-  }
+  },
+  "revision": {
+    "id": "material-first-v2",
+    "operator_authorization": "2026-09-27 conversation: revise the 83-task plan around reusable matter, membrane pressure, physical connections, mesh-derived assembly and GPU passes; continue with an extensible material architecture.",
+    "parent_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "adoption_state": "ACTIVE_SPECIFICATION_RUNTIME_UNQUALIFIED",
+    "preservation": "All 83 original IDs retained. New M01-M12 specify explicit foundation gates. Old receipts and active claims retain original criteria; no new qualification is inherited from a title or prior DONE.",
+    "scope_reason": "Do not disguise additional foundation work by overwriting unrelated old tasks or forcing the count to remain 83.",
+    "queue_identity": "Changed tasks require (plan revision, task ID, criteria hash) identities and explicit evidence carry-forward review. Existing unversioned ONT-* completion flags cannot qualify the new plan.",
+    "card_namespace": "MAT2-"
+  },
+  "architecture": {
+    "material_unit": "Bounded region or declared shell with stable identity, rest/current geometry, mass/inertia, material orientation/history, selected pressure/deformation laws and explicit interfaces.",
+    "triangles": "Surface elements carry area, orientation and interface ownership. Subdivision alone does not identify anatomy, assign bulk mass, or create new material.",
+    "pressure": "For a uniform pressure difference, F_i=(p_inside-p_outside)*A_i*n_i. Uniform compartment pressure is a selected equilibrated approximation; resolve spatial pressure when required by the observable and time scale. Define closure, exterior pressure, work and volume ownership.",
+    "topology": "Containment, spatial neighborhood, material adjacency, contact and bond are distinct relations. No containment edge silently produces a bond.",
+    "bones": "Separate physical objects. Tissue/capsule/contact can constrain them; any reduced constraint must identify the represented material, validity envelope and removal behavior. No unaccounted skeleton hinge survives tissue removal.",
+    "activation": "Pressure-controlled active membrane with explicit volume/work source and directional reinforcement is an engineering material model. Compare its measured response with intended muscle behavior; do not call it biological equivalence by definition.",
+    "gpu": "Reuse existing resident state and hierarchy infrastructure. Field, pressure/reduction, local constitutive, contact/constraint and integration passes have explicit ordering and single state ownership; CPU handles bounded intent/configuration/telemetry.",
+    "barnes_hut": "Only law-specific aggregatable far-field interactions use Barnes-Hut approximation with measured error. Local contact, shear history, bonds and pressure closure use appropriate local/topological operations; do not reinterpret every quantity as gravity.",
+    "graph": "Graph stores material types, geometry/region identity, parameter provenance and uncertainty, model versions, interfaces, dependencies, evidence and validity envelopes. Graphify is a search/visualization projection, not a solver or a source of missing physical laws.",
+    "extensibility": "Additional materials and phenomena can add parameterized response laws and state to the shared interfaces. No claim that density alone represents all reality or that a universal physical simulator is already implemented.",
+    "fidelity": "Render mesh resolution, mechanical discretization and control rate are independent. Changes preserve declared mass/inertia, boundary response, attachments and state within tested error; use only the detail required by the observable.",
+    "reuse": "Inventory current code/receipts first. Existing components close a gate only through scoped reproducible evidence; do not rebuild passed capabilities or substitute cosmetic animation."
+  },
+  "first_visible_sequence": [
+    "P02",
+    "M01",
+    "M02",
+    "M03",
+    "M04",
+    "M05",
+    "M06",
+    "M07",
+    "M08",
+    "M09",
+    "M10",
+    "M11",
+    "M12",
+    "W10",
+    "F06",
+    "K08",
+    "S05"
+  ],
+  "first_visible_sequence_note": "Narrative demonstration order, not an additional serial dependency chain. Independent prerequisite branches may run in parallel; reuse passed evidence before implementing."
 }

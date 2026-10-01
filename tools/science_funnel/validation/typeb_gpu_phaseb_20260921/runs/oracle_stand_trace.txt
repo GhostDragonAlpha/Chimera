@@ -1,0 +1,884 @@
+PROBE=stand ticks=60
+CONSTRUCTED
+CONFIGURED
+PT t=0
+[tick] 0
+PT t=1
+PT t=2
+PT t=3
+PT t=4
+PT t=5
+PT t=6
+PT t=7
+PT t=8
+PT t=9
+PT t=10
+[tick] 10
+PT t=11
+PT t=12
+PT t=13
+PT t=14
+PT t=15
+PT t=16
+PT t=17
+PT t=18
+PT t=19
+PT t=20
+[tick] 20
+PT t=21
+PT t=22
+PT t=23
+PT t=24
+PT t=25
+PT t=26
+PT t=27
+PT t=28
+PT t=29
+PT t=30
+[tick] 30
+PT t=31
+PT t=32
+[poscorr] tick=32 points=1 dq_max=8.743e-06 du=+2.909013e-06 J
+[poscorr-pt] tick=32 pt=fore_left_heel gap=-1.614394e-06 lam=2.966363e-07 du_pt=-4.788879e-13 J
+PT t=33
+PT t=34
+PT t=35
+PT t=36
+PT t=37
+PT t=38
+PT t=39
+PT t=40
+[tick] 40
+PT t=41
+PT t=42
+PT t=43
+PT t=44
+PT t=45
+PT t=46
+PT t=47
+[poscorr] tick=47 points=1 dq_max=1.583e-02 du=+4.880820e-04 J
+[poscorr-pt] tick=47 pt=left_heel gap=-1.936849e-04 lam=4.975639e-05 du_pt=-9.637060e-09 J
+[poscorr] tick=47 points=1 dq_max=1.554e-02 du=+7.433666e-04 J
+[poscorr-pt] tick=47 pt=left_heel gap=-2.180135e-04 lam=7.568145e-05 du_pt=-1.649958e-08 J
+[poscorr] tick=47 points=2 dq_max=1.091e-02 du=+3.387910e-04 J
+[poscorr-pt] tick=47 pt=left_heel gap=-1.338828e-04 lam=3.422722e-05 du_pt=-4.582436e-09 J
+[poscorr-pt] tick=47 pt=fore_left_heel gap=-4.521060e-06 lam=3.129571e-07 du_pt=-1.414898e-12 J
+[poscorr] tick=47 points=1 dq_max=4.861e-03 du=+2.318862e-04 J
+[poscorr-pt] tick=47 pt=left_heel gap=-6.955521e-05 lam=2.363370e-05 du_pt=-1.643847e-09 J
+[poscorr] tick=47 points=2 dq_max=2.342e-05 du=+1.823098e-06 J
+[poscorr-pt] tick=47 pt=fore_left_heel gap=-1.316207e-06 lam=7.618358e-08 du_pt=-1.002733e-13 J
+[poscorr-pt] tick=47 pt=fore_right_heel gap=-1.807867e-06 lam=1.097198e-07 du_pt=-1.983589e-13 J
+[poscorr] tick=47 points=1 dq_max=2.135e-03 du=+6.589142e-05 J
+[poscorr-pt] tick=47 pt=left_heel gap=-2.636102e-05 lam=6.718785e-06 du_pt=-1.771140e-10 J
+[poscorr] tick=47 points=1 dq_max=1.589e-04 du=+7.561560e-06 J
+[poscorr-pt] tick=47 pt=left_heel gap=-2.310181e-06 lam=7.710513e-07 du_pt=-1.781268e-12 J
+[poscorr] tick=47 points=1 dq_max=2.502e-03 du=+7.728471e-05 J
+[poscorr-pt] tick=47 pt=left_heel gap=-3.095330e-05 lam=7.880473e-06 du_pt=-2.439266e-10 J
+[poscorr] tick=47 points=1 dq_max=1.696e-03 du=+8.021781e-05 J
+[poscorr-pt] tick=47 pt=left_heel gap=-2.492610e-05 lam=8.178423e-06 du_pt=-2.038562e-10 J
+[poscorr] tick=47 points=1 dq_max=1.068e-03 du=+5.039120e-05 J
+[poscorr-pt] tick=47 pt=left_heel gap=-1.579262e-05 lam=5.137866e-06 du_pt=-8.114036e-11 J
+[poscorr] tick=47 points=2 dq_max=2.389e-03 du=+7.474314e-05 J
+[poscorr-pt] tick=47 pt=left_heel gap=-2.972037e-05 lam=7.543155e-06 du_pt=-2.241854e-10 J
+[poscorr-pt] tick=47 pt=fore_right_heel gap=-1.131097e-06 lam=7.817402e-08 du_pt=-8.842242e-14 J
+[poscorr] tick=47 points=2 dq_max=9.543e-04 du=+4.569059e-05 J
+[poscorr-pt] tick=47 pt=left_heel gap=-1.419150e-05 lam=4.576640e-06 du_pt=-6.494938e-11 J
+[poscorr-pt] tick=47 pt=fore_left_heel gap=-1.169529e-06 lam=8.201737e-08 du_pt=-9.592166e-14 J
+[poscorr] tick=47 points=1 dq_max=3.362e-04 du=+1.042177e-05 J
+[poscorr-pt] tick=47 pt=left_heel gap=-4.191416e-06 lam=1.062718e-06 du_pt=-4.454292e-12 J
+[poscorr] tick=47 points=1 dq_max=1.548e-03 du=+7.245645e-05 J
+[poscorr-pt] tick=47 pt=left_heel gap=-2.327153e-05 lam=7.387209e-06 du_pt=-1.719116e-10 J
+[poscorr] tick=47 points=1 dq_max=1.529e-03 du=+4.744114e-05 J
+[poscorr-pt] tick=47 pt=left_heel gap=-1.910254e-05 lam=4.837504e-06 du_pt=-9.240859e-11 J
+[poscorr] tick=47 points=1 dq_max=1.169e-04 du=+5.469557e-06 J
+[poscorr-pt] tick=47 pt=left_heel gap=-1.759002e-06 lam=5.577322e-07 du_pt=-9.810520e-13 J
+[poscorr] tick=47 points=1 dq_max=8.768e-04 du=+2.722533e-05 J
+[poscorr-pt] tick=47 pt=left_heel gap=-1.097262e-05 lam=2.776162e-06 du_pt=-3.046177e-11 J
+[poscorr] tick=47 points=1 dq_max=7.476e-04 du=+2.323795e-05 J
+[poscorr-pt] tick=47 pt=left_heel gap=-9.373314e-06 lam=2.369576e-06 du_pt=-2.221078e-11 J
+[poscorr] tick=47 points=1 dq_max=6.706e-04 du=+3.120626e-05 J
+[poscorr-pt] tick=47 pt=left_heel gap=-1.019074e-05 lam=3.181909e-06 du_pt=-3.242602e-11 J
+[poscorr] tick=47 points=2 dq_max=3.088e-04 du=+1.028211e-05 J
+[poscorr-pt] tick=47 pt=left_heel gap=-3.876217e-06 lam=9.792571e-07 du_pt=-3.795813e-12 J
+[poscorr-pt] tick=47 pt=fore_right_heel gap=-1.159724e-06 lam=6.921974e-08 du_pt=-8.027583e-14 J
+PT t=48
+[poscorr] tick=48 points=1 dq_max=1.067e-03 du=+4.942743e-05 J
+[poscorr-pt] tick=48 pt=left_heel gap=-1.637546e-05 lam=5.039570e-06 du_pt=-8.252526e-11 J
+[poscorr] tick=48 points=2 dq_max=1.257e-03 du=+3.987883e-05 J
+[poscorr-pt] tick=48 pt=left_heel gap=-1.581885e-05 lam=3.990618e-06 du_pt=-6.312699e-11 J
+[poscorr-pt] tick=48 pt=fore_left_heel gap=-1.254526e-06 lam=7.578863e-08 du_pt=-9.507882e-14 J
+[poscorr] tick=48 points=1 dq_max=8.444e-05 du=+3.909053e-06 J
+[poscorr-pt] tick=48 pt=left_heel gap=-1.296372e-06 lam=3.986086e-07 du_pt=-5.167450e-13 J
+[poscorr] tick=48 points=1 dq_max=4.651e-04 du=+1.449226e-05 J
+[poscorr-pt] tick=48 pt=left_heel gap=-5.863551e-06 lam=1.477785e-06 du_pt=-8.665067e-12 J
+[poscorr] tick=48 points=1 dq_max=8.289e-04 du=+2.584926e-05 J
+[poscorr-pt] tick=48 pt=left_heel gap=-1.046699e-05 lam=2.635846e-06 du_pt=-2.758937e-11 J
+[poscorr] tick=48 points=1 dq_max=7.276e-04 du=+3.351729e-05 J
+[poscorr-pt] tick=48 pt=left_heel gap=-1.127294e-05 lam=3.417520e-06 du_pt=-3.852548e-11 J
+[poscorr] tick=48 points=1 dq_max=5.661e-04 du=+1.766456e-05 J
+[poscorr-pt] tick=48 pt=left_heel gap=-7.160379e-06 lam=1.801263e-06 du_pt=-1.289773e-11 J
+[poscorr] tick=48 points=1 dq_max=8.507e-04 du=+3.901046e-05 J
+[poscorr-pt] tick=48 pt=left_heel gap=-1.329805e-05 lam=3.977557e-06 du_pt=-5.289375e-11 J
+[poscorr] tick=48 points=1 dq_max=1.072e-03 du=+3.346402e-05 J
+[poscorr-pt] tick=48 pt=left_heel gap=-1.357855e-05 lam=3.412304e-06 du_pt=-4.633413e-11 J
+[poscorr] tick=48 points=1 dq_max=1.379e-05 du=+6.048637e-07 J
+[poscorr-pt] tick=48 pt=fore_right_heel gap=-1.074210e-06 lam=6.167874e-08 du_pt=-6.625592e-14 J
+[poscorr] tick=48 points=1 dq_max=3.341e-04 du=+1.044201e-05 J
+[poscorr-pt] tick=48 pt=left_heel gap=-4.240275e-06 lam=1.064781e-06 du_pt=-4.514966e-12 J
+[poscorr] tick=48 points=1 dq_max=8.757e-04 du=+2.739520e-05 J
+[poscorr-pt] tick=48 pt=left_heel gap=-1.113314e-05 lam=2.793481e-06 du_pt=-3.110021e-11 J
+[poscorr] tick=48 points=1 dq_max=7.536e-04 du=+3.437863e-05 J
+[poscorr-pt] tick=48 pt=left_heel gap=-1.188306e-05 lam=3.505327e-06 du_pt=-4.165399e-11 J
+[poscorr] tick=48 points=2 dq_max=2.512e-04 du=+8.420160e-06 J
+[poscorr-pt] tick=48 pt=left_heel gap=-3.197601e-06 lam=8.018951e-07 du_pt=-2.564141e-12 J
+[poscorr-pt] tick=48 pt=fore_left_heel gap=-1.018934e-06 lam=5.671783e-08 du_pt=-5.779173e-14 J
+[poscorr] tick=48 points=2 dq_max=5.038e-03 du=+1.698791e-04 J
+[poscorr-pt] tick=48 pt=left_heel gap=-1.015688e-05 lam=2.469033e-06 du_pt=-2.507767e-11 J
+[poscorr-pt] tick=48 pt=right_heel gap=-6.136253e-05 lam=1.485336e-05 du_pt=-9.114396e-10 J
+[poscorr] tick=48 points=2 dq_max=3.124e-03 du=+2.169736e-04 J
+[poscorr-pt] tick=48 pt=left_heel gap=-1.008595e-05 lam=2.295532e-06 du_pt=-2.315262e-11 J
+[poscorr-pt] tick=48 pt=right_heel gap=-6.375597e-05 lam=1.982048e-05 du_pt=-1.263674e-09 J
+[poscorr] tick=48 points=2 dq_max=2.584e-05 du=+2.034274e-06 J
+[poscorr-pt] tick=48 pt=fore_left_heel gap=-1.723762e-06 lam=9.321468e-08 du_pt=-1.606799e-13 J
+[poscorr-pt] tick=48 pt=fore_right_heel gap=-2.025237e-06 lam=1.142224e-07 du_pt=-2.313275e-13 J
+[poscorr] tick=48 points=1 dq_max=5.023e-04 du=+1.574759e-05 J
+[poscorr-pt] tick=48 pt=left_heel gap=-6.417342e-06 lam=1.605790e-06 du_pt=-1.030491e-11 J
+[poscorr] tick=48 points=1 dq_max=3.607e-04 du=+1.131911e-05 J
+[poscorr-pt] tick=48 pt=left_heel gap=-4.615853e-06 lam=1.154219e-06 du_pt=-5.327704e-12 J
+[poscorr] tick=48 points=1 dq_max=3.048e-04 du=+1.378588e-05 J
+[poscorr-pt] tick=48 pt=left_heel gap=-4.884983e-06 lam=1.405716e-06 du_pt=-6.866899e-12 J
+[poscorr] tick=48 points=1 dq_max=4.752e-04 du=+1.492145e-05 J
+[poscorr-pt] tick=48 pt=left_heel gap=-6.090159e-06 lam=1.521549e-06 du_pt=-9.266474e-12 J
+[poscorr] tick=48 points=1 dq_max=6.553e-04 du=+2.951763e-05 J
+[poscorr-pt] tick=48 pt=left_heel gap=-1.057669e-05 lam=3.009716e-06 du_pt=-3.183283e-11 J
+[poscorr] tick=48 points=1 dq_max=5.746e-04 du=+1.805265e-05 J
+[poscorr-pt] tick=48 pt=left_heel gap=-7.374325e-06 lam=1.840835e-06 du_pt=-1.357492e-11 J
+[poscorr] tick=48 points=2 dq_max=2.333e-03 du=+7.928223e-05 J
+[poscorr-pt] tick=48 pt=left_heel gap=-4.919145e-06 lam=1.193061e-06 du_pt=-5.868840e-12 J
+[poscorr-pt] tick=48 pt=right_heel gap=-2.862379e-05 lam=6.891368e-06 du_pt=-1.972571e-10 J
+[poscorr] tick=48 points=2 dq_max=6.010e-04 du=+3.861872e-05 J
+[poscorr-pt] tick=48 pt=left_heel gap=-7.870859e-06 lam=1.938469e-06 du_pt=-1.525742e-11 J
+[poscorr-pt] tick=48 pt=right_heel gap=-6.739970e-06 lam=1.999422e-06 du_pt=-1.347604e-11 J
+[poscorr] tick=48 points=1 dq_max=4.948e-04 du=+2.219215e-05 J
+[poscorr-pt] tick=48 pt=left_heel gap=-8.042741e-06 lam=2.262829e-06 du_pt=-1.819935e-11 J
+[poscorr] tick=48 points=2 dq_max=3.867e-04 du=+2.123096e-05 J
+[poscorr-pt] tick=48 pt=left_heel gap=-4.115916e-06 lam=1.019564e-06 du_pt=-4.196439e-12 J
+[poscorr-pt] tick=48 pt=right_heel gap=-4.781462e-06 lam=1.145381e-06 du_pt=-5.476596e-12 J
+PT t=49
+[poscorr] tick=49 points=2 dq_max=7.223e-04 du=+4.444303e-05 J
+[poscorr-pt] tick=49 pt=left_heel gap=-1.186025e-05 lam=3.287239e-06 du_pt=-3.898746e-11 J
+[poscorr-pt] tick=49 pt=right_heel gap=-5.325339e-06 lam=1.244385e-06 du_pt=-6.626773e-12 J
+[poscorr] tick=49 points=4 dq_max=7.723e-04 du=+4.037759e-05 J
+[poscorr-pt] tick=49 pt=left_heel gap=-1.006349e-05 lam=2.488046e-06 du_pt=-2.503844e-11 J
+[poscorr-pt] tick=49 pt=right_heel gap=-5.088725e-06 lam=1.481808e-06 du_pt=-7.540515e-12 J
+[poscorr-pt] tick=49 pt=fore_left_heel gap=-1.226933e-06 lam=7.284551e-08 du_pt=-8.937659e-14 J
+[poscorr-pt] tick=49 pt=fore_right_heel gap=-1.207405e-06 lam=7.457131e-08 du_pt=-9.003778e-14 J
+[poscorr] tick=49 points=2 dq_max=3.736e-04 du=+1.705244e-05 J
+[poscorr-pt] tick=49 pt=left_heel gap=-2.564696e-06 lam=6.324830e-07 du_pt=-1.622126e-12 J
+[poscorr-pt] tick=49 pt=right_heel gap=-4.619247e-06 lam=1.106376e-06 du_pt=-5.110625e-12 J
+[poscorr] tick=49 points=2 dq_max=5.221e-04 du=+5.175256e-05 J
+[poscorr-pt] tick=49 pt=left_heel gap=-8.837824e-06 lam=2.349257e-06 du_pt=-2.076232e-11 J
+[poscorr-pt] tick=49 pt=right_heel gap=-1.019509e-05 lam=2.927666e-06 du_pt=-2.984783e-11 J
+[poscorr] tick=49 points=2 dq_max=4.120e-04 du=+2.327687e-05 J
+[poscorr-pt] tick=49 pt=left_heel gap=-5.362515e-06 lam=1.327598e-06 du_pt=-7.119264e-12 J
+[poscorr-pt] tick=49 pt=right_heel gap=-4.384824e-06 lam=1.045967e-06 du_pt=-4.586383e-12 J
+[poscorr] tick=49 points=2 dq_max=4.239e-04 du=+2.342141e-05 J
+[poscorr-pt] tick=49 pt=left_heel gap=-4.578739e-06 lam=1.131136e-06 du_pt=-5.179176e-12 J
+[poscorr-pt] tick=49 pt=right_heel gap=-5.264916e-06 lam=1.257171e-06 du_pt=-6.618898e-12 J
+[poscorr] tick=49 points=2 dq_max=6.843e-04 du=+6.683119e-05 J
+[poscorr-pt] tick=49 pt=left_heel gap=-1.164199e-05 lam=3.068793e-06 du_pt=-3.572686e-11 J
+[poscorr-pt] tick=49 pt=right_heel gap=-1.317684e-05 lam=3.745469e-06 du_pt=-4.935343e-11 J
+[poscorr] tick=49 points=2 dq_max=3.002e-04 du=+1.805252e-05 J
+[poscorr-pt] tick=49 pt=left_heel gap=-3.920488e-06 lam=9.687464e-07 du_pt=-3.797959e-12 J
+[poscorr-pt] tick=49 pt=right_heel gap=-3.658820e-06 lam=8.720905e-07 du_pt=-3.190822e-12 J
+[poscorr] tick=49 points=2 dq_max=2.548e-04 du=+1.505570e-05 J
+[poscorr-pt] tick=49 pt=left_heel gap=-3.155470e-06 lam=7.789601e-07 du_pt=-2.457985e-12 J
+[poscorr-pt] tick=49 pt=right_heel gap=-3.174068e-06 lam=7.562885e-07 du_pt=-2.400511e-12 J
+[poscorr] tick=49 points=2 dq_max=6.225e-04 du=+4.376048e-05 J
+[poscorr-pt] tick=49 pt=left_heel gap=-9.705053e-06 lam=2.602574e-06 du_pt=-2.525812e-11 J
+[poscorr-pt] tick=49 pt=right_heel gap=-7.887996e-06 lam=1.859550e-06 du_pt=-1.466812e-11 J
+[poscorr] tick=49 points=4 dq_max=4.349e-04 du=+3.690905e-05 J
+[poscorr-pt] tick=49 pt=left_heel gap=-5.799094e-06 lam=1.412784e-06 du_pt=-8.192867e-12 J
+[poscorr-pt] tick=49 pt=right_heel gap=-7.707542e-06 lam=2.207984e-06 du_pt=-1.701813e-11 J
+[poscorr-pt] tick=49 pt=fore_left_heel gap=-1.187973e-06 lam=7.034931e-08 du_pt=-8.357307e-14 J
+[poscorr-pt] tick=49 pt=fore_right_heel gap=-1.176532e-06 lam=7.242061e-08 du_pt=-8.520514e-14 J
+[poscorr] tick=49 points=2 dq_max=2.935e-04 du=+1.521196e-05 J
+[poscorr-pt] tick=49 pt=left_heel gap=-3.863274e-06 lam=9.500139e-07 du_pt=-3.670164e-12 J
+[poscorr-pt] tick=49 pt=right_heel gap=-2.136630e-06 lam=6.011584e-07 du_pt=-1.284453e-12 J
+[poscorr] tick=49 points=2 dq_max=6.141e-04 du=+3.040167e-05 J
+[poscorr-pt] tick=49 pt=left_heel gap=-8.040045e-06 lam=1.984902e-06 du_pt=-1.595870e-11 J
+[poscorr-pt] tick=49 pt=right_heel gap=-4.706427e-06 lam=1.115175e-06 du_pt=-5.248488e-12 J
+[poscorr] tick=49 points=2 dq_max=4.859e-04 du=+3.373441e-05 J
+[poscorr-pt] tick=49 pt=left_heel gap=-8.245750e-06 lam=2.173854e-06 du_pt=-1.792505e-11 J
+[poscorr-pt] tick=49 pt=right_heel gap=-4.657021e-06 lam=1.265919e-06 du_pt=-5.895412e-12 J
+[poscorr] tick=49 points=2 dq_max=3.620e-04 du=+1.988561e-05 J
+[poscorr-pt] tick=49 pt=left_heel gap=-3.871501e-06 lam=9.524821e-07 du_pt=-3.687536e-12 J
+[poscorr-pt] tick=49 pt=right_heel gap=-4.522791e-06 lam=1.075277e-06 du_pt=-4.863252e-12 J
+[poscorr] tick=49 points=2 dq_max=4.888e-04 du=+4.000934e-05 J
+[poscorr-pt] tick=49 pt=left_heel gap=-6.553438e-06 lam=1.591691e-06 du_pt=-1.043105e-11 J
+[poscorr-pt] tick=49 pt=right_heel gap=-8.851268e-06 lam=2.487948e-06 du_pt=-2.202150e-11 J
+[poscorr] tick=49 points=1 dq_max=2.864e-04 du=+8.324041e-06 J
+[poscorr-pt] tick=49 pt=right_heel gap=-3.558606e-06 lam=8.488141e-07 du_pt=-3.020595e-12 J
+[poscorr] tick=49 points=1 dq_max=2.695e-04 du=+1.635579e-05 J
+[poscorr-pt] tick=49 pt=right_heel gap=-5.910705e-06 lam=1.667754e-06 du_pt=-9.857604e-12 J
+[poscorr] tick=49 points=2 dq_max=4.331e-04 du=+1.983620e-05 J
+[poscorr-pt] tick=49 pt=left_heel gap=-3.006338e-06 lam=7.362319e-07 du_pt=-2.213362e-12 J
+[poscorr-pt] tick=49 pt=right_heel gap=-5.414646e-06 lam=1.286489e-06 du_pt=-6.965883e-12 J
+[poscorr] tick=49 points=2 dq_max=2.434e-04 du=+2.206041e-05 J
+[poscorr-pt] tick=49 pt=left_heel gap=-3.025333e-06 lam=7.560146e-07 du_pt=-2.287196e-12 J
+[poscorr-pt] tick=49 pt=right_heel gap=-5.395366e-06 lam=1.493446e-06 du_pt=-8.057685e-12 J
+[poscorr] tick=49 points=2 dq_max=2.066e-04 du=+1.079719e-05 J
+[poscorr-pt] tick=49 pt=left_heel gap=-2.721531e-06 lam=6.694908e-07 du_pt=-1.822040e-12 J
+[poscorr-pt] tick=49 pt=right_heel gap=-1.825441e-06 lam=4.315129e-07 du_pt=-7.877011e-13 J
+[poscorr] tick=49 points=2 dq_max=4.004e-04 du=+3.455824e-05 J
+[poscorr-pt] tick=49 pt=left_heel gap=-5.402586e-06 lam=1.307551e-06 du_pt=-7.064159e-12 J
+[poscorr-pt] tick=49 pt=right_heel gap=-8.013129e-06 lam=2.216266e-06 du_pt=-1.775922e-11 J
+[poscorr] tick=49 points=4 dq_max=4.368e-04 du=+2.744262e-05 J
+[poscorr-pt] tick=49 pt=left_heel gap=-5.289052e-06 lam=1.369611e-06 du_pt=-7.243943e-12 J
+[poscorr-pt] tick=49 pt=right_heel gap=-5.538271e-06 lam=1.304038e-06 du_pt=-7.222117e-12 J
+[poscorr-pt] tick=49 pt=fore_left_heel gap=-1.092064e-06 lam=6.129227e-08 du_pt=-6.693506e-14 J
+[poscorr-pt] tick=49 pt=fore_right_heel gap=-1.089241e-06 lam=6.336663e-08 du_pt=-6.902150e-14 J
+[poscorr] tick=49 points=2 dq_max=2.267e-04 du=+1.764695e-05 J
+[poscorr-pt] tick=49 pt=left_heel gap=-1.716601e-06 lam=4.075579e-07 du_pt=-6.996141e-13 J
+[poscorr-pt] tick=49 pt=right_heel gap=-5.034729e-06 lam=1.391878e-06 du_pt=-7.007727e-12 J
+PT t=50
+[tick] 50
+[poscorr] tick=50 points=2 dq_max=4.096e-04 du=+2.459866e-05 J
+[poscorr-pt] tick=50 pt=left_heel gap=-5.423718e-06 lam=1.330512e-06 du_pt=-7.216324e-12 J
+[poscorr-pt] tick=50 pt=right_heel gap=-4.982713e-06 lam=1.177836e-06 du_pt=-5.868818e-12 J
+[poscorr] tick=50 points=2 dq_max=3.141e-04 du=+2.648691e-05 J
+[poscorr-pt] tick=50 pt=left_heel gap=-5.475574e-06 lam=1.384625e-06 du_pt=-7.581616e-12 J
+[poscorr-pt] tick=50 pt=right_heel gap=-4.906060e-06 lam=1.316184e-06 du_pt=-6.457276e-12 J
+[poscorr] tick=50 points=2 dq_max=2.574e-04 du=+1.115301e-05 J
+[poscorr-pt] tick=50 pt=left_heel gap=-1.525697e-06 lam=3.720430e-07 du_pt=-5.676248e-13 J
+[poscorr-pt] tick=50 pt=right_heel gap=-3.230119e-06 lam=7.652448e-07 du_pt=-2.471832e-12 J
+[poscorr] tick=50 points=2 dq_max=4.771e-04 du=+2.467688e-05 J
+[poscorr-pt] tick=50 pt=left_heel gap=-4.482315e-06 lam=1.096256e-06 du_pt=-4.913764e-12 J
+[poscorr-pt] tick=50 pt=right_heel gap=-6.005347e-06 lam=1.420071e-06 du_pt=-8.528018e-12 J
+[poscorr] tick=50 points=2 dq_max=2.623e-04 du=+2.653204e-05 J
+[poscorr-pt] tick=50 pt=left_heel gap=-4.492680e-06 lam=1.114075e-06 du_pt=-5.005181e-12 J
+[poscorr-pt] tick=50 pt=right_heel gap=-5.918989e-06 lam=1.591334e-06 du_pt=-9.419088e-12 J
+[poscorr] tick=50 points=2 dq_max=2.211e-04 du=+1.035191e-05 J
+[poscorr-pt] tick=50 pt=left_heel gap=-1.629048e-06 lam=3.975355e-07 du_pt=-6.476044e-13 J
+[poscorr-pt] tick=50 pt=right_heel gap=-2.782752e-06 lam=6.580634e-07 du_pt=-1.831228e-12 J
+[poscorr] tick=50 points=2 dq_max=3.255e-04 du=+2.031839e-05 J
+[poscorr-pt] tick=50 pt=left_heel gap=-5.640383e-06 lam=1.434210e-06 du_pt=-8.089494e-12 J
+[poscorr-pt] tick=50 pt=right_heel gap=-2.751955e-06 lam=6.376248e-07 du_pt=-1.754715e-12 J
+[poscorr] tick=50 points=1 dq_max=1.945e-04 du=+6.197508e-06 J
+[poscorr-pt] tick=50 pt=left_heel gap=-2.571795e-06 lam=6.319670e-07 du_pt=-1.625290e-12 J
+[poscorr] tick=50 points=2 dq_max=2.329e-04 du=+1.201359e-05 J
+[poscorr-pt] tick=50 pt=left_heel gap=-2.175937e-06 lam=5.312596e-07 du_pt=-1.155987e-12 J
+[poscorr-pt] tick=50 pt=right_heel gap=-2.939357e-06 lam=6.937820e-07 du_pt=-2.039273e-12 J
+[poscorr] tick=50 points=2 dq_max=4.467e-04 du=+3.200081e-05 J
+[poscorr-pt] tick=50 pt=left_heel gap=-6.031982e-06 lam=1.461086e-06 du_pt=-8.813242e-12 J
+[poscorr-pt] tick=50 pt=right_heel gap=-6.735986e-06 lam=1.801985e-06 du_pt=-1.213814e-11 J
+[poscorr] tick=50 points=2 dq_max=3.394e-04 du=+2.203220e-05 J
+[poscorr-pt] tick=50 pt=left_heel gap=-5.909261e-06 lam=1.490665e-06 du_pt=-8.808726e-12 J
+[poscorr-pt] tick=50 pt=right_heel gap=-3.257232e-06 lam=7.559239e-07 du_pt=-2.462219e-12 J
+[poscorr] tick=50 points=4 dq_max=2.078e-04 du=+1.881721e-05 J
+[poscorr-pt] tick=50 pt=left_heel gap=-2.283951e-06 lam=5.472887e-07 du_pt=-1.249981e-12 J
+[poscorr-pt] tick=50 pt=right_heel gap=-4.703104e-06 lam=1.260949e-06 du_pt=-5.930373e-12 J
+[poscorr-pt] tick=50 pt=fore_left_heel gap=-1.008654e-06 lam=5.432492e-08 du_pt=-5.479504e-14 J
+[poscorr-pt] tick=50 pt=fore_right_heel gap=-1.007105e-06 lam=5.621341e-08 du_pt=-5.661283e-14 J
+[poscorr] tick=50 points=2 dq_max=2.851e-04 du=+1.070509e-05 J
+[poscorr-pt] tick=50 pt=left_heel gap=-1.006546e-06 lam=2.429692e-07 du_pt=-2.445598e-13 J
+[poscorr-pt] tick=50 pt=right_heel gap=-3.594369e-06 lam=8.486435e-07 du_pt=-3.050338e-12 J
+[poscorr] tick=50 points=1 dq_max=1.560e-04 du=+9.286580e-06 J
+[poscorr-pt] tick=50 pt=right_heel gap=-3.531534e-06 lam=9.469431e-07 du_pt=-3.344161e-12 J
+[poscorr] tick=50 points=2 dq_max=2.400e-04 du=+1.329659e-05 J
+[poscorr-pt] tick=50 pt=left_heel gap=-2.625456e-06 lam=6.401849e-07 du_pt=-1.680777e-12 J
+[poscorr-pt] tick=50 pt=right_heel gap=-3.041023e-06 lam=7.156858e-07 du_pt=-2.176417e-12 J
+[poscorr] tick=50 points=2 dq_max=3.873e-04 du=+3.127891e-05 J
+[poscorr-pt] tick=50 pt=left_heel gap=-6.887952e-06 lam=1.685477e-06 du_pt=-1.160948e-11 J
+[poscorr-pt] tick=50 pt=right_heel gap=-5.818065e-06 lam=1.503931e-06 du_pt=-8.749971e-12 J
+[poscorr] tick=50 points=2 dq_max=2.583e-04 du=+1.512715e-05 J
+[poscorr-pt] tick=50 pt=left_heel gap=-3.165752e-06 lam=7.719064e-07 du_pt=-2.443664e-12 J
+[poscorr-pt] tick=50 pt=right_heel gap=-3.277994e-06 lam=7.706271e-07 du_pt=-2.526111e-12 J
+[poscorr] tick=50 points=2 dq_max=2.165e-04 du=+1.581202e-05 J
+[poscorr-pt] tick=50 pt=left_heel gap=-2.939091e-06 lam=7.098059e-07 du_pt=-2.086184e-12 J
+[poscorr-pt] tick=50 pt=right_heel gap=-3.432647e-06 lam=9.025452e-07 du_pt=-3.098119e-12 J
+[poscorr] tick=50 points=2 dq_max=4.218e-04 du=+2.566404e-05 J
+[poscorr-pt] tick=50 pt=left_heel gap=-7.431021e-06 lam=1.838977e-06 du_pt=-1.366547e-11 J
+[poscorr-pt] tick=50 pt=right_heel gap=-3.375353e-06 lam=7.779186e-07 du_pt=-2.625750e-12 J
+[poscorr] tick=50 points=2 dq_max=1.944e-04 du=+1.428610e-05 J
+[poscorr-pt] tick=50 pt=left_heel gap=-2.642486e-06 lam=6.377335e-07 du_pt=-1.685201e-12 J
+[poscorr-pt] tick=50 pt=right_heel gap=-3.125368e-06 lam=8.190219e-07 du_pt=-2.559745e-12 J
+[poscorr] tick=50 points=2 dq_max=2.618e-04 du=+1.224010e-05 J
+[poscorr-pt] tick=50 pt=left_heel gap=-1.925421e-06 lam=4.673760e-07 du_pt=-8.998954e-13 J
+[poscorr-pt] tick=50 pt=right_heel gap=-3.320932e-06 lam=7.807634e-07 du_pt=-2.592862e-12 J
+[poscorr] tick=50 points=2 dq_max=3.386e-04 du=+2.815613e-05 J
+[poscorr-pt] tick=50 pt=left_heel gap=-6.075313e-06 lam=1.465541e-06 du_pt=-8.903623e-12 J
+[poscorr-pt] tick=50 pt=right_heel gap=-5.497166e-06 lam=1.405461e-06 du_pt=-7.726051e-12 J
+[poscorr] tick=50 points=2 dq_max=1.904e-04 du=+1.047601e-05 J
+[poscorr-pt] tick=50 pt=left_heel gap=-2.553821e-06 lam=6.221931e-07 du_pt=-1.588970e-12 J
+[poscorr-pt] tick=50 pt=right_heel gap=-1.904823e-06 lam=4.460590e-07 du_pt=-8.496637e-13 J
+[poscorr] tick=50 points=2 dq_max=2.030e-04 du=+1.215537e-05 J
+[poscorr-pt] tick=50 pt=left_heel gap=-2.728783e-06 lam=6.640770e-07 du_pt=-1.812122e-12 J
+[poscorr-pt] tick=50 pt=right_heel gap=-2.455995e-06 lam=5.754210e-07 du_pt=-1.413231e-12 J
+PT t=51
+[poscorr] tick=51 points=2 dq_max=3.863e-04 du=+2.746013e-05 J
+[poscorr-pt] tick=51 pt=left_heel gap=-6.871057e-06 lam=1.674611e-06 du_pt=-1.150635e-11 J
+[poscorr-pt] tick=51 pt=right_heel gap=-4.852023e-06 lam=1.125450e-06 du_pt=-5.460706e-12 J
+[poscorr] tick=51 points=3 dq_max=2.059e-04 du=+1.880176e-05 J
+[poscorr-pt] tick=51 pt=left_heel gap=-2.825638e-06 lam=6.776562e-07 du_pt=-1.914811e-12 J
+[poscorr-pt] tick=51 pt=right_heel gap=-4.566902e-06 lam=1.184744e-06 du_pt=-5.410612e-12 J
+[poscorr-pt] tick=51 pt=fore_right_heel gap=-1.005706e-06 lam=5.480203e-08 du_pt=-5.511475e-14 J
+[poscorr] tick=51 points=1 dq_max=1.324e-05 du=+5.142797e-07 J
+[poscorr-pt] tick=51 pt=fore_left_heel gap=-1.082289e-06 lam=5.244180e-08 du_pt=-5.675718e-14 J
+[poscorr] tick=51 points=2 dq_max=1.293e-04 du=+6.840724e-06 J
+[poscorr-pt] tick=51 pt=left_heel gap=-1.738084e-06 lam=4.229497e-07 du_pt=-7.351220e-13 J
+[poscorr-pt] tick=51 pt=right_heel gap=-1.175269e-06 lam=2.746084e-07 du_pt=-3.227387e-13 J
+[poscorr] tick=51 points=2 dq_max=3.157e-04 du=+2.225663e-05 J
+[poscorr-pt] tick=51 pt=left_heel gap=-5.453753e-06 lam=1.320378e-06 du_pt=-7.201017e-12 J
+[poscorr-pt] tick=51 pt=right_heel gap=-4.092185e-06 lam=9.491073e-07 du_pt=-3.883922e-12 J
+[poscorr] tick=51 points=2 dq_max=1.733e-04 du=+1.532850e-05 J
+[poscorr-pt] tick=51 pt=left_heel gap=-2.384059e-06 lam=5.710078e-07 du_pt=-1.361316e-12 J
+[poscorr-pt] tick=51 pt=right_heel gap=-3.851426e-06 lam=9.920337e-07 du_pt=-3.820744e-12 J
+[poscorr] tick=51 points=2 dq_max=1.833e-04 du=+9.000844e-06 J
+[poscorr-pt] tick=51 pt=left_heel gap=-2.467770e-06 lam=6.002357e-07 du_pt=-1.481244e-12 J
+[poscorr-pt] tick=51 pt=right_heel gap=-1.362658e-06 lam=3.175918e-07 du_pt=-4.327692e-13 J
+[poscorr] tick=51 points=2 dq_max=3.424e-04 du=+2.540596e-05 J
+[poscorr-pt] tick=51 pt=left_heel gap=-6.188272e-06 lam=1.473154e-06 du_pt=-9.116276e-12 J
+[poscorr-pt] tick=51 pt=right_heel gap=-4.482662e-06 lam=1.117427e-06 du_pt=-5.009047e-12 J
+[poscorr] tick=51 points=2 dq_max=2.222e-04 du=+1.037477e-05 J
+[poscorr-pt] tick=51 pt=left_heel gap=-2.991789e-06 lam=7.275284e-07 du_pt=-2.176612e-12 J
+[poscorr-pt] tick=51 pt=right_heel gap=-1.420219e-06 lam=3.303995e-07 du_pt=-4.692397e-13 J
+[poscorr] tick=51 points=2 dq_max=1.887e-04 du=+9.776202e-06 J
+[poscorr-pt] tick=51 pt=left_heel gap=-1.787018e-06 lam=4.327630e-07 du_pt=-7.733551e-13 J
+[poscorr-pt] tick=51 pt=right_heel gap=-2.411576e-06 lam=5.641297e-07 du_pt=-1.360442e-12 J
+[poscorr] tick=51 points=2 dq_max=2.828e-04 du=+1.969521e-05 J
+[poscorr-pt] tick=51 pt=left_heel gap=-4.839462e-06 lam=1.157539e-06 du_pt=-5.601866e-12 J
+[poscorr-pt] tick=51 pt=right_heel gap=-3.674496e-06 lam=8.507673e-07 du_pt=-3.126141e-12 J
+[poscorr] tick=51 points=2 dq_max=1.475e-04 du=+1.299095e-05 J
+[poscorr-pt] tick=51 pt=left_heel gap=-1.876758e-06 lam=4.476674e-07 du_pt=-8.401631e-13 J
+[poscorr-pt] tick=51 pt=right_heel gap=-3.444664e-06 lam=8.770168e-07 du_pt=-3.021028e-12 J
+[poscorr] tick=51 points=2 dq_max=1.854e-04 du=+9.571301e-06 J
+[poscorr-pt] tick=51 pt=left_heel gap=-2.505380e-06 lam=6.079847e-07 du_pt=-1.523233e-12 J
+[poscorr-pt] tick=51 pt=right_heel gap=-1.580695e-06 lam=3.680130e-07 du_pt=-5.817163e-13 J
+[poscorr] tick=51 points=2 dq_max=2.713e-04 du=+1.517578e-05 J
+[poscorr-pt] tick=51 pt=left_heel gap=-4.884945e-06 lam=1.166282e-06 du_pt=-5.697222e-12 J
+[poscorr-pt] tick=51 pt=right_heel gap=-1.674341e-06 lam=3.811726e-07 du_pt=-6.382132e-13 J
+[poscorr] tick=51 points=2 dq_max=1.516e-04 du=+8.589726e-06 J
+[poscorr-pt] tick=51 pt=left_heel gap=-2.066215e-06 lam=4.985315e-07 du_pt=-1.030073e-12 J
+[poscorr-pt] tick=51 pt=right_heel gap=-1.504238e-06 lam=3.773708e-07 du_pt=-5.676553e-13 J
+[poscorr] tick=51 points=2 dq_max=1.237e-04 du=+6.678704e-06 J
+[poscorr-pt] tick=51 pt=left_heel gap=-1.674981e-06 lam=4.059478e-07 du_pt=-6.799550e-13 J
+[poscorr-pt] tick=51 pt=right_heel gap=-1.181880e-06 lam=2.750890e-07 du_pt=-3.251222e-13 J
+[poscorr] tick=51 points=2 dq_max=3.369e-04 du=+1.980759e-05 J
+[poscorr-pt] tick=51 pt=left_heel gap=-4.571041e-06 lam=1.106658e-06 du_pt=-5.058581e-12 J
+[poscorr-pt] tick=51 pt=right_heel gap=-3.920753e-06 lam=9.131419e-07 du_pt=-3.580203e-12 J
+[poscorr] tick=51 points=2 dq_max=2.439e-04 du=+1.921551e-05 J
+[poscorr-pt] tick=51 pt=left_heel gap=-4.463046e-06 lam=1.041310e-06 du_pt=-4.647416e-12 J
+[poscorr-pt] tick=51 pt=right_heel gap=-3.730900e-06 lam=9.180656e-07 du_pt=-3.425211e-12 J
+[poscorr] tick=51 points=2 dq_max=9.649e-05 du=+5.628038e-06 J
+[poscorr-pt] tick=51 pt=left_heel gap=-1.178559e-06 lam=2.849557e-07 du_pt=-3.358372e-13 J
+[poscorr-pt] tick=51 pt=right_heel gap=-1.240138e-06 lam=2.889435e-07 du_pt=-3.583300e-13 J
+[poscorr] tick=51 points=2 dq_max=2.844e-04 du=+1.641653e-05 J
+[poscorr-pt] tick=51 pt=left_heel gap=-3.402406e-06 lam=8.222069e-07 du_pt=-2.797482e-12 J
+[poscorr-pt] tick=51 pt=right_heel gap=-3.657332e-06 lam=8.518053e-07 du_pt=-3.115335e-12 J
+[poscorr] tick=51 points=2 dq_max=1.794e-04 du=+1.588712e-05 J
+[poscorr-pt] tick=51 pt=left_heel gap=-3.307137e-06 lam=7.632655e-07 du_pt=-2.524223e-12 J
+[poscorr-pt] tick=51 pt=right_heel gap=-3.480943e-06 lam=8.567289e-07 du_pt=-2.982225e-12 J
+[poscorr] tick=51 points=1 dq_max=1.285e-05 du=+4.990764e-07 J
+[poscorr-pt] tick=51 pt=fore_right_heel gap=-1.050028e-06 lam=5.089150e-08 du_pt=-5.343751e-14 J
+[poscorr] tick=51 points=2 dq_max=8.705e-05 du=+5.815572e-06 J
+[poscorr-pt] tick=51 pt=left_heel gap=-1.196619e-06 lam=2.871649e-07 du_pt=-3.436269e-13 J
+[poscorr-pt] tick=51 pt=right_heel gap=-1.231850e-06 lam=3.058550e-07 du_pt=-3.767674e-13 J
+[poscorr] tick=51 points=2 dq_max=2.504e-04 du=+1.431371e-05 J
+[poscorr-pt] tick=51 pt=left_heel gap=-3.407735e-06 lam=8.236612e-07 du_pt=-2.806819e-12 J
+[poscorr-pt] tick=51 pt=right_heel gap=-2.736859e-06 lam=6.359249e-07 du_pt=-1.740437e-12 J
+[poscorr] tick=51 points=3 dq_max=1.802e-04 du=+1.420119e-05 J
+[poscorr-pt] tick=51 pt=left_heel gap=-3.313185e-06 lam=7.664090e-07 du_pt=-2.539255e-12 J
+[poscorr-pt] tick=51 pt=right_heel gap=-2.590151e-06 lam=6.298736e-07 du_pt=-1.631468e-12 J
+[poscorr-pt] tick=51 pt=fore_left_heel gap=-1.027300e-06 lam=5.180445e-08 du_pt=-5.321870e-14 J
+[poscorr] tick=51 points=2 dq_max=1.114e-04 du=+6.175489e-06 J
+[poscorr-pt] tick=51 pt=left_heel gap=-1.227283e-06 lam=2.960485e-07 du_pt=-3.633353e-13 J
+[poscorr-pt] tick=51 pt=right_heel gap=-1.434370e-06 lam=3.336751e-07 du_pt=-4.786137e-13 J
+PT t=52
+[poscorr] tick=52 points=2 dq_max=3.105e-04 du=+1.738254e-05 J
+[poscorr-pt] tick=52 pt=left_heel gap=-3.491657e-06 lam=8.419903e-07 du_pt=-2.939941e-12 J
+[poscorr-pt] tick=52 pt=right_heel gap=-4.002181e-06 lam=9.305267e-07 du_pt=-3.724136e-12 J
+[poscorr] tick=52 points=2 dq_max=1.817e-04 du=+1.661721e-05 J
+[poscorr-pt] tick=52 pt=left_heel gap=-3.375771e-06 lam=7.695465e-07 du_pt=-2.597813e-12 J
+[poscorr-pt] tick=52 pt=right_heel gap=-3.794212e-06 lam=9.248914e-07 du_pt=-3.509234e-12 J
+[poscorr] tick=52 points=2 dq_max=9.079e-05 du=+5.401018e-06 J
+[poscorr-pt] tick=52 pt=left_heel gap=-1.154960e-06 lam=2.785299e-07 du_pt=-3.216910e-13 J
+[poscorr-pt] tick=52 pt=right_heel gap=-1.171975e-06 lam=2.722198e-07 du_pt=-3.190348e-13 J
+[poscorr] tick=52 points=2 dq_max=2.416e-04 du=+1.487799e-05 J
+[poscorr-pt] tick=52 pt=left_heel gap=-3.286131e-06 lam=7.923536e-07 du_pt=-2.603778e-12 J
+[poscorr-pt] tick=52 pt=right_heel gap=-3.122647e-06 lam=7.247723e-07 du_pt=-2.263208e-12 J
+[poscorr] tick=52 points=2 dq_max=1.710e-04 du=+1.407658e-05 J
+[poscorr-pt] tick=52 pt=left_heel gap=-3.175684e-06 lam=7.236439e-07 du_pt=-2.298064e-12 J
+[poscorr-pt] tick=52 pt=right_heel gap=-2.948130e-06 lam=7.117344e-07 du_pt=-2.098285e-12 J
+[poscorr] tick=52 points=2 dq_max=8.417e-05 du=+5.522011e-06 J
+[poscorr-pt] tick=52 pt=left_heel gap=-1.162016e-06 lam=2.782471e-07 du_pt=-3.233277e-13 J
+[poscorr-pt] tick=52 pt=right_heel gap=-1.166812e-06 lam=2.848382e-07 du_pt=-3.323526e-13 J
+[poscorr] tick=52 points=2 dq_max=2.424e-04 du=+1.356050e-05 J
+[poscorr-pt] tick=52 pt=left_heel gap=-3.314796e-06 lam=7.991752e-07 du_pt=-2.649102e-12 J
+[poscorr-pt] tick=52 pt=right_heel gap=-2.519662e-06 lam=5.836050e-07 du_pt=-1.470487e-12 J
+[poscorr] tick=52 points=2 dq_max=1.725e-04 du=+1.269093e-05 J
+[poscorr-pt] tick=52 pt=left_heel gap=-3.201853e-06 lam=7.291802e-07 du_pt=-2.334728e-12 J
+[poscorr-pt] tick=52 pt=right_heel gap=-2.366961e-06 lam=5.649062e-07 du_pt=-1.337111e-12 J
+[poscorr] tick=52 points=2 dq_max=1.029e-04 du=+5.821679e-06 J
+[poscorr-pt] tick=52 pt=left_heel gap=-1.184058e-06 lam=2.849152e-07 du_pt=-3.373562e-13 J
+[poscorr-pt] tick=52 pt=right_heel gap=-1.331151e-06 lam=3.087298e-07 du_pt=-4.109661e-13 J
+[poscorr] tick=52 points=2 dq_max=2.798e-04 du=+1.560047e-05 J
+[poscorr-pt] tick=52 pt=left_heel gap=-3.123900e-06 lam=7.512723e-07 du_pt=-2.346899e-12 J
+[poscorr-pt] tick=52 pt=right_heel gap=-3.620994e-06 lam=8.395260e-07 du_pt=-3.039918e-12 J
+[poscorr] tick=52 points=2 dq_max=1.600e-04 du=+1.462759e-05 J
+[poscorr-pt] tick=52 pt=left_heel gap=-2.999250e-06 lam=6.731537e-07 du_pt=-2.018956e-12 J
+[poscorr-pt] tick=52 pt=right_heel gap=-3.410413e-06 lam=8.184091e-07 du_pt=-2.791113e-12 J
+[poscorr] tick=52 points=2 dq_max=8.763e-05 du=+5.266185e-06 J
+[poscorr-pt] tick=52 pt=left_heel gap=-1.138890e-06 lam=2.739474e-07 du_pt=-3.119960e-13 J
+[poscorr-pt] tick=52 pt=right_heel gap=-1.135811e-06 lam=2.630533e-07 du_pt=-2.987788e-13 J
+[poscorr] tick=52 points=2 dq_max=2.234e-04 du=+1.365769e-05 J
+[poscorr-pt] tick=52 pt=left_heel gap=-3.068127e-06 lam=7.379256e-07 du_pt=-2.264050e-12 J
+[poscorr-pt] tick=52 pt=right_heel gap=-2.829377e-06 lam=6.547654e-07 du_pt=-1.852578e-12 J
+[poscorr] tick=52 points=2 dq_max=1.573e-04 du=+1.266735e-05 J
+[poscorr-pt] tick=52 pt=left_heel gap=-2.945696e-06 lam=6.615733e-07 du_pt=-1.948794e-12 J
+[poscorr-pt] tick=52 pt=right_heel gap=-2.652859e-06 lam=6.301100e-07 du_pt=-1.671593e-12 J
+[poscorr] tick=52 points=2 dq_max=8.366e-05 du=+5.018502e-06 J
+[poscorr-pt] tick=52 pt=left_heel gap=-1.084023e-06 lam=2.605212e-07 du_pt=-2.824109e-13 J
+[poscorr-pt] tick=52 pt=right_heel gap=-1.085715e-06 lam=2.512228e-07 du_pt=-2.727563e-13 J
+[poscorr] tick=52 points=2 dq_max=1.692e-04 du=+1.390106e-05 J
+[poscorr-pt] tick=52 pt=left_heel gap=-3.179066e-06 lam=7.098737e-07 du_pt=-2.256735e-12 J
+[poscorr-pt] tick=52 pt=right_heel gap=-2.990776e-06 lam=7.076073e-07 du_pt=-2.116295e-12 J
+[poscorr] tick=52 points=2 dq_max=2.051e-04 du=+1.651308e-05 J
+[poscorr-pt] tick=52 pt=left_heel gap=-3.857623e-06 lam=8.600061e-07 du_pt=-3.317580e-12 J
+[poscorr-pt] tick=52 pt=right_heel gap=-3.493798e-06 lam=8.238129e-07 du_pt=-2.878236e-12 J
+[poscorr] tick=52 points=3 dq_max=1.037e-04 du=+6.829291e-06 J
+[poscorr-pt] tick=52 pt=left_heel gap=-1.400657e-06 lam=3.365271e-07 du_pt=-4.713591e-13 J
+[poscorr-pt] tick=52 pt=right_heel gap=-1.346302e-06 lam=3.113126e-07 du_pt=-4.191208e-13 J
+[poscorr-pt] tick=52 pt=fore_right_heel gap=-1.028488e-06 lam=4.855278e-08 du_pt=-4.993595e-14 J
+[poscorr] tick=52 points=2 dq_max=7.115e-05 du=+5.831473e-06 J
+[poscorr-pt] tick=52 pt=left_heel gap=-1.341007e-06 lam=2.979855e-07 du_pt=-3.996008e-13 J
+[poscorr-pt] tick=52 pt=right_heel gap=-1.260207e-06 lam=2.966535e-07 du_pt=-3.738448e-13 J
+[poscorr] tick=52 points=2 dq_max=8.285e-05 du=+5.023712e-06 J
+[poscorr-pt] tick=52 pt=left_heel gap=-1.097319e-06 lam=2.632806e-07 du_pt=-2.889028e-13 J
+[poscorr-pt] tick=52 pt=right_heel gap=-1.078139e-06 lam=2.489947e-07 du_pt=-2.684510e-13 J
+[poscorr] tick=52 points=2 dq_max=2.529e-04 du=+1.472961e-05 J
+[poscorr-pt] tick=52 pt=left_heel gap=-3.487117e-06 lam=8.368609e-07 du_pt=-2.918232e-12 J
+[poscorr-pt] tick=52 pt=right_heel gap=-2.883528e-06 lam=6.651338e-07 du_pt=-1.917932e-12 J
+[poscorr] tick=52 points=2 dq_max=1.765e-04 du=+1.338119e-05 J
+[poscorr-pt] tick=52 pt=left_heel gap=-3.328829e-06 lam=7.384165e-07 du_pt=-2.458062e-12 J
+[poscorr-pt] tick=52 pt=right_heel gap=-2.682890e-06 lam=6.260541e-07 du_pt=-1.679634e-12 J
+[poscorr] tick=52 points=2 dq_max=8.405e-05 du=+5.053915e-06 J
+[poscorr-pt] tick=52 pt=left_heel gap=-1.095817e-06 lam=2.626820e-07 du_pt=-2.878514e-13 J
+[poscorr-pt] tick=52 pt=right_heel gap=-1.094972e-06 lam=2.526732e-07 du_pt=-2.766700e-13 J
+PT t=53
+[poscorr] tick=53 points=2 dq_max=2.425e-04 du=+1.444878e-05 J
+[poscorr-pt] tick=53 pt=left_heel gap=-3.328987e-06 lam=7.417331e-07 du_pt=-2.469220e-12 J
+[poscorr-pt] tick=53 pt=right_heel gap=-3.187720e-06 lam=7.316114e-07 du_pt=-2.332172e-12 J
+[poscorr] tick=53 points=1 dq_max=1.207e-04 du=+6.845895e-06 J
+[poscorr-pt] tick=53 pt=right_heel gap=-2.928953e-06 lam=6.980719e-07 du_pt=-2.044620e-12 J
+[poscorr] tick=53 points=2 dq_max=1.896e-04 du=+1.012002e-05 J
+[poscorr-pt] tick=53 pt=left_heel gap=-3.551198e-06 lam=7.940612e-07 du_pt=-2.819869e-12 J
+[poscorr-pt] tick=53 pt=right_heel gap=-1.058366e-06 lam=2.378714e-07 du_pt=-2.517550e-13 J
+[poscorr] tick=53 points=2 dq_max=1.253e-04 du=+1.027651e-05 J
+[poscorr-pt] tick=53 pt=left_heel gap=-1.385772e-06 lam=3.259913e-07 du_pt=-4.517496e-13 J
+[poscorr-pt] tick=53 pt=right_heel gap=-3.057020e-06 lam=7.219043e-07 du_pt=-2.206876e-12 J
+[poscorr] tick=53 points=2 dq_max=6.748e-05 du=+3.235915e-06 J
+[poscorr-pt] tick=53 pt=left_heel gap=-1.261082e-06 lam=2.826240e-07 du_pt=-3.564120e-13 J
+[poscorr-pt] tick=53 pt=fore_left_heel gap=-1.048608e-06 lam=4.734459e-08 du_pt=-4.964589e-14 J
+[poscorr] tick=53 points=2 dq_max=1.288e-04 du=+9.855795e-06 J
+[poscorr-pt] tick=53 pt=left_heel gap=-1.127455e-06 lam=2.636114e-07 du_pt=-2.972101e-13 J
+[poscorr-pt] tick=53 pt=right_heel gap=-3.144292e-06 lam=7.413821e-07 du_pt=-2.331122e-12 J
+[poscorr] tick=53 points=2 dq_max=2.375e-04 du=+1.057781e-05 J
+[poscorr-pt] tick=53 pt=left_heel gap=-3.281121e-06 lam=7.867695e-07 du_pt=-2.581486e-12 J
+[poscorr-pt] tick=53 pt=right_heel gap=-1.275753e-06 lam=2.918616e-07 du_pt=-3.723433e-13 J
+[poscorr] tick=53 points=2 dq_max=1.655e-04 du=+9.310514e-06 J
+[poscorr-pt] tick=53 pt=left_heel gap=-3.124488e-06 lam=6.900321e-07 du_pt=-2.155997e-12 J
+[poscorr-pt] tick=53 pt=right_heel gap=-1.163050e-06 lam=2.593572e-07 du_pt=-3.016455e-13 J
+[poscorr] tick=53 points=2 dq_max=7.994e-05 du=+4.860107e-06 J
+[poscorr-pt] tick=53 pt=left_heel gap=-1.066321e-06 lam=2.549837e-07 du_pt=-2.718944e-13 J
+[poscorr-pt] tick=53 pt=right_heel gap=-1.045535e-06 lam=2.406086e-07 du_pt=-2.515646e-13 J
+[poscorr] tick=53 points=2 dq_max=2.044e-04 du=+1.256351e-05 J
+[poscorr-pt] tick=53 pt=left_heel gap=-3.019040e-06 lam=6.635620e-07 du_pt=-2.003320e-12 J
+[poscorr-pt] tick=53 pt=right_heel gap=-2.699083e-06 lam=6.175425e-07 du_pt=-1.666798e-12 J
+[poscorr] tick=53 points=1 dq_max=1.006e-04 du=+5.669455e-06 J
+[poscorr-pt] tick=53 pt=right_heel gap=-2.461524e-06 lam=5.781130e-07 du_pt=-1.423039e-12 J
+[poscorr] tick=53 points=2 dq_max=1.857e-04 du=+9.880562e-06 J
+[poscorr-pt] tick=53 pt=left_heel gap=-3.507268e-06 lam=7.731801e-07 du_pt=-2.711750e-12 J
+[poscorr-pt] tick=53 pt=right_heel gap=-1.044673e-06 lam=2.343354e-07 du_pt=-2.448039e-13 J
+[poscorr] tick=53 points=2 dq_max=2.185e-04 du=+9.597122e-06 J
+[poscorr-pt] tick=53 pt=left_heel gap=-1.351842e-06 lam=3.214379e-07 du_pt=-4.345332e-13 J
+[poscorr-pt] tick=53 pt=right_heel gap=-2.853113e-06 lam=6.571937e-07 du_pt=-1.875048e-12 J
+[poscorr] tick=53 points=2 dq_max=1.074e-04 du=+8.617056e-06 J
+[poscorr-pt] tick=53 pt=left_heel gap=-1.261610e-06 lam=2.657096e-07 du_pt=-3.352218e-13 J
+[poscorr-pt] tick=53 pt=right_heel gap=-2.647013e-06 lam=6.129711e-07 du_pt=-1.622542e-12 J
+[poscorr] tick=53 points=2 dq_max=7.476e-05 du=+4.734238e-06 J
+[poscorr-pt] tick=53 pt=left_heel gap=-1.048172e-06 lam=2.489144e-07 du_pt=-2.609052e-13 J
+[poscorr-pt] tick=53 pt=right_heel gap=-1.012819e-06 lam=2.338413e-07 du_pt=-2.368389e-13 J
+[poscorr] tick=53 points=2 dq_max=2.170e-04 du=+1.210411e-05 J
+[poscorr-pt] tick=53 pt=left_heel gap=-3.018242e-06 lam=7.209218e-07 du_pt=-2.175917e-12 J
+[poscorr-pt] tick=53 pt=right_heel gap=-2.238445e-06 lam=5.133481e-07 du_pt=-1.149101e-12 J
+[poscorr] tick=53 points=2 dq_max=1.487e-04 du=+1.059236e-05 J
+[poscorr-pt] tick=53 pt=left_heel gap=-2.846614e-06 lam=6.153799e-07 du_pt=-1.751749e-12 J
+[poscorr-pt] tick=53 pt=right_heel gap=-2.054131e-06 lam=4.647201e-07 du_pt=-9.545959e-13 J
+[poscorr] tick=53 points=2 dq_max=7.695e-05 du=+4.772398e-06 J
+[poscorr-pt] tick=53 pt=left_heel gap=-1.072077e-06 lam=2.557640e-07 du_pt=-2.741987e-13 J
+[poscorr-pt] tick=53 pt=right_heel gap=-1.006060e-06 lam=2.308844e-07 du_pt=-2.322836e-13 J
+[poscorr] tick=53 points=2 dq_max=2.068e-04 du=+1.112003e-05 J
+[poscorr-pt] tick=53 pt=left_heel gap=-2.878559e-06 lam=6.871631e-07 du_pt=-1.978039e-12 J
+[poscorr-pt] tick=53 pt=right_heel gap=-1.950726e-06 lam=4.467600e-07 du_pt=-8.715063e-13 J
+[poscorr] tick=53 points=2 dq_max=1.414e-04 du=+9.659083e-06 J
+[poscorr-pt] tick=53 pt=left_heel gap=-2.710733e-06 lam=5.841957e-07 du_pt=-1.583599e-12 J
+[poscorr-pt] tick=53 pt=right_heel gap=-1.784203e-06 lam=4.007391e-07 du_pt=-7.149998e-13 J
+[poscorr] tick=53 points=1 dq_max=7.699e-05 du=+2.507150e-06 J
+[poscorr-pt] tick=53 pt=left_heel gap=-1.068663e-06 lam=2.556577e-07 du_pt=-2.732118e-13 J
+[poscorr] tick=53 points=2 dq_max=1.491e-04 du=+1.409665e-05 J
+[poscorr-pt] tick=53 pt=left_heel gap=-2.892816e-06 lam=6.128252e-07 du_pt=-1.772791e-12 J
+[poscorr-pt] tick=53 pt=right_heel gap=-3.633439e-06 lam=8.245974e-07 du_pt=-2.996124e-12 J
+[poscorr] tick=53 points=1 dq_max=1.226e-05 du=+4.517223e-07 J
+[poscorr-pt] tick=53 pt=fore_right_heel gap=-1.035357e-06 lam=4.606276e-08 du_pt=-4.769140e-14 J
+[poscorr] tick=53 points=2 dq_max=1.711e-04 du=+1.052454e-05 J
+[poscorr-pt] tick=53 pt=left_heel gap=-2.406645e-06 lam=5.704806e-07 du_pt=-1.372944e-12 J
+[poscorr-pt] tick=53 pt=right_heel gap=-2.208835e-06 lam=5.027126e-07 du_pt=-1.110409e-12 J
+PT t=54
+[poscorr] tick=54 points=2 dq_max=2.423e-04 du=+1.248166e-05 J
+[poscorr-pt] tick=54 pt=left_heel gap=-4.629864e-06 lam=1.000312e-06 du_pt=-4.631309e-12 J
+[poscorr-pt] tick=54 pt=right_heel gap=-1.222390e-06 lam=2.724266e-07 du_pt=-3.330115e-13 J
+[poscorr] tick=54 points=2 dq_max=8.232e-05 du=+5.012588e-06 J
+[poscorr-pt] tick=54 pt=left_heel gap=-1.158646e-06 lam=2.745814e-07 du_pt=-3.181428e-13 J
+[poscorr-pt] tick=54 pt=right_heel gap=-1.042025e-06 lam=2.365579e-07 du_pt=-2.464992e-13 J
+[poscorr] tick=54 points=2 dq_max=1.903e-04 du=+8.452494e-06 J
+[poscorr-pt] tick=54 pt=left_heel gap=-2.654680e-06 lam=6.331454e-07 du_pt=-1.680799e-12 J
+[poscorr-pt] tick=54 pt=right_heel gap=-1.005620e-06 lam=2.287656e-07 du_pt=-2.300513e-13 J
+[poscorr] tick=54 points=2 dq_max=2.191e-04 du=+1.489106e-05 J
+[poscorr-pt] tick=54 pt=left_heel gap=-3.988809e-06 lam=8.545184e-07 du_pt=-3.408511e-12 J
+[poscorr-pt] tick=54 pt=right_heel gap=-2.921491e-06 lam=6.639187e-07 du_pt=-1.939632e-12 J
+[poscorr] tick=54 points=2 dq_max=1.052e-04 du=+8.816963e-06 J
+[poscorr-pt] tick=54 pt=left_heel gap=-1.294135e-06 lam=3.033049e-07 du_pt=-3.925175e-13 J
+[poscorr-pt] tick=54 pt=right_heel gap=-2.620705e-06 lam=5.957628e-07 du_pt=-1.561318e-12 J
+[poscorr] tick=54 points=1 dq_max=1.486e-04 du=+4.847998e-06 J
+[poscorr-pt] tick=54 pt=left_heel gap=-2.071520e-06 lam=4.943562e-07 du_pt=-1.024069e-12 J
+[poscorr] tick=54 points=2 dq_max=2.228e-04 du=+1.354119e-05 J
+[poscorr-pt] tick=54 pt=left_heel gap=-2.980869e-06 lam=7.084487e-07 du_pt=-2.111793e-12 J
+[poscorr-pt] tick=54 pt=right_heel gap=-2.940181e-06 lam=6.723622e-07 du_pt=-1.976867e-12 J
+[poscorr] tick=54 points=2 dq_max=1.427e-04 du=+1.158772e-05 J
+[poscorr-pt] tick=54 pt=left_heel gap=-2.776097e-06 lam=5.842098e-07 du_pt=-1.621823e-12 J
+[poscorr-pt] tick=54 pt=right_heel gap=-2.680348e-06 lam=5.973842e-07 du_pt=-1.601197e-12 J
+[poscorr] tick=54 points=2 dq_max=2.316e-04 du=+1.335690e-05 J
+[poscorr-pt] tick=54 pt=left_heel gap=-3.119091e-06 lam=6.609295e-07 du_pt=-2.061499e-12 J
+[poscorr-pt] tick=54 pt=right_heel gap=-3.080902e-06 lam=7.010775e-07 du_pt=-2.159951e-12 J
+[poscorr] tick=54 points=1 dq_max=1.110e-04 du=+6.156937e-06 J
+[poscorr-pt] tick=54 pt=right_heel gap=-2.773850e-06 lam=6.278199e-07 du_pt=-1.741478e-12 J
+[poscorr] tick=54 points=1 dq_max=1.225e-04 du=+4.932961e-06 J
+[poscorr-pt] tick=54 pt=left_heel gap=-2.358997e-06 lam=5.030128e-07 du_pt=-1.186606e-12 J
+[poscorr] tick=54 points=2 dq_max=1.693e-04 du=+9.398585e-06 J
+[poscorr-pt] tick=54 pt=left_heel gap=-2.114684e-06 lam=4.458856e-07 du_pt=-9.429073e-13 J
+[poscorr-pt] tick=54 pt=right_heel gap=-2.252640e-06 lam=5.124949e-07 du_pt=-1.154466e-12 J
+[poscorr] tick=54 points=1 dq_max=7.560e-05 du=+4.186445e-06 J
+[poscorr-pt] tick=54 pt=right_heel gap=-1.894385e-06 lam=4.268926e-07 du_pt=-8.086988e-13 J
+[poscorr] tick=54 points=2 dq_max=1.518e-04 du=+7.566447e-06 J
+[poscorr-pt] tick=54 pt=left_heel gap=-2.131515e-06 lam=5.064184e-07 du_pt=-1.079439e-12 J
+[poscorr-pt] tick=54 pt=right_heel gap=-1.165558e-06 lam=2.651420e-07 du_pt=-3.090384e-13 J
+[poscorr] tick=54 points=2 dq_max=2.576e-04 du=+1.458791e-05 J
+[poscorr-pt] tick=54 pt=left_heel gap=-3.623808e-06 lam=8.599583e-07 du_pt=-3.116324e-12 J
+[poscorr-pt] tick=54 pt=right_heel gap=-2.754405e-06 lam=6.275870e-07 du_pt=-1.728629e-12 J
+[poscorr] tick=54 points=2 dq_max=1.721e-04 du=+1.221914e-05 J
+[poscorr-pt] tick=54 pt=left_heel gap=-3.361078e-06 lam=7.017335e-07 du_pt=-2.358581e-12 J
+[poscorr-pt] tick=54 pt=right_heel gap=-2.488704e-06 lam=5.442441e-07 du_pt=-1.354463e-12 J
+[poscorr] tick=54 points=2 dq_max=1.889e-04 du=+8.889407e-06 J
+[poscorr-pt] tick=54 pt=left_heel gap=-1.423430e-06 lam=3.362680e-07 du_pt=-4.786538e-13 J
+[poscorr-pt] tick=54 pt=right_heel gap=-2.497341e-06 lam=5.701969e-07 du_pt=-1.423976e-12 J
+[poscorr] tick=54 points=2 dq_max=8.966e-05 du=+7.526882e-06 J
+[poscorr-pt] tick=54 pt=left_heel gap=-1.305861e-06 lam=2.660505e-07 du_pt=-3.474249e-13 J
+[poscorr-pt] tick=54 pt=right_heel gap=-2.268724e-06 lam=5.014668e-07 du_pt=-1.137690e-12 J
+[poscorr] tick=54 points=1 dq_max=7.319e-05 du=+2.395633e-06 J
+[poscorr-pt] tick=54 pt=left_heel gap=-1.027759e-06 lam=2.442861e-07 du_pt=-2.510673e-13 J
+[poscorr] tick=54 points=2 dq_max=2.070e-04 du=+1.406771e-05 J
+[poscorr-pt] tick=54 pt=left_heel gap=-2.950261e-06 lam=6.941277e-07 du_pt=-2.047858e-12 J
+[poscorr-pt] tick=54 pt=right_heel gap=-3.355650e-06 lam=7.403572e-07 du_pt=-2.484379e-12 J
+[poscorr] tick=54 points=1 dq_max=1.380e-04 du=+5.520528e-06 J
+[poscorr-pt] tick=54 pt=left_heel gap=-2.679712e-06 lam=5.629255e-07 du_pt=-1.508478e-12 J
+[poscorr] tick=54 points=2 dq_max=1.574e-04 du=+7.139192e-06 J
+[poscorr-pt] tick=54 pt=left_heel gap=-1.071350e-06 lam=2.526235e-07 du_pt=-2.706483e-13 J
+[poscorr-pt] tick=54 pt=right_heel gap=-2.084116e-06 lam=4.753700e-07 du_pt=-9.907263e-13 J
+PT t=55
+[poscorr] tick=55 points=2 dq_max=2.089e-04 du=+1.816138e-05 J
+[poscorr-pt] tick=55 pt=left_heel gap=-2.929687e-06 lam=6.847896e-07 du_pt=-2.006219e-12 J
+[poscorr-pt] tick=55 pt=right_heel gap=-5.296322e-06 lam=1.167106e-06 du_pt=-6.181367e-12 J
+[poscorr] tick=55 points=2 dq_max=1.346e-04 du=+5.816269e-06 J
+[poscorr-pt] tick=55 pt=left_heel gap=-2.618672e-06 lam=5.483008e-07 du_pt=-1.435820e-12 J
+[poscorr-pt] tick=55 pt=fore_left_heel gap=-1.047896e-06 lam=4.478226e-08 du_pt=-4.692713e-14 J
+[poscorr] tick=55 points=1 dq_max=1.974e-04 du=+5.842264e-06 J
+[poscorr-pt] tick=55 pt=right_heel gap=-2.608864e-06 lam=5.957437e-07 du_pt=-1.554214e-12 J
+[poscorr] tick=55 points=2 dq_max=1.805e-04 du=+1.258768e-05 J
+[poscorr-pt] tick=55 pt=left_heel gap=-1.200371e-06 lam=2.755003e-07 du_pt=-3.307026e-13 J
+[poscorr-pt] tick=55 pt=right_heel gap=-4.581617e-06 lam=1.008052e-06 du_pt=-4.618506e-12 J
+[poscorr] tick=55 points=2 dq_max=5.263e-05 du=+2.526288e-06 J
+[poscorr-pt] tick=55 pt=left_heel gap=-1.025542e-06 lam=2.141276e-07 du_pt=-2.195968e-13 J
+[poscorr-pt] tick=55 pt=fore_right_heel gap=-1.012770e-06 lam=4.348033e-08 du_pt=-4.403559e-14 J
+[poscorr] tick=55 points=1 dq_max=1.813e-04 du=+5.368124e-06 J
+[poscorr-pt] tick=55 pt=right_heel gap=-2.399093e-06 lam=5.473950e-07 du_pt=-1.313251e-12 J
+[poscorr] tick=55 points=2 dq_max=2.073e-04 du=+1.641758e-05 J
+[poscorr-pt] tick=55 pt=left_heel gap=-2.980106e-06 lam=6.974762e-07 du_pt=-2.078553e-12 J
+[poscorr-pt] tick=55 pt=right_heel gap=-4.473996e-06 lam=9.766149e-07 du_pt=-4.369371e-12 J
+[poscorr] tick=55 points=1 dq_max=1.365e-04 du=+5.434968e-06 J
+[poscorr-pt] tick=55 pt=left_heel gap=-2.671247e-06 lam=5.542010e-07 du_pt=-1.480408e-12 J
+[poscorr] tick=55 points=2 dq_max=1.856e-04 du=+7.810797e-06 J
+[poscorr-pt] tick=55 pt=left_heel gap=-1.002339e-06 lam=2.353721e-07 du_pt=-2.359226e-13 J
+[poscorr-pt] tick=55 pt=right_heel gap=-2.464939e-06 lam=5.611058e-07 du_pt=-1.383092e-12 J
+[poscorr] tick=55 points=2 dq_max=1.805e-04 du=+1.604603e-05 J
+[poscorr-pt] tick=55 pt=left_heel gap=-3.170399e-06 lam=6.370079e-07 du_pt=-2.019569e-12 J
+[poscorr-pt] tick=55 pt=right_heel gap=-4.624787e-06 lam=9.991822e-07 du_pt=-4.621004e-12 J
+[poscorr] tick=55 points=2 dq_max=1.630e-04 du=+1.283088e-05 J
+[poscorr-pt] tick=55 pt=left_heel gap=-3.242612e-06 lam=6.569107e-07 du_pt=-2.130107e-12 J
+[poscorr-pt] tick=55 pt=right_heel gap=-3.042548e-06 lam=6.514444e-07 du_pt=-1.982051e-12 J
+[poscorr] tick=55 points=2 dq_max=1.557e-04 du=+7.521277e-06 J
+[poscorr-pt] tick=55 pt=left_heel gap=-1.257695e-06 lam=2.958825e-07 du_pt=-3.721300e-13 J
+[poscorr-pt] tick=55 pt=right_heel gap=-2.073505e-06 lam=4.710727e-07 du_pt=-9.767717e-13 J
+[poscorr] tick=55 points=2 dq_max=7.252e-05 du=+6.164695e-06 J
+[poscorr-pt] tick=55 pt=left_heel gap=-1.141180e-06 lam=2.276245e-07 du_pt=-2.597606e-13 J
+[poscorr-pt] tick=55 pt=right_heel gap=-1.861175e-06 lam=4.009920e-07 du_pt=-7.463161e-13 J
+[poscorr] tick=55 points=2 dq_max=8.221e-05 du=+4.799593e-06 J
+[poscorr-pt] tick=55 pt=left_heel gap=-1.020187e-06 lam=2.404140e-07 du_pt=-2.452673e-13 J
+[poscorr-pt] tick=55 pt=right_heel gap=-1.097823e-06 lam=2.490075e-07 du_pt=-2.733661e-13 J
+[poscorr] tick=55 points=2 dq_max=2.439e-04 du=+1.370544e-05 J
+[poscorr-pt] tick=55 pt=left_heel gap=-2.798192e-06 lam=6.589714e-07 du_pt=-1.843929e-12 J
+[poscorr-pt] tick=55 pt=right_heel gap=-3.256627e-06 lam=7.385889e-07 du_pt=-2.405308e-12 J
+[poscorr] tick=55 points=2 dq_max=1.271e-04 du=+1.110144e-05 J
+[poscorr-pt] tick=55 pt=left_heel gap=-2.544786e-06 lam=5.104622e-07 du_pt=-1.299017e-12 J
+[poscorr-pt] tick=55 pt=right_heel gap=-2.910492e-06 lam=6.215464e-07 du_pt=-1.809006e-12 J
+[poscorr] tick=55 points=1 dq_max=7.132e-05 du=+2.344931e-06 J
+[poscorr-pt] tick=55 pt=left_heel gap=-1.011518e-06 lam=2.391159e-07 du_pt=-2.418700e-13 J
+[poscorr] tick=55 points=2 dq_max=1.763e-04 du=+8.157958e-06 J
+[poscorr-pt] tick=55 pt=left_heel gap=-2.508196e-06 lam=5.918030e-07 du_pt=-1.484358e-12 J
+[poscorr-pt] tick=55 pt=right_heel gap=-1.065375e-06 lam=2.400740e-07 du_pt=-2.557688e-13 J
+[poscorr] tick=55 points=1 dq_max=1.160e-04 du=+4.586874e-06 J
+[poscorr-pt] tick=55 pt=left_heel gap=-2.291183e-06 lam=4.677226e-07 du_pt=-1.071638e-12 J
+[poscorr] tick=55 points=2 dq_max=7.202e-05 du=+6.187437e-06 J
+[poscorr-pt] tick=55 pt=left_heel gap=-1.003105e-06 lam=2.333717e-07 du_pt=-2.340963e-13 J
+[poscorr-pt] tick=55 pt=right_heel gap=-1.853222e-06 lam=3.975654e-07 du_pt=-7.367768e-13 J
+[poscorr] tick=55 points=2 dq_max=1.939e-04 du=+1.099133e-05 J
+[poscorr-pt] tick=55 pt=left_heel gap=-2.766819e-06 lam=6.515747e-07 du_pt=-1.802789e-12 J
+[poscorr-pt] tick=55 pt=right_heel gap=-2.075884e-06 lam=4.692245e-07 du_pt=-9.740558e-13 J
+[poscorr] tick=55 points=2 dq_max=1.258e-04 du=+8.737804e-06 J
+[poscorr-pt] tick=55 pt=left_heel gap=-2.515341e-06 lam=5.046446e-07 du_pt=-1.269353e-12 J
+[poscorr-pt] tick=55 pt=right_heel gap=-1.839697e-06 lam=3.863484e-07 du_pt=-7.107641e-13 J
+PT t=56
+[poscorr] tick=56 points=1 dq_max=2.175e-04 du=+6.455115e-06 J
+[poscorr-pt] tick=56 pt=right_heel gap=-2.899922e-06 lam=6.582367e-07 du_pt=-1.908835e-12 J
+[poscorr] tick=56 points=1 dq_max=1.009e-04 du=+5.458919e-06 J
+[poscorr-pt] tick=56 pt=right_heel gap=-2.598167e-06 lam=5.566441e-07 du_pt=-1.446254e-12 J
+[poscorr] tick=56 points=1 dq_max=3.001e-04 du=+9.884125e-06 J
+[poscorr-pt] tick=56 pt=left_heel gap=-4.273183e-06 lam=1.007891e-06 du_pt=-4.306905e-12 J
+[poscorr] tick=56 points=1 dq_max=3.387e-04 du=+1.332421e-05 J
+[poscorr-pt] tick=56 pt=left_heel gap=-6.733865e-06 lam=1.358620e-06 du_pt=-9.148763e-12 J
+[poscorr] tick=56 points=2 dq_max=3.604e-04 du=+2.044833e-05 J
+[poscorr-pt] tick=56 pt=left_heel gap=-5.159006e-06 lam=1.212576e-06 du_pt=-6.255688e-12 J
+[poscorr-pt] tick=56 pt=right_heel gap=-3.867614e-06 lam=8.725563e-07 du_pt=-3.374711e-12 J
+[poscorr] tick=56 points=2 dq_max=2.187e-04 du=+1.627829e-05 J
+[poscorr-pt] tick=56 pt=left_heel gap=-1.994933e-06 lam=4.593346e-07 du_pt=-9.163416e-13 J
+[poscorr-pt] tick=56 pt=right_heel gap=-5.665309e-06 lam=1.200537e-06 du_pt=-6.801411e-12 J
+[poscorr] tick=56 points=1 dq_max=8.609e-05 du=+3.381159e-06 J
+[poscorr-pt] tick=56 pt=left_heel gap=-1.715535e-06 lam=3.447777e-07 du_pt=-5.914783e-13 J
+[poscorr] tick=56 points=1 dq_max=4.023e-04 du=+1.194734e-05 J
+[poscorr-pt] tick=56 pt=right_heel gap=-5.377998e-06 lam=1.218283e-06 du_pt=-6.551925e-12 J
+[poscorr] tick=56 points=2 dq_max=2.258e-04 du=+1.147503e-05 J
+[poscorr-pt] tick=56 pt=left_heel gap=-4.516056e-06 lam=9.023027e-07 du_pt=-4.074850e-12 J
+[poscorr-pt] tick=56 pt=right_heel gap=-1.214628e-06 lam=2.677927e-07 du_pt=-3.252685e-13 J
+[poscorr] tick=56 points=2 dq_max=9.481e-05 du=+5.204319e-06 J
+[poscorr-pt] tick=56 pt=left_heel gap=-1.366238e-06 lam=3.197553e-07 du_pt=-4.368619e-13 J
+[poscorr-pt] tick=56 pt=right_heel gap=-1.008319e-06 lam=2.109351e-07 du_pt=-2.126900e-13 J
+[poscorr] tick=56 points=2 dq_max=1.274e-04 du=+6.691401e-06 J
+[poscorr-pt] tick=56 pt=left_heel gap=-1.827773e-06 lam=4.291988e-07 du_pt=-7.844778e-13 J
+[poscorr-pt] tick=56 pt=right_heel gap=-1.124957e-06 lam=2.531324e-07 du_pt=-2.847631e-13 J
+[poscorr] tick=56 points=2 dq_max=2.348e-04 du=+1.357665e-05 J
+[poscorr-pt] tick=56 pt=left_heel gap=-4.711009e-06 lam=9.364668e-07 du_pt=-4.411704e-12 J
+[poscorr-pt] tick=56 pt=right_heel gap=-2.012761e-06 lam=4.479311e-07 du_pt=-9.015781e-13 J
+[poscorr] tick=56 points=2 dq_max=6.601e-05 du=+3.964729e-06 J
+[poscorr-pt] tick=56 pt=right_heel gap=-1.713452e-06 lam=3.618019e-07 du_pt=-6.199301e-13 J
+[poscorr-pt] tick=56 pt=fore_right_heel gap=-1.031269e-06 lam=4.248333e-08 du_pt=-4.381175e-14 J
+[poscorr] tick=56 points=1 dq_max=2.259e-04 du=+7.459622e-06 J
+[poscorr-pt] tick=56 pt=left_heel gap=-3.234731e-06 lam=7.606647e-07 du_pt=-2.460546e-12 J
+[poscorr] tick=56 points=2 dq_max=2.967e-04 du=+1.772381e-05 J
+[poscorr-pt] tick=56 pt=left_heel gap=-5.967409e-06 lam=1.181308e-06 du_pt=-7.049348e-12 J
+[poscorr-pt] tick=56 pt=right_heel gap=-2.810219e-06 lam=6.259612e-07 du_pt=-1.759088e-12 J
+[poscorr] tick=56 points=1 dq_max=9.216e-05 du=+4.940375e-06 J
+[poscorr-pt] tick=56 pt=right_heel gap=-2.398283e-06 lam=5.037691e-07 du_pt=-1.208181e-12 J
+[poscorr] tick=56 points=1 dq_max=2.087e-04 du=+6.896022e-06 J
+[poscorr-pt] tick=56 pt=left_heel gap=-2.992596e-06 lam=7.031942e-07 du_pt=-2.104376e-12 J
+[poscorr] tick=56 points=2 dq_max=2.784e-04 du=+1.767837e-05 J
+[poscorr-pt] tick=56 pt=left_heel gap=-5.614721e-06 lam=1.106580e-06 du_pt=-6.213138e-12 J
+[poscorr-pt] tick=56 pt=right_heel gap=-3.119861e-06 lam=6.960615e-07 du_pt=-2.171615e-12 J
+[poscorr] tick=56 points=1 dq_max=1.026e-04 du=+5.487570e-06 J
+[poscorr-pt] tick=56 pt=right_heel gap=-2.674316e-06 lam=5.595653e-07 du_pt=-1.496454e-12 J
+[poscorr] tick=56 points=1 dq_max=2.070e-04 du=+6.842995e-06 J
+[poscorr-pt] tick=56 pt=left_heel gap=-2.971823e-06 lam=6.977870e-07 du_pt=-2.073699e-12 J
+[poscorr] tick=56 points=2 dq_max=2.695e-04 du=+1.271863e-05 J
+[poscorr-pt] tick=56 pt=left_heel gap=-5.435622e-06 lam=1.070396e-06 du_pt=-5.818267e-12 J
+[poscorr-pt] tick=56 pt=right_heel gap=-1.040866e-06 lam=2.264982e-07 du_pt=-2.357542e-13 J
+[poscorr] tick=56 points=2 dq_max=2.099e-04 du=+1.047660e-05 J
+[poscorr-pt] tick=56 pt=left_heel gap=-3.036368e-06 lam=7.092862e-07 du_pt=-2.153654e-12 J
+[poscorr-pt] tick=56 pt=right_heel gap=-1.751963e-06 lam=3.590209e-07 du_pt=-6.289913e-13 J
+PT t=57
+[poscorr] tick=57 points=2 dq_max=2.658e-04 du=+1.491744e-05 J
+[poscorr-pt] tick=57 pt=left_heel gap=-5.378334e-06 lam=1.053521e-06 du_pt=-5.666187e-12 J
+[poscorr-pt] tick=57 pt=right_heel gap=-2.109708e-06 lam=4.675903e-07 du_pt=-9.864791e-13 J
+[poscorr] tick=57 points=1 dq_max=6.790e-05 du=+3.619300e-06 J
+[poscorr-pt] tick=57 pt=right_heel gap=-1.777388e-06 lam=3.690610e-07 du_pt=-6.559647e-13 J
+[poscorr] tick=57 points=1 dq_max=1.592e-04 du=+6.186655e-06 J
+[poscorr-pt] tick=57 pt=left_heel gap=-3.216683e-06 lam=6.308475e-07 du_pt=-2.029236e-12 J
+[poscorr] tick=57 points=2 dq_max=1.889e-04 du=+1.092504e-05 J
+[poscorr-pt] tick=57 pt=left_heel gap=-2.310495e-06 lam=5.394151e-07 du_pt=-1.246316e-12 J
+[poscorr-pt] tick=57 pt=right_heel gap=-2.557545e-06 lam=5.746247e-07 du_pt=-1.469628e-12 J
+[poscorr] tick=57 points=2 dq_max=1.001e-04 du=+8.333443e-06 J
+[poscorr-pt] tick=57 pt=left_heel gap=-2.053713e-06 lam=3.945293e-07 du_pt=-8.102500e-13 J
+[poscorr-pt] tick=57 pt=right_heel gap=-2.233935e-06 lam=4.552317e-07 du_pt=-1.016958e-12 J
+[poscorr] tick=57 points=1 dq_max=8.402e-05 du=+2.782512e-06 J
+[poscorr-pt] tick=57 pt=left_heel gap=-1.211156e-06 lam=2.837365e-07 du_pt=-3.436492e-13 J
+[poscorr] tick=57 points=2 dq_max=2.318e-04 du=+1.320964e-05 J
+[poscorr-pt] tick=57 pt=left_heel gap=-3.355938e-06 lam=7.839118e-07 du_pt=-2.630760e-12 J
+[poscorr-pt] tick=57 pt=right_heel gap=-2.512018e-06 lam=5.630897e-07 du_pt=-1.414492e-12 J
+[poscorr] tick=57 points=2 dq_max=1.462e-04 du=+9.161173e-06 J
+[poscorr-pt] tick=57 pt=left_heel gap=-2.986269e-06 lam=5.765435e-07 du_pt=-1.721714e-12 J
+[poscorr-pt] tick=57 pt=right_heel gap=-1.783604e-06 lam=3.576182e-07 du_pt=-6.378491e-13 J
+[poscorr] tick=57 points=1 dq_max=8.158e-05 du=+2.429678e-06 J
+[poscorr-pt] tick=57 pt=right_heel gap=-1.100434e-06 lam=2.477580e-07 du_pt=-2.726414e-13 J
+[poscorr] tick=57 points=2 dq_max=1.927e-04 du=+9.094989e-06 J
+[poscorr-pt] tick=57 pt=left_heel gap=-1.772073e-06 lam=3.404056e-07 du_pt=-6.032234e-13 J
+[poscorr-pt] tick=57 pt=right_heel gap=-2.620019e-06 lam=5.870189e-07 du_pt=-1.538000e-12 J
+[poscorr] tick=57 points=1 dq_max=8.631e-05 du=+4.574956e-06 J
+[poscorr-pt] tick=57 pt=right_heel gap=-2.272346e-06 lam=4.665079e-07 du_pt=-1.060067e-12 J
+[poscorr] tick=57 points=1 dq_max=8.011e-05 du=+2.656138e-06 J
+[poscorr-pt] tick=57 pt=left_heel gap=-1.157867e-06 lam=2.708500e-07 du_pt=-3.136082e-13 J
+[poscorr] tick=57 points=2 dq_max=1.840e-04 du=+1.170448e-05 J
+[poscorr-pt] tick=57 pt=left_heel gap=-3.758518e-06 lam=7.246244e-07 du_pt=-2.723514e-12 J
+[poscorr-pt] tick=57 pt=right_heel gap=-2.109937e-06 lam=4.688778e-07 du_pt=-9.893025e-13 J
+[poscorr] tick=57 points=1 dq_max=1.326e-04 du=+3.949970e-06 J
+[poscorr-pt] tick=57 pt=right_heel gap=-1.791000e-06 lam=4.027841e-07 du_pt=-7.213862e-13 J
+[poscorr] tick=57 points=1 dq_max=5.947e-05 du=+3.146824e-06 J
+[poscorr-pt] tick=57 pt=right_heel gap=-1.568854e-06 lam=3.208831e-07 du_pt=-5.034187e-13 J
+[poscorr] tick=57 points=1 dq_max=1.469e-04 du=+5.676304e-06 J
+[poscorr-pt] tick=57 pt=left_heel gap=-2.994682e-06 lam=5.788084e-07 du_pt=-1.733347e-12 J
+[poscorr] tick=57 points=2 dq_max=1.516e-04 du=+9.166033e-06 J
+[poscorr-pt] tick=57 pt=left_heel gap=-2.030636e-06 lam=4.728631e-07 du_pt=-9.602126e-13 J
+[poscorr-pt] tick=57 pt=right_heel gap=-2.062175e-06 lam=4.618091e-07 du_pt=-9.523310e-13 J
+[poscorr] tick=57 points=2 dq_max=1.306e-04 du=+7.276826e-06 J
+[poscorr-pt] tick=57 pt=left_heel gap=-1.792552e-06 lam=3.431646e-07 du_pt=-6.151404e-13 J
+[poscorr-pt] tick=57 pt=right_heel gap=-1.786701e-06 lam=3.988596e-07 du_pt=-7.126429e-13 J
+[poscorr] tick=57 points=2 dq_max=1.119e-04 du=+8.244547e-06 J
+[poscorr-pt] tick=57 pt=left_heel gap=-1.047692e-06 lam=2.396054e-07 du_pt=-2.510327e-13 J
+[poscorr-pt] tick=57 pt=right_heel gap=-2.963702e-06 lam=6.010908e-07 du_pt=-1.781454e-12 J
+[poscorr] tick=57 points=2 dq_max=3.360e-04 du=+1.533040e-05 J
+[poscorr-pt] tick=57 pt=left_heel gap=-2.837662e-06 lam=5.387550e-07 du_pt=-1.528805e-12 J
+[poscorr-pt] tick=57 pt=right_heel gap=-4.580861e-06 lam=1.024494e-06 du_pt=-4.693064e-12 J
+[poscorr] tick=57 points=1 dq_max=5.583e-05 du=+2.943029e-06 J
+[poscorr-pt] tick=57 pt=right_heel gap=-1.478100e-06 lam=3.001022e-07 du_pt=-4.435810e-13 J
+[poscorr] tick=57 points=1 dq_max=1.405e-04 du=+4.665051e-06 J
+[poscorr-pt] tick=57 pt=left_heel gap=-2.038072e-06 lam=4.757008e-07 du_pt=-9.695122e-13 J
+[poscorr] tick=57 points=2 dq_max=2.304e-04 du=+1.389437e-05 J
+[poscorr-pt] tick=57 pt=left_heel gap=-3.359473e-06 lam=7.816247e-07 du_pt=-2.625847e-12 J
+[poscorr-pt] tick=57 pt=right_heel gap=-2.842508e-06 lam=6.351988e-07 du_pt=-1.805558e-12 J
+[poscorr] tick=57 points=2 dq_max=1.430e-04 du=+1.024987e-05 J
+[poscorr-pt] tick=57 pt=left_heel gap=-2.958516e-06 lam=5.590021e-07 du_pt=-1.653817e-12 J
+[poscorr-pt] tick=57 pt=right_heel gap=-2.449501e-06 lam=4.861724e-07 du_pt=-1.190880e-12 J
+PT t=58
+[poscorr] tick=58 points=2 dq_max=1.962e-04 du=+9.511027e-06 J
+[poscorr-pt] tick=58 pt=left_heel gap=-1.604564e-06 lam=3.720190e-07 du_pt=-5.969281e-13 J
+[poscorr-pt] tick=58 pt=right_heel gap=-2.671792e-06 lam=5.978329e-07 du_pt=-1.597285e-12 J
+[poscorr] tick=58 points=3 dq_max=8.664e-05 du=+7.475458e-06 J
+[poscorr-pt] tick=58 pt=left_heel gap=-1.400778e-06 lam=2.604681e-07 du_pt=-3.648581e-13 J
+[poscorr-pt] tick=58 pt=right_heel gap=-2.310627e-06 lam=4.617978e-07 du_pt=-1.067043e-12 J
+[poscorr-pt] tick=58 pt=fore_right_heel gap=-1.004109e-06 lam=4.000798e-08 du_pt=-4.017235e-14 J
+[poscorr] tick=58 points=1 dq_max=4.888e-05 du=+1.876820e-06 J
+[poscorr-pt] tick=58 pt=left_heel gap=-1.004411e-06 lam=1.913808e-07 du_pt=-1.922251e-13 J
+[poscorr] tick=58 points=2 dq_max=2.128e-04 du=+1.168690e-05 J
+[poscorr-pt] tick=58 pt=left_heel gap=-2.339900e-06 lam=5.429026e-07 du_pt=-1.270338e-12 J
+[poscorr-pt] tick=58 pt=right_heel gap=-2.903880e-06 lam=6.488252e-07 du_pt=-1.884111e-12 J
+[poscorr] tick=58 points=2 dq_max=9.803e-05 du=+8.606745e-06 J
+[poscorr-pt] tick=58 pt=left_heel gap=-2.046087e-06 lam=3.814261e-07 du_pt=-7.804310e-13 J
+[poscorr-pt] tick=58 pt=right_heel gap=-2.502081e-06 lam=4.962026e-07 du_pt=-1.241539e-12 J
+[poscorr] tick=58 points=2 dq_max=2.227e-04 du=+1.160628e-05 J
+[poscorr-pt] tick=58 pt=left_heel gap=-2.175890e-06 lam=5.042136e-07 du_pt=-1.097113e-12 J
+[poscorr-pt] tick=58 pt=right_heel gap=-3.041484e-06 lam=6.792931e-07 du_pt=-2.066059e-12 J
+[poscorr] tick=58 points=2 dq_max=9.771e-05 du=+8.528189e-06 J
+[poscorr-pt] tick=58 pt=left_heel gap=-1.896627e-06 lam=3.514678e-07 du_pt=-6.666034e-13 J
+[poscorr-pt] tick=58 pt=right_heel gap=-2.618118e-06 lam=5.181504e-07 du_pt=-1.356579e-12 J
+[poscorr] tick=58 points=1 dq_max=8.296e-05 du=+2.761824e-06 J
+[poscorr-pt] tick=58 pt=left_heel gap=-1.210100e-06 lam=2.816270e-07 du_pt=-3.407968e-13 J
+[poscorr] tick=58 points=2 dq_max=2.068e-04 du=+1.315869e-05 J
+[poscorr-pt] tick=58 pt=left_heel gap=-3.770479e-06 lam=7.081729e-07 du_pt=-2.670151e-12 J
+[poscorr-pt] tick=58 pt=right_heel gap=-2.856053e-06 lam=6.336176e-07 du_pt=-1.809646e-12 J
+[poscorr] tick=58 points=1 dq_max=6.278e-05 du=+3.279117e-06 J
+[poscorr-pt] tick=58 pt=right_heel gap=-1.676851e-06 lam=3.343727e-07 du_pt=-5.606931e-13 J
+[poscorr] tick=58 points=2 dq_max=1.477e-04 du=+8.090538e-06 J
+[poscorr-pt] tick=58 pt=left_heel gap=-3.058985e-06 lam=5.752285e-07 du_pt=-1.759615e-12 J
+[poscorr-pt] tick=58 pt=right_heel gap=-1.136209e-06 lam=2.497629e-07 du_pt=-2.837828e-13 J
+[poscorr] tick=58 points=2 dq_max=1.613e-04 du=+8.534408e-06 J
+[poscorr-pt] tick=58 pt=left_heel gap=-2.018020e-06 lam=3.767367e-07 du_pt=-7.602622e-13 J
+[poscorr-pt] tick=58 pt=right_heel gap=-2.220205e-06 lam=4.935237e-07 du_pt=-1.095724e-12 J
+[poscorr] tick=58 points=1 dq_max=7.057e-05 du=+3.678380e-06 J
+[poscorr-pt] tick=58 pt=right_heel gap=-1.887789e-06 lam=3.750851e-07 du_pt=-7.080816e-13 J
+[poscorr] tick=58 points=1 dq_max=1.228e-04 du=+4.092778e-06 J
+[poscorr-pt] tick=58 pt=left_heel gap=-1.795836e-06 lam=4.173457e-07 du_pt=-7.494845e-13 J
+[poscorr] tick=58 points=2 dq_max=1.908e-04 du=+1.098070e-05 J
+[poscorr-pt] tick=58 pt=left_heel gap=-2.320521e-06 lam=5.370832e-07 du_pt=-1.246313e-12 J
+[poscorr-pt] tick=58 pt=right_heel gap=-2.615908e-06 lam=5.826324e-07 du_pt=-1.524113e-12 J
+[poscorr] tick=58 points=2 dq_max=9.598e-05 du=+7.926607e-06 J
+[poscorr-pt] tick=58 pt=left_heel gap=-2.015802e-06 lam=3.715007e-07 du_pt=-7.488719e-13 J
+[poscorr-pt] tick=58 pt=right_heel gap=-2.236173e-06 lam=4.367754e-07 du_pt=-9.767055e-13 J
+[poscorr] tick=58 points=2 dq_max=2.114e-04 du=+1.210148e-05 J
+[poscorr-pt] tick=58 pt=left_heel gap=-3.158125e-06 lam=5.863839e-07 du_pt=-1.851873e-12 J
+[poscorr-pt] tick=58 pt=right_heel gap=-2.920568e-06 lam=6.476075e-07 du_pt=-1.891381e-12 J
+[poscorr] tick=58 points=1 dq_max=9.193e-05 du=+4.774413e-06 J
+[poscorr-pt] tick=58 pt=right_heel gap=-2.467586e-06 lam=4.868458e-07 du_pt=-1.201334e-12 J
+[poscorr] tick=58 points=1 dq_max=1.110e-04 du=+4.225136e-06 J
+[poscorr-pt] tick=58 pt=left_heel gap=-2.308358e-06 lam=4.308363e-07 du_pt=-9.945244e-13 J
+[poscorr] tick=58 points=2 dq_max=1.911e-04 du=+9.449267e-06 J
+[poscorr-pt] tick=58 pt=left_heel gap=-2.052131e-06 lam=3.787223e-07 du_pt=-7.771876e-13 J
+[poscorr-pt] tick=58 pt=right_heel gap=-2.634242e-06 lam=5.848271e-07 du_pt=-1.540576e-12 J
+[poscorr] tick=58 points=1 dq_max=8.306e-05 du=+4.305703e-06 J
+[poscorr-pt] tick=58 pt=right_heel gap=-2.233134e-06 lam=4.390522e-07 du_pt=-9.804623e-13 J
+[poscorr] tick=58 points=1 dq_max=1.274e-04 du=+4.253507e-06 J
+[poscorr-pt] tick=58 pt=left_heel gap=-1.870392e-06 lam=4.337353e-07 du_pt=-8.112549e-13 J
+PT t=59
+[poscorr] tick=59 points=2 dq_max=2.153e-04 du=+1.424477e-05 J
+[poscorr-pt] tick=59 pt=left_heel gap=-4.284868e-06 lam=7.916370e-07 du_pt=-3.392060e-12 J
+[poscorr-pt] tick=59 pt=right_heel gap=-2.991097e-06 lam=6.608970e-07 du_pt=-1.976807e-12 J
+[poscorr] tick=59 points=1 dq_max=9.297e-05 du=+4.810918e-06 J
+[poscorr-pt] tick=59 pt=right_heel gap=-2.503825e-06 lam=4.905681e-07 du_pt=-1.228297e-12 J
+[poscorr] tick=59 points=1 dq_max=2.130e-04 du=+7.114271e-06 J
+[poscorr-pt] tick=59 pt=left_heel gap=-3.130555e-06 lam=7.254489e-07 du_pt=-2.271058e-12 J
+[poscorr] tick=59 points=1 dq_max=2.637e-04 du=+9.998763e-06 J
+[poscorr-pt] tick=59 pt=left_heel gap=-5.508597e-06 lam=1.019547e-06 du_pt=-5.616272e-12 J
+[poscorr] tick=59 points=2 dq_max=2.772e-04 du=+1.495227e-05 J
+[poscorr-pt] tick=59 pt=left_heel gap=-2.936013e-06 lam=6.770088e-07 du_pt=-1.987707e-12 J
+[poscorr-pt] tick=59 pt=right_heel gap=-3.816581e-06 lam=8.476906e-07 du_pt=-3.235280e-12 J
+[poscorr] tick=59 points=2 dq_max=2.231e-04 du=+1.840927e-05 J
+[poscorr-pt] tick=59 pt=left_heel gap=-3.943793e-06 lam=7.103035e-07 du_pt=-2.801290e-12 J
+[poscorr-pt] tick=59 pt=right_heel gap=-6.052844e-06 lam=1.166846e-06 du_pt=-7.062737e-12 J
+[poscorr] tick=59 points=2 dq_max=3.347e-04 du=+1.522464e-05 J
+[poscorr-pt] tick=59 pt=left_heel gap=-2.301996e-06 lam=5.292253e-07 du_pt=-1.218275e-12 J
+[poscorr-pt] tick=59 pt=right_heel gap=-4.606248e-06 lam=1.023248e-06 du_pt=-4.713336e-12 J
+[poscorr] tick=59 points=2 dq_max=1.562e-04 du=+9.835240e-06 J
+[poscorr-pt] tick=59 pt=left_heel gap=-3.298395e-06 lam=6.005442e-07 du_pt=-1.980832e-12 J
+[poscorr-pt] tick=59 pt=right_heel gap=-2.122439e-06 lam=4.023498e-07 du_pt=-8.539628e-13 J
+[poscorr] tick=59 points=2 dq_max=6.344e-04 du=+4.004596e-05 J
+[poscorr-pt] tick=59 pt=left_heel gap=-9.403011e-06 lam=2.167119e-06 du_pt=-2.037745e-11 J
+[poscorr-pt] tick=59 pt=right_heel gap=-8.652682e-06 lam=1.916370e-06 du_pt=-1.658174e-11 J
+[poscorr] tick=59 points=2 dq_max=3.828e-04 du=+2.008908e-05 J
+[poscorr-pt] tick=59 pt=left_heel gap=-8.076660e-06 lam=1.471616e-06 du_pt=-1.188574e-11 J
+[poscorr-pt] tick=59 pt=right_heel gap=-3.101252e-06 lam=5.767952e-07 du_pt=-1.788787e-12 J
+[poscorr] tick=59 points=2 dq_max=1.418e-04 du=+1.109640e-05 J
+[poscorr-pt] tick=59 pt=left_heel gap=-2.128717e-06 lam=4.865054e-07 du_pt=-1.035632e-12 J
+[poscorr-pt] tick=59 pt=right_heel gap=-3.365110e-06 lam=6.449948e-07 du_pt=-2.170478e-12 J
+[poscorr] tick=59 points=1 dq_max=8.504e-05 du=+3.206426e-06 J
+[poscorr-pt] tick=59 pt=left_heel gap=-1.790153e-06 lam=3.269599e-07 du_pt=-5.853083e-13 J
+[poscorr] tick=59 points=2 dq_max=1.316e-04 du=+6.713367e-06 J
+[poscorr-pt] tick=59 pt=left_heel gap=-1.224918e-06 lam=2.814967e-07 du_pt=-3.448104e-13 J
+[poscorr-pt] tick=59 pt=right_heel gap=-1.819301e-06 lam=4.030746e-07 du_pt=-7.333141e-13 J
+[poscorr] tick=59 points=2 dq_max=2.539e-04 du=+1.509167e-05 J
+[poscorr-pt] tick=59 pt=left_heel gap=-3.772010e-06 lam=8.684780e-07 du_pt=-3.275908e-12 J
+[poscorr-pt] tick=59 pt=right_heel gap=-3.032841e-06 lam=6.704348e-07 du_pt=-2.033322e-12 J
+[poscorr] tick=59 points=2 dq_max=1.519e-04 du=+1.040200e-05 J
+[poscorr-pt] tick=59 pt=left_heel gap=-3.230543e-06 lam=5.811691e-07 du_pt=-1.877492e-12 J
+[poscorr-pt] tick=59 pt=right_heel gap=-2.543637e-06 lam=4.795162e-07 du_pt=-1.219715e-12 J
+[poscorr] tick=59 points=2 dq_max=1.232e-04 du=+7.433155e-06 J
+[poscorr-pt] tick=59 pt=left_heel gap=-2.619743e-06 lam=4.712761e-07 du_pt=-1.234622e-12 J
+[poscorr-pt] tick=59 pt=right_heel gap=-1.535307e-06 lam=2.866822e-07 du_pt=-4.401450e-13 J
+[poscorr] tick=59 points=2 dq_max=1.364e-04 du=+7.068432e-06 J
+[poscorr-pt] tick=59 pt=left_heel gap=-2.027946e-06 lam=4.667796e-07 du_pt=-9.466039e-13 J
+[poscorr-pt] tick=59 pt=right_heel gap=-1.152196e-06 lam=2.539975e-07 du_pt=-2.926549e-13 J

@@ -1,0 +1,13 @@
+{
+ "falsifier": "F-SLICE-LAUNCH",
+ "port": 60694,
+ "t_server_up": 7.3,
+ "t_world_up": 7.3,
+ "t_first_verts": 7.33,
+ "first_verts_count": 314,
+ "t_settled": 20.83,
+ "page_bytes": 19428,
+ "pass_server_side": true,
+ "law": "first frame = the first /api/verts payload the WebGL2 canvas renders; the browser console transcript is recorded beside this file",
+ "server_url": "http://127.0.0.1:60694"
+}

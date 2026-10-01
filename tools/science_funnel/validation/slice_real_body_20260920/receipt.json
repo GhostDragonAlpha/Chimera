@@ -1,0 +1,148 @@
+{
+ "schema": "chimera.rule0_receipt.v1",
+ "lane": "lane/slice-real-body-20260920",
+ "date": "2026-09-20 (lane); measurements wall-clock 2026-09-22",
+ "agent": "GLM 5.3 (trailer: Agent: realbody)",
+ "base_commit": "bd4bf630 (Merge agent/playable-slice-20260921 @ 2909bb4e; verified by ls-remote origin master == bd4bf6300d1633a67d2dae5a8a06bdf278f67f97 before fetch)",
+ "branch": "lane/slice-real-body-20260920",
+ "worktree": "E:/ChimeraWork/realbody-agent/repo (sparse clone, canonical git@github.com-fleetdeploy:GhostDragonAlpha/Chimera.git)",
+ "preregistration": {
+  "file": "record.md",
+  "committed_before_run": true,
+  "commit": "55450481",
+  "inherited_prereg": "slice_real_body_20260922/preregistration.md (commit f4ed9ca8, Agent: GLM 5.3 -- the crashed instance; SAME scope as this mission, verified against its receipts; its uncommitted build was preserved b4f9acaa and carried by cherry-picks c38ce8b7)",
+  "amendments": "record.md AMENDMENT 1 (fall I1 clause), AMENDMENT 2 (restart recorder), AMENDMENT 3 (launch RED) -- all measurement-earned, appended, nothing tuned"
+ },
+ "what_changed": {
+  "tick_body": "MOCK[mock_physics_body] (bbox stand-in capsule) RETIRED -> reality.physics_body: THE REAL CT SKELETON (meshes_body_20260922: 25 committed previews repaired to the importer's own closure rule and decimated under its kMaxTris by the cap-derived ratio r = 0.7020263287954351; 499,976 tris, 249,743 verts), posed by the SAME standing compose as the ghost, committed as standing_body.obj sha-pinned bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111 in meshes_body_20260922/body_manifest.json",
+  "swap_flag": "NONE -- the inherited receipts retire the stand-in outright (registry 'retired', zero code sites); no flag was invented",
+  "slice_fixes_this_lane": [
+   ".gitattributes: tools/playable_slice/*.obj -text (the sha-pinned payload was checkout-fragile: a fresh clone's CRLF rewrite broke the pin; the boot would have refused its own body -- the CRLF lesson, mechanically closed by F-PAYLOAD-PIN)",
+   "slice_server._finish_settle: 'settled' now means residence AT the derived attractor (-(m*g/k)-ymin, banked constants, |root_y-root_eq|<5e-5, |vy|<1e-5, held 10 s) -- the old drift-only break fired at bounce crests of the real body's longer-lived oscillation",
+   "scene_boot.boot_standing_start: import POST timeout 180->900 s (the engine's parse of the cap-scale body measures 130-240+ s; 180 s killed boots mid-parse)"
+  ]
+ },
+ "falsifiers": {
+  "F-BODY-CLOSURE": {
+   "pass": true,
+   "measured": {
+    "source_previews_refused_by_the_same_check": "19/25 (the debt reproduced on this base)",
+    "output_bones_closed": "25/25, 1:1 with sources",
+    "payload_audit": "index_degenerate_faces=0, boundary_edges=0, nonmanifold_edges=0, winding_violations=0, faces=499976, closed=true"
+   },
+   "artifact": "slice_real_body_20260922/body_closure.json (re-run 3x, byte-identical)"
+  },
+  "F-BODY-CAP": {
+   "pass": true,
+   "measured": {
+    "merged_payload_triangles": 499976,
+    "kMaxTris": 500000,
+    "mesh_import_ok": true,
+    "engine_import_stats": "verts 249743, tris 499976, volume 0.000973470353 m^3, ymin -0.134641007, ymax +0.134641007, winding_flipped false"
+   }
+  },
+  "F-ALIGNMENT": {
+   "pass": true,
+   "new_with_this_lane": true,
+   "bound_mm": 5.0,
+   "measured": {
+    "hip_L": {"inside_payload_femur": true, "winding": 1.0, "d_payload_mm": 3.228567, "d_preview_mm": 3.286597, "delta_mm": 0.05803},
+    "hip_R": {"inside_payload_femur": true, "winding": 1.0, "d_payload_mm": 3.58757, "d_preview_mm": 3.654796, "delta_mm": 0.067226},
+    "knee_L": {"d_payload_mm": 4.703337, "d_preview_mm": 4.703337, "delta_mm": 0.0},
+    "knee_R": {"d_payload_mm": 4.63879, "d_preview_mm": 4.566349, "delta_mm": 0.07244},
+    "compose_anchor": "this script's compose reproduces the merged payload/preview femur blocks BITWISE before any distance is measured"
+   },
+   "note": "deltas are 0.058-0.072 mm -- two orders inside the 5 mm mission-named bound and consistent with the sub-mm derived expectation (manifest QEM max_dev <= 0.6827 mm); the hip pivots (fitted femoral-head centers) lie strictly INSIDE the payload femora",
+   "artifact": "alignment.json (re-run 3x, byte-identical)"
+  },
+  "F-PAYLOAD-PIN": {
+   "pass": true,
+   "measured": {
+    "pin_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+    "worktree_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+    "recomposed_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111"
+   },
+   "artifact": "payload_pin.json (re-run 3x, byte-identical)"
+  },
+  "F-SLICE-MOCK-TRUTH": {
+   "pass": true,
+   "measured": {
+    "registry_fantasy_ids": ["mock_carry"],
+    "registry_declared_ids": ["ghost_standing_pose"],
+    "registry_reality_ids": ["render_stream", "physics_body", "gravity", "floor_contact", "press", "fall_test", "camera"],
+    "mock_physics_body": "0 code sites, retirement recorded in the registry; one fewer mock"
+   },
+   "artifact": "slice_real_body_20260922/mock_truth.json (re-run 3x, byte-identical)"
+  },
+  "F-SLICE-NO-SPLAT": {
+   "pass": true,
+   "measured": {"grep_hits": 0, "routes": "triangles only: /mesh_import, /verts, /topology, /tick_gravity, /tick_touch, /tick_state, /frame"},
+   "artifact": "slice_real_body_20260922/no_splat.json (re-run 3x, byte-identical)"
+  },
+  "F-SLICE-RESTART": {
+   "pass": true,
+   "amendment": "2 (first measurement RED: the carried drift-only settle break recorded three different bounce crests; the slice's settle now requires residence at the derived attractor)",
+   "measured": {
+    "boots": 3,
+    "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111 (== the payload pin, identical x3)",
+    "start_state_sha256": "8c040418fe5bfaac6f56004364d033429a8495bb5b78d2dff5545427ab2e9001 (identical x3)",
+    "settled_root_y": "at the derived attractor 0.124641 (window +-5e-5)"
+   },
+   "artifact": "restart_measurement_realbody.json"
+  },
+  "F-SLICE-FALL": {
+   "pass_as_preregistered_in_record_md": false,
+   "pass_per_the_carried_bank_bar_and_amendment_1": true,
+   "measured": {
+    "i0_import_ok": true,
+    "i1_clamp_as_written": "RED -- measured peak root_y 0.9152 m vs the 3.0 m clamp (2.0848 m off); the clamp-reach was the capsule's transient shape: penetration 0.1346 m vs 0.2653 m -> ~1/4 the stored spring energy k*x^2/2; geometry-dependent by the law's own arithmetic",
+    "i2_terminal_descent": {"derived_vt_mps": 0.223718814, "measured_median_vt_mps": 0.223719, "rel_error": 8.3e-07, "bar": "<=1e-6 relative (geometry-independent identity) -> GREEN"},
+    "i3_equilibrium_sink": {"derived_m": -0.01, "measured_lowest_m": -0.01, "within_10pct": true},
+    "settled_root_vs_derived_prediction": "0.124641 == -(m*g/k)-ymin = 0.124641"
+   },
+   "artifact": "fall_measurement_realbody.json"
+  },
+  "F-SLICE-LAUNCH": {
+   "pass": false,
+   "amendment": "3 (RED stands; successor work named)",
+   "measured": {
+    "t_first_verts_s": 135.73,
+    "bar": "10 s (the slice's own bar, unchanged)",
+    "isolated_breakdown_s": {"engine_ready": 0.71, "ghost_build": 7.92, "mesh_import_parse": 237.67, "gravity_arm": 0.026},
+    "import_parse_variance": "130-240+ s across boots (one boot killed by the old 180 s POST timeout)",
+    "browser_console_errors": 0
+   },
+   "cause_and_successor_work": "the cost is the ENGINE's own /mesh_import parse at cap scale -- the 500k-tri cap was never exercised at this size before this body; the carried prereg's payment (committed posed payload, no compose in the boot path) was real but pays only the slice side. Not slice-fixable without tuning (the decimation ratio is the cap's own law). SUCCESSOR: engine importer performance at cap scale, its own Rule-0 lane",
+   "artifact": "launch_server_timeline_realbody.json, import_timing.json"
+  },
+  "F-SLICE-VISUAL": {
+   "pass": true,
+   "measured": {
+    "after": ["slice_shot_live_realbody.png (the REAL skeleton -- skull/spine/limbs -- riding the tick at the standing start; HUD shows REAL physics_body, root_y 0.1246 m, gravity ON)", "slice_shot_carry_realbody.png (after /api/send, the page button's own endpoint: the creature AT the marker, 'the creature is at the marker (seated)', arrived x=0.5985 z=0.8749, root_y still 0.1246 m -- the carry never touches Y)"],
+    "before": "the 0921 lane's committed capsule shots (playable_slice_20260921/slice_shot_*.png)",
+    "browser_console_errors": 0,
+    "console_transcript": "launch_browser_record_realbody.json (headless Chrome stderr CONSOLE channel; the only message is Chrome's own software-WebGL INFO under swiftshader; the agent-browser CDP daemon wedged on this page and was replaced by headless runs -- recorded in the browser record)"
+   }
+  }
+ },
+ "determinism": {
+  "offline_bank": "every offline falsifier script run 3x: exit 0 x3 and byte-identical artifacts x3 (offline_runs.json records all 15 artifact hashes)",
+  "restart": "3 boots byte-identical (scene sha == pin x3, start-state sha identical x3)"
+ },
+ "gates": {
+  "creature_graph_both_roots": "19 passed + 27 subtests passed on BOTH roots (PYTHONPATH=tools;tools/creature_graph and PYTHONPATH=.)",
+  "matter_kernel": "test_definition 9/9 OK (PYTHONPATH=.)",
+  "training_gate": "PASS -- every target Froude-consistent (required sparse-checkout add story: story/theHuman/numbers.json is tracked but the sparse clone excluded story/)",
+  "artifact": "gates.json"
+ },
+ "findings_banked": [
+  "THE SLICE CARRIES THE REAL BODY: the physics (gravity, floor contact, fall law, settle) rides the 499,976-tri repaired/decimated CT skeleton through the REAL aliveness ingestion; alignment to the pose chain's own hip/knee pivots is 0.058-0.072 mm (5 mm bound), and the hip fit centers lie strictly inside the payload femora",
+  "THE ENGINE'S IMPORT IS THE BOOT COST: /mesh_import on a cap-scale body costs minutes on this machine (130-240+ s, variable) -- first exercised at this size by this lane; the slice's own boot path is otherwise clean (engine 0.71 s, ghost 7.92 s). Successor work: importer performance at cap scale",
+  "THE CRLF PIN TRAP: a sha-pinned text artifact under * text=auto breaks its own pin on every fresh checkout -- .gitattributes -text is load-bearing, and F-PAYLOAD-PIN now holds it to its word",
+  "A SETTLE RECORDER MUST WAIT FOR THE ATTRACTOR: a drift-only convergence break records bounce crests of a body whose oscillation outlives the capsule's; the derived equilibrium (banked constants + the import's own ymin) is the any-body 'settled means settled'",
+  "AUTOMATION BROWSER HYGIENE: a wedged CDP daemon leaked 31 Chrome processes that starved the machine (visible as import-time variance and one server death); sweeps are by command line, artifacts committed"
+ ],
+ "physics_target_note": "locomotion remains NOT real and is not shown as real: the registry still names mock_carry as the only fantasy and the wave-38 walk refusal as the pending real component",
+ "pass": false,
+ "pass_note": "TWO preregistered clauses fired and are recorded, not tuned: F-SLICE-LAUNCH's 10 s bar (135.73 s measured; engine import parse; successor work) and F-SLICE-FALL's I1-as-written (clamp-reach; a capsule-transient shape, geometry-dependent by the law's own arithmetic). The THEORY's claims hold on the carried bank's own bars: the real body rides the slice at correct mm scale and pose (F-ALIGNMENT two orders inside bound; F-PAYLOAD-PIN byte-identity; F-BODY-CLOSURE/CAP; mock-truth; no-splat; restart byte-clean x3; the geometry-independent fall identity at 8.3e-7; the visual evidence on the real page)."
+}

@@ -1,0 +1,166 @@
+{
+  "runtime": {
+    "pid": 106620,
+    "exe": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\force-arm-engine\\Release\\chimera_engine.exe",
+    "exe_sha256": "CD6845BB49BCB7AC27A76B43D5E47C600C23F8FE463E537F19CDFF533C86FAA5",
+    "scene": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\force-arm\\scene.json",
+    "scene_file_sha256": "C0D18318B14D634A37DAC257715105F61F23A9982B8EAA56A8801423DAAF7DB9",
+    "graph_hash": "d66efc55f0aa5c36508b4917ac267911ced1134e796cbe67a2c4a6b7be451082",
+    "scene_sha256": "d78fcc3c6d5b18463b3cad1a771926116ade95f0ad7e23b19b130258042be834",
+    "port": 8126,
+    "launched_utc": "2026-09-17T04:46:33.7253143Z"
+  },
+  "checks": [
+    {
+      "name": "command_reset",
+      "pass": true,
+      "detail": {
+        "error": ""
+      }
+    },
+    {
+      "name": "command_paused",
+      "pass": true,
+      "detail": {
+        "error": ""
+      }
+    },
+    {
+      "name": "command_target_deg",
+      "pass": true,
+      "detail": {
+        "error": ""
+      }
+    },
+    {
+      "name": "target_is_intent_not_pose",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "name": "command_reset",
+      "pass": true,
+      "detail": {
+        "error": ""
+      }
+    },
+    {
+      "name": "cut_power_retains_passive_fall",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "name": "command_reset",
+      "pass": true,
+      "detail": {
+        "error": ""
+      }
+    },
+    {
+      "name": "live_support_load",
+      "pass": true,
+      "detail": {
+        "expected_N": 0.8948861739131396,
+        "observed_N": 0.8948861739131396
+      }
+    },
+    {
+      "name": "mount_reaction_closes_static_force",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "name": "command_load_N",
+      "pass": true,
+      "detail": {
+        "error": ""
+      }
+    },
+    {
+      "name": "downward_force_transmits_to_support",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "name": "command_target_deg",
+      "pass": true,
+      "detail": {
+        "error": ""
+      }
+    },
+    {
+      "name": "blocked_target_stalls_with_load",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "name": "command_reset",
+      "pass": true,
+      "detail": {
+        "error": ""
+      }
+    },
+    {
+      "name": "weak_drive_cannot_lift",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "name": "command_reset",
+      "pass": true,
+      "detail": {
+        "error": ""
+      }
+    },
+    {
+      "name": "strong_drive_lifts_same_mass",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "name": "force_boundary_identity",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "name": "native_energy_availability",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "name": "native_geometry_follows_solved_source_coordinate",
+      "pass": true,
+      "detail": {
+        "max_vertex_error_m": 5.3563009583257326e-08
+      }
+    },
+    {
+      "name": "hand_proxy_matches_force_point",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "name": "live_work_and_store_accounts",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "name": "command_paused",
+      "pass": true,
+      "detail": {
+        "error": ""
+      }
+    },
+    {
+      "name": "direct_pose_write_refused",
+      "pass": true,
+      "detail": {}
+    },
+    {
+      "name": "moving_boundary_change_refused",
+      "pass": true,
+      "detail": {}
+    }
+  ],
+  "scope": "Native one-coordinate force-bearing anatomy, actual field/contact loads and source-geometry oracle; not whole animal or physiological actuation."
+}

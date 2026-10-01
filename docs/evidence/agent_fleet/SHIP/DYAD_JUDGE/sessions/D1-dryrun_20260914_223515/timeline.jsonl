@@ -1,0 +1,37 @@
+{"wall_ms": 1789443315910, "wall": "2026-09-15T03:35:15+00:00", "phase": "prepare", "note": "session dir E:\\ChimeraWork\\slot-01\\docs\\evidence\\agent_fleet\\SHIP\\DYAD_JUDGE\\sessions\\D1-dryrun_20260914_223515"}
+{"wall_ms": 1789443315955, "wall": "2026-09-15T03:35:15+00:00", "phase": "prepare", "note": "env probed ok (demo reachable, ffmpeg+node present)"}
+{"wall_ms": 1789443316006, "wall": "2026-09-15T03:35:16+00:00", "phase": "prepare", "note": "copying local playwright install", "src": "E:\\ChimeraWork\\slot-01\\docs\\evidence\\agent_fleet\\SHIP\\R8_R4_PLAYBOOK\\dryrun_H5\\node_modules"}
+{"wall_ms": 1789443316987, "wall": "2026-09-15T03:35:16+00:00", "phase": "prepare", "note": "registry backed up (first-write guard)"}
+{"wall_ms": 1789443317000, "wall": "2026-09-15T03:35:16+00:00", "phase": "prepare", "note": "membrane OPEN as V63 (Rule 0: all three parts)"}
+{"wall_ms": 1789443317817, "wall": "2026-09-15T03:35:17+00:00", "phase": "session", "note": "driver ready"}
+{"wall_ms": 1789443317825, "wall": "2026-09-15T03:35:17+00:00", "phase": "pipeline", "note": "T_capture + T_watch + P_encode running OVERLAPPED with T_session"}
+{"wall_ms": 1789443317918, "wall": "2026-09-15T03:35:17+00:00", "phase": "watch", "note": "eye lane: ollama-fallback (qwen3.8)", "lane": "ollama-fallback", "model": "qwen3.8", "reason": "senses eye dark (dyad_required_model_not_loaded: [dyad_required_model_not_loaded] permanent DYAD model 'qwen3.8-27b-nvfp4-mtp' is not explicitly loaded; loaded=[]); ollama fallback serving"}
+{"wall_ms": 1789443318276, "wall": "2026-09-15T03:35:18+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 459}
+{"wall_ms": 1789443318277, "wall": "2026-09-15T03:35:18+00:00", "phase": "capture", "note": "cap_0001", "frame": "cap_0001"}
+{"wall_ms": 1789443318284, "wall": "2026-09-15T03:35:18+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 458}
+{"wall_ms": 1789443323711, "wall": "2026-09-15T03:35:23+00:00", "phase": "session", "note": "wait -> ok=True", "cmd": "wait", "resp_ms": 5427}
+{"wall_ms": 1789443324169, "wall": "2026-09-15T03:35:24+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 4681}
+{"wall_ms": 1789443324169, "wall": "2026-09-15T03:35:24+00:00", "phase": "capture", "note": "cap_0002", "frame": "cap_0002"}
+{"wall_ms": 1789443324174, "wall": "2026-09-15T03:35:24+00:00", "phase": "session", "note": "shot -> ok=True", "cmd": "shot", "resp_ms": 462}
+{"wall_ms": 1789443324633, "wall": "2026-09-15T03:35:24+00:00", "phase": "session", "note": "text -> ok=True", "cmd": "text", "resp_ms": 458}
+{"wall_ms": 1789443345413, "wall": "2026-09-15T03:35:45+00:00", "phase": "session", "note": "shot TIMEOUT", "cmd": "shot"}
+{"wall_ms": 1789443345414, "wall": "2026-09-15T03:35:45+00:00", "phase": "capture", "note": "failed: SendTimeout: no response for {'do': 'shot', 'name': 'cap_0003'} within 20.0s"}
+{"wall_ms": 1789443366650, "wall": "2026-09-15T03:36:06+00:00", "phase": "session", "note": "shot TIMEOUT", "cmd": "shot"}
+{"wall_ms": 1789443366650, "wall": "2026-09-15T03:36:06+00:00", "phase": "capture", "note": "failed: SendTimeout: no response for {'do': 'shot', 'name': 'cap_0004'} within 20.0s"}
+{"wall_ms": 1789443369668, "wall": "2026-09-15T03:36:09+00:00", "phase": "session", "note": "click TIMEOUT", "cmd": "click"}
+{"wall_ms": 1789443369669, "wall": "2026-09-15T03:36:09+00:00", "phase": "session", "note": "play aborted: no response for {'do': 'click', 'x': 720, 'y': 484} within 45.0s"}
+{"wall_ms": 1789443387919, "wall": "2026-09-15T03:36:27+00:00", "phase": "session", "note": "shot TIMEOUT", "cmd": "shot"}
+{"wall_ms": 1789443387920, "wall": "2026-09-15T03:36:27+00:00", "phase": "capture", "note": "failed: SendTimeout: no response for {'do': 'shot', 'name': 'cap_0005'} within 20.0s"}
+{"wall_ms": 1789443389677, "wall": "2026-09-15T03:36:29+00:00", "phase": "session", "note": "driver exited rc=None"}
+{"wall_ms": 1789443401002, "wall": "2026-09-15T03:36:41+00:00", "phase": "watch", "note": "read cap_0001.png lane=ollama-fallback dent_yes=False", "frame": "cap_0001.png", "lane": "ollama-fallback"}
+{"wall_ms": 1789443402213, "wall": "2026-09-15T03:36:42+00:00", "phase": "watch", "note": "read cap_0002.png lane=ollama-fallback dent_yes=False", "frame": "cap_0002.png", "lane": "ollama-fallback"}
+{"wall_ms": 1789443402215, "wall": "2026-09-15T03:36:42+00:00", "phase": "pipeline", "note": "T_encode + T_watch joined"}
+{"wall_ms": 1789443402216, "wall": "2026-09-15T03:36:42+00:00", "phase": "verdict", "note": "judge_task.md written; waiting for verdict.json"}
+{"wall_ms": 1789443407950, "wall": "2026-09-15T03:36:47+00:00", "phase": "session", "note": "shot TIMEOUT", "cmd": "shot"}
+{"wall_ms": 1789443407950, "wall": "2026-09-15T03:36:47+00:00", "phase": "capture", "note": "failed: SendTimeout: no response for {'do': 'shot', 'name': 'cap_0006'} within 20.0s"}
+{"wall_ms": 1789443427974, "wall": "2026-09-15T03:37:07+00:00", "phase": "session", "note": "shot TIMEOUT", "cmd": "shot"}
+{"wall_ms": 1789443427974, "wall": "2026-09-15T03:37:07+00:00", "phase": "capture", "note": "failed: SendTimeout: no response for {'do': 'shot', 'name': 'cap_0007'} within 20.0s"}
+{"wall_ms": 1789443447998, "wall": "2026-09-15T03:37:27+00:00", "phase": "session", "note": "shot TIMEOUT", "cmd": "shot"}
+{"wall_ms": 1789443447998, "wall": "2026-09-15T03:37:27+00:00", "phase": "capture", "note": "failed: SendTimeout: no response for {'do': 'shot', 'name': 'cap_0008'} within 20.0s"}
+{"wall_ms": 1789443468024, "wall": "2026-09-15T03:37:48+00:00", "phase": "session", "note": "shot TIMEOUT", "cmd": "shot"}
+{"wall_ms": 1789443468025, "wall": "2026-09-15T03:37:48+00:00", "phase": "capture", "note": "failed: SendTimeout: no response for {'do': 'shot', 'name': 'cap_0009'} within 20.0s"}
