@@ -1,0 +1,30 @@
+{
+  "action_replay_probes": {
+    "engine_cli_nonexistent_absolute_path": {
+      "argv2": "Z:\\no_such\\pre_recorded_actions.bin",
+      "exit_code": 0,
+      "fg42_schedule_echo": true,
+      "probe": "B_nonexistent_absolute_actions_path",
+      "refused_before_any_step": false,
+      "stderr_head": "run F-G5\r\n[tick] 0\r\n[tick] 10\r\n[tick] 20\r\n[tick] 30\r\n[tick] 40\r\n[tick] 50\r\n[tick] 60\r\n[tick] 70\r\n[tick] 80\r\n[tick] 90\r\n[tick] 0\r\n[poscorr] tick=0 points=1 dq_ma"
+    },
+    "engine_cli_relative_actions_path": {
+      "argv2": "refA1.actions.bin",
+      "exit_code": 1,
+      "fg42_schedule_echo": false,
+      "probe": "A_relative_actions_path",
+      "refused_before_any_step": true,
+      "stderr_head": "bad command spec (want tick:vx)"
+    },
+    "runner_requalify": [
+      "ACTION_REPLAY_REFUSED: the requalification harness does not accept pre-recorded actions or an action_replay mode -- replaying build-N actions into the new build tests the old trajectory and misses the feedback-loop divergence the gate exists to detect; observations and actions are recomputed from the NEW trajectory every tick (prereg receipt.json, P7)",
+      "ACTION_REPLAY_REFUSED: the requalification harness does not accept pre-recorded actions or an action_replay mode -- replaying build-N actions into the new build tests the old trajectory and misses the feedback-loop divergence the gate exists to detect; observations and actions are recomputed from the NEW trajectory every tick (prereg receipt.json, P7)"
+    ]
+  },
+  "check": "CHECK_3_engine_closed_loop_requalification_shape",
+  "closed_loop": "the engine controller is the in-loop actor; per-tick actions (last_torque_) are recomputed from the live trajectory at every tick; the checkpoint-resume proof shows the recomputation reproduces the uninterrupted actions bit-for-bit after a fresh-process restore",
+  "detail": "engine CLI relative-path probe refused=True; nonexistent-path probe ran without opening the file (fg42 echo=True); runner refusals 2/2",
+  "pass": true,
+  "reasons": [],
+  "refusal_rationale": "no input channel accepts a pre-recorded action stream on the engine walk path: the instrument's CLI takes a scene and (plain form) a tick:vx command-schedule STRING only -- a file reference is refused as 'bad command spec' before any step, and a nonexistent path is 'consumed' as a schedule without ever being opened (probe B: the walk runs on a nonexistent file -- no action-file channel exists); the restore hook takes a STATE snapshot and the controller recomputes the actions"
+}

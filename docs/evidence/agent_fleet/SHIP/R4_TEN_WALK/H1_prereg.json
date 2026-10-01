@@ -1,0 +1,16 @@
+{
+  "agent": "H1-sound-and-walk",
+  "at": "2026-09-13",
+  "workspace": "E:/ChimeraWork/slot-01 @ 09e71b55 (astra/tasks/matter-kernel-format-01)",
+  "statement": "The ten-lesson walk passes 10/10 once the served judge evaluates pressure_isolation (commit 09e71b55), and the W4 sound wiring (sound.js contract call sites, every call try/caught page-side) changes no judged behavior.",
+  "prediction": "the_cascade (L8) passes: during the 50 kN belly press the torso (cell 1) crosses 15000 Pa while cells 0 and 3 stay under the 100 Pa quiet bar. G5's diagnostic walk already measured the world satisfying this on every poll (torso peak 2135680 Pa, cells 0+3 at 0 Pa).",
+  "falsifier": {
+    "named_before_run": true,
+    "condition": "the_cascade still FAILS (holds) in the formal walk despite pressure_isolation being served and implemented",
+    "discrimination": "From /state during the L8 press trace: torso (cell 1) peak kPa vs quiet-cell (cells 0+3) peak kPa.",
+    "branch_a_judge_misread": "world satisfied (torso >= 15000 Pa AND quiet < 100 Pa) but lesson did not pass -> page judge bug (H1's to fix, re-diagnose renderBlood/judgeState paths)",
+    "branch_b_real_physics_leak": "quiet-cell peak >= 100 Pa while the torso is woken -> the world's hydraulic isolation genuinely leaks (belly press moving shin/feet pressure) -> a REAL physics defect, reported loudly",
+    "branch_c_world_short": "torso peak < 15000 Pa -> the world never met the goal; the judge and physics are both fine, the walk script's press is the suspect"
+  },
+  "stage1_smoke_bar": "headless page load: zero console errors, page boots, scripted SPACE press holds (judge line holding=true), every ChimeraSound method callable without throwing, AudioContext constructed only inside a user gesture"
+}

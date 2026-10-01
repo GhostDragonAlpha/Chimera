@@ -1,0 +1,126 @@
+{
+  "schema": "chimera.mount_reconciliation.receipt.v1",
+  "lane": "agent/mount-reconciliation",
+  "base": "buffy/ct-skeleton-visual-20260919 @ 0f9e3dd0",
+  "date": "2026-09-20",
+  "agent": "GLM 5.3",
+
+  "membrane_rule0": {
+    "statement": "The measured chains discriminate the mountings: each hypothesis implies testable predictions about where the identified bones sit relative to the scaffold's joint centers.",
+    "prediction": "One mounting predicts the chain geometry (assembly-scale distances between chain-adjacent identified bones' centroids) within tolerance and the other does not.",
+    "falsifier": "For BOTH mountings, the implied assembly-scale distances between chain-adjacent bones' centroids are compared with the walker Table-1 segment lengths (validation/gait_controller_20260918/derived_numbers.json, sha256 013810f87a6ca7c1e01916ef7a5454e61e8d0e88f8d6a589fbfdd1514017a173); the mounting whose chain spans match within 15% wins; if BOTH match or NEITHER does, that is the honest verdict; the recommendation must cite the numbers."
+  },
+
+  "inputs": {
+    "arbiter": "bone_identification_v3.json (committed copy here; sha256 1d84854fd1770ed6548221ee803c949a487d9005133548eb162a5c64d4161d33), lane buffy/bone-id-transfer-20260919",
+    "v2_adjacency_needed": false,
+    "reason": "v3 carries the touching_edges chains, labels and cross-specimen homology for both specimens",
+    "specimen": "000875604 (USNM 497136-3, M. mulatta) -- BOTH lanes mount this specimen",
+    "walker_segments_Table1_m": {"HAT": 0.482, "thigh": 0.163, "shank": 0.182, "foot": 0.074, "phalanges": 0.045}
+  },
+
+  "hypotheses": {
+    "H1_rigid": "tools/science_funnel/ct_skeleton_layer.py: the WHOLE skeleton under ONE rigid transform (x_scene = s*(R@x_mm)/1000 + t), s = HAT_length / trunk_PCA_span = 3.23148227 (trunk span 149.158 mm), one rotation, trunk midpoint seated at the free-root height; skull-end residual 2.7 mm on the HAT-pelvis axis (that lane's own measured claim)",
+    "H2_per_bone": "codex/macaque-bones-lane-20260919 tools/science_funnel/macaque_skeleton_scene.py: bones mounted individually on the stage-E standing scaffold with per-bone joint-span scales (committed: femur pair only, scale = 0.163/joint_span = 3.79-3.81, seated hip->knee; committed falsifiers passed at sub-mm)"
+  },
+
+  "gated_falsifier": {
+    "link_expectation": "E(A,B) = 0.5*(L_seg(A)+L_seg(B)) -- mid-bone derivation, stated before measuring; identical for both mountings",
+    "tolerance": "15% (pre-registered)",
+    "links": [
+      {"pair": [2, 6], "labels": ["femur", "tibia"], "chain": "hind", "expectation_m": 0.1725},
+      {"pair": [6, 25], "labels": ["tibia", "foot_class"], "chain": "hind", "expectation_m": 0.128},
+      {"pair": [3, 7], "labels": ["femur", "tibia"], "chain": "hind", "expectation_m": 0.1725},
+      {"pair": [7, 18], "labels": ["tibia", "foot_class"], "chain": "hind", "expectation_m": 0.128},
+      {"pair": [7, 24], "labels": ["tibia", "foot_class"], "chain": "hind", "expectation_m": 0.128}
+    ],
+    "H1_implied_m_and_err": {
+      "[2,6]": [0.049425, "-71.4%"],
+      "[6,25]": [0.090786, "-29.1%"],
+      "[3,7]": [0.042695, "-75.2%"],
+      "[7,18]": [0.083869, "-34.5%"],
+      "[7,24]": [0.090222, "-29.5%"],
+      "satisfies": false
+    },
+    "H2_generalized_implied_m_and_err": {
+      "[2,6]": [0.150326, "-12.8% PASS"],
+      "[6,25]": [0.093065, "-27.3%"],
+      "[3,7]": [0.162747, "-5.7% PASS"],
+      "[7,18]": [0.086290, "-32.6%"],
+      "[7,24]": [0.088313, "-31.0%"],
+      "satisfies": false
+    },
+    "H2_as_committed": "the committed compiler mounts ONLY the femur pair; every (tibia, foot_class) link and every forelimb link has NO implied assembly-scale placement (committed role 'undetermined'), and the femur link's span match is fitted by construction -- recorded, not scored",
+    "verdict": "NEITHER satisfies: the mountings are both wrong on the measured chains (pre-registered falsifier 2 applies -- this is the honest verdict, not a failure to decide)"
+  },
+
+  "pose_free_discriminator": {
+    "why": "a bone's own cap-to-cap joint span under each mounting's scale vs its Table-1 segment -- the curled pose cannot affect this test",
+    "H1_scale": 3.23148227,
+    "results": [
+      {"bone": 2, "femur": true, "span_mm": 42.73, "h1_implied_m": 0.1381, "err": "-15.3% FAIL"},
+      {"bone": 3, "femur": true, "span_mm": 42.97, "h1_implied_m": 0.1389, "err": "-14.8% (marginal pass)"},
+      {"bone": 6, "tibia": true, "span_mm": 41.14, "h1_implied_m": 0.1329, "err": "-27.0% FAIL"},
+      {"bone": 7, "tibia": true, "span_mm": 41.35, "h1_implied_m": 0.1336, "err": "-26.6% FAIL"}
+    ],
+    "H2": "exact by construction (scale = segment/joint_span; fitted, not a prediction)"
+  },
+
+  "scale_conflict": {
+    "H1_scale_scene_per_mm": 3.23148227,
+    "H2_femur_scales": [3.8143, 3.7933],
+    "H2_minus_H1": ["+18.0%", "+17.4%"],
+    "note": "the trunk-anchored and limb-anchored scales disagree about the assembly scale itself, beyond the 15% tolerance"
+  },
+
+  "post_hoc_attribution_not_gated": {
+    "flexion_aware_expectation_m": {"femur->tibia": 0.156630, "tibia->foot": 0.088896},
+    "derivation": "committed scaffold angles (phi_thigh 18.83, phi_shank -30.79, foot_pitch 15.75 deg) + Table-1 mid-span centroids; derived from the same pinned numbers, labeled POST-HOC -- it attributes failures, it does not replace the gated test",
+    "H1": "knee links stay -68.4%/-72.7% even flexion-aware: the failure is the measured curled pose (CT centroid spacing 15.3/13.2 mm) plus the scale -- no rigid transform can fix it",
+    "H2_generalized": "matches EVERY gated link within ~5% flexion-aware (-4.0%/+4.7%/+3.9%/-2.9%/-0.7%): the gated foot failures are the straight-chain expectation meeting the scaffold's ~105-deg foot pitch, an artifact of the expectation model, identical for both mountings"
+  },
+
+  "orientation_finding": {
+    "finding": "the committed H2 orientation (raw PCA sign in femur_landmarks) is unvalidated by that lane's own falsifiers (seating is 0 by construction either way; the surface bound passes on any bone end), and trunk proximity is invalid in a curled specimen",
+    "resolution": "H2-generalized mounts with chain-adjacency orientation -- the cap nearer the touching chain partner is the shared-joint cap, from the arbiter's own touching_edges; all mounted bones resolved with margins 1.11-9.05 mm",
+    "curl_evidence": "foot bones touch tibiae on the knee side (e.g. edges 3-17, 7-18): the curled pose folds the feet against the femur side; distal touches recorded as curl observations, not orientation votes",
+    "effect": "with the corrected orientation the H2 knee link (3,7) improved from -11.9% to -5.7%"
+  },
+
+  "reported_not_gated": {
+    "forelimb": "Table-1 folds the forelimbs into HAT: no arm segment expectation exists. H1 implied humerus->forearm centroid distances 0.0752-0.0866 m; H2 leaves forelimb bones unmounted -- forelimb chains cannot gate either mounting",
+    "curl_contacts": "femur-foot (2-15, 3-17) and humerus-hand (4-8, 5-9) touches are curl folds, not articulations; fibula and forearm pairs are parallel elements within one segment"
+  },
+
+  "verdict": "NEITHER mounting satisfies the pre-registered chain falsifier on every gated link -- the honest verdict per falsifier (2). The chains still DISCRIMINATE: H1 fails everything (all 5 gated links -29% to -75%; 3 of 4 pose-free bone spans -15% to -27%), with the failure in the measured curled pose and the trunk-anchored scale; H2-generalized passes the femur->tibia links (-12.8%/-5.7%) and its gated foot failures (-27% to -33%) are expectation-model artifacts, vanishing to within ~5% against the flexion-aware standing skeleton.",
+
+  "recommendation": {
+    "mounting_for_the_final_visual": "H2 per-bone scaffold mounting, generalized to the identified tibiae (and tibia-touching foot bones), chain-adjacency orientation",
+    "why_the_numbers_say_so": "H2 is the only mounting whose implied chain geometry is consistent with the walker skeleton: femur->tibia -12.8%/-5.7% (PASS the 15% gate) and every link within ~5% of the flexion-aware standing skeleton, while H1 lands at -29% to -75% on every link and makes the limb bones themselves 15-27% too short at its 3.2315 scale",
+    "honest_caveats": [
+      "H2's span agreement is FITTED (scale = segment/joint_span), not predicted; the measured content is the centroid geometry and the committed sub-mm femur seating falsifiers",
+      "the committed H2 compiler covers only the femur pair; using it for the final visual requires the generalized per-bone rule measured here (tibia scales 4.40-4.42, foot 6.25-8.82)",
+      "the committed PCA orientation was replaced by measured chain-adjacency orientation (documented above)"
+    ],
+    "H1_retained_for": "its own measured claim only: the trunk-aligned whole-CT layer (skull-end residual 2.7 mm on the HAT-pelvis axis, pin sha256 013810f87a6ca7c1e01916ef7a5454e61e8d0e88f8d6a589fbfdd1514017a173); it must NOT be used to present limb chains"
+  },
+
+  "graph_tests": {
+    "root_repo": "python -m pytest tools/science_funnel/tests/test_ct_skeleton_layer.py -q (PYTHONPATH=repo root): 13 passed in 30.33s",
+    "root_creature_graph": "cd tools/creature_graph && python -m pytest tests -q -c tests/pytest.ini: 19 passed, 27 subtests passed"
+  },
+
+  "boundaries_respected": [
+    "new directory only: tools/science_funnel/validation/mount_reconciliation_20260919/",
+    "both lanes' files read-only: the H2 module and common.py were loaded from origin/codex/macaque-bones-lane-20260919 git blobs into a temp package, never written; the arbiter was read from origin/buffy/bone-id-transfer-20260919 and copied here with its sha256",
+    "engine code untouched; never master / port 8127"
+  ],
+
+  "provenance": {
+    "h1_module": "tools/science_funnel/ct_skeleton_layer.py @ 0f9e3dd0 (this branch)",
+    "h2_module": "macaque_skeleton_scene.py + common.py from origin/codex/macaque-bones-lane-20260919 (sha256s in reconciliation.json inputs)",
+    "reproduction": "python tools/science_funnel/validation/mount_reconciliation_20260919/reconcile_mountings.py -- rewrites reconciliation.json from the committed meshes, walker pin and arbiter copy"
+  },
+
+  "trailer": "Agent: GLM 5.3"
+}

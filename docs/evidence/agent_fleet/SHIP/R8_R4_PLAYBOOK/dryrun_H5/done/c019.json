@@ -1,0 +1,4 @@
+{"do":"clickText","text":"knee_L"}
+{"do":"wait","ms":1500}
+{"do":"shot","name":"25_knee_chip"}
+{"do":"text","max":900}

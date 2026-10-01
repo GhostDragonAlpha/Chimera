@@ -1,0 +1,144 @@
+2026-09-15T03:39:13.138Z {"ok":true,"did":"goto","url":"http://127.0.0.1:8206","ms":480}
+2026-09-15T03:39:13.139Z {"ok":true,"did":"ready","cmdDir":"cmd"}
+2026-09-15T03:39:13.615Z {"ok":true,"did":"shot","file":"shots\\cap_0001.png"}
+2026-09-15T03:39:13.668Z {"ok":true,"did":"shot","file":"shots\\01_landing.png"}
+2026-09-15T03:39:19.086Z {"ok":true,"did":"wait","ms":5000}
+2026-09-15T03:39:19.546Z {"ok":true,"did":"shot","file":"shots\\cap_0002.png"}
+2026-09-15T03:39:19.602Z {"ok":true,"did":"shot","file":"shots\\02_landing_settled.png"}
+2026-09-15T03:39:20.014Z {"ok":true,"did":"text","text":"C H I M E R A\n\na creature of water and skin. touch it, and it answers.\n\nPLAY\n\nyour progress is kept under your name — the world remembers you."}
+2026-09-15T03:39:20.431Z {"ok":true,"did":"click","x":720,"y":484}
+2026-09-15T03:39:20.871Z {"ok":true,"did":"type"}
+2026-09-15T03:39:20.934Z {"ok":true,"did":"shot","file":"shots\\cap_0003.png"}
+2026-09-15T03:39:21.403Z {"ok":true,"did":"click","x":720,"y":546}
+2026-09-15T03:39:24.316Z {"ok":true,"did":"wait","ms":2500}
+2026-09-15T03:39:24.806Z {"ok":true,"did":"shot","file":"shots\\cap_0004.png"}
+2026-09-15T03:39:24.808Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · D1-dryrun-223920\nTHE LESSON\n‹\n1 / 10\n›\nWAKE THE CELL\n\nThe creature is sealed — water under its skin. Press its big body and HOLD the touch: the cell resists, because the water is real. Wake it: push the torso cell's pressure past 0.02 MPa. Then let go, and watch the body heal itself back to zero.\n\nthe creature waits.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress\nYou are a camera in one living world.\nDrag to look. Click (or SPACE) to touch — hold to press.\nThe body answers: watch its blood.\ndraglook\nclickSPACEtouch · hold = press\n1–5lessons\n\nSPACE\nto touch\n\nbegin\n\nEnter also begins."}
+2026-09-15T03:39:25.264Z {"ok":true,"did":"clickText","text":"Begin","box":null}
+2026-09-15T03:39:26.876Z {"ok":true,"did":"wait","ms":1200}
+2026-09-15T03:39:27.326Z {"ok":true,"did":"shot","file":"shots\\cap_0005.png"}
+2026-09-15T03:39:27.328Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · D1-dryrun-223920\nTHE LESSON\n‹\n1 / 10\n›\nWAKE THE CELL\n\nThe creature is sealed — water under its skin. Press its big body and HOLD the touch: the cell resists, because the water is real. Wake it: push the torso cell's pressure past 0.02 MPa. Then let go, and watch the body heal itself back to zero.\n\nthe creature waits.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-15T03:39:27.778Z {"ok":true,"did":"shot","file":"shots\\10_lesson1_start.png"}
+2026-09-15T03:39:28.183Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · D1-dryrun-223920\nTHE LESSON\n‹\n1 / 10\n›\nWAKE THE CELL\n\nThe creature is sealed — water under its skin. Press its big body and HOLD the touch: the cell resists, because the water is real. Wake it: push the torso cell's pressure past 0.02 MPa. Then let go, and watch the body heal itself back to zero.\n\nthe creature waits.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-15T03:39:29.395Z {"ok":true,"did":"wait","ms":800}
+2026-09-15T03:39:29.842Z {"ok":true,"did":"shot","file":"shots\\cap_0006.png"}
+2026-09-15T03:39:29.848Z {"ok":true,"did":"keydown","key":" "}
+2026-09-15T03:39:34.262Z {"ok":true,"did":"wait","ms":4000}
+2026-09-15T03:39:34.709Z {"ok":true,"did":"shot","file":"shots\\cap_0007.png"}
+2026-09-15T03:39:34.715Z {"ok":true,"did":"keyup","key":" "}
+2026-09-15T03:39:35.180Z {"ok":true,"did":"shot","file":"shots\\11_lesson1_held.png"}
+2026-09-15T03:39:35.617Z {"ok":true,"did":"clickText","text":"let go","box":{"x":1113,"y":190.296875,"width":295,"height":107.96875}}
+2026-09-15T03:39:39.036Z {"ok":true,"did":"wait","ms":3000}
+2026-09-15T03:39:39.482Z {"ok":true,"did":"shot","file":"shots\\cap_0008.png"}
+2026-09-15T03:39:39.511Z {"ok":true,"did":"clickText","text":"stand at rest","box":{"x":1113,"y":556.03125,"width":295,"height":36}}
+2026-09-15T03:39:43.927Z {"ok":true,"did":"wait","ms":4000}
+2026-09-15T03:39:44.373Z {"ok":true,"did":"shot","file":"shots\\cap_0009.png"}
+2026-09-15T03:39:44.418Z {"ok":true,"did":"shot","file":"shots\\12_lesson1_result.png"}
+2026-09-15T03:39:44.827Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · D1-dryrun-223920\nTHE LESSON\n‹\n1 / 10\n›\nWAKE THE CELL\n\nThe creature is sealed — water under its skin. Press its big body and HOLD the touch: the cell resists, because the water is real. Wake it: push the torso cell's pressure past 0.02 MPa. Then let go, and watch the body heal itself back to zero.\n\nPASSED — you pressed, the cell woke, and the water healed itself. the world is real.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\nstanding at rest\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-15T03:39:45.277Z {"ok":true,"did":"shot","file":"shots\\10_lesson2_start.png"}
+2026-09-15T03:39:45.691Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · D1-dryrun-223920\nTHE LESSON\n‹\n1 / 10\n›\nWAKE THE CELL\n\nThe creature is sealed — water under its skin. Press its big body and HOLD the touch: the cell resists, because the water is real. Wake it: push the torso cell's pressure past 0.02 MPa. Then let go, and watch the body heal itself back to zero.\n\nPASSED — you pressed, the cell woke, and the water healed itself. the world is real.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\nstanding at rest\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-15T03:39:45.736Z {"ok":true,"did":"shot","file":"shots\\cap_0010.png"}
+2026-09-15T03:39:46.180Z {"ok":true,"did":"clickText","text":"›","box":{"x":1377,"y":95.859375,"width":31,"height":26}}
+2026-09-15T03:39:47.596Z {"ok":true,"did":"wait","ms":1000}
+2026-09-15T03:39:48.051Z {"ok":true,"did":"shot","file":"shots\\cap_0011.png"}
+2026-09-15T03:39:51.054Z {"ok":false,"cmd":"clickText","error":"TimeoutError: locator.click: Timeout 3000ms exceeded."}
+2026-09-15T03:39:51.513Z {"ok":true,"did":"shot","file":"shots\\cap_0012.png"}
+2026-09-15T03:39:53.176Z {"ok":true,"did":"shot","file":"shots\\cap_0013.png"}
+2026-09-15T03:39:54.837Z {"ok":true,"did":"shot","file":"shots\\cap_0014.png"}
+2026-09-15T03:39:56.500Z {"ok":true,"did":"shot","file":"shots\\cap_0015.png"}
+2026-09-15T03:39:58.170Z {"ok":true,"did":"shot","file":"shots\\cap_0016.png"}
+2026-09-15T03:39:59.833Z {"ok":true,"did":"shot","file":"shots\\cap_0017.png"}
+2026-09-15T03:40:01.511Z {"ok":true,"did":"shot","file":"shots\\cap_0018.png"}
+2026-09-15T03:40:03.178Z {"ok":true,"did":"shot","file":"shots\\cap_0019.png"}
+2026-09-15T03:40:04.846Z {"ok":true,"did":"shot","file":"shots\\cap_0020.png"}
+2026-09-15T03:40:06.511Z {"ok":true,"did":"shot","file":"shots\\cap_0021.png"}
+2026-09-15T03:40:08.175Z {"ok":true,"did":"shot","file":"shots\\cap_0022.png"}
+2026-09-15T03:40:09.842Z {"ok":true,"did":"shot","file":"shots\\cap_0023.png"}
+2026-09-15T03:40:11.509Z {"ok":true,"did":"shot","file":"shots\\cap_0024.png"}
+2026-09-15T03:40:13.180Z {"ok":true,"did":"shot","file":"shots\\cap_0025.png"}
+2026-09-15T03:40:14.846Z {"ok":true,"did":"shot","file":"shots\\cap_0026.png"}
+2026-09-15T03:40:16.505Z {"ok":true,"did":"shot","file":"shots\\cap_0027.png"}
+2026-09-15T03:40:18.172Z {"ok":true,"did":"shot","file":"shots\\cap_0028.png"}
+2026-09-15T03:40:19.839Z {"ok":true,"did":"shot","file":"shots\\cap_0029.png"}
+2026-09-15T03:40:21.507Z {"ok":true,"did":"shot","file":"shots\\cap_0030.png"}
+2026-09-15T03:40:23.169Z {"ok":true,"did":"shot","file":"shots\\cap_0031.png"}
+2026-09-15T03:40:24.842Z {"ok":true,"did":"shot","file":"shots\\cap_0032.png"}
+2026-09-15T03:40:26.517Z {"ok":true,"did":"shot","file":"shots\\cap_0033.png"}
+2026-09-15T03:40:28.178Z {"ok":true,"did":"shot","file":"shots\\cap_0034.png"}
+2026-09-15T03:40:29.839Z {"ok":true,"did":"shot","file":"shots\\cap_0035.png"}
+2026-09-15T03:40:31.512Z {"ok":true,"did":"shot","file":"shots\\cap_0036.png"}
+2026-09-15T03:40:33.935Z {"ok":true,"did":"wait","ms":800}
+2026-09-15T03:40:33.984Z {"ok":true,"did":"shot","file":"shots\\cap_0037.png"}
+2026-09-15T03:40:34.388Z {"ok":true,"did":"keydown","key":" "}
+2026-09-15T03:40:38.805Z {"ok":true,"did":"wait","ms":4000}
+2026-09-15T03:40:39.255Z {"ok":true,"did":"shot","file":"shots\\cap_0038.png"}
+2026-09-15T03:40:39.257Z {"ok":true,"did":"keyup","key":" "}
+2026-09-15T03:40:39.706Z {"ok":true,"did":"shot","file":"shots\\11_lesson2_held.png"}
+2026-09-15T03:40:40.124Z {"ok":true,"did":"clickText","text":"let go","box":{"x":1113,"y":190.296875,"width":295,"height":129.5625}}
+2026-09-15T03:40:43.530Z {"ok":true,"did":"wait","ms":3000}
+2026-09-15T03:40:43.984Z {"ok":true,"did":"shot","file":"shots\\cap_0039.png"}
+2026-09-15T03:40:44.002Z {"ok":true,"did":"clickText","text":"stand at rest","box":{"x":1113,"y":557.375,"width":295,"height":36}}
+2026-09-15T03:40:48.418Z {"ok":true,"did":"wait","ms":4000}
+2026-09-15T03:40:48.862Z {"ok":true,"did":"shot","file":"shots\\cap_0040.png"}
+2026-09-15T03:40:48.909Z {"ok":true,"did":"shot","file":"shots\\12_lesson2_result.png"}
+2026-09-15T03:40:49.317Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · D1-dryrun-223920\nTHE LESSON\n‹\n2 / 10\n›\nTHE GENTLE HAND\n\nSmall parts hold small water. The same push that barely stirs the body can spike a foot — so a gentle hand touches a small part softly. Keep your force under 8,000 N and press a foot until its cell passes 50 kPa, then let go and let it settle.\n\nthe creature waits.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\nstanding at rest\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-15T03:40:49.767Z {"ok":true,"did":"shot","file":"shots\\10_lesson3_start.png"}
+2026-09-15T03:40:50.175Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · D1-dryrun-223920\nTHE LESSON\n‹\n2 / 10\n›\nTHE GENTLE HAND\n\nSmall parts hold small water. The same push that barely stirs the body can spike a foot — so a gentle hand touches a small part softly. Keep your force under 8,000 N and press a foot until its cell passes 50 kPa, then let go and let it settle.\n\nthe creature waits.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\nstanding at rest\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-15T03:40:50.627Z {"ok":true,"did":"shot","file":"shots\\cap_0041.png"}
+2026-09-15T03:40:50.650Z {"ok":true,"did":"clickText","text":"›","box":{"x":1377,"y":95.859375,"width":31,"height":26}}
+2026-09-15T03:40:52.056Z {"ok":true,"did":"wait","ms":1000}
+2026-09-15T03:40:52.506Z {"ok":true,"did":"shot","file":"shots\\cap_0042.png"}
+2026-09-15T03:40:52.526Z {"ok":true,"did":"clickText","text":"Begin","box":{"x":1113,"y":190.296875,"width":295,"height":151.15625}}
+2026-09-15T03:40:53.748Z {"ok":true,"did":"wait","ms":800}
+2026-09-15T03:40:54.199Z {"ok":true,"did":"shot","file":"shots\\cap_0043.png"}
+2026-09-15T03:40:54.201Z {"ok":true,"did":"keydown","key":" "}
+2026-09-15T03:40:58.609Z {"ok":true,"did":"wait","ms":4000}
+2026-09-15T03:40:59.062Z {"ok":true,"did":"shot","file":"shots\\cap_0044.png"}
+2026-09-15T03:40:59.064Z {"ok":true,"did":"keyup","key":" "}
+2026-09-15T03:40:59.528Z {"ok":true,"did":"shot","file":"shots\\11_lesson3_held.png"}
+2026-09-15T03:40:59.946Z {"ok":true,"did":"clickText","text":"let go","box":{"x":1113,"y":190.296875,"width":295,"height":151.15625}}
+2026-09-15T03:41:03.358Z {"ok":true,"did":"wait","ms":3000}
+2026-09-15T03:41:03.409Z {"ok":true,"did":"shot","file":"shots\\cap_0045.png"}
+2026-09-15T03:41:03.827Z {"ok":true,"did":"clickText","text":"stand at rest","box":{"x":1113,"y":599.21875,"width":295,"height":36}}
+2026-09-15T03:41:08.245Z {"ok":true,"did":"wait","ms":4000}
+2026-09-15T03:41:08.694Z {"ok":true,"did":"shot","file":"shots\\cap_0046.png"}
+2026-09-15T03:41:08.741Z {"ok":true,"did":"shot","file":"shots\\12_lesson3_result.png"}
+2026-09-15T03:41:09.147Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · D1-dryrun-223920\nTHE LESSON\n‹\n3 / 10\n›\nTHE HEALING\n\nThe creature's skin is elastic: the moment you let go, the dent unwinds and the squeezed water flows away, fading to zero in a few seconds. Wake any cell past 0.02 MPa, then take your hand off and simply wait. Nothing heals while you keep holding; the healing begins when you let go.\n\nPASSED — you let go, and the body healed itself. it never needed you.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\nstanding at rest\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-15T03:41:09.607Z {"ok":true,"did":"shot","file":"shots\\20_press_before.png"}
+2026-09-15T03:41:10.013Z {"ok":true,"did":"keydown","key":" "}
+2026-09-15T03:41:10.057Z {"ok":true,"did":"shot","file":"shots\\cap_0047.png"}
+2026-09-15T03:41:15.469Z {"ok":true,"did":"wait","ms":5000}
+2026-09-15T03:41:15.923Z {"ok":true,"did":"shot","file":"shots\\cap_0048.png"}
+2026-09-15T03:41:15.925Z {"ok":true,"did":"keyup","key":" "}
+2026-09-15T03:41:16.383Z {"ok":true,"did":"shot","file":"shots\\21_press_held.png"}
+2026-09-15T03:41:18.802Z {"ok":true,"did":"wait","ms":2000}
+2026-09-15T03:41:19.254Z {"ok":true,"did":"shot","file":"shots\\cap_0049.png"}
+2026-09-15T03:41:19.300Z {"ok":true,"did":"shot","file":"shots\\22_released.png"}
+2026-09-15T03:41:19.725Z {"ok":true,"did":"clickText","text":"let go","box":{"x":1113,"y":190.296875,"width":295,"height":151.15625}}
+2026-09-15T03:41:24.142Z {"ok":true,"did":"wait","ms":4000}
+2026-09-15T03:41:24.596Z {"ok":true,"did":"shot","file":"shots\\cap_0050.png"}
+2026-09-15T03:41:24.642Z {"ok":true,"did":"shot","file":"shots\\23_recover_mid.png"}
+2026-09-15T03:41:29.053Z {"ok":true,"did":"wait","ms":4000}
+2026-09-15T03:41:29.505Z {"ok":true,"did":"shot","file":"shots\\cap_0051.png"}
+2026-09-15T03:41:29.553Z {"ok":true,"did":"shot","file":"shots\\24_recover_settled.png"}
+2026-09-15T03:41:29.961Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · D1-dryrun-223920\nTHE LESSON\n‹\n3 / 10\n›\nTHE HEALING\n\nThe creature's skin is elastic: the moment you let go, the dent unwinds and the squeezed water flows away, fading to zero in a few seconds. Wake any cell past 0.02 MPa, then take your hand off and simply wait. Nothing heals while you keep holding; the healing begins when you let go.\n\nPASSED — you let go, and the body healed itself. it never needed you.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-15T03:41:30.373Z {"ok":true,"did":"wheel"}
+2026-09-15T03:41:31.594Z {"ok":true,"did":"wait","ms":800}
+2026-09-15T03:41:32.049Z {"ok":true,"did":"shot","file":"shots\\cap_0052.png"}
+2026-09-15T03:41:32.077Z {"ok":true,"did":"move","x":400,"y":500}
+2026-09-15T03:41:32.487Z {"ok":true,"did":"down"}
+2026-09-15T03:41:32.992Z {"ok":true,"did":"move","x":620,"y":380}
+2026-09-15T03:41:33.403Z {"ok":true,"did":"up"}
+2026-09-15T03:41:33.444Z {"ok":true,"did":"shot","file":"shots\\cap_0053.png"}
+2026-09-15T03:41:34.668Z {"ok":true,"did":"wait","ms":800}
+2026-09-15T03:41:35.115Z {"ok":true,"did":"shot","file":"shots\\cap_0054.png"}
+2026-09-15T03:41:35.158Z {"ok":true,"did":"shot","file":"shots\\30_freeplay_orbit.png"}
+2026-09-15T03:41:35.573Z {"ok":true,"did":"keydown","key":" "}
+2026-09-15T03:41:38.484Z {"ok":true,"did":"wait","ms":2500}
+2026-09-15T03:41:38.937Z {"ok":true,"did":"shot","file":"shots\\cap_0055.png"}
+2026-09-15T03:41:38.938Z {"ok":true,"did":"keyup","key":" "}
+2026-09-15T03:41:39.391Z {"ok":true,"did":"shot","file":"shots\\31_freeplay_press.png"}
+2026-09-15T03:41:42.803Z {"ok":true,"did":"wait","ms":3000}
+2026-09-15T03:41:43.251Z {"ok":true,"did":"shot","file":"shots\\cap_0056.png"}
+2026-09-15T03:41:43.294Z {"ok":true,"did":"shot","file":"shots\\32_freeplay_after.png"}
+2026-09-15T03:41:43.709Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · D1-dryrun-223920\nTHE LESSON\n‹\n3 / 10\n›\nTHE HEALING\n\nThe creature's skin is elastic: the moment you let go, the dent unwinds and the squeezed water flows away, fading to zero in a few seconds. Wake any cell past 0.02 MPa, then take your hand off and simply wait. Nothing heals while you keep holding; the healing begins when you let go.\n\nPASSED — you let go, and the body healed itself. it never needed you.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-15T03:41:44.120Z {"ok":true,"did":"quit"}

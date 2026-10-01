@@ -1,0 +1,247 @@
+{
+ "trace_sha256": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+ "refusal": [
+  302,
+  "gait_positional_correction_budget"
+ ],
+ "ticks": 302,
+ "distinct_observations": 277,
+ "bitidentical_groups": 13,
+ "bitidentical_ticks": 38,
+ "aliased_pairs": [
+  {
+   "t1": 8,
+   "t2": 38,
+   "reason": "pad 3 deformation rate -0.000790 vs -0.003335 m/tick (> kSinkRateMax); body advance 0.6909 vs 0.7668 m/s (>= graded bar); context: events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()"
+  },
+  {
+   "t1": 8,
+   "t2": 39,
+   "reason": "pad 3 deformation rate -0.000790 vs -0.003411 m/tick (> kSinkRateMax); body advance 0.6909 vs 0.7740 m/s (>= graded bar); context: events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()"
+  },
+  {
+   "t1": 9,
+   "t2": 38,
+   "reason": "pad 3 deformation rate -0.000930 vs -0.003335 m/tick (> kSinkRateMax); body advance 0.6867 vs 0.7668 m/s (>= graded bar); context: events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()"
+  },
+  {
+   "t1": 9,
+   "t2": 39,
+   "reason": "pad 3 deformation rate -0.000930 vs -0.003411 m/tick (> kSinkRateMax); body advance 0.6867 vs 0.7740 m/s (>= graded bar); context: events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()"
+  },
+  {
+   "t1": 11,
+   "t2": 38,
+   "reason": "body advance 0.6798 vs 0.7668 m/s (>= graded bar)"
+  },
+  {
+   "t1": 11,
+   "t2": 39,
+   "reason": "body advance 0.6798 vs 0.7740 m/s (>= graded bar)"
+  },
+  {
+   "t1": 14,
+   "t2": 38,
+   "reason": "body advance 0.6741 vs 0.7668 m/s (>= graded bar)"
+  },
+  {
+   "t1": 14,
+   "t2": 39,
+   "reason": "body advance 0.6741 vs 0.7740 m/s (>= graded bar)"
+  },
+  {
+   "t1": 23,
+   "t2": 38,
+   "reason": "body advance 0.6909 vs 0.7668 m/s (>= graded bar)"
+  },
+  {
+   "t1": 23,
+   "t2": 39,
+   "reason": "body advance 0.6909 vs 0.7740 m/s (>= graded bar)"
+  },
+  {
+   "t1": 24,
+   "t2": 38,
+   "reason": "body advance 0.6963 vs 0.7668 m/s (>= graded bar)"
+  },
+  {
+   "t1": 24,
+   "t2": 39,
+   "reason": "body advance 0.6963 vs 0.7740 m/s (>= graded bar)"
+  },
+  {
+   "t1": 27,
+   "t2": 38,
+   "reason": "body advance 0.6969 vs 0.7668 m/s (>= graded bar)"
+  },
+  {
+   "t1": 27,
+   "t2": 39,
+   "reason": "body advance 0.6969 vs 0.7740 m/s (>= graded bar)"
+  },
+  {
+   "t1": 29,
+   "t2": 38,
+   "reason": "body advance 0.7026 vs 0.7668 m/s (>= graded bar)"
+  },
+  {
+   "t1": 29,
+   "t2": 39,
+   "reason": "body advance 0.7026 vs 0.7740 m/s (>= graded bar)"
+  },
+  {
+   "t1": 12,
+   "t2": 25,
+   "reason": "touch pattern (False, True, False, False) vs (True, False, False, False)"
+  },
+  {
+   "t1": 18,
+   "t2": 33,
+   "reason": "body advance 0.6756 vs 0.7302 m/s (>= graded bar)"
+  },
+  {
+   "t1": 19,
+   "t2": 34,
+   "reason": "body advance 0.6777 vs 0.7377 m/s (>= graded bar)"
+  },
+  {
+   "t1": 20,
+   "t2": 35,
+   "reason": "body advance 0.6810 vs 0.7446 m/s (>= graded bar)"
+  },
+  {
+   "t1": 40,
+   "t2": 54,
+   "reason": "body advance 0.7539 vs 0.6231 m/s (>= graded bar)"
+  }
+ ],
+ "context_only_pairs": [
+  {
+   "t1": 8,
+   "t2": 11,
+   "reason": "events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()"
+  },
+  {
+   "t1": 8,
+   "t2": 14,
+   "reason": "events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()"
+  },
+  {
+   "t1": 8,
+   "t2": 23,
+   "reason": "events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()"
+  },
+  {
+   "t1": 8,
+   "t2": 24,
+   "reason": "events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()"
+  },
+  {
+   "t1": 8,
+   "t2": 27,
+   "reason": "events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()"
+  },
+  {
+   "t1": 8,
+   "t2": 29,
+   "reason": "events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()"
+  },
+  {
+   "t1": 9,
+   "t2": 11,
+   "reason": "events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()"
+  },
+  {
+   "t1": 9,
+   "t2": 14,
+   "reason": "events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()"
+  },
+  {
+   "t1": 9,
+   "t2": 23,
+   "reason": "events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()"
+  },
+  {
+   "t1": 9,
+   "t2": 24,
+   "reason": "events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()"
+  },
+  {
+   "t1": 9,
+   "t2": 27,
+   "reason": "events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()"
+  },
+  {
+   "t1": 9,
+   "t2": 29,
+   "reason": "events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()"
+  },
+  {
+   "t1": 10,
+   "t2": 28,
+   "reason": "events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()"
+  }
+ ],
+ "mask_never_available": [
+  "foot_contact_fl",
+  "foot_contact_fr",
+  "foot_contact_ml",
+  "foot_contact_mr",
+  "foot_contact_hl",
+  "foot_contact_hr",
+  "foot_force_fl",
+  "foot_force_fr",
+  "foot_force_ml",
+  "foot_force_mr",
+  "foot_force_hl",
+  "foot_force_hr",
+  "com_vel_x_heading",
+  "com_vel_y_heading",
+  "com_vel_z",
+  "yaw_rate",
+  "yaw_rate_prev",
+  "prev_req_l_phase_off",
+  "prev_req_l_stride_amp",
+  "prev_req_l_lift_amp",
+  "prev_req_l_stiff",
+  "prev_req_r_phase_off",
+  "prev_req_r_stride_amp",
+  "prev_req_r_lift_amp",
+  "prev_req_r_stiff",
+  "prev_app_l_phase_off",
+  "prev_app_l_stride_amp",
+  "prev_app_l_lift_amp",
+  "prev_app_l_stiff",
+  "prev_app_r_phase_off",
+  "prev_app_r_stride_amp",
+  "prev_app_r_lift_amp",
+  "prev_app_r_stiff",
+  "lim_sat_l_phase_off",
+  "lim_sat_l_stride_amp",
+  "lim_sat_l_lift_amp",
+  "lim_sat_l_stiff",
+  "lim_sat_r_phase_off",
+  "lim_sat_r_stride_amp",
+  "lim_sat_r_lift_amp",
+  "lim_sat_r_stiff",
+  "freq_scale",
+  "pad_g_heel_hl",
+  "pad_g_heel_hr",
+  "pad_g_mp_hl",
+  "pad_g_mp_hr",
+  "pad_dg_heel_hl",
+  "pad_dg_heel_hr",
+  "pad_dg_mp_hl",
+  "pad_dg_mp_hr",
+  "pad_split_hl",
+  "pad_split_hr",
+  "pad_split_rate_hl",
+  "pad_split_rate_hr"
+ ],
+ "prereg_bars": {
+  "kTouch": 1e-05,
+  "kSinkRateMax": 0.002349,
+  "v_graded_bar": 0.05,
+  "settle_ticks": 60
+ }
+}

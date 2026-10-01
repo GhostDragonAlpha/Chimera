@@ -63,11 +63,12 @@ Run:  python test_phase6.py        (plain script, asserts)
 
 from playwright.sync_api import sync_playwright
 import os
+from pathlib import Path
 import subprocess
 import sys
 
-PHASE_URL = "file:///E:/PythonChimera/ChimeraEngine/engine/spiace_phase6.html"
-ENGINE_DIR = "E:/PythonChimera/ChimeraEngine/engine"
+PHASE_URL = (Path(__file__).resolve().parent / "spiace_phase6.html").as_uri()
+ENGINE_DIR = Path(__file__).resolve().parent.as_posix()
 SCREENSHOT_START = os.path.join(ENGINE_DIR, "spiace_phase6_screenshot.png")
 SCREENSHOT_FINAL = os.path.join(ENGINE_DIR, "spiace_phase6_final.png")
 

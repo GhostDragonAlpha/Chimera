@@ -1,0 +1,127 @@
+{
+  "schema": "chimera.rule0_receipt.v1",
+  "lane": "agent/hip-bond-adoption-20260921",
+  "base_commit": "3539fdb9 (agent/axial-limb-adjacency-20260920, the verified measurement head; sparse clone E:/ChimeraWork/adopt-agent, docs/ and Saved/ excluded)",
+  "scope": "The integrator act the adjacency lane explicitly deferred ('adopting it is the integrator's act, never this lane's'): ADOPT the measured adjacency into the matter skeleton definition conservatively, BY ANATOMICAL CLASS -- the 2 pre-registered GREEN hip bonds join the bond graph; the 6 discovered curl contacts are recorded as pose metadata, never bonds; the refused shoulders and singletons stay recorded refusals. The definition's geometry (mesh bytes) is untouched.",
+
+  "rule_0": {
+    "statement": "The measured cross-component adjacency table (tools/science_funnel/validation/axial_adjacency_20260920/) splits by anatomical class into three handling classes, and the skeleton definition should carry them differently: the 2 pre-registered hip pairs (femur<->composite, law gap 1.44/1.49 mm, deep inside the <=3.0 mm touching class that already holds all 21 committed bonds, closest points at the acetabular region) are JOINTS and belong in the definition's bond graph as cartilage bonds in the exact 21-bond format; the 6 discovered curl appositions (hands 8/9, forearms 11/13, feet 15/17 to the composite, 0.56-2.83 mm) are the curled fetal specimen's REAL physical contacts -- the pose it was CT-scanned in -- but NOT joints: a standing-pose animal would not have them, so they ride the definition's metadata (a pose_contacts section) and must never enter the bond graph; the 2 shoulders (4.60/5.00 mm) and 3 singletons stay honest refusals with their numbers recorded. Adopting exactly the joint class merges the two femoral chains into the composite's component (8 connected components -> 6) and changes nothing else.",
+    "prediction": "Measured on the adopted state, not yet measured at pre-registration time:\n  P1 The kernel's own parser (tools.matter_kernel.definition.parse_body) accepts the adopted definition: 25 membranes, 23 bonds (21 + 2 hips), every stated membrane mass within the 5% kernel-derived tolerance.\n  P2 The bond graph has EXACTLY 6 connected components: {1,2,3,6,7,15,17,18,20,21,22,23,24,25} (composite + both hind chains joined through the hips), {4,8,10,12}, {5,9,11,13} (the fore chains stay separate -- a curl contact that leaked into bonds would merge them), {14}, {16}, {19}.\n  P3 Geometry is preserved bit-for-bit: all 25 triangle blobs, vertex sha256 records, thicknesses and masses equal the pre-adoption definition (the adoption diff touches bonds + metadata only); the mass book (total 52.3139 g and every compartment) equals the committed derivation.json.\n  P4 The 21 committed bonds keep rest_length_mm == committed gap_mm (dev <= 0.005 mm) and the 2 adopted bonds carry rest_length_mm == measured law gap EXACTLY (1.44 / 1.49) with refined_gap_mm (1.403 / 1.343) recorded as metadata; every bond's rest_length_mm equals its measured_gap_mm.\n  P5 A TRUE fresh clone of the adopted HEAD checks out byte-identical to the committed blobs (worktree==blob pre-checked, the CRLF law) and verify_adoption.py passes inside it reading only committed artifacts.\n  P6 The import lane's replay (matter_skeleton_import.py verify) refuses against the adopted definition (kernel_bonds expected 21) -- the NAMED, expected consequence of a legitimate successor adoption, recorded verbatim, never tuned away.",
+    "falsifiers": {
+      "F1_geometry_preserved": "If ANY mesh byte, vertex record, thickness or stated mass differs from the pre-adoption definition (per-membrane blob readback vs source OBJs + vertex_sha256 + derivation.json book equality), the adoption violated 'bonds/metadata only' and is VOID.",
+      "F2_bond_class_law": "If the adopted bonds deviate from candidate_bonds.json's pre_registered:true entries in ANY field (members, material, cure_strength, rest_length vs measured_gap_mm), or if ANY of the 6 curl contacts or 2 refused shoulders appears in the bonds array, the adoption invented or blanket-adopted anatomy -- VOID. The class split IS the law: 2 bonds, 6 pose records, 0 refusals converted.",
+      "F3_component_consequence": "If the adopted bond graph's connected components are not exactly the 6 predicted in P2, a pose contact leaked into the graph or a hip failed to join -- VOID.",
+      "F4_kernel_and_book": "If the kernel parser refuses the adopted definition, or any stated mass deviates beyond the 5% tolerance, or mass-book totals drift from the committed derivation.json -- VOID (the definition must remain a body the kernel may load).",
+      "F5_fresh_clone_bytes": "If a fresh clone's worktree bytes for any touched file differ from its HEAD blob (eol or otherwise), or the battery fails in that clone, the state is not checkout-invariant -- VOID (the 2d585c7b law: the verifier's fresh clone refusing definition_drift was RIGHT).",
+      "F6_replay_honesty": "The import lane's replay is expected to refuse (P6). If it instead PASSES, the adoption silently vanished from the definition (regression) -- VOID. The refusal is recorded with its exact code, never suppressed."
+    }
+  },
+
+  "rule_1_derivation_plan": {
+    "note": "No new free numbers. Every adopted number is copied verbatim from committed measured artifacts; the only decisions are class assignments, each derived from committed law.",
+    "rest_length_law": "rest_length_mm = the MEASURED LAW GAP (vertex metric), not the triangle-refined gap. Derivation: the pinned measurement receipt's refinement_law states 'The LAW number stays the vertex metric -- the committed 21 bonds and any candidate bond are defined on THAT metric, and refined_gap_mm <= law gap always'; candidate_bonds.json itself carries rest_length_mm == measured_gap_mm (1.44/1.49) with refined_gap_mm (1.403/1.343) as separate fields; the battery criterion 'all rest lengths = measured gaps' checks rest_length_mm == measured_gap_mm per bond. The refined gaps are recorded as named bond metadata so no measured number is lost.",
+    "format_law": "The adopted bond objects use the existing 21-bond format exactly (id, material mat.cartilage, two members, cure_strength 13 MPa Yamada 1970, rest_length_mm, measured_gap_mm, evidence) plus refined_gap_mm and anatomical_reading carried from the candidate file -- same law, same format, 0 invented / 0 dropped.",
+    "pose_class_law": "The 6 curl contacts are real contacts of the specimen's actual curled (fetal) state -- the same stage honesty the definition already carries for life_stage=infant applies to pose: recorded in a top-level pose_contacts metadata section (members, law gap, refined gap, closest points, reading), which the kernel parser deliberately ignores (unknown top-level keys are metadata). They contribute NO graph edges, so components do not merge through them.",
+    "refusal_law": "Falsifier F2 of the measurement lane FIRED for the shoulders (4.60/5.00 mm > 3.0 mm cut): the refusal stands as anatomy, recorded in a refused_joints metadata section with the singleton refusals (16 row-min 5.82, 14 row-min 6.99, 19 row-min 7.71 on the law metric) and the named singleton-19 vertex-vertex metric artifact (true surface gap 0.0, face contact) left as successor law work, never self-granted here.",
+    "component_law": "Component count derives from the bond graph, not from taste: 8 components before (verified in matter_skeleton_20260920/verify.json), 6 after -- exactly the two femoral chains merging into the composite's component through the two hip bonds."
+  },
+
+  "inputs": {
+    "tools/science_funnel/validation/axial_adjacency_20260920/candidate_bonds.json": "the measured candidate table (2 pre_registered:true hip bonds adopted verbatim; 6 pre_registered:false curl contacts recorded as pose metadata; trailer Agent: GLM 5.3)",
+    "tools/science_funnel/validation/axial_adjacency_20260920/receipt.json": "the measurement lane's Rule-0 receipt (preregistration sha256 36e9c23f... pinned before measuring; refinement_law names the vertex metric as the bond-defining metric)",
+    "tools/science_funnel/data/morphosource_ct/matter_skeleton/infant_skeleton.body.json": "the adopted definition (the ONE data file this lane is entitled to modify)",
+    "tools/science_funnel/validation/matter_skeleton_20260920/derivation.json": "the committed mass book (the unchanged-ness reference)"
+  },
+
+  "outputs_planned": {
+    "tools/science_funnel/data/morphosource_ct/matter_skeleton/infant_skeleton.body.json": "the adopted definition: bonds 21 -> 23, new top-level pose_contacts / refused_joints / adoption metadata sections",
+    "tools/science_funnel/validation/hip_adoption_20260921/verify_adoption.py": "the deterministic battery (fresh-clone mode, reads only committed artifacts)",
+    "tools/science_funnel/validation/hip_adoption_20260921/verify.json": "the measured verify record",
+    "tools/science_funnel/validation/hip_adoption_20260921/receipt.json": "this file; measurements + verdicts appended below AFTER the run",
+    "tools/science_funnel/validation/hip_adoption_20260921/preregistration.sha256": "sha256 of THIS file's pre-registration state, hashed before any edit"
+  },
+
+  "measurements": {
+    "completed_utc": "2026-09-21 (adoption run; fresh-clone verification appended below)",
+    "adoption_diff": {
+      "definition": "tools/science_funnel/data/morphosource_ct/matter_skeleton/infant_skeleton.body.json: 1 file changed, 294 insertions(+), 1 deletion(-) vs base 3539fdb9 -- bonds + 3 new metadata sections ONLY; the membranes/materials/specimen/stage/units/membrane_layer sections are object-equal to the base blob (battery-checked)",
+      "lane_files": [
+        "tools/science_funnel/validation/hip_adoption_20260921/receipt.json",
+        "tools/science_funnel/validation/hip_adoption_20260921/preregistration.sha256",
+        "tools/science_funnel/validation/hip_adoption_20260921/adopt.py",
+        "tools/science_funnel/validation/hip_adoption_20260921/verify_adoption.py",
+        "tools/science_funnel/validation/hip_adoption_20260921/verify.json"
+      ]
+    },
+    "bonds_adopted": [
+      {
+        "id": "bond.joint_01_02",
+        "members": ["mem.bone_01", "mem.bone_02"],
+        "material": "mat.cartilage",
+        "cure_strength_pa": 13000000.0,
+        "rest_length_mm": 1.44,
+        "measured_gap_mm": 1.44,
+        "refined_gap_mm": 1.403,
+        "reading": "hip joint, femoral head apposed to the acetabular region (closest points recorded in the bond object)"
+      },
+      {
+        "id": "bond.joint_01_03",
+        "members": ["mem.bone_01", "mem.bone_03"],
+        "material": "mat.cartilage",
+        "cure_strength_pa": 13000000.0,
+        "rest_length_mm": 1.49,
+        "measured_gap_mm": 1.49,
+        "refined_gap_mm": 1.343,
+        "reading": "hip joint, acetabular region (closest points recorded)"
+      }
+    ],
+    "pose_contacts_recorded_not_bonded": [
+      {"pair": [1, 8], "law_gap_mm": 0.68, "refined_gap_mm": 0.681},
+      {"pair": [1, 9], "law_gap_mm": 0.56, "refined_gap_mm": 0.0},
+      {"pair": [1, 11], "law_gap_mm": 2.75, "refined_gap_mm": 0.0},
+      {"pair": [1, 13], "law_gap_mm": 2.83, "refined_gap_mm": 0.0},
+      {"pair": [1, 15], "law_gap_mm": 0.85, "refined_gap_mm": 0.823},
+      {"pair": [1, 17], "law_gap_mm": 0.64, "refined_gap_mm": 0.592}
+    ],
+    "refusals_recorded": {
+      "shoulder_01_04": 5.0,
+      "shoulder_01_05": 4.6,
+      "singleton_16_row_min": 5.82,
+      "singleton_14_row_min": 6.99,
+      "singleton_19_row_min": 7.71,
+      "singleton_19_metric_artifact": "named, NOT self-granted; 19 stays isolated"
+    },
+    "components": {
+      "before": 8,
+      "after": 6,
+      "after_lists": [[1, 2, 3, 6, 7, 15, 17, 18, 20, 21, 22, 23, 24, 25],
+                      [4, 8, 10, 12], [5, 9, 11, 13], [14], [16], [19]]
+    },
+    "battery": {
+      "kernel_conformance": "parse_body OK: 25 membranes, 23 bonds; stated-vs-derived mass max rel 2.16e-06 (tolerance 5%)",
+      "geometry_preserved": "25/25 blobs byte-canonical vs source OBJs; vertex sha256 25/25 match; worst bbox dev 6.27e-06 mm (tol 1e-3); ALL seven non-bond sections object-equal to the base blob",
+      "adjacency_reproduced": "21 committed edges reproduced at max dev 0.0 mm; 2 hip bonds field-verbatim vs candidate_bonds.json with rest_length == measured_gap EXACTLY (1.44/1.49); refined gaps recorded (1.403/1.343); all 23 bonds satisfy rest_length == measured_gap; 6 pose contacts in metadata with 0 pairs in bonds; shoulders (1,4)/(1,5) and singletons 14/16/19 carry no bond; 0 invented / 0 dropped",
+      "mass_book": "total 52.3139 g unchanged vs committed derivation.json; worst compartment mass dev 4.75e-07 g (book rounds to 6 decimals in grams)",
+      "graph_tests": "python -m unittest tools.matter_kernel.test_definition: 9/9 OK",
+      "adjacency_lane_rerun": "measure_adjacency.py rerun in this tree regenerates its outputs byte-identically (sha256 OK x3) -- the adoption caused no side effects in the measurement lane"
+    }
+  },
+
+  "verdicts": {
+    "F1_geometry_preserved": "GREEN -- bonds/metadata only: all 25 membrane sections byte-canonical and the seven non-bond sections object-equal to the base blob; 0 mesh bytes touched.",
+    "F2_bond_class_law": "GREEN -- exactly 2 bonds adopted, field-verbatim from candidate_bonds.json's pre_registered:true entries (rest_length = the law gap per the refinement_law); all 6 curl contacts recorded in pose_contacts with 0 leaking into bonds; both refused shoulders stay out with verbatim numbers. No blanket adoption, no invention.",
+    "F3_component_consequence": "GREEN -- the bond graph has exactly the 6 predicted components: 8 -> 6, the two femoral chains joined into the composite's component, fore chains and singletons unmoved.",
+    "F4_kernel_and_book": "GREEN -- the kernel's own parser loads the adopted definition (25 membranes / 23 bonds, mass max rel 2.16e-06) and the mass book is unchanged (52.3139 g).",
+    "F5_fresh_clone_bytes": "GREEN -- see fresh_clone_verification below: TRUE fresh clone checked out byte-identical (worktree==blob pre-checked on every changed file) and the whole battery + adopt check + kernel tests pass inside it reading only committed artifacts.",
+    "F6_replay_honesty": "AS PREDICTED -- the import lane's replay (matter_skeleton_import.py verify) refuses against the adopted definition with exactly 'REFUSED kernel_bonds: expected 21' (exit 2): its regeneration reproduces the PRE-adoption 21-bond product, which a legitimate successor adoption necessarily supersedes. Recorded verbatim, never tuned away, never suppressed; the adoption lane's own determinism proof (adopt.py check: committed definition byte-identical to the deterministic adoption of base blob 3539fdb9) replaces it for this state.",
+    "headline": "The measured adjacency is ADOPTED BY ANATOMICAL CLASS: the 2 GREEN hip bonds (1.44/1.49 mm law gap, refined 1.403/1.343 recorded) join the skeleton definition as cartilage bonds in the exact 21-bond format (23 bonds total, all rest lengths = measured gaps); the 6 fetal-curl contacts ride the definition as pose_contacts metadata, never bonds; the shoulders (4.60/5.00) and singletons stay recorded refusals with the singleton-19 metric artifact named for successor law work; components 8 -> 6; geometry and mass book untouched; all falsifiers green in a TRUE fresh clone."
+  },
+
+  "fresh_clone_verification": {
+    "note": "TRUE fresh git clone (E:/ChimeraWork/adopt-verify, sparse docs/+Saved/ excluded) of this lane's branch at the adoption commit; status clean before the run. Re-run mechanically on the final amended HEAD (only this receipt section differs from the verified tree, and verify.json regenerates byte-identically).",
+    "worktree_vs_blob_precheck": "6/6 changed files MATCH (sha256 of worktree == sha256 of git cat-file blob HEAD:path): infant_skeleton.body.json, receipt.json, adopt.py, verify_adoption.py, verify.json, preregistration.sha256 -- checkout-invariant despite core.autocrlf=true (the morphosource_ct -text / validation -text gitattributes classes)",
+    "battery_in_clone": "adopt.py check OK (committed definition byte-identical to the deterministic adoption of base blob 3539fdb9); verify_adoption.py OK: 25 membranes, 23 bonds (21 committed + 2 hips), 6 pose contacts recorded, 0 pose pairs in bonds, 6 components, mass book unchanged; kernel graph battery tools.matter_kernel.test_definition 9/9 OK",
+    "verify_record_reproducible": true,
+    "verify_json_diff_vs_committed": "empty (regenerated byte-identically inside the clone)"
+  }
+}

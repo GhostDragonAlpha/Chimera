@@ -1,0 +1,24 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": { "major": 3, "minor": 20, "patch": 0 },
+  "configurePresets": [
+    {
+      "name": "parallel24",
+      "displayName": "Release, 24-core parallel compilation (work.data.compute_harness)",
+      "description": "Parallel-level default of 24; the MSVC /MP24 flag itself is set in CMakeLists.txt. binaryDir lives under the repo's gitignored .tmp scratch.",
+      "binaryDir": "${sourceDir}/../../.tmp/compute_harness/build_engine_preset",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_BUILD_PARALLEL_LEVEL": "24"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "parallel24",
+      "configurePreset": "parallel24",
+      "configuration": "Release",
+      "jobs": 24
+    }
+  ]
+}

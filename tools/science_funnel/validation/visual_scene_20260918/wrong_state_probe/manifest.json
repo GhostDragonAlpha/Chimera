@@ -1,0 +1,19 @@
+{
+ "artifacts": {
+  "judgement.json": "56782378d67fabb03919da0263cde114393d2b100a37f38e89d69883bc7805a6",
+  "state_render.png": "88a6f9e5e90e9be3e4cfc9c5225f2a2f778c5d22d13abc8c1413c7788e837f77"
+ },
+ "kind": "visual_scene_wrong_state_probe.v1",
+ "rule0": {
+  "admitted_utc": "2026-09-17 (before the first run of this lane)",
+  "falsifiers": {
+   "F1": "re-render from the recorded state is byte-identical (sha256)",
+   "F2": "python FK hand point == engine body.position_m within 1e-6 m",
+   "F3": "a corrupted penetrating state FAILS the template and renders visibly wrong; a template that passes it is worthless",
+   "F4": "every settled ledger closes (balance_error_J and store_balance_error_J within 1e-4 J -- 10x the repo live-qual bar for these 45-90 s windows -- and the mechanical identity holds); a leak falsifies the energy claims"
+  },
+  "prediction": "All five scenarios pass their numeric templates AND render the expected picture (hang / reach / press-at-plane / stick / slide-with-heat); a penetrating-hand corruption fails.",
+  "statement": "The live scene's own numeric state, rendered by a pure deterministic renderer and judged against a structured expected-physics template, is a valid verification record closing the loop between the numbers and the eye."
+ },
+ "written_utc": "2026-09-18T22:16:31.212434+00:00"
+}

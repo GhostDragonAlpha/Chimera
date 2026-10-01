@@ -1,4 +1,5 @@
 #include "engine.hpp"
+#include "joint_binding.hpp"
 #include "platform/vulkan_surface.h"
 #include <windows.h>
 #include <vulkan/vulkan_win32.h>
@@ -50,6 +51,7 @@ static std::atomic<uint32_t> g_pending_resize_h{0};
 // near plane SLICES it (operator report: "the nose and one hand are severed
 // at the wall of deletion"). Derived from the geometry, never a constant.
 static float      g_mesh_sphere = 0.0f;
+static float      g_mesh_center[3] = {0.f, 0.f, 0.f}; // ORBIT PIVOT LAW: the loaded mesh's bbox center
 static float      g_shadow_contact_radius = 2.0f;   // floor-projected contact disk radius
 static float radius_floor() { return fmaxf(1.0f, g_mesh_sphere * 1.02f); }
 static float shadow_radius() { return fmaxf(2.0f, 0.65f * (0.5f * g_mesh_sphere * 2.f)); }
@@ -61,6 +63,43 @@ static float shadow_radius() { return fmaxf(2.0f, 0.65f * (0.5f * g_mesh_sphere 
 // shadow). Consumed by render_tri_shadow.vert via the UBO.
 static float      g_mesh_ymin = 0.0f;
 static float      g_mesh_ymax = 1.0f;
+
+// ── E1 STAGE BLOCK (fleet-2/E1, 2026-09-13) — light rig + stage constants ────
+// RULE 0 membrane: STATEMENT — the same creature reads as a staged product
+// (not "one model on a grid", the blind judges' words) under a cool 4:1 fill
+// and a gold rim over a warm cyclorama. PREDICTION — at the dark-side camera
+// the unlit flank clears the ~40/255 perception floor and the rim stays an
+// edge (p95 <= 240); the composed contact shadow stays >= ~25/255 below its
+// surround. FALSIFIER — flank still merges, rim reads as a second outline, or
+// a seam appears where the floor sweep meets the background. Verified at the
+// build window with /frame at three cameras (hero / dark-side / high-wide).
+//
+// ENGINE-OWNED:
+static constexpr float E1_CLEAR_COLOR[4] = { 0.015f, 0.02f, 0.06f, 1.0f };
+// Consumed by the swapchain + /frame clears (search E1_CLEAR_COLOR). THE
+// background the floor's far sweep lands on — floor.frag's stage_far mirrors
+// this exact value; change them together or the horizon seams.
+//
+// SHADER-OWNED (rig map — the values live in the .frag files because fragment
+// UBO reads are measured-untrustworthy on this lane and the UBO is size-locked
+// at 176 B by static_assert; mirrored here so the rig reads from one place.
+// Change a value in BOTH places or the map lies):
+//   render_tri.frag  FILL 0.21 = 25% of key 0.85 -> 4:1 key:fill (was 0.18, 4.7:1)
+//                    FILL_TINT (0.89,1.00,1.28) cool, luminance-normalized
+//                    (0.299/0.587/0.114 -> 1.00 — 0.21 stays the measured irradiance)
+//                    RIM 0.35, pow(1-N.V,3), RIM_TINT (1.00,0.84,0.55) gold —
+//                    2-3x the dark flank's ~0.15 amb: clears the 40/255 floor,
+//                    stays under the per-channel albedo clamp
+//   floor.frag       OUTER (34,31,27)/255 — warmer at equal luminance (luma 31.4 ~ 32)
+//                    stage_far = E1_CLEAR_COLOR (above)
+//                    GLOW ring 9/255 peak at 1.5*Rc, sigma 0.9*Rc, where
+//                    Rc = max(2, 0.65*uMeshR) mirrors g_shadow_contact_radius;
+//                    ring center = e^-(1.5/0.9)^2 ~ 0.06 of peak = +0.6/255 at
+//                    contact — the ink law (contact EXACTLY 55) holds within
+//                    quantization
+// OUT OF SCOPE (handed to a bench lane): grid-line distance fade + warmer line
+// color — push_grid_overlay (GR/GG/GB 0.30/0.34/0.46, GA 0.70) and ui.cpp own those.
+// ─────────────────────────────────────────────────────────────────────────────
 
 // Keyboard helper: wasd + qe + space/ctrl + r reset
 static void update_camera_input(CameraState& cam, float dt) {
@@ -296,7 +335,11 @@ static HWND create_window(uint32_t w, uint32_t h) {
             }
         }
     }
-    ShowWindow(hwnd, SW_SHOW);
+    // THE SHIP GOAL (R1, the operator: "maximized when loading"): the game
+    // opens filling the screen — never a small offset window. SW_MAXIMIZE
+    // sizes to the work area by construction (the bar-off-screen clamp above
+    // remains for any later restore).
+    ShowWindow(hwnd, SW_MAXIMIZE);
     UpdateWindow(hwnd);
     g_hwnd = hwnd;
     return hwnd;
@@ -800,6 +843,12 @@ bool Engine::init(const EngineConfig& cfg) {
 
     printf("Vulkan engine initialized: %u x %u, %u frames in flight\n",
            cfg.width, cfg.height, MAX_FRAMES_IN_FLIGHT);
+
+    // Inline collection uses the cached-read policy below. The separate reader
+    // remains opt-in; moving an uncached scalar read to another thread does not
+    // cure its access cost. CHIMERA_RB_READER=1 is a diagnostic option.
+    rb_use_reader_ = std::getenv("CHIMERA_RB_READER") != nullptr;
+    if (rb_use_reader_) rb_reader_ = std::thread(&Engine::rb_reader_loop, this);
     return true;
 }
 
@@ -923,6 +972,16 @@ void Engine::shutdown() {
         if (log_fp_) { fflush(log_fp_); fclose(log_fp_); log_fp_ = nullptr; }
     }
 
+    // G8 r3: stop the readback reader before any device resource dies — it may
+    // be inside a map+swizzle of a ring slot; drain the queue first so a queued
+    // grab is never dropped mid-shutdown, then join.
+    {
+        std::unique_lock<std::mutex> lk(rb_q_m_);
+        rb_quit_.store(true);
+    }
+    rb_q_cv_.notify_all();
+    if (rb_reader_.joinable()) rb_reader_.join();
+
     vkDeviceWaitIdle(device_);
 
     ui_.shutdown();   // THE STUDIO: before any pool/device teardown
@@ -980,8 +1039,10 @@ void Engine::shutdown() {
         }
     }
     if (comp_params_buf_) { vkDestroyBuffer(device_, comp_params_buf_, nullptr); vkFreeMemory(device_, comp_params_mem_, nullptr); }
-    if (capture_staging_) { vkDestroyBuffer(device_, capture_staging_, nullptr); vkFreeMemory(device_, capture_staging_mem_, nullptr); }
-    if (glass_staging_)   { vkDestroyBuffer(device_, glass_staging_, nullptr);   vkFreeMemory(device_, glass_staging_mem_, nullptr); }
+    for (int k = 0; k < RB_SLOTS; ++k) {   // G8: both readback rings die with the device
+        rb_destroy_slot(capture_rb_[k]);
+        rb_destroy_slot(glass_rb_[k]);
+    }
     destroy_sort_resources();
     destroy_skin_resources();
     destroy_triangle_resources();
@@ -1667,7 +1728,13 @@ bool Engine::create_triangle_pipeline() {
     }
     // Shadow twin (the eye's "subject ungrounded", 2026-09-02): the same mesh
     // projected to the floor plane by the vertex stage; blended translucent
-    // black, no depth write (the mesh's own depth test decides visibility).
+    // black, no depth write. GUIDE AMENDMENT (2026-09-20, Defect B): the plane
+    // no longer writes depth, so the shadow cannot lean on it — the shadow is
+    // DEPTH-TESTED (LESS, write OFF) against the body's own depth: it lands on
+    // the plane wherever the body is not in front of it in screen space, and
+    // can never paint over the body (drawn after the body and the plane — see
+    // frame()'s draw order). The old FLOOR-COEXIST depth-equality gamble against
+    // the plane's own depth is GONE: the plane writes nothing.
     // Culling stays OFF — the recon mesh's winding is unreliable (the fill
     // pipeline is CULL_MODE_NONE for the same reason), and a culled shadow is
     // an invisible shadow. Requires its own frag module (flat alpha) —
@@ -1687,26 +1754,32 @@ bool Engine::create_triangle_pipeline() {
         blend.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
         blend.alphaBlendOp        = VK_BLEND_OP_ADD;
         ds.depthWriteEnable = VK_FALSE;
-        ds.depthTestEnable  = VK_FALSE;
+        ds.depthTestEnable  = VK_TRUE;             // AMENDMENT: tested against the
+                                                   // body's depth (drawn after it);
+                                                   // never paints over the subject
+        ds.depthCompareOp   = VK_COMPARE_OP_LESS;
         // GRID DEPTH CONTRACT: the shadow is ink ON the floor, not an occluder —
         // the grid draws OVER it (pinned; the shared ds carries the fill's mark)
         ds.stencilTestEnable = VK_FALSE;
-        // FLOOR-COEXIST (2026-09-03, two rounds): the shadow projects onto the
-        // SAME y=0 plane the floor rasterizes, so its fragment depth equals the
-        // floor's only up to float ulps — LESS rejected every fragment (shadow
-        // = 0 pixels measured), and LESS_OR_EQUAL still rejected the half where
-        // the interpolated depth lands 1e-6 FARTHER. A decal that draws
-        // immediately after the floor and before the mesh must not gamble on
-        // depth equality at all: test OFF, write OFF. The mesh (drawn later,
-        // depth-tested) still wins where it stands in front.
         if (vkCreateGraphicsPipelines(device_, cache, 1, &gpci, nullptr, &tri_shadow_pipeline_) != VK_SUCCESS) {
             fprintf(stderr, "Failed to create triangle shadow pipeline\n");
             tri_shadow_pipeline_ = VK_NULL_HANDLE;
         }
     }
-    // THE GROUND PLANE twin: position-only verts (one vec3), opaque, depth-test
-    // ON + depth-write ON — the floor is world geometry the subject stands ON,
-    // and the shadow's no-depth-write draw must lose to it where they overlap.
+    // THE GROUND PLANE twin: position-only verts (one vec3). GUIDE AMENDMENT
+    // (2026-09-20, lane agent/triangle-monkey-grid-20260920 — operator Defect B:
+    // "you can't see through it; anything on the backside of the grid is culled;
+    // from underneath, the top side is culled. It is not working as its intended
+    // purpose of a Gaussian guide; it is blocking the view."): the grid plane is
+    // a GUIDE, never an occluder. The plane is BLENDED (alpha 0.5, derived in
+    // floor.frag — the body behind keeps >= half its contrast), depth-write OFF
+    // (it never enters the depth solution), depth-TEST ON with LESS (so it still
+    // loses to geometry in front of it and never paints over the subject), and
+    // cull stays NONE (visible from BOTH sides). Drawn AFTER the opaque body in
+    // frame() so the body lands first and the guide composites over it. The
+    // shadow (drawn after the plane) keeps ink ON the plane and is depth-tested
+    // against the body so it can never paint over it. Contract record:
+    // docs/THE_STUDIO_GRID_DEPTH.md (the 2026-09-20 amendment).
     // Built ONLY if both modules loaded (same instrument policy as the shadow).
     if (floor_vert_mod_ != VK_NULL_HANDLE && floor_frag_mod_ != VK_NULL_HANDLE) {
         printf("floor: building pipeline (modules ok)\n");
@@ -1727,17 +1800,24 @@ bool Engine::create_triangle_pipeline() {
         vi.pVertexAttributeDescriptions = fattrs;
         vi.vertexAttributeDescriptionCount = 1;
 
-        blend.blendEnable = VK_FALSE;             // opaque
-        ds.depthTestEnable  = VK_TRUE;            // shared ds now carries the shadow's
-                                                  // depthTestEnable=FALSE — pin the
-                                                  // floor's own law explicitly
-        ds.depthWriteEnable = VK_TRUE;
-        ds.depthCompareOp    = VK_COMPARE_OP_LESS; // shared ds carries the shadow's
-                                                   // LESS_OR_EQUAL — pin the floor's
-                                                   // own law explicitly
+        blend.blendEnable = VK_TRUE;              // GUIDE: the plane is see-through
+        blend.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+        blend.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+        blend.colorBlendOp        = VK_BLEND_OP_ADD;
+        blend.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+        blend.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+        blend.alphaBlendOp        = VK_BLEND_OP_ADD;
+        ds.depthTestEnable  = VK_TRUE;            // the guide still loses to geometry
+                                                  // in FRONT of it (never paints over
+                                                  // the subject)
+        ds.depthWriteEnable = VK_FALSE;           // GUIDE: never enters the depth
+                                                  // solution — nothing can be culled
+                                                  // behind/below the plane any more
+        ds.depthCompareOp    = VK_COMPARE_OP_LESS; // unchanged law
         ds.stencilTestEnable = VK_FALSE;          // the floor IS the grid's plane —
                                                   // it never marks (grid draws on it)
-        ras.cullMode = VK_CULL_MODE_NONE;         // winding kept unordered by intent
+        ras.cullMode = VK_CULL_MODE_NONE;         // winding kept unordered by intent —
+                                                  // visible from BOTH sides (guide law)
 
         if (vkCreateGraphicsPipelines(device_, cache, 1, &gpci, nullptr, &floor_pipeline_) != VK_SUCCESS) {
             fprintf(stderr, "Failed to create floor pipeline\n");
@@ -1755,6 +1835,11 @@ bool Engine::create_triangle_pipeline() {
 
 bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32_t>& indices,
                        uint32_t vcount, uint32_t icount) {
+    if (preserve_mesh_topology_) {
+        if (verts.size()!=9ull*vcount || indices.size()!=icount || icount%3) return false;
+        for (float x:verts) if (!std::isfinite(x)) return false;
+        for (uint32_t i:indices) if (i>=vcount) return false;
+    }
     vkDeviceWaitIdle(device_);
     // B3: an empty POST clears the mesh slot (was: 0-byte buffer -> NULL-handle crash).
     if (verts.empty() || indices.empty() || icount == 0) {
@@ -1912,6 +1997,10 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
     for (size_t t = 0; t + 2 < indices.size(); t += 3) {
         uint32_t ia = indices[t], ib = indices[t + 1], ic = indices[t + 2];
         bool keep = true;
+        if (preserve_mesh_topology_) {
+            clean_idx.push_back(ia); clean_idx.push_back(ib); clean_idx.push_back(ic);
+            continue;
+        }
         if ((size_t)ia < nv && (size_t)ib < nv && (size_t)ic < nv) {
             const float* A = clean.data() + (size_t)ia * 9;
             const float* B = clean.data() + (size_t)ib * 9;
@@ -1950,6 +2039,8 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
         fprintf(stderr, "[load_mesh] degenerate eviction: dropped %zu zero-area tris\n", n_evict);
     if (n_collapse > 0)
         fprintf(stderr, "[load_mesh] sliver collapse: neutralized %zu sub-sample tris (width < %.5f wu)\n", n_collapse, sliver_max);
+    if (preserve_mesh_topology_)
+        fprintf(stderr, "[load_mesh] exact topology: preserved %zu triangles\n", clean_idx.size()/3);
     // THE STRAIN OVERLAY: keep the index list — true triangle strain needs the
     // adjacency, and the loader used to throw it away.
     mesh_tris_.assign(clean_idx.begin(), clean_idx.end());
@@ -1986,17 +2077,33 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
     // (pos3 + normal3 + color3).
     float r2max = 0.0f;
     float ymin = 0.0f, ymax = 1.0f;   // H0 defaults sane for degenerate payloads
+    float xmin = 0.0f, xmax = 0.0f, zmin = 0.0f, zmax = 0.0f;
     bool first = true;
     for (size_t i = 0; i + 2 < clean.size(); i += 9) {
         float x = clean[i], y = clean[i + 1], z = clean[i + 2];
         float r2 = x * x + y * y + z * z;
         if (r2 > r2max) r2max = r2;
-        if (first)      { ymin = y; ymax = y; first = false; }
-        else if (y < ymin) ymin = y;
-        else if (y > ymax) ymax = y;
+        if (first)      { ymin = y; ymax = y; xmin = x; xmax = x; zmin = z; zmax = z; first = false; }
+        else {
+            if (y < ymin) ymin = y;
+            if (y > ymax) ymax = y;
+            if (x < xmin) xmin = x;
+            if (x > xmax) xmax = x;
+            if (z < zmin) zmin = z;
+            if (z > zmax) zmax = z;
+        }
     }
     g_mesh_sphere = sqrtf(r2max);
     g_mesh_ymin = ymin; g_mesh_ymax = ymax;
+    // ORBIT PIVOT LAW (2026-09-20, membrane D, lane agent/triangle-monkey-grid):
+    // the viewer's orbit pivot is the loaded mesh's bbox CENTER -- derived from
+    // what the viewer itself loads (geometry only; the mass book is not
+    // reachable in the engine path). The engine exposes it and the mesh upload
+    // hands it to the camera as the orbit target, so rotating no longer swings
+    // the eye in and out around a point the body is not at.
+    g_mesh_center[0] = 0.5f * (xmin + xmax);
+    g_mesh_center[1] = 0.5f * (ymin + ymax);
+    g_mesh_center[2] = 0.5f * (zmin + zmax);
     return true;
 }
 
@@ -2399,18 +2506,7 @@ void Engine::compute_strain_joints() {
         // (No early skip on zero angles: identity composes to exact rest, and
         // skipping would leave the PREVIOUS frame's position in the scratch —
         // phantom strain. Always write.)
-        auto step = [](const float R[9], const float Jv[3], float M[9], float T[3]) {
-            float nM[9], nT[3];
-            for (int r = 0; r < 3; ++r) {
-                const float Rt0 = R[r * 3], Rt1 = R[r * 3 + 1], Rt2 = R[r * 3 + 2];
-                nT[r] = Rt0 * T[0] + Rt1 * T[1] + Rt2 * T[2]
-                      + (Jv[r] - (Rt0 * Jv[0] + Rt1 * Jv[1] + Rt2 * Jv[2]));
-                for (int cc = 0; cc < 3; ++cc)
-                    nM[r * 3 + cc] = Rt0 * M[cc] + Rt1 * M[3 + cc] + Rt2 * M[6 + cc];
-            }
-            for (int q = 0; q < 9; ++q) M[q] = nM[q];
-            T[0] = nT[0]; T[1] = nT[1]; T[2] = nT[2];
-        };
+        auto step = chimera::articulation::append_local_rotation;
         // JNT3: term 2's bone is the vertex's SECOND OWNER (its own FULL FK
         // chain — the sibling at limb/torso seams); the -1/missing fallback
         // keeps the JNT2 parent law exactly. Same law as joints.comp, or the
@@ -5117,75 +5213,23 @@ bool Engine::load_joints(const std::vector<uint8_t>& blob) {
     // copy, not a source. When a hinge IS engaged the two are equal by
     // construction, so the old behavior is preserved bit-for-bit there.
     if (!has_mesh_ || mesh_cpu_.empty()) { fprintf(stderr, "joints: no mesh rest\n"); return false; }
-    const bool is_jnt3 = (blob.size() >= 16 && memcmp(blob.data(), "JNT3", 4) == 0);
-    const bool is_jnt2 = (blob.size() >= 16 && memcmp(blob.data(), "JNT2", 4) == 0);
-    if (blob.size() < 16 ||
-        (!is_jnt2 && !is_jnt3 && memcmp(blob.data(), "JNT1", 4) != 0)) {
-        fprintf(stderr, "joints: bad blob\n"); return false;
+    chimera::articulation::JointBinding binding;
+    std::string binding_error;
+    if (!chimera::articulation::decode_joint_binding(
+            blob, tri_vfloats_ / 9, binding, binding_error)) {
+        fprintf(stderr, "joints: refused %s\n", binding_error.c_str());
+        return false; // No existing binding or GPU state changed on refusal.
     }
-    const uint8_t* p = blob.data() + 4;
-    uint32_t nv, nj, nl;
-    memcpy(&nv, p, 4); p += 4;
-    memcpy(&nj, p, 4); p += 4;
-    memcpy(&nl, p, 4); p += 4;
-    j_names_.clear();
-    {   // \0-separated names
-        const char* s = reinterpret_cast<const char*>(p);
-        size_t used = 0;
-        for (uint32_t k = 0; k < nj; ++k) {
-            size_t l = strnlen(s + used, nl - used);
-            j_names_.emplace_back(s + used, l);
-            used += l + 1;
-        }
-    }
-    p += nl;
-    const int32_t* assign = reinterpret_cast<const int32_t*>(p); p += nv * 4;
-    const float* w = reinterpret_cast<const float*>(p); p += nv * 4;
-    const float* J = reinterpret_cast<const float*>(p); p += nj * 12;
-    const float* ax = reinterpret_cast<const float*>(p); p += nj * 12;
-    const float* rom = reinterpret_cast<const float*>(p);
-    p += nj * 8;   // JNT1 ended here; JNT2 continues past the ROM array
-    // JNT2/JNT3: trailing FK parent map (i32 per joint). A JNT1 blob ends at
-    // ROM — a JNT2/3 blob must carry nj more int32s, or it is truncated.
-    // JNT3 then carries the per-vertex SECOND-OWNER arrays (the coverage law:
-    // term 2's bone + its blend share). A JNT2 pack gets the synthesized law
-    // (joint2 = parent) so the shipped behavior survives bit-for-bit.
-    j_parents_.clear();
-    if (is_jnt2 || is_jnt3) {
-        if (blob.size() < static_cast<size_t>(p - blob.data()) + size_t(nj) * 4) {
-            fprintf(stderr, "joints: JNT2/3 truncated parent map\n"); return false;
-        }
-        const int32_t* par = reinterpret_cast<const int32_t*>(p);
-        j_parents_.assign(par, par + nj);
-        for (uint32_t k = 0; k < nj; ++k) {
-            int32_t pk = j_parents_[k];
-            if (pk >= static_cast<int32_t>(nj)) {   // -1 legal (root); >= nj is not
-                fprintf(stderr, "joints: JNT2/3 parent %d out of range\n", k); return false;
-            }
-        }
-        p += size_t(nj) * 4;
-    }
-    j_joint2_.clear();
-    if (is_jnt3) {
-        if (blob.size() < static_cast<size_t>(p - blob.data()) + size_t(nv) * 8) {
-            fprintf(stderr, "joints: JNT3 truncated second-owner arrays\n"); return false;
-        }
-        const int32_t* j2 = reinterpret_cast<const int32_t*>(p);
-        j_joint2_.assign(j2, j2 + nv);
-        const float* w2 = reinterpret_cast<const float*>(p + size_t(nv) * 4);
-        for (uint32_t k = 0; k < nv; ++k) {
-            int32_t jk = j_joint2_[k];
-            if (jk >= static_cast<int32_t>(nj)) {   // -1 legal (kernel falls back)
-                fprintf(stderr, "joints: JNT3 joint2 %d out of range\n", k); return false;
-            }
-        }
-        (void)w2;   // share = 1 - w (the kernel derives it; the gate verifies)
-        p += size_t(nv) * 8;
-    } else {
-        j_joint2_.assign(nv, -1);   // JNT1/JNT2: the kernel's parent fallback
-    }
-    j_lbs_mode_ = is_jnt2 || is_jnt3;
-    if (j_parents_.empty()) j_parents_.assign(nj, -1);   // JNT1: all roots — the legacy law never reads this
+    const uint32_t nv=binding.vertex_count, nj=binding.joint_count;
+    const int32_t* assign=binding.owner.data();
+    const float* w=binding.weight.data();
+    const float* J=binding.pivots.data();
+    const float* ax=binding.axes.data();
+    const float* rom=binding.limits.data();
+    j_names_=binding.names;
+    j_parents_=binding.parents;
+    j_joint2_=binding.secondary;
+    j_lbs_mode_=binding.lbs;
     // THE STRAIN OVERLAY, JOINTS LANE (2026-09-04): keep the pack's CPU copies
     // (the pack arrays are transient pointers into the blob). The GPU side
     // (shared strain SSBO + compact domain) is built AFTER vkDeviceWaitIdle
@@ -6158,59 +6202,79 @@ bool Engine::dispatch_compute(std::vector<float>& out_velocities) {
 
 // ── Membrane streaming + frame capture (the C++ engine is the emission target) ──────────
 
-void Engine::ensure_capture_staging() {
+// G8: allocate/resize ONE readback ring slot to the current extent. Called at arm time only, on the render thread, so a
+// slot being in flight is never destroyed under the GPU (a resize between arm
+// and collect leaves the in-flight slot at its armed geometry — the slot
+// records its own w/h — and the realloc happens on a LATER arm).
+//
+// Readback is a CPU-read workload. Prefer HOST_CACHED, independently of
+// HOST_COHERENT. On this host the old nonlocal+coherent-first rule chose
+// uncached type 2 (flags 6): direct conversion took ~917 ms. Cached type 3
+// (flags 14) took ~1.8 ms with identical pixels in the 2026-09-16 A/B test.
+// See graph record doc.native_readback_diagnosis for scope and receipts.
+// Noncoherent selections map/invalidate the whole allocation before reading.
+void Engine::rb_ensure_slot(ReadbackSlot& s) {
     VkDeviceSize size = static_cast<VkDeviceSize>(extent_.width) * extent_.height * 4;
-    if (capture_staging_ != VK_NULL_HANDLE && size == capture_staging_size_) return;
-    if (capture_staging_ != VK_NULL_HANDLE) {
-        vkDestroyBuffer(device_, capture_staging_, nullptr);
-        vkFreeMemory(device_, capture_staging_mem_, nullptr);
-        capture_staging_ = VK_NULL_HANDLE;
-    }
+    if (s.buf != VK_NULL_HANDLE && size == s.size) return;
+    rb_destroy_slot(s);
     VkBufferCreateInfo bci{};
     bci.sType       = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
     bci.size        = size;
     bci.usage       = VK_BUFFER_USAGE_TRANSFER_DST_BIT;
     bci.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-    vkCreateBuffer(device_, &bci, nullptr, &capture_staging_);
-    VkMemoryRequirements mr; vkGetBufferMemoryRequirements(device_, capture_staging_, &mr);
+    vkCreateBuffer(device_, &bci, nullptr, &s.buf);
+    VkMemoryRequirements mr; vkGetBufferMemoryRequirements(device_, s.buf, &mr);
+
+    VkPhysicalDeviceMemoryProperties mp;
+    vkGetPhysicalDeviceMemoryProperties(phys_dev_, &mp);
+    int pick = -1;
+    bool noncoherent = false;
+    // CPU READBACK: HOST_COHERENT is a visibility guarantee, not a cache.
+    // Prefer HOST_CACHED; retain explicit invalidation for noncoherent memory.
+    // This control switch exists only for the controlled latency A/B check.
+    const bool uncached_control=std::getenv("CHIMERA_RB_UNCACHED_CONTROL")!=nullptr;
+    for(int pass=0;pass<7 && pick<0;++pass) {
+        for(uint32_t i=0;i<mp.memoryTypeCount;++i) {
+            if(!(mr.memoryTypeBits&(1u<<i)))continue;
+            const auto flags=mp.memoryTypes[i].propertyFlags;
+            if(!(flags&VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT))continue;
+            const bool local=(flags&VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)!=0;
+            const bool coherent=(flags&VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)!=0;
+            const bool cached=(flags&VK_MEMORY_PROPERTY_HOST_CACHED_BIT)!=0;
+            const bool accept=uncached_control ?
+                ((pass==0 && !local && coherent) || (pass==1 && !local && cached) ||
+                 (pass==2 && !local) || (pass==3 && coherent) || pass==6) :
+                ((pass==0 && !local && cached && coherent) || (pass==1 && !local && cached) ||
+                 (pass==2 && cached) || (pass==3 && !local && coherent) ||
+                 (pass==4 && !local) || (pass==5 && coherent) || pass==6);
+            if(accept){pick=int(i);noncoherent=!coherent;break;}
+        }
+    }
+    if(pick<0)throw std::runtime_error("readback_host_visible_memory_missing");
+
     VkMemoryAllocateInfo ai{};
     ai.sType           = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
     ai.allocationSize  = mr.size;
-    ai.memoryTypeIndex = find_mem_type(mr.memoryTypeBits,
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-    vkAllocateMemory(device_, &ai, nullptr, &capture_staging_mem_);
-    vkBindBufferMemory(device_, capture_staging_, capture_staging_mem_, 0);
-    capture_staging_size_ = size;
+    ai.memoryTypeIndex = static_cast<uint32_t>(pick);
+    vkAllocateMemory(device_, &ai, nullptr, &s.mem);
+    vkBindBufferMemory(device_, s.buf, s.mem, 0);
+    s.size = size;
+    s.noncoherent = noncoherent;
+    s.host_cached = (mp.memoryTypes[pick].propertyFlags & VK_MEMORY_PROPERTY_HOST_CACHED_BIT) != 0;
+    rb_mem_type_.store(static_cast<uint32_t>(pick));                 // G8 r3: expose the pick
+    rb_mem_flags_.store(mp.memoryTypes[pick].propertyFlags);         // for /studio_chrome
 }
 
-// The glass channel's staging, allocated by the SAME law as the pixel-clean one
-// (host-visible + coherent, sized to the swapchain extent). It is a SEPARATE
-// buffer on purpose: the two channels must never share a destination, or a glass
-// grab silently overwrites the frame /frame and the reel just handed out.
-void Engine::ensure_glass_staging() {
-    VkDeviceSize size = static_cast<VkDeviceSize>(extent_.width) * extent_.height * 4;
-    if (glass_staging_ != VK_NULL_HANDLE && size == glass_staging_size_) return;
-    if (glass_staging_ != VK_NULL_HANDLE) {
-        vkDestroyBuffer(device_, glass_staging_, nullptr);
-        vkFreeMemory(device_, glass_staging_mem_, nullptr);
-        glass_staging_ = VK_NULL_HANDLE;
-    }
-    VkBufferCreateInfo bci{};
-    bci.sType       = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-    bci.size        = size;
-    bci.usage       = VK_BUFFER_USAGE_TRANSFER_DST_BIT;
-    bci.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-    vkCreateBuffer(device_, &bci, nullptr, &glass_staging_);
-    VkMemoryRequirements mr; vkGetBufferMemoryRequirements(device_, glass_staging_, &mr);
-    VkMemoryAllocateInfo ai{};
-    ai.sType           = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-    ai.allocationSize  = mr.size;
-    ai.memoryTypeIndex = find_mem_type(mr.memoryTypeBits,
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-    vkAllocateMemory(device_, &ai, nullptr, &glass_staging_mem_);
-    vkBindBufferMemory(device_, glass_staging_, glass_staging_mem_, 0);
-    glass_staging_size_ = size;
+void Engine::rb_destroy_slot(ReadbackSlot& s) {
+    if (s.buf != VK_NULL_HANDLE) vkDestroyBuffer(device_, s.buf, nullptr);
+    if (s.mem != VK_NULL_HANDLE) vkFreeMemory(device_, s.mem, nullptr);
+    s.buf = VK_NULL_HANDLE; s.mem = VK_NULL_HANDLE; s.size = 0;
 }
+
+// The glass channel's staging follows the SAME law as the pixel-clean one
+// (host-visible + coherent, sized to the extent). It is a SEPARATE ring on
+// purpose: the two channels must never share a destination, or a glass grab
+// silently overwrites the frame /frame and the reel just handed out.
 
 // ── THE GLASS CHANNEL — one law, two loops ─────────────────────────────────────
 // Both frame() and frame_idle_ui() draw the Studio into the swapchain, and both
@@ -6630,7 +6694,35 @@ void Engine::push_grid_overlay() {
 
 void Engine::update_camera_matrices(float proj[16], float view[16]) {
     float aspect = static_cast<float>(extent_.width) / static_cast<float>(extent_.height);
-    perspective(proj, 45.0f * 3.14159265f / 180.0f, aspect, 0.1f, 1000.0f);
+    // CAMERA CLIPPING LAW (2026-09-20, lane agent/triangle-monkey-grid-20260920;
+    // operator Defect C: "clipping ... when you rotate around to the back of the
+    // object"). The near plane was the fixed constant 0.1 while the HTTP /camera
+    // (and /mesh_bin's header camera) set the radius WITHOUT the keyboard zoom's
+    // radius_floor() clamp — so any orbit whose eye-to-subject clearance fell
+    // under 0.1 sliced the subject, at the orbit phases where the off-center
+    // body swings nearest the eye. The near plane now tracks the SUBJECT: the
+    // clearance is the eye-to-target distance minus the mesh's measured bounding
+    // sphere (g_mesh_sphere, measured at upload — a true upper bound of the
+    // surface's distance from the ORIGIN, and the orbit target is the origin).
+    // Inside the old constant's wall (clearance < 0.1) the near plane shrinks to
+    // a quarter of the clearance (floor 2 mm) so a full orbit never clips;
+    // outside that regime the tested 0.1 stands — minimal behavior change for
+    // every existing view. far stays 1000: the subject never exceeds
+    // radius+sphere (~< 101 wu at the clamped max radius) and the R=300 floor
+    // quad's far corner ~524 wu from the worst camera, both far inside it.
+    float cam_near = 0.1f;
+    if (g_mesh_sphere > 0.0f) {
+        float cs = cosf(g_cam.phi), ss = sinf(g_cam.phi);
+        float cx = cosf(g_cam.theta), sx = sinf(g_cam.theta);
+        float ex = g_cam.radius * cs * sx + g_cam.pan_x;   // eye - target, the SAME
+        float ey = g_cam.radius * ss + g_cam.pan_y;        // law the eye build below
+        float ez = -g_cam.radius * cs * cx;                // uses (target at origin)
+        float dist_eye_target = sqrtf(ex * ex + ey * ey + ez * ez);
+        float clearance = dist_eye_target - g_mesh_sphere;
+        if (clearance < cam_near)
+            cam_near = fmaxf(clearance * 0.25f, 0.002f);
+    }
+    perspective(proj, 45.0f * 3.14159265f / 180.0f, aspect, cam_near, 1000.0f);
 
     update_camera_input(g_cam, cfg_.dt);
 
@@ -6660,6 +6752,150 @@ void Engine::update_camera_matrices(float proj[16], float view[16]) {
     std::memcpy(last_proj_, proj, 16 * sizeof(float));
     std::memcpy(last_view_, view, 16 * sizeof(float));
     last_vp_valid_ = true;
+}
+
+// R3 TOUCH (prereg 0935695e): the camera ray through pixel fractions.
+// Same spherical law as update_camera_matrices — one camera source of
+// truth. Handedness is verified by the closed loop, not by eye: the hit
+// must re-project onto the requested pixel (project_world).
+bool Engine::pick_cam(const float cam8[8], float aspect, float u, float v,
+                      const std::vector<float>& verts9,
+                      const std::vector<uint32_t>& tris,
+                      float out_point[3]) const {
+    // identical math to pick(), with the camera supplied by the caller.
+    // Z SIGN (2026-09-14, operator-measured): the caller is the WEB KERNEL's
+    // camera (page camEye = target.z + r*ch*cos(theta)) — the page IS the view
+    // the click came from, so the eye reconstruction must match ITS orbit law,
+    // not the engine's render-side law (update_camera_matrices uses -r*c*cx —
+    // mirrored). The old minus-Z picked through the target from BEHIND the
+    // body: click the front, the dent landed on the far side.
+    float c = cosf(cam8[2]), s = sinf(cam8[2]);
+    float cx = cosf(cam8[1]), sx = sinf(cam8[1]);
+    float eye[3] = { cam8[3] + cam8[0] * c * sx + cam8[6],
+                     cam8[4] + cam8[0] * s + cam8[7],
+                     cam8[5] + cam8[0] * c * cx };
+    float up[3] = { -s * sx, c, s * cx };
+    float fwd[3] = { cam8[3] - eye[0], cam8[4] - eye[1], cam8[5] - eye[2] };
+    float fl = sqrtf(fwd[0]*fwd[0] + fwd[1]*fwd[1] + fwd[2]*fwd[2]);
+    if (fl < 1e-9f) return false;
+    fwd[0] /= fl; fwd[1] /= fl; fwd[2] /= fl;
+    float right[3] = { fwd[1]*up[2] - fwd[2]*up[1],
+                       fwd[2]*up[0] - fwd[0]*up[2],
+                       fwd[0]*up[1] - fwd[1]*up[0] };
+    float rl = sqrtf(right[0]*right[0] + right[1]*right[1] + right[2]*right[2]);
+    if (rl < 1e-9f) return false;
+    right[0] /= rl; right[1] /= rl; right[2] /= rl;
+    const float th = tanf(45.0f * 3.14159265f / 180.0f * 0.5f);
+    const float ndx = 2.f * u - 1.f, ndy = 1.f - 2.f * v;
+    float dir[3] = { fwd[0] + right[0] * (ndx * aspect * th) + up[0] * (ndy * th),
+                     fwd[1] + right[1] * (ndx * aspect * th) + up[1] * (ndy * th),
+                     fwd[2] + right[2] * (ndx * aspect * th) + up[2] * (ndy * th) };
+    float dl = sqrtf(dir[0]*dir[0] + dir[1]*dir[1] + dir[2]*dir[2]);
+    dir[0] /= dl; dir[1] /= dl; dir[2] /= dl;
+    const size_t nt = tris.size() / 3;
+    float best_t = 1e30f;
+    bool hit = false;
+    for (size_t i = 0; i < nt; ++i) {
+        const uint32_t ia = tris[i*3+0], ib = tris[i*3+1], ic = tris[i*3+2];
+        const float* a = &verts9[(size_t)ia * 9];
+        const float* b = &verts9[(size_t)ib * 9];
+        const float* cc = &verts9[(size_t)ic * 9];
+        float e1[3] = { b[0]-a[0], b[1]-a[1], b[2]-a[2] };
+        float e2[3] = { cc[0]-a[0], cc[1]-a[1], cc[2]-a[2] };
+        float pv[3] = { dir[1]*e2[2] - dir[2]*e2[1],
+                        dir[2]*e2[0] - dir[0]*e2[2],
+                        dir[0]*e2[1] - dir[1]*e2[0] };
+        float det = e1[0]*pv[0] + e1[1]*pv[1] + e1[2]*pv[2];
+        if (det > -1e-10f && det < 1e-10f) continue;
+        float inv = 1.f / det;
+        float tv[3] = { eye[0]-a[0], eye[1]-a[1], eye[2]-a[2] };
+        float uu = (tv[0]*pv[0] + tv[1]*pv[1] + tv[2]*pv[2]) * inv;
+        if (uu < -1e-6f || uu > 1.f + 1e-6f) continue;
+        float qv[3] = { tv[1]*e1[2] - tv[2]*e1[1],
+                        tv[2]*e1[0] - tv[0]*e1[2],
+                        tv[0]*e1[1] - tv[1]*e1[0] };
+        float vv = (dir[0]*qv[0] + dir[1]*qv[1] + dir[2]*qv[2]) * inv;
+        if (vv < -1e-6f || uu + vv > 1.f + 1e-6f) continue;
+        float t = (e2[0]*qv[0] + e2[1]*qv[1] + e2[2]*qv[2]) * inv;
+        if (t > 1e-4f && t < best_t) {
+            best_t = t;
+            out_point[0] = eye[0] + dir[0]*t;
+            out_point[1] = eye[1] + dir[1]*t;
+            out_point[2] = eye[2] + dir[2]*t;
+            hit = true;
+        }
+    }
+    return hit;
+}
+
+bool Engine::pick(float u, float v,
+                  const std::vector<float>& verts9,
+                  const std::vector<uint32_t>& tris,
+                  float out_point[3]) const {
+    if (!last_vp_valid_ || verts9.size() < 9 || tris.size() < 3) return false;
+    float c = cosf(g_cam.phi), s = sinf(g_cam.phi);
+    float cx = cosf(g_cam.theta), sx = sinf(g_cam.theta);
+    float eye[3] = { g_cam.target[0] + g_cam.radius * c * sx + g_cam.pan_x,
+                     g_cam.target[1] + g_cam.radius * s + g_cam.pan_y,
+                     g_cam.target[2] - g_cam.radius * c * cx };
+    float up[3] = { -s * sx, c, s * cx };
+    float fwd[3] = { g_cam.target[0] - eye[0],
+                     g_cam.target[1] - eye[1],
+                     g_cam.target[2] - eye[2] };
+    float fl = sqrtf(fwd[0]*fwd[0] + fwd[1]*fwd[1] + fwd[2]*fwd[2]);
+    if (fl < 1e-9f) return false;
+    fwd[0] /= fl; fwd[1] /= fl; fwd[2] /= fl;
+    float right[3] = { fwd[1]*up[2] - fwd[2]*up[1],
+                       fwd[2]*up[0] - fwd[0]*up[2],
+                       fwd[0]*up[1] - fwd[1]*up[0] };
+    float rl = sqrtf(right[0]*right[0] + right[1]*right[1] + right[2]*right[2]);
+    if (rl < 1e-9f) return false;
+    right[0] /= rl; right[1] /= rl; right[2] /= rl;
+
+    const float aspect = static_cast<float>(extent_.width) / static_cast<float>(extent_.height);
+    const float th = tanf(45.0f * 3.14159265f / 180.0f * 0.5f);
+    const float ndx = 2.f * u - 1.f, ndy = 1.f - 2.f * v;
+    float dir[3] = { fwd[0] + right[0] * (ndx * aspect * th) + up[0] * (ndy * th),
+                     fwd[1] + right[1] * (ndx * aspect * th) + up[1] * (ndy * th),
+                     fwd[2] + right[2] * (ndx * aspect * th) + up[2] * (ndy * th) };
+    float dl = sqrtf(dir[0]*dir[0] + dir[1]*dir[1] + dir[2]*dir[2]);
+    dir[0] /= dl; dir[1] /= dl; dir[2] /= dl;
+
+    // Moller-Trumbore, nearest hit; verts9 = 9 floats per vertex
+    const size_t nt = tris.size() / 3;
+    float best_t = 1e30f;
+    bool hit = false;
+    for (size_t i = 0; i < nt; ++i) {
+        const uint32_t ia = tris[i*3+0], ib = tris[i*3+1], ic = tris[i*3+2];
+        const float* a = &verts9[(size_t)ia * 9];
+        const float* b = &verts9[(size_t)ib * 9];
+        const float* cc = &verts9[(size_t)ic * 9];
+        float e1[3] = { b[0]-a[0], b[1]-a[1], b[2]-a[2] };
+        float e2[3] = { cc[0]-a[0], cc[1]-a[1], cc[2]-a[2] };
+        float pv[3] = { dir[1]*e2[2] - dir[2]*e2[1],
+                        dir[2]*e2[0] - dir[0]*e2[2],
+                        dir[0]*e2[1] - dir[1]*e2[0] };
+        float det = e1[0]*pv[0] + e1[1]*pv[1] + e1[2]*pv[2];
+        if (det > -1e-10f && det < 1e-10f) continue;
+        float inv = 1.f / det;
+        float tv[3] = { eye[0]-a[0], eye[1]-a[1], eye[2]-a[2] };
+        float uu = (tv[0]*pv[0] + tv[1]*pv[1] + tv[2]*pv[2]) * inv;
+        if (uu < -1e-6f || uu > 1.f + 1e-6f) continue;
+        float qv[3] = { tv[1]*e1[2] - tv[2]*e1[1],
+                        tv[2]*e1[0] - tv[0]*e1[2],
+                        tv[0]*e1[1] - tv[1]*e1[0] };
+        float vv = (dir[0]*qv[0] + dir[1]*qv[1] + dir[2]*qv[2]) * inv;
+        if (vv < -1e-6f || uu + vv > 1.f + 1e-6f) continue;
+        float t = (e2[0]*qv[0] + e2[1]*qv[1] + e2[2]*qv[2]) * inv;
+        if (t > 1e-4f && t < best_t) {
+            best_t = t;
+            out_point[0] = eye[0] + dir[0]*t;
+            out_point[1] = eye[1] + dir[1]*t;
+            out_point[2] = eye[2] + dir[2]*t;
+            hit = true;
+        }
+    }
+    return hit;
 }
 
 // ── GPU bitonic sort (back-to-front splat ordering — no CPU in the per-frame path) ─────────
@@ -7071,20 +7307,35 @@ bool Engine::load_membrane(const std::string& term, const std::vector<float>& po
     return ok;
 }
 
-void Engine::set_camera(float radius, float theta, float phi) {
+const float* Engine::mesh_center() const { return g_mesh_center; }
+
+void Engine::set_camera(float radius, float theta, float phi,
+                        float pan_x, float pan_y,
+                        float target_x, float target_y, float target_z) {
     g_cam.radius = fmaxf(radius_floor(), radius);
     g_cam.theta  = theta;
     g_cam.phi    = phi;   // free spin — the camera up vector handles any elevation
-    g_cam.target[0] = g_cam.target[1] = g_cam.target[2] = 0.0f;
-    g_cam.pan_x = g_cam.pan_y = 0.0f;
+    // CAM-PAN/TARGET LAW (2026-09-20, Defect C lane): pan and target default to
+    // 0 — every existing caller keeps today's zeroed behavior — but /camera can
+    // now carry them so a deterministic harness can (a) reproduce the
+    // operator's pan-then-orbit scenario (pan is the unclamped eye offset; the
+    // near plane tracks it, see update_camera_matrices) and (b) frame an
+    // off-origin body (the orbit looks at the target).
+    g_cam.target[0] = target_x;
+    g_cam.target[1] = target_y;
+    g_cam.target[2] = target_z;
+    g_cam.pan_x = pan_x;
+    g_cam.pan_y = pan_y;
 }
 
-bool Engine::capture_frame(std::vector<uint8_t>& out_rgba, uint32_t& w, uint32_t& h) {
+bool Engine::capture_frame(std::vector<uint8_t>& out_rgba, uint32_t& w, uint32_t& h, uint64_t* sequence, std::array<uint64_t,5>* phases_us) {
     std::lock_guard<std::mutex> lk(capture_mutex_);
     if (capture_rgba_.empty()) return false;
     out_rgba = capture_rgba_;
     w = capture_w_;
     h = capture_h_;
+    if(phases_us)*phases_us=capture_read_phases_us_;
+    if(sequence)*sequence=capture_collected_gen_.load(); // Same lock as the copied pixels.
     return true;
 }
 
@@ -7097,13 +7348,23 @@ bool Engine::glass_frame(std::vector<uint8_t>& out_rgba, uint32_t& w, uint32_t& 
     return true;
 }
 
-// D3: THE REEL — every grab lands. Render thread, called from frame()'s capture
-// readback, so the metadata IS the state at grab time (t, joint, theta, camera,
-// light). The UI gets the pixels; the ledger (reel_json) is the dyad's channel.
+// D3: THE REEL — every grab lands. Render thread, called after the reader
+// thread published a fresh grab (reel_pending_), so the metadata IS the state
+// at grab time (t, joint, theta, camera, light). The UI gets the pixels; the
+// ledger (reel_json) is the dyad's channel.
 void Engine::reel_note_grab() {
-    if (capture_rgba_.empty() || capture_w_ == 0 || capture_h_ == 0) return;
+    // G8 r3: the reader thread swaps capture_rgba_ from its own thread now —
+    // snapshot under the mutex so the ledger can never read a mid-swap buffer
+    std::vector<uint8_t> rgba;
+    uint32_t sw = 0, sh = 0;
+    {
+        std::lock_guard<std::mutex> lk(capture_mutex_);
+        rgba = capture_rgba_;
+        sw = capture_w_;
+        sh = capture_h_;
+    }
+    if (rgba.empty() || sw == 0 || sh == 0) return;
     const int TW = StudioUI::THUMB_W, TH = StudioUI::THUMB_H;
-    const uint32_t sw = capture_w_, sh = capture_h_;
     static std::vector<uint8_t> tb;
     tb.assign(static_cast<size_t>(TW) * TH * 4, 0);
     for (int ty = 0; ty < TH; ++ty) {
@@ -7117,7 +7378,7 @@ void Engine::reel_note_grab() {
             uint32_t r = 0, g = 0, b = 0, a = 0, n = 0;
             for (uint32_t y = y0; y < y1 && y < sh; ++y)
                 for (uint32_t x = x0; x < x1 && x < sw; ++x) {
-                    const uint8_t* p = &capture_rgba_[(static_cast<size_t>(y) * sw + x) * 4];
+                    const uint8_t* p = &rgba[(static_cast<size_t>(y) * sw + x) * 4];
                     r += p[0]; g += p[1]; b += p[2]; a += p[3]; ++n;
                 }
             uint8_t* d = &tb[(static_cast<size_t>(ty) * TW + tx) * 4];
@@ -7529,7 +7790,13 @@ bool Engine::frame() {
     // Frames-in-flight: slot cycles 0..1 — the CPU records this frame while the GPU
     // may still be drawing the previous slot. Per-slot fence/cmdbuf/descriptors/UBO.
     uint32_t img_idx = image_idx_;
+    // G8 r3 phase timers: the instrument that settles where a slow grab spends
+    // its time (fence wait / collect / present), exposed on /studio_chrome.
+    const auto ph_t0 = std::chrono::steady_clock::now();
     VkResult fence_res = vkWaitForFences(device_, 1, &fences_[img_idx], VK_TRUE, UINT64_MAX);
+    ph_fence_us_.store(static_cast<uint64_t>(
+        std::chrono::duration_cast<std::chrono::microseconds>(
+            std::chrono::steady_clock::now() - ph_t0).count()));
     if (fence_res == VK_ERROR_DEVICE_LOST) {
         fprintf(stderr, "FATAL: VK_ERROR_DEVICE_LOST at frame fence wait (slot %u)\n", img_idx);
         fflush(stderr);
@@ -7538,6 +7805,11 @@ bool Engine::frame() {
     // NOTE: the fence is NOT reset here — an early return (OUT_OF_DATE) would leave
     // it reset-but-never-submitted and the next wait on this slot would hang.
     // Reset happens at the submit site, immediately before vkQueueSubmit.
+    // G8: snapshot the arm counter BEFORE this frame can arm anything — slots
+    // with seq > it are THIS frame's arms, whose copies ride the submit below;
+    // the backstop must never collect them against the PREVIOUS submit's
+    // still-signalled fence.
+    const uint64_t g8_armed_before = capture_armed_gen_.load();
     // THE STRAIN OVERLAY: the CPU computes true area strain from the SAME
     // analytic FK law (works for both the CPU fallback and the GPU kernel),
     // then the kernel tints when the overlay flag is set. One call, both paths.
@@ -7735,7 +8007,7 @@ bool Engine::frame() {
     stride_tick();
     const bool stride_drives = stride_active_.load(std::memory_order_relaxed) &&
                              stride_playing_.load(std::memory_order_relaxed);
-    if ((joints_on_.load(std::memory_order_relaxed) || edit_mode || stride_drives) &&
+    if (!external_body_owner_.load() && (joints_on_.load(std::memory_order_relaxed) || edit_mode || stride_drives) &&
         joints_loaded_ && joints_pipe_ != VK_NULL_HANDLE) {
         float* st = static_cast<float*>(j_state_map_);
         if (stride_drives) {
@@ -7854,7 +8126,7 @@ bool Engine::frame() {
                     0, 1, &mb, 0, nullptr, 0, nullptr);
             }
         }
-    } else if (hinge_active_ && hinge_pipe_ != VK_NULL_HANDLE) {
+    } else if (!external_body_owner_.load() && hinge_active_ && hinge_pipe_ != VK_NULL_HANDLE) {
         if (hinge_desc_dirty_) hinge_rebind();   // tri_vbuf_ recreated -> rebind BEFORE dispatch
         struct HingePC { float JL[4], JR[4], axis[4]; float romL, romR, period, phaseR, time;
                          float thetaL, thetaR; uint32_t flags; uint32_t n; } hpc{};
@@ -8053,7 +8325,7 @@ bool Engine::frame() {
 
     // ── W4 surface displacement — build the water vertex buffer from the POSED
     // mesh (runs after the hinge/clock compute, before the render pass reads it).
-    if (water_vis_on_.load(std::memory_order_relaxed) && water_loaded_ && has_mesh_
+    if (!external_body_owner_.load() && water_vis_on_.load(std::memory_order_relaxed) && water_loaded_ && has_mesh_
         && w_vis_pipe_ != VK_NULL_HANDLE && w_vis_set_ != VK_NULL_HANDLE) {
         if (water_vis_desc_dirty_) water_vis_rebind();
         // zero indirect.vertexCount (instanceCount stays 1 from the init upload)
@@ -8209,28 +8481,11 @@ bool Engine::frame() {
             vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS,
                                     frost_render_layout_, 1, 1, &frost_frag_set_, 0, nullptr);
         }
-        // THE GROUND PLANE first of all (opaque, depth-writing): the surface
-        // the contact shadow lands on. The shadow (no depth write) blends over
-        // it; the mesh's depth-tested draw wins where they overlap.
-        if (floor_pipeline_ != VK_NULL_HANDLE && floor_vbuf_ != VK_NULL_HANDLE) {
-            vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, floor_pipeline_);
-            vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS,
-                                    pipeline_layout_, 0, 1, &desc_sets_[img_idx], 0, nullptr);
-            VkBuffer fvb = floor_vbuf_; VkDeviceSize foff = 0;
-            vkCmdBindVertexBuffers(cmd_bufs_[img_idx], 0, 1, &fvb, &foff);
-            vkCmdDraw(cmd_bufs_[img_idx], FLOOR_VERTS, 1, 0, 0);
-        }
-        // THE CONTACT SHADOW first (blended over the cleared background, under
-        // the mesh): the flattened mesh on the floor plane, moving with the
-        // pose. Depth write is off, so the mesh's own draw wins the depth test.
-        if (tri_shadow_pipeline_ != VK_NULL_HANDLE) {
-            vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, tri_shadow_pipeline_);
-            vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS,
-                                    pipeline_layout_, 0, 1, &desc_sets_[img_idx], 0, nullptr);
-            vkCmdBindVertexBuffers(cmd_bufs_[img_idx], 0, 1, &vb, &off);
-            vkCmdBindIndexBuffer(cmd_bufs_[img_idx], ib, 0, VK_INDEX_TYPE_UINT32);
-            vkCmdDrawIndexed(cmd_bufs_[img_idx], draw_idx_count, 1, 0, 0, 0);
-        }
+        // THE BODY FIRST (GUIDE AMENDMENT 2026-09-20, Defect B): the opaque
+        // accepted fill lands before the grid plane so the plane — now a
+        // blended, depth-write-OFF guide — composites over the scene and can
+        // never hide geometry behind/below it. The contact shadow (depth-tested,
+        // write OFF) inks ON the plane after it.
         if (mesh_mode_ != 1) {
             vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS,
                               frost_draw ? tri_frost_pipeline_ : tri_pipeline_);
@@ -8265,6 +8520,36 @@ bool Engine::frame() {
             vkCmdBindVertexBuffers(cmd_bufs_[img_idx], 0, 1, &wvb, &woff);
             vkCmdDrawIndirect(cmd_bufs_[img_idx], w_vis_indirect_buf_, 0, 1, 0);
         }
+        // THE GRID PLANE (the guide): blended, depth-write OFF, cull NONE —
+        // visible from BOTH sides, never occluding. Drawn after the opaque body:
+        // the guide composites over it at alpha 0.5 where the plane is nearer,
+        // and loses the depth test to geometry in front of it.
+        static const bool floor_diag = getenv("CHIMERA_FLOOR_DIAG") != nullptr;
+        if (floor_diag && floor_pipeline_ != VK_NULL_HANDLE && floor_vbuf_ != VK_NULL_HANDLE) {
+            static int floor_diag_frames = 0;
+            if (floor_diag_frames++ < 3)
+                fprintf(stderr, "[floor-diag] drawing floor: pipe=%p vbuf=%p\n", (void*)floor_pipeline_, (void*)floor_vbuf_);
+        }
+        if (floor_pipeline_ != VK_NULL_HANDLE && floor_vbuf_ != VK_NULL_HANDLE) {
+            vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, floor_pipeline_);
+            vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                    pipeline_layout_, 0, 1, &desc_sets_[img_idx], 0, nullptr);
+            VkBuffer fvb = floor_vbuf_; VkDeviceSize foff = 0;
+            vkCmdBindVertexBuffers(cmd_bufs_[img_idx], 0, 1, &fvb, &foff);
+            vkCmdDraw(cmd_bufs_[img_idx], FLOOR_VERTS, 1, 0, 0);
+        }
+        // THE CONTACT SHADOW (ink ON the plane, drawn after it): depth-tested
+        // against the body's depth, write OFF — it can never paint over the
+        // body, and with the plane no longer writing depth there is no
+        // depth-equality gamble (the old FLOOR-COEXIST hazard is gone).
+        if (tri_shadow_pipeline_ != VK_NULL_HANDLE) {
+            vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, tri_shadow_pipeline_);
+            vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                    pipeline_layout_, 0, 1, &desc_sets_[img_idx], 0, nullptr);
+            vkCmdBindVertexBuffers(cmd_bufs_[img_idx], 0, 1, &vb, &off);
+            vkCmdBindIndexBuffer(cmd_bufs_[img_idx], ib, 0, VK_INDEX_TYPE_UINT32);
+            vkCmdDrawIndexed(cmd_bufs_[img_idx], draw_idx_count, 1, 0, 0, 0);
+        }
     } else {
         vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline_);
         vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline_layout_, 0, 1, &desc_sets_[img_idx], 0, nullptr);
@@ -8290,24 +8575,15 @@ bool Engine::frame() {
 
     vkCmdEndRenderPass(cmd_bufs_[img_idx]);
 
-    // Capture the rendered frame (copy offscreen image -> host staging) when requested.
-    // The offscreen render pass leaves the image in TRANSFER_SRC, so no layout transition needed.
+    // Capture the rendered frame (copy offscreen image -> host staging ring)
+    // when requested. G8 ARM: the copy is only RECORDED here — the readback is
+    // collected off the tick path by collect_readbacks() at the end of a later
+    // frame (the old path vkQueueWaitIdle'd + swizzled HERE, ~910 ms per grab).
+    // The offscreen render pass leaves the image in TRANSFER_SRC, so no layout
+    // transition needed.
     bool do_capture = capture_requested_.exchange(false);
-    if (do_capture) {
-        ensure_capture_staging();
-        VkBufferImageCopy region{};
-        region.bufferOffset      = 0;
-        region.bufferRowLength   = 0;
-        region.bufferImageHeight = 0;
-        region.imageSubresource.aspectMask     = VK_IMAGE_ASPECT_COLOR_BIT;
-        region.imageSubresource.mipLevel       = 0;
-        region.imageSubresource.baseArrayLayer = 0;
-        region.imageSubresource.layerCount     = 1;
-        region.imageOffset = {0, 0, 0};
-        region.imageExtent = {extent_.width, extent_.height, 1};
-        vkCmdCopyImageToBuffer(cmd_bufs_[img_idx], rt_image_, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-                               capture_staging_, 1, &region);
-    }
+    if (do_capture && !arm_capture_readback(cmd_bufs_[img_idx], img_idx))
+        capture_requested_.store(true);   // ring full: arm again next frame
 
     // Blit the offscreen result into the swapchain image and present it, so the WINDOW shows the
     // render instead of a blank screen. Skipped when the window is minimized / out-of-date.
@@ -8377,10 +8653,15 @@ bool Engine::frame() {
             glass_err_.store(GLASS_ERR_NO_PRESENT);
             glass_ready_.store(true);        // ready, so HTTP can report the failure
         } else {
-            ensure_glass_staging();
-            // both branches above leave the swapchain in PRESENT_SRC
-            record_glass_copy(cmd_bufs_[img_idx], swap_imgs_[sc_idx],
-                              VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, glass_staging_, extent_);
+            // G8 ARM: same staging-ring law as the pixel-clean capture above.
+            ReadbackSlot* gs = arm_glass_readback(img_idx);
+            if (gs) {
+                // both branches above leave the swapchain in PRESENT_SRC
+                record_glass_copy(cmd_bufs_[img_idx], swap_imgs_[sc_idx],
+                                  VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, gs->buf, extent_);
+            } else {
+                glass_requested_.store(true);   // ring full: arm again next frame
+            }
         }
     }
     vkEndCommandBuffer(cmd_bufs_[img_idx]);
@@ -8398,6 +8679,14 @@ bool Engine::frame() {
         si.signalSemaphoreCount = 1;
         si.pSignalSemaphores    = &flush_sem_[img_idx];
     }
+    // G8 backstop: a readback riding THIS slot's fence must be drained before
+    // the reset reuses the fence — a zero-timeout collect that has missed for a
+    // whole MAX_FRAMES_IN_FLIGHT cycle means the device is deeply backlogged,
+    // and the (capped) wait here keeps the reset from destroying the only
+    // proof the copy finished. Normal path: collect_readbacks() below already
+    // drained it, so this is a scan of 4 slot flags, ~ns. g8_armed_before
+    // excludes THIS frame's arms — see collect_for_frame_slot().
+    collect_for_frame_slot(img_idx, 100, g8_armed_before);
     vkResetFences(device_, 1, &fences_[img_idx]);
     VkResult submit_res = vkQueueSubmit(queue_, 1, &si, fences_[img_idx]);
     if (submit_res == VK_ERROR_DEVICE_LOST) {
@@ -8407,6 +8696,7 @@ bool Engine::frame() {
     }
 
     if (can_present) {
+        const auto ph_p0 = std::chrono::steady_clock::now();
         VkPresentInfoKHR pi{};
         pi.sType              = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
         pi.waitSemaphoreCount = 1;
@@ -8424,11 +8714,25 @@ bool Engine::frame() {
         }
         if (pres_res == VK_ERROR_OUT_OF_DATE_KHR || pres_res == VK_SUBOPTIMAL_KHR)
             recreate_after_frame = true;
+        ph_pres_us_.store(static_cast<uint64_t>(
+            std::chrono::duration_cast<std::chrono::microseconds>(
+                std::chrono::steady_clock::now() - ph_p0).count()));
     }
 
-    // the one readback law, shared with frame_idle_ui()
-    readback_captures(do_capture, do_glass);
-    if (do_capture) reel_note_grab();   // D3: every grab lands in the reel
+    // G8: the one readback law, shared with frame_idle_ui() — hand every
+    // ALREADY-finished readback slot to the reader thread, ZERO timeout, oldest
+    // first. The render thread never maps, reads, or waits on a readback; a
+    // not-yet-finished slot is handed over on a later frame (worst case one
+    // frame of added latency instead of the old ~910 ms freeze).
+    const auto ph_c0 = std::chrono::steady_clock::now();
+    collect_readbacks();
+    ph_coll_us_.store(static_cast<uint64_t>(
+        std::chrono::duration_cast<std::chrono::microseconds>(
+            std::chrono::steady_clock::now() - ph_c0).count()));
+    // D3: the reader swizzled a fresh grab — the ledger lands on this thread
+    // (ui_ is render-thread-only) from the already-published bytes.
+    if (reel_pending_.exchange(false, std::memory_order_acquire))
+        reel_note_grab();
 
     // B1: deferred swapchain rebuild (suboptimal acquire, or present reported
     // OUT_OF_DATE/SUBOPTIMAL) — done at frame end, outside the render pass.
@@ -8442,52 +8746,292 @@ bool Engine::frame() {
     return true;  // a present failure (minimized window) is not fatal — skip, retry next frame
 }
 
-void Engine::readback_captures(bool do_capture, bool do_glass) {
-    if (do_capture) {
-        vkQueueWaitIdle(queue_);
-        void* mapped = nullptr;
-        vkMapMemory(device_, capture_staging_mem_, 0, capture_staging_size_, 0, &mapped);
-        {
-            std::lock_guard<std::mutex> lk(capture_mutex_);
-            size_t px = static_cast<size_t>(extent_.width) * extent_.height;
-            capture_rgba_.resize(px * 4);
-            const uint8_t* src = static_cast<const uint8_t*>(mapped);
-            for (size_t i = 0; i < px; ++i) {
-                capture_rgba_[i * 4 + 0] = src[i * 4 + 2];  // R
-                capture_rgba_[i * 4 + 1] = src[i * 4 + 1];  // G
-                capture_rgba_[i * 4 + 2] = src[i * 4 + 0];  // B
-                capture_rgba_[i * 4 + 3] = src[i * 4 + 3];  // A
-            }
-            capture_w_ = extent_.width;
-            capture_h_ = extent_.height;
+// ══ G8 TWO-PHASE ARM/COLLECT READBACK (2026-09-13, the tick-counter fix) ════
+// THE OLD LAW: after submit, readback_captures() did vkQueueWaitIdle(queue_) +
+// map + full-res BGRA->RGBA swizzle ON THE RENDER THREAD — ~910 ms per grab
+// (payload-independent: docs/evidence/agent_fleet/SHIP/R6_BENCH/
+// tick_counter_audit.md), freezing the tick loop that runs on this thread
+// after frame() returns. THE NEW LAW, in the same two beats the old one used:
+//
+//   ARM  (mid-recording, arm_*_readback): pick a free ring slot, ensure its
+//        staging buffer, record the copy into the frame's cmdbuf, stamp it
+//        {frame_slot, extent, seq}, return. NO WAIT — the submit carries the
+//        copy to the GPU exactly like any other draw.
+//   COLLECT (end of frame, collect_readbacks): for each in-flight slot, a
+//        ZERO-timeout fence check; only a slot whose fence is ALREADY
+//        signalled gets mapped + swizzled (oldest seq first). A slot the GPU
+//        has not finished stays pending — worst case it is served one frame
+//        later (~3.3 ms at the 300 fps cap) instead of stalling the loop
+//        ~910 ms now.
+//
+// G8 ROUND 2 CORRECTION (2026-09-14, live AFTER-run evidence): removing the
+// queue wait was NOT enough — every grab still stalled ~940 ms, async and
+// sync alike, and the stall sat in THIS collect's map+swizzle (worker TTFB
+// and sync watermark both pinned it inside capture_mutex_). Root cause: the
+// Historical attempts changed residency or thread placement without reliably
+// selecting HOST_CACHED. The current policy separates CPU caching from coherence;
+// see rb_ensure_slot and the captured phase timings. Uncached fallback uses bulk
+// copy before conversion, avoiding scalar reads directly from uncached memory.
+//
+// The render thread never waits on a readback. The one bounded exception is
+// collect_for_frame_slot(), the backstop before a fences_ slot is RESET: a
+// capture riding that fence must be collected (or waited, capped) first, or
+// the reset destroys the only proof the copy finished. It is reachable only
+// when the device is >= MAX_FRAMES_IN_FLIGHT frames backlogged — the old path
+// paid its ~910 ms on EVERY grab; the backstop pays a capped 100 ms on a
+// pathological schedule only.
+//
+// THE FENCE-GENERATION LAW (desk-check fix, 2026-09-13): between a frame's
+// fence WAIT (frame start) and its vkResetFences, fences_[img_idx] still
+// carries the PREVIOUS submit's signal. Any collect in that window must
+// ignore slots armed in THIS frame (seq > the frame-entry snapshot of
+// capture_armed_gen_) — their copy has not been submitted, and a fence pass
+// there would publish the staging buffer's PREVIOUS contents as a fresh
+// grab and falsely advance the watermark. The backstop passes the snapshot
+// down; the end-of-frame collects run after reset+submit, where the signal
+// they see is the copy's own generation, and need no guard.
+//
+// G8 ROUND 3 CORRECTION (2026-09-14): the memory-law fix did NOT shrink the
+// stall — the AFTER2 run repeated ~940 ms per grab with cached-sysmem staging,
+// so the slow op inside the collect was never memory bandwidth either. The
+// collect itself has left the render thread: fence-check + ENQUEUE here, and
+// a dedicated reader thread owns every map / invalidate / swizzle / unmap /
+// publish (rb_reader_loop). The render thread never waits on a readback — not
+// even accidentally — and the ph_* timers on /studio_chrome (fence wait /
+// collect / present, µs) make the next window decisive if any stall survives.
+bool Engine::arm_capture_readback(VkCommandBuffer cb, uint32_t frame_slot) {
+    ReadbackSlot* s = nullptr;
+    for (int k = 0; k < RB_SLOTS; ++k) {
+        ReadbackSlot& c = capture_rb_[(capture_rb_next_ + k) % RB_SLOTS];
+        if (!c.in_flight) {
+            s = &c;
+            capture_rb_next_ = (capture_rb_next_ + k + 1) % RB_SLOTS;
+            break;
         }
-        vkUnmapMemory(device_, capture_staging_mem_);
-        capture_ready_.store(true);
     }
-    // the glass readback: same BGRA->RGBA swizzle (the swapchain is B8G8R8A8,
-    // same as rt_image_), the same vkQueueWaitIdle the pixel-clean path already
-    // paid -- but into glass_rgba_, never capture_rgba_, and it never touches the
-    // reel: the reel is the pixel-clean capture ledger the dyad reads.
-    if (do_glass && glass_err_.load() == GLASS_OK) {
-        if (!do_capture) vkQueueWaitIdle(queue_);
-        void* gmap = nullptr;
-        vkMapMemory(device_, glass_staging_mem_, 0, glass_staging_size_, 0, &gmap);
-        {
-            std::lock_guard<std::mutex> lk(glass_mutex_);
-            size_t px = static_cast<size_t>(extent_.width) * extent_.height;
-            glass_rgba_.resize(px * 4);
-            const uint8_t* src = static_cast<const uint8_t*>(gmap);
-            for (size_t i = 0; i < px; ++i) {
-                glass_rgba_[i * 4 + 0] = src[i * 4 + 2];  // R
-                glass_rgba_[i * 4 + 1] = src[i * 4 + 1];  // G
-                glass_rgba_[i * 4 + 2] = src[i * 4 + 0];  // B
-                glass_rgba_[i * 4 + 3] = src[i * 4 + 3];  // A
-            }
-            glass_w_ = extent_.width;
-            glass_h_ = extent_.height;
+    if (!s) return false;   // ring full: caller re-stores the request flag
+    rb_ensure_slot(*s);
+    VkBufferImageCopy region{};
+    region.bufferOffset      = 0;
+    region.bufferRowLength   = 0;
+    region.bufferImageHeight = 0;
+    region.imageSubresource.aspectMask     = VK_IMAGE_ASPECT_COLOR_BIT;
+    region.imageSubresource.mipLevel       = 0;
+    region.imageSubresource.baseArrayLayer = 0;
+    region.imageSubresource.layerCount     = 1;
+    region.imageOffset = {0, 0, 0};
+    region.imageExtent = {extent_.width, extent_.height, 1};
+    // The offscreen render pass leaves rt_image_ in TRANSFER_SRC, so no layout
+    // transition needed (unchanged from the synchronous path).
+    vkCmdCopyImageToBuffer(cb, rt_image_, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                           s->buf, 1, &region);
+    s->frame_slot = frame_slot;
+    s->w = extent_.width;
+    s->h = extent_.height;
+    s->seq = ++capture_armed_gen_;     // the strict-fresh watermark advances at arm
+    s->glass = false;
+    s->in_flight.store(true, std::memory_order_release);
+    return true;
+}
+
+Engine::ReadbackSlot* Engine::arm_glass_readback(uint32_t frame_slot) {
+    ReadbackSlot* s = nullptr;
+    for (int k = 0; k < RB_SLOTS; ++k) {
+        ReadbackSlot& c = glass_rb_[(glass_rb_next_ + k) % RB_SLOTS];
+        if (!c.in_flight) {
+            s = &c;
+            glass_rb_next_ = (glass_rb_next_ + k + 1) % RB_SLOTS;
+            break;
         }
-        vkUnmapMemory(device_, glass_staging_mem_);
-        glass_ready_.store(true);
+    }
+    if (!s) return nullptr;   // ring full: caller re-stores the request flag
+    rb_ensure_slot(*s);
+    // The caller records record_glass_copy(..., s->buf, ...) into its own
+    // cmdbuf: only the call site knows the swapchain image and the layout it
+    // carries at that point (PRESENT_SRC after the UI pass, TRANSFER_DST when
+    // only the clear/blit ran). The copy takes the image back to PRESENT_SRC.
+    s->frame_slot = frame_slot;
+    s->w = extent_.width;
+    s->h = extent_.height;
+    s->seq = ++capture_armed_gen_;   // shares the arm counter; glass collects
+                                     // never store it into capture_collected_gen_
+    s->glass = true;
+    s->in_flight.store(true, std::memory_order_release);
+    return s;
+}
+
+// One collect pass over finished slots, oldest seq first, both channels.
+// G8 r4 DEFAULT (inline blocking law — the pre-G8 liveness trade): fence-check
+// FIRST (never map an unsignalled slot), then map + optional invalidate +
+// swizzle + unmap + publish INLINE ON THE RENDER THREAD. This costs ~1 s per
+// grab on this box (the readback read serializes the device under WDDM — see
+// the round-3 note) but the world always recovers: verified live, rounds 1-2.
+// CHIMERA_RB_READER=1 (experimental, OFF): hand the slot to the reader thread
+// instead — the render thread only enqueues and never blocks on the read.
+// armed_before (default: everything) — the fence-generation guard for calls
+// made between a frame's fence WAIT and its vkResetFences (i.e. the backstop):
+// there fences_[img_idx] still carries the PREVIOUS submit's signal, so a slot
+// armed THIS frame (seq > armed_before) must be skipped — its copy was never
+// submitted. After reset+submit the signal is the copy's own generation and
+// the default collects it normally.
+void Engine::collect_readbacks(uint64_t armed_before) {
+    for (;;) {
+        ReadbackSlot* best = nullptr;
+        // FIFO: the oldest finished capture slot is read first, so
+        // capture_rgba_ always ends holding the NEWEST finished frame.
+        for (int k = 0; k < RB_SLOTS; ++k) {
+            ReadbackSlot& c = capture_rb_[k];
+            if (c.in_flight.load(std::memory_order_acquire) &&
+                (!rb_use_reader_ || !c.queued.load(std::memory_order_acquire)) &&
+                c.seq <= armed_before &&
+                vkGetFenceStatus(device_, fences_[c.frame_slot]) == VK_SUCCESS &&
+                (!best || c.seq < best->seq))
+                best = &c;
+        }
+        if (!best) break;
+        if (rb_use_reader_) rb_enqueue(*best);
+        else                rb_read_slot(*best);   // inline: map + read + publish (render thread)
+    }
+    for (;;) {
+        ReadbackSlot* best = nullptr;
+        for (int k = 0; k < RB_SLOTS; ++k) {
+            ReadbackSlot& g = glass_rb_[k];
+            if (g.in_flight.load(std::memory_order_acquire) &&
+                (!rb_use_reader_ || !g.queued.load(std::memory_order_acquire)) &&
+                g.seq <= armed_before &&
+                vkGetFenceStatus(device_, fences_[g.frame_slot]) == VK_SUCCESS &&
+                (!best || g.seq < best->seq))
+                best = &g;
+        }
+        if (!best) break;
+        if (rb_use_reader_) rb_enqueue(*best);
+        else                rb_read_slot(*best);
+    }
+}
+
+// Map, invalidate if required, read/convert, unmap, and publish. Per-capture
+// phase timings travel under the same lock as the pixels and capture sequence.
+// The slot is mapped only after its submission fence generation is complete.
+void Engine::rb_read_slot(ReadbackSlot& s) {
+    using ReadClock=std::chrono::steady_clock;
+    auto micros=[](ReadClock::time_point a,ReadClock::time_point b) {
+        return uint64_t(std::chrono::duration_cast<std::chrono::microseconds>(b-a).count());
+    };
+    const auto t0=ReadClock::now();
+    void* mapped = nullptr;
+    if (vkMapMemory(device_, s.mem, 0, VK_WHOLE_SIZE, 0, &mapped) == VK_SUCCESS) {
+        const auto t1=ReadClock::now();
+        if (s.noncoherent) {   // non-coherent staging: make the GPU's copy visible before the CPU read
+            VkMappedMemoryRange rng{};
+            rng.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+            rng.memory = s.mem;
+            rng.offset = 0;
+            rng.size   = VK_WHOLE_SIZE;   // whole alloc mapped from 0; keeps the
+                                          // nonCoherentAtomSize-multiple VUID moot
+            vkInvalidateMappedMemoryRanges(device_, 1, &rng);
+        }
+        const auto t2=ReadClock::now();
+        const size_t px = static_cast<size_t>(s.w) * s.h;
+        std::vector<uint8_t> scratch(px * 4);
+        const uint8_t* src = static_cast<const uint8_t*>(mapped);
+        static const bool force_bulk=std::getenv("CHIMERA_RB_MEMCPY_SWIZZLE")!=nullptr;
+        static const bool direct_control=std::getenv("CHIMERA_RB_DIRECT_CONTROL")!=nullptr;
+        const bool bulk_read=force_bulk || (!s.host_cached && !direct_control);
+        const auto copy_start=ReadClock::now();
+        if(bulk_read)std::memcpy(scratch.data(),src,px*4);
+        const auto copy_end=ReadClock::now();
+        if(bulk_read) {
+            for(size_t i=0;i<px;++i)std::swap(scratch[i*4],scratch[i*4+2]);
+        }else{
+            for(size_t i=0;i<px;++i) {
+                scratch[i*4+0]=src[i*4+2];scratch[i*4+1]=src[i*4+1];
+                scratch[i*4+2]=src[i*4+0];scratch[i*4+3]=src[i*4+3];
+            }
+        }
+        const auto convert_end=ReadClock::now();
+        vkUnmapMemory(device_, s.mem);
+        const auto unmap_end=ReadClock::now();
+        const std::array<uint64_t,5> phases{micros(t0,t1),micros(t1,t2),
+            micros(copy_start,copy_end),micros(copy_end,convert_end),micros(convert_end,unmap_end)};
+        if (s.glass) {
+            std::lock_guard<std::mutex> lk(glass_mutex_);
+            glass_rgba_.swap(scratch);
+            glass_w_ = s.w;
+            glass_h_ = s.h;
+            glass_ready_.store(true);
+        } else {
+            std::lock_guard<std::mutex> lk(capture_mutex_);
+            capture_rgba_.swap(scratch);
+            capture_w_ = s.w;
+            capture_h_ = s.h;
+            capture_read_phases_us_=phases;
+            capture_collected_gen_.store(s.seq);   // strict-fresh watermark
+            capture_ready_.store(true);
+            reel_pending_.store(true, std::memory_order_release);
+        }
+    }
+    // published (or failed map — drop the slot's bytes either way): the arm
+    // path may reuse the slot on a later frame
+    s.in_flight.store(false, std::memory_order_release);
+    s.queued.store(false, std::memory_order_release);
+}
+
+// G8 r3/r4: transfer a fence-finished slot to the reader thread (experimental
+// mode only). `queued` is set HERE, on the render thread, so the collect loop
+// can never re-enqueue the slot while the reader is still draining the queue
+// (the round-3 freeze: the loop re-enqueued a finished slot forever because
+// in_flight only clears after the reader's slow read).
+void Engine::rb_enqueue(ReadbackSlot& s) {
+    s.queued.store(true, std::memory_order_release);
+    {
+        std::lock_guard<std::mutex> lk(rb_q_m_);
+        rb_q_.push(&s);
+    }
+    rb_q_cv_.notify_one();
+}
+
+// The reader thread (experimental, CHIMERA_RB_READER=1): pops queued slots and
+// runs the same per-slot read as the inline law, on this thread instead of the
+// render thread. Exits when rb_quit_ is set and the queue is drained.
+void Engine::rb_reader_loop() {
+    for (;;) {
+        ReadbackSlot* s = nullptr;
+        {
+            std::unique_lock<std::mutex> lk(rb_q_m_);
+            rb_q_cv_.wait(lk, [&] { return rb_quit_.load() || !rb_q_.empty(); });
+            if (rb_quit_.load() && rb_q_.empty()) return;
+            s = rb_q_.front();
+            rb_q_.pop();
+        }
+        rb_read_slot(*s);
+    }
+}
+
+// The backstop: a slot riding THIS frame's fence must be drained before the
+// reset below reuses the fence. Waits are capped; reached only on a deeply
+// backlogged device (see the block comment above).
+// armed_before: slots armed THIS frame (seq > it) are excluded — their proof
+// rides the submit that follows the reset; collecting one here would publish
+// never-submitted staging bytes against the PREVIOUS submit's fence signal
+// (the desk-check bug this guard exists for).
+void Engine::collect_for_frame_slot(uint32_t frame_slot, uint64_t timeout_ms,
+                                    uint64_t armed_before) {
+    if (frame_slot >= fences_.size()) return;
+    for (int k = 0; k < RB_SLOTS; ++k) {
+        if (capture_rb_[k].in_flight && capture_rb_[k].frame_slot == frame_slot &&
+            capture_rb_[k].seq <= armed_before) {
+            vkWaitForFences(device_, 1, &fences_[frame_slot], VK_TRUE,
+                            timeout_ms * 1000000ull);
+            collect_readbacks(armed_before);   // the fence is now signalled: drain everything ARMED BEFORE this frame
+            return;
+        }
+        if (glass_rb_[k].in_flight && glass_rb_[k].frame_slot == frame_slot &&
+            glass_rb_[k].seq <= armed_before) {
+            vkWaitForFences(device_, 1, &fences_[frame_slot], VK_TRUE,
+                            timeout_ms * 1000000ull);
+            collect_readbacks(armed_before);
+            return;
+        }
     }
 }
 
@@ -8633,6 +9177,10 @@ bool Engine::frame_idle_ui() {
     }
     bool can_present = (acquire_res == VK_SUCCESS || acquire_res == VK_SUBOPTIMAL_KHR);
     bool recreate_after_frame = (acquire_res == VK_SUBOPTIMAL_KHR);
+    // G8: same law as frame() — snapshot BEFORE this loop can arm anything, so
+    // the backstop can tell THIS frame's arms (seq > it, copies riding the
+    // submit below) from older slots the fence signal still covers.
+    const uint64_t g8_armed_before = capture_armed_gen_.load();
 
     bool do_capture = capture_requested_.exchange(false);
     bool do_glass   = glass_requested_.exchange(false);
@@ -8656,7 +9204,8 @@ bool Engine::frame_idle_ui() {
                                 VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                                 0, VK_ACCESS_TRANSFER_WRITE_BIT,
                                 VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
-        VkClearColorValue cc = {{0.015f, 0.02f, 0.06f, 1.0f}};
+        VkClearColorValue cc = {{E1_CLEAR_COLOR[0], E1_CLEAR_COLOR[1],
+                                 E1_CLEAR_COLOR[2], E1_CLEAR_COLOR[3]}};   // E1 STAGE BLOCK owns the value
         VkImageSubresourceRange sr{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
         vkCmdClearColorImage(cmd_bufs_[img_idx], swap_imgs_[sc_idx],
                              VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, &cc, 1, &sr);
@@ -8666,7 +9215,6 @@ bool Engine::frame_idle_ui() {
         // happened to hold. UNDEFINED as the old layout discards the contents,
         // which is exactly right before a clear.
         if (do_capture) {
-            ensure_capture_staging();
             transition_image_layout(cmd_bufs_[img_idx], rt_image_,
                                     VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                                     0, VK_ACCESS_TRANSFER_WRITE_BIT,
@@ -8677,18 +9225,10 @@ bool Engine::frame_idle_ui() {
                                     VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
                                     VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_TRANSFER_READ_BIT,
                                     VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
-            VkBufferImageCopy region{};
-            region.bufferOffset      = 0;
-            region.bufferRowLength   = 0;
-            region.bufferImageHeight = 0;
-            region.imageSubresource.aspectMask     = VK_IMAGE_ASPECT_COLOR_BIT;
-            region.imageSubresource.mipLevel       = 0;
-            region.imageSubresource.baseArrayLayer = 0;
-            region.imageSubresource.layerCount     = 1;
-            region.imageOffset = {0, 0, 0};
-            region.imageExtent = {extent_.width, extent_.height, 1};
-            vkCmdCopyImageToBuffer(cmd_bufs_[img_idx], rt_image_, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-                                   capture_staging_, 1, &region);
+            // G8 ARM: record the copy into a free staging-ring slot — never
+            // wait (collect_readbacks() drains it off this path).
+            if (!arm_capture_readback(cmd_bufs_[img_idx], img_idx))
+                capture_requested_.store(true);   // ring full: arm again next frame
         }
 
         VkRenderPassBeginInfo urp{};
@@ -8706,13 +9246,18 @@ bool Engine::frame_idle_ui() {
             glass_err_.store(GLASS_ERR_NO_PRESENT);
             glass_ready_.store(true);
         } else {
-            ensure_glass_staging();
-            // the UI render pass leaves the swapchain in PRESENT_SRC; with no UI
-            // it is still TRANSFER_DST from the clear above.
-            record_glass_copy(cmd_bufs_[img_idx], swap_imgs_[sc_idx],
-                              ui_drawn ? VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
-                                       : VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                              glass_staging_, extent_);
+            // G8 ARM: same staging-ring law as the pixel-clean capture above.
+            ReadbackSlot* gs = arm_glass_readback(img_idx);
+            if (gs) {
+                // the UI render pass leaves the swapchain in PRESENT_SRC; with no UI
+                // it is still TRANSFER_DST from the clear above.
+                record_glass_copy(cmd_bufs_[img_idx], swap_imgs_[sc_idx],
+                                  ui_drawn ? VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
+                                           : VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                                  gs->buf, extent_);
+            } else {
+                glass_requested_.store(true);   // ring full: arm again next frame
+            }
         }
     }
     vkEndCommandBuffer(cmd_bufs_[img_idx]);
@@ -8729,6 +9274,11 @@ bool Engine::frame_idle_ui() {
         si.signalSemaphoreCount = 1;
         si.pSignalSemaphores = &flush_sem_[img_idx];
     }
+    // G8 backstop (same law as frame()): drain — with a capped wait — any
+    // readback riding THIS slot's fence before the reset reuses it. This
+    // frame's arms (seq > g8_armed_before) are excluded: their copies ride the
+    // submit below.
+    collect_for_frame_slot(img_idx, 100, g8_armed_before);
     vkResetFences(device_, 1, &fences_[img_idx]);
     VkResult submit_res = vkQueueSubmit(queue_, 1, &si, fences_[img_idx]);
     if (submit_res == VK_ERROR_DEVICE_LOST) {
@@ -8754,7 +9304,10 @@ bool Engine::frame_idle_ui() {
             recreate_after_frame = true;
     }
     // the SAME readback law as frame() — one implementation, two loops
-    readback_captures(do_capture, do_glass);
+    collect_readbacks();
+    // D3: the reader swizzled a fresh grab — the ledger lands on this thread
+    if (reel_pending_.exchange(false, std::memory_order_acquire))
+        reel_note_grab();
     if (recreate_after_frame) {
         VkSurfaceCapabilitiesKHR caps{};
         vkGetPhysicalDeviceSurfaceCapabilitiesKHR(phys_dev_, surface_, &caps);

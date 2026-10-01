@@ -1,0 +1,28 @@
+{
+ "source": "Janisch et al. 2024 wild primate limb joint kinematics, figshare article 23231366 v1 (387 stride rows x 14 species + 1 all-NA row); CSV downloaded via direct ndownloader and sha256-verified against the lane pin; figshare API record and consensus tree pinned as provenance attachments",
+ "retrieved_utc": "2026-09-17T00:00:00+00:00",
+ "license": "CC BY 4.0 (figshare API license field)",
+ "files": [
+  {
+   "path": "wildprimate_kin.csv",
+   "url": "https://ndownloader.figshare.com/files/40942022",
+   "resolved_url": "https://ndownloader.figshare.com/files/40942022",
+   "bytes": 229396,
+   "sha256": "d0048076a68de3a881304884a0bf5e3fa87a37392ae567b16be8cecacf001608"
+  },
+  {
+   "path": "figshare_23231366_api.json",
+   "url": "https://api.figshare.com/v2/articles/23231366",
+   "resolved_url": "https://api.figshare.com/v2/articles/23231366",
+   "bytes": 8661,
+   "sha256": "7850676cfbf9a2accc307e6dd73c50ec50ae338d7acf5fca440fc3bb25e1ad56"
+  },
+  {
+   "path": "consensusTree_10kTrees_Primates_Version3.nex",
+   "url": "https://ndownloader.figshare.com/files/40942016",
+   "resolved_url": "https://ndownloader.figshare.com/files/40942016",
+   "bytes": 754,
+   "sha256": "16180c412d2d8d7967d3b4b0db1c5912d6153e486fa222713c6d39127fec6741"
+  }
+ ]
+}

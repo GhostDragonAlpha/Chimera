@@ -1,0 +1,57 @@
+{
+ "falsifier": "F-SLICE-MOCK-TRUTH",
+ "pass": true,
+ "registry_fantasy_ids": [
+  "mock_carry"
+ ],
+ "registry_declared_ids": [
+  "ghost_standing_pose"
+ ],
+ "registry_reality_ids": [
+  "camera",
+  "fall_test",
+  "floor_contact",
+  "gravity",
+  "physics_body",
+  "press",
+  "render_stream"
+ ],
+ "code_mock_sites": {
+  "mock_carry": [
+   "scene_boot.py:26",
+   "slice_server.py:9",
+   "slice_server.py:145",
+   "slice_server.py:170",
+   "index.html:310",
+   "mock_registry.json:24"
+  ]
+ },
+ "code_declared_sites": {
+  "ghost_standing_pose": [
+   "scene_boot.py:27",
+   "scene_boot.py:211",
+   "mock_registry.json:34"
+  ]
+ },
+ "mocks_in_code_not_registry": [],
+ "registry_mocks_without_code_site": [],
+ "declared_in_code_not_registry": [],
+ "registry_declared_without_code_site": [],
+ "retirement": {
+  "id": "mock_physics_body",
+  "mock_token_sites_remaining": [],
+  "prose_mentions_recorded_for_transparency": [
+   "scene_boot.py"
+  ],
+  "gone_from_code_and_fantasy": true,
+  "recorded_in_registry_retired": true,
+  "one_fewer_mock": true,
+  "before": [
+   "mock_carry",
+   "mock_physics_body"
+  ],
+  "after": [
+   "mock_carry"
+  ]
+ }
+}

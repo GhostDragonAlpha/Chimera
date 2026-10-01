@@ -1,3 +1,5 @@
+> Current branch policy: [SLOT_BRANCHES.md](SLOT_BRANCHES.md) supersedes per-attempt remote branch creation below. Ten slots map to branch-1 through branch-10; the lead serializes publication. Existing PRs are migration exceptions.
+
 # Ten-card Kanban â€” current workflow
 
 The ten slots are TASKS, not worker reservations. No 20-minute or hourly expiry exists.

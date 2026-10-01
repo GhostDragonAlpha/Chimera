@@ -1,0 +1,172 @@
+{
+ "schema": "chimera.pennation_correction_validation.v1",
+ "written_utc": "2026-09-21T04:32:49Z (frozen BEFORE this lane's builder existed or ran; pre-registration values below were derived only from the two prior lanes' COMMITTED artifacts - the pairing's at 2098797b and the sigma lane's at beb6b106 - never from a run of this lane)",
+ "written_before_build": true,
+ "lane": "pennation correction of the Guimaraes force pairing",
+ "agent": "pennation-correction agent (branch agent/pennation-correction-20260921 off agent/guimaraes-pairing-20260921 at 2098797b), GLM 5.3",
+
+ "statement": "The pairing's 23 force records OVERSTATE tendon-line force for pennate muscles: the sigma lane measured (decisive bucket, 18 muscles with pennation > 11.48 deg where the two conventions differ > 2%: 17 match uncorrected, 0 match corrected) that the pinned sheet's PCSA_m2 column is the pennation-UNCORRECTED area m/(rho*FL), so F = sigma * PCSA alone overestimates a pennate muscle by 1/cos(pennation) - up to 16.06% at VM's 30.5 deg. The correction is arithmetic, not taste: F_corrected = sigma_ASSUMED * PCSA_m2 * 1e4 * cos(pennation_deg), with pennation the measured avg_penn_deg from the SAME pinned sheet rows the pairing read, and sigma = 30.0 N/cm^2 = 0.30 MPa EXPLICITLY ASSUMED (the sigma lane's verdict: RETAINED AS ASSUMED, NOT RETIRED BY MEASUREMENT). Only the 23 paired forces are recomputed; the deferred EDL/FDL whole-muscle numbers and the 5 admitted absent-muscle numbers are carried UNCHANGED into the closure (their correction is out of this lane's scope and is named, not hidden). This lane EMITS A NEW annotation file ALONGSIDE the pairing's; the pairing's committed artifacts are not modified - the integrator chooses which to admit.",
+
+ "inputs": [
+  {
+   "role": "before-state: the pairing's force-annotated assembly (READ ONLY, never modified)",
+   "path": "tools/science_funnel/validation/guimaraes_pairing_20260921/macaque_assembly_force_annotated.json",
+   "sha256_at_2098797b": "d7791b4d1db7d0a49d4ff99c76d36a3d9fa02a77723ac694d9d7741acbd1a27f"
+  },
+  {
+   "role": "before-state audit table (READ ONLY)",
+   "path": "tools/science_funnel/validation/guimaraes_pairing_20260921/audit_table.json",
+   "sha256_at_2098797b": "843d1e70a5a881819360e05cef961eee89108ec86e6cb82ff2dbf475a0979d88"
+  },
+  {
+   "role": "the correction's measured source: the sigma lane's finding and per-row table",
+   "ref": "agent/sigma-law-20260921 at beb6b1062874d140a6a29a58282ea337fc226213",
+   "paths": [
+    "tools/science_funnel/validation/sigma_law_20260921/receipt.json",
+    "tools/science_funnel/validation/sigma_law_20260921/audit_table.csv"
+   ]
+  },
+  {
+   "role": "architecture batch (PCSA + pennation re-read fresh from pinned bytes by this lane's builder)",
+   "path_at_ref": "tools/science_funnel/data/guimaraes_arch/AJPA-190-e70329-s001.xlsx",
+   "sha256": "08ead4a901a53f97e136c709a7804b9d04b4b903107e873c01f3b9b5b9eb8678",
+   "ref_cited": "46ed85a3ba1e451cf5b02f068134bf6801dbd258 via refs/remotes/origin/agent/skeleton-movie-20260919",
+   "pin_verified_before_freeze": "git show 46ed85a3:<path> | sha256sum == pin and bytes == 321899, measured before this receipt was written"
+  },
+  {
+   "role": "the sigma datum (ASSUMED, not measured)",
+   "path": "LightEngine/kinematic/muscles.py",
+   "line": 79,
+   "sha256_at_2098797b": "e807d7f5533dcae06c338f6f053655ac0212073bac08f1d6e150e0808f51488a",
+   "datum_line_verified_before_freeze": true
+  }
+ ],
+
+ "law": {
+  "corrected_force": "F_corrected_N = sigma_ASSUMED_N_PER_CM2 * PCSA_m2 * 1e4 * cos(radians(pennation_deg))",
+  "sigma_status": "ASSUMED: 30.0 N/cm^2 == 0.30 MPa, LightEngine/kinematic/muscles.py:79 ANATOMY-DATUM; the sigma lane's verdict is RETAINED AS ASSUMED, NOT RETIRED BY MEASUREMENT (the batch carries no Fmax, sigma_implied not computable) - marked ASSUMED on every corrected record",
+  "pennation_source": "sheet avg_penn_deg of the SAME Macaca mulatta row the pairing used (same pinned xlsx bytes); deg -> rad via math.radians (matches units.convert)",
+  "no_pennation_rows": "rows whose avg_penn_deg cell is blank carry correction factor exactly 1.0, pennation_correction.source = 'absent_at_source_treat_as_0_declared' - the pairing's own declared convention; they are listed as UNCORRECTED BY ABSENCE, never silently treated as parallel-fiber measurements",
+  "scope": "exactly the 23 muscles whose before-record status is paired_exact_admitted; quarantined rows still get no force; deferred EDL/FDL and absent-muscle numbers are carried unchanged into the re-closed total and their non-correction is declared"
+ },
+
+ "pre_registration": {
+  "derivation_basis": "every number below was computed at freeze time from ONLY: (a) the pairing's committed before-artifact (23 paired F values = 30*PCSA*1e4, penn_deg per muscle), and (b) math.cos/math.fsum. No builder of this lane existed; no sheet re-read had happened. The builder's fresh byte-read reproducing these numbers is itself a falsifiable prediction (F2).",
+  "P1_before_reproduction": "Re-reading the pinned xlsx bytes reproduces the before-artifact bit-exactly on all 23 rows: pcsa_m2, penn_deg (19 measured, 4 blank: AM, GRA, PB, PL), and F_before == 30.0*PCSA_m2*1e4 exactly. The 23-paired set is exactly: AL, AM, BFL, EHL, FHL, GMax, GMed, GMin, GRA, ILI, LG, MG, PB, PECT, PIRI, PL, SM, SOL, ST, TA, VI, VL, VM.",
+  "P2_corrected_sum_23_N": {"value": 1954.6936924458228, "tolerance": "bit-exact expected (same formula on identical floats; math.fsum is exact); FALSIFIED if relative deviation > 1e-12"},
+  "P3_total_shift_N": {"shift": -134.6656075541773, "shift_pct_of_sum23": -6.44530634602566, "batch_total_before_N": 2389.4823, "batch_total_after_N": 2254.816692445823, "note": "batch total = fsum(sum23_corrected, F_EDL_whole 11.49, F_FDL_whole 138.0639, sum_5_absent_admitted 150.5691), all three non-paired terms carried UNCHANGED; tolerance 1e-12 relative"},
+  "P4_top3_by_absolute_delta_N": [
+   {"muscle": "GMed", "guimaraes_row_penn_deg": 30.3, "factor": 0.8633955506067716, "F_before_N": 257.0172, "F_after_N": 221.90750690941076, "delta_N": -35.10969309058925, "overestimate_if_uncorrected_pct": 15.821768979145933},
+   {"muscle": "BFL", "guimaraes_row_penn_deg": 26.2, "factor": 0.8972583696743285, "F_before_N": 302.29769999999996, "F_after_N": 271.23914145829923, "delta_N": -31.058558541700748, "overestimate_if_uncorrected_pct": 11.450618216351982},
+   {"muscle": "VM", "guimaraes_row_penn_deg": 30.5, "factor": 0.8616291604415258, "F_before_N": 134.8503, "F_after_N": 116.1909507742879, "delta_N": -18.659349225712113, "overestimate_if_uncorrected_pct": 16.059210378577315}
+  ],
+  "P5_top3_by_pct_correction": [
+   {"muscle": "VM", "penn_deg": 30.5, "force_drop_pct": -13.837083955847419, "overestimate_if_uncorrected_pct": 16.059210378577315},
+   {"muscle": "GMed", "penn_deg": 30.3, "force_drop_pct": -13.660444939322836, "overestimate_if_uncorrected_pct": 15.821768979145933},
+   {"muscle": "AL", "penn_deg": 29.5, "force_drop_pct": -12.964430406010031, "overestimate_if_uncorrected_pct": 14.895554158475054}
+  ],
+  "P6_uncorrected_by_absence": "exactly 4 of the 23 (AM, GRA, PB, PL) have no measured pennation and get factor exactly 1.0 with the treat-as-0 declaration; the other 19 carry measured pennation; the max overestimate among the 23 is VM's 16.059210378577315% (== the sigma lane's 16.059% over all 36 rows, since VM carries the sheet's max pennation)"
+ },
+
+ "falsifiers": {
+  "F1_pin_lawfulness": "The builder refuses unless: xlsx bytes at 46ed85a3 via git show sha256 == 08ead4a901a53f97e136c709a7804b9d04b4b903107e873c01f3b9b5b9eb8678 and bytes == 321899; 46ed85a3 is an ancestor of refs/remotes/origin/agent/skeleton-movie-20260919; carrier download_receipt.json agrees; the before-artifact and its audit table sha256 equal the committed pins d7791b4d... / 843d1e70...; muscles.py sha256 == e807d7f5... with the datum line verbatim at line 79. FALSIFIED if any pin drifts.",
+  "F2_before_reproduction": "The fresh byte-read reproduces the before-state bit-exactly: same 23-row set, same pcsa_m2 floats, same penn_deg floats (19 measured / 4 absent), and every F_before == 30.0*PCSA_m2*1e4 exactly. FALSIFIED on any drift (would mean the before-artifact does not derive from the pinned bytes it claims).",
+  "F3_correction_trace_and_nothing_hidden": "Every corrected force carries: factor == cos(radians(sheet avg_penn_deg)) traced to its sheet row + cell + member sha256; sigma marked ASSUMED on the record; the UNCORRECTED value retained as a named field (max_isometric_force_N_uncorrected) on every one of the 23 records; the 4 absence rows carry factor 1.0 with source 'absent_at_source_treat_as_0_declared'. A completeness scan inside the builder proves every emitted data number has an audit row and vice versa. FALSIFIED if any corrected number lacks its trace, any uncorrected value is dropped, or any emitted number lacks provenance.",
+  "F4_determinism": "Two independent builder invocations produce byte-identical outputs (sha256 equality; no timestamps in artifacts). FALSIFIED on any byte difference.",
+  "F5_pairing_untouched": "After the build: sha256 of the pairing's two artifacts still equal the committed pins, and `git status --porcelain` shows changes ONLY inside tools/science_funnel/validation/pennation_correction_20260921/. FALSIFIED if the pairing's artifacts change or anything outside the lane directory is touched. THE OUTPUT IS A NEW ANNOTATION FILE ALONGSIDE THE ORIGINAL - the integrator chooses which to admit; this lane does not overwrite.",
+  "F6_closure": "Per muscle F_after == F_before * factor exactly (IEEE multiplication, no rounding); the re-closed arithmetic fsum(sum23_corrected, 11.49, 138.0639, 150.5691) == sum_30_corrected_batch_total at 1e-9 relative with the three non-paired terms carried unchanged and named. FALSIFIED if any force deviates or the closure parts."
+ },
+
+ "rule0": {
+  "statement": "See statement above: pennation-uncorrected PCSA (sigma lane, measured 17-0) means the pairing's 23 forces overstate pennate muscles by 1/cos(pennation); the measured per-muscle cos(pennation) correction is applied as a NEW annotation, sigma stays explicitly ASSUMED, the original stays untouched.",
+  "prediction": "See pre_registration above: P1..P6 frozen before this lane's builder existed, with full-precision values.",
+  "falsifiers": "F1..F6 above, each with its firing condition named before the run."
+ },
+
+ "results_note": "Filled by the run BELOW THIS LINE ONLY; the sections above are the preregistration and are never edited after the first commit.",
+ "results": {
+  "measured_utc": "2026-09-21T04:32:49Z (freeze) -> run 1 + run 2 immediately after; two independent builder invocations",
+  "amendment": {
+   "muscles_recomputed": 23,
+   "measured_pennation_count": 19,
+   "uncorrected_by_absence": ["AM", "GRA", "PB", "PL"],
+   "sum_23_paired_before_N": 2089.3593,
+   "sum_23_paired_corrected_N": 1954.6936924458228,
+   "shift_N": -134.6656075541773,
+   "shift_pct_of_sum23": -6.44530634602566,
+   "batch_total_before_N": 2389.4823,
+   "batch_total_corrected_N": 2254.816692445823,
+   "carried_unchanged_terms_N": {"F_EDL_whole": 11.49, "F_FDL_whole": 138.0639, "sum_5_absent_admitted": 150.5691},
+   "top3_by_absolute_delta_N": [
+    {"muscle": "GMed", "penn_deg": 30.3, "factor": 0.8633955506067716, "delta_N": -35.109693090589246},
+    {"muscle": "BFL", "penn_deg": 26.2, "factor": 0.8972583696743285, "delta_N": -31.058558541700734},
+    {"muscle": "VM", "penn_deg": 30.5, "factor": 0.8616291604415258, "delta_N": -18.659349225712106}
+   ],
+   "top3_by_pct": [
+    {"muscle": "VM", "penn_deg": 30.5, "force_drop_pct": -13.837083955847419, "overestimate_if_uncorrected_pct": 16.059210378577315},
+    {"muscle": "GMed", "penn_deg": 30.3, "force_drop_pct": -13.660444939322836, "overestimate_if_uncorrected_pct": 15.821768979145933},
+    {"muscle": "AL", "penn_deg": 29.5, "force_drop_pct": -12.964430406010031, "overestimate_if_uncorrected_pct": 14.895554158475054}
+   ],
+   "delta_derivation_note": "the frozen P4 delta values were derived at freeze time via F*(cos-1); the artifacts carry F*cos - F (the builder's subtraction route). The two routes agree to 15 significant digits and differ only in the final ulp (e.g. GMed: -35.10969309058925 vs -35.109693090589246); the P4 falsifier was registered on the top-3 ORDER, which both routes give identically (GMed, BFL, VM). Recorded, not tuned."
+  },
+  "falsifiers": {
+   "F1_pin_lawfulness": {
+    "verdict": "PASS",
+    "xlsx_sha256": "08ead4a901a53f97e136c709a7804b9d04b4b903107e873c01f3b9b5b9eb8678",
+    "xlsx_bytes": 321899,
+    "carrier_ancestry": "git merge-base --is-ancestor 46ed85a3 refs/remotes/origin/agent/skeleton-movie-20260919 -> true",
+    "before_artifact_sha": "d7791b4d1db7d0a49d4ff99c76d36a3d9fa02a77723ac694d9d7741acbd1a27f (== committed pin)",
+    "before_audit_sha": "843d1e70a5a881819360e05cef961eee89108ec86e6cb82ff2dbf475a0979d88 (== committed pin)",
+    "muscles_py_sha": "e807d7f5533dcae06c338f6f053655ac0212073bac08f1d6e150e0808f51488a, datum line 79 verbatim",
+    "sigma_lane": "receipt + audit_table.csv reachable at beb6b1062874d140a6a29a58282ea337fc226213"
+   },
+   "F2_before_reproduction": {
+    "verdict": "PASS",
+    "detail": "all 23 paired rows re-read from the pinned bytes reproduce the before-artifact bit-exactly (pcsa_m2, penn_deg 19/4, and every F_before == 30.0*PCSA*1e4 exactly); the paired set equals the frozen list exactly"
+   },
+   "F3_correction_trace_and_nothing_hidden": {
+    "verdict": "PASS",
+    "audit_rows": 310,
+    "emitted_data_numbers": 285,
+    "unprovenanced": 0,
+    "orphan_audit_rows": 0,
+    "detail": "every corrected force traces sheet row -> cell -> raw text -> member sha (spot: VM/R_VMed row 20 cell E20 raw '4.4950099999999999E-4' sha 08ead4a9...); factor traced to avg_penn_deg on every record; sigma marked ASSUMED on every record; max_isometric_force_N_uncorrected retained on all 23; AM/GRA/PB/PL carry factor 1.0 with absent_at_source_treat_as_0_declared"
+   },
+   "F4_determinism": {
+    "verdict": "PASS",
+    "run1_run2_shas_equal": true,
+    "sha256_run1_and_run2": {
+     "macaque_assembly_force_annotated_pennation_corrected.json": "939e0d7a9f908a4664f6f756ad58928b12c52ec4b41c0c3aa7e75c9f777806ee",
+     "amendment_table.json": "6531fe2fd79cb6b7f0939fbd28c133b4b6323245df7e540e5fa3636a3ad9f177",
+     "audit_table.json": "0d20d303ed947733b049ba481812d5aaee74b59ed0bcde887dcde2de761b1721"
+    }
+   },
+   "F5_pairing_untouched": {
+    "verdict": "PASS",
+    "pairing_artifacts_after_run2": "both sha256 == committed pins (byte-unchanged)",
+    "git_status_porcelain_after_run2": "?? tools/science_funnel/validation/pennation_correction_20260921/ ONLY - no change outside the lane directory",
+    "output_kind": "NEW annotation file alongside the original; the integrator chooses"
+   },
+   "F6_closure": {
+    "verdict": "PASS",
+    "per_muscle": "F_after == F_before * factor exactly on all 23 (builder pin)",
+    "closure": "fsum(1954.6936924458228, 11.49, 138.0639, 150.5691) == 2254.816692445823 with the three non-paired terms carried UNCORRECTED and named",
+    "before_sum_check": "fsum(before 23) == 2089.3593 == the pairing's sum_23_paired, bit-exact"
+   }
+  },
+  "predictions": {
+   "P1_before_reproduction": "PASS",
+   "P2_corrected_sum_23_N": "PASS (1954.6936924458228, bit-exact vs frozen)",
+   "P3_total_shift_N": "PASS (shift -134.6656075541773; total 2389.4823 -> 2254.816692445823, bit-exact vs frozen)",
+   "P4_top3_by_absolute_delta_N": "PASS (GMed, BFL, VM - order as frozen)",
+   "P5_top3_by_pct_correction": "PASS (VM, GMed, AL - order as frozen)",
+   "P6_uncorrected_by_absence": "PASS (19 measured / AM, GRA, PB, PL absent)"
+  },
+  "inter_lane_observations": [
+   "PB quarantine discrepancy, NOT adjudicated here: sigma_law_20260921's audit_table.csv names PB a pcsa-closure contradiction (dev 2.013e-02 vs the 2% cut, its committed row_status 'pcsa_closure_fail_quarantine_equivalent') while the admitting store at 46ed85a3 and the pairing lane admitted PB (30 admitted rows; PB is in the 23). This lane amends the pairing's before-state as it stands and invents no quarantine of its own; PB has no measured pennation and carries factor 1.0 either way, so the correction arithmetic is identical under both verdicts. Named for the integrator.",
+   "sigma_law_20260921's results.json says rows_with_pennation = 30 while its own committed audit_table.csv carries 29 non-blank penn cells (the mission's '29/36' matches the CSV); this lane's builder reads the bytes directly: 29 of 36 rows carry a measured pennation value, 19 of the 23 paired. The sigma lane's decisive-bucket conclusion (17-0 uncorrected) is unaffected by that count.",
+   "sigma remains the ASSUMED 30.0 N/cm^2 = 0.30 MPa datum on every corrected record: RETAINED AS ASSUMED, NOT RETIRED BY MEASUREMENT (sigma lane's verdict, restated, not re-litigated)."
+  ],
+  "verdict": "THE CORRECTED FORCE ANNOTATION LANDED ON ITS FROZEN PREDICTIONS, BIT-EXACT: the 23 paired forces recomputed as F = sigma_ASSUMED (30.0 N/cm^2 = 0.30 MPa, retained-not-retired) * PCSA * cos(measured pennation) shift the 23-pair sum 2089.3593 -> 1954.6936924458228 N (-134.6656075541773 N, -6.445% of the pair sum) and the batch closure 2389.4823 -> 2254.816692445823 N (EDL 11.49, FDL 138.0639 and the 5 admitted absent muscles 150.5691 carried UNCORRECTED and named). Largest corrections: GMed -35.11 N, BFL -31.06 N, VM -18.66 N absolute; VM -13.84% (16.06% overestimate if uncorrected), GMed -13.66%, AL -12.96% relative. The before-state reproduced bit-exactly from the pinned sheet bytes (the pairing's numbers ARE the bytes' numbers); every corrected number traces row -> cell -> raw text -> member sha; uncorrected values retained as named fields on all 23 records; determinism byte-exact over two runs; the pairing's artifacts byte-unchanged and nothing outside the lane directory touched - this lane emits a NEW annotation alongside the original and the integrator chooses."
+ }
+}

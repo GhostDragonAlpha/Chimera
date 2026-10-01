@@ -1,0 +1,46 @@
+{
+ "schema": "chimera.review_verdict.v1",
+ "base": "a4eaf574d78f63b494cd9688b4c32b5b218221a6",
+ "candidate": "4b047609c8f51782da10c9d63726f10ddb525cbc",
+ "candidate_short": "4b047609",
+ "checklist": "tools\\science_funnel\\review_checklist.json",
+ "checks": [
+  {
+   "id": "frozen_reference",
+   "status": "PASS",
+   "detail": "no engine/physics files touched; frozen check not applicable"
+  },
+  {
+   "id": "falsifier_as_test",
+   "status": "PASS",
+   "detail": "no engine/physics files touched; falsifier check not applicable"
+  },
+  {
+   "id": "receipt_schema",
+   "status": "PASS",
+   "detail": "no receipt in scope (none touched, none claims candidate); schema check not applicable"
+  },
+  {
+   "id": "scope_honesty",
+   "status": "PASS",
+   "detail": "no physics and no receipt in scope; scope check not applicable"
+  },
+  {
+   "id": "evidence_count",
+   "status": "PASS",
+   "detail": "no graph JSONs touched; evidence count not at risk"
+  },
+  {
+   "id": "graph_merge_replay",
+   "status": "PASS",
+   "detail": "no merges in range; merge-replay check not applicable"
+  }
+ ],
+ "summary_counts": {
+  "PASS": 6,
+  "FINDING": 0,
+  "CANNOT-VERIFY": 0
+ },
+ "verdict": "PASS",
+ "human_summary": "review 4b047609: PASS — all 6 checks green"
+}

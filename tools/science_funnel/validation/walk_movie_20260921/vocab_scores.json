@@ -1,0 +1,89 @@
+{
+ "aggregated_report": {
+  "categories": {
+   "gait": {
+    "hits": [
+     "motion"
+    ],
+    "n_hits": 1,
+    "n_stems": 14,
+    "ratio": 0.0714,
+    "required": true
+   },
+   "body_plan": {
+    "hits": [],
+    "n_hits": 0,
+    "n_stems": 21,
+    "ratio": 0.0,
+    "required": true
+   },
+   "size_proportion": {
+    "hits": [
+     "compact",
+     "elongat",
+     "large",
+     "long",
+     "proportion",
+     "scal",
+     "short",
+     "size",
+     "slender",
+     "small",
+     "thick",
+     "thin"
+    ],
+    "n_hits": 12,
+    "n_stems": 22,
+    "ratio": 0.5455,
+    "required": false
+   },
+   "posture_collapse": {
+    "hits": [
+     "lower",
+     "tilt"
+    ],
+    "n_hits": 2,
+    "n_stems": 15,
+    "ratio": 0.1333,
+    "required": false
+   },
+   "segment_build": {
+    "hits": [
+     "block",
+     "box",
+     "cylind",
+     "facet",
+     "geometric",
+     "joint",
+     "limb",
+     "low-poly",
+     "rectangular",
+     "segment"
+    ],
+    "n_hits": 10,
+    "n_stems": 16,
+    "ratio": 0.625,
+    "required": false
+   },
+   "ground_contact": {
+    "hits": [
+     "contact",
+     "floor",
+     "ground",
+     "stand",
+     "surface",
+     "touch"
+    ],
+    "n_hits": 6,
+    "n_stems": 9,
+    "ratio": 0.6667,
+    "required": false
+   }
+  },
+  "required_categories_hit": false,
+  "dark_report": false
+ },
+ "per_frame_required_hit_rate": 0.0,
+ "bank_sha256": "7e9cb737e6a845f8b92289d7e39b1a4443dfd266973fe9585c9ac82006ccffe2",
+ "scorer": "vocab_align: word-prefix stem match over the bank ONLY; deterministic string arithmetic, no model"
+}

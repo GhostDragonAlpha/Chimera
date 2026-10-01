@@ -1,0 +1,21 @@
+﻿{
+    "license":  "CC0 (Creative Commons Zero)",
+    "files":  [
+                  {
+                      "path":  "Dataset_macaque-gait.xlsx",
+                      "url":  "https://datadryad.org/api/v2/datasets/10.5061%2Fdryad.fj6q573tc/download",
+                      "resolved_url":  "https://datadryad.org/dataset/doi:10.5061/dryad.fj6q573tc",
+                      "bytes":  23042,
+                      "sha256":  "eb75067157e57ddedc1a672124083899362e69773f713e021dff70ece3726fc3"
+                  },
+                  {
+                      "path":  "Readme_macaque-gait.xlsx",
+                      "url":  "https://datadryad.org/api/v2/datasets/10.5061%2Fdryad.fj6q573tc/download",
+                      "resolved_url":  "https://datadryad.org/dataset/doi:10.5061/dryad.fj6q573tc",
+                      "bytes":  10572,
+                      "sha256":  "77e258c5966b66d2897c99f0d121c55b2fa86de91f1f9447e81a160aa8d94ac7"
+                  }
+              ],
+    "source":  "Dryad API v2 (token auth) - Higurashi \u0026 Kumakura macaque gait",
+    "retrieved_utc":  "2026-09-19T05:16:00.4548813Z"
+}

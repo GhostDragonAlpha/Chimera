@@ -1,0 +1,68 @@
+{
+  "source": "limblab/monkeyArmModel",
+  "revision": "4fb7dddeec06a0df9525c18f37234a824cb1b5b1",
+  "license": "MIT",
+  "files": [
+    {
+      "path": "LICENSE",
+      "url": "https://raw.githubusercontent.com/limblab/monkeyArmModel/4fb7dddeec06a0df9525c18f37234a824cb1b5b1/LICENSE",
+      "sha256": "3f700b598849d3adbd380342f06e59c5f43efa5b4679a9d56bd071cfc484ba3d",
+      "bytes": 1064
+    },
+    {
+      "path": "monkeyArm_current.osim",
+      "url": "https://raw.githubusercontent.com/limblab/monkeyArmModel/4fb7dddeec06a0df9525c18f37234a824cb1b5b1/monkeyArm_current.osim",
+      "sha256": "4148aee2c8dda1dcb0918496ad7c5e1adcf4ebabde0a68a3e0dc67faec67b895",
+      "bytes": 215094
+    },
+    {
+      "path": "scaleSettings.xml",
+      "url": "https://raw.githubusercontent.com/limblab/monkeyArmModel/4fb7dddeec06a0df9525c18f37234a824cb1b5b1/scaleSettings.xml",
+      "sha256": "fb5469352b83c12ef96756255cee238e9dd02b6ba25ebda607976b5596e8ac14",
+      "bytes": 11867
+    },
+    {
+      "path": "Geometry/clavicle.vtp",
+      "url": "https://raw.githubusercontent.com/limblab/monkeyArmModel/4fb7dddeec06a0df9525c18f37234a824cb1b5b1/Geometry/clavicle.vtp",
+      "sha256": "84caf2d4724aef05b7f8e904474deda7342db1b6c0329cfa5b399802bfebc905",
+      "bytes": 8918
+    },
+    {
+      "path": "Geometry/scapula.vtp",
+      "url": "https://raw.githubusercontent.com/limblab/monkeyArmModel/4fb7dddeec06a0df9525c18f37234a824cb1b5b1/Geometry/scapula.vtp",
+      "sha256": "e9ffe8ef9ad2dc577fb8c50afd87f694d0ddb6e243d230ba91e2aa7137480fe7",
+      "bytes": 20067
+    },
+    {
+      "path": "Geometry/sternum.vtp",
+      "url": "https://raw.githubusercontent.com/limblab/monkeyArmModel/4fb7dddeec06a0df9525c18f37234a824cb1b5b1/Geometry/sternum.vtp",
+      "sha256": "fc688ea2643c356f28a6eb3c825e056941d307d407414f77f0c5d655c91a227d",
+      "bytes": 1502
+    },
+    {
+      "path": "Geometry/humerus.vtp",
+      "url": "https://raw.githubusercontent.com/limblab/monkeyArmModel/4fb7dddeec06a0df9525c18f37234a824cb1b5b1/Geometry/humerus.vtp",
+      "sha256": "87f6034aa082c49b6448259ae7ec4452c6b0d3314442d5be3e8e1a5e4ec8118b",
+      "bytes": 26056
+    },
+    {
+      "path": "Geometry/radius.vtp",
+      "url": "https://raw.githubusercontent.com/limblab/monkeyArmModel/4fb7dddeec06a0df9525c18f37234a824cb1b5b1/Geometry/radius.vtp",
+      "sha256": "8a2d3f2fe5f8b27014c0f024994ff76659bac73a52844494926dd29b9f3bb10e",
+      "bytes": 14894
+    },
+    {
+      "path": "Geometry/ulna.vtp",
+      "url": "https://raw.githubusercontent.com/limblab/monkeyArmModel/4fb7dddeec06a0df9525c18f37234a824cb1b5b1/Geometry/ulna.vtp",
+      "sha256": "8f80ac47453fa175118fa385a5fbcb9cf770a21cf10c1757dccc5df2cceb1409",
+      "bytes": 26030
+    },
+    {
+      "path": "Geometry/hand.vtp",
+      "url": "https://raw.githubusercontent.com/limblab/monkeyArmModel/4fb7dddeec06a0df9525c18f37234a824cb1b5b1/Geometry/hand.vtp",
+      "sha256": "a06ea7e079c849df07d6eec001e9bcc2ea193ecd3914011c78a993a5faa94fc6",
+      "bytes": 187353
+    }
+  ],
+  "scope": "Published macaque arm research model, not a full monkey scan. Original mesh ancestry, model approximations and calibration require inspection; no runtime physiology qualification."
+}

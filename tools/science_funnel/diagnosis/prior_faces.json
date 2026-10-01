@@ -1,0 +1,123 @@
+[
+ {
+  "wave": 28,
+  "face": "THE HIND STEP LAW",
+  "pass_flag": false,
+  "death_class": "CAPACITY_FOLD",
+  "tag_justification": "the ride-concentration fold -- 'whose knee was already at its wave-27 cap ... the fold is CAP-LIMITED DYNAMICS' (recorded in wave-29's statement as the wave-28 deaths being owned)",
+  "death_record": "All numbers below were measured AFTER the pre-registered block above was written; that block is unedited (its canonical-json sha256 3d321413ed80c3b8... re-verified at append time). The scene bytes: UNTOUCHED through the whole wave -- the scene file sha256 f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342, the bundle's scene",
+  "lane": "agent/gait-wave28-hind-step",
+  "receipt": "tools/science_funnel/validation/gait_zero_20260919/receipt_wave28.json",
+  "shape": {}
+ },
+ {
+  "wave": 29,
+  "face": "THE HIND ALTERNATION LAW",
+  "pass_flag": false,
+  "death_class": "CAPACITY_FOLD",
+  "tag_justification": "the ride-concentration fold is a joint-capacity death (wave 29's three-point proof)",
+  "death_record": "All numbers below were measured AFTER the pre-registered block above was frozen (rule_0_sha256 f2a89a7c40fc7eb6c0326bd7c8696583fe0e4977377826b65defe23b677e460c, re-verified unedited at append time). THREE builds ran: BUILD A (the first clause-(d) form: any count-3 floor at the fire exempted the promise) -- its falsifier FIRED and the amen",
+  "lane": "agent/gait-wave29-alternation",
+  "receipt": "tools/science_funnel/validation/gait_zero_20260919/receipt_wave29.json",
+  "shape": {}
+ },
+ {
+  "wave": 30,
+  "face": "THE STANDING KNEE'S DEMAND SIDE (wave 30)",
+  "pass_flag": null,
+  "death_class": null,
+  "tag_justification": "derivation lane: derives what the standing knee is actually ASKED through the ride",
+  "death_record": "All numbers below were measured AFTER the pre-registered block above was frozen (rule_0_sha256 9165ac66604f1c317bcdd8272b51dbf14be51b89cb716489318675339598c19b, re-verified byte-identical at append time). Runs (all .tmp, gitignored): w30_base_plain/trace (the reproduction), w30_base_trace_q (the [dvq]-instrumented baseline trace -- the de",
+  "lane": "agent/gait-wave30-knee-demand",
+  "receipt": "tools/science_funnel/validation/gait_zero_20260919/receipt_wave30.json",
+  "shape": {}
+ },
+ {
+  "wave": 31,
+  "face": "THE GLIDE-RETURN LAW (wave 31)",
+  "pass_flag": null,
+  "death_class": "BAND_MISS",
+  "tag_justification": "after the 142 alternation fire the L pads NEVER re-enter the touch band (pair-min 11.5 mm at the 151 replant event)",
+  "death_record": "All numbers below were measured AFTER the pre-registered block above was frozen (rule_0_sha256 e6b366ef237ab445c4e98eff9a59e0c31d86aa5b4588fdb7b50338ce9f6bc4d1, the declared convention: canonical-json of rule_0 sort_keys compact; re-verified byte-identical at append time against the committed cc825fbc pre-registration). Runs (all .tmp, gi",
+  "lane": "agent/gait-wave31-glide-return",
+  "receipt": "tools/science_funnel/validation/gait_zero_20260919/receipt_wave31.json",
+  "shape": {}
+ },
+ {
+  "wave": 32,
+  "face": "THE UNLOAD-LIFT DEADLINE (wave 32)",
+  "pass_flag": false,
+  "death_class": "UNLOAD_DRAIN",
+  "tag_justification": "the L's landing UNLOADED the standing R (the R rxn 7.47 N@158 -> 3.80@159 -> 1.59@160 -> 0@161)",
+  "death_record": "All numbers below were measured AFTER the pre-registered block above was frozen (rule_0_sha256 5171a704b69cdee2591ba8c4c66684206038f044a7fdf8f862f1796577fa920c, the declared convention: canonical-json of rule_0 sort_keys compact; re-verified byte-identical at append time against the committed a7969d63 pre-registration). Runs (all .tmp, gi",
+  "lane": "agent/gait-wave32-unload-deadline",
+  "receipt": "tools/science_funnel/validation/gait_zero_20260919/receipt_wave32.json",
+  "shape": {}
+ },
+ {
+  "wave": 33,
+  "face": "THE STAND-FIRST HOLD (wave 33)",
+  "pass_flag": false,
+  "death_class": "UNLOAD_DRAIN",
+  "tag_justification": "the R's share hit 0 at tick 215 -- five ticks BEFORE the L's band entry (220)",
+  "death_record": "All numbers below were measured AFTER the pre-registered blocks above were frozen (the four freeze shas re-verified byte-identical at append time). Runs (all .tmp, gitignored): w33_base_plain/trace (the lane-setup reproduction of the committed 77b36f45), w33_final_plain/trace (interim build 1: the stall-clock-arm law), w33_final2_plain/tr",
+  "lane": "agent/gait-wave33-carrier-era",
+  "receipt": "tools/science_funnel/validation/gait_zero_20260919/receipt_wave33.json",
+  "shape": {}
+ },
+ {
+  "wave": 34,
+  "face": "THE LATCHED WORLD-PIVOT CARRIER HOLD (wave 34)",
+  "pass_flag": false,
+  "death_class": "UNLOAD_DRAIN",
+  "tag_justification": "the R -- the ride-era carrier -- drained mid-haul; the drain is geometric",
+  "death_record": "PASS = FALSE: THE WAVE-34 LAW IS REVERTED -- the bank's question is answered NEGATIVELY by measurement and the bytes restored to the wave-33 shipped state (the pre-committed falsifier action, amendment 2's fb_amendment).",
+  "lane": "agent/gait-wave34-realswing-carrier",
+  "receipt": "tools/science_funnel/validation/gait_zero_20260919/receipt_wave34.json",
+  "shape": {}
+ },
+ {
+  "wave": 35,
+  "face": "THE CARRIER SELF-UNLOAD FIRE DEADLINE (wave 35)",
+  "pass_flag": false,
+  "death_class": "CALENDAR_SCATTER",
+  "tag_justification": "the carrier self-unload fire deadline is REAL but its cost is the exchange calendar itself -- measured twice (the calendar death at 305; the re-phased ride death at 266)",
+  "death_record": "PASS = FALSE: THE WAVE-35 LAW IS REVERTED -- the bank's question is answered NEGATIVELY by measurement and the bytes restored to the wave-34 ship state (the pre-committed fb_revert terminal action, after the rung falsifier fired on the second amended build). The wave-35 verdict: the carrier self-unload fire deadline is REAL but its cost is the exchan",
+  "lane": "agent/gait-wave35-carrier-rxn-deadline",
+  "receipt": "tools/science_funnel/validation/gait_zero_20260919/receipt_wave35.json",
+  "shape": {}
+ },
+ {
+  "wave": 36,
+  "face": "THE WAIVE-ERA HAND-OFF PRESERVATION",
+  "pass_flag": false,
+  "death_class": "CALENDAR_SCATTER",
+  "tag_justification": "the rung falsifier fired on the first (and only) amended build (the refusal 298 <= 300) -- a +1 twelfth-launch drift its own pre-registered window allowed but its waive's touch-window could not afford",
+  "death_record": "PASS = FALSE: THE WAVE-36 LAW IS REVERTED -- the rung falsifier fired on the first (and only) amended build (the refusal 298 <= 300) and the pre-committed fb36_revert terminal action restored the law bytes to the wave-35 ship state. The law's OWN clause measured GREEN in full (the preserved hand-off EXACTLY 175, the stall grid re-locked 7/7) -- the d",
+  "lane": "agent/gait-wave36-swing-ticked-fire",
+  "receipt": "tools/science_funnel/validation/gait_zero_20260919/receipt_wave36.json",
+  "shape": {}
+ },
+ {
+  "wave": 37,
+  "face": "THE COMPLETION-TICK RE-LOCK",
+  "pass_flag": false,
+  "death_class": "GRAZE_MISFIRE",
+  "tag_justification": "the re-locked trajectory's OWN dynamics cleared a STALL swing's hold (the R's [202,211) hold cleared at the 206 decision), the (a)-waive fired INSIDE stall eras, and the calendar scattered; THE LEDGER FALSIFIER FIRED (33.559179 > the 32.861605 bound)",
+  "death_record": "PASS = FALSE: THE WAVE-37 LAW IS REVERTED -- the rung LETTER PASSED for the first time in the campaign's measured record (the refusal 304 > 300, 9 ticks past the shipped strand) AND THE LEDGER FALSIFIER FIRED (33.559179 > the 32.861605 bound); the pre-committed fb37_revert terminal action restored the law bytes to the wave-36 ship state. The re-lock'",
+  "lane": "agent/gait-wave37-full-relock",
+  "receipt": "tools/science_funnel/validation/gait_zero_20260919/receipt_wave37.json",
+  "shape": {}
+ },
+ {
+  "wave": 38,
+  "face": "THE CALENDAR-ARITHMETIC WAIVE SCOPE GUARD (wave 38)",
+  "pass_flag": true,
+  "death_class": null,
+  "tag_justification": "PASS = TRUE: the rung-pass/ledger-pass composition ships",
+  "death_record": "PASS = TRUE: THE RUNG-PASS/LEDGER-PASS COMPOSITION SHIPS -- the refusal 302 > 300 AND the worst moving ledger 30.970714 <= the 32.861605 bound, BOTH letters on ONE shipped build for the first time in the campaign's measured record -- AND ONE prediction-window falsifier FIRED and is carried verbatim (f38_twelfth_td_window: the twelfth era's TD 256 vs",
+  "lane": "agent/gait-wave38-calendar-guard",
+  "receipt": "tools/science_funnel/validation/gait_zero_20260919/receipt_wave38.json",
+  "shape": {}
+ }
+]

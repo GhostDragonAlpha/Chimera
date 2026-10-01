@@ -1,0 +1,368 @@
+{
+ "R03_fall_10_full": {
+  "shift_us": -80000,
+  "shift_rmse_m": 0.018771852,
+  "peak_root_y": 2.998,
+  "per_phase": {
+   "DESCENT": {
+    "n": 570,
+    "median_mad": 0.0,
+    "p95_mad": 0.0,
+    "max_mad": 13.333
+   },
+   "LANDING": {
+    "n": 9,
+    "median_mad": 0.0,
+    "p95_mad": 0.0,
+    "max_mad": 0.0
+   },
+   "LAUNCH": {
+    "n": 36,
+    "median_mad": 0.0,
+    "p95_mad": 0.0,
+    "max_mad": 0.0
+   }
+  },
+  "worst": {
+   "pair": 39,
+   "phase": "DESCENT",
+   "mad": 13.333
+  },
+  "overall": {
+   "median_mad": 0.0,
+   "p95_mad": 0.0,
+   "max_mad": 13.333,
+   "budget": 2.0
+  }
+ },
+ "R04_fall_60_full": {
+  "shift_us": -20000,
+  "shift_rmse_m": 0.004141461,
+  "peak_root_y": 3.0,
+  "per_phase": {
+   "DESCENT": {
+    "n": 564,
+    "median_mad": 0.0,
+    "p95_mad": 13.333,
+    "max_mad": 13.333
+   },
+   "LANDING": {
+    "n": 9,
+    "median_mad": 0.0,
+    "p95_mad": 0.0,
+    "max_mad": 0.0
+   },
+   "LAUNCH": {
+    "n": 34,
+    "median_mad": 0.0,
+    "p95_mad": 0.0,
+    "max_mad": 0.0
+   }
+  },
+  "worst": {
+   "pair": 306,
+   "phase": "DESCENT",
+   "mad": 13.333
+  },
+  "overall": {
+   "median_mad": 0.0,
+   "p95_mad": 13.333,
+   "max_mad": 13.333,
+   "budget": 2.0
+  }
+ },
+ "R09_fall_30_pos16": {
+  "shift_us": -80000,
+  "shift_rmse_m": 0.0,
+  "peak_root_y": 3.0,
+  "per_phase": {
+   "DESCENT": {
+    "n": 55,
+    "median_mad": 0.0,
+    "p95_mad": 0.0,
+    "max_mad": 0.0
+   }
+  },
+  "worst": {
+   "pair": 0,
+   "phase": "DESCENT",
+   "mad": 0.0
+  },
+  "overall": {
+   "median_mad": 0.0,
+   "p95_mad": 0.0,
+   "max_mad": 0.0,
+   "budget": 2.0
+  }
+ },
+ "R10_fall_30_z12": {
+  "shift_us": -6000,
+  "shift_rmse_m": 0.002819138,
+  "peak_root_y": 3.0,
+  "per_phase": {
+   "DESCENT": {
+    "n": 562,
+    "median_mad": 0.0,
+    "p95_mad": 0.0,
+    "max_mad": 13.244
+   },
+   "LANDING": {
+    "n": 9,
+    "median_mad": 0.0,
+    "p95_mad": 0.0,
+    "max_mad": 0.0
+   },
+   "LAUNCH": {
+    "n": 35,
+    "median_mad": 0.0,
+    "p95_mad": 0.0,
+    "max_mad": 0.0
+   }
+  },
+  "worst": {
+   "pair": 29,
+   "phase": "DESCENT",
+   "mad": 13.244
+  },
+  "overall": {
+   "median_mad": 0.0,
+   "p95_mad": 0.0,
+   "max_mad": 13.244,
+   "budget": 2.0
+  }
+ },
+ "R11_fall_30_delta": {
+  "shift_us": -17000,
+  "shift_rmse_m": 0.014723844,
+  "peak_root_y": 3.0,
+  "per_phase": {
+   "DESCENT": {
+    "n": 637,
+    "median_mad": 13.333,
+    "p95_mad": 13.333,
+    "max_mad": 13.333
+   },
+   "LANDING": {
+    "n": 9,
+    "median_mad": 13.333,
+    "p95_mad": 13.333,
+    "max_mad": 13.333
+   },
+   "LAUNCH": {
+    "n": 35,
+    "median_mad": 0.0,
+    "p95_mad": 0.0,
+    "max_mad": 0.0
+   }
+  },
+  "worst": {
+   "pair": 0,
+   "phase": "DESCENT",
+   "mad": 13.333
+  },
+  "overall": {
+   "median_mad": 13.333,
+   "p95_mad": 13.333,
+   "max_mad": 13.333,
+   "budget": 2.0
+  }
+ },
+ "R02_fall_15_full": {
+  "shift_us": 0,
+  "shift_rmse_m": Infinity,
+  "peak_root_y": 3.0,
+  "per_phase": {
+   "DESCENT": {
+    "n": 22,
+    "median_mad": 0.0,
+    "p95_mad": 0.0,
+    "max_mad": 13.333
+   },
+   "LAUNCH": {
+    "n": 1,
+    "median_mad": 0.0,
+    "p95_mad": 0.0,
+    "max_mad": 0.0
+   }
+  },
+  "worst": {
+   "pair": 2,
+   "phase": "DESCENT",
+   "mad": 13.333
+  },
+  "overall": {
+   "median_mad": 0.0,
+   "p95_mad": 0.0,
+   "max_mad": 13.333,
+   "budget": 2.0
+  }
+ },
+ "R06_fall_30_tr50j": {
+  "shift_us": -23000,
+  "shift_rmse_m": 0.003370505,
+  "peak_root_y": 3.0,
+  "per_phase": {
+   "DESCENT": {
+    "n": 2,
+    "median_mad": 0.0,
+    "p95_mad": 0.0,
+    "max_mad": 0.0
+   }
+  },
+  "worst": {
+   "pair": 0,
+   "phase": "DESCENT",
+   "mad": 0.0
+  },
+  "overall": {
+   "median_mad": 0.0,
+   "p95_mad": 0.0,
+   "max_mad": 0.0,
+   "budget": 2.0
+  }
+ },
+ "R07_fall_30_tail": {
+  "shift_us": -23500,
+  "shift_rmse_m": 0.002795278,
+  "peak_root_y": 3.0,
+  "per_phase": {
+   "DESCENT": {
+    "n": 2,
+    "median_mad": 0.0,
+    "p95_mad": 0.0,
+    "max_mad": 0.0
+   }
+  },
+  "worst": {
+   "pair": 0,
+   "phase": "DESCENT",
+   "mad": 0.0
+  },
+  "overall": {
+   "median_mad": 0.0,
+   "p95_mad": 0.0,
+   "max_mad": 0.0,
+   "budget": 2.0
+  }
+ },
+ "R08_fall_30_pos12": {
+  "shift_us": 0,
+  "shift_rmse_m": Infinity,
+  "peak_root_y": 3.0,
+  "per_phase": {
+   "DESCENT": {
+    "n": 21,
+    "median_mad": 0.0,
+    "p95_mad": 0.0,
+    "max_mad": 13.333
+   },
+   "LANDING": {
+    "n": 1,
+    "median_mad": 0.0,
+    "p95_mad": 0.0,
+    "max_mad": 0.0
+   },
+   "LAUNCH": {
+    "n": 1,
+    "median_mad": 0.0,
+    "p95_mad": 0.0,
+    "max_mad": 0.0
+   }
+  },
+  "worst": {
+   "pair": 13,
+   "phase": "DESCENT",
+   "mad": 13.333
+  },
+  "overall": {
+   "median_mad": 0.0,
+   "p95_mad": 0.0,
+   "max_mad": 13.333,
+   "budget": 2.0
+  }
+ },
+ "R12_carry_30_full": {
+  "shift_us": -80000,
+  "shift_rmse_m": 0.0,
+  "peak_root_y": 0.255,
+  "per_phase": {
+   "CARRY": {
+    "n": 391,
+    "median_mad": 0.0,
+    "p95_mad": 0.0,
+    "max_mad": 13.333
+   }
+  },
+  "worst": {
+   "pair": 46,
+   "phase": "CARRY",
+   "mad": 13.333
+  },
+  "overall": {
+   "median_mad": 0.0,
+   "p95_mad": 0.0,
+   "max_mad": 13.333,
+   "budget": 2.0
+  }
+ },
+ "R01_fall_30_full": {
+  "shift_us": 10000,
+  "shift_rmse_m": 0.008274325,
+  "peak_root_y": 3.0,
+  "per_phase": {
+   "DESCENT": {
+    "n": 599,
+    "median_mad": 0.0,
+    "p95_mad": 0.0,
+    "max_mad": 13.333
+   },
+   "LANDING": {
+    "n": 8,
+    "median_mad": 0.0,
+    "p95_mad": 0.0,
+    "max_mad": 0.0
+   },
+   "LAUNCH": {
+    "n": 35,
+    "median_mad": 0.0,
+    "p95_mad": 0.333,
+    "max_mad": 13.007
+   }
+  },
+  "worst": {
+   "pair": 127,
+   "phase": "DESCENT",
+   "mad": 13.333
+  },
+  "overall": {
+   "median_mad": 0.0,
+   "p95_mad": 0.0,
+   "max_mad": 13.333,
+   "budget": 2.0
+  }
+ },
+ "R05_fall_30_tr50": {
+  "shift_us": -38000,
+  "shift_rmse_m": 0.003051318,
+  "peak_root_y": 3.0,
+  "per_phase": {
+   "DESCENT": {
+    "n": 23,
+    "median_mad": 0.0,
+    "p95_mad": 0.0,
+    "max_mad": 0.0
+   }
+  },
+  "worst": {
+   "pair": 0,
+   "phase": "DESCENT",
+   "mad": 0.0
+  },
+  "overall": {
+   "median_mad": 0.0,
+   "p95_mad": 0.0,
+   "max_mad": 0.0,
+   "budget": 2.0
+  }
+ }
+}

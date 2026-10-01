@@ -1,0 +1,360 @@
+rbmovie launcher: port 62619 engine E:\ChimeraWork\rbmovie-agent\.tmp\slice_build\Release\chimera_engine.exe
+  "GET /api/health HTTP/1.1" 200 -
+  "GET / HTTP/1.1" 200 -
+  "GET /mock_registry.json HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /ghost.obj HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/topology HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "POST /api/send HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "POST /api/drop_test HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 502 -
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 50182)
+Traceback (most recent call last):
+  File "E:\ChimeraWork\rbmovie-agent\tools\playable_slice\slice_server.py", line 320, in do_GET
+    self._send(200, WORLD.verts(), "application/octet-stream")
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\rbmovie-agent\tools\playable_slice\slice_server.py", line 305, in _send
+    self.wfile.write(body)
+    ~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Python314\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "E:\ChimeraWork\rbmovie-agent\tools\playable_slice\slice_server.py", line 322, in do_GET
+    self._json({"error": str(e)}, 502)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\rbmovie-agent\tools\playable_slice\slice_server.py", line 308, in _json
+    self._send(code, json.dumps(obj).encode(), "application/json")
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\rbmovie-agent\tools\playable_slice\slice_server.py", line 304, in _send
+    self.end_headers()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 598, in end_headers
+    self.flush_headers()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 602, in flush_headers
+    self.wfile.write(b"".join(self._headers_buffer))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+----------------------------------------

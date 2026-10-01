@@ -1,0 +1,42 @@
+﻿{
+    "kind":  "draco_decode_cdn_lock.v1",
+    "fetched_utc":  "2026-09-18T07:33:16.5849704Z",
+    "files":  [
+                  {
+                      "file":  "three.module.js",
+                      "url":  "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+                      "sha256":  "76dea8151bc9352aef3528b4262e249b2604f62543828328db978d060d61a495",
+                      "bytes":  1272972
+                  },
+                  {
+                      "file":  "GLTFLoader.js",
+                      "url":  "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js",
+                      "sha256":  "d073b438e6a07e1359741dd5d6c76c953420cc0d4fd84eb1bdde94315540e6a3",
+                      "bytes":  108522
+                  },
+                  {
+                      "file":  "DRACOLoader.js",
+                      "url":  "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/DRACOLoader.js",
+                      "sha256":  "65c114ecb7b349cdc59c75b2c92d19cca672a138060dba0f60f64262fa40408c",
+                      "bytes":  13628
+                  },
+                  {
+                      "file":  "BufferGeometryUtils.js",
+                      "url":  "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/utils/BufferGeometryUtils.js",
+                      "sha256":  "9be041e96308775d00e2695cc607645b9a9b64fd7c0e759dd8f7c00a8d92becb",
+                      "bytes":  31906
+                  },
+                  {
+                      "file":  "draco_wasm_wrapper.js",
+                      "url":  "https://www.gstatic.com/draco/versioned/decoders/1.5.7/draco_wasm_wrapper.js",
+                      "sha256":  "e8049906ef3f8f75d3456c22a3f31bfdfe5b5b5bd09ccdec613b9e9a49d554d8",
+                      "bytes":  58763
+                  },
+                  {
+                      "file":  "draco_decoder.wasm",
+                      "url":  "https://www.gstatic.com/draco/versioned/decoders/1.5.7/draco_decoder.wasm",
+                      "sha256":  "2516a4e43526d71787bf2f678f951329f7f858f8f15f42d4bc9e370b31a0da3a",
+                      "bytes":  285948
+                  }
+              ]
+}

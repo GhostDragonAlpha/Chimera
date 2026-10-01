@@ -1,0 +1,3684 @@
+{
+ "schema": "chimera.viewer.walkfilm_playlist.v1",
+ "declared_by": "wk-liveviewer-d02 (viewer lane) 2026-09-30; composed against CARD_STARTER v3",
+ "source_plan": {
+  "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/walkfilm_frames.json",
+  "sha256": "daa0636d371ecadfb19dcc2ba8071d59469e9866b0e812ea5dd26905dd3e0079",
+  "role": "THE plan law: frame/shot/tick/eye/yaw/buffer sha per frame"
+ },
+ "source_manifest": {
+  "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/walkfilm_manifest.json",
+  "sha256": "2e0503a7756efff4dd32ae9fa75ffc1d181ba120975ae0f1b453746a6ae5beaa",
+  "role": "SEALED per-frame render manifest (png_sha256 written by the render job)"
+ },
+ "pins": {
+  "trace_sha256_file": "b47b709c43a021d24bfee13bb2fe4592167cf205ee0abf9971de462319389c93",
+  "trace_base_dx_exact": 0.9131056683968011,
+  "world_with_monkey_sha256_array_bytes": "16a978f8e093be48e5bb86069259b74839c98cf24c3973ff2d2fbea01d437572",
+  "composed_world_sha256_array_bytes": "a3dc2b19aadb8f142d905b38c4bec10da4b107a9030ea145f5d7d0fde01fdb71",
+  "engine_gpu_pipeline_sha256": "529c0e08874c254fa29614d1ca68148e6d317d0d83a4513fd26ae7b0978373d5",
+  "engine_clone": "E:/ChimeraWork/_scratch/rebaseline",
+  "render_job": "composition2-walkfilm-001",
+  "seed": 20260928,
+  "fps": 24,
+  "stride_ticks": 3,
+  "duration_s": 8.417
+ },
+ "declared_limits": [
+  "SEALED CAPTURE REPLAY, not live pixels: these 202 frames are the certified offline walkfilm renders; the engine is NOT rendering anything here and the live panes are unaffected.",
+  "NOT interactive control and NOT the live engine: nothing on this page drives the monkey; no input path to the sealed W03 body exists.",
+  "NO new physics and zero engine work: a client-side image cycler over sha-pinned PNGs; no simulation, no re-render, no re-derive of pixel content.",
+  "Rigid rest pose only: no limb swing, no per-tick joints q[6..17]; the refusal-collapse tumble (ticks ~200-301) is NOT rendered - the upright body's certified planar base motion is shown instead.",
+  "Sampling is stride-3 (ticks 0..300, 101 ticks per shot, tick 301 excluded); two shots (track, approach) share the same tick set, 202 frames total.",
+  "In-image caption bars overlay the bottom 30 px of every frame (lane evidence convention).",
+  "PLAY/PAUSE/SCRUB ARE LOCAL UI CONTROLS over this frame playlist only; they never touch the engine and never change any mode - the goal never leaves play mode.",
+  "Frame file paths are bound to this campaign host; on any other host every frame refuses by name ('file missing') instead of serving anything.",
+  "The PNGs are the determinism unit; walkfilm_ffv1.mkv / walkfilm_preview.mp4 are convenience media and are NOT served by the viewer."
+ ],
+ "counts": {
+  "frames": 202,
+  "ticks": 101,
+  "shots": [
+   "approach",
+   "track"
+  ]
+ },
+ "frames": [
+  {
+   "name": "wf_f0000",
+   "frame": 0,
+   "tick": 0,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0000.png",
+   "sha256": "5fa620dacb7a9ec47981ac0f55c0f4b7f13b07fbf58667b5a840bcecd5ddb15a",
+   "bytes": 1000857,
+   "buffer_sha256": "7e10b5554ca75d5862600a36e0adc8df79b32eef89efb8643bc8d336413990c5",
+   "eye_m": [
+    -2.102320339,
+    -1.912374008,
+    1.704
+   ],
+   "yaw_deg": 35.94828,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0001",
+   "frame": 1,
+   "tick": 3,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0001.png",
+   "sha256": "8eea3648f021c6088261d62045d24347a9571d44491483a1690bcb46fde9c276",
+   "bytes": 1004456,
+   "buffer_sha256": "adebce383a36c84a580641a2c5efb31f536076657951495a78ec6270d77ef863",
+   "eye_m": [
+    -2.066478979,
+    -1.950341383,
+    1.704
+   ],
+   "yaw_deg": 37.008226,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0002",
+   "frame": 2,
+   "tick": 6,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0002.png",
+   "sha256": "cf8125cd724cdb131d59625e39da2c878c3872c70977d5419dbc8b0cc6a437a5",
+   "bytes": 1004603,
+   "buffer_sha256": "6d8b06b1695777f71f4a29a46187f8bd12b79ffa193234fe5706878a49e174f7",
+   "eye_m": [
+    -2.046195626,
+    -1.966243777,
+    1.704
+   ],
+   "yaw_deg": 37.490595,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0003",
+   "frame": 3,
+   "tick": 9,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0003.png",
+   "sha256": "69a18b401af9a2eac0c08a3b8c2af498e01aa37b50eed049cb76ad965aa8532f",
+   "bytes": 1004949,
+   "buffer_sha256": "5b212a6b8b56cadcab42486cde24abd20e2518aad7e795bb00a5b0c49131ceb9",
+   "eye_m": [
+    -2.034295065,
+    -1.970424228,
+    1.704
+   ],
+   "yaw_deg": 37.671022,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0004",
+   "frame": 4,
+   "tick": 12,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0004.png",
+   "sha256": "9f4fb105f1b3f863f21725ef0df3044730f0ccaf0cbc37d5b8b2a7b990ddca55",
+   "bytes": 1003951,
+   "buffer_sha256": "e938d80b72c7b1881a8b347c54ec673fd7b3d8fa5e584f246bf556286b387495",
+   "eye_m": [
+    -2.027117739,
+    -1.967851619,
+    1.704
+   ],
+   "yaw_deg": 37.684568,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0005",
+   "frame": 5,
+   "tick": 15,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0005.png",
+   "sha256": "d71970e5df3c54955fd465bab8e46a1f47a92a7248fb3e1d7e18b6b61dd625d1",
+   "bytes": 1004092,
+   "buffer_sha256": "2184d4edb4e40641fa2ef5c8e6954e21286ae740abafcbc1fde006fb10577aba",
+   "eye_m": [
+    -2.022473077,
+    -1.961341497,
+    1.704
+   ],
+   "yaw_deg": 37.608784,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0006",
+   "frame": 6,
+   "tick": 18,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0006.png",
+   "sha256": "418287597453f34b14d0801e6119d7f3addecb3313bcc7951a2f06505f070aee",
+   "bytes": 1004037,
+   "buffer_sha256": "8eb2f4a5ed8b3991ed98533b6e24e9ffd69529f7a7427f4048c18e4c21a67d39",
+   "eye_m": [
+    -2.019234662,
+    -1.952291156,
+    1.704
+   ],
+   "yaw_deg": 37.482034,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0007",
+   "frame": 7,
+   "tick": 21,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0007.png",
+   "sha256": "441673810821cf58ede0c5e3e4778702240862ec1225adbbd33de4e891088b34",
+   "bytes": 1003477,
+   "buffer_sha256": "3faa89687bde8bf9cc54720304ddba411b143f2fcd8550b38835dc90dd55f4aa",
+   "eye_m": [
+    -2.016216171,
+    -1.942169491,
+    1.704
+   ],
+   "yaw_deg": 37.344555,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0008",
+   "frame": 8,
+   "tick": 24,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0008.png",
+   "sha256": "d2c58782b5ed7e0e0e1be00f3fa3b218860e9ca904cfa472480537688d9a7a2c",
+   "bytes": 1002809,
+   "buffer_sha256": "cbbf87356002f099b0da3e4b32b9506cba32a8111098ea586f07d0fbc9ae996c",
+   "eye_m": [
+    -2.01246756,
+    -1.932200145,
+    1.704
+   ],
+   "yaw_deg": 37.229534,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0009",
+   "frame": 9,
+   "tick": 27,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0009.png",
+   "sha256": "9ed6103e57149fdb20fe1c05f3cbfd7a80f2a6ad1da5415b2d4c9cdef6dce2ed",
+   "bytes": 1002631,
+   "buffer_sha256": "12199f14beb115a4ebe6b7feff2d589dd453f4785421ed5cd9e3eddfc4c93a7d",
+   "eye_m": [
+    -2.007532266,
+    -1.923063625,
+    1.704
+   ],
+   "yaw_deg": 37.155077,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0010",
+   "frame": 10,
+   "tick": 30,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0010.png",
+   "sha256": "42c11cfc095811590b44bf506d1e198005648770b66db24a93a6290a294c6752",
+   "bytes": 1001986,
+   "buffer_sha256": "ca621f23f614362c058df8cded7fab4498bec6d514721c19480acdc2819980bb",
+   "eye_m": [
+    -2.001536159,
+    -1.914632317,
+    1.704
+   ],
+   "yaw_deg": 37.117175,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0011",
+   "frame": 11,
+   "tick": 33,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0011.png",
+   "sha256": "131a16b013a39f1106d77e48238538fe46849b674c87dcdae0ba85e880d888c3",
+   "bytes": 1000240,
+   "buffer_sha256": "7a0cc90df02250223827348e47bc1eddfc0e1277fa936f022e1f211bcb06fd47",
+   "eye_m": [
+    -1.994582665,
+    -1.906597755,
+    1.704
+   ],
+   "yaw_deg": 37.107137,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0012",
+   "frame": 12,
+   "tick": 36,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0012.png",
+   "sha256": "200083773c57104b79d65b1f5ebf9e7004f5909f432714d8ece5c364d71fca9b",
+   "bytes": 1000325,
+   "buffer_sha256": "ad575ca50d20bd385bb386fbd3d7096e27626b21060df29e1ab90a24b920ad37",
+   "eye_m": [
+    -1.986502875,
+    -1.899158222,
+    1.704
+   ],
+   "yaw_deg": 37.130197,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0013",
+   "frame": 13,
+   "tick": 39,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0013.png",
+   "sha256": "efe8d143c6257c4e8f2a2d62053c0d9a5b5f97b0bd0710a4fcce2b9eb2f92fc5",
+   "bytes": 999250,
+   "buffer_sha256": "7fb4085cfbbab1db53b49d52708e4dab86362ed2e155b527d574b98280ca7fb9",
+   "eye_m": [
+    -1.98124696,
+    -1.88709381,
+    1.704
+   ],
+   "yaw_deg": 37.042013,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0014",
+   "frame": 14,
+   "tick": 42,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0014.png",
+   "sha256": "037ab6b3da58128d6eb41520677c4c68da41f2c0531202b5d976c727324601c0",
+   "bytes": 998435,
+   "buffer_sha256": "db275fa0c5aeca29ef4c0616a4818bfeb05a5230df3bef3c9ab67628b65c21cd",
+   "eye_m": [
+    -1.963815003,
+    -1.892703621,
+    1.704
+   ],
+   "yaw_deg": 37.426705,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0015",
+   "frame": 15,
+   "tick": 45,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0015.png",
+   "sha256": "6c2898d38948009771d849baf9f03fef8436e31f70f2f759d5e35e54af3d3055",
+   "bytes": 999554,
+   "buffer_sha256": "b5f166e428345c980933e5472cf2bacc4e914feb066aa887860ee970d22d3967",
+   "eye_m": [
+    -1.948121815,
+    -1.898523169,
+    1.704
+   ],
+   "yaw_deg": 37.768473,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0016",
+   "frame": 16,
+   "tick": 48,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0016.png",
+   "sha256": "008a9e5a1ac410b718ef91344303870a12d4b6d04d15261e09af1b9b6b4e74a2",
+   "bytes": 997005,
+   "buffer_sha256": "547317565bd1e20896261d2c1830606ad3c972e8c4e2d58691173c8dedded944",
+   "eye_m": [
+    -1.942290055,
+    -1.892538142,
+    1.704
+   ],
+   "yaw_deg": 37.755747,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0017",
+   "frame": 17,
+   "tick": 51,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0017.png",
+   "sha256": "ff2ed418a3bf6d5476c2ccf4ba2cd5dd7096ce855d10796c14aca7a4ff802a87",
+   "bytes": 996724,
+   "buffer_sha256": "28b5362bdfe59331ea5ab02dcf42d1641f3d4cbad37808c6d787dd524521c44f",
+   "eye_m": [
+    -1.945115344,
+    -1.875839925,
+    1.704
+   ],
+   "yaw_deg": 37.429695,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0018",
+   "frame": 18,
+   "tick": 54,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0018.png",
+   "sha256": "6044040f2a325d01c3bb01daa2156daf2c324419a59dbfe14d77ec2104526fce",
+   "bytes": 996279,
+   "buffer_sha256": "bac6b91cf2382809de48e4cacb846393661eb3efc1296a8c123b20f1526da8c3",
+   "eye_m": [
+    -1.955017125,
+    -1.849908164,
+    1.704
+   ],
+   "yaw_deg": 36.840815,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0019",
+   "frame": 19,
+   "tick": 57,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0019.png",
+   "sha256": "46ec80c09bf971903ae65563ce38e76f9533389779dbcc0c27451d51d0897d1c",
+   "bytes": 993737,
+   "buffer_sha256": "78a19e576842508fe5d3de28aa1053bd46886f928a94b3e86dd3ce5bde2d5414",
+   "eye_m": [
+    -1.97132189,
+    -1.814956273,
+    1.704
+   ],
+   "yaw_deg": 36.004248,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0020",
+   "frame": 20,
+   "tick": 60,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0020.png",
+   "sha256": "508e6bb0f0f5dea0419089b6f2e38bd946bc004e0907e8c1f889ed249dff157a",
+   "bytes": 992004,
+   "buffer_sha256": "c98ba19368675dcad3af65ab66dab67536bf3c1addff2d6c08b7baa71235f3ca",
+   "eye_m": [
+    -1.99257728,
+    -1.772408487,
+    1.704
+   ],
+   "yaw_deg": 34.965579,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0021",
+   "frame": 21,
+   "tick": 63,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0021.png",
+   "sha256": "37ae10f9aa525f157de0946342087d81b0a0bca9fc4983057c741949b9793b0f",
+   "bytes": 991986,
+   "buffer_sha256": "cc075256116da7d575ba0d9371841418b0bbc8560788f7f2c9354158b02a4d81",
+   "eye_m": [
+    -2.014953487,
+    -1.726894092,
+    1.704
+   ],
+   "yaw_deg": 33.859167,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0022",
+   "frame": 22,
+   "tick": 66,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0022.png",
+   "sha256": "8ee8123009edf396f7ecebf846dfc2d7215ee031b046c2c6a1b83b93cc02e010",
+   "bytes": 989855,
+   "buffer_sha256": "8718a5d182c5556bef64e7f3d17fb64eb68306cdf3cdebf494e9fbedec6a74dc",
+   "eye_m": [
+    -2.041358285,
+    -1.673272313,
+    1.704
+   ],
+   "yaw_deg": 32.55676,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0023",
+   "frame": 23,
+   "tick": 69,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0023.png",
+   "sha256": "99637b5c2095543639b5a09cc24bec92a33a1c6be26da571f33f734bd8c0b8f4",
+   "bytes": 989699,
+   "buffer_sha256": "66eae2eb518a1b9486836b7b03c77f9e579fe986953da287c2bba3fbebaff41b",
+   "eye_m": [
+    -2.077162143,
+    -1.601368992,
+    1.704
+   ],
+   "yaw_deg": 30.80602,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0024",
+   "frame": 24,
+   "tick": 72,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0024.png",
+   "sha256": "5cfe8e34bd945ee059034c56772e5845cb04ce8679202d2be5a2203a41813efd",
+   "bytes": 991935,
+   "buffer_sha256": "2874b446b3e632ab52d155d6c5e5cd6481e33adb149f15ef0cf00f7ee2d0a0c5",
+   "eye_m": [
+    -2.121916949,
+    -1.507905832,
+    1.704
+   ],
+   "yaw_deg": 28.547558,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0025",
+   "frame": 25,
+   "tick": 75,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0025.png",
+   "sha256": "de4bae76575f890f658a293f173d3f5d32b1bdc2aa4a04e2ea193151209dbe91",
+   "bytes": 994203,
+   "buffer_sha256": "f26a5109c0bc7c503e7ef3d8741914e2699e7d639ead28bf165ad37cc6d1a641",
+   "eye_m": [
+    -2.173434734,
+    -1.391110283,
+    1.704
+   ],
+   "yaw_deg": 25.769353,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0026",
+   "frame": 26,
+   "tick": 78,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0026.png",
+   "sha256": "d082a2605d7a402d5898f8a2015fb2d602e33393ffd204228dc4a2ec673a5db2",
+   "bytes": 990437,
+   "buffer_sha256": "e3c8bdfde835437222c7e033c640f785bde388d63e998d39b9ac88696926be8d",
+   "eye_m": [
+    -2.229157146,
+    -1.248034237,
+    1.704
+   ],
+   "yaw_deg": 22.425354,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0027",
+   "frame": 27,
+   "tick": 81,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0027.png",
+   "sha256": "f45090b75e843fe32b950a1dc90e9b3d2c6aa13c6c1193d1d8ec0e5d4b9cb840",
+   "bytes": 976817,
+   "buffer_sha256": "b1c3de6897754c050985050f87b3aadb7e228e623396ca81b8e5bceafc9fee61",
+   "eye_m": [
+    -2.283605364,
+    -1.080182107,
+    1.704
+   ],
+   "yaw_deg": 18.570915,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0028",
+   "frame": 28,
+   "tick": 84,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0028.png",
+   "sha256": "f0cca6d78e276cfe4112ba2e52fc75b46a4dc0ec174dc058cbc0597e002b5320",
+   "bytes": 1004258,
+   "buffer_sha256": "a2061d1d87051bb305e4a55c055ded50a0a7e8eda698a283b7555fcca62d4824",
+   "eye_m": [
+    -2.324639726,
+    -0.916246008,
+    1.704
+   ],
+   "yaw_deg": 14.874843,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0029",
+   "frame": 29,
+   "tick": 87,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0029.png",
+   "sha256": "d0824aa8c830fa602340f2f4be6e7d8e882f2f19bfd0f6cafcb5644178e2e631",
+   "bytes": 1022571,
+   "buffer_sha256": "3766f3ff162ed8a5fd93dc8ff915d382e9e3ae85fecbc8e49b24679642b26443",
+   "eye_m": [
+    -2.353493885,
+    -0.758354237,
+    1.704
+   ],
+   "yaw_deg": 11.359551,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0030",
+   "frame": 30,
+   "tick": 90,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0030.png",
+   "sha256": "04bd91ed2b204eefdee289a4c17c9bf4a5592f7c296077e34a400f4ce37f9925",
+   "bytes": 1024493,
+   "buffer_sha256": "c6ba3e42699b7f99fb0dfcfb9755b4d5be8714c797c61f97d5ee14924c73ade9",
+   "eye_m": [
+    -2.372228128,
+    -0.603810244,
+    1.704
+   ],
+   "yaw_deg": 7.943207,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0031",
+   "frame": 31,
+   "tick": 93,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0031.png",
+   "sha256": "dc26f3009c9cd2fcddf9f08e748fa39abab4a443a1da7b4bb1b544400417ac5f",
+   "bytes": 1022426,
+   "buffer_sha256": "97723f64154c7a61795cc8420037484db836718c4f0e534767466c562d712d01",
+   "eye_m": [
+    -2.381902462,
+    -0.452859881,
+    1.704
+   ],
+   "yaw_deg": 4.61614,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0032",
+   "frame": 32,
+   "tick": 96,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0032.png",
+   "sha256": "ec2e9421d36cb8f063370c24cb064103d3c78124be9543e3b09298e0899b93aa",
+   "bytes": 1024266,
+   "buffer_sha256": "89e7f7a6a41bd3a935d604cf576c296f133b7c62ad5ac41c60b08ff33b1f8be3",
+   "eye_m": [
+    -2.383169277,
+    -0.308417252,
+    1.704
+   ],
+   "yaw_deg": 1.430616,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0033",
+   "frame": 33,
+   "tick": 99,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0033.png",
+   "sha256": "6cfa896a3b7d6de0e6b1c6fbe395276c48782efda62abc448954a0dcf09dbd43",
+   "bytes": 1027896,
+   "buffer_sha256": "4fb5f5d2199dd8c2521a4197da552ae9e5dc4aa07278b3e49f86b7a97a34e7e3",
+   "eye_m": [
+    -2.377026189,
+    -0.176456029,
+    1.704
+   ],
+   "yaw_deg": -1.486539,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0034",
+   "frame": 34,
+   "tick": 102,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0034.png",
+   "sha256": "aabbba70292d3aa86218c198cc372ed1ec1d74afdd35a6cc5181e77f04f2ba12",
+   "bytes": 1029007,
+   "buffer_sha256": "9cb335b62105ea5a73f6fff761b4f02947e2bb13fe7409550f998a86eb62d39b",
+   "eye_m": [
+    -2.365852481,
+    -0.058129289,
+    1.704
+   ],
+   "yaw_deg": -4.108579,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0035",
+   "frame": 35,
+   "tick": 105,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0035.png",
+   "sha256": "5f38c8ffd273d59e897eea297b88541a1b98a7fc74794bdf770d1fa92527e3bf",
+   "bytes": 1030336,
+   "buffer_sha256": "a66a5676b748da69cc1e0229e093b2f9ea27c15412bc3122f19991e8f35107ec",
+   "eye_m": [
+    -2.350782468,
+    0.053416201,
+    1.704
+   ],
+   "yaw_deg": -6.597415,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0036",
+   "frame": 36,
+   "tick": 108,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0036.png",
+   "sha256": "09ec4c26f11848a901d5b89fc336b6d5b140d75f9ddbbb67d684439f783a1f43",
+   "bytes": 1028477,
+   "buffer_sha256": "73185b45afd75be747b8c137b3d2428b6d6eb000303138d67f4121ffb05a18cb",
+   "eye_m": [
+    -2.330652497,
+    0.163693689,
+    1.704
+   ],
+   "yaw_deg": -9.080113,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0037",
+   "frame": 37,
+   "tick": 111,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0037.png",
+   "sha256": "5112b380972eccd376bda3d6a4bacab25a28906bf1954e8f5cd41c2649296dd2",
+   "bytes": 1027856,
+   "buffer_sha256": "b01d8f5912d9619cd290983eb90b96a5ebefee35d74cf4b0df2e787e5ff052e1",
+   "eye_m": [
+    -2.304756389,
+    0.273162224,
+    1.704
+   ],
+   "yaw_deg": -11.575295,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0038",
+   "frame": 38,
+   "tick": 114,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0038.png",
+   "sha256": "10b4e162c5bae13ac1d28813bfb33527be14bea2d0551c960e5d388335c62ff9",
+   "bytes": 1030229,
+   "buffer_sha256": "2825dffc40f6797bee6f40f5e4edb740a0b3ecdbe31542db5a9c6d79285ac843",
+   "eye_m": [
+    -2.274990101,
+    0.375604363,
+    1.704
+   ],
+   "yaw_deg": -13.948847,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0039",
+   "frame": 39,
+   "tick": 117,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0039.png",
+   "sha256": "fbc4e08088845c79e5b6c7b44ac053c183d0c81283d7e60f81fbbb3d2b0e33d6",
+   "bytes": 1031458,
+   "buffer_sha256": "8deda25cca591d79b9bd3368c532f35739e78587e3792fb54cc829ab6b12964b",
+   "eye_m": [
+    -2.245015383,
+    0.460833513,
+    1.704
+   ],
+   "yaw_deg": -15.96731,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0040",
+   "frame": 40,
+   "tick": 120,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0040.png",
+   "sha256": "f8534f9ce3464f543c786214da976eadb48f506cd1589f249156f1629dca7660",
+   "bytes": 1027808,
+   "buffer_sha256": "14e608fb71e9f5a2ae8ffe47cf531a4ac547a039ec8800134109da49512b4cda",
+   "eye_m": [
+    -2.219081012,
+    0.521116861,
+    1.704
+   ],
+   "yaw_deg": -17.443352,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0041",
+   "frame": 41,
+   "tick": 123,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0041.png",
+   "sha256": "3656e51187a8dbfc6f1fc4ae38124e8c4c23cd2c79d87ae2692e348736426d99",
+   "bytes": 1027577,
+   "buffer_sha256": "9ff0d3439a915234ba5e1c3fe6d42edc15dd91e9cd18a3bc37166915a6556c07",
+   "eye_m": [
+    -2.198730339,
+    0.558407882,
+    1.704
+   ],
+   "yaw_deg": -18.408139,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0042",
+   "frame": 42,
+   "tick": 126,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0042.png",
+   "sha256": "921610b1e3a8a49c00147529b431057ff26746171078d01072255ef87bb337e3",
+   "bytes": 1026263,
+   "buffer_sha256": "2eb268bcc7c228ef4cd7bac07b4ac4694ae30488f2d657565f3710f6974ca2f8",
+   "eye_m": [
+    -2.182570331,
+    0.581409694,
+    1.704
+   ],
+   "yaw_deg": -19.053737,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0043",
+   "frame": 43,
+   "tick": 129,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0043.png",
+   "sha256": "da7456583c6afdb2ff4456b0bedaa1b9812263c4f1472b516fc04eecda0bf678",
+   "bytes": 1025636,
+   "buffer_sha256": "a0997b516a25b0b7d0f69071e3c08565d94ab77885d122a820f39f1c83383530",
+   "eye_m": [
+    -2.17124737,
+    0.589677958,
+    1.704
+   ],
+   "yaw_deg": -19.361714,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0044",
+   "frame": 44,
+   "tick": 132,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0044.png",
+   "sha256": "ccc091a715f130dab8b49c6a3b92bd41d52d548db2d0ca51102f7521de2a9de2",
+   "bytes": 1026215,
+   "buffer_sha256": "c63fb1870f188e445bb08c9d966fda42cba95fd1f74fd1735cb90a1b70b071cf",
+   "eye_m": [
+    -2.166322553,
+    0.578667663,
+    1.704
+   ],
+   "yaw_deg": -19.221246,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0045",
+   "frame": 45,
+   "tick": 135,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0045.png",
+   "sha256": "75d078f0f7ac0b5984c1b5c0c5949e9ba6c26a1a856552b4d3a4949148f46c00",
+   "bytes": 1027947,
+   "buffer_sha256": "86e9d46bc25ee7ed0a25bd0b8a23f6d2650eb2e9047e1425c95918df710f416c",
+   "eye_m": [
+    -2.168888765,
+    0.543959018,
+    1.704
+   ],
+   "yaw_deg": -18.52726,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0046",
+   "frame": 46,
+   "tick": 138,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0046.png",
+   "sha256": "ade986af9751a93ae6532603177edd38a43d222b0faeb213eee49d896d5d1f9e",
+   "bytes": 1029014,
+   "buffer_sha256": "78f10abf8e46c4150c6c6f8e356336a6e0e3b361c61e98eb5c9fb8aeac906d1d",
+   "eye_m": [
+    -2.177423802,
+    0.486695933,
+    1.704
+   ],
+   "yaw_deg": -17.306998,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0047",
+   "frame": 47,
+   "tick": 141,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0047.png",
+   "sha256": "9856983161bf667297723da138beb21dfb9433e833a0859d44ab22fc9bba1be5",
+   "bytes": 1032737,
+   "buffer_sha256": "c17f8a536e9e1ee5cfc28df10bf87f2d1115ebe561798471ab8922a132e47282",
+   "eye_m": [
+    -2.187829968,
+    0.416650865,
+    1.704
+   ],
+   "yaw_deg": -15.792209,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0048",
+   "frame": 48,
+   "tick": 144,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0048.png",
+   "sha256": "38a86dfcd1c4c1d44604bb6a56d16ff1479b98b0520f3038be62d636534ff7e5",
+   "bytes": 1031558,
+   "buffer_sha256": "ad6d1b99916357e2db57c7c8493ac928632624949bd4e53a8c154474361dd868",
+   "eye_m": [
+    -2.200882441,
+    0.331131267,
+    1.704
+   ],
+   "yaw_deg": -13.929471,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0049",
+   "frame": 49,
+   "tick": 147,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0049.png",
+   "sha256": "3539e37fde74ef18432480af5abaa39bd86bb6d7dde21baf249bcd0a2fc67e96",
+   "bytes": 1029504,
+   "buffer_sha256": "7c7646e8cbf4de4aa3a75fd5246302902342ba7d7800872482c1bcfefcb163d1",
+   "eye_m": [
+    -2.214816897,
+    0.234557705,
+    1.704
+   ],
+   "yaw_deg": -11.830584,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0050",
+   "frame": 50,
+   "tick": 150,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0050.png",
+   "sha256": "d9439df26a0ee3bd62004f6109e9b313f5e083b8fb8a34dbd89a72e8594ec361",
+   "bytes": 1030480,
+   "buffer_sha256": "38e55322fc18ec1b2d0159ad0f02c8f3a7da179d9876161e3679283fa251034b",
+   "eye_m": [
+    -2.22827413,
+    0.126856181,
+    1.704
+   ],
+   "yaw_deg": -9.498002,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0051",
+   "frame": 51,
+   "tick": 153,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0051.png",
+   "sha256": "48a184677e286cbbf30b045d2aa94168e6fbd145e95df59188e2878387cd972c",
+   "bytes": 1030997,
+   "buffer_sha256": "fac403986104a11eb935b947db50950793d076363df538cd78bea984a74f4b05",
+   "eye_m": [
+    -2.239522336,
+    0.005066381,
+    1.704
+   ],
+   "yaw_deg": -6.861021,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0052",
+   "frame": 52,
+   "tick": 156,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0052.png",
+   "sha256": "bb17bd49297e0de44d72550ff1232f6de64e351e9ed3cbb4dae94e036e722166",
+   "bytes": 1028750,
+   "buffer_sha256": "64611bd0dd70f02c04e243bd22bdb439a63f825c0e6179e6fc4457f8c752dab5",
+   "eye_m": [
+    -2.245743577,
+    -0.129052687,
+    1.704
+   ],
+   "yaw_deg": -3.948584,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0053",
+   "frame": 53,
+   "tick": 159,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0053.png",
+   "sha256": "6770ea95d07d1a94549cc863feeb370a8039ca06ec78bb11aba28d8fcd52e792",
+   "bytes": 1025576,
+   "buffer_sha256": "8fbd429621a008bec2e5cb4f5dd1be3d753e4dee7c09716a69d3e70d82c0e0db",
+   "eye_m": [
+    -2.244628727,
+    -0.274157267,
+    1.704
+   ],
+   "yaw_deg": -0.777652,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0054",
+   "frame": 54,
+   "tick": 162,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0054.png",
+   "sha256": "c15d305f7efcf48763a9ed7278825bfe446930e0a65a9b5ce217afe98a71388d",
+   "bytes": 1019178,
+   "buffer_sha256": "75b617284778c53b09cd7569e1652b3afcb3b5b1b74e4bde8cf39ca436c89049",
+   "eye_m": [
+    -2.2344261,
+    -0.430243096,
+    1.704
+   ],
+   "yaw_deg": 2.657519,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0055",
+   "frame": 55,
+   "tick": 165,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0055.png",
+   "sha256": "7920e0af65a967c10cfdf47f567e52afdefe97f9eb72252b24ce572a7eb64264",
+   "bytes": 1012809,
+   "buffer_sha256": "730aa3792840aec589acac348f53c397f1b8b8b2bb46539400571d079c0baac4",
+   "eye_m": [
+    -2.214130654,
+    -0.594581113,
+    1.704
+   ],
+   "yaw_deg": 6.301617,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0056",
+   "frame": 56,
+   "tick": 168,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0056.png",
+   "sha256": "22148a343983eaff1f23adeb6cb6f4a3ded9b256f963e16750bae6dc68222c9f",
+   "bytes": 1011315,
+   "buffer_sha256": "ae794ab5de6611b90bc79c2f52ea6354b8ee5ef2f451410d1812fc90c79e5f50",
+   "eye_m": [
+    -2.183898804,
+    -0.757216374,
+    1.704
+   ],
+   "yaw_deg": 9.943142,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0057",
+   "frame": 57,
+   "tick": 171,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0057.png",
+   "sha256": "ebf6be45aea81bd7e7de4a7eab27c4337259fbec4c1c4862e0f1ec489d539558",
+   "bytes": 983665,
+   "buffer_sha256": "d36b3952efd0d1660d668e8cd085ecb962e137a1b6611b63a621074a63c39388",
+   "eye_m": [
+    -2.144997872,
+    -0.910851993,
+    1.704
+   ],
+   "yaw_deg": 13.434174,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0058",
+   "frame": 58,
+   "tick": 174,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0058.png",
+   "sha256": "b188bd1721ac59ff431d7798275029b179608871d7698014280d90525bae5331",
+   "bytes": 964323,
+   "buffer_sha256": "d935362b105849f32d173254bedb7d55b2fae553b0f603fd0b67d6352241da9c",
+   "eye_m": [
+    -2.096668588,
+    -1.060326322,
+    1.704
+   ],
+   "yaw_deg": 16.898088,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0059",
+   "frame": 59,
+   "tick": 177,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0059.png",
+   "sha256": "5ba93c29c7429da2fe5266b0c072f609be49da15614d0fafdc6d607afada3135",
+   "bytes": 955621,
+   "buffer_sha256": "9aa96c00eadcccbf5905525f79260d31b3c7c05e4ab9be3777877f79eb453aa3",
+   "eye_m": [
+    -2.039870419,
+    -1.202441252,
+    1.704
+   ],
+   "yaw_deg": 20.272115,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0060",
+   "frame": 60,
+   "tick": 180,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0060.png",
+   "sha256": "3d946964feab052091ece552439bb348f257cecb418c9ed33fd9d5898c0042be",
+   "bytes": 949150,
+   "buffer_sha256": "f56e0a980867d5d7a61cff9d90dc476f19905a3adb43d87ad7714090f0f23b81",
+   "eye_m": [
+    -1.978034609,
+    -1.332387916,
+    1.704
+   ],
+   "yaw_deg": 23.449461,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0061",
+   "frame": 61,
+   "tick": 183,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0061.png",
+   "sha256": "305116db93b573141dd32f293a68e212e783392c900b1f2e63829999daf3a00a",
+   "bytes": 944924,
+   "buffer_sha256": "8e6edd6fe19a8f5a15df914ac47c3f54fc39d2017cbbacdd4c02e089bd939e19",
+   "eye_m": [
+    -1.910483004,
+    -1.455125255,
+    1.704
+   ],
+   "yaw_deg": 26.545775,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0062",
+   "frame": 62,
+   "tick": 186,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0062.png",
+   "sha256": "4e7861252b0e4fd78a03c0a92293cb3174cc4ce8464f375d8db7881e9c3e1839",
+   "bytes": 953432,
+   "buffer_sha256": "a1df3315138bc778ebc3f15c36b71f10854d33835a4613ff10b8a3130d7602fe",
+   "eye_m": [
+    -1.840491894,
+    -1.566249031,
+    1.704
+   ],
+   "yaw_deg": 29.447775,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0063",
+   "frame": 63,
+   "tick": 189,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0063.png",
+   "sha256": "de2990845c30ef4804f0557698e60df2318f3885fa09c9c622f59b83c67f1af4",
+   "bytes": 953137,
+   "buffer_sha256": "eb49c9d0fb3cc06eb54d9eba8101929d7b66b23a781a7ece1e86a2229b0c7b3d",
+   "eye_m": [
+    -1.770925209,
+    -1.663641457,
+    1.704
+   ],
+   "yaw_deg": 32.091478,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0064",
+   "frame": 64,
+   "tick": 192,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0064.png",
+   "sha256": "cdb04ce7bad3773deaf642f45a9972239b6be7c5d5921c98bbaa9fdf76d6ce0b",
+   "bytes": 961443,
+   "buffer_sha256": "9d01e330423c5465d06ed0f4368dbfc3a53be0b7ac7de8a3ef1eb18adb83e08c",
+   "eye_m": [
+    -1.703344787,
+    -1.747876724,
+    1.704
+   ],
+   "yaw_deg": 34.477884,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0065",
+   "frame": 65,
+   "tick": 195,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0065.png",
+   "sha256": "2ebc5ffdbd4220d923cb47124fd7d4627c6c0f6990f1e2e852ef2b8d280e4c27",
+   "bytes": 971486,
+   "buffer_sha256": "f7f3a7f32aaaa51baa43e1e35dac14cbdfbd0cb8aa4915ba309118dd472542a4",
+   "eye_m": [
+    -1.638196042,
+    -1.820919587,
+    1.704
+   ],
+   "yaw_deg": 36.640396,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0066",
+   "frame": 66,
+   "tick": 198,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0066.png",
+   "sha256": "dd5376425b5799cccdbb330ceb5d332265b4f099e4d11a474b75b9084d6f1261",
+   "bytes": 979045,
+   "buffer_sha256": "c7e8a48fc1919167f62609f43c614c8103127afd00376955a6fad949775679d4",
+   "eye_m": [
+    -1.576009902,
+    -1.8839962,
+    1.704
+   ],
+   "yaw_deg": 38.594132,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0067",
+   "frame": 67,
+   "tick": 201,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0067.png",
+   "sha256": "4240b72e509811b54bfefba906950f30a8e90541a88b3f5dd894d4ee32742a05",
+   "bytes": 985059,
+   "buffer_sha256": "74d33fd313c265fdffde6899cdc38399ba170bed7f680dca129cf44379410af7",
+   "eye_m": [
+    -1.517068978,
+    -1.938065803,
+    1.704
+   ],
+   "yaw_deg": 40.356366,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0068",
+   "frame": 68,
+   "tick": 204,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0068.png",
+   "sha256": "be9067becf54919e9ee226fdef30ad2354bc4a43d5b2733438e2bbd51d583fb9",
+   "bytes": 992030,
+   "buffer_sha256": "b52ab7ec76176489f7a8dcfa1da2e7759a9adc5bbc816bac7f21042e0b49f377",
+   "eye_m": [
+    -1.462302223,
+    -1.983201207,
+    1.704
+   ],
+   "yaw_deg": 41.916767,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0069",
+   "frame": 69,
+   "tick": 207,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0069.png",
+   "sha256": "39c6faed9013d7e04d4a916bfdd5cf759ce9ee7962bbf0ac3997c4bd67bb4e35",
+   "bytes": 999026,
+   "buffer_sha256": "a6cd6191274a74a5805cefe14315efaa7d921b704bbd57b01850eac4b4585019",
+   "eye_m": [
+    -1.413824489,
+    -2.018792092,
+    1.704
+   ],
+   "yaw_deg": 43.236825,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0070",
+   "frame": 70,
+   "tick": 210,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0070.png",
+   "sha256": "25f2b33f13f34e7899d583463500743ad2201ca751bb4d0b249cbe6acc7c5437",
+   "bytes": 1003062,
+   "buffer_sha256": "333de32b442a63bbc6602581fbebaf0fa7e19c254fc0d73421234df56e6ce19c",
+   "eye_m": [
+    -1.370056295,
+    -2.048923517,
+    1.704
+   ],
+   "yaw_deg": 44.404381,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0071",
+   "frame": 71,
+   "tick": 213,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0071.png",
+   "sha256": "e19f70fbd4857a63c1e10463a5e45c2e3e3c00ac5095041af3f7821c8cbea70f",
+   "bytes": 1006858,
+   "buffer_sha256": "f250034f8b2cce78180ea6375068bfc101a8ea1332174efbfc5a945c7af57f6e",
+   "eye_m": [
+    -1.327768516,
+    -2.075759395,
+    1.704
+   ],
+   "yaw_deg": 45.492125,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0072",
+   "frame": 72,
+   "tick": 216,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0072.png",
+   "sha256": "50eb382ef8a209961839d1bdb5fb0ac04bed7861d8e76960be54a94d05713012",
+   "bytes": 1008250,
+   "buffer_sha256": "d7f5b0defa7fd4f6ab24e8a63802e66dca5f273f14da98b9deb29cccb1b320a9",
+   "eye_m": [
+    -1.285728755,
+    -2.100084882,
+    1.704
+   ],
+   "yaw_deg": 46.536659,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0073",
+   "frame": 73,
+   "tick": 219,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0073.png",
+   "sha256": "561070ca6c716079c6f55978efbaf06fce6f7d9661c3bf6391715aa4fe9fd34f",
+   "bytes": 1011292,
+   "buffer_sha256": "3d6a45aeef3d9abaa58ec15760c14b60d938ff401135909b8e4286589282ab99",
+   "eye_m": [
+    -1.247099502,
+    -2.121036477,
+    1.704
+   ],
+   "yaw_deg": 47.478047,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0074",
+   "frame": 74,
+   "tick": 222,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0074.png",
+   "sha256": "b53013b63b2b17ef1f73af2a748b96c86935f42a41c37b9f3a7f6da6e77a7bbd",
+   "bytes": 1011807,
+   "buffer_sha256": "ecf552ab97100839c2b3c1b21677bea1bcef8b2e79161438b809ca55e5743b01",
+   "eye_m": [
+    -1.212101863,
+    -2.136897817,
+    1.704
+   ],
+   "yaw_deg": 48.281238,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0075",
+   "frame": 75,
+   "tick": 225,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0075.png",
+   "sha256": "962c5b96875a74e91264ba9e14410ba8d78e3479da0bbd65b26305652a285f08",
+   "bytes": 1014629,
+   "buffer_sha256": "790e9142d2dc247699d585415fd2ef47f952d3256451e4f33211b6174ad0e8ab",
+   "eye_m": [
+    -1.179868074,
+    -2.147783091,
+    1.704
+   ],
+   "yaw_deg": 48.969129,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0076",
+   "frame": 76,
+   "tick": 228,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0076.png",
+   "sha256": "9e9044c9abf941aeb587fd4cee5b8c7be15e4fd1a19b29cc33087141d566f3d1",
+   "bytes": 1016774,
+   "buffer_sha256": "e3ffddda37cf9e423876a2476bde88fa2f0de0ded63dba54b2d81cb58d8e6b22",
+   "eye_m": [
+    -1.148554302,
+    -2.156322977,
+    1.704
+   ],
+   "yaw_deg": 49.612188,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0077",
+   "frame": 77,
+   "tick": 231,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0077.png",
+   "sha256": "da6737abbb72288c548aeb8337c947a3d209d16a3edc65be73236c0c42247b3f",
+   "bytes": 1018218,
+   "buffer_sha256": "d16b41f361cc7311602a696d69c097f32b2c2b3adaba19f4548df33431388c84",
+   "eye_m": [
+    -1.118359131,
+    -2.162412089,
+    1.704
+   ],
+   "yaw_deg": 50.204378,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0078",
+   "frame": 78,
+   "tick": 234,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0078.png",
+   "sha256": "affa1af03e70ea1b3d34d8ef81c06ab5a3511341a89a5992914fb4d071b081b5",
+   "bytes": 1020427,
+   "buffer_sha256": "9d385783814701d955c168eb55bd79f474e38b81832ab51485170ffe062dbab9",
+   "eye_m": [
+    -1.089331853,
+    -2.16627898,
+    1.704
+   ],
+   "yaw_deg": 50.74917,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0079",
+   "frame": 79,
+   "tick": 237,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0079.png",
+   "sha256": "e457ff5abe1119747c64d4bb6082e0b699ea4663948941d39c735bee3fac42d7",
+   "bytes": 1021002,
+   "buffer_sha256": "b63bf9a0c22d0dff1ed55238037d384f6ab1af211a21cb35e72ed7812e867ccb",
+   "eye_m": [
+    -1.064518808,
+    -2.165505699,
+    1.704
+   ],
+   "yaw_deg": 51.160104,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0080",
+   "frame": 80,
+   "tick": 240,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0080.png",
+   "sha256": "a6ab0a215df4508c8f8e7720119739a83b670bf66b030464bb5c5cadaaceb884",
+   "bytes": 1021869,
+   "buffer_sha256": "77da2db7a20265d9869b02452aaf6d1a4d328d162cc42612041bd959a0ee891c",
+   "eye_m": [
+    -1.040529356,
+    -2.162797693,
+    1.704
+   ],
+   "yaw_deg": 51.532654,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0081",
+   "frame": 81,
+   "tick": 243,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0081.png",
+   "sha256": "a6edad4846b5b87fa97254bd9b2213988303345178caf67d61c7fe4929ee6e0b",
+   "bytes": 1022596,
+   "buffer_sha256": "2534f141020fe023ba3673a4b08fe67fe82246ce3b738628233092899d7f0cb0",
+   "eye_m": [
+    -1.019705097,
+    -2.156418642,
+    1.704
+   ],
+   "yaw_deg": 51.804187,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0082",
+   "frame": 82,
+   "tick": 246,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0082.png",
+   "sha256": "1ee3c85edeaca2075103954c1b471281b538cbf05b58a91eefa11da4ee5b60c2",
+   "bytes": 1022179,
+   "buffer_sha256": "63e275dcd34b33be3d66a577b7188de8185e310d371d0acb5e0c74038993b18e",
+   "eye_m": [
+    -1.01210075,
+    -2.138581201,
+    1.704
+   ],
+   "yaw_deg": 51.69041,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0083",
+   "frame": 83,
+   "tick": 249,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0083.png",
+   "sha256": "83af1e55781189b52022d4e8e9f85638cea70425b52e015a73002ec1719a834c",
+   "bytes": 1022523,
+   "buffer_sha256": "9d32af94238a2186ec5a440a62e295bfc227eeb0717cb6554965f8dc89e289b3",
+   "eye_m": [
+    -1.000299491,
+    -2.122742136,
+    1.704
+   ],
+   "yaw_deg": 51.676888,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0084",
+   "frame": 84,
+   "tick": 252,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0084.png",
+   "sha256": "5e9a0f1c73351ea2ee3ce7b60bc519b59d3b052de0d88861eb597fe2d5f1ba7c",
+   "bytes": 1027043,
+   "buffer_sha256": "2c64ce26c65d946a2d69f546d60ea8bd5f0757c96799794c5282092dc01e1ab1",
+   "eye_m": [
+    -0.978728998,
+    -2.113267899,
+    1.704
+   ],
+   "yaw_deg": 51.925251,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0085",
+   "frame": 85,
+   "tick": 255,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0085.png",
+   "sha256": "2ba362c97f6e0e12570c5258dcdfbb6ee62d522beabfd00ac97f6085a161a029",
+   "bytes": 1032040,
+   "buffer_sha256": "3d782eadbaff80f1504724ab621d55e806769859514d9ce599f071c5071de1e5",
+   "eye_m": [
+    -0.953338529,
+    -2.105393953,
+    1.704
+   ],
+   "yaw_deg": 52.265953,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0086",
+   "frame": 86,
+   "tick": 258,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0086.png",
+   "sha256": "bfde7811bcb6c9ead411dcc0a82d68db489e86dc22ddfff4a3c752d2f06907df",
+   "bytes": 1034754,
+   "buffer_sha256": "34ce863c661742345fb037487a47b1adc5da1a4efef593344b429e1fb3b9a959",
+   "eye_m": [
+    -0.923090999,
+    -2.09977399,
+    1.704
+   ],
+   "yaw_deg": 52.725272,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0087",
+   "frame": 87,
+   "tick": 261,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0087.png",
+   "sha256": "fa7dadca8f34119f2fe6b4fd0493ca707e5e9c33b7b4faa930ca340623ecfb0b",
+   "bytes": 1035615,
+   "buffer_sha256": "5c4aeec00edaf2f708453306093cfb1f3da050de7570e62499509045c1696dfa",
+   "eye_m": [
+    -0.89911032,
+    -2.088080324,
+    1.704
+   ],
+   "yaw_deg": 52.99313,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0088",
+   "frame": 88,
+   "tick": 264,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0088.png",
+   "sha256": "52b654cf6f9d4a415715ea52c84ceaa5d01c87bb1016cb1a17b5525e06ff8342",
+   "bytes": 958868,
+   "buffer_sha256": "77a489befb16d0d9690e146961b33a73d14d92e944e991bd49d46c472c4c4a5c",
+   "eye_m": [
+    -0.880296402,
+    -2.071106292,
+    1.704
+   ],
+   "yaw_deg": 53.098551,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0089",
+   "frame": 89,
+   "tick": 267,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0089.png",
+   "sha256": "c8e06d43689b3e6df81fd1235fe4aed5665f758e4f5689221bfac90a6c05a319",
+   "bytes": 968839,
+   "buffer_sha256": "808d85765179697c094251152543dd1df97e1e7ee194f60c190fe9af195f9070",
+   "eye_m": [
+    -0.861090537,
+    -2.052787247,
+    1.704
+   ],
+   "yaw_deg": 53.197013,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0090",
+   "frame": 90,
+   "tick": 270,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0090.png",
+   "sha256": "448a1115bfa8153efa33fb0dfd1b9dc03d576bf97932456771f3f61b963b5b7a",
+   "bytes": 976299,
+   "buffer_sha256": "9bac91847780f113cd087655460c625d56585f89a7a2a6becb7a051700022223",
+   "eye_m": [
+    -0.841506638,
+    -2.033093302,
+    1.704
+   ],
+   "yaw_deg": 53.291263,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0091",
+   "frame": 91,
+   "tick": 273,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0091.png",
+   "sha256": "b4e3a0a3228374853f1b84341dca11adb18e5e1377fb2296ab663c1597855f0e",
+   "bytes": 984538,
+   "buffer_sha256": "cbf8cb9a0febdaf641b73de0d78204219a3d3dd72c03d639a82ea9f665f6cf3e",
+   "eye_m": [
+    -0.821670391,
+    -2.011919473,
+    1.704
+   ],
+   "yaw_deg": 53.37854,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0092",
+   "frame": 92,
+   "tick": 276,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0092.png",
+   "sha256": "1366c9df4ef0d23dc97ab8f7bb375027780f17898a6713e9f34150169bbde4b9",
+   "bytes": 993235,
+   "buffer_sha256": "9631063efb0ea0f47487e4c75665c062ca844342180027bb9aacd2869e692e66",
+   "eye_m": [
+    -0.801284318,
+    -1.989911758,
+    1.704
+   ],
+   "yaw_deg": 53.460726,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0093",
+   "frame": 93,
+   "tick": 279,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0093.png",
+   "sha256": "fd6563820205902e6470e70068357a29901e18843ff087472fbf0c977d9289da",
+   "bytes": 1000629,
+   "buffer_sha256": "ad39368ea119d8cd19e34a3b45308d523c891476f938a61c008655b9d02a0ee0",
+   "eye_m": [
+    -0.780216491,
+    -1.967330236,
+    1.704
+   ],
+   "yaw_deg": 53.540339,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0094",
+   "frame": 94,
+   "tick": 282,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0094.png",
+   "sha256": "3da4f7f08b44b326b6a82fab05f492f0af9a6f38ad2c7f21690ef9cb6eb82f51",
+   "bytes": 1007477,
+   "buffer_sha256": "f8bc28e455d3324799ab512229ac9c0094269ed91fcee59da15dfbd415de1e40",
+   "eye_m": [
+    -0.759134288,
+    -1.943384019,
+    1.704
+   ],
+   "yaw_deg": 53.611355,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0095",
+   "frame": 95,
+   "tick": 285,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0095.png",
+   "sha256": "c755e6cb43d909749a082c800497a327a04e93cc812c52e867a922b8e98187f1",
+   "bytes": 1014235,
+   "buffer_sha256": "3500317256dd63810bcb9afa58fae8fc871254b83ca4027bf41e6ed735066197",
+   "eye_m": [
+    -0.735353257,
+    -1.92040579,
+    1.704
+   ],
+   "yaw_deg": 53.681071,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0096",
+   "frame": 96,
+   "tick": 288,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0096.png",
+   "sha256": "81a437edf497c74c1956d409623644bd65cc596bec056ce2a13375552dec217e",
+   "bytes": 1018822,
+   "buffer_sha256": "d7354aa6ab171766006e98af6106301e9cd976b00c74d954ff0f909d4ef4ceb3",
+   "eye_m": [
+    -0.709336541,
+    -1.896566293,
+    1.704
+   ],
+   "yaw_deg": 53.766108,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0097",
+   "frame": 97,
+   "tick": 291,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0097.png",
+   "sha256": "d0788b09c1246f3c1a7302ae7b023e7b23234ec200a5b3bb8a5e087cae566d44",
+   "bytes": 1021708,
+   "buffer_sha256": "bb0b218d10d6a3125613fc935098f4226a428ad5d01286b952571a7c0c03f82d",
+   "eye_m": [
+    -0.685262442,
+    -1.869113202,
+    1.704
+   ],
+   "yaw_deg": 53.836733,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0098",
+   "frame": 98,
+   "tick": 294,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0098.png",
+   "sha256": "6011fe5da3db42357ecca71d93da26dfdf072150a7fadfb92e4e2cdda6c39271",
+   "bytes": 1024947,
+   "buffer_sha256": "6421c652a19460d8932c47fe1f19f6c5b6340fe613faf378231f070c48e52819",
+   "eye_m": [
+    -0.661945009,
+    -1.839607462,
+    1.704
+   ],
+   "yaw_deg": 53.889132,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0099",
+   "frame": 99,
+   "tick": 297,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0099.png",
+   "sha256": "1cd0ac3271956bb7a1d641afbc5b9e05bbb40199b96e22ac6b74dac0b40daeea",
+   "bytes": 1025778,
+   "buffer_sha256": "d32951e61c4c7f3da959e9512b88767441eef020bff60e1c987674ce895d6824",
+   "eye_m": [
+    -0.63974879,
+    -1.807903921,
+    1.704
+   ],
+   "yaw_deg": 53.92983,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0100",
+   "frame": 100,
+   "tick": 300,
+   "shot": "track",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0100.png",
+   "sha256": "0522c103d139c7185a54908a921f8467901d9615d8cd346ecb586e074a073184",
+   "bytes": 1025917,
+   "buffer_sha256": "ef720dea86a44a9fc4c1ef29ce1f71b265e131b1bd11aad781c17a81a72b813a",
+   "eye_m": [
+    -0.61864344,
+    -1.777654669,
+    1.704
+   ],
+   "yaw_deg": 53.972027,
+   "pitch_deg": -10.0,
+   "eye_to_creature_m": 2.6
+  },
+  {
+   "name": "wf_f0101",
+   "frame": 101,
+   "tick": 0,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0101.png",
+   "sha256": "03f213ef81841974c227fdf0cefe1c30e82851cc7d04a6668372cad49c86a441",
+   "bytes": 813764,
+   "buffer_sha256": "7e10b5554ca75d5862600a36e0adc8df79b32eef89efb8643bc8d336413990c5",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.6615
+  },
+  {
+   "name": "wf_f0102",
+   "frame": 102,
+   "tick": 3,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0102.png",
+   "sha256": "427d5e9979d6437dc3e9922b1343f75312fc62761e24080065cc72c738ac5895",
+   "bytes": 813769,
+   "buffer_sha256": "adebce383a36c84a580641a2c5efb31f536076657951495a78ec6270d77ef863",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.6554
+  },
+  {
+   "name": "wf_f0103",
+   "frame": 103,
+   "tick": 6,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0103.png",
+   "sha256": "5daf32c685b33451eadfb44f5dac922cff9ca0f12f8df809ffd916f2b6a88003",
+   "bytes": 813755,
+   "buffer_sha256": "6d8b06b1695777f71f4a29a46187f8bd12b79ffa193234fe5706878a49e174f7",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.6489
+  },
+  {
+   "name": "wf_f0104",
+   "frame": 104,
+   "tick": 9,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0104.png",
+   "sha256": "5b4e312bf6e9d8b997b7712add3b78504239a7b60076b3af8b8e7be3e36fae8a",
+   "bytes": 813780,
+   "buffer_sha256": "5b212a6b8b56cadcab42486cde24abd20e2518aad7e795bb00a5b0c49131ceb9",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.642
+  },
+  {
+   "name": "wf_f0105",
+   "frame": 105,
+   "tick": 12,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0105.png",
+   "sha256": "f0a1702bf99b5d0afea65ed5a994dccd00c2dd9a9504fb1c982433dc582cf528",
+   "bytes": 813759,
+   "buffer_sha256": "e938d80b72c7b1881a8b347c54ec673fd7b3d8fa5e584f246bf556286b387495",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.6348
+  },
+  {
+   "name": "wf_f0106",
+   "frame": 106,
+   "tick": 15,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0106.png",
+   "sha256": "90395e353076bdf90614e53e036d92abecbd5db3a2f64e54be7b6f449da057ab",
+   "bytes": 813774,
+   "buffer_sha256": "2184d4edb4e40641fa2ef5c8e6954e21286ae740abafcbc1fde006fb10577aba",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.6272
+  },
+  {
+   "name": "wf_f0107",
+   "frame": 107,
+   "tick": 18,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0107.png",
+   "sha256": "7759e5eb988e38746bc63a176b2a67c7d3b79dce156b079928e7a869713ce1b1",
+   "bytes": 813863,
+   "buffer_sha256": "8eb2f4a5ed8b3991ed98533b6e24e9ffd69529f7a7427f4048c18e4c21a67d39",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.6191
+  },
+  {
+   "name": "wf_f0108",
+   "frame": 108,
+   "tick": 21,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0108.png",
+   "sha256": "956e7a5b2a8a308b674bfb275a287ef6f676ebe684636cd0b7f6cfeb2bbb9625",
+   "bytes": 813775,
+   "buffer_sha256": "3faa89687bde8bf9cc54720304ddba411b143f2fcd8550b38835dc90dd55f4aa",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.6105
+  },
+  {
+   "name": "wf_f0109",
+   "frame": 109,
+   "tick": 24,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0109.png",
+   "sha256": "f96cfdfce9e9ae2b7fdcc161d12019636c53a0998eb169ab3d652fe45f677348",
+   "bytes": 813836,
+   "buffer_sha256": "cbbf87356002f099b0da3e4b32b9506cba32a8111098ea586f07d0fbc9ae996c",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.6015
+  },
+  {
+   "name": "wf_f0110",
+   "frame": 110,
+   "tick": 27,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0110.png",
+   "sha256": "e33c61388a8a10bd14e9813bbee5862426eb2d428c779b404bfa142627dfe5f3",
+   "bytes": 813851,
+   "buffer_sha256": "12199f14beb115a4ebe6b7feff2d589dd453f4785421ed5cd9e3eddfc4c93a7d",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.592
+  },
+  {
+   "name": "wf_f0111",
+   "frame": 111,
+   "tick": 30,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0111.png",
+   "sha256": "498047bccaea0f95dcd5473d0016db992549466391e4244a0dc58db38540136f",
+   "bytes": 813716,
+   "buffer_sha256": "ca621f23f614362c058df8cded7fab4498bec6d514721c19480acdc2819980bb",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.5821
+  },
+  {
+   "name": "wf_f0112",
+   "frame": 112,
+   "tick": 33,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0112.png",
+   "sha256": "2c6045c5bccbdbd5210f3cd0b0eab9b5ab8ba2a97b9ab813307f079d71d95d6d",
+   "bytes": 813761,
+   "buffer_sha256": "7a0cc90df02250223827348e47bc1eddfc0e1277fa936f022e1f211bcb06fd47",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.5717
+  },
+  {
+   "name": "wf_f0113",
+   "frame": 113,
+   "tick": 36,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0113.png",
+   "sha256": "82a96fa46d35de7fea120861191f6377bbc8228cbb77cd5ebd235c002664c64d",
+   "bytes": 813782,
+   "buffer_sha256": "ad575ca50d20bd385bb386fbd3d7096e27626b21060df29e1ab90a24b920ad37",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.5607
+  },
+  {
+   "name": "wf_f0114",
+   "frame": 114,
+   "tick": 39,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0114.png",
+   "sha256": "9afcaadc710ba613a1c4a2e34099567855f42a36c8c14577c00f21b9f365000b",
+   "bytes": 813865,
+   "buffer_sha256": "7fb4085cfbbab1db53b49d52708e4dab86362ed2e155b527d574b98280ca7fb9",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.5492
+  },
+  {
+   "name": "wf_f0115",
+   "frame": 115,
+   "tick": 42,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0115.png",
+   "sha256": "209092b248f7d60f63e3d3cbdb5ed767f02c127b66904d3101955d47a8afc47d",
+   "bytes": 813830,
+   "buffer_sha256": "db275fa0c5aeca29ef4c0616a4818bfeb05a5230df3bef3c9ab67628b65c21cd",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.5387
+  },
+  {
+   "name": "wf_f0116",
+   "frame": 116,
+   "tick": 45,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0116.png",
+   "sha256": "22f100af3a2d989f0ff218f307c52d437fd445bcd96c44d74539d02ab1eb9a27",
+   "bytes": 813840,
+   "buffer_sha256": "b5f166e428345c980933e5472cf2bacc4e914feb066aa887860ee970d22d3967",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.5298
+  },
+  {
+   "name": "wf_f0117",
+   "frame": 117,
+   "tick": 48,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0117.png",
+   "sha256": "e3047ea35f8a9df1aac6102f92d8740dfc58c6129183499b3242bc1fe612967e",
+   "bytes": 813851,
+   "buffer_sha256": "547317565bd1e20896261d2c1830606ad3c972e8c4e2d58691173c8dedded944",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.5215
+  },
+  {
+   "name": "wf_f0118",
+   "frame": 118,
+   "tick": 51,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0118.png",
+   "sha256": "2a0309b5ad537a1c1c2007a3b31e8f4dcce518da00506a7685202e9504ea0622",
+   "bytes": 813792,
+   "buffer_sha256": "28b5362bdfe59331ea5ab02dcf42d1641f3d4cbad37808c6d787dd524521c44f",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.5136
+  },
+  {
+   "name": "wf_f0119",
+   "frame": 119,
+   "tick": 54,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0119.png",
+   "sha256": "2256d4582c6976b5ff92d22331644f26172d83e74a08ed34bfd839ea84dec342",
+   "bytes": 813865,
+   "buffer_sha256": "bac6b91cf2382809de48e4cacb846393661eb3efc1296a8c123b20f1526da8c3",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.5058
+  },
+  {
+   "name": "wf_f0120",
+   "frame": 120,
+   "tick": 57,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0120.png",
+   "sha256": "1843afee9153f17443ba27c8537b71040dd2148aecb1834289ed998dd6bdaee8",
+   "bytes": 813921,
+   "buffer_sha256": "78a19e576842508fe5d3de28aa1053bd46886f928a94b3e86dd3ce5bde2d5414",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.4982
+  },
+  {
+   "name": "wf_f0121",
+   "frame": 121,
+   "tick": 60,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0121.png",
+   "sha256": "2ef2603555dbc57d275adc1482314ad2b90d40fa380bce875fc4b16a548a811e",
+   "bytes": 813887,
+   "buffer_sha256": "c98ba19368675dcad3af65ab66dab67536bf3c1addff2d6c08b7baa71235f3ca",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.4908
+  },
+  {
+   "name": "wf_f0122",
+   "frame": 122,
+   "tick": 63,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0122.png",
+   "sha256": "1d1ccfb404538599bf6e255802fd9b220cd63aaf62d77200333e7cbc9f9a1470",
+   "bytes": 813890,
+   "buffer_sha256": "cc075256116da7d575ba0d9371841418b0bbc8560788f7f2c9354158b02a4d81",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.4836
+  },
+  {
+   "name": "wf_f0123",
+   "frame": 123,
+   "tick": 66,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0123.png",
+   "sha256": "f8a61b204b2526c1b16194dc3caef14b3d75f302a74c99dd6c3d005708d1b514",
+   "bytes": 813957,
+   "buffer_sha256": "8718a5d182c5556bef64e7f3d17fb64eb68306cdf3cdebf494e9fbedec6a74dc",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.4763
+  },
+  {
+   "name": "wf_f0124",
+   "frame": 124,
+   "tick": 69,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0124.png",
+   "sha256": "15e82954aa5ec7c94f052e4bd7dd9c98171345cd197bcd99aa23726214c90361",
+   "bytes": 813970,
+   "buffer_sha256": "66eae2eb518a1b9486836b7b03c77f9e579fe986953da287c2bba3fbebaff41b",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.469
+  },
+  {
+   "name": "wf_f0125",
+   "frame": 125,
+   "tick": 72,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0125.png",
+   "sha256": "0afa8d48529e3d145cea94dd587bc4d22474572359a7735b432f4e481114ebe3",
+   "bytes": 813936,
+   "buffer_sha256": "2874b446b3e632ab52d155d6c5e5cd6481e33adb149f15ef0cf00f7ee2d0a0c5",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.4616
+  },
+  {
+   "name": "wf_f0126",
+   "frame": 126,
+   "tick": 75,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0126.png",
+   "sha256": "07003a6ef08ef00a2b16be3ffa50ea756a640e90b6974d5548cc0c27304c07e7",
+   "bytes": 813915,
+   "buffer_sha256": "f26a5109c0bc7c503e7ef3d8741914e2699e7d639ead28bf165ad37cc6d1a641",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.454
+  },
+  {
+   "name": "wf_f0127",
+   "frame": 127,
+   "tick": 78,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0127.png",
+   "sha256": "65b70ccc528fc123106000877fdd8117d6be21297171def79d66b620f0a710f6",
+   "bytes": 814109,
+   "buffer_sha256": "e3c8bdfde835437222c7e033c640f785bde388d63e998d39b9ac88696926be8d",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.4462
+  },
+  {
+   "name": "wf_f0128",
+   "frame": 128,
+   "tick": 81,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0128.png",
+   "sha256": "ea75a5d3289661660ec0f369905b53ac170705e365c8e653764ac964efdb06d2",
+   "bytes": 813987,
+   "buffer_sha256": "b1c3de6897754c050985050f87b3aadb7e228e623396ca81b8e5bceafc9fee61",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.4384
+  },
+  {
+   "name": "wf_f0129",
+   "frame": 129,
+   "tick": 84,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0129.png",
+   "sha256": "30007657854c7f7115ccfc5d16c2449f05db1c7e23ba4ea4b8ffc73466c276d3",
+   "bytes": 813945,
+   "buffer_sha256": "a2061d1d87051bb305e4a55c055ded50a0a7e8eda698a283b7555fcca62d4824",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.4307
+  },
+  {
+   "name": "wf_f0130",
+   "frame": 130,
+   "tick": 87,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0130.png",
+   "sha256": "14ae0e779c51abbc19b4308e4d951bbfc2aaa782638801d760525d384e499c6a",
+   "bytes": 813960,
+   "buffer_sha256": "3766f3ff162ed8a5fd93dc8ff915d382e9e3ae85fecbc8e49b24679642b26443",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.4233
+  },
+  {
+   "name": "wf_f0131",
+   "frame": 131,
+   "tick": 90,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0131.png",
+   "sha256": "47665486343e4de6eed2f629755a19200abf32aa7b5a1b289fb6374605bcc46f",
+   "bytes": 813972,
+   "buffer_sha256": "c6ba3e42699b7f99fb0dfcfb9755b4d5be8714c797c61f97d5ee14924c73ade9",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.4166
+  },
+  {
+   "name": "wf_f0132",
+   "frame": 132,
+   "tick": 93,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0132.png",
+   "sha256": "2c3bb15d9713dc1376113bba2b175e62ddbb901fcdc72e7e30dca27459adc2d5",
+   "bytes": 813984,
+   "buffer_sha256": "97723f64154c7a61795cc8420037484db836718c4f0e534767466c562d712d01",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.4106
+  },
+  {
+   "name": "wf_f0133",
+   "frame": 133,
+   "tick": 96,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0133.png",
+   "sha256": "95e18a1b2fde76bb33ce98b568aafd600af990564b7ac59ddf13adaa8a8c00d0",
+   "bytes": 814010,
+   "buffer_sha256": "89e7f7a6a41bd3a935d604cf576c296f133b7c62ad5ac41c60b08ff33b1f8be3",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.4056
+  },
+  {
+   "name": "wf_f0134",
+   "frame": 134,
+   "tick": 99,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0134.png",
+   "sha256": "03c68f32320a01d0f8a37cffa8f58e6c761fc2e2ef65564688da1267b7bc2c87",
+   "bytes": 814023,
+   "buffer_sha256": "4fb5f5d2199dd8c2521a4197da552ae9e5dc4aa07278b3e49f86b7a97a34e7e3",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.4011
+  },
+  {
+   "name": "wf_f0135",
+   "frame": 135,
+   "tick": 102,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0135.png",
+   "sha256": "cc4f980791f692ea2cf0765fcc43eb72ab05891b63f95433375490008618773d",
+   "bytes": 814019,
+   "buffer_sha256": "9cb335b62105ea5a73f6fff761b4f02947e2bb13fe7409550f998a86eb62d39b",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.3972
+  },
+  {
+   "name": "wf_f0136",
+   "frame": 136,
+   "tick": 105,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0136.png",
+   "sha256": "09bb31098edf24c6c8e5b14c7e17bf095f91e4e57a3bb9d7b1a00cc5ef933963",
+   "bytes": 814023,
+   "buffer_sha256": "a66a5676b748da69cc1e0229e093b2f9ea27c15412bc3122f19991e8f35107ec",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.3942
+  },
+  {
+   "name": "wf_f0137",
+   "frame": 137,
+   "tick": 108,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0137.png",
+   "sha256": "b8a6f8751aeec4283af56b5a9902abe9b1be68c5678907719602b928b091d700",
+   "bytes": 814057,
+   "buffer_sha256": "73185b45afd75be747b8c137b3d2428b6d6eb000303138d67f4121ffb05a18cb",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.3913
+  },
+  {
+   "name": "wf_f0138",
+   "frame": 138,
+   "tick": 111,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0138.png",
+   "sha256": "3f6c3eeffff3ca398f1e0e9718c267d208186676e40c68ea0fc6e54130fd409c",
+   "bytes": 813908,
+   "buffer_sha256": "b01d8f5912d9619cd290983eb90b96a5ebefee35d74cf4b0df2e787e5ff052e1",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.3881
+  },
+  {
+   "name": "wf_f0139",
+   "frame": 139,
+   "tick": 114,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0139.png",
+   "sha256": "af75145699301badd0df771c7d5486632c7ca8c61474bbfc87058e9edd0e8e4d",
+   "bytes": 813910,
+   "buffer_sha256": "2825dffc40f6797bee6f40f5e4edb740a0b3ecdbe31542db5a9c6d79285ac843",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.3851
+  },
+  {
+   "name": "wf_f0140",
+   "frame": 140,
+   "tick": 117,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0140.png",
+   "sha256": "d9e7420c96f434174049532adc570db83678c86a493caf8e97bc89c618dde7ba",
+   "bytes": 814007,
+   "buffer_sha256": "8deda25cca591d79b9bd3368c532f35739e78587e3792fb54cc829ab6b12964b",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.3821
+  },
+  {
+   "name": "wf_f0141",
+   "frame": 141,
+   "tick": 120,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0141.png",
+   "sha256": "0f8a7ddb610d3caaf8a9171b0d17f0b5d7fdaacc8c6c04f4ea44116a3d805135",
+   "bytes": 813935,
+   "buffer_sha256": "14e608fb71e9f5a2ae8ffe47cf531a4ac547a039ec8800134109da49512b4cda",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.3794
+  },
+  {
+   "name": "wf_f0142",
+   "frame": 142,
+   "tick": 123,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0142.png",
+   "sha256": "700c1398d1775d91c0c59bfd6f1a6e3f839622ca70996a9ac5a8f1b530bf840e",
+   "bytes": 813832,
+   "buffer_sha256": "9ff0d3439a915234ba5e1c3fe6d42edc15dd91e9cd18a3bc37166915a6556c07",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.3767
+  },
+  {
+   "name": "wf_f0143",
+   "frame": 143,
+   "tick": 126,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0143.png",
+   "sha256": "bd132225c50f78da7fc04f08650f4f719ff71991a412eda5c3c0d52ec745e904",
+   "bytes": 813864,
+   "buffer_sha256": "2eb268bcc7c228ef4cd7bac07b4ac4694ae30488f2d657565f3710f6974ca2f8",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.3745
+  },
+  {
+   "name": "wf_f0144",
+   "frame": 144,
+   "tick": 129,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0144.png",
+   "sha256": "4042cb8b875336cbc6b84c21b1f7525bef7a3008fafb29196e9e9501e7a90fe3",
+   "bytes": 813809,
+   "buffer_sha256": "a0997b516a25b0b7d0f69071e3c08565d94ab77885d122a820f39f1c83383530",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.3723
+  },
+  {
+   "name": "wf_f0145",
+   "frame": 145,
+   "tick": 132,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0145.png",
+   "sha256": "59558a9db27b7385ed68a31a7b3d16480b740615f254ca06e6204ffc65801b91",
+   "bytes": 813789,
+   "buffer_sha256": "c63fb1870f188e445bb08c9d966fda42cba95fd1f74fd1735cb90a1b70b071cf",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.37
+  },
+  {
+   "name": "wf_f0146",
+   "frame": 146,
+   "tick": 135,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0146.png",
+   "sha256": "cbe90b8c9658fe2630f0f1553f04fcf088ee1d1a4e21fdfa804a9851ea5a3bd5",
+   "bytes": 813975,
+   "buffer_sha256": "86e9d46bc25ee7ed0a25bd0b8a23f6d2650eb2e9047e1425c95918df710f416c",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.3672
+  },
+  {
+   "name": "wf_f0147",
+   "frame": 147,
+   "tick": 138,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0147.png",
+   "sha256": "2113db143b2c7674ccb71eba7140d8660a378732c1340343339f5ed79e949228",
+   "bytes": 813876,
+   "buffer_sha256": "78f10abf8e46c4150c6c6f8e356336a6e0e3b361c61e98eb5c9fb8aeac906d1d",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.3636
+  },
+  {
+   "name": "wf_f0148",
+   "frame": 148,
+   "tick": 141,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0148.png",
+   "sha256": "1d017bb6de682ead12beedb7026fe1a4757d0742bbb3e077f360a2c1f1ee8d69",
+   "bytes": 813857,
+   "buffer_sha256": "c17f8a536e9e1ee5cfc28df10bf87f2d1115ebe561798471ab8922a132e47282",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.3591
+  },
+  {
+   "name": "wf_f0149",
+   "frame": 149,
+   "tick": 144,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0149.png",
+   "sha256": "adcebcf997f05472b4ddd19ab1ac769a578834e035cf7b0740d9d55237165e32",
+   "bytes": 813863,
+   "buffer_sha256": "ad6d1b99916357e2db57c7c8493ac928632624949bd4e53a8c154474361dd868",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.3549
+  },
+  {
+   "name": "wf_f0150",
+   "frame": 150,
+   "tick": 147,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0150.png",
+   "sha256": "17ed269cce94ccec6be3bb97dc4f2507c6e6d079b6f1c81da9454dbc59d99784",
+   "bytes": 813826,
+   "buffer_sha256": "7c7646e8cbf4de4aa3a75fd5246302902342ba7d7800872482c1bcfefcb163d1",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.3516
+  },
+  {
+   "name": "wf_f0151",
+   "frame": 151,
+   "tick": 150,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0151.png",
+   "sha256": "a57a11c288eaf5519df198a3bf790a56438c22279aa852066e45fe4dbbe12f55",
+   "bytes": 813863,
+   "buffer_sha256": "38e55322fc18ec1b2d0159ad0f02c8f3a7da179d9876161e3679283fa251034b",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.3493
+  },
+  {
+   "name": "wf_f0152",
+   "frame": 152,
+   "tick": 153,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0152.png",
+   "sha256": "03d572b0b68e19e85d142234b69897a68931ea2cf9aa067da653cf57e6216783",
+   "bytes": 813667,
+   "buffer_sha256": "fac403986104a11eb935b947db50950793d076363df538cd78bea984a74f4b05",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.347
+  },
+  {
+   "name": "wf_f0153",
+   "frame": 153,
+   "tick": 156,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0153.png",
+   "sha256": "c010fbe256dad9ca9a3ad7deb6340fe435bb22b7d209afa422639e345577286c",
+   "bytes": 813794,
+   "buffer_sha256": "64611bd0dd70f02c04e243bd22bdb439a63f825c0e6179e6fc4457f8c752dab5",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.3438
+  },
+  {
+   "name": "wf_f0154",
+   "frame": 154,
+   "tick": 159,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0154.png",
+   "sha256": "87af7a37f6c431e10ea31f513ef5040b8f5a20eab2c1d4610c3d956ddc50d2a9",
+   "bytes": 813820,
+   "buffer_sha256": "8fbd429621a008bec2e5cb4f5dd1be3d753e4dee7c09716a69d3e70d82c0e0db",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.3393
+  },
+  {
+   "name": "wf_f0155",
+   "frame": 155,
+   "tick": 162,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0155.png",
+   "sha256": "864c1bf0df7f26b702237e13bd37f1c45a92384b78337f3737bf91450ab73391",
+   "bytes": 813756,
+   "buffer_sha256": "75b617284778c53b09cd7569e1652b3afcb3b5b1b74e4bde8cf39ca436c89049",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.3336
+  },
+  {
+   "name": "wf_f0156",
+   "frame": 156,
+   "tick": 165,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0156.png",
+   "sha256": "8175664874106c88b0965e5a9622d357e0d1682b76970a85790aec258e7b3202",
+   "bytes": 813682,
+   "buffer_sha256": "730aa3792840aec589acac348f53c397f1b8b8b2bb46539400571d079c0baac4",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.3276
+  },
+  {
+   "name": "wf_f0157",
+   "frame": 157,
+   "tick": 168,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0157.png",
+   "sha256": "b262848e62a792b2db044ac412592d670b6f3bf767c08a0393fc2d81b55ead86",
+   "bytes": 813640,
+   "buffer_sha256": "ae794ab5de6611b90bc79c2f52ea6354b8ee5ef2f451410d1812fc90c79e5f50",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.3217
+  },
+  {
+   "name": "wf_f0158",
+   "frame": 158,
+   "tick": 171,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0158.png",
+   "sha256": "1119277919c9b24ef07b5644d0f89d2a5169cfe1e33d8075e3989e074fc9b9ea",
+   "bytes": 813667,
+   "buffer_sha256": "d36b3952efd0d1660d668e8cd085ecb962e137a1b6611b63a621074a63c39388",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.3155
+  },
+  {
+   "name": "wf_f0159",
+   "frame": 159,
+   "tick": 174,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0159.png",
+   "sha256": "77ae9cab0f0398fefe30d752c9b2e1e8d05ad3fa06b72e53ec3f5ed7dfa45f4e",
+   "bytes": 813735,
+   "buffer_sha256": "d935362b105849f32d173254bedb7d55b2fae553b0f603fd0b67d6352241da9c",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.3086
+  },
+  {
+   "name": "wf_f0160",
+   "frame": 160,
+   "tick": 177,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0160.png",
+   "sha256": "f86c0e03441c4ec1bbe314aaa28b50fa7e14d978cf5cc9236b2c1986faebff96",
+   "bytes": 813649,
+   "buffer_sha256": "9aa96c00eadcccbf5905525f79260d31b3c7c05e4ab9be3777877f79eb453aa3",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.3005
+  },
+  {
+   "name": "wf_f0161",
+   "frame": 161,
+   "tick": 180,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0161.png",
+   "sha256": "793d4c3a9943dc66de222184de3a988634e94834d26eecc31ab745d38ef61fd8",
+   "bytes": 813748,
+   "buffer_sha256": "f56e0a980867d5d7a61cff9d90dc476f19905a3adb43d87ad7714090f0f23b81",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.2918
+  },
+  {
+   "name": "wf_f0162",
+   "frame": 162,
+   "tick": 183,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0162.png",
+   "sha256": "aa691ed30f89c7115c03578546c470c375781cd1a9bc1d38f966a43951796369",
+   "bytes": 813800,
+   "buffer_sha256": "8e6edd6fe19a8f5a15df914ac47c3f54fc39d2017cbbacdd4c02e089bd939e19",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.2826
+  },
+  {
+   "name": "wf_f0163",
+   "frame": 163,
+   "tick": 186,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0163.png",
+   "sha256": "9de677776854e06e0452dfb8e1e7a748b04dd6c983c0a850c5ffc5c9c6f0815f",
+   "bytes": 813737,
+   "buffer_sha256": "a1df3315138bc778ebc3f15c36b71f10854d33835a4613ff10b8a3130d7602fe",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.273
+  },
+  {
+   "name": "wf_f0164",
+   "frame": 164,
+   "tick": 189,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0164.png",
+   "sha256": "825ad9f8f0ed44bb406f601af46240bc3548bfa3f8b9bd7ff0dcc167c8f34f13",
+   "bytes": 813744,
+   "buffer_sha256": "eb49c9d0fb3cc06eb54d9eba8101929d7b66b23a781a7ece1e86a2229b0c7b3d",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.2631
+  },
+  {
+   "name": "wf_f0165",
+   "frame": 165,
+   "tick": 192,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0165.png",
+   "sha256": "46aed4b088a51414602bc73cb2c2275eda6e398c41e36bc484a05699879b8cb2",
+   "bytes": 813882,
+   "buffer_sha256": "9d01e330423c5465d06ed0f4368dbfc3a53be0b7ac7de8a3ef1eb18adb83e08c",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.2528
+  },
+  {
+   "name": "wf_f0166",
+   "frame": 166,
+   "tick": 195,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0166.png",
+   "sha256": "84c96015950c20e95cce2f3670cd25e87eaf2e01f18cb8f36e0d58a2be6f1607",
+   "bytes": 813715,
+   "buffer_sha256": "f7f3a7f32aaaa51baa43e1e35dac14cbdfbd0cb8aa4915ba309118dd472542a4",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.2423
+  },
+  {
+   "name": "wf_f0167",
+   "frame": 167,
+   "tick": 198,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0167.png",
+   "sha256": "f47d8af45e0dded179d7f987ac058fe9897beb1564797d059d1c50986a70c68c",
+   "bytes": 813759,
+   "buffer_sha256": "c7e8a48fc1919167f62609f43c614c8103127afd00376955a6fad949775679d4",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.2315
+  },
+  {
+   "name": "wf_f0168",
+   "frame": 168,
+   "tick": 201,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0168.png",
+   "sha256": "43d9287d3994311dc6fa5c4cf65e3857e98065a00bfc847344204847beeccd8d",
+   "bytes": 813831,
+   "buffer_sha256": "74d33fd313c265fdffde6899cdc38399ba170bed7f680dca129cf44379410af7",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.2204
+  },
+  {
+   "name": "wf_f0169",
+   "frame": 169,
+   "tick": 204,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0169.png",
+   "sha256": "bb366411cdcc31e2ed8bb209b47555650d15d8b77558fa3247a3c0df8702c7d0",
+   "bytes": 813794,
+   "buffer_sha256": "b52ab7ec76176489f7a8dcfa1da2e7759a9adc5bbc816bac7f21042e0b49f377",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.2088
+  },
+  {
+   "name": "wf_f0170",
+   "frame": 170,
+   "tick": 207,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0170.png",
+   "sha256": "1706f3e3808d9d745658555bc6c4f588abe06671e9edd38dab9ba93d3948c5a2",
+   "bytes": 813855,
+   "buffer_sha256": "a6cd6191274a74a5805cefe14315efaa7d921b704bbd57b01850eac4b4585019",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.1973
+  },
+  {
+   "name": "wf_f0171",
+   "frame": 171,
+   "tick": 210,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0171.png",
+   "sha256": "78055d021a01bda7c6cacd769f8a95132a0b78fb830c586ee8d72eba8087547d",
+   "bytes": 813933,
+   "buffer_sha256": "333de32b442a63bbc6602581fbebaf0fa7e19c254fc0d73421234df56e6ce19c",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.1866
+  },
+  {
+   "name": "wf_f0172",
+   "frame": 172,
+   "tick": 213,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0172.png",
+   "sha256": "c4090de729db8468fb0b477f1b765c992aa185c5343a67d93119199fe6e23817",
+   "bytes": 814025,
+   "buffer_sha256": "f250034f8b2cce78180ea6375068bfc101a8ea1332174efbfc5a945c7af57f6e",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.1757
+  },
+  {
+   "name": "wf_f0173",
+   "frame": 173,
+   "tick": 216,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0173.png",
+   "sha256": "dc01249a664bf3b84a1bb65a84a9f6b7738bbccbe8ad685dcdb14ecf02c817e9",
+   "bytes": 813930,
+   "buffer_sha256": "d7f5b0defa7fd4f6ab24e8a63802e66dca5f273f14da98b9deb29cccb1b320a9",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.1641
+  },
+  {
+   "name": "wf_f0174",
+   "frame": 174,
+   "tick": 219,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0174.png",
+   "sha256": "b7c30e4c013929108fa0a7a43969b660bbd76ff1534e61dc42f654a24b440e9e",
+   "bytes": 813953,
+   "buffer_sha256": "3d6a45aeef3d9abaa58ec15760c14b60d938ff401135909b8e4286589282ab99",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.1532
+  },
+  {
+   "name": "wf_f0175",
+   "frame": 175,
+   "tick": 222,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0175.png",
+   "sha256": "0fbf91296c414d79c311309306d7657ccfe6c1ff40fde106c634697dc02edaff",
+   "bytes": 813968,
+   "buffer_sha256": "ecf552ab97100839c2b3c1b21677bea1bcef8b2e79161438b809ca55e5743b01",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.1416
+  },
+  {
+   "name": "wf_f0176",
+   "frame": 176,
+   "tick": 225,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0176.png",
+   "sha256": "8c65e2d164538a9aec69c11cc66884d6f33be968a663cdbbee6ff9f34912de19",
+   "bytes": 813926,
+   "buffer_sha256": "790e9142d2dc247699d585415fd2ef47f952d3256451e4f33211b6174ad0e8ab",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.1286
+  },
+  {
+   "name": "wf_f0177",
+   "frame": 177,
+   "tick": 228,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0177.png",
+   "sha256": "17ca8c85778b48747e5a6e7c5f2ec3ebd1f9b9a265c157897db4799a44dcd94a",
+   "bytes": 814071,
+   "buffer_sha256": "e3ffddda37cf9e423876a2476bde88fa2f0de0ded63dba54b2d81cb58d8e6b22",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.1148
+  },
+  {
+   "name": "wf_f0178",
+   "frame": 178,
+   "tick": 231,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0178.png",
+   "sha256": "c4c3ceef7a25f9217c7d9b2cd37eaaa290972a9efe97321e8ad9205c9d65e7b2",
+   "bytes": 814041,
+   "buffer_sha256": "d16b41f361cc7311602a696d69c097f32b2c2b3adaba19f4548df33431388c84",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.1002
+  },
+  {
+   "name": "wf_f0179",
+   "frame": 179,
+   "tick": 234,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0179.png",
+   "sha256": "e1f7a405fca069ed73a57ac830ec9e9833749af84365188242db0eee3397ae9e",
+   "bytes": 813931,
+   "buffer_sha256": "9d385783814701d955c168eb55bd79f474e38b81832ab51485170ffe062dbab9",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.0849
+  },
+  {
+   "name": "wf_f0180",
+   "frame": 180,
+   "tick": 237,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0180.png",
+   "sha256": "5b4519262e402d41303021d6dd9605b167f4fcba208a29c3fe5789049206aab2",
+   "bytes": 814045,
+   "buffer_sha256": "b63bf9a0c22d0dff1ed55238037d384f6ab1af211a21cb35e72ed7812e867ccb",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.069
+  },
+  {
+   "name": "wf_f0181",
+   "frame": 181,
+   "tick": 240,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0181.png",
+   "sha256": "37c8f5300cc8eb55621091cad504762c35aa6b781b62595ca4d6376075b8428d",
+   "bytes": 814052,
+   "buffer_sha256": "77da2db7a20265d9869b02452aaf6d1a4d328d162cc42612041bd959a0ee891c",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.0522
+  },
+  {
+   "name": "wf_f0182",
+   "frame": 182,
+   "tick": 243,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0182.png",
+   "sha256": "ed691009e44053c1e6a75ac568b4a52d80be3999062dd94550120407ef44b181",
+   "bytes": 814071,
+   "buffer_sha256": "2534f141020fe023ba3673a4b08fe67fe82246ce3b738628233092899d7f0cb0",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.0346
+  },
+  {
+   "name": "wf_f0183",
+   "frame": 183,
+   "tick": 246,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0183.png",
+   "sha256": "da659ebd2c8b95c61e750fa5589aec8d32bd0e7c5ce9abab5bd2d1101a4064d8",
+   "bytes": 814167,
+   "buffer_sha256": "63e275dcd34b33be3d66a577b7188de8185e310d371d0acb5e0c74038993b18e",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 5.0163
+  },
+  {
+   "name": "wf_f0184",
+   "frame": 184,
+   "tick": 249,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0184.png",
+   "sha256": "c55273dc0e62476c2965c8811b03370e80c789994b2408a7ff25284f832ea1ed",
+   "bytes": 814082,
+   "buffer_sha256": "9d32af94238a2186ec5a440a62e295bfc227eeb0717cb6554965f8dc89e289b3",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 4.997
+  },
+  {
+   "name": "wf_f0185",
+   "frame": 185,
+   "tick": 252,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0185.png",
+   "sha256": "de05a627453767e226daf31db9b2444d444a15e928331823fe252e62260d6a6f",
+   "bytes": 814190,
+   "buffer_sha256": "2c64ce26c65d946a2d69f546d60ea8bd5f0757c96799794c5282092dc01e1ab1",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 4.9767
+  },
+  {
+   "name": "wf_f0186",
+   "frame": 186,
+   "tick": 255,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0186.png",
+   "sha256": "fb50fb473556bd0c10bba3a7d4cc30da3fe438de78f5c44209f225a6cfc29c40",
+   "bytes": 814146,
+   "buffer_sha256": "3d782eadbaff80f1504724ab621d55e806769859514d9ce599f071c5071de1e5",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 4.9555
+  },
+  {
+   "name": "wf_f0187",
+   "frame": 187,
+   "tick": 258,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0187.png",
+   "sha256": "8a07c0ca70fbd194266d6f71a6abc484f754ee5f2fb35d95d581f6f0c33780a9",
+   "bytes": 814205,
+   "buffer_sha256": "34ce863c661742345fb037487a47b1adc5da1a4efef593344b429e1fb3b9a959",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 4.9332
+  },
+  {
+   "name": "wf_f0188",
+   "frame": 188,
+   "tick": 261,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0188.png",
+   "sha256": "824f3b1ba5bb564e3f77148f03efd87ed63abecf64a93d552c08500e512942d6",
+   "bytes": 814237,
+   "buffer_sha256": "5c4aeec00edaf2f708453306093cfb1f3da050de7570e62499509045c1696dfa",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 4.9101
+  },
+  {
+   "name": "wf_f0189",
+   "frame": 189,
+   "tick": 264,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0189.png",
+   "sha256": "73ee96fd4e75cd7e4a4211a128aa1e7adf1b3113d1d1ac321e257b85acaaf9ca",
+   "bytes": 814210,
+   "buffer_sha256": "77a489befb16d0d9690e146961b33a73d14d92e944e991bd49d46c472c4c4a5c",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 4.8859
+  },
+  {
+   "name": "wf_f0190",
+   "frame": 190,
+   "tick": 267,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0190.png",
+   "sha256": "451c1afa997728eb711e31dff7ce181ae9b7b91772c865014f3a5b6ce90b3124",
+   "bytes": 814149,
+   "buffer_sha256": "808d85765179697c094251152543dd1df97e1e7ee194f60c190fe9af195f9070",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 4.8605
+  },
+  {
+   "name": "wf_f0191",
+   "frame": 191,
+   "tick": 270,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0191.png",
+   "sha256": "67c3c7de85542acd851b07956857e20b87fe1587bbcfb99bba4543080cf94333",
+   "bytes": 814085,
+   "buffer_sha256": "9bac91847780f113cd087655460c625d56585f89a7a2a6becb7a051700022223",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 4.8339
+  },
+  {
+   "name": "wf_f0192",
+   "frame": 192,
+   "tick": 273,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0192.png",
+   "sha256": "77bd3c1041fe6b24af9e6b6fc33b9120d653943914281763001311d02c1031b2",
+   "bytes": 814295,
+   "buffer_sha256": "cbf8cb9a0febdaf641b73de0d78204219a3d3dd72c03d639a82ea9f665f6cf3e",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 4.8061
+  },
+  {
+   "name": "wf_f0193",
+   "frame": 193,
+   "tick": 276,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0193.png",
+   "sha256": "e913b98a319d934427a6be226a4efb9e6dbd0a2c247e34e2ac0673b1d4e6941f",
+   "bytes": 814421,
+   "buffer_sha256": "9631063efb0ea0f47487e4c75665c062ca844342180027bb9aacd2869e692e66",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 4.7773
+  },
+  {
+   "name": "wf_f0194",
+   "frame": 194,
+   "tick": 279,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0194.png",
+   "sha256": "3e3abb9e825daa34bc92a8f782ddc4db4e37d95db7d8d1fad4a6da37c110e211",
+   "bytes": 814442,
+   "buffer_sha256": "ad39368ea119d8cd19e34a3b45308d523c891476f938a61c008655b9d02a0ee0",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 4.7476
+  },
+  {
+   "name": "wf_f0195",
+   "frame": 195,
+   "tick": 282,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0195.png",
+   "sha256": "bc522bbfe677df417f284f973b380a998d3daed2e19c0e44e289e02ed276feca",
+   "bytes": 814504,
+   "buffer_sha256": "f8bc28e455d3324799ab512229ac9c0094269ed91fcee59da15dfbd415de1e40",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 4.717
+  },
+  {
+   "name": "wf_f0196",
+   "frame": 196,
+   "tick": 285,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0196.png",
+   "sha256": "a8478be0e82bca45a0ff7d21c8333664e115b2f64ceca3c83f962cb691f71367",
+   "bytes": 814452,
+   "buffer_sha256": "3500317256dd63810bcb9afa58fae8fc871254b83ca4027bf41e6ed735066197",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 4.6848
+  },
+  {
+   "name": "wf_f0197",
+   "frame": 197,
+   "tick": 288,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0197.png",
+   "sha256": "b1a0ec882eac8267f1094f5b5eaad6cd43c90373cb8558660ededca78fa62471",
+   "bytes": 814512,
+   "buffer_sha256": "d7354aa6ab171766006e98af6106301e9cd976b00c74d954ff0f909d4ef4ceb3",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 4.6506
+  },
+  {
+   "name": "wf_f0198",
+   "frame": 198,
+   "tick": 291,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0198.png",
+   "sha256": "61272afae345fd87f24adab9086aa9eacc994bbb0d4c3b578cd15102b5f9608e",
+   "bytes": 814499,
+   "buffer_sha256": "bb0b218d10d6a3125613fc935098f4226a428ad5d01286b952571a7c0c03f82d",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 4.6155
+  },
+  {
+   "name": "wf_f0199",
+   "frame": 199,
+   "tick": 294,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0199.png",
+   "sha256": "82da34475768b33f021c2809ec1c5247939239b595e76d669e1b8701b6e9a758",
+   "bytes": 814574,
+   "buffer_sha256": "6421c652a19460d8932c47fe1f19f6c5b6340fe613faf378231f070c48e52819",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 4.5795
+  },
+  {
+   "name": "wf_f0200",
+   "frame": 200,
+   "tick": 297,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0200.png",
+   "sha256": "cebf6469402e619edc7758db442a754b45f91627052a41037b9593652d32c2fe",
+   "bytes": 814590,
+   "buffer_sha256": "d32951e61c4c7f3da959e9512b88767441eef020bff60e1c987674ce895d6824",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 4.5429
+  },
+  {
+   "name": "wf_f0201",
+   "frame": 201,
+   "tick": 300,
+   "shot": "approach",
+   "file": "E:/ChimeraWork/world-build-20260928/composition2/walkfilm/frames/f0201.png",
+   "sha256": "7932bad4c366de1b98cb67ca63274296d32d9527a9765ead85ebe10f596a7426",
+   "bytes": 814638,
+   "buffer_sha256": "ef720dea86a44a9fc4c1ef29ce1f71b265e131b1bd11aad781c17a81a72b813a",
+   "eye_m": [
+    4.453292903,
+    3.112954154,
+    1.704
+   ],
+   "yaw_deg": 218.172635,
+   "pitch_deg": 6.0,
+   "eye_to_creature_m": 4.5081
+  }
+ ]
+}

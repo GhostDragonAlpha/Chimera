@@ -1,0 +1,11 @@
+{
+  "pieces": [
+    {
+      "name": "relexe-engine-8249",
+      "argv": ["chimera_engine.exe", "8249", "--hidden"],
+      "cwd": ".h12_scratch/engine",
+      "check": {"url": "http://127.0.0.1:8249/tick_state", "mode": "ticks"},
+      "boot_seconds": 30
+    }
+  ]
+}

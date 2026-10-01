@@ -135,8 +135,15 @@ def _start(call, rng, n_osc, assist_hz):
     assist is not a crutch bolted on to rescue the design - it is the design. Too much
     -> trivial; too little -> luck; the optimum is found by MEASURING, not arguing.
     """
+    if not call:
+        raise FileNotFoundError('attunement_call_empty: the engine produced no '
+                               'call partials in this environment')
     out = []
-    for (a, f, _p) in call[:n_osc]:
+    # the emitter is the PLAYER'S hardware, sized by n_osc -- legal genomes may
+    # carry more oscillators than the call has partials (n_osc > n_partials),
+    # so extra oscillators coarse-tune around CYCLED partials, never crash.
+    for i in range(n_osc):
+        (_a, f, _p) = call[i % len(call)]
         out.append((float(rng.uniform(0.2, 1.0)),
                     float(f + rng.uniform(-assist_hz, assist_hz)),
                     float(rng.uniform(0, 2 * math.pi))))
@@ -169,6 +176,12 @@ def agent_greedy(call, rng, n_osc=N_OSC, budget=2000, assist_hz=0.0):
     good move on one is masked by bad moves on the others - and it is what tuning IS,
     one peg at a time."""
     cur = _start(call, rng, n_osc, assist_hz)
+    if len(cur) < n_osc:
+        # the engine produced no call partials in this environment: a
+        # designed refusal with cause, never an unclassified IndexError
+        raise FileNotFoundError('attunement_call_empty: engine call signal '
+                               'yielded ' + str(len(cur)) + ' partials, need '
+                               + str(n_osc))
     cur_e = residual(call, cur)
     curve = [cur_e]
     step = 1.0
@@ -212,6 +225,12 @@ def measure(call, seed=0, n_osc=N_OSC, budget=300, restarts=5, assist_hz=20.0):
         greedy_es.append(e)
         curves.append(curve)
     e_greedy = max(greedy_es)              # WORST of N - honest, not lucky
+    if not curves or not all(curve for curve in curves):
+        # the engine subprocess produced no learning curves in this
+        # environment (engine not built here / runner unavailable): a
+        # designed refusal with cause, never an unclassified IndexError
+        raise FileNotFoundError('attunement_engine_curves_empty: no learning curves '
+                           'from the engine subprocess in this environment')
     first = float(np.mean([c[0] for c in curves]))
     last = float(np.mean([c[-1] for c in curves]))
 

@@ -1,0 +1,9 @@
+Viewed all nine images and 12 extracted frames spanning the video.
+
+1. **What I think it is:** A guided physics experiment where I press a monkey-shaped, fluid-filled body, watch pressure readings change, and let it recover. It looks like an early simulation demo with lessons.
+
+2. **Would I pay $14.99? No.** The media shows too little variety or satisfying interaction to convince me I’d stay interested beyond briefly poking it.
+
+3. **What would make it a yes:** A playable demo showing responsive deformation, varied experiments and meaningful challenges beyond reaching pressure thresholds. Cleaner character joints and more readable UI would help; the “~1 fps” capture note also leaves responsiveness unproven.
+
+4. **Novelty: 5/10.** The fluid-pressure teaching angle feels unusual, but the visible experience—pressing a mostly stationary model and watching numbers—doesn’t yet look especially distinctive.

@@ -134,7 +134,8 @@ def project(catalog, nodes=None, definition_raw_sha256=None):
                 task_status_policy='Planned requirements; reconcile current receipts. No earned acceptance inferred.',
                 checkpoint_policy='Integration milestones after contributor evidence; never prerequisites for their own contributor tasks. Independent implementation may proceed earlier.',
                 dependency_layers=layers, checkpoints=gates, tasks=tasks,
-                definition_raw_sha256=definition_raw_sha256)
+                definition_raw_sha256=definition_raw_sha256,
+                card_namespace=catalog.get('revision', {}).get('card_namespace', 'ONT-'))
 
 
 def load_catalog(path):

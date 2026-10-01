@@ -1,0 +1,41 @@
+{
+  "lane": "agent/failure-packets-20260921",
+  "date": "2026-09-21",
+  "agent": "GLM 5.3 (failure-diagnosis lane)",
+  "base": "30821ef7 (agent/gait-wave38-calendar-guard, the wave-38 ship state)",
+  "protocol_parent": "Astra acceleration pilots 2026-09-21, section P2 (Automatic failure-analysis packet); lane = the failure-analysis-packet protocol; target = the 54-minute mining phase (60% of the 90-minute law cycle).",
+  "rule_0": {
+    "statement": "THE MACHINE-GENERATED FAILURE PACKET (the failure-diagnosis lane). Every failed gait run can be compiled by ONE machine pass into a compact diagnosis packet -- built ONLY from that run's GAIT_EVENT_TRACE stderr, its stdout census, its receipt's pre-registered rule_0 block, and (when supplied) a reference run's trace -- that contains what the wave's human hand-mine finds today: the first fired falsifier (the receipt's own letter evaluated against the run's census numbers), the earliest relevant divergence vs the reference, the dependency slice (controller [hindstep] decisions -> per-drive forces [dvq] -> contact changes [dvp] -> the observed death, sliced BACK from the death tick), the phase/force/work/energy bookkeeping (the era table + the per-era drive-work decomposition + the matched-tick ledger component deltas), a replayable state reference (scene + tick + the declared harness), a ranked set of DISCRIMINATING INTERVENTIONS (counterfactual probes that separate the competing explanations -- not proposed repairs), and a signature (death class + slice shape) matched against a library built from the PAST wave receipts' death records (waves 28-38's named faces). THE PACKET IS A READ-ONLY PROJECTION OF THE TRACE: it never cuts trace sections (an arbitrary cut can make an impossible trajectory -- the physics ordering decisions->forces->contacts->death is causal and is preserved), it never edits a run, and it proposes no law.",
+    "prediction": {
+      "P_PACKET_W37_HELDOUT": "On the wave-37 death run (the composed law's reconstructed trace .tmp/diag_fixtures/w37comp_tr_stderr.txt, refusal 304, worst ledger 33.559179 J, stdout checks 153) the generator -- reading ONLY that trace, its stdout w37comp_tr_stdout.txt, receipt_wave37.json's rule_0 block, and the supplied reference trace (the wave-36 amended reconstruction w36instr_tr_stderr.txt) -- emits a packet that contains, WITHOUT any human mine and WITHOUT reading the receipt's measurements section or any mine_* artifact: (a) the FIRST FIRED FALSIFIER = the ledger letter (worst_ledger_J 33.559179 > the 32.861605 bound in f37_rung's own text) with the rung letter shown PASSED (304 > 300); (b) the EARLIEST RELEVANT DIVERGENCE vs the reference at tick 193 (the re-lock's insertion); (c) the DEPENDENCY SLICE through the [202,211) era: the R's hold grazed the release band (era max pair-min 1.147e-05, one contact quantum past kTouch+kReleaseBand=1.1e-5), the pose read cleared it at decision 206, the (a)-waive L@206 fired inside a stall-by-arithmetic era (t0 202 - prev_other_fire 193 == tair 9), the calendar scattered ([215,292) len 77), and the death tick 304; (d) the ENERGY DECOMPOSITION: worst |bal| 33.108444 @ 290 (from the [ledger10] dumps) and the per-era drive-work table attributing +1.3977 J (tolerance +/-0.05) to era [202,211) on drive_4 vs the matched reference era, and the unmatched scatter era [215,292) at 14.5321 J (tolerance +/-0.05); (e) the REPLAYABLE STATE REFERENCE (the scene + the death tick + the declared harness line); (f) at least three DISCRIMINATING INTERVENTIONS separating contact-read vs calendar-arithmetic vs force-allocation ownership of the 206 misfire.",
+      "P_PACKET_COVERAGE": "The packet's mechanism elements reproduce the recorded human mine's findings (mine_w37_out.txt / mine_w38_out.txt numbers, used ONLY as the scoring key AFTER generation) on every scored element: the held-out coverage is 100% of the six scored elements above; any miss is a fired falsifier.",
+      "P_PACKET_COST": "One packet generates in under 60 seconds on this lane's Python (one process, one pass over each input file) -- the machine cost of the packet is negligible against the 54-minute phase it shortens."
+    },
+    "falsifier": {
+      "F-DIAGNOSIS-TIME": "On the held-out wave-37 death run the packet FAILS if any scored mechanism element is missing or outside its tolerance: the [202,211) stall-graze era (bounds + graze-band max pair-min + clear tick 206), the waive L@206 misfire classification (stall-by-arithmetic host), the era work delta +1.3977 +/-0.05 J on drive_4, the worst |bal| 33.108444 @ 290, the fired ledger letter (33.559179 > 32.861605), or the earliest relevant divergence tick 193. ALSO fires if producing those elements requires any human-mine artifact as a GENERATOR input (the mine outputs are admitted only post-generation, as the scoring key). SCORED: elements matched / 6; 6/6 = GREEN.",
+      "F-DIAGNOSIS-WRONG": "The packet's slice MISATTRIBUTES if, on a known-mechanism run, its death class or slice disagrees with the run's receipt-carried death record: (case 1) the wave-36 amended death (w36instr_tr_stderr.txt, refusal 298 <= 300): the true mechanism is the stall-seeded calendar scatter (the R's swung era [184,212) len 28, first off-grid fire L@194, rung letter FIRED) -- the packet must route its slice through the stalled era and the off-grid fire and MUST NOT tag a capacity fold or an unload drain as the primary; (case 2) the wave-38 ship run (w38_tr_stderr.txt, pass=True, refusal 302 > 300 AND ledger 30.970714 <= 32.861605): a PASSING run -- the packet must report NO fired falsifier and NO death class (manufacturing a death on a green run is misattribution); (case 3) the wave-37 held-out run itself: the slice must route through the [202,211) graze era, NOT through the lawful L@161 waive era (designed, host era REAL) nor through a capacity fold. 3/3 correct attributions = GREEN; any wrong attribution = FIRED.",
+      "F-DIAGNOSIS-LEAK": "The packet generator reads ANY held-back outcome: the receipt's measurements section, any mine_* artifact, any wave >= the diagnosed run's wave in the prior-failure library, or any later-law implementation. Enforced by construction (the receipt reader consumes ONLY rule_0 + pass) and audited by a source grep for the banned fields before the held-out run. Any leak path = FIRED."
+    },
+    "design_constraints": [
+      "CEGIS framing: the packet is the counterexample-analysis stage -- it produces the counterexample's causal story and the discriminating questions; the LAW synthesis stays with the wave lane (the packet proposes no law, no repair).",
+      "Delta-debugging caution (Astra P2): NO trace minimization. The dependency slice is a READ-ONLY projection that preserves tick ordering and the decisions->forces->contacts->death chain; no trace section is removed in a way that could assert an impossible trajectory.",
+      "Discriminating interventions are counterfactual PROBES with named predictions per competing explanation -- never proposed repairs.",
+      "The prior-failure library carries ONLY waves STRICTLY BEFORE the diagnosed run's wave at packet-build time (hard filter --prior-waves-through)."
+    ]
+  },
+  "frozen_rule_0_sha_convention": "sha256 of json.dumps(rule_0, sort_keys=True, separators=(',',':'), ensure_ascii=True) UTF-8",
+  "inputs_declared": {
+    "failed_run": ".tmp/diag_fixtures/w37comp_tr_stderr.txt + w37comp_tr_stdout.txt (the wave-37 composed law's reconstructed run -- the mining instrument the wave-38 lane preserved; stdout sha f57b67a5..., refusal 304, ledger 33.559179)",
+    "reference_run": ".tmp/diag_fixtures/w36instr_tr_stderr.txt (the wave-36 amended reconstruction, refusal 298 -- the composed law's parent state)",
+    "receipt": "tools/science_funnel/validation/gait_zero_20260919/receipt_wave37.json -- rule_0 block ONLY",
+    "prior_library": "tools/science_funnel/diagnosis/prior_faces.json (built from receipt_wave28..38.json death records), filtered to waves <= 36 for the held-out run",
+    "known_traces_not_admitted_as_generator_inputs": [
+      "any mine_* output",
+      "the receipt's measurements sections",
+      "receipt_wave38.json (later law)"
+    ]
+  },
+  "measurements": [],
+  "pass": null,
+  "frozen_rule_0_sha": "5f223bbe546d6b1bb180c028c50086161093f147702896328ff9af81ed7dcbd0"
+}

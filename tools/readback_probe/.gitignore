@@ -1,0 +1,3 @@
+# Build products and raw run outputs stay out of git; curated results are
+# copied to docs/evidence/agent_fleet/SHIP/A4_READBACK/
+.tmp/

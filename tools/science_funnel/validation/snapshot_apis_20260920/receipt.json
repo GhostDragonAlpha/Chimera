@@ -1,0 +1,258 @@
+{
+  "schema": "chimera.snapshot_apis.v1",
+  "lane": "snapshot-apis-20260920",
+  "branch": "lane/snapshot-apis-20260920",
+  "base": "9ce96d4f (upgrade-gate measurements appended: ALL FALSIFIERS HELD; verified: worktree E:/ChimeraWork/snapapi-agent clean on lane/snapshot-apis-20260920 @ 9ce96d4f)",
+  "date": "2026-09-20",
+  "agent": "GLM 5.3 (SNAPSHOT-API lane agent, git trailer Agent: snapapi)",
+  "mission": "close the four production restart-state gaps (gap_engine_contact_warm_start, gap_engine_reflex_state, gap_engine_controller_history, gap_engine_world_state) by making the four state classes READABLE from the production walk path -- out-of-tree instrument first, mined surfaces second, a named engine-service record if a class genuinely cannot be read without editing the frozen core -- and PROVE it: snapshot the four classes at a mid-walk tick, restore into a fresh process, show the future trajectory bit-identical to uninterrupted execution (tick-wise state hashes + action bytes).",
+  "pre_registration": {
+    "written_before_any_build": true,
+    "note": "this file was committed BEFORE the instrument was written, before any build, before any run; the measured section below is append-only",
+    "rule_0": {
+      "statement": "THE FOUR PRODUCTION RESTART-STATE GAPS ARE CLOSEABLE FROM THE WALK PATH WITHOUT TOUCHING THE FROZEN CORE. THE THEORY: the four registered engine gaps (gap_engine_contact_warm_start, gap_engine_reflex_state, gap_engine_controller_history, gap_engine_world_state) are all resident in the GaitWalker's per-tick private state, so an OUT-OF-TREE instrument -- a lane-dir copy of the engine headers carrying a DORMANT GAIT_SNAPSHOT_API flag plus a proof harness -- can serialize all four classes at a mid-walk tick, a FRESH process can restore them, and the restored future is BIT-IDENTICAL to uninterrupted execution (the upgate F2 instrument: tick-wise state hashes + action bytes); therefore the validator's gap registry can accept these four gaps as RESOLVED (reader + proof) for instrumented builds, and a production-class certificate stops being structurally blocked BY THESE GAPS. A description ('the state is readable') survives any result; THIS theory can lose -- F1 kills it if one restored byte diverges.",
+      "prediction": {
+        "contact_warm_start": "resident in the walker's persistent contact books: the touch-hysteresis state touching_prev_[2] plus s_.contact_impact[8]/friction_heat[8] (the accumulated impact/friction heat ledgers) and the per-tick contact impulse scratch (reset at each step start, carried for completeness); dumps cleanly via the instrument",
+        "reflex_state": "resident in the reflex laws' own arrays: the hind-step law's mode/t/from/to/plant_y/ap/mp/branch/xoff/qerr + held/clear_tick/hold_ticks + the stand-first hold (stand_/stand_from_/stand_y_/stand_mp_/stand_ticks_) + the stall/latch/waive/calendar censuses, the height-emergency latch (latched_/fire_tick_/fire_margin_/fires_), capture_events_, hind_alt_repairs_, hind_step_handoff_restores_; dumps cleanly via the instrument",
+        "controller_history": "resident in the clocks and calendars: ticks_, phi_[2], the fore stepping-strut clock (fore_t_/stance_/cycle_/mode_/td_/replants_/clamped_/conv_/entry_/gate_holds_/wall_bound_/wall_follows_/td_plant_/glide_hold_/hold_last_/hold_off_/wait_fires_/swing_from_/swing_to_/paw_plant_y_/paw_target_/ik_branch_/ik_sat_ticks_/ik_roundtrip_m_/ik_qerr_/ik_sat_prev_/paws_captured_), the actuator stores (battery_[12]/brake_[12]/empty_events_[12]/battery_post_/brake_post_/empty_post_/store_total_), last_torque_[18], settle_ticks_/settle_total_, e_ref_, the command hold (cmd_vx_live_/cmd_vx_/cmd_vx_tick_/cmd_fires_/cmd_first_fire_tick_) and the pin census (wall_pins_[12]/wall_pins_air_[12]); dumps cleanly via the instrument",
+        "world_state": "reduces to the walker's dynamical state s_ -- q[18]/v[18]/work[18]/external/damping/impact/constraint_work (the persistent world + ledger accumulators) -- plus the scene pin already carried by the build recipe (the gait_scene.json input, sha-pinned); the model/tables are construction constants rebuilt identically by the constructor, not state",
+        "restore_bit_identity": "because the walk is a deterministic closed function of (scene, configure, serialized state), a COMPLETE dump+restore in a fresh process resumes BIT-IDENTICALLY: the per-tick state hashes and the applied-action byte stream (last_torque_, 18 f64 LE per tick) of the restored future equal the uninterrupted reference tick-for-tick, through the refusal"
+      },
+      "falsifiers": {
+        "F1_RESTORE_DRIFT": "any restored-from-snapshot future that diverges from uninterrupted execution -- tick-wise state hashes OR action bytes, at or after the snapshot tick -- FIRES; the report names the first diverging tick and localizes the diverging class by the declared forced-drop probe (restore with one class reverted to fresh-reset values; the classes whose drop moves the continuation further are load-bearing); never papered over",
+        "F2_SHIP_INVARIANCE": "the unexercised builds' scene bytes + GAIT_EVENT_TRACE equal the ship anchors: scene sha256 f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342 and the wave-47 trace sha c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481; the instrument copy built with the flag OFF must equal the PRISTINE base build byte-for-byte on stdout and stderr (the ifreeze LEG-A inertness); any ship-byte movement FIRES. HONESTY CLAUSE (the ifreeze fence-v2 lesson): this lane's base 9ce96d4f carries the typea command channel beyond the wave-47 anchor state f106fc54, so if a stdout/trace byte moved by COMMITTED reporting growth, the fence cross-checks against the base's OWN pristine bytes and names the exact diff -- a moved byte from THIS lane's instrument is a firing, a moved byte from committed growth is a named diagnosis, and the two are never conflated",
+        "F3_GAP_CLOSURE": "each of the four gaps either CLOSES (a working reader + the F1 proof + the F2 fence) or becomes a PRECISELY-NAMED engine-service record (what route/flag would be needed in the shipped tree, and why the instrument pattern cannot read it); a gap neither closed nor named FIRES",
+        "F4_DETERMINISM": "3 independent fresh-process reference runs (dump mode) produce byte-identical state-hash files, action files, snapshot files and meta (refusal tick/class included); any run-to-run movement FIRES",
+        "F5_SCOPE": "the diff of this lane vs its base touches ONLY the lane dir (tools/science_funnel/validation/snapshot_apis_20260920/) and tools/policy_compat extensions (the validator's gap registry consumes the new readers); any edit to ChimeraEngine/engine/gait_controller.hpp or ANY new C++ in the shipped tree FIRES -- the instrument lives out-of-tree (the ifreeze precedent: nothing tracked built or modified in the engine)"
+      },
+      "instrument": {
+        "pattern": "the wave/ifreeze OUT-OF-TREE instrument precedent: copy the engine include closure (gait_controller.hpp, coupled_articulation.hpp, earth_environment.hpp + their closure) into the lane dir, add ONLY #ifdef GAIT_SNAPSHOT_API blocks to the COPY, build under .tmp/ (untracked); NOTHING tracked in the engine is built or modified",
+        "read_only": "the exercised build's walk dynamics are byte-identical to the ship's: the snapshot API only SERIALIZES state (a const read at the tick boundary) and the restore path writes state only in an explicit restore() call the ship harness never makes; the fence (F2) is the proof",
+        "classes_serialized": {
+          "world_state": "s_.q[18], s_.v[18], s_.work[18], s_.external, s_.damping, s_.impact, s_.constraint_work",
+          "contact_warm_start": "touching_prev_[2], s_.contact_impact[8], s_.friction_heat[8], s_.impulse[18], s_.contact_impact_impulse[8], s_.contact_force_impulse[8], s_.friction_heat_tick[8], s_.friction_impulse[8], s_.friction_force_impulse[8], s_.contact_generalized[18]",
+          "reflex_state": "capture_events_, hind_height_hold_latched_, hind_height_fire_tick_, hind_height_fire_margin_, hind_height_fires_, hind_step_mode_[2], hind_step_t_[2], hind_step_from_[2]x3, hind_step_to_[2]x3, hind_step_plant_y_[2], hind_step_ap_[2], hind_step_mp_[2], hind_step_branch_[2], hind_step_xoff_[2], hind_step_qerr_[2], hind_step_fires_[2], hind_step_tds_[2], hind_step_gated_[2], hind_step_clamped_[2], hind_step_last_fire_[2], hind_step_last_td_[2], hind_step_held_[2], hind_step_clear_tick_[2], hind_step_hold_ticks_[2], hind_step_alt_[2], hind_step_stall_[2], hind_step_stand_[2], hind_step_stand_from_[2]x3, hind_step_stand_y_[2], hind_step_stand_mp_[2], hind_step_stand_ticks_[2], hind_step_stand_latch_[2], hind_step_stand_pivot_[2], hind_step_stand_release_[2], hind_step_stand_latch_ticks_[2], hind_step_alt_due_[2], hind_step_deadline_tick_[2], hind_step_deadline_fires_[2], hind_step_dl_unload_[2], hind_step_unload_fires_[2], hind_step_waive_fires_[2], hind_step_waive_first_[2], hind_step_waive_last_[2], hind_step_graze_yields_[2], hind_step_graze_first_[2], hind_step_guard_blocks_[2], hind_step_guard_first_[2], hind_alt_repairs_[2], hind_step_handoff_restores_[2]",
+          "controller_history": "ticks_, phi_[2], last_torque_[18], battery_[12], brake_[12], empty_events_[12], battery_post_, brake_post_, empty_post_, store_total_, settle_ticks_, settle_total_, e_ref_, paws_captured_, paw_target_[2]x3, ik_branch_[2], fore_t_[2], fore_stance_[2], fore_cycle_[2], fore_mode_[2], fore_td_[2], fore_replants_[2], fore_clamped_[2], fore_conv_[2], fore_entry_[2], fore_gate_holds_[2], fore_wall_bound_[2], fore_wall_follows_[2], fore_td_plant_[2], fore_glide_hold_[2], fore_hold_last_[2], fore_hold_off_[2]x3, fore_wait_fires_[2], swing_from_[2]x3, swing_to_[2]x3, paw_plant_y_[2], ik_sat_ticks_[2], ik_roundtrip_m_[2], ik_qerr_[2], ik_sat_prev_[2], wall_pins_[12], wall_pins_air_[12], cmd_vx_live_, cmd_vx_, cmd_vx_tick_, cmd_fires_, cmd_first_fire_tick_"
+        },
+        "completeness_rule": "the serializer writes EVERY non-const, non-derivable member of GaitWalker's private state; the restore() writes all of it back; a round-trip check re-serializes after restore and requires BYTE-IDENTITY with the dump (the snapshot is complete or the proof fails loudly)",
+        "format": "little-endian raw doubles/uint64s, field order fixed by the serializer; header = magic 'CHSNAP01' + format version + tick + n/npts/nd counts + sha256 of the serialized body; a field manifest (name, class, offset, count) ships beside every dump"
+      },
+      "proof_protocol": {
+        "mid_walk_tick": "T = 150, DERIVED not chosen (Rule 1): the shipped walk refuses at tick ~300-304 (the wave-32 receipt's own tick-300 face; wave-45/47 measure 302), so the future half carries >=150 comparable ticks; 150 lies strictly after the entry transient and the first full exchange era (the R hind fire at 98, its TD replant at 107 on the shipped grid), and INSIDE the post-exchange ride/hold era [107,152) -- literally a mid-hold tick on the shipped calendar; the tick is frozen BEFORE any run",
+        "reference": "instrument exe, dump mode: reset + configure(capture_enabled) exactly like the ship harness's walk leg; per tick record the state hash (sha256 of the canonical serialization) and the action bytes (last_torque_, 18 x f64 LE); at the END of tick T write the snapshot + manifest",
+        "restore": "FRESH process: rebuild the walker on the same scene, step blind to T, require the blind state hash to equal the reference's H[T] (else F4 territory), restore() the snapshot, round-trip-verify (re-serialize == dump bytes), then continue to the refusal recording hashes + actions",
+        "comparison": "the restored future (ticks T+1..refusal) must equal the reference tick-for-tick on BOTH instruments (state hashes, action bytes) and refuse at the same tick with the same class; the restored tick-T hash must equal H[T]"
+      },
+      "ship_anchors": {
+        "scene_sha256": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342",
+        "wave47_ship_stdout_sha256": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+        "wave47_trace_stderr_sha256": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+        "note": "anchors recorded at the wave-47 ship state f106fc54 (ancestor of this lane's base); this base 9ce96d4f adds the typea command channel (+84 header lines, inert when unused) -- the fence measures the base's own pristine bytes FIRST, then cross-checks against the wave-47 pins with any committed-growth diff named (F2's honesty clause)"
+      },
+      "policy_compat_integration": "tools/policy_compat/snapshot_api.py: the ENGINE gap registry -- the four readers with their proof artifacts; certificate.py's inventory validator is extended so a RESOLVED gap MUST carry verifiable proof fields (reader id, proof receipt sha, bit-identity and ship-invariance verdicts) and a production-class certificate requires every gap RESOLVED WITH proof (unresolved or unproven = BLOCK); the surrogate path's bytes and verdicts are unchanged"
+    },
+    "frozen_rule_0_sha": "b49707933222e2f787f8105449450304c6f256146fb7258ca9459c4054003d56",
+    "frozen_rule_0_sha_convention": "sha256 of json.dumps(rule_0, sort_keys=True, separators=(',',':'), ensure_ascii=True) UTF-8; re-verified byte-identical at every append"
+  },
+  "measured": {
+    "written_after_all_runs": true,
+    "build_recipe": "pristine fence: cmake -S ChimeraEngine/engine/tests_coupled_arm -B .tmp/snapapi/fence + targets gait_unit/gait_unit_trace (nothing tracked built); instrument: cmake -S tools/science_funnel/validation/snapshot_apis_20260920/instrument -B .tmp/snapapi/inst + targets gait_unit_snapoff/gait_snap; scene regenerated by tools/science_funnel/gait_scene.py",
+    "f2_ship_invariance": {
+      "pass": true,
+      "legs": {
+        "EXERCISED_ref_stdout_with_recording": {
+          "anchor": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+          "measured": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+          "pass": true
+        },
+        "EXERCISED_ref_trace_with_recording": {
+          "anchor": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+          "measured": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+          "pass": true
+        },
+        "LEG_A_copy_flagoff_stderr": {
+          "measured": "b505bb65652c2b796c163899ec51b7e5268342e5d31f28a9603fc2ab6c2d72ab",
+          "pass": true,
+          "pristine": "b505bb65652c2b796c163899ec51b7e5268342e5d31f28a9603fc2ab6c2d72ab"
+        },
+        "LEG_A_copy_flagoff_stdout": {
+          "measured": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+          "pass": true,
+          "pristine": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc"
+        },
+        "LEG_B_plain_stderr": {
+          "anchor": "b505bb65652c2b796c163899ec51b7e5268342e5d31f28a9603fc2ab6c2d72ab",
+          "measured": "b505bb65652c2b796c163899ec51b7e5268342e5d31f28a9603fc2ab6c2d72ab",
+          "pass": true
+        },
+        "LEG_B_scene_anchor": {
+          "anchor": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342",
+          "measured": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342",
+          "pass": true
+        },
+        "LEG_B_ship_stdout": {
+          "anchor": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+          "measured": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+          "pass": true
+        },
+        "LEG_B_ship_trace": {
+          "anchor": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+          "measured": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+          "pass": true
+        },
+        "RESTORED_trace_equals_ship_walk_segment": {
+          "pass": true,
+          "restored_trace_bytes": 1667220,
+          "ship_prefix_match_at_walk1": true
+        }
+      },
+      "detail": "ALL LEGS GREEN, ALL ANCHORS EXACT at this base: scene sha f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342 (the wave-38 pin) REGENERATED byte-exact; pristine plain stdout 8c537cdb... (the wave-47 ship stdout) EXACT; pristine trace stderr c6f9b6c0... (the wave-47 ship trace) EXACT; plain stderr b505bb65... EXACT. LEG A (copy fidelity): the instrument's header copy with the flag OFF, compiled with the SHIPPED gait_unit.cpp source (verbatim copy), reproduces the pristine stdout AND stderr byte-for-byte. EXERCISED INERTNESS: the instrument WITH recording + the tick-150 snapshot write active still prints the ship stdout AND the full wave-47 trace byte-exactly on all three ref runs -- the per-tick serialize is observation-only. The committed-growth diagnosis clause was NOT needed: this base's own anchors equal the wave-47 pins exactly."
+    },
+    "f4_determinism": {
+      "pass": true,
+      "runs": [
+        {
+          "actions_sha256": "09f6ce53e21c980dfadcc72b152f2c7952191de91851563f32fe7832282f8c27",
+          "refused_class": "gait_positional_correction_budget",
+          "refused_tick": 302,
+          "run": "ref1",
+          "snapshot_sha256": "0d6f65f9169dc5fdcf1ee503cd6a4e5bba87a1a687ee82f1809de36267b3863b",
+          "states_sha256": "f1a477281ab0f833031e6cf2f99f853dbb263e9493b3f30df0005318016d64f1",
+          "stderr_sha256": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+          "stdout_sha256": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc"
+        },
+        {
+          "actions_sha256": "09f6ce53e21c980dfadcc72b152f2c7952191de91851563f32fe7832282f8c27",
+          "refused_class": "gait_positional_correction_budget",
+          "refused_tick": 302,
+          "run": "ref2",
+          "snapshot_sha256": "0d6f65f9169dc5fdcf1ee503cd6a4e5bba87a1a687ee82f1809de36267b3863b",
+          "states_sha256": "f1a477281ab0f833031e6cf2f99f853dbb263e9493b3f30df0005318016d64f1",
+          "stderr_sha256": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+          "stdout_sha256": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc"
+        },
+        {
+          "actions_sha256": "09f6ce53e21c980dfadcc72b152f2c7952191de91851563f32fe7832282f8c27",
+          "refused_class": "gait_positional_correction_budget",
+          "refused_tick": 302,
+          "run": "ref3",
+          "snapshot_sha256": "0d6f65f9169dc5fdcf1ee503cd6a4e5bba87a1a687ee82f1809de36267b3863b",
+          "states_sha256": "f1a477281ab0f833031e6cf2f99f853dbb263e9493b3f30df0005318016d64f1",
+          "stderr_sha256": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+          "stdout_sha256": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc"
+        }
+      ],
+      "detail": "3 fresh-process reference runs byte-identical on states/actions/snapshot/stdout/stderr (states 932878 B, body 3089 B/tick, 302 ticks, refusal tick 302 class gait_positional_correction_budget)"
+    },
+    "snapshot": {
+      "tick": "end of tick 150 (ticks_==151; the mid-hold tick derived in the prereg: inside the shipped ride/hold era [107,152), after the first full hind exchange era fire 98/TD 107, >=150 comparable future ticks before the refusal)",
+      "file_bytes": 3129,
+      "body_bytes": 3089,
+      "manifest_fields": 184,
+      "class_field_counts": {
+        "world_state": 7,
+        "contact_warm_start": 10,
+        "reflex_state": 93,
+        "controller_history": 74
+      },
+      "snapshot_body_equals_reference_tick150": true
+    },
+    "f1_restore_bit_identity": {
+      "pass": true,
+      "restored_tick": 150,
+      "ticks_compared": 152,
+      "state_hashes_identical": true,
+      "first_diverging_tick": null,
+      "action_bytes_identical": true,
+      "action_bytes_compared": 21888,
+      "restored_state_hash_equals_reference": true,
+      "blind_phase_matches_snapshot_file": true,
+      "roundtrip_serialization_equal": true,
+      "refusal_tick_and_class_identical": true,
+      "detail": "restored future ticks [150,302) vs uninterrupted: state hashes IDENTICAL, action bytes IDENTICAL (21888 B), refusal tick/class identical (302/gait_positional_correction_budget); the fresh process's BLIND phase reproduced the snapshot state exactly (cross-process determinism to the restore point), the post-restore re-serialization was byte-identical to the dump (completeness), and the restored future was BIT-IDENTICAL on both instruments through the identical refusal 302/gait_positional_correction_budget"
+    },
+    "f3_gap_closure": {
+      "pass": true,
+      "forced_drop_load_bearing": {
+        "contact_warm_start": {
+          "detail": "dropping contact_warm_start from the restore MOVES the continuation (first divergence tick 150)",
+          "first_diverging_tick": 150,
+          "load_bearing": true,
+          "roundtrip_ok": true
+        },
+        "controller_history": {
+          "detail": "dropping controller_history from the restore MOVES the continuation (first divergence tick 150)",
+          "first_diverging_tick": 150,
+          "load_bearing": true,
+          "roundtrip_ok": true
+        },
+        "reflex_state": {
+          "detail": "dropping reflex_state from the restore MOVES the continuation (first divergence tick 150)",
+          "first_diverging_tick": 150,
+          "load_bearing": true,
+          "roundtrip_ok": true
+        },
+        "world_state": {
+          "detail": "dropping world_state from the restore MOVES the continuation (first divergence tick 150)",
+          "first_diverging_tick": 150,
+          "load_bearing": true,
+          "roundtrip_ok": true
+        }
+      },
+      "classes_closed": {
+        "world_state": "CLOSED: reader class 0 (7 fields) + F1 proof",
+        "contact_warm_start": "CLOSED: reader class 1 (10 fields) + F1 proof",
+        "reflex_state": "CLOSED: reader class 2 (93 fields) + F1 proof",
+        "controller_history": "CLOSED: reader class 3 (74 fields) + F1 proof"
+      },
+      "detail": "ALL FOUR GAPS CLOSED (reader + proof): each class serializes per tick, restores into a fresh process, and its forced-drop probe (the class reverted to the fresh-reset serialization, the upgate convention) MOVES the continuation -- no class is carried vacuously. rng_stream: the engine walk carries NO random stream (the solver is deterministic; the scene pin gait_scene.json binds the world), so no RNG state exists to serialize -- recorded, not invented."
+    },
+    "f5_scope": {
+      "pass": true,
+      "touched_paths": [
+        "tools/policy_compat/certificate.py",
+        "tools/policy_compat/snapshot_api.py",
+        "tools/policy_compat/tests/test_snapshot_api.py",
+        "tools/science_funnel/validation/snapshot_apis_20260920/instrument/CMakeLists.txt",
+        "tools/science_funnel/validation/snapshot_apis_20260920/instrument/native/ChimeraEngine/engine/coupled_articulation.hpp",
+        "tools/science_funnel/validation/snapshot_apis_20260920/instrument/native/ChimeraEngine/engine/earth_environment.hpp",
+        "tools/science_funnel/validation/snapshot_apis_20260920/instrument/native/ChimeraEngine/engine/force_models.hpp",
+        "tools/science_funnel/validation/snapshot_apis_20260920/instrument/native/ChimeraEngine/engine/gait_controller.hpp",
+        "tools/science_funnel/validation/snapshot_apis_20260920/instrument/native/ChimeraEngine/engine/tests_coupled_arm/gait_snap.cpp",
+        "tools/science_funnel/validation/snapshot_apis_20260920/instrument/native/ChimeraEngine/engine/tests_coupled_arm/gait_unit.cpp",
+        "tools/science_funnel/validation/snapshot_apis_20260920/instrument/native/ChimeraEngine/native/viewer3rd/json.hpp",
+        "tools/science_funnel/validation/snapshot_apis_20260920/receipt.json",
+        "tools/science_funnel/validation/snapshot_apis_20260920/record.md"
+      ],
+      "out_of_scope": [],
+      "engine_tree_touched": false,
+      "detail": "diff vs base 9ce96d4f touches only the lane dir + tools/policy_compat; ChimeraEngine/ (gait_controller.hpp included) has ZERO edits; the instrument lives out-of-tree in the lane dir (the ifreeze precedent); nothing tracked was built in place"
+    },
+    "policy_compat_integration": {
+      "module": "tools/policy_compat/snapshot_api.py",
+      "validator": "certificate._validate_inventory: a RESOLVED gap MUST carry the proof block (reader/kind/proof_receipt_sha256/restore_bit_identity/ship_invariance/load_bearing_forced_drops); production certificates un-block ONLY through proven readers; the surrogate path's bytes and verdicts unchanged",
+      "tests": "tools/policy_compat/tests/test_snapshot_api.py (31 passed: 28 unit + 3 live-lane tests un-skipped by these artifacts); the pre-existing test_policy_compat.py suite unchanged and green"
+    },
+    "engine_service_forward_note": "PRECISELY-NAMED SUCCESSOR WORK (not needed for gap closure at the validator): a SHIPPED engine binding would port the dormant GAIT_SNAPSHOT_API serialize/restore block into the shipped gait_controller.hpp (the copy in this lane is the template) and expose it on the engine's state surface (the engine's current HTTP routes are the renderer's /membrane + /frame; a walker snapshot route -- GET/POST /gait_snapshot returning the 4-class body -- is the missing piece). Until then, production-class certificates un-block through THIS registry for builds carrying the out-of-tree instrument; the ship-tree route is what would make the readers SHIP-native.",
+    "what_a_production_certificate_still_lacks": "the validator-side BLOCK is lifted (all four gaps RESOLVED with verifiable proof); a FULL production certificate additionally needs (a) the 5-tuple relation bound to the REAL engine build's identity (build id, scene module sha, params sha -- the certificate format and the upgate checks 1-3 transfer unchanged), (b) the closed-loop requalification evidence run ON the engine walk path through these readers, and (c) if ship-native reading is wanted, the ship-tree snapshot route above.",
+    "honest_summary": "ALL FIVE FALSIFIERS HELD. F1 RESTORE-DRIFT: the restored future [150,302) was BIT-IDENTICAL on tick-wise state hashes AND action bytes (21888 B), refusal tick/class identical. F2 SHIP-INVARIANCE: scene f6844ee, stdout 8c537cdb, trace c6f9b6c0, plain stderr b505bb65 -- ALL EXACT at this base; the instrument copy flag-off == pristine bytes; the EXERCISED build with recording active still prints the ship bytes. F3 GAP-CLOSURE: all four gaps CLOSED with load-bearing readers (every forced-drop moved the continuation); rng_stream recorded as non-existent in the engine walk. F4: three fresh-process reference runs byte-identical. F5: zero engine-tree edits; scope confined to the lane dir + tools/policy_compat.",
+    "evidence_exclusions": "three large regenerable stderr traces (pristine trace 6.5 MB, ref1 trace 6.5 MB, restored-run trace 1.7 MB) are NOT committed; their sha256s are recorded in runs/proof_compare.json + runs/fence.json and they regenerate byte-exactly from the committed sources (F4 determinism)",
+    "post_commit_scope_check": {
+      "at_commit": "b864c179",
+      "touched_dirs": [
+        "tools/policy_compat",
+        "tools/policy_compat/tests",
+        "tools/science_funnel/validation/snapshot_apis_20260920",
+        "tools/science_funnel/validation/snapshot_apis_20260920/instrument",
+        "tools/science_funnel/validation/snapshot_apis_20260920/instrument/native/ChimeraEngine/engine",
+        "tools/science_funnel/validation/snapshot_apis_20260920/instrument/native/ChimeraEngine/engine/tests_coupled_arm",
+        "tools/science_funnel/validation/snapshot_apis_20260920/instrument/native/ChimeraEngine/native/viewer3rd",
+        "tools/science_funnel/validation/snapshot_apis_20260920/runs"
+      ],
+      "out_of_scope": [],
+      "engine_tree_touched": false,
+      "verdict": "F5 CONFIRMED POST-COMMIT: scope confined to the lane dir + tools/policy_compat; zero ChimeraEngine/ edits"
+    }
+  },
+  "pass": true
+}

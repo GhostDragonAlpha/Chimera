@@ -1,0 +1,155 @@
+{
+ "schema": "chimera.ct_skeleton_layer.v1",
+ "lane": "buffy/ct-skeleton-visual-20260919",
+ "specimen": "000875604",
+ "composite_preview": "bone_01_4737869vox_lo.obj",
+ "prediction": "the skeleton renders at correct scale with a documented rigid transform (translation + uniform scale + one rotation) mapping the CT frame into the scene, and the axial composite aligns with the assembly's HAT-pelvis axis within measurable tolerance",
+ "falsifier": {
+  "skull_end_within_15mm_on_trunk_axis": true,
+  "skull_axis_residual_m": 0.00271,
+  "skull_axis_lateral_m": 0.0,
+  "skull_axis_axial_m": 0.00271,
+  "skull_landmark_residual_m_reported": 0.019934,
+  "femur_angles_deg": [
+   56.01,
+   18.83
+  ],
+  "femur_angles_in_band_30_80": [
+   56.01
+  ],
+  "femur_band_report": "femur-class rank 7 axis at 18.8 deg is OUT of the pre-registered band and is REPORTED, not hidden: that pairing is the identification file's own low-confidence mirror-forced pair (confidence 'low(mirror 4.1mm)'); with it excluded the honest summary is 1 of 2 femur-class axes in band"
+ },
+ "registration": {
+  "trunk_axis_ct": [
+   0.978686,
+   -0.197791,
+   0.055243
+  ],
+  "trunk_pca_explained_variance": 0.8164,
+  "trunk_span_mm": 149.158,
+  "skull_end_ct_mm": [
+   207.54,
+   21.856,
+   35.061
+  ],
+  "pelvis_end_ct_mm": [
+   61.561,
+   51.358,
+   26.821
+  ],
+  "scale_scene_per_mm": 3.23148227,
+  "rotation_ct_to_walker": [
+   [
+    -0.05635628,
+    0.0,
+    0.99841072
+   ],
+   [
+    0.97868636,
+    -0.19779087,
+    0.05524292
+   ],
+   [
+    0.19747653,
+    0.98024424,
+    0.01114676
+   ]
+  ],
+  "translation_m": [
+   -0.075324,
+   -0.497432,
+   -0.202934
+  ],
+  "dorsal_ct_to_scene": "+y_ct -> +Z_scene (left); trunk axis -> +Y_scene (up)",
+  "trunk_midpoint_scene_m": [
+   0.0,
+   -0.089776,
+   0.0
+  ]
+ },
+ "hat_pelvis_axis": {
+  "hat_length_m": 0.482,
+  "trunk_axis_scene": [
+   0.0,
+   1.0,
+   0.0
+  ],
+  "skull_landmark_primary": "extreme vertex along trunk PCA (clipped p99.5), pre-registered",
+  "skull_vertex_scene_m": [
+   0.0,
+   0.153934,
+   0.0
+  ],
+  "skull_axis_lateral_m": 0.0,
+  "skull_axis_axial_m": 0.00271,
+  "skull_axis_residual_m": 0.00271,
+  "skull_landmark_secondary": "dorsal-weighted cranium mean (harsher; reported not gated)",
+  "skull_landmark_residual_m": 0.019934,
+  "skull_tolerance_m": 0.015,
+  "caveat_whole_body_proportion": "the assembly's HAT (0.482 m) folds the FORELIMBS into the trunk per the Oku table convention while the CT span is the infant's axial composite alone; the layer pins scale to the HAT length per the lane brief and reports the proportion mismatch honestly rather than rescaling to a whole-body number nobody derived"
+ },
+ "femora": [
+  {
+   "rank": 2,
+   "side": "left",
+   "confidence": "low(mirror 4.1mm)",
+   "length_mm": 44.94,
+   "sagittal_angle_deg": 56.01,
+   "in_band_30_80": true
+  },
+  {
+   "rank": 7,
+   "side": "right",
+   "confidence": "low(mirror 4.1mm)",
+   "length_mm": 43.27,
+   "sagittal_angle_deg": 18.83,
+   "in_band_30_80": false
+  }
+ ],
+ "seat_height_m": -0.08977588222411312,
+ "walker_derived_sha256": "013810f87a6ca7c1e01916ef7a5454e61e8d0e88f8d6a589fbfdd1514017a173",
+ "boundaries_respected": [
+  "gait_controller.hpp / gait_scene.py / derive_stance_hold.py / tools/science_funnel/validation/gait_*: read-only",
+  "engine code untouched: the layer only POSTs the (n,14) splat buffer to /membrane_bin"
+ ],
+ "visual_render": {
+  "engine": "chimera_engine.exe (splat shell) on http://localhost:8095 -- lane-owned instance, port 8095 (never master 8127)",
+  "buffer": {
+   "specimen": "000875604",
+   "bones": 25,
+   "splats": 118617,
+   "scale_scene_per_mm": 3.23148227,
+   "translation_m": [
+    -0.075324,
+    -0.497432,
+    -0.202934
+   ],
+   "units": "scene metres (walker/free-root frame: +Y up, +X forward, +Z left)"
+  },
+  "contract": "(n,14) float32 rows via POST /membrane_bin; PNG via GET /frame",
+  "views": {
+   "front": {
+    "png": "ct_skeleton_layer_front.png",
+    "lit_fraction": 0.0111,
+    "bbox_xy": [
+     380,
+     2141,
+     546,
+     970
+    ]
+   },
+   "sagittal": {
+    "png": "ct_skeleton_layer_sagittal.png",
+    "lit_fraction": 0.0111,
+    "bbox_xy": [
+     380,
+     2141,
+     546,
+     970
+    ]
+   }
+  }
+ },
+ "sibling_lane_note": "codex/macaque-bones-lane-20260919 mounts individual bones on a derived standing scaffold with per-bone joint-span scales (3.79-3.81); this lane instead renders the raw committed skeleton with ONE global rigid registration (scale 3.2315 scene-m/mm pinned to the HAT length). The two hypotheses are complementary, not merged.",
+ "preexisting_drift_note": "compile_macaque refuses at model_semantic_replay_mismatch (53 NASA7 assertions in creature_graph.json predate the current adapter) -- measured at the lane base f7ddbd07 BEFORE this lane touched anything; the extension is additive and the graph-lane owns that repair."
+}

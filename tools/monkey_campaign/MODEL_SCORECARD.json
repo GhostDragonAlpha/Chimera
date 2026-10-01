@@ -1,0 +1,18 @@
+{
+  "schema": "chimera.model_scorecard.v1",
+  "rubric_version": 1,
+  "as_of": "2026-09-27",
+  "status": "INSUFFICIENT_ATTRIBUTED_EVIDENCE",
+  "cohorts": [],
+  "operator_observations": [
+    {
+      "recorded_date": "2026-09-27",
+      "labels_as_supplied": ["Quinn 3.8 flash", "GLM 5.3 flash"],
+      "observation": "Captain reports this approximate capability level functions as the practical worker floor in this project.",
+      "classification": "OPERATOR_OBSERVATION_NOT_A_SCORED_SAMPLE",
+      "exact_model_ids_verified": false
+    }
+  ],
+  "next_action": "Capture exact model/configuration attribution in normal dispatch records; grade independently verified terminal work using MODEL_GRADES.md. Do not backfill guessed model identities.",
+  "limits": "No per-model grade has yet been established. Empty cohorts do not mean poor performance. Grades are advisory, not authorization."
+}

@@ -1,0 +1,95 @@
+INTEGRATION REHEARSAL — SCRATCH MERGE LOG
+Date: 2026-09-21 (lane work 2026-09-20/21)
+Clone: E:/ChimeraWork/rehearsal-agent (scratch; canonical remote = git@github.com-fleetdeploy:GhostDragonAlpha/Chimera.git)
+Branch: agent/integration-rehearsal-20260921
+Baseline origin/master: 6946f3b99f04b794bca948a1b2cdc44688c2354d (recorded before ANY work; never pushed by this agent)
+All merges `git merge --no-ff <tip>` except step 1 (chain, pure fast-forward). Every lane "clean" claim below is backed by its merge commit existing in this clone.
+
+=====================================================================
+STEP 1 — THE WALK CHAIN (waves 12→27a), tip d981bc04
+=====================================================================
+merge-base(origin/master 6946f3b9, d981bc04) = 6946f3b9  →  the chain ALREADY CONTAINS current master.
+Chain base f0efbba7 ("Add quadruped forelimb struts") = master + 19 commits (gait campaign waves 2–8, CT bone
+segmentation d35dc6b3, bone identification 7fddbd07/f7ddbd07, merge 84ff1747 of buffy/gait-wave7).
+Consequence: `git merge --ff-only d981bc04` from 6946f3b9 — ZERO conflicts, fast-forward. Brought in: 34 commits,
+123 files changed (coupled_articulation.hpp, gait_controller.hpp, tests_coupled_arm/{CMakeLists,gait_unit.cpp},
+creature_graph data + admit scripts, morphosource_ct data, .gitignore).
+
+Chain proper (first-parent, strictly linear):
+  e7dce7e2 w12 → 554f40ed w13 → b5886451 w14 → c3db49cd w15 → 47d30cb4 w16 → c03ddf41 w17 → 74fc0195 w19
+  → 5c94fb4b w20 → 8a17c500 w21 → 17b6bdde w22 → 3cf3674c w23 → ecddf6eb w24 → 40811bdd w25 → 6efb3ef0 w26
+  → d981bc04 w27a.
+WAVE 18 IS OFF-CHAIN: tip 17936d83 ("partial-lean") is a superseded sibling; wave 19's message says
+"THE LEANED ENTRY, RECONCILED" and its parent is wave 17 (c03ddf41). Wave 18's content lives in the chain via 19.
+Siblings 27b/27c are NOT in the chain proper. During this rehearsal wave-27c landed on canonical:
+  origin/agent/gait-wave27c-decay-seats = 4198dbdc ("FALSIFIED AT DERIVATION"), NOT a descendant of d981bc04.
+
+Master drift since 32105f18 (the question asked): 67 commits. Under ChimeraEngine/engine/: 15 files, +3149/−32
+(includes tests_coupled_arm/gait_unit.cpp +199). Under tools/science_funnel/: 307 files, +183039/−28.
+ALL of it is inside the chain's history — the fast-forward cannot conflict with it.
+
+Tests after chain merge (in this clone):
+  Build: cmake -S ChimeraEngine/engine/tests_coupled_arm -B .tmp/coupled-tests; target gait_unit + gait_unit_trace — OK (MSVC Release).
+  Scene: python -B tools/science_funnel/gait_scene.py --output .tmp/gait-walker → scene sha256 e61ad3864472453f….
+  gait_unit: EXIT 0, refusal tick=122 gait_impact_event_budget — EXACTLY the wave-27 receipt's banked state
+    (receipt_wave27.json: "refusal moved 105 → 122"). Red set line-identical to the receipt's red_enumeration:
+    13 named reds + 3 NOT-MEASURED (F-G1/G2/G3); machine counter reports 16. pass=false — the honest carried
+    state of wave 27, reproduced, not introduced by the merge.
+  Graph tests (tools/creature_graph/tests): 19 passed, 27 subtests passed.
+  Science_funnel root (baseline, post-chain): 19 failed, 322 passed, 1 skipped, 16 errors, 24m51s.
+    (Capture mistake: only counts + 3 ERROR names survived the first run's output truncation —
+    test_force_compiler ERRORs ×3. Full re-capture done at final state, see step 16.)
+  FINDING: running tools/science_funnel/tests MUTATES committed evidence in-tree — visual_proof_20260917 and
+    visual_proof_wave2_20260918 manifests/PNGs were regenerated with the local environment's stamps
+    (python 3.14.3 / zlib 1.3.1.zlib-ng vs recorded 3.11.15 / 1.3.2). 15 files re-restored before merging.
+    Any integrator who runs the suite before committing will contaminate the integration.
+
+=====================================================================
+STEPS 2–13 — THE INDEPENDENT LANES, one at a time
+=====================================================================
+2. matter A — 2d585c7b (agent/matter-skeleton-import-20260920) → MERGE b8b10168
+   Conflicts (1): .gitattributes (content).
+   Resolution: union — keep master's `tools/science_funnel/data/** -text`, then matterA's
+     `tools/science_funnel/data/morphosource_ct/** -text -whitespace` AFTER it (gitattributes last-match-wins
+     grants the specific class its -whitespace attribute).
+   All 31 predicted CT-data overlap files (.obj/manifests/bone_identification.json/download_receipt.json)
+     auto-merged clean — both sides carried identical content.
+3. reality gate — 4d1c0ffa (agent/reality-fantasy-gate-20260920) → MERGE af19f762 — CLEAN, 0 conflicts.
+4. visual repair — 1b08b29d (agent/triangle-monkey-grid-20260920) → MERGE 5974fee5 — CLEAN, 0 conflicts.
+5. engine determinism — ee2dec83 (agent/engine-determinism-argc) → MERGE 9a886562
+   Conflicts (2), both add/add:
+     - tools/science_funnel/ct_skeleton_layer.py → resolved THEIRS: strict superset of ours
+       (+20/−6: SEAT_HEIGHT_M pinned constant + loud drift refusal; nothing of ours lost).
+     - tools/science_funnel/skeleton_movie.py → NEEDS THE INTEGRATOR'S HAND. Two divergent lineages of the
+       same file: ours = master-line harness including the visual lane's +103/−11 edits (just merged);
+       theirs = engdet's rewritten determinism instrument (+262/−560 vs ours).
+       Resolution: ours keeps the canonical path; theirs preserved verbatim as
+       tools/science_funnel/skeleton_movie_engine_determinism.py (engdet's validation records embed no path
+       reference, so the paper trail stays consistent). The integrator must ratify this split or re-base
+       engdet's instrument onto the canonical harness.
+   ChimeraEngine/engine/main.cpp — the OTHER predicted hot spot — auto-merged clean.
+6. Engine compile check after 4+5: cmake -S ChimeraEngine/engine -B .tmp/engine-build; Release build →
+   chimera_engine.exe LINKS (exit 0; only LNK4315 FASTLINK warning). Visual's engine.cpp/engine.hpp and
+   engdet's main.cpp/sort.comp compile together post-merge.
+7. workflow MCP — a672b16b (agent/workflow-mcp-20260920) → MERGE 59f3bab6 — CLEAN, 0 conflicts
+   (branch contains visual 1b08b29d, so it must follow step 4; only its 10 extra files landed).
+8. checklist — e9c8b394 (agent/workflow-checklist-20260920) → MERGE 9799463c — CLEAN, 0 conflicts
+   (creates docs/THE_CHECKLIST.md).
+9. constitution — c0e130c5 (agent/constitution-bio-laws-20260920) → MERGE 5d1a83de
+   Conflicts (1): docs/THE_CHECKLIST.md (add/add — constitution amends the file the checklist lane creates).
+   Resolution: THEIRS — strict superset (the full checklist + a 27-line "THE CONSTITUTION POINTERS" appendix).
+   docs/THE_GAME.md (constitution-only) merged clean.
+10. research memo — fc45106c (agent/muscle-data-research-20260920) → MERGE 5c4fadf9 — CLEAN, 0 conflicts.
+11. wiseman — aede5de9 (Wiseman 2026 RSOS osim acquisition; landed on canonical MID-REHEARSAL) →
+    MERGE 76cad47b — CLEAN, 0 conflicts (18 new files, additive data + receipts).
+12. adapter — bbbc4d67 (OpenSim 4.x wiseman intake adapter; descendant of aede5de9, so it must follow
+    step 11) → MERGE 2043fc63 — CLEAN, 0 conflicts (8 new files: wiseman_osim.py + tests + validation).
+13. matter B — 53aff9f9c: MISSING FROM CANONICAL at three checks (fresh clone 22:0x, fetch --prune twice).
+    NOT merged, NOT guessed. Reported per the falsifier rule.
+
+=====================================================================
+STEP 14 — FINAL STATE
+=====================================================================
+Branch tip at receipt time: see receipt.json "final_commit".
+Final test battery: see receipt.json "tests_final".
+Master verification: origin/master ls-remote before AND after — see receipt.json "master_never_pushed".

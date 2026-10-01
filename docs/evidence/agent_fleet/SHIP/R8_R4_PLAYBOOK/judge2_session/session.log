@@ -1,0 +1,325 @@
+2026-09-14T23:27:57.785Z {"ok":true,"did":"goto","url":"http://127.0.0.1:8206","ms":439}
+2026-09-14T23:27:57.786Z {"ok":true,"did":"ready","cmdDir":"cmd"}
+2026-09-14T23:28:34.033Z {"ok":true,"did":"shot","file":"shots\\01_landing.png"}
+2026-09-14T23:28:39.035Z {"ok":true,"did":"wait","ms":5000}
+2026-09-14T23:28:39.085Z {"ok":true,"did":"shot","file":"shots\\02_landing_settled.png"}
+2026-09-14T23:28:39.087Z {"ok":true,"did":"text","text":"C H I M E R A\n\na creature of water and skin. touch it, and it answers.\n\nPLAY\n\nyour progress is kept under your name — the world remembers you."}
+2026-09-14T23:29:33.457Z {"ok":true,"did":"clickText","text":"PLAY","box":null}
+2026-09-14T23:29:35.967Z {"ok":true,"did":"wait","ms":2500}
+2026-09-14T23:29:36.049Z {"ok":true,"did":"shot","file":"shots\\03_after_play_click.png"}
+2026-09-14T23:29:36.050Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n1 / 10\n›\nWAKE THE CELL\n\nThe creature is sealed — water under its skin. Press its big body and HOLD the touch: the cell resists, because the water is real. Wake it: push the torso cell's pressure past 0.02 MPa. Then let go, and watch the body heal itself back to zero.\n\nthe creature waits.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress\nYou are a camera in one living world.\nDrag to look. Click (or SPACE) to touch — hold to press.\nThe body answers: watch its blood.\ndraglook\nclickSPACEtouch · hold = press\n1–5lessons\n\nSPACE\nto touch\n\nbegin\n\nEnter also begins."}
+2026-09-14T23:30:01.598Z {"ok":true,"did":"clickText","text":"Begin","box":null}
+2026-09-14T23:30:03.098Z {"ok":true,"did":"wait","ms":1500}
+2026-09-14T23:30:03.140Z {"ok":true,"did":"shot","file":"shots\\04_scene.png"}
+2026-09-14T23:31:43.695Z REQFAIL: http://127.0.0.1:8206/api/verts?delta=key net::ERR_NO_BUFFER_SPACE
+2026-09-14T23:31:43.695Z console.error: Failed to load resource: net::ERR_NO_BUFFER_SPACE
+2026-09-14T23:31:53.799Z {"ok":true,"did":"move","x":300,"y":700}
+2026-09-14T23:31:53.800Z {"ok":true,"did":"down"}
+2026-09-14T23:31:53.899Z {"ok":true,"did":"move","x":500,"y":640}
+2026-09-14T23:31:53.901Z {"ok":true,"did":"up"}
+2026-09-14T23:31:54.701Z {"ok":true,"did":"wait","ms":800}
+2026-09-14T23:31:54.735Z {"ok":true,"did":"shot","file":"shots\\05_after_drag_look.png"}
+2026-09-14T23:31:54.745Z {"ok":true,"did":"wheel"}
+2026-09-14T23:31:55.559Z {"ok":true,"did":"wait","ms":800}
+2026-09-14T23:31:55.594Z {"ok":true,"did":"shot","file":"shots\\06_after_wheel.png"}
+2026-09-14T23:32:21.536Z {"ok":true,"did":"move","x":560,"y":400}
+2026-09-14T23:32:21.537Z {"ok":true,"did":"down"}
+2026-09-14T23:32:22.742Z {"ok":true,"did":"wait","ms":1200}
+2026-09-14T23:32:22.777Z {"ok":true,"did":"shot","file":"shots\\07_press_hold_early.png"}
+2026-09-14T23:32:24.291Z {"ok":true,"did":"wait","ms":1500}
+2026-09-14T23:32:24.292Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n1 / 10\n›\nWAKE THE CELL\n\nThe creature is sealed — water under its skin. Press its big body and HOLD the touch: the cell resists, because the water is real. Wake it: push the torso cell's pressure past 0.02 MPa. Then let go, and watch the body heal itself back to zero.\n\nthe goal is met — now LET GO, and let the body heal.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\npressing — 20000 N\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.504 m3  P=0.956 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:32:24.326Z {"ok":true,"did":"shot","file":"shots\\08_press_hold_late.png"}
+2026-09-14T23:32:56.785Z {"ok":true,"did":"up"}
+2026-09-14T23:32:57.393Z {"ok":true,"did":"wait","ms":600}
+2026-09-14T23:32:57.431Z {"ok":true,"did":"shot","file":"shots\\09_released.png"}
+2026-09-14T23:32:57.432Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n1 / 10\n›\nWAKE THE CELL\n\nThe creature is sealed — water under its skin. Press its big body and HOLD the touch: the cell resists, because the water is real. Wake it: push the torso cell's pressure past 0.02 MPa. Then let go, and watch the body heal itself back to zero.\n\nthe goal is met — now LET GO, and let the body heal.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.507 m3  P=0.432 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:32:59.936Z {"ok":true,"did":"wait","ms":2500}
+2026-09-14T23:32:59.972Z {"ok":true,"did":"shot","file":"shots\\10_settling.png"}
+2026-09-14T23:32:59.973Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n1 / 10\n›\nWAKE THE CELL\n\nThe creature is sealed — water under its skin. Press its big body and HOLD the touch: the cell resists, because the water is real. Wake it: push the torso cell's pressure past 0.02 MPa. Then let go, and watch the body heal itself back to zero.\n\nthe goal is met — now LET GO, and let the body heal.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.006 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:33:02.974Z {"ok":true,"did":"wait","ms":3000}
+2026-09-14T23:33:03.011Z {"ok":true,"did":"shot","file":"shots\\11_settled.png"}
+2026-09-14T23:33:03.012Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n1 / 10\n›\nWAKE THE CELL\n\nThe creature is sealed — water under its skin. Press its big body and HOLD the touch: the cell resists, because the water is real. Wake it: push the torso cell's pressure past 0.02 MPa. Then let go, and watch the body heal itself back to zero.\n\nPASSED — you pressed, the cell woke, and the water healed itself. the world is real.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:33:38.284Z {"ok":true,"did":"click","x":1420,"y":108}
+2026-09-14T23:33:39.096Z {"ok":true,"did":"wait","ms":800}
+2026-09-14T23:33:39.097Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n1 / 10\n›\nWAKE THE CELL\n\nThe creature is sealed — water under its skin. Press its big body and HOLD the touch: the cell resists, because the water is real. Wake it: push the torso cell's pressure past 0.02 MPa. Then let go, and watch the body heal itself back to zero.\n\nPASSED — you pressed, the cell woke, and the water healed itself. the world is real.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:33:39.136Z {"ok":true,"did":"shot","file":"shots\\12_lesson2.png"}
+2026-09-14T23:33:54.610Z {"ok":true,"did":"key","key":"2"}
+2026-09-14T23:33:55.417Z {"ok":true,"did":"wait","ms":800}
+2026-09-14T23:33:55.418Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n2 / 10\n›\nTHE GENTLE HAND\n\nSmall parts hold small water. The same push that barely stirs the body can spike a foot — so a gentle hand touches a small part softly. Keep your force under 8,000 N and press a foot until its cell passes 50 kPa, then let go and let it settle.\n\nthe creature waits.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:34:21.783Z {"ok":true,"did":"move","x":1192,"y":435}
+2026-09-14T23:34:21.784Z {"ok":true,"did":"down"}
+2026-09-14T23:34:21.857Z {"ok":true,"did":"move","x":1155,"y":435}
+2026-09-14T23:34:21.861Z {"ok":true,"did":"up"}
+2026-09-14T23:34:22.265Z {"ok":true,"did":"wait","ms":400}
+2026-09-14T23:34:22.265Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n2 / 10\n›\nTHE GENTLE HAND\n\nSmall parts hold small water. The same push that barely stirs the body can spike a foot — so a gentle hand touches a small part softly. Keep your force under 8,000 N and press a foot until its cell passes 50 kPa, then let go and let it settle.\n\nthe creature waits.\nYOUR HAND\n20000 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P="}
+2026-09-14T23:34:37.680Z {"ok":true,"did":"eval","result":"\"[{\\\"type\\\":\\\"text\\\",\\\"min\\\":\\\"\\\",\\\"max\\\":\\\"\\\",\\\"value\\\":\\\"\\\",\\\"r\\\":{\\\"x\\\":0,\\\"y\\\":0,\\\"width\\\":0,\\\"height\\\":0,\\\"top\\\":0,\\\"right\\\":0,\\\"bottom\\\":0,\\\"left\\\":0}},{\\\"type\\\":\\\"range\\\",\\\"min\\\":\\\"500\\\",\\\"max\\\":\\\"50000\\\",\\\"value\\\":\\\"20000\\\",\\\"r\\\":{\\\"x\\\":1113,\\\"y\\\":443.375,\\\"width\\\":197,\\\"height\\\":28,\\\"top\\\":443.375,\\\"right\\\":1310,\\\"bottom\\\":471.375,\\\"left\\\":1113}}]\""}
+2026-09-14T23:34:53.099Z {"ok":true,"did":"move","x":1193,"y":457}
+2026-09-14T23:34:53.100Z {"ok":true,"did":"down"}
+2026-09-14T23:34:53.174Z {"ok":true,"did":"move","x":1135,"y":457}
+2026-09-14T23:34:53.177Z {"ok":true,"did":"up"}
+2026-09-14T23:34:53.584Z {"ok":true,"did":"wait","ms":400}
+2026-09-14T23:34:53.585Z {"ok":true,"did":"eval","result":"\"4300\""}
+2026-09-14T23:35:11.035Z {"ok":true,"did":"move","x":565,"y":620}
+2026-09-14T23:35:11.035Z {"ok":true,"did":"down"}
+2026-09-14T23:35:12.242Z {"ok":true,"did":"wait","ms":1200}
+2026-09-14T23:35:12.242Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n2 / 10\n›\nTHE GENTLE HAND\n\nSmall parts hold small water. The same push that barely stirs the body can spike a foot — so a gentle hand touches a small part softly. Keep your force under 8,000 N and press a foot until its cell passes 50 kPa, then let go and let it settle.\n\nthe creature waits.\nYOUR HAND\n4300 N\ngentle ≤\nhand strength\nlet go\nyou touched only water.\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:35:12.279Z {"ok":true,"did":"shot","file":"shots\\13_foot_press.png"}
+2026-09-14T23:35:13.780Z {"ok":true,"did":"wait","ms":1500}
+2026-09-14T23:35:13.781Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n2 / 10\n›\nTHE GENTLE HAND\n\nSmall parts hold small water. The same push that barely stirs the body can spike a foot — so a gentle hand touches a small part softly. Keep your force under 8,000 N and press a foot until its cell passes 50 kPa, then let go and let it settle.\n\nthe creature waits.\nYOUR HAND\n4300 N\ngentle ≤\nhand strength\nlet go\nyou touched only water.\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:35:36.087Z {"ok":true,"did":"up"}
+2026-09-14T23:35:36.097Z {"ok":true,"did":"wheel"}
+2026-09-14T23:35:36.109Z {"ok":true,"did":"wheel"}
+2026-09-14T23:35:36.711Z {"ok":true,"did":"wait","ms":600}
+2026-09-14T23:35:36.750Z {"ok":true,"did":"shot","file":"shots\\14_zoomed_feet.png"}
+2026-09-14T23:35:59.483Z {"ok":true,"did":"move","x":590,"y":755}
+2026-09-14T23:35:59.484Z {"ok":true,"did":"down"}
+2026-09-14T23:36:00.489Z {"ok":true,"did":"wait","ms":1000}
+2026-09-14T23:36:00.490Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n2 / 10\n›\nTHE GENTLE HAND\n\nSmall parts hold small water. The same push that barely stirs the body can spike a foot — so a gentle hand touches a small part softly. Keep your force under 8,000 N and press a foot until its cell passes 50 kPa, then let go and let it settle.\n\nthe goal is met — now LET GO, and let the body heal.\nYOUR HAND\n4300 N\ngentle ≤\nhand strength\nlet go\npressing — 4300 N\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=2.624 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:36:00.533Z {"ok":true,"did":"shot","file":"shots\\15_foot_press_2.png"}
+2026-09-14T23:36:02.046Z {"ok":true,"did":"wait","ms":1500}
+2026-09-14T23:36:02.047Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n2 / 10\n›\nTHE GENTLE HAND\n\nSmall parts hold small water. The same push that barely stirs the body can spike a foot — so a gentle hand touches a small part softly. Keep your force under 8,000 N and press a foot until its cell passes 50 kPa, then let go and let it settle.\n\nthe goal is met — now LET GO, and let the body heal.\nYOUR HAND\n4300 N\ngentle ≤\nhand strength\nlet go\npressing — 4300 N\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=2.624 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:36:19.477Z {"ok":true,"did":"up"}
+2026-09-14T23:36:20.178Z {"ok":true,"did":"wait","ms":700}
+2026-09-14T23:36:20.217Z {"ok":true,"did":"shot","file":"shots\\16_foot_released.png"}
+2026-09-14T23:36:22.718Z {"ok":true,"did":"wait","ms":2500}
+2026-09-14T23:36:22.719Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n2 / 10\n›\nTHE GENTLE HAND\n\nSmall parts hold small water. The same push that barely stirs the body can spike a foot — so a gentle hand touches a small part softly. Keep your force under 8,000 N and press a foot until its cell passes 50 kPa, then let go and let it settle.\n\nthe goal is met — now LET GO, and let the body heal.\nYOUR HAND\n4300 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.005 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:36:22.759Z {"ok":true,"did":"shot","file":"shots\\17_foot_settled.png"}
+2026-09-14T23:36:42.322Z {"ok":true,"did":"wait","ms":2500}
+2026-09-14T23:36:42.322Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n2 / 10\n›\nTHE GENTLE HAND\n\nSmall parts hold small water. The same push that barely stirs the body can spike a foot — so a gentle hand touches a small part softly. Keep your force under 8,000 N and press a foot until its cell passes 50 kPa, then let go and let it settle.\n\nPASSED — a gentle hand: the small water answered a small touch.\nYOUR HAND\n4300 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:36:42.361Z {"ok":true,"did":"shot","file":"shots\\18_foot_passed.png"}
+2026-09-14T23:36:55.733Z {"ok":true,"did":"key","key":"3"}
+2026-09-14T23:36:56.633Z {"ok":true,"did":"wait","ms":900}
+2026-09-14T23:36:56.634Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n3 / 10\n›\nTHE HEALING\n\nThe creature's skin is elastic: the moment you let go, the dent unwinds and the squeezed water flows away, fading to zero in a few seconds. Wake any cell past 0.02 MPa, then take your hand off and simply wait. Nothing heals while you keep holding; the healing begins when you let go.\n\nthe creature waits.\nYOUR HAND\n4300 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:36:56.675Z {"ok":true,"did":"shot","file":"shots\\19_lesson3.png"}
+2026-09-14T23:37:33.998Z {"ok":true,"did":"move","x":560,"y":300}
+2026-09-14T23:37:33.999Z {"ok":true,"did":"down"}
+2026-09-14T23:37:35.503Z {"ok":true,"did":"wait","ms":1500}
+2026-09-14T23:37:35.504Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n3 / 10\n›\nTHE HEALING\n\nThe creature's skin is elastic: the moment you let go, the dent unwinds and the squeezed water flows away, fading to zero in a few seconds. Wake any cell past 0.02 MPa, then take your hand off and simply wait. Nothing heals while you keep holding; the healing begins when you let go.\n\nthe goal is met — now LET GO, and let the body heal.\nYOUR HAND\n4300 N\ngentle ≤\nhand strength\nlet go\npressing — 4300 N\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.508 m3  P=0.156 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:37:35.543Z {"ok":true,"did":"shot","file":"shots\\20_heal_press.png"}
+2026-09-14T23:37:35.544Z {"ok":true,"did":"up"}
+2026-09-14T23:37:36.354Z {"ok":true,"did":"wait","ms":800}
+2026-09-14T23:37:36.354Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n3 / 10\n›\nTHE HEALING\n\nThe creature's skin is elastic: the moment you let go, the dent unwinds and the squeezed water flows away, fading to zero in a few seconds. Wake any cell past 0.02 MPa, then take your hand off and simply wait. Nothing heals while you keep holding; the healing begins when you let go.\n\nthe goal is met — now LET GO, and let the body heal.\nYOUR HAND\n4300 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.508 m3  P=0.107 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:37:37.866Z {"ok":true,"did":"wait","ms":1500}
+2026-09-14T23:37:37.867Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n3 / 10\n›\nTHE HEALING\n\nThe creature's skin is elastic: the moment you let go, the dent unwinds and the squeezed water flows away, fading to zero in a few seconds. Wake any cell past 0.02 MPa, then take your hand off and simply wait. Nothing heals while you keep holding; the healing begins when you let go.\n\nthe goal is met — now LET GO, and let the body heal.\nYOUR HAND\n4300 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.006 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:37:40.372Z {"ok":true,"did":"wait","ms":2500}
+2026-09-14T23:37:40.372Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n3 / 10\n›\nTHE HEALING\n\nThe creature's skin is elastic: the moment you let go, the dent unwinds and the squeezed water flows away, fading to zero in a few seconds. Wake any cell past 0.02 MPa, then take your hand off and simply wait. Nothing heals while you keep holding; the healing begins when you let go.\n\nPASSED — you let go, and the body healed itself. it never needed you.\nYOUR HAND\n4300 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:37:40.415Z {"ok":true,"did":"shot","file":"shots\\21_heal_result.png"}
+2026-09-14T23:40:40.124Z {"ok":true,"did":"move","x":1135,"y":457}
+2026-09-14T23:40:40.125Z {"ok":true,"did":"down"}
+2026-09-14T23:40:40.190Z {"ok":true,"did":"move","x":1193,"y":457}
+2026-09-14T23:40:40.192Z {"ok":true,"did":"up"}
+2026-09-14T23:40:40.502Z {"ok":true,"did":"wait","ms":300}
+2026-09-14T23:40:40.503Z {"ok":true,"did":"eval","result":"\"4300\""}
+2026-09-14T23:43:32.086Z {"ok":true,"did":"move","x":1128,"y":457}
+2026-09-14T23:43:32.087Z {"ok":true,"did":"down"}
+2026-09-14T23:43:32.140Z {"ok":true,"did":"move","x":1160,"y":457}
+2026-09-14T23:43:32.195Z {"ok":true,"did":"move","x":1193,"y":457}
+2026-09-14T23:43:32.199Z {"ok":true,"did":"up"}
+2026-09-14T23:43:32.512Z {"ok":true,"did":"wait","ms":300}
+2026-09-14T23:43:32.513Z {"ok":true,"did":"eval","result":"\"4300\""}
+2026-09-14T23:43:57.235Z {"ok":true,"did":"click","x":1128,"y":457}
+2026-09-14T23:43:57.236Z {"ok":true,"did":"key","key":"PageUp"}
+2026-09-14T23:43:57.545Z {"ok":true,"did":"wait","ms":300}
+2026-09-14T23:43:57.546Z {"ok":true,"did":"eval","result":"\"4300\""}
+2026-09-14T23:44:24.382Z REQFAIL: http://127.0.0.1:8206/api/state net::ERR_NO_BUFFER_SPACE
+2026-09-14T23:44:24.382Z console.error: Failed to load resource: net::ERR_NO_BUFFER_SPACE
+2026-09-14T23:44:26.343Z {"ok":true,"did":"move","x":1128,"y":457}
+2026-09-14T23:44:26.344Z {"ok":true,"did":"down"}
+2026-09-14T23:44:26.550Z {"ok":true,"did":"wait","ms":200}
+2026-09-14T23:44:26.587Z {"ok":true,"did":"move","x":1150,"y":457}
+2026-09-14T23:44:26.787Z {"ok":true,"did":"wait","ms":200}
+2026-09-14T23:44:26.824Z {"ok":true,"did":"move","x":1175,"y":457}
+2026-09-14T23:44:27.031Z {"ok":true,"did":"wait","ms":200}
+2026-09-14T23:44:27.069Z {"ok":true,"did":"move","x":1193,"y":457}
+2026-09-14T23:44:27.373Z {"ok":true,"did":"wait","ms":300}
+2026-09-14T23:44:27.373Z {"ok":true,"did":"up"}
+2026-09-14T23:44:27.682Z {"ok":true,"did":"wait","ms":300}
+2026-09-14T23:44:27.683Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n3 / 10\n›\nTHE HEALING\n\nThe creature's skin is elastic: the moment you let go, the dent unwinds and the squeezed water flows away, fading to zero in a few seconds. Wake any cell past 0.02 MPa, then take your hand off and simply wait. Nothing heals while you keep holding; the healing begins when you let go.\n\nPASSED — you let go, and the body healed itself."}
+2026-09-14T23:44:50.368Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n3 / 10\n›\nTHE HEALING\n\nThe creature's skin is elastic: the moment you let go, the dent unwinds and the squeezed water flows away, fading to zero in a few seconds. Wake any cell past 0.02 MPa, then take your hand off and simply wait. Nothing heals while you keep holding; the healing begins when you let go.\n\nPASSED — you let go, and the body healed itself. it never needed you.\nYOUR HAND\n4300 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:45:08.619Z {"ok":true,"did":"move","x":1134,"y":457}
+2026-09-14T23:45:08.619Z {"ok":true,"did":"down"}
+2026-09-14T23:45:08.777Z {"ok":true,"did":"wait","ms":150}
+2026-09-14T23:45:08.821Z {"ok":true,"did":"move","x":1160,"y":457}
+2026-09-14T23:45:08.868Z {"ok":true,"did":"move","x":1192,"y":457}
+2026-09-14T23:45:09.071Z {"ok":true,"did":"wait","ms":200}
+2026-09-14T23:45:09.072Z {"ok":true,"did":"up"}
+2026-09-14T23:45:09.382Z {"ok":true,"did":"wait","ms":300}
+2026-09-14T23:45:09.383Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n3 / 10\n›\nTHE HEALING\n\nThe creature's skin is elastic: the moment you let go, the dent unwinds and the squeezed water flows away, fading to zero in a few seconds. Wake any cell past 0.02 MPa, then take your hand off and simply wait. Nothing heals while you keep holding; the healing begins when you let go.\n\nPASSED — you let go, and the body healed itself. it never needed you.\nYOUR HAND\n4300 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:45:44.638Z {"ok":true,"did":"click","x":1134,"y":457}
+2026-09-14T23:45:44.639Z {"ok":true,"did":"key","key":"PageUp"}
+2026-09-14T23:45:44.903Z {"ok":true,"did":"wait","ms":250}
+2026-09-14T23:45:44.906Z {"ok":true,"did":"key","key":"PageUp"}
+2026-09-14T23:45:45.167Z {"ok":true,"did":"wait","ms":250}
+2026-09-14T23:45:45.168Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n3 / 10\n›\nTHE HEALING\n\nThe creature's skin is elastic: the moment you let go, the dent unwinds and the squeezed water flows away, fading to zero in a few seconds. Wake any cell past 0.02 MPa, then take your hand off and simply wait. Nothing heals while you keep holding; the healing begins when you let go.\n\nPASSED — you let go, and the body healed itself. it never needed you.\nYOUR HAND\n4300 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:46:05.815Z {"ok":true,"did":"click","x":1134,"y":457}
+2026-09-14T23:46:05.816Z {"ok":true,"did":"key","key":"End"}
+2026-09-14T23:46:06.128Z {"ok":true,"did":"wait","ms":300}
+2026-09-14T23:46:06.129Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n3 / 10\n›\nTHE HEALING\n\nThe creature's skin is elastic: the moment you let go, the dent unwinds and the squeezed water flows away, fading to zero in a few seconds. Wake any cell past 0.02 MPa, then take your hand off and simply wait. Nothing heals while you keep holding; the healing begins when you let go.\n\nPASSED — you let go, and the body healed itself. it never needed you.\nYOUR HAND\n4300 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:46:23.961Z {"ok":true,"did":"wheel"}
+2026-09-14T23:46:23.970Z {"ok":true,"did":"wheel"}
+2026-09-14T23:46:24.780Z {"ok":true,"did":"wait","ms":800}
+2026-09-14T23:46:24.822Z {"ok":true,"did":"shot","file":"shots\\22_before_press.png"}
+2026-09-14T23:46:52.402Z {"ok":true,"did":"move","x":600,"y":350}
+2026-09-14T23:46:52.402Z {"ok":true,"did":"down"}
+2026-09-14T23:46:53.407Z {"ok":true,"did":"wait","ms":1000}
+2026-09-14T23:46:53.446Z {"ok":true,"did":"shot","file":"shots\\23_press_hold_1s.png"}
+2026-09-14T23:46:54.951Z {"ok":true,"did":"wait","ms":1500}
+2026-09-14T23:46:54.952Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n3 / 10\n›\nTHE HEALING\n\nThe creature's skin is elastic: the moment you let go, the dent unwinds and the squeezed water flows away, fading to zero in a few seconds. Wake any cell past 0.02 MPa, then take your hand off and simply wait. Nothing heals while you keep holding; the healing begins when you let go.\n\nPASSED — you let go, and the body healed itself. it never needed you.\nYOUR HAND\n4300 N\ngentle ≤\nhand strength\nlet go\npressing — 4300 N\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.508 m3  P=0.171 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:46:57.465Z {"ok":true,"did":"wait","ms":2500}
+2026-09-14T23:46:57.505Z {"ok":true,"did":"shot","file":"shots\\24_press_hold_5s.png"}
+2026-09-14T23:46:57.506Z {"ok":true,"did":"up"}
+2026-09-14T23:46:58.215Z {"ok":true,"did":"wait","ms":700}
+2026-09-14T23:46:58.255Z {"ok":true,"did":"shot","file":"shots\\25_press_released.png"}
+2026-09-14T23:46:58.256Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n3 / 10\n›\nTHE HEALING\n\nThe creature's skin is elastic: the moment you let go, the dent unwinds and the squeezed water flows away, fading to zero in a few seconds. Wake any cell past 0.02 MPa, then take your hand off and simply wait. Nothing heals while you keep holding; the healing begins when you let go.\n\nPASSED — you let go, and the body healed itself. it never needed you.\nYOUR HAND\n4300 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.508 m3  P=0.089 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:47:00.261Z {"ok":true,"did":"wait","ms":2000}
+2026-09-14T23:47:00.302Z {"ok":true,"did":"shot","file":"shots\\26_press_settle_2s.png"}
+2026-09-14T23:47:03.311Z {"ok":true,"did":"wait","ms":3000}
+2026-09-14T23:47:03.351Z {"ok":true,"did":"shot","file":"shots\\27_press_settled.png"}
+2026-09-14T23:47:03.352Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n3 / 10\n›\nTHE HEALING\n\nThe creature's skin is elastic: the moment you let go, the dent unwinds and the squeezed water flows away, fading to zero in a few seconds. Wake any cell past 0.02 MPa, then take your hand off and simply wait. Nothing heals while you keep holding; the healing begins when you let go.\n\nPASSED — you let go, and the body healed itself. it never needed you.\nYOUR HAND\n4300 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:47:43.428Z {"ok":true,"did":"move","x":610,"y":120}
+2026-09-14T23:47:43.429Z {"ok":true,"did":"down"}
+2026-09-14T23:47:44.444Z {"ok":true,"did":"wait","ms":1000}
+2026-09-14T23:47:44.485Z {"ok":true,"did":"shot","file":"shots\\28_head_press_hold.png"}
+2026-09-14T23:47:44.486Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n3 / 10\n›\nTHE HEALING\n\nThe creature's skin is elastic: the moment you let go, the dent unwinds and the squeezed water flows away, fading to zero in a few seconds. Wake any cell past 0.02 MPa, then take your hand off and simply wait. Nothing heals while you keep holding; the healing begins when you let go.\n\nPASSED — you let go, and the body healed itself. it never needed you.\nYOUR HAND\n4300 N\ngentle ≤\nhand strength\nlet go\npressing — 4300 N\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.046 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:47:44.487Z {"ok":true,"did":"up"}
+2026-09-14T23:47:45.092Z {"ok":true,"did":"wait","ms":600}
+2026-09-14T23:47:45.131Z {"ok":true,"did":"shot","file":"shots\\29_head_released.png"}
+2026-09-14T23:47:47.642Z {"ok":true,"did":"wait","ms":2500}
+2026-09-14T23:47:47.643Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n3 / 10\n›\nTHE HEALING\n\nThe creature's skin is elastic: the moment you let go, the dent unwinds and the squeezed water flows away, fading to zero in a few seconds. Wake any cell past 0.02 MPa, then take your hand off and simply wait. Nothing heals while you keep holding; the healing begins when you let go.\n\nPASSED — you let go, and the body healed itself. it never needed you.\nYOUR HAND\n4300 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:47:47.681Z {"ok":true,"did":"shot","file":"shots\\30_head_settled.png"}
+2026-09-14T23:48:20.079Z {"ok":true,"did":"clickText","text":"stand at rest","box":{"x":1113,"y":540.21875,"width":295,"height":36}}
+2026-09-14T23:48:21.588Z {"ok":true,"did":"wait","ms":1500}
+2026-09-14T23:48:21.626Z {"ok":true,"did":"shot","file":"shots\\31_stand_at_rest.png"}
+2026-09-14T23:48:21.627Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n3 / 10\n›\nTHE HEALING\n\nThe creature's skin is elastic: the moment you let go, the dent unwinds and the squeezed water flows away, fading to zero in a few seconds. Wake any cell past 0.02 MPa, then take your hand off and simply wait. Nothing heals while you keep holding; the healing begins when you let go.\n\nPASSED — you let go, and the body healed itself. it never needed you.\nYOUR HAND\n4300 N\ngentle ≤\nhand strength\nlet go\nstanding at rest\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:48:38.280Z {"ok":true,"did":"key","key":"4"}
+2026-09-14T23:48:39.195Z {"ok":true,"did":"wait","ms":900}
+2026-09-14T23:48:39.195Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n4 / 10\n›\nBEND THE KNEE\n\nThe creature listens to more than touches — it listens to intents. A pose is a wish you post: bend the left knee to 40 degrees and the body rearranges its water to match, cells shifting as the joint turns. Set the left knee to 40 and watch the pressures answer.\n\nknee_L → 40°\nPASSED — this one is yours already.\nYOUR HAND\n4300 N\ngentle ≤\nhand strength\nlet go\nstanding at rest\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:48:39.237Z {"ok":true,"did":"shot","file":"shots\\32_lesson4.png"}
+2026-09-14T23:49:10.787Z {"ok":true,"did":"key","key":"5"}
+2026-09-14T23:49:11.702Z {"ok":true,"did":"wait","ms":900}
+2026-09-14T23:49:11.703Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n5 / 10\n›\nTHE WHOLE BODY\n\nOne creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa — in any order, at any moments. Then let everything go, and feel the whole body go quiet together.\n\nthe creature waits.\nYOUR HAND\n4300 N\ngentle ≤\nhand strength\nlet go\nstanding at rest\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:49:11.743Z {"ok":true,"did":"shot","file":"shots\\33_lesson5.png"}
+2026-09-14T23:49:47.394Z {"ok":true,"did":"move","x":575,"y":590}
+2026-09-14T23:49:47.395Z {"ok":true,"did":"down"}
+2026-09-14T23:49:48.897Z {"ok":true,"did":"wait","ms":1500}
+2026-09-14T23:49:48.898Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n5 / 10\n›\nTHE WHOLE BODY\n\nOne creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa — in any order, at any moments. Then let everything go, and feel the whole body go quiet together.\n\nthe creature waits.\nYOUR HAND\n4300 N\ngentle ≤\nhand strength\nlet go\nyou touched only water.\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:49:48.939Z {"ok":true,"did":"shot","file":"shots\\34_shin_press.png"}
+2026-09-14T23:49:48.939Z {"ok":true,"did":"up"}
+2026-09-14T23:49:49.753Z {"ok":true,"did":"wait","ms":800}
+2026-09-14T23:49:49.753Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n5 / 10\n›\nTHE WHOLE BODY\n\nOne creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa — in any order, at any moments. Then let everything go, and feel the whole body go quiet together.\n\nthe creature waits.\nYOUR HAND\n4300 N\ngentle ≤\nhand strength\nlet go\nyou touched only water.\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:50:09.634Z {"ok":true,"did":"move","x":1134,"y":451}
+2026-09-14T23:50:09.635Z {"ok":true,"did":"down"}
+2026-09-14T23:50:09.793Z {"ok":true,"did":"wait","ms":150}
+2026-09-14T23:50:09.874Z {"ok":true,"did":"move","x":1250,"y":451}
+2026-09-14T23:50:09.877Z {"ok":true,"did":"up"}
+2026-09-14T23:50:10.290Z {"ok":true,"did":"wait","ms":400}
+2026-09-14T23:50:10.291Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n5 / 10\n›\nTHE WHOLE BODY\n\nOne creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa — in any order, at any moments. Then let everything go, and feel the whole body go quiet together.\n\nthe creature waits.\nYOUR HAND\n35800 N\ngentle ≤\nhand strength\nlet go\nyou touched only water.\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:50:52.047Z {"ok":true,"did":"move","x":600,"y":320}
+2026-09-14T23:50:52.048Z {"ok":true,"did":"down"}
+2026-09-14T23:50:53.548Z {"ok":true,"did":"wait","ms":1500}
+2026-09-14T23:50:53.549Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n5 / 10\n›\nTHE WHOLE BODY\n\nOne creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa — in any order, at any moments. Then let everything go, and feel the whole body go quiet together.\n\nthe creature waits.\nYOUR HAND\n35800 N\ngentle ≤\nhand strength\nlet go\nyou touched only water.\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:50:53.549Z {"ok":true,"did":"up"}
+2026-09-14T23:50:54.762Z {"ok":true,"did":"wait","ms":1200}
+2026-09-14T23:50:54.762Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n5 / 10\n›\nTHE WHOLE BODY\n\nOne creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa — in any order, at any moments. Then let everything go, and feel the whole body go quiet together.\n\nthe creature waits.\nYOUR HAND\n35800 N\ngentle ≤\nhand strength\nlet go\nyou touched only water.\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:51:24.804Z {"ok":true,"did":"shot","file":"shots\\37_framing_check.png"}
+2026-09-14T23:51:48.279Z {"ok":true,"did":"move","x":555,"y":330}
+2026-09-14T23:51:48.280Z {"ok":true,"did":"down"}
+2026-09-14T23:51:49.781Z {"ok":true,"did":"wait","ms":1500}
+2026-09-14T23:51:49.783Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n5 / 10\n›\nTHE WHOLE BODY\n\nOne creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa — in any order, at any moments. Then let everything go, and feel the whole body go quiet together.\n\nthe creature waits.\nYOUR HAND\n35800 N\ngentle ≤\nhand strength\nlet go\npressing — 35800 N\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.500 m3  P=1.514 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:51:49.823Z {"ok":true,"did":"shot","file":"shots\\38_torso_strong_press.png"}
+2026-09-14T23:51:49.824Z {"ok":true,"did":"up"}
+2026-09-14T23:51:50.831Z {"ok":true,"did":"wait","ms":1000}
+2026-09-14T23:51:50.832Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n5 / 10\n›\nTHE WHOLE BODY\n\nOne creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa — in any order, at any moments. Then let everything go, and feel the whole body go quiet together.\n\nthe creature waits.\nYOUR HAND\n35800 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.505 m3  P=0.618 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:52:15.557Z {"ok":true,"did":"move","x":450,"y":500}
+2026-09-14T23:52:15.558Z {"ok":true,"did":"down"}
+2026-09-14T23:52:15.675Z {"ok":true,"did":"move","x":700,"y":450}
+2026-09-14T23:52:15.675Z {"ok":true,"did":"up"}
+2026-09-14T23:52:16.382Z {"ok":true,"did":"wait","ms":700}
+2026-09-14T23:52:16.427Z {"ok":true,"did":"shot","file":"shots\\39_camera_rotated.png"}
+2026-09-14T23:55:10.561Z {"ok":true,"did":"move","x":545,"y":540}
+2026-09-14T23:55:10.562Z {"ok":true,"did":"down"}
+2026-09-14T23:55:11.776Z {"ok":true,"did":"wait","ms":1200}
+2026-09-14T23:55:11.777Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n5 / 10\n›\nTHE WHOLE BODY\n\nOne creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa — in any order, at any moments. Then let everything go, and feel the whole body go quiet together.\n\nthe creature waits.\nYOUR HAND\n35800 N\ngentle ≤\nhand strength\nlet go\nyou touched only water.\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:55:11.823Z {"ok":true,"did":"shot","file":"shots\\40_shin_press.png"}
+2026-09-14T23:55:11.823Z {"ok":true,"did":"up"}
+2026-09-14T23:55:12.431Z {"ok":true,"did":"wait","ms":600}
+2026-09-14T23:55:12.433Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n5 / 10\n›\nTHE WHOLE BODY\n\nOne creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa — in any order, at any moments. Then let everything go, and feel the whole body go quiet together.\n\nthe creature waits.\nYOUR HAND\n35800 N\ngentle ≤\nhand strength\nlet go\nyou touched only water.\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:55:37.143Z {"ok":true,"did":"move","x":620,"y":650}
+2026-09-14T23:55:37.144Z {"ok":true,"did":"down"}
+2026-09-14T23:55:38.352Z {"ok":true,"did":"wait","ms":1200}
+2026-09-14T23:55:38.353Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n5 / 10\n›\nTHE WHOLE BODY\n\nOne creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa — in any order, at any moments. Then let everything go, and feel the whole body go quiet together.\n\nthe creature waits.\nYOUR HAND\n35800 N\ngentle ≤\nhand strength\nlet go\npressing — 35800 N\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.285 m3  P=25.511 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:55:38.397Z {"ok":true,"did":"shot","file":"shots\\41_foot_press_l5.png"}
+2026-09-14T23:55:38.399Z {"ok":true,"did":"up"}
+2026-09-14T23:55:38.913Z {"ok":true,"did":"wait","ms":500}
+2026-09-14T23:55:38.913Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n5 / 10\n›\nTHE WHOLE BODY\n\nOne creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa — in any order, at any moments. Then let everything go, and feel the whole body go quiet together.\n\nthe creature waits.\nYOUR HAND\n35800 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.285 m3  P=25.511 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:56:01.192Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n5 / 10\n›\nTHE WHOLE BODY\n\nOne creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa — in any order, at any moments. Then let everything go, and feel the whole body go quiet together.\n\nthe creature waits.\nYOUR HAND\n35800 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:56:01.237Z {"ok":true,"did":"shot","file":"shots\\42_l5_state.png"}
+2026-09-14T23:56:25.178Z {"ok":true,"did":"move","x":545,"y":575}
+2026-09-14T23:56:25.179Z {"ok":true,"did":"down"}
+2026-09-14T23:56:26.383Z {"ok":true,"did":"wait","ms":1200}
+2026-09-14T23:56:26.384Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n5 / 10\n›\nTHE WHOLE BODY\n\nOne creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa — in any order, at any moments. Then let everything go, and feel the whole body go quiet together.\n\nthe creature waits.\nYOUR HAND\n35800 N\ngentle ≤\nhand strength\nlet go\nyou touched only water.\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:56:26.384Z {"ok":true,"did":"up"}
+2026-09-14T23:56:26.797Z {"ok":true,"did":"wait","ms":400}
+2026-09-14T23:56:26.816Z {"ok":true,"did":"move","x":610,"y":580}
+2026-09-14T23:56:26.817Z {"ok":true,"did":"down"}
+2026-09-14T23:56:28.025Z {"ok":true,"did":"wait","ms":1200}
+2026-09-14T23:56:28.026Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n5 / 10\n›\nTHE WHOLE BODY\n\nOne creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa — in any order, at any moments. Then let everything go, and feel the whole body go quiet together.\n\nthe creature waits.\nYOUR HAND\n35800 N\ngentle ≤\nhand strength\nlet go\nyou touched only water.\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:56:28.026Z {"ok":true,"did":"up"}
+2026-09-14T23:56:51.127Z {"ok":true,"did":"move","x":750,"y":590}
+2026-09-14T23:56:51.128Z {"ok":true,"did":"down"}
+2026-09-14T23:56:52.334Z {"ok":true,"did":"wait","ms":1200}
+2026-09-14T23:56:52.335Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n5 / 10\n›\nTHE WHOLE BODY\n\nOne creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa — in any order, at any moments. Then let everything go, and feel the whole body go quiet together.\n\nthe creature waits.\nYOUR HAND\n35800 N\ngentle ≤\nhand strength\nlet go\npressing — 35800 N\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.506 m3  P=0.494 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:56:52.381Z {"ok":true,"did":"shot","file":"shots\\43_arm_press.png"}
+2026-09-14T23:56:52.382Z {"ok":true,"did":"up"}
+2026-09-14T23:57:15.876Z {"ok":true,"did":"move","x":470,"y":640}
+2026-09-14T23:57:15.877Z {"ok":true,"did":"down"}
+2026-09-14T23:57:16.886Z {"ok":true,"did":"wait","ms":1000}
+2026-09-14T23:57:16.887Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n5 / 10\n›\nTHE WHOLE BODY\n\nOne creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa — in any order, at any moments. Then let everything go, and feel the whole body go quiet together.\n\nthe creature waits.\nYOUR HAND\n35800 N\ngentle ≤\nhand strength\nlet go\npressing — 35800 N\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.290 m3  P=-17.034 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:57:16.888Z {"ok":true,"did":"up"}
+2026-09-14T23:57:17.291Z {"ok":true,"did":"wait","ms":400}
+2026-09-14T23:57:17.310Z {"ok":true,"did":"move","x":600,"y":575}
+2026-09-14T23:57:17.310Z {"ok":true,"did":"down"}
+2026-09-14T23:57:18.321Z {"ok":true,"did":"wait","ms":1000}
+2026-09-14T23:57:18.322Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n5 / 10\n›\nTHE WHOLE BODY\n\nOne creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa — in any order, at any moments. Then let everything go, and feel the whole body go quiet together.\n\nthe creature waits.\nYOUR HAND\n35800 N\ngentle ≤\nhand strength\nlet go\npressing — 35800 N\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.287 m3  P=4.095 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.690 m3  P=9.285 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:57:18.324Z {"ok":true,"did":"up"}
+2026-09-14T23:57:18.324Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n5 / 10\n›\nTHE WHOLE BODY\n\nOne creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa — in any order, at any moments. Then let everything go, and feel the whole body go quiet together.\n\nthe creature waits.\nYOUR HAND\n35800 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.287 m3  P=4.095 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.690 m3  P=9.285 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:57:41.830Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n5 / 10\n›\nTHE WHOLE BODY\n\nOne creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa — in any order, at any moments. Then let everything go, and feel the whole body go quiet together.\n\nthe creature waits.\nYOUR HAND\n35800 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:57:41.875Z {"ok":true,"did":"shot","file":"shots\\44_l5_after_shin.png"}
+2026-09-14T23:58:06.229Z {"ok":true,"did":"move","x":590,"y":600}
+2026-09-14T23:58:06.229Z {"ok":true,"did":"down"}
+2026-09-14T23:58:07.132Z {"ok":true,"did":"wait","ms":900}
+2026-09-14T23:58:07.133Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n5 / 10\n›\nTHE WHOLE BODY\n\nOne creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa — in any order, at any moments. Then let everything go, and feel the whole body go quiet together.\n\nthe creature waits.\nYOUR HAND\n35800 N\ngentle ≤\nhand strength\nlet go\npressing — 35800 N\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.688 m3  P=14.814 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:58:07.134Z {"ok":true,"did":"up"}
+2026-09-14T23:58:07.443Z {"ok":true,"did":"wait","ms":300}
+2026-09-14T23:58:07.458Z {"ok":true,"did":"move","x":560,"y":615}
+2026-09-14T23:58:07.458Z {"ok":true,"did":"down"}
+2026-09-14T23:58:08.364Z {"ok":true,"did":"wait","ms":900}
+2026-09-14T23:58:08.365Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n5 / 10\n›\nTHE WHOLE BODY\n\nOne creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa — in any order, at any moments. Then let everything go, and feel the whole body go quiet together.\n\nthe creature waits.\nYOUR HAND\n35800 N\ngentle ≤\nhand strength\nlet go\nyou touched only water.\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.692 m3  P=3.066 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:58:08.365Z {"ok":true,"did":"up"}
+2026-09-14T23:58:08.675Z {"ok":true,"did":"wait","ms":300}
+2026-09-14T23:58:08.691Z {"ok":true,"did":"move","x":625,"y":605}
+2026-09-14T23:58:08.692Z {"ok":true,"did":"down"}
+2026-09-14T23:58:09.604Z {"ok":true,"did":"wait","ms":900}
+2026-09-14T23:58:09.604Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n5 / 10\n›\nTHE WHOLE BODY\n\nOne creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa — in any order, at any moments. Then let everything go, and feel the whole body go quiet together.\n\nthe creature waits.\nYOUR HAND\n35800 N\ngentle ≤\nhand strength\nlet go\nyou touched only water.\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.187 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:58:09.605Z {"ok":true,"did":"up"}
+2026-09-14T23:58:34.750Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n5 / 10\n›\nTHE WHOLE BODY\n\nOne creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa — in any order, at any moments. Then let everything go, and feel the whole body go quiet together.\n\nthe creature waits.\nYOUR HAND\n35800 N\ngentle ≤\nhand strength\nlet go\nyou touched only water.\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:58:58.692Z {"ok":true,"did":"move","x":440,"y":670}
+2026-09-14T23:58:58.693Z {"ok":true,"did":"down"}
+2026-09-14T23:58:59.802Z {"ok":true,"did":"wait","ms":1100}
+2026-09-14T23:58:59.803Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n5 / 10\n›\nTHE WHOLE BODY\n\nOne creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa — in any order, at any moments. Then let everything go, and feel the whole body go quiet together.\n\nthe creature waits.\nYOUR HAND\n35800 N\ngentle ≤\nhand strength\nlet go\npressing — 35800 N\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.522 m3  P=-2.255 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-14T23:58:59.846Z {"ok":true,"did":"shot","file":"shots\\45_tail_press.png"}
+2026-09-14T23:58:59.847Z {"ok":true,"did":"up"}
+2026-09-14T23:59:28.066Z {"ok":true,"did":"wait","ms":1500}
+2026-09-14T23:59:28.111Z {"ok":true,"did":"shot","file":"shots\\46_tail_released.png"}
+2026-09-14T23:59:28.128Z {"ok":true,"did":"clickText","text":"save progress","box":{"x":1097,"y":844.078125,"width":327,"height":40}}
+2026-09-14T23:59:29.342Z {"ok":true,"did":"wait","ms":1200}
+2026-09-14T23:59:29.391Z {"ok":true,"did":"shot","file":"shots\\47_save_progress.png"}
+2026-09-14T23:59:29.392Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n5 / 10\n›\nTHE WHOLE BODY\n\nOne creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa — in any order, at any moments. Then let everything go, and feel the whole body go quiet together.\n\nsaved. the world remembers you, wanderer.\nYOUR HAND\n35800 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.509 m3  P=0.000 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-15T00:00:06.203Z {"ok":true,"did":"key","key":"Space"}
+2026-09-15T00:00:07.711Z {"ok":true,"did":"wait","ms":1500}
+2026-09-15T00:00:07.712Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n5 / 10\n›\nTHE WHOLE BODY\n\nOne creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa — in any order, at any moments. Then let everything go, and feel the whole body go quiet together.\n\nsaved. the world remembers you, wanderer.\nYOUR HAND\n35800 N\ngentle ≤\nhand strength\nlet go\npressing — 35800 N (space)\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.500 m3  P=1.519 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-15T00:00:07.713Z {"ok":true,"did":"key","key":"Space"}
+2026-09-15T00:00:08.223Z {"ok":true,"did":"wait","ms":500}
+2026-09-15T00:00:08.224Z {"ok":true,"did":"text","text":"C H I M E R A\ncamera · wanderer\nTHE LESSON\n‹\n5 / 10\n›\nTHE WHOLE BODY\n\nOne creature, many rooms: the body is four sealed compartments, and each keeps its own water. Wake the torso past 0.2 MPa, and wake the shins past 0.1 MPa — in any order, at any moments. Then let everything go, and feel the whole body go quiet together.\n\nsaved. the world remembers you, wanderer.\nYOUR HAND\n35800 N\ngentle ≤\nhand strength\nlet go\nhand open\nstand at rest\n\ndrag = look around · click = touch · wheel = zoom\n\nTHE CREATURE'S BLOOD\ncell 0: V=0.288 m3  P=0.000 MPa\ncell 1: V=12.504 m3  P=0.947 MPa\ncell 2: V=0.693 m3  P=0.000 MPa\ncell 3: V=0.335 m3  P=0.000 MPa\n\nconserve: -0.00 %\nsave progress"}
+2026-09-15T00:00:27.719Z {"ok":true,"did":"shot","file":"shots\\48_final.png"}
+2026-09-15T00:00:27.719Z {"ok":true,"did":"quit"}

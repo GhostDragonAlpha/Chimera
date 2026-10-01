@@ -1,0 +1,20 @@
+{
+  "schema": "chimera.playable_build_record.v1",
+  "integration_branch": "astra/gait-capture",
+  "release_branch": "master",
+  "milestone": "flat_ground_controlled_monkey",
+  "status": "UNQUALIFIED",
+  "source_commit": null,
+  "build_recipe": null,
+  "executable_sha256": null,
+  "body_scene_policy_identity": null,
+  "integrated_features": [],
+  "verified_player_actions": [],
+  "runtime_evidence": [],
+  "remaining_blockers": [
+    "Bind the accepted physics body, scene, policy and mass registration to one build",
+    "Demonstrate player command ingestion producing physical ground movement",
+    "Verify start, stop, speed, heading, camera and focus-loss behavior in that build"
+  ],
+  "rule": "Only source-bound integrated runtime evidence can update this record. Existing component, diagnostic and mocked movement receipts do not qualify a player action. The integration branch is a destination, not proof that it currently builds or plays."
+}

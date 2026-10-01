@@ -1,0 +1,12 @@
+{
+ "sealedSolidShown": true,
+ "garbageHidden": true,
+ "dashesShown": true,
+ "whooshNotFiredForSliver": true,
+ "blood": [
+  "cell 4: V=0.000 m3  P=---  sealed solid (no water)"
+ ],
+ "consoleErrors": [],
+ "consoleErrorCount": 0,
+ "CLEAN": true
+}

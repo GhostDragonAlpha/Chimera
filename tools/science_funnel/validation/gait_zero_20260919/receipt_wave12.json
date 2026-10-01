@@ -1,0 +1,59 @@
+{
+  "lane": "agent/gait-wave12-planted-struts",
+  "date": "2026-09-20",
+  "agent": "GLM 5.3 (wave 12 implementation agent)",
+  "base": "f0efbba7 (origin/buffy/gait-wave11-quadruped)",
+  "rule_0": {
+    "statement": "A 2-DOF analytic closure (law-of-cosines IK, deterministic, branch picked at the settle) holds each forelimb paw at its PLANTED WORLD POSITION against the moving body -- the fore strut is a position-held strut, not a fixed-angle strut; with the paws planted, the front cannot sag and the hind positional-correction budget does not exhaust.",
+    "prediction": "Forepaw gaps (all four fore contact points) stay within the 1e-5 touch band for every tick through tick 426 (two full cycles -- the region where wave 11 lifted and refused at 291); the walk exceeds tick 426 at s=0.45; F-G1/F-G2/F-G3 become MEASURED for the first time; the wave-11 ledger peak (30.202201 J) collapses with the correction storm; the bisect is monotone in s.",
+    "falsifiers": {
+      "run": "Refusal before tick 426 ships the bisect table (s=0.25/0.45/0.55) with the failing joint/phase named from the traces; refusal tick and failing joint must vary MONOTONICALLY with s (higher fore share -> later refusal or pass) or the load-share model is falsified dynamically -- a finding to bank, never tuned away.",
+      "paw_band": "Any forepaw gap outside [0, 1e-5] m (penetration bound -1e-6 m, the poscorr trigger) before tick 426 is RED with the tick and gap named.",
+      "ik_closure": "The analytic solution must reproduce the planted configuration to <1e-12 rad at capture, and the tracked paw error must stay <1e-4 m on unsaturated ticks through the window; saturated-tick counts are reported, not hidden.",
+      "free_fall": "F-G5 free fall stays -9.806650 m/s2 with four legs and no powered contact response; the powered-off body must still fall honestly.",
+      "determinism": "F-G7 remains bit-identical.",
+      "graph": "Graph tests remain green (19 OK expected).",
+      "elbow_ceiling": "The fore-elbow cap never exceeds the doc-derived 3.76 N.m at ANY s; demands measured beyond it are banked as a red finding, never raised away.",
+      "ledger": "The 300-tick diagnostic separates the [ledger10] energy books (brake/damping/impact/friction/constraint) from positional-correction work (per-point poscorr totals); wave 11 peaked 30.202201 J -- the report names whether it collapses with the correction storm or persists (and which channel)."
+    }
+  },
+  "design": {
+    "ik": "Planar 2-DOF closed form: paw reference = midpoint of the forearm's heel/MP paw points (local (0.031,-0.132753), rho=0.136324, beta=-1.341391); L1=0.125 from the elbow joint mount; shoulder world position evaluated each tick from the pelvis transform; law-of-cosines theta1 = delta +/- acos((D^2+L1^2-rho^2)/(2 D L1)), elbow from the closed vector solution q2 = theta2 - q1 - beta; branch (+/-1) captured ONCE at the end of the settle window as the branch closer to the planted configuration, then held. Out-of-reach targets saturate D to the reachable boundary (loud [ik] trace + saturation tick counters in status), never silently vanish.",
+    "capture": "The paw target is the planted spot captured at the END of the 60-tick settle window (post poscorr, pre clock release), held fixed in the world (model) frame. Capture requires power+gait_enabled+contact; reset() clears it.",
+    "fore_share": "New recipe field fore_share (default 0.45), quad-share envelope 0.25<=s<=0.55, bisect at {0.25,0.45,0.55}. The strut's static load line scales through the measured s=0.45 point: shoulder cap 4.229*(s/0.45) N.m and store floor 15x cap; the elbow keeps the doc-derived 3.76 N.m as an absolute CEILING (cap_elbow = 3.76*min(s,0.45)/0.45, floor 15x cap) -- the wave-11 falsifier forbids raising it, and the constructor now enforces cap_elbow<=3.76 in code.",
+    "coordinates": "18 unchanged (6 base + 8 hind + shoulder/elbow per forelimb); the IK only replaces the CONSTANT fore targets (-0.903/0.838) with the closed-form solution of the planted paw position.",
+    "bounds": "Worktree E:\\ChimeraWork\\w12-agent only; receipts append-only (this file is new); master untouched; port 8127 untouched."
+  },
+  "measurements": {
+    "status": "All numbers below were measured AFTER the pre-registered block above was written; the block is unedited. Scene s=0.45 sha256=90766fe1bb24020d3407d30d159d91016f95519e7fa7cd703393b50c56b57c85.",
+    "build": "PASS: cmake configure + Release gait_unit/gait_unit_trace (MSVC).",
+    "scene_shares": "fore_share scales the declared static load line: s=0.25 caps 2.3494/2.0889 N.m, s=0.45 caps 4.229/3.76 N.m (= wave 11 exactly), s=0.55 caps 5.1688/3.76 N.m. The elbow never exceeds the doc-derived 3.76 (enforced by a require in the controller constructor). Seating scan at s=0.45: hind gaps 2e-6 m, fore gaps 7.503e-6/9.666e-6 m (in band); weight 98.439133 N.",
+    "ik_closure": "GREEN, exact: at capture qerr=8.006e-16 (left) / 1.391e-15 rad (right), FK round-trip=1.415e-16 / 5.004e-17 m. The first (world-frame) law-of-cosines formulation was FALSIFIED the same day: the trunk vault lean (entry -0.206 rad) biased the branch and clamped the shoulder (round-trip degraded to 1.31e-2/1.87e-2 m, captured target 3.37e-2 m above the plane); the law is now solved in the PELVIS frame (where q is defined) with the world target mapped through the pelvis rotation transpose -- the lean cancels exactly. Banked implementation law: a planar chain IK must be solved in its parent frame, not the world frame.",
+    "walk_s045": "RED: refused at tick 291 with gait_positional_correction_budget -- the SAME tick and budget as wave 11 -- before the 426 threshold (two full cycles). Refusal state: base y=-0.2966 m, x=0.8323 m; trunk_pitch_HAT at -170.47 deg (target -9.85), torque saturated at its 11.2125 N.m cap; hind heels penetrating -6.746e-4/-8.717e-4 m with slip 4.05 m/s. The planted struts did not save the walk.",
+    "ik_saturation": "The body out-walks the world-fixed plants: the shoulder-paw distance hits the 0.261324 m reach annulus at tick 114 (left) / 122 (right) -- 1.6 gait-phases after the settle; 176 of 291 ticks saturated; tracked paw error grows monotonically to 0.314010 m by the refusal. The saturated strut holds the annulus-boundary pose and plows.",
+    "f_g_fore": "RED (pre-registered paw band): fore gap max=0.042212 m, min=-0.9e-6 m (no poscorr-triggering penetration), first breach tick 0 -- the settle transient seats the paws from 1.736e-4 m (tick 0) into the band by ~tick 10, BEFORE the capture at settle end; and the captured target itself sits 3.37e-2 m above the plane (heel touching, MP pitched up at the leaned settle pose -- the heel/MP midpoint reference), so the post-capture struts hold a spot the pads only graze (heel reactions 10.5-12.2 N, MP 0).",
+    "f_g1": "RED/NOT MEASURED: refusal inside the transient window (same as wave 11).",
+    "f_g2": "RED/NOT MEASURED: refusal inside the transient window (same as wave 11).",
+    "f_g3": "RED/NOT MEASURED: refusal before cycle 5 (same as wave 11).",
+    "f_g4": "hind drives net work/stride negative (brake-booked), batteries positive (78.6/37.9/49.0/7.5 J hind-trunk), no empty events recorded pre-refusal.",
+    "f_g5": "GREEN: free_fall_m_s2=-9.806650 (exact), drop_m=0.544814, stand_fold_deg=5.00842 -- the powered-off four-legged body still falls honestly.",
+    "f_g6": "armed capture_events=0 (walk refused before any hull exit), disarmed captures=0.",
+    "f_g7": "GREEN: streams bit-identical=1.",
+    "f_g8": "RED: worst_moving_ledger_J=30.776609 (wave 11: 30.202201).",
+    "bisect": {
+      "s025": "refused tick 291, gait_positional_correction_budget, ledger 30.832056 J, sat 176, paw_err 0.314618 m (caps 2.3494/2.0889 -- the only share whose caps clipped: its ledger differs).",
+      "s045": "refused tick 291, gait_positional_correction_budget, ledger 30.776609 J, sat 176, paw_err 0.314010 m.",
+      "s055": "refused tick 291, gait_positional_correction_budget, ledger 30.776609 J, sat 176, paw_err 0.314010 m -- BIT-IDENTICAL to s=0.45: the fore shoulder torque (~0.88 N.m at refusal) never reaches either cap (4.229 or 5.169) before the walk dies.",
+      "verdict": "FALSIFIER NOT CONFIRMED -- banked dynamic finding: the refusal tick is FLAT in s (291/291/291) and the failing joint (trunk_pitch_HAT saturated, hind heel poscorr) is identical. Within the quad-share envelope, the load-share drive envelope has NO dynamic effect on the failure: the tick-291 refusal is reach/toppling-driven, not load-share-driven. Non-strict monotonicity holds trivially, but the modulation the load-share model predicts is absent."
+    },
+    "ledger_diagnostic": {
+      "window": "300 ticks requested; the run refuses at 291, so the last full decade tick is 290.",
+      "persistence": "The wave-11 ledger does NOT collapse: balance_error grows from |0.015| J (tick 0) through 0.34 J (tick 80) to 30.776609 J at tick 290 -- it PERSISTS and slightly exceeds wave 11's 30.202201 J.",
+      "channel": "NOT positional-correction work: 13934 poscorr events (10383 walk-phase) book only 0.234062 J total (0.113282 J walk-phase), max per-event dq 6.645e-3 rad -- the correction storm is FREQUENCY, not energy. The named channels are the heat books of the toppling fall: brake_heat_J=38.918 (+38.908 over the run), damping_heat_J=9.587, friction_heat_J=8.879, impact 0.703, constraint work -5.3e-4; kinetic_J=73.605 and gravitational_J=-91.744 -- the body is in accelerating forward free-fall/topple after the struts saturate.",
+      "timing": "The books close (|balance| < 0.35 J) until tick ~100; growth begins exactly at the IK saturation ticks (114/122) and accelerates quadratically -- the saturated planted struts plow, the front loads erratically, and the same hind poscorr storm as wave 11 kills the walk at the same tick."
+    },
+    "graph_tests": "PASS: 19 tests OK (PYTHONPATH=<root>;<root>/tools/creature_graph/tests)."
+  },
+  "pass": false,
+  "honest_summary": "The 2-DOF analytic closure itself is exact (1e-16 m FK round-trip; a world-frame formulation was falsified and replaced by the pelvis-frame law the same day), but the membrane is FALSIFIED at every measured share: the body out-walks the world-fixed paw plants (reach annulus hit at ticks 114/122; 176/291 ticks saturated; paw error 0.314 m), the paw-band falsifier is red (max gap 4.22e-2 m, first breach in the settle transient at tick 0), and the walk refuses at tick 291 -- the same tick, budget, and failing joint as wave 11 -- far short of the predicted 426. F-G1/F-G2/F-G3 remain unmeasured. The bisect is FLAT in fore_share (291/291/291; s=0.55 bit-identical to s=0.45): load share does not modulate this failure -- reach does. The 300-tick diagnostic banks the wave-11 ledger question: the 30.2 J PERSISTS (30.78 J here) and is brake/damping/friction heat of the toppling fall, not positional-correction work (0.23 J total). F-G5 (-9.806650 exactly), F-G7 (bit-identical), and the 19 graph tests stay green. Next membrane: the fore struts must STEP (a fore clock replanting ahead of the walking shoulder) or the planted-spot law must yield reach to the stride -- a fixed world plant cannot survive a translating body."
+}

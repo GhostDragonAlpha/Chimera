@@ -1,0 +1,167 @@
+{
+  "schema": "chimera.grasp_contract_prestudy.v1",
+  "pose": {
+    "shoulder_flexion_deg": 20.0,
+    "elbow_flexion_deg": 20.0,
+    "hand_world_m": [
+      0.1626940956273763,
+      -0.24474953553802828,
+      0.00783599078114629
+    ],
+    "coordinate_order": [
+      "shoulder_flexion",
+      "elbow_flexion"
+    ],
+    "hand_jacobian_m_per_rad": [
+      [
+        0.24674953553802828,
+        0.1626940956273763,
+        0.0
+      ],
+      [
+        0.12928795793978973,
+        0.11994157771166769,
+        0.0
+      ]
+    ]
+  },
+  "qualified_store": {
+    "capacity_J": 2.0,
+    "source": "model.dynamics.coupled_arm battery_initial_J"
+  },
+  "squeeze_force_envelope": [
+    {
+      "closure_m": 0.001,
+      "force_bound_N": 2000.0
+    },
+    {
+      "closure_m": 0.002,
+      "force_bound_N": 1000.0
+    },
+    {
+      "closure_m": 0.003,
+      "force_bound_N": 666.6666666666666
+    },
+    {
+      "closure_m": 0.004,
+      "force_bound_N": 500.0
+    },
+    {
+      "closure_m": 0.005,
+      "force_bound_N": 400.0
+    },
+    {
+      "closure_m": 0.006,
+      "force_bound_N": 333.3333333333333
+    },
+    {
+      "closure_m": 0.007,
+      "force_bound_N": 285.7142857142857
+    },
+    {
+      "closure_m": 0.008,
+      "force_bound_N": 250.0
+    },
+    {
+      "closure_m": 0.009000000000000001,
+      "force_bound_N": 222.2222222222222
+    },
+    {
+      "closure_m": 0.01,
+      "force_bound_N": 200.0
+    }
+  ],
+  "rank": {
+    "opposing_rows": [
+      [
+        0.1626940956273763,
+        0.11994157771166769
+      ],
+      [
+        -0.1626940956273763,
+        -0.11994157771166769
+      ]
+    ],
+    "opposing_row_determinant_max_abs": 8.202080767248333e-18,
+    "opposing_row_rank": 1,
+    "normal_tangent_metric": [
+      [
+        8.725033615629068,
+        7.672244343077311
+      ],
+      [
+        7.672244343077307,
+        8.390227282593136
+      ]
+    ],
+    "normal_tangent_determinant_grid_min": -0.022044054587666947,
+    "normal_tangent_determinant_grid_max": -0.008561141191425332,
+    "minimum_normal_row_norm_grid": 0.025266417419960656,
+    "minimum_normal_row_norm_pose_deg": [
+      -15.187499970112286,
+      19.99999997714667
+    ]
+  },
+  "kkt_example": {
+    "mu": 0.5,
+    "metric": [
+      [
+        8.725033615629068,
+        7.672244343077311
+      ],
+      [
+        7.672244343077307,
+        8.390227282593136
+      ]
+    ],
+    "acceleration_floor": [
+      1.0,
+      0.5
+    ],
+    "multipliers_normal_tangent": [
+      0.3175433095711671,
+      -0.23077680679241352
+    ],
+    "pair_total_normal": 0.6350866191423342,
+    "pair_tangent_magnitude": 0.23077680679241352,
+    "coulomb_limit": 0.3175433095711671,
+    "cone_pass": true,
+    "decouples_iff_metric_off_diagonal_zero": false
+  },
+  "catch_example": {
+    "mu": 0.25,
+    "point_velocity_before_m_per_s": [
+      -0.08,
+      0.03
+    ],
+    "joint_velocity_before_rad_per_s": [
+      1.628437569433136,
+      -2.87587660780797
+    ],
+    "uncapped_total_impulse_normal_tangent": [
+      0.06285075376738988,
+      -0.061047969595848205
+    ],
+    "tangential_cap_N_s": 0.03142537688369494,
+    "capped_total_impulse_normal_tangent": [
+      0.03680251379774767,
+      -0.03142537688369494
+    ],
+    "point_velocity_after_m_per_s": [
+      -4.1190826696963254e-17,
+      0.04869182380044513
+    ],
+    "joint_velocity_after_rad_per_s": [
+      0.6821723917608004,
+      -0.9253290014767852
+    ],
+    "kinetic_before_J": 0.0034297496946333163,
+    "kinetic_after_J": 0.000721189032426258,
+    "dissipation_normal_J": 0.0014721005519099065,
+    "dissipation_tangential_J": 0.001236460110297152,
+    "dissipation_total_J": 0.0027085606622070583,
+    "dissipation_split_closes": true,
+    "symmetric_plane_impulse_split": "each plane receives one half of the total normal impulse; friction uses the anti-parallel row pair and the pair cone"
+  },
+  "scope": "Offline 2-DOF proxy-sphere grasp contract only; no runtime grasp implementation."
+}

@@ -16,7 +16,7 @@ class OntologyPlanChecks(unittest.TestCase):
     def test_complete_deterministic_mapping_and_worker_projection(self):
         before = deepcopy(self.catalog)
         p = project(self.catalog)
-        self.assertEqual((p['task_count'], p['selected_count'], len(p['checkpoints'])), (83, 76, 11))
+        self.assertEqual((p['task_count'], p['selected_count'], len(p['checkpoints'])), (95, 95, 15))
         self.assertEqual(p, project(self.catalog))
         self.assertEqual(before, self.catalog)
         by = {t['id']: t for t in p['tasks']}
@@ -27,7 +27,7 @@ class OntologyPlanChecks(unittest.TestCase):
         for t in worker['tasks']:
             self.assertEqual(t['ontology'], by[t['id']]['ontology'])
             self.assertEqual(t['verification_profile'], by[t['id']]['verification_profile'])
-        self.assertFalse(any(t['selected'] for t in p['tasks'] if t['id'].startswith('B')))
+        self.assertTrue(all(t['selected'] for t in p['tasks'] if t['id'].startswith('B')))
 
     def test_browser_and_worker_share_exact_profiles_and_task_identities(self):
         import importlib.util
@@ -82,7 +82,8 @@ class OntologyPlanChecks(unittest.TestCase):
 
     def test_amendment_reconstructs_previous_scope_without_changing_acceptance(self):
         receipt = load_catalog(HERE / 'SCOPE_AMENDMENT_ONTOLOGY_20260924.json')
-        old = deepcopy(self.catalog)
+        historical = load_catalog(HERE / 'plans/material-first-v2/prior_active_catalog.json')
+        old = deepcopy(historical)
         old.pop('ontology_contract')
         changes = {r['task_id']: r for r in receipt['dependency_changes']}
         for task in old['tasks']:
@@ -91,7 +92,7 @@ class OntologyPlanChecks(unittest.TestCase):
             if task['id'] in changes:
                 task['depends_on'] = changes[task['id']]['before']
         self.assertEqual(content_digest(old), receipt['previous_scope_sha256'])
-        self.assertEqual(content_digest(self.catalog), receipt['scope_sha256'])
+        self.assertEqual(content_digest(historical), receipt['scope_sha256'])
 
 
 if __name__ == '__main__':

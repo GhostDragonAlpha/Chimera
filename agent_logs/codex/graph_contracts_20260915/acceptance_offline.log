@@ -1,0 +1,4 @@
+PIN DRIFT for bodyparts3d::bp3d/lic.html + bp3d/download.html: pinned sha256 7fd311e6646fb82711e9cec857095dde7906ab976e50e89f7a79aaba86306f00 != observed 16befbe937b1e3cdfe9339bf91ed07745f8cd1e560f7b61c80e9a101b53c4b57. The pinned source changed upstream. If this is intended, re-run with --refresh (a human decision) and record the new release in sources.py.
+[build] building the store from authored seeds
+[join] reference objects added: 1349; candidate mappings: 23
+[item 6] reference import idempotency + provenance survival

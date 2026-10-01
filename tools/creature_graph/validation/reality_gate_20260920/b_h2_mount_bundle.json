@@ -1,0 +1,173 @@
+{
+ "allometry": {
+  "expectation_exclusions": [
+   "000875604"
+  ],
+  "per_bone_scale_factors": {
+   "h2_bone_18": 6.249079681541482,
+   "h2_bone_2": 3.814326112931454,
+   "h2_bone_24": 8.820653773994831,
+   "h2_bone_25": 8.809011488728324,
+   "h2_bone_3": 3.793330778253154,
+   "h2_bone_6": 4.424029143483223,
+   "h2_bone_7": 4.401207012074293
+  },
+  "reference_uniform_scale": 3.2314822711250724,
+  "reference_uniform_scale_source": "mount_reconciliation_20260919/reconciliation.json scale_conflict: trunk-anchored rigid scale (HAT/trunk_PCA_span)",
+  "stage": "infant"
+ },
+ "components": [
+  {
+   "id": "h2_bone_2",
+   "kind": "anatomy",
+   "length_mm": 44.94,
+   "mount_scale_factor": 3.814326112931454,
+   "segment_label": "femur",
+   "source": "chimera.ct_bone_identification.v3 rank 2; scale from mount_reconciliation_20260919/reconciliation.json h2_per_bone.generalized",
+   "species": "Macaca mulatta",
+   "stage": {
+    "confirmed": true,
+    "label": "infant",
+    "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+   }
+  },
+  {
+   "id": "h2_bone_3",
+   "kind": "anatomy",
+   "length_mm": 45.16,
+   "mount_scale_factor": 3.793330778253154,
+   "segment_label": "femur",
+   "source": "chimera.ct_bone_identification.v3 rank 3; scale from mount_reconciliation_20260919/reconciliation.json h2_per_bone.generalized",
+   "species": "Macaca mulatta",
+   "stage": {
+    "confirmed": true,
+    "label": "infant",
+    "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+   }
+  },
+  {
+   "id": "h2_bone_6",
+   "kind": "anatomy",
+   "length_mm": 43.14,
+   "mount_scale_factor": 4.424029143483223,
+   "segment_label": "tibia",
+   "source": "chimera.ct_bone_identification.v3 rank 6; scale from mount_reconciliation_20260919/reconciliation.json h2_per_bone.generalized",
+   "species": "Macaca mulatta",
+   "stage": {
+    "confirmed": true,
+    "label": "infant",
+    "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+   }
+  },
+  {
+   "id": "h2_bone_7",
+   "kind": "anatomy",
+   "length_mm": 43.27,
+   "mount_scale_factor": 4.401207012074293,
+   "segment_label": "tibia",
+   "source": "chimera.ct_bone_identification.v3 rank 7; scale from mount_reconciliation_20260919/reconciliation.json h2_per_bone.generalized",
+   "species": "Macaca mulatta",
+   "stage": {
+    "confirmed": true,
+    "label": "infant",
+    "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+   }
+  },
+  {
+   "id": "h2_bone_18",
+   "kind": "anatomy",
+   "length_mm": 12.89,
+   "mount_scale_factor": 6.249079681541482,
+   "segment_label": "foot_class",
+   "source": "chimera.ct_bone_identification.v3 rank 18; scale from mount_reconciliation_20260919/reconciliation.json h2_per_bone.generalized",
+   "species": "Macaca mulatta",
+   "stage": {
+    "confirmed": true,
+    "label": "infant",
+    "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+   }
+  },
+  {
+   "id": "h2_bone_24",
+   "kind": "anatomy",
+   "length_mm": 8.97,
+   "mount_scale_factor": 8.820653773994831,
+   "segment_label": "foot_class",
+   "source": "chimera.ct_bone_identification.v3 rank 24; scale from mount_reconciliation_20260919/reconciliation.json h2_per_bone.generalized",
+   "species": "Macaca mulatta",
+   "stage": {
+    "confirmed": true,
+    "label": "infant",
+    "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+   }
+  },
+  {
+   "id": "h2_bone_25",
+   "kind": "anatomy",
+   "length_mm": 8.98,
+   "mount_scale_factor": 8.809011488728324,
+   "segment_label": "foot_class",
+   "source": "chimera.ct_bone_identification.v3 rank 25; scale from mount_reconciliation_20260919/reconciliation.json h2_per_bone.generalized",
+   "species": "Macaca mulatta",
+   "stage": {
+    "confirmed": true,
+    "label": "infant",
+    "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+   }
+  },
+  {
+   "id": "h2_scaffold_shank",
+   "kind": "scaffold_segment",
+   "length_m": 0.182,
+   "segment_label": "shank",
+   "source": "mount_reconciliation_20260919/reconciliation.json h2_per_bone.scaffold (Table-1 derived)",
+   "species": "Macaca fuscata",
+   "stage": {
+    "confirmed": true,
+    "label": "adult",
+    "provenance": "Oku, Ide, Ogihara et al. 2021, Communications Biology PMC7940622: adult female Japanese macaque musculoskeletal model, Table-1 (tools/science_funnel/validation/gait_controller_20260918/derived_numbers.json body_model)"
+   }
+  },
+  {
+   "id": "h2_scaffold_tarsal",
+   "kind": "scaffold_segment",
+   "length_m": 0.074,
+   "segment_label": "tarsal",
+   "source": "mount_reconciliation_20260919/reconciliation.json h2_per_bone.scaffold (Table-1 derived)",
+   "species": "Macaca fuscata",
+   "stage": {
+    "confirmed": true,
+    "label": "adult",
+    "provenance": "Oku, Ide, Ogihara et al. 2021, Communications Biology PMC7940622: adult female Japanese macaque musculoskeletal model, Table-1 (tools/science_funnel/validation/gait_controller_20260918/derived_numbers.json body_model)"
+   }
+  },
+  {
+   "id": "h2_scaffold_thigh",
+   "kind": "scaffold_segment",
+   "length_m": 0.163,
+   "segment_label": "thigh",
+   "source": "mount_reconciliation_20260919/reconciliation.json h2_per_bone.scaffold (Table-1 derived)",
+   "species": "Macaca fuscata",
+   "stage": {
+    "confirmed": true,
+    "label": "adult",
+    "provenance": "Oku, Ide, Ogihara et al. 2021, Communications Biology PMC7940622: adult female Japanese macaque musculoskeletal model, Table-1 (tools/science_funnel/validation/gait_controller_20260918/derived_numbers.json body_model)"
+   }
+  }
+ ],
+ "construction_provenance": "explicit developer construction (agent/mount-reconciliation lane): per-bone scale = adult Table-1 segment length / infant joint span; classified FANTASY would be the honest verdict of the reconciliation itself",
+ "description": "infant CT bones per-bone-scaled onto the adult Table-1 standing scaffold (the mounting lane's H2, the operator's 'adult arms on a baby' case, already measured)",
+ "fantasy_manifest_acknowledged": true,
+ "name": "h2_per_bone_scaffold_mounting",
+ "schema": "chimera.creature_bundle.v1",
+ "species": [
+  {
+   "name": "Macaca mulatta",
+   "provenance": "the CT bones (specimen 000875604)"
+  },
+  {
+   "name": "Macaca fuscata",
+   "provenance": "the Table-1 scaffold (Oku/Ogihara 2021 adult female Japanese macaque model)"
+  }
+ ]
+}

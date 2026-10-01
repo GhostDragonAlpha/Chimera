@@ -1,0 +1,1586 @@
+{
+ "schema": "chimera.mount_reconciliation.v1",
+ "lane": "agent/mount-reconciliation (base buffy/ct-skeleton-visual-20260919 @ 0f9e3dd0)",
+ "membrane": {
+  "statement": "the measured chains discriminate the mountings: each hypothesis implies testable predictions about where the identified bones sit relative to the scaffold's joint centers",
+  "prediction": "one mounting predicts the chain geometry within tolerance and the other does not",
+  "falsifier": "both mountings' implied assembly-scale chain-adjacent centroid distances vs the walker Table-1 segment lengths; 15% tolerance; both-or-neither is the honest verdict"
+ },
+ "inputs": {
+  "walker_table1_sha256": "013810f87a6ca7c1e01916ef7a5454e61e8d0e88f8d6a589fbfdd1514017a173",
+  "segments_Table1_m": {
+   "HAT": 0.482,
+   "thigh": 0.163,
+   "shank": 0.182,
+   "foot": 0.074,
+   "phalanges": 0.045
+  },
+  "arbiter": {
+   "source": "committed copy in this validation dir (sha256 below; source branch origin/buffy/bone-id-transfer-20260919)",
+   "sha256": "1d84854fd1770ed6548221ee803c949a487d9005133548eb162a5c64d4161d33",
+   "branch": "origin/buffy/bone-id-transfer-20260919",
+   "v2_adjacency_needed": false,
+   "reason": "v3 carries touching_edges chains for both specimens"
+  },
+  "h1_module": {
+   "branch": "origin/buffy/ct-skeleton-visual-20260919",
+   "committed_head": "0f9e3dd0"
+  },
+  "h2_module": {
+   "branch": "origin/codex/macaque-bones-lane-20260919",
+   "macaque_skeleton_scene_sha256": "e67f1b1fd70eba616763f903a1fe012e20805c9e042fa4218dcc92143bc2a0b0",
+   "common_sha256": "ee4af6e15bff8f941c9b05ef7ce8ac171f6f20ce5673ef90a9f1adaa47bfb87c"
+  }
+ },
+ "h1_rigid": {
+  "description": "whole skeleton under ONE rigid transform: uniform scale s = HAT_length/trunk_PCA_span, one rotation, trunk midpoint at the free-root seat height",
+  "scale_scene_per_mm": 3.2314822711250724,
+  "trunk_span_mm": 149.158,
+  "chain_spans_are": "FREE predictions (scale anchored on the trunk; nothing fitted to limb segments); orientation-free",
+  "gated_links": [
+   {
+    "pair": [
+     2,
+     6
+    ],
+    "labels": [
+     "femur",
+     "tibia"
+    ],
+    "v3_gap_mm": 2.91,
+    "expectation_m": 0.1725,
+    "implied_m": 0.049425,
+    "err_frac": 0.7135,
+    "within_15pct": false
+   },
+   {
+    "pair": [
+     6,
+     25
+    ],
+    "labels": [
+     "tibia",
+     "foot_class"
+    ],
+    "v3_gap_mm": 0.66,
+    "expectation_m": 0.128,
+    "implied_m": 0.090786,
+    "err_frac": 0.2907,
+    "within_15pct": false
+   },
+   {
+    "pair": [
+     3,
+     7
+    ],
+    "labels": [
+     "femur",
+     "tibia"
+    ],
+    "v3_gap_mm": 2.83,
+    "expectation_m": 0.1725,
+    "implied_m": 0.042695,
+    "err_frac": 0.7525,
+    "within_15pct": false
+   },
+   {
+    "pair": [
+     7,
+     18
+    ],
+    "labels": [
+     "tibia",
+     "foot_class"
+    ],
+    "v3_gap_mm": 1.79,
+    "expectation_m": 0.128,
+    "implied_m": 0.083869,
+    "err_frac": 0.3448,
+    "within_15pct": false
+   },
+   {
+    "pair": [
+     7,
+     24
+    ],
+    "labels": [
+     "tibia",
+     "foot_class"
+    ],
+    "v3_gap_mm": 0.86,
+    "expectation_m": 0.128,
+    "implied_m": 0.090222,
+    "err_frac": 0.2951,
+    "within_15pct": false
+   }
+  ],
+  "all_evaluated_edges": [
+   {
+    "pair": [
+     2,
+     6
+    ],
+    "labels": [
+     "femur",
+     "tibia"
+    ],
+    "v3_gap_mm": 2.91,
+    "expectation_m": 0.1725,
+    "implied_m": 0.049425,
+    "err_frac": 0.7135,
+    "within_15pct": false
+   },
+   {
+    "pair": [
+     6,
+     25
+    ],
+    "labels": [
+     "tibia",
+     "foot_class"
+    ],
+    "v3_gap_mm": 0.66,
+    "expectation_m": 0.128,
+    "implied_m": 0.090786,
+    "err_frac": 0.2907,
+    "within_15pct": false
+   },
+   {
+    "pair": [
+     3,
+     7
+    ],
+    "labels": [
+     "femur",
+     "tibia"
+    ],
+    "v3_gap_mm": 2.83,
+    "expectation_m": 0.1725,
+    "implied_m": 0.042695,
+    "err_frac": 0.7525,
+    "within_15pct": false
+   },
+   {
+    "pair": [
+     7,
+     18
+    ],
+    "labels": [
+     "tibia",
+     "foot_class"
+    ],
+    "v3_gap_mm": 1.79,
+    "expectation_m": 0.128,
+    "implied_m": 0.083869,
+    "err_frac": 0.3448,
+    "within_15pct": false
+   },
+   {
+    "pair": [
+     7,
+     24
+    ],
+    "labels": [
+     "tibia",
+     "foot_class"
+    ],
+    "v3_gap_mm": 0.86,
+    "expectation_m": 0.128,
+    "implied_m": 0.090222,
+    "err_frac": 0.2951,
+    "within_15pct": false
+   }
+  ],
+  "satisfies_falsifier": false
+ },
+ "h2_per_bone": {
+  "description": "per-bone mounting on the stage-E standing scaffold (hip-local frame, y down); committed compiler mounts ONLY the femur pair, scale = 0.163/joint_span, raw PCA-sign orientation as committed",
+  "scaffold": {
+   "segments_m": {
+    "thigh": 0.163,
+    "shank": 0.182,
+    "tarsal": 0.074
+   },
+   "angles_deg": {
+    "phi_thigh": 18.83,
+    "phi_shank": -30.79,
+    "foot_pitch": 15.75
+   },
+   "joints_m": {
+    "hip": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "knee": [
+     0.05261009441442112,
+     -0.15427630396695954,
+     0.0
+    ],
+    "ankle": [
+     -0.04055442071818298,
+     -0.31062326786490924,
+     0.0
+    ],
+    "mp": [
+     0.030667266779386915,
+     -0.33070986115492473,
+     0.0
+    ]
+   }
+  },
+  "as_committed": {
+   "gated_links": [
+    {
+     "chain_kind": "hind",
+     "pair": [
+      2,
+      6
+     ],
+     "labels": [
+      "femur",
+      "tibia"
+     ],
+     "v3_gap_mm": 2.91,
+     "expectation_m": 0.1725,
+     "implied_m": null,
+     "note": "bone 6 (tibia) is role 'undetermined' in the committed compiler: no assembly-scale placement exists"
+    },
+    {
+     "chain_kind": "hind",
+     "pair": [
+      6,
+      25
+     ],
+     "labels": [
+      "tibia",
+      "foot_class"
+     ],
+     "v3_gap_mm": 0.66,
+     "expectation_m": 0.128,
+     "implied_m": null,
+     "note": "neither bone is mounted by the committed compiler (role 'undetermined')"
+    },
+    {
+     "chain_kind": "hind",
+     "pair": [
+      3,
+      7
+     ],
+     "labels": [
+      "femur",
+      "tibia"
+     ],
+     "v3_gap_mm": 2.83,
+     "expectation_m": 0.1725,
+     "implied_m": null,
+     "note": "bone 7 (tibia) is role 'undetermined' in the committed compiler: no assembly-scale placement exists"
+    },
+    {
+     "chain_kind": "hind",
+     "pair": [
+      7,
+      18
+     ],
+     "labels": [
+      "tibia",
+      "foot_class"
+     ],
+     "v3_gap_mm": 1.79,
+     "expectation_m": 0.128,
+     "implied_m": null,
+     "note": "neither bone is mounted by the committed compiler (role 'undetermined')"
+    },
+    {
+     "chain_kind": "hind",
+     "pair": [
+      7,
+      24
+     ],
+     "labels": [
+      "tibia",
+      "foot_class"
+     ],
+     "v3_gap_mm": 0.86,
+     "expectation_m": 0.128,
+     "implied_m": null,
+     "note": "neither bone is mounted by the committed compiler (role 'undetermined')"
+    }
+   ],
+   "femur_mounts": {
+    "2": {
+     "scale": 3.814326112931453,
+     "joint_span_mm": 42.73362978781286,
+     "orientation": "raw PCA sign (committed code path)",
+     "centroid_scene_m": [
+      0.030014,
+      -0.080776,
+      0.003469
+     ],
+     "raw_ct_span_vs_thigh_pct": -73.78
+    },
+    "3": {
+     "scale": 3.793330778253153,
+     "joint_span_mm": 42.970151966305,
+     "orientation": "raw PCA sign (committed code path)",
+     "centroid_scene_m": [
+      0.030008,
+      -0.083254,
+      -0.004058
+     ],
+     "raw_ct_span_vs_thigh_pct": -73.64
+    }
+   },
+   "assessment": "the femur joint span equals THIGH_M by CONSTRUCTION (fitted, not predicted); all (tibia, foot) links and all forelimb links are UNPREDICTED (committed role 'undetermined'); the committed orientation (raw PCA sign) is unvalidated by the committed falsifiers (seating is 0 by construction either way)",
+   "satisfies_falsifier": null
+  },
+  "generalized": {
+   "description": "the same committed rule (mount_femur transform) on every segment-labeled bone, chain-adjacency orientation",
+   "gated_links": [
+    {
+     "chain_kind": "hind",
+     "pair": [
+      2,
+      6
+     ],
+     "labels": [
+      "femur",
+      "tibia"
+     ],
+     "v3_gap_mm": 2.91,
+     "expectation_m": 0.1725,
+     "implied_m": 0.150326,
+     "err_frac": 0.1285,
+     "within_15pct": true
+    },
+    {
+     "chain_kind": "hind",
+     "pair": [
+      6,
+      25
+     ],
+     "labels": [
+      "tibia",
+      "foot_class"
+     ],
+     "v3_gap_mm": 0.66,
+     "expectation_m": 0.128,
+     "foot_candidate": 25,
+     "implied_m": 0.093065,
+     "err_frac": 0.2729,
+     "within_15pct": false
+    },
+    {
+     "chain_kind": "hind",
+     "pair": [
+      3,
+      7
+     ],
+     "labels": [
+      "femur",
+      "tibia"
+     ],
+     "v3_gap_mm": 2.83,
+     "expectation_m": 0.1725,
+     "implied_m": 0.162747,
+     "err_frac": 0.0565,
+     "within_15pct": true
+    },
+    {
+     "chain_kind": "hind",
+     "pair": [
+      7,
+      18
+     ],
+     "labels": [
+      "tibia",
+      "foot_class"
+     ],
+     "v3_gap_mm": 1.79,
+     "expectation_m": 0.128,
+     "foot_candidate": 18,
+     "implied_m": 0.08629,
+     "err_frac": 0.3259,
+     "within_15pct": false
+    },
+    {
+     "chain_kind": "hind",
+     "pair": [
+      7,
+      24
+     ],
+     "labels": [
+      "tibia",
+      "foot_class"
+     ],
+     "v3_gap_mm": 0.86,
+     "expectation_m": 0.128,
+     "foot_candidate": 24,
+     "implied_m": 0.088313,
+     "err_frac": 0.3101,
+     "within_15pct": false
+    }
+   ],
+   "all_evaluated_edges": [
+    {
+     "chain_kind": "hind",
+     "pair": [
+      2,
+      6
+     ],
+     "labels": [
+      "femur",
+      "tibia"
+     ],
+     "v3_gap_mm": 2.91,
+     "expectation_m": 0.1725,
+     "implied_m": 0.150326,
+     "err_frac": 0.1285,
+     "within_15pct": true
+    },
+    {
+     "chain_kind": "hind",
+     "pair": [
+      6,
+      25
+     ],
+     "labels": [
+      "tibia",
+      "foot_class"
+     ],
+     "v3_gap_mm": 0.66,
+     "expectation_m": 0.128,
+     "foot_candidate": 25,
+     "implied_m": 0.093065,
+     "err_frac": 0.2729,
+     "within_15pct": false
+    },
+    {
+     "chain_kind": "hind",
+     "pair": [
+      3,
+      7
+     ],
+     "labels": [
+      "femur",
+      "tibia"
+     ],
+     "v3_gap_mm": 2.83,
+     "expectation_m": 0.1725,
+     "implied_m": 0.162747,
+     "err_frac": 0.0565,
+     "within_15pct": true
+    },
+    {
+     "chain_kind": "hind",
+     "pair": [
+      7,
+      18
+     ],
+     "labels": [
+      "tibia",
+      "foot_class"
+     ],
+     "v3_gap_mm": 1.79,
+     "expectation_m": 0.128,
+     "foot_candidate": 18,
+     "implied_m": 0.08629,
+     "err_frac": 0.3259,
+     "within_15pct": false
+    },
+    {
+     "chain_kind": "hind",
+     "pair": [
+      7,
+      24
+     ],
+     "labels": [
+      "tibia",
+      "foot_class"
+     ],
+     "v3_gap_mm": 0.86,
+     "expectation_m": 0.128,
+     "foot_candidate": 24,
+     "implied_m": 0.088313,
+     "err_frac": 0.3101,
+     "within_15pct": false
+    }
+   ],
+   "femur_mounts": {
+    "2": {
+     "scale": 3.814326112931454,
+     "joint_span_mm": 42.73362978781286,
+     "centroid_scene": [
+      0.030014495928781526,
+      -0.08077646123337982,
+      0.00346943877260998
+     ]
+    },
+    "3": {
+     "scale": 3.793330778253154,
+     "joint_span_mm": 42.97015196630499,
+     "centroid_scene": [
+      0.021059259031475992,
+      -0.07154854428927886,
+      -0.0029699790062801316
+     ]
+    }
+   },
+   "tibia_mounts": {
+    "6": {
+     "scale": 4.424029143483223,
+     "joint_span_mm": 41.13896949980393,
+     "centroid_scene": [
+      0.013232021586040116,
+      -0.2300799856858537,
+      -0.001504321811665476
+     ]
+    },
+    "7": {
+     "scale": 4.401207012074293,
+     "joint_span_mm": 41.35229256444887,
+     "centroid_scene": [
+      0.011690255270975778,
+      -0.23400842902252045,
+      -0.0005759484119410318
+     ]
+    }
+   },
+   "foot_mounts": {
+    "25": {
+     "scale": 8.809011488728324,
+     "joint_span_mm": 8.400488533212561,
+     "centroid_scene": [
+      -0.007018609237452541,
+      -0.3209145553978052,
+      -0.0017953597072482889
+     ],
+     "note": "a single foot_class bone mounted alone claims the WHOLE foot segment (rule granularity)"
+    },
+    "18": {
+     "scale": 6.249079681541482,
+     "joint_span_mm": 11.841743708050489,
+     "centroid_scene": [
+      -0.0029585579119972916,
+      -0.3190085656607125,
+      -0.0031097980623744147
+     ],
+     "note": "a single foot_class bone mounted alone claims the WHOLE foot segment (rule granularity)"
+    },
+    "24": {
+     "scale": 8.820653773994831,
+     "joint_span_mm": 8.389400819491158,
+     "centroid_scene": [
+      -0.006488930607738937,
+      -0.3203986814395079,
+      0.0017585687139347733
+     ],
+     "note": "a single foot_class bone mounted alone claims the WHOLE foot segment (rule granularity)"
+    }
+   },
+   "satisfies_falsifier": false,
+   "honesty_notes": [
+    "the femur/tibia JOINT SPANS match Table-1 by construction (scale = segment_length/joint_span): the falsifier's content for H2-generalized is only the centroid GEOMETRY (where each bone's centroid lands between its joints), not the spans themselves",
+    "each foot_class bone mounted alone claims the WHOLE foot segment (the rule's granularity is per segment, not per phalanx)",
+    "the committed PCA orientation was replaced by chain-adjacency orientation (measured from the arbiter's touching edges): see orientation_check -- in a curled specimen the raw PCA sign and trunk proximity both misplace the shared-joint caps"
+   ]
+  }
+ },
+ "orientation_check": [
+  {
+   "rank": 2,
+   "label": "femur",
+   "trunk_dist_raw_head_mm": 106.06,
+   "trunk_dist_raw_condyle_mm": 87.22,
+   "orientation_votes": [
+    {
+     "partner": 6,
+     "partner_label": "tibia",
+     "vote": "head_is_cap_farther_partner",
+     "measured_near_cap": "condyle",
+     "margin_mm": 2.8,
+     "implies_raw_head_is_proximal": true
+    }
+   ],
+   "curl_observations": [],
+   "orientation_resolved": true,
+   "mounted_with": "chain_adjacency (proximal side)"
+  },
+  {
+   "rank": 3,
+   "label": "femur",
+   "trunk_dist_raw_head_mm": 107.46,
+   "trunk_dist_raw_condyle_mm": 71.78,
+   "orientation_votes": [
+    {
+     "partner": 7,
+     "partner_label": "tibia",
+     "vote": "head_is_cap_farther_partner",
+     "measured_near_cap": "head",
+     "margin_mm": 1.11,
+     "implies_raw_head_is_proximal": false
+    }
+   ],
+   "curl_observations": [],
+   "orientation_resolved": true,
+   "mounted_with": "chain_adjacency (proximal side)"
+  },
+  {
+   "rank": 6,
+   "label": "tibia",
+   "trunk_dist_raw_head_mm": 121.69,
+   "trunk_dist_raw_condyle_mm": 95.21,
+   "orientation_votes": [
+    {
+     "partner": 2,
+     "partner_label": "femur",
+     "vote": "head_is_cap_nearer_partner",
+     "measured_near_cap": "condyle",
+     "margin_mm": 8.82,
+     "implies_raw_head_is_proximal": false
+    }
+   ],
+   "curl_observations": [
+    {
+     "partner": 25,
+     "partner_label": "foot_class",
+     "measured_near_cap": "head",
+     "why": "distal-side touch recorded as curl evidence; it does not vote on orientation (the curled pose folds foot bones against the knee side)"
+    }
+   ],
+   "orientation_resolved": true,
+   "mounted_with": "chain_adjacency (proximal side)"
+  },
+  {
+   "rank": 7,
+   "label": "tibia",
+   "trunk_dist_raw_head_mm": 112.87,
+   "trunk_dist_raw_condyle_mm": 77.17,
+   "orientation_votes": [
+    {
+     "partner": 3,
+     "partner_label": "femur",
+     "vote": "head_is_cap_nearer_partner",
+     "measured_near_cap": "condyle",
+     "margin_mm": 9.05,
+     "implies_raw_head_is_proximal": false
+    }
+   ],
+   "curl_observations": [
+    {
+     "partner": 18,
+     "partner_label": "foot_class",
+     "measured_near_cap": "condyle",
+     "why": "distal-side touch recorded as curl evidence; it does not vote on orientation (the curled pose folds foot bones against the knee side)"
+    },
+    {
+     "partner": 24,
+     "partner_label": "foot_class",
+     "measured_near_cap": "head",
+     "why": "distal-side touch recorded as curl evidence; it does not vote on orientation (the curled pose folds foot bones against the knee side)"
+    }
+   ],
+   "orientation_resolved": true,
+   "mounted_with": "chain_adjacency (proximal side)"
+  },
+  {
+   "rank": 15,
+   "label": "foot_class",
+   "trunk_dist_raw_head_mm": 117.34,
+   "trunk_dist_raw_condyle_mm": 105.48,
+   "orientation_votes": [],
+   "curl_observations": [],
+   "orientation_resolved": false,
+   "mounted_with": "chain_adjacency (proximal side)"
+  },
+  {
+   "rank": 17,
+   "label": "foot_class",
+   "trunk_dist_raw_head_mm": 117.86,
+   "trunk_dist_raw_condyle_mm": 106.22,
+   "orientation_votes": [],
+   "curl_observations": [],
+   "orientation_resolved": false,
+   "mounted_with": "chain_adjacency (proximal side)"
+  },
+  {
+   "rank": 18,
+   "label": "foot_class",
+   "trunk_dist_raw_head_mm": 78.18,
+   "trunk_dist_raw_condyle_mm": 69.72,
+   "orientation_votes": [
+    {
+     "partner": 7,
+     "partner_label": "tibia",
+     "vote": "head_is_cap_nearer_partner",
+     "measured_near_cap": "head",
+     "margin_mm": 7.38,
+     "implies_raw_head_is_proximal": true
+    }
+   ],
+   "curl_observations": [],
+   "orientation_resolved": true,
+   "mounted_with": "chain_adjacency (proximal side)"
+  },
+  {
+   "rank": 22,
+   "label": "foot_class",
+   "trunk_dist_raw_head_mm": 132.81,
+   "trunk_dist_raw_condyle_mm": 124.06,
+   "orientation_votes": [],
+   "curl_observations": [],
+   "orientation_resolved": false,
+   "mounted_with": "chain_adjacency (proximal side)"
+  },
+  {
+   "rank": 23,
+   "label": "foot_class",
+   "trunk_dist_raw_head_mm": 125.22,
+   "trunk_dist_raw_condyle_mm": 118.03,
+   "orientation_votes": [],
+   "curl_observations": [],
+   "orientation_resolved": false,
+   "mounted_with": "chain_adjacency (proximal side)"
+  },
+  {
+   "rank": 24,
+   "label": "foot_class",
+   "trunk_dist_raw_head_mm": 122.69,
+   "trunk_dist_raw_condyle_mm": 117.09,
+   "orientation_votes": [
+    {
+     "partner": 7,
+     "partner_label": "tibia",
+     "vote": "head_is_cap_nearer_partner",
+     "measured_near_cap": "condyle",
+     "margin_mm": 5.87,
+     "implies_raw_head_is_proximal": false
+    }
+   ],
+   "curl_observations": [],
+   "orientation_resolved": true,
+   "mounted_with": "chain_adjacency (proximal side)"
+  },
+  {
+   "rank": 25,
+   "label": "foot_class",
+   "trunk_dist_raw_head_mm": 131.34,
+   "trunk_dist_raw_condyle_mm": 124.27,
+   "orientation_votes": [
+    {
+     "partner": 6,
+     "partner_label": "tibia",
+     "vote": "head_is_cap_nearer_partner",
+     "measured_near_cap": "condyle",
+     "margin_mm": 4.23,
+     "implies_raw_head_is_proximal": false
+    }
+   ],
+   "curl_observations": [],
+   "orientation_resolved": true,
+   "mounted_with": "chain_adjacency (proximal side)"
+  }
+ ],
+ "frame_cross_check": {
+  "max_deviation_mm": 0.0069,
+  "per_bone": [
+   {
+    "rank": 2,
+    "label": "femur",
+    "preview_centroid_mm": [
+     69.537,
+     22.386,
+     41.733
+    ],
+    "v3_centroid_mm": [
+     69.54,
+     22.39,
+     41.73
+    ],
+    "deviation_mm": 0.0061
+   },
+   {
+    "rank": 3,
+    "label": "femur",
+    "preview_centroid_mm": [
+     76.285,
+     31.292,
+     17.432
+    ],
+    "v3_centroid_mm": [
+     76.28,
+     31.29,
+     17.43
+    ],
+    "deviation_mm": 0.0058
+   },
+   {
+    "rank": 4,
+    "label": "humerus",
+    "preview_centroid_mm": [
+     137.446,
+     30.423,
+     49.87
+    ],
+    "v3_centroid_mm": [
+     137.45,
+     30.42,
+     49.87
+    ],
+    "deviation_mm": 0.0051
+   },
+   {
+    "rank": 5,
+    "label": "humerus",
+    "preview_centroid_mm": [
+     142.255,
+     22.766,
+     12.93
+    ],
+    "v3_centroid_mm": [
+     142.26,
+     22.77,
+     12.93
+    ],
+    "deviation_mm": 0.0061
+   },
+   {
+    "rank": 6,
+    "label": "tibia",
+    "preview_centroid_mm": [
+     56.648,
+     14.185,
+     40.996
+    ],
+    "v3_centroid_mm": [
+     56.65,
+     14.19,
+     41.0
+    ],
+    "deviation_mm": 0.0068
+   },
+   {
+    "rank": 7,
+    "label": "tibia",
+    "preview_centroid_mm": [
+     68.825,
+     21.319,
+     21.841
+    ],
+    "v3_centroid_mm": [
+     68.82,
+     21.32,
+     21.84
+    ],
+    "deviation_mm": 0.0051
+   },
+   {
+    "rank": 8,
+    "label": "hand_class",
+    "preview_centroid_mm": [
+     148.728,
+     26.117,
+     43.498
+    ],
+    "v3_centroid_mm": [
+     148.73,
+     26.12,
+     43.5
+    ],
+    "deviation_mm": 0.004
+   },
+   {
+    "rank": 9,
+    "label": "hand_class",
+    "preview_centroid_mm": [
+     150.601,
+     18.565,
+     20.706
+    ],
+    "v3_centroid_mm": [
+     150.6,
+     18.56,
+     20.71
+    ],
+    "deviation_mm": 0.0065
+   },
+   {
+    "rank": 10,
+    "label": "forearm_class",
+    "preview_centroid_mm": [
+     110.666,
+     29.768,
+     50.478
+    ],
+    "v3_centroid_mm": [
+     110.67,
+     29.77,
+     50.48
+    ],
+    "deviation_mm": 0.005
+   },
+   {
+    "rank": 11,
+    "label": "forearm_class",
+    "preview_centroid_mm": [
+     118.995,
+     23.657,
+     13.362
+    ],
+    "v3_centroid_mm": [
+     119.0,
+     23.66,
+     13.36
+    ],
+    "deviation_mm": 0.0059
+   },
+   {
+    "rank": 12,
+    "label": "forearm_class",
+    "preview_centroid_mm": [
+     112.46,
+     38.76,
+     48.203
+    ],
+    "v3_centroid_mm": [
+     112.46,
+     38.76,
+     48.2
+    ],
+    "deviation_mm": 0.0029
+   },
+   {
+    "rank": 13,
+    "label": "forearm_class",
+    "preview_centroid_mm": [
+     121.139,
+     33.481,
+     11.903
+    ],
+    "v3_centroid_mm": [
+     121.14,
+     33.48,
+     11.9
+    ],
+    "deviation_mm": 0.0034
+   },
+   {
+    "rank": 15,
+    "label": "foot_class",
+    "preview_centroid_mm": [
+     52.205,
+     43.95,
+     38.956
+    ],
+    "v3_centroid_mm": [
+     52.21,
+     43.95,
+     38.96
+    ],
+    "deviation_mm": 0.0064
+   },
+   {
+    "rank": 17,
+    "label": "foot_class",
+    "preview_centroid_mm": [
+     51.242,
+     43.754,
+     27.965
+    ],
+    "v3_centroid_mm": [
+     51.24,
+     43.75,
+     27.96
+    ],
+    "deviation_mm": 0.0065
+   },
+   {
+    "rank": 18,
+    "label": "foot_class",
+    "preview_centroid_mm": [
+     91.843,
+     10.073,
+     25.999
+    ],
+    "v3_centroid_mm": [
+     91.84,
+     10.07,
+     26.0
+    ],
+    "deviation_mm": 0.004
+   },
+   {
+    "rank": 20,
+    "label": "fibula",
+    "preview_centroid_mm": [
+     55.636,
+     18.028,
+     45.217
+    ],
+    "v3_centroid_mm": [
+     55.64,
+     18.03,
+     45.22
+    ],
+    "deviation_mm": 0.0056
+   },
+   {
+    "rank": 21,
+    "label": "fibula",
+    "preview_centroid_mm": [
+     64.565,
+     24.241,
+     18.545
+    ],
+    "v3_centroid_mm": [
+     64.57,
+     24.24,
+     18.55
+    ],
+    "deviation_mm": 0.0069
+   },
+   {
+    "rank": 22,
+    "label": "foot_class",
+    "preview_centroid_mm": [
+     34.942,
+     36.523,
+     49.109
+    ],
+    "v3_centroid_mm": [
+     34.94,
+     36.52,
+     49.11
+    ],
+    "deviation_mm": 0.0036
+   },
+   {
+    "rank": 23,
+    "label": "foot_class",
+    "preview_centroid_mm": [
+     40.855,
+     34.039,
+     25.219
+    ],
+    "v3_centroid_mm": [
+     40.86,
+     34.04,
+     25.22
+    ],
+    "deviation_mm": 0.0047
+   },
+   {
+    "rank": 24,
+    "label": "foot_class",
+    "preview_centroid_mm": [
+     42.64,
+     29.017,
+     27.725
+    ],
+    "v3_centroid_mm": [
+     42.64,
+     29.02,
+     27.72
+    ],
+    "deviation_mm": 0.0058
+   },
+   {
+    "rank": 25,
+    "label": "foot_class",
+    "preview_centroid_mm": [
+     35.332,
+     31.928,
+     45.483
+    ],
+    "v3_centroid_mm": [
+     35.33,
+     31.93,
+     45.48
+    ],
+    "deviation_mm": 0.0043
+   }
+  ]
+ },
+ "pose_free_bone_spans": [
+  {
+   "rank": 2,
+   "class": "femur",
+   "segment": "thigh",
+   "joint_span_mm": 42.734,
+   "h1_implied_span_m": 0.138093,
+   "h1_scale": 3.231482,
+   "h1_err_frac": -0.1528,
+   "h1_within_15pct": false,
+   "h2_scale": 3.8143,
+   "h2_implied_span_m": 0.163,
+   "h2_err_frac": 0.0,
+   "h2_note": "exact by construction (scale = segment/joint_span; fitted, not a prediction)"
+  },
+  {
+   "rank": 3,
+   "class": "femur",
+   "segment": "thigh",
+   "joint_span_mm": 42.97,
+   "h1_implied_span_m": 0.138857,
+   "h1_scale": 3.231482,
+   "h1_err_frac": -0.1481,
+   "h1_within_15pct": true,
+   "h2_scale": 3.7933,
+   "h2_implied_span_m": 0.163,
+   "h2_err_frac": 0.0,
+   "h2_note": "exact by construction (scale = segment/joint_span; fitted, not a prediction)"
+  },
+  {
+   "rank": 6,
+   "class": "tibia",
+   "segment": "shank",
+   "joint_span_mm": 41.139,
+   "h1_implied_span_m": 0.13294,
+   "h1_scale": 3.231482,
+   "h1_err_frac": -0.2696,
+   "h1_within_15pct": false,
+   "h2_scale": 4.424,
+   "h2_implied_span_m": 0.182,
+   "h2_err_frac": 0.0,
+   "h2_note": "exact by construction (scale = segment/joint_span; fitted, not a prediction)"
+  },
+  {
+   "rank": 7,
+   "class": "tibia",
+   "segment": "shank",
+   "joint_span_mm": 41.352,
+   "h1_implied_span_m": 0.133629,
+   "h1_scale": 3.231482,
+   "h1_err_frac": -0.2658,
+   "h1_within_15pct": false,
+   "h2_scale": 4.4012,
+   "h2_implied_span_m": 0.182,
+   "h2_err_frac": 0.0,
+   "h2_note": "exact by construction (scale = segment/joint_span; fitted, not a prediction)"
+  }
+ ],
+ "post_hoc_diagnostics": {
+  "flexion_aware_expectations_m": {
+   "femur->tibia": 0.15663,
+   "tibia->foot": 0.088896
+  },
+  "derivation": "committed scaffold angles + Table-1 mid-span segment centroids; POST-HOC, NOT the gated test; it attributes how much of each gated failure is the straight-chain expectation model (scaffold knee flexion 49.62 deg, foot pitch) vs the mounting itself",
+  "attributions": [
+   {
+    "mounting": "H1_rigid",
+    "pair": [
+     2,
+     6
+    ],
+    "labels": [
+     "femur",
+     "tibia"
+    ],
+    "implied_m": 0.049425,
+    "gated_expectation_m": 0.1725,
+    "flexion_aware_expectation_m": 0.15663,
+    "err_vs_gated_frac": 0.7135,
+    "err_vs_flexion_aware_frac": -0.6844
+   },
+   {
+    "mounting": "H1_rigid",
+    "pair": [
+     6,
+     25
+    ],
+    "labels": [
+     "tibia",
+     "foot_class"
+    ],
+    "implied_m": 0.090786,
+    "gated_expectation_m": 0.128,
+    "flexion_aware_expectation_m": 0.088896,
+    "err_vs_gated_frac": 0.2907,
+    "err_vs_flexion_aware_frac": 0.0213
+   },
+   {
+    "mounting": "H1_rigid",
+    "pair": [
+     3,
+     7
+    ],
+    "labels": [
+     "femur",
+     "tibia"
+    ],
+    "implied_m": 0.042695,
+    "gated_expectation_m": 0.1725,
+    "flexion_aware_expectation_m": 0.15663,
+    "err_vs_gated_frac": 0.7525,
+    "err_vs_flexion_aware_frac": -0.7274
+   },
+   {
+    "mounting": "H1_rigid",
+    "pair": [
+     7,
+     18
+    ],
+    "labels": [
+     "tibia",
+     "foot_class"
+    ],
+    "implied_m": 0.083869,
+    "gated_expectation_m": 0.128,
+    "flexion_aware_expectation_m": 0.088896,
+    "err_vs_gated_frac": 0.3448,
+    "err_vs_flexion_aware_frac": -0.0566
+   },
+   {
+    "mounting": "H1_rigid",
+    "pair": [
+     7,
+     24
+    ],
+    "labels": [
+     "tibia",
+     "foot_class"
+    ],
+    "implied_m": 0.090222,
+    "gated_expectation_m": 0.128,
+    "flexion_aware_expectation_m": 0.088896,
+    "err_vs_gated_frac": 0.2951,
+    "err_vs_flexion_aware_frac": 0.0149
+   },
+   {
+    "mounting": "H2_generalized",
+    "pair": [
+     2,
+     6
+    ],
+    "labels": [
+     "femur",
+     "tibia"
+    ],
+    "implied_m": 0.150326,
+    "gated_expectation_m": 0.1725,
+    "flexion_aware_expectation_m": 0.15663,
+    "err_vs_gated_frac": 0.1285,
+    "err_vs_flexion_aware_frac": -0.0402
+   },
+   {
+    "mounting": "H2_generalized",
+    "pair": [
+     6,
+     25
+    ],
+    "labels": [
+     "tibia",
+     "foot_class"
+    ],
+    "implied_m": 0.093065,
+    "gated_expectation_m": 0.128,
+    "flexion_aware_expectation_m": 0.088896,
+    "err_vs_gated_frac": 0.2729,
+    "err_vs_flexion_aware_frac": 0.0469
+   },
+   {
+    "mounting": "H2_generalized",
+    "pair": [
+     3,
+     7
+    ],
+    "labels": [
+     "femur",
+     "tibia"
+    ],
+    "implied_m": 0.162747,
+    "gated_expectation_m": 0.1725,
+    "flexion_aware_expectation_m": 0.15663,
+    "err_vs_gated_frac": 0.0565,
+    "err_vs_flexion_aware_frac": 0.0391
+   },
+   {
+    "mounting": "H2_generalized",
+    "pair": [
+     7,
+     18
+    ],
+    "labels": [
+     "tibia",
+     "foot_class"
+    ],
+    "implied_m": 0.08629,
+    "gated_expectation_m": 0.128,
+    "flexion_aware_expectation_m": 0.088896,
+    "err_vs_gated_frac": 0.3259,
+    "err_vs_flexion_aware_frac": -0.0293
+   },
+   {
+    "mounting": "H2_generalized",
+    "pair": [
+     7,
+     24
+    ],
+    "labels": [
+     "tibia",
+     "foot_class"
+    ],
+    "implied_m": 0.088313,
+    "gated_expectation_m": 0.128,
+    "flexion_aware_expectation_m": 0.088896,
+    "err_vs_gated_frac": 0.3101,
+    "err_vs_flexion_aware_frac": -0.0066
+   }
+  ]
+ },
+ "scale_conflict": {
+  "h1_scale_scene_per_mm": 3.2314822711250724,
+  "h2_femur_scales": {
+   "2": 3.8143,
+   "3": 3.7933
+  },
+  "h2_scale_minus_h1_frac": {
+   "2": 0.1804,
+   "3": 0.1739
+  },
+  "note": "the trunk-anchored rigid scale and the limb-anchored per-bone joint-span scales disagree about the assembly scale itself by ~17-18%, beyond the 15% tolerance"
+ },
+ "reported_not_gated": {
+  "forelimb_links": [
+   {
+    "chain_kind": "fore",
+    "pair": [
+     4,
+     10
+    ],
+    "labels": [
+     "humerus",
+     "forearm_class"
+    ],
+    "v3_gap_mm": 2.0,
+    "h1_implied_m": 0.086587,
+    "h2_implied_m": null,
+    "h2_note": "forelimb bones unmounted in the committed compiler; no Table-1 forelimb segment exists (folded into HAT)"
+   },
+   {
+    "chain_kind": "fore",
+    "pair": [
+     4,
+     12
+    ],
+    "labels": [
+     "humerus",
+     "forearm_class"
+    ],
+    "v3_gap_mm": 0.93,
+    "h1_implied_m": 0.085287,
+    "h2_implied_m": null,
+    "h2_note": "forelimb bones unmounted in the committed compiler; no Table-1 forelimb segment exists (folded into HAT)"
+   },
+   {
+    "chain_kind": "fore",
+    "pair": [
+     5,
+     11
+    ],
+    "labels": [
+     "humerus",
+     "forearm_class"
+    ],
+    "v3_gap_mm": 2.27,
+    "h1_implied_m": 0.075233,
+    "h2_implied_m": null,
+    "h2_note": "forelimb bones unmounted in the committed compiler; no Table-1 forelimb segment exists (folded into HAT)"
+   },
+   {
+    "chain_kind": "fore",
+    "pair": [
+     5,
+     13
+    ],
+    "labels": [
+     "humerus",
+     "forearm_class"
+    ],
+    "v3_gap_mm": 0.86,
+    "h1_implied_m": 0.076592,
+    "h2_implied_m": null,
+    "h2_note": "forelimb bones unmounted in the committed compiler; no Table-1 forelimb segment exists (folded into HAT)"
+   }
+  ],
+  "observations": [
+   {
+    "chain_kind": "hind",
+    "pair": [
+     2,
+     15
+    ],
+    "labels": [
+     "femur",
+     "foot_class"
+    ],
+    "v3_gap_mm": 1.01,
+    "why": "curl-fold contact, not an articulation",
+    "h1_implied_m": 0.08985
+   },
+   {
+    "chain_kind": "hind",
+    "pair": [
+     6,
+     20
+    ],
+    "labels": [
+     "tibia",
+     "fibula"
+    ],
+    "v3_gap_mm": 0.48,
+    "why": "parallel element (fibula alongside tibia, same shank segment)",
+    "h1_implied_m": 0.018733
+   },
+   {
+    "chain_kind": "hind",
+    "pair": [
+     20,
+     25
+    ],
+    "labels": [
+     "fibula",
+     "foot_class"
+    ],
+    "v3_gap_mm": 2.47,
+    "why": "curl-fold contact, not an articulation",
+    "h1_implied_m": 0.079518
+   },
+   {
+    "chain_kind": "hind",
+    "pair": [
+     22,
+     25
+    ],
+    "labels": [
+     "foot_class",
+     "foot_class"
+    ],
+    "v3_gap_mm": 0.99,
+    "why": "same-segment contact (elements within one segment)",
+    "h1_implied_m": 0.018957
+   },
+   {
+    "chain_kind": "hind",
+    "pair": [
+     3,
+     17
+    ],
+    "labels": [
+     "femur",
+     "foot_class"
+    ],
+    "v3_gap_mm": 0.69,
+    "why": "curl-fold contact, not an articulation",
+    "h1_implied_m": 0.096588
+   },
+   {
+    "chain_kind": "hind",
+    "pair": [
+     7,
+     21
+    ],
+    "labels": [
+     "tibia",
+     "fibula"
+    ],
+    "v3_gap_mm": 0.45,
+    "why": "parallel element (fibula alongside tibia, same shank segment)",
+    "h1_implied_m": 0.019801
+   },
+   {
+    "chain_kind": "hind",
+    "pair": [
+     21,
+     24
+    ],
+    "labels": [
+     "fibula",
+     "foot_class"
+    ],
+    "v3_gap_mm": 2.9,
+    "why": "curl-fold contact, not an articulation",
+    "h1_implied_m": 0.078344
+   },
+   {
+    "chain_kind": "hind",
+    "pair": [
+     23,
+     24
+    ],
+    "labels": [
+     "foot_class",
+     "foot_class"
+    ],
+    "v3_gap_mm": 1.01,
+    "why": "same-segment contact (elements within one segment)",
+    "h1_implied_m": 0.019032
+   },
+   {
+    "chain_kind": "fore",
+    "pair": [
+     4,
+     8
+    ],
+    "labels": [
+     "humerus",
+     "hand_class"
+    ],
+    "v3_gap_mm": 0.73,
+    "why": "curl-fold contact, not an articulation",
+    "h1_implied_m": 0.044122
+   },
+   {
+    "chain_kind": "fore",
+    "pair": [
+     10,
+     12
+    ],
+    "labels": [
+     "forearm_class",
+     "forearm_class"
+    ],
+    "v3_gap_mm": 0.38,
+    "why": "same-segment contact (elements within one segment)",
+    "h1_implied_m": 0.030529
+   },
+   {
+    "chain_kind": "fore",
+    "pair": [
+     5,
+     9
+    ],
+    "labels": [
+     "humerus",
+     "hand_class"
+    ],
+    "v3_gap_mm": 0.86,
+    "why": "curl-fold contact, not an articulation",
+    "h1_implied_m": 0.039282
+   },
+   {
+    "chain_kind": "fore",
+    "pair": [
+     11,
+     13
+    ],
+    "labels": [
+     "forearm_class",
+     "forearm_class"
+    ],
+    "v3_gap_mm": 0.47,
+    "why": "same-segment contact (elements within one segment)",
+    "h1_implied_m": 0.032833
+   }
+  ],
+  "forelimb_note": "Table-1 folds the forelimbs into HAT: no segment expectation exists, so forelimb chains cannot gate either mounting"
+ },
+ "verdict": "NEITHER satisfies: the mountings are both wrong on the measured chains",
+ "h1_pass": false,
+ "h2_generalized_pass": false,
+ "recommendation": {
+  "mounting_for_the_final_visual": "H2 per-bone scaffold mounting, generalized to the identified tibiae (chain-adjacency orientation)",
+  "numbers_cited": "Strict falsifier: NEITHER mounting satisfies it on every gated link. H1 fails ALL five gated links (femur->tibia -71.4%/-75.2%, tibia->foot -29.1%/-34.5%/-29.5%) AND three of four pose-free bone spans (femur -15.3%/-14.8%, tibia -27.0%/-26.6% vs Table-1): its trunk-anchored scale 3.2315 makes the tibiae ~27% too short even before the curled pose folds the chains to a quarter of the standing spans -- even against the flexion-aware expectation the knee links stay at -68.4%/-72.7%, so the failure is in the measured curled pose plus the scale itself, and no rigid transform can fix it. H2-generalized passes both femur->tibia links (-12.8%/-5.7%) and its gated foot failures (-27.3%/-32.6%/-31.0%) are the straight-chain expectation meeting the scaffold's 105-deg foot pitch: against the flexion-aware standing skeleton derived from the same Table-1 + committed scaffold angles, H2 matches EVERY gated link within ~5% (-4.0%/+4.7%/+3.9%/-2.9%/-0.7%). H2's span agreement is fitted (scale = segment/joint_span: femur 3.79-3.81, tibia [4.4, 4.42], foot [6.25, 8.81, 8.82]) and is reported as construction, not prediction.",
+  "h1_retained_for": "its own measured claim only -- the trunk-aligned whole-CT layer (skull-end residual 2.7 mm on the HAT-pelvis axis); it must not be used to present limb chains"
+ }
+}
