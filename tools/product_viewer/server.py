@@ -1141,12 +1141,25 @@ class ViewerHandler(BaseHTTPRequestHandler):
                     self._json({"ok": False,
                                 "error": f"frame not served: {rec.get('refusal')}"}, 502)
                 else:
-                    sha, _ = _sha256_file(Path(rec["file"]))  # re-verify at serve time
-                    if sha != rec["sha256"]:
+                    # Serve-time guard (the PR #287 round-2 pattern, aligned
+                    # after the merge): read ONCE, hash exactly those bytes,
+                    # serve the hashed bytes. A frame deleted or made
+                    # unreadable AFTER startup yields a NAMED 502 refusal -
+                    # no OSError escaping do_GET (which catches only
+                    # EngineError), no second unverified read (TOCTOU).
+                    try:
+                        data = Path(rec["file"]).read_bytes()
+                    except OSError as e:
                         self._json({"ok": False,
-                                    "error": "sha256 mismatch at serve time; refusing"}, 502)
+                                    "error": f"frame unreadable at serve time: {e}"},
+                                   502)
                     else:
-                        self._send(200, Path(rec["file"]).read_bytes(), "image/png")
+                        if hashlib.sha256(data).hexdigest() != rec["sha256"]:
+                            self._json({"ok": False,
+                                        "error": "sha256 mismatch at serve time; refusing"},
+                                       502)
+                        else:
+                            self._send(200, data, "image/png")
             else:
                 self._json({"ok": False, "error": "unknown route"}, 404)
         except EngineError as e:

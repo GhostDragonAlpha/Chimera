@@ -9,8 +9,11 @@ read-only.
 
 Contract pinned here:
 - a frame is served ONLY when file exists AND sha256 AND size match the pin;
-- the sha is RE-VERIFIED AT SERVE TIME (a file mutated after load is
-  refused with a named 502, not served);
+- the bytes are RE-VERIFIED AT SERVE TIME, read-once-serve-what-you-hashed
+  (the PR #287 round-2 pattern): a file mutated after load is refused with a
+  named sha-mismatch 502; a file deleted/unreadable after load is refused
+  with a named unreadable 502 - never an escaping OSError, never a second
+  unverified read;
 - a refused frame is NAMED in the page section and in /api/world/walkfilm,
   never silently dropped; unknown names are 404;
 - served bytes equal the pinned file bytes (no re-encode);
@@ -197,6 +200,21 @@ class PlaylistRoutes(unittest.TestCase):
             st, body, _ = self._get("/api/world/walkfilm/frame?name=wf_f0000")
             self.assertEqual(st, 502)
             self.assertIn("sha256 mismatch at serve time",
+                          json.loads(body)["error"])
+        finally:
+            png.write_bytes(original)
+
+    def test_serve_time_unreadable_file_is_refused_by_name(self):
+        # Delete AFTER load (the read-once guard's TOCTOU half): the route
+        # must 502 with a NAMED refusal - not OSError out of do_GET, and not
+        # a second unverified read serving stale bytes.
+        png = self._tmp / "f0000.png"
+        original = png.read_bytes()
+        try:
+            png.unlink()
+            st, body, _ = self._get("/api/world/walkfilm/frame?name=wf_f0000")
+            self.assertEqual(st, 502)
+            self.assertIn("unreadable at serve time",
                           json.loads(body)["error"])
         finally:
             png.write_bytes(original)
