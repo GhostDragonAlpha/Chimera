@@ -1,3 +1,27 @@
+# Current operating method — package era and serving scheduler, 2026-10-01
+
+Read [docs/WORKFLOW.md](../../docs/WORKFLOW.md) (the method map) with
+[NO_WORKTREES.md](NO_WORKTREES.md) and runner_profile.json. Workers deliver through
+pinned file packages: seal returns a manifest hash and patch; your `task_package.py
+apply` stages them in the single publication checkout at the exact recorded base;
+prereg commits you publish precede gated experiments and packages pin your published
+prereg SHAs; a card's review/<CARD> ref is seeded local and remote at the integrated
+tip BEFORE its first dispatch. The continuous scheduler
+(`E:/ChimeraWork/monkey-coordination/compiler-scheduler/scheduler.py`) serves since
+2026-10-01 behind your SERVE-ENABLED.txt gate: it projects lifecycle states, emits
+advisory dispatch and LEAD_* directives (publication, accept/merge, ref refresh,
+materialization) that only you execute; the registry stays the single work
+authority. Acceptance runs through the acceptance-chain packets
+(`acceptance-chain/ACCEPTANCE_CHAIN.md`): build, your recorded approve, reconciled
+execute. Dispatch obeys the disk doctrine: the 150G free-disk floor stops new card
+dispatch when crossed, with a Captain escalation and a reclaim directive. Your
+operational state store is
+`E:/ChimeraWork/monkey-coordination/LIEUTENANT_RESUME_v2.json`; durable lessons are
+per-task files under `E:/ChimeraWork/monkey-coordination/memory/`. Capacity: 12
+target / 15 ceiling API agents including descendants, four CPU package slots, one
+publication writer. Where the older text below conflicts with this section, this
+section and docs/WORKFLOW.md govern.
+
 # Material-first scope — astra-0031
 
 Read [MATERIAL_PLAN_ADOPTION.md](MATERIAL_PLAN_ADOPTION.md). Use canonical startup, your existing arrival ID, and the returned MAT2- assignment. Prior ONT- work is archived evidence, not an active claim. Do not ask the operator for a new goal or recreate completed implementation.

@@ -1,3 +1,24 @@
+# Current operating method — file packages and the continuous scheduler, 2026-10-01
+
+Read [docs/WORKFLOW.md](../../docs/WORKFLOW.md) first (the method map), then
+[NO_WORKTREES.md](NO_WORKTREES.md) and runner_profile.json. New attempts use pinned
+file packages from canonical `worker_start.py` startup with your existing arrival ID;
+no new clones or worktrees; CPU commands run through `task_package.py` (four slots;
+BUSY/exit 75 means back off). Capacity truth is the registry's per-card attempt
+records: 12 target / 15 ceiling API agents including descendants, four CPU package
+slots, one publication writer, GPU work through the existing GPU queue. Dispatch is
+advised by the continuous scheduler
+(`E:/ChimeraWork/monkey-coordination/compiler-scheduler/scheduler.py`, serving since
+2026-10-01) and consumed by the Lieutenant; you claim work through the registry
+join/claim path, never by inventing an assignment. Handoffs --finish, --submit-pr
+and --review-result deal the next card only with the explicit `--take-next` flag;
+--checkpoint and --park never re-deal. Acceptance runs through the acceptance-chain
+packets; evidence anchors through the evidence-store before anything references it;
+the 150G free-disk floor stops new dispatches when crossed. The ten-worker limit,
+hourly handoff mechanics and EXECUTION_QUEUE/execution_plan.py coordinator wording
+below are historical layers from before this method; where they conflict with this
+section, this section and docs/WORKFLOW.md govern.
+
 # Material-first scope — astra-0031
 
 Read [MATERIAL_PLAN_ADOPTION.md](MATERIAL_PLAN_ADOPTION.md). Use canonical startup, your existing arrival ID, and the returned MAT2- assignment. Prior ONT- work is archived evidence, not an active claim. Do not ask the operator for a new goal or recreate completed implementation.
