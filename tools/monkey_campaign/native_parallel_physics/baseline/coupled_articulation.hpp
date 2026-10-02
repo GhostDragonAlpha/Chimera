@@ -1,6 +1,5 @@
 #pragma once
 #include "earth_environment.hpp"
-#include "contribution_executor.hpp"
 #include <map>
 namespace chimera::multibody {
 using namespace chimera::environment;
@@ -50,7 +49,6 @@ struct Evaluation {
  Dense force(size_t body,V p,V f)const{auto j=point(body,p).second;Dense result;for(auto v:j)result.push_back(dot(v,f));return result;}
  Dense acceleration(Dense tau)const{for(size_t i=0;i<tau.size();++i)tau[i]+=gravity[i]-bias[i];return multiply(inverse_spd(mass,tau.size()),tau);}
 };
-struct EvaluationInput {Dense q,v;V gravity;};
 class Model {
  struct Axis {bool rotational;V axis;int slot;double slope,constant;};
  struct Body {std::string name;int parent=-1;double mass;V com;Mat inertia,fp,fc;std::vector<Axis> axes;};
@@ -81,47 +79,15 @@ public:
   }require(progress,"coupled_missing_or_cyclic_parent");}
  }
  size_t body(const std::string& name)const{for(size_t i=0;i<bodies_.size();++i)if(bodies_[i].name==name)return i;throw Refusal("coupled_body_missing");}
- Evaluation evaluate(const Dense& q,const Dense& v,V gravity,ContributionExecutor* executor=nullptr)const{
+ Evaluation evaluate(const Dense& q,const Dense& v,V gravity)const{
   F9_EVAL_INC();
   size_t n=names.size();require(q.size()==n&&v.size()==n,"coupled_state_shape");for(double x:q)require(std::isfinite(x),"coupled_state_nonfinite");for(double x:v)require(std::isfinite(x),"coupled_state_nonfinite");Evaluation e;e.mass.assign(n*n,0);e.gravity.assign(n,0);e.bias.assign(n,0);
-  // Kinematics remains parent-ordered. No worker reads a partially built frame.
-  e.frames.reserve(bodies_.size());
   for(auto& b:bodies_){Transform f(n);if(b.parent>=0){Transform motion(n);V translation{},velocity{};std::vector<V> dj(n);
     for(auto& a:b.axes){double angle=a.constant+(a.slot<0?0:a.slope*q[a.slot]),rate=a.slot<0?0:a.slope*v[a.slot];if(a.rotational){Transform one(n);one.t=rotation(a.axis,angle);auto dr=skew(a.axis)*one.t;if(a.slot>=0)one.d[a.slot]=dr*a.slope;one.dt=dr*rate;one.ddt=skew(a.axis)*dr*(rate*rate);motion=product(motion,one);}else{translation=add(translation,mul(a.axis,angle));velocity=add(velocity,mul(a.axis,rate));if(a.slot>=0)dj[a.slot]=add(dj[a.slot],mul(a.axis,a.slope));}}
     for(int k=0;k<3;++k){motion.t(k,3)=translation[k];motion.dt(k,3)=velocity[k];for(size_t i=0;i<n;++i)motion.d[i](k,3)=dj[i][k];}f=product(product(product(e.frames[b.parent],fixed(b.fp,n)),motion),fixed(b.fc,n));
-   }e.frames.push_back(f);
-  }
-  // The admitted Model has at most seven coordinates. Each body owns one
-  // bounded temporary; only this calling owner combines Evaluation fields.
-  struct BodyTerms {std::array<double,49> mass{};std::array<double,7> gravity{},bias{};double potential_term=0;};
-  const auto& frames=e.frames;
-  auto compute=[&](size_t index){const auto& b=bodies_[index];const auto& f=frames[index];BodyTerms out;
-   Mat rt;for(int i=0;i<3;++i)for(int j=0;j<3;++j)rt(i,j)=f.t(j,i);Mat iw=f.t*b.inertia*rt;V p=vector(f.t,b.com,1),acc=vector(f.ddt,b.com,1),omega=axial(f.dt*rt),alpha=axial(f.ddt*rt+f.dt*transpose(f.dt));std::vector<V> jv,jw;for(auto& d:f.d){jv.push_back(vector(d,b.com,1));jw.push_back(axial(d*rt));}V moment=add(vector(iw,alpha),cross(omega,vector(iw,omega)));
-   for(size_t i=0;i<n;++i){out.gravity[i]=b.mass*dot(jv[i],gravity);out.bias[i]=b.mass*dot(jv[i],acc)+dot(jw[i],moment);for(size_t j=0;j<n;++j)out.mass[n*i+j]=b.mass*dot(jv[i],jv[j])+dot(jw[i],vector(iw,jw[j]));}out.potential_term=b.mass*dot(gravity,p);
-   return out;
-  };
-  auto combine=[&](const BodyTerms& term){
-   // Preserve the original summation order and subtraction for potential,
-   // including signed zero. Never reduce in worker completion order.
-   for(size_t i=0;i<n;++i){e.gravity[i]+=term.gravity[i];e.bias[i]+=term.bias[i];for(size_t j=0;j<n;++j)e.mass[n*i+j]+=term.mass[n*i+j];}e.potential-=term.potential_term;
-  };
-  if(executor&&executor->workers()>1){
-   std::vector<BodyTerms> terms(bodies_.size());
-   executor->for_each(bodies_.size(),[&](size_t index){terms[index]=compute(index);});
-   for(const auto& term:terms)combine(term);
-  }else for(size_t index=0;index<bodies_.size();++index)combine(compute(index));
-  return e;
- }
- // Independent configurations only: this API does not advance time or resolve
- // physical coupling. Requests read this same immutable Model; each owns a result.
- // Batch the coarser computation to amortize scheduling overhead on small models.
- std::vector<Evaluation> evaluate_independent(const std::vector<EvaluationInput>& inputs,ContributionExecutor& executor)const{
-  std::vector<Evaluation> results(inputs.size());
-  executor.for_each(inputs.size(),[&](size_t i){
-   const auto& input=inputs[i];
-   results[i]=evaluate(input.q,input.v,input.gravity); // never nest parallel calls
-  });
-  return results;
+   }e.frames.push_back(f);Mat rt;for(int i=0;i<3;++i)for(int j=0;j<3;++j)rt(i,j)=f.t(j,i);Mat iw=f.t*b.inertia*rt;V p=vector(f.t,b.com,1),acc=vector(f.ddt,b.com,1),omega=axial(f.dt*rt),alpha=axial(f.ddt*rt+f.dt*transpose(f.dt));std::vector<V> jv,jw;for(auto& d:f.d){jv.push_back(vector(d,b.com,1));jw.push_back(axial(d*rt));}V moment=add(vector(iw,alpha),cross(omega,vector(iw,omega)));
+   for(size_t i=0;i<n;++i){e.gravity[i]+=b.mass*dot(jv[i],gravity);e.bias[i]+=b.mass*dot(jv[i],acc)+dot(jw[i],moment);for(size_t j=0;j<n;++j)e.mass[n*i+j]+=b.mass*dot(jv[i],jv[j])+dot(jw[i],vector(iw,jw[j]));}e.potential-=b.mass*dot(gravity,p);
+  }return e;
  }
 };
 } // namespace chimera::multibody

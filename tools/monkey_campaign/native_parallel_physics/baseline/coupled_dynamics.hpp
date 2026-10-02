@@ -8,7 +8,6 @@ namespace chimera::multibody {
 class CoupledDynamics {
  struct State {Dense q,v,work{0,0},impulse{0,0};double external=0,damping=0,impact=0;double contact_impact=0,contact_impact_impulse=0,contact_force_impulse=0;double friction_heat=0,friction_heat_tick=0,friction_impulse=0,friction_force_impulse=0;Dense contact_generalized{0,0};};
  struct Rate {Dense q,v,reaction;double damping;double contact_lambda=0;Dense contact_force{0,0};double friction_lambda=0,friction_heat=0,slip=0;int mode=0;Dense friction_force{0,0};};
- std::shared_ptr<ContributionExecutor> contribution_executor_;
  std::shared_ptr<const Model> model_;J recipe_,config_;size_t hand_;V local_,shift_,gravity_;
  double dt_,initial_store_,initial_potential_=0;Dense kp_,kd_,damping_,last_torque_{0,0};
  bool contact_=false;double plane_world_y_=0,plane_model_y_=0,radius_=0,mu_=0;
@@ -18,7 +17,7 @@ class CoupledDynamics {
  // micro-penetration (same bound) stays within the band.
  static constexpr double kTouch=1e-5,kSlip=1e-9;
  State s_;double battery_=0,brake_=0;uint64_t ticks_=0,empty_events_=0;
- Evaluation evaluate(const State& s)const{return model_->evaluate(s.q,s.v,gravity_,contribution_executor_.get());}
+ Evaluation evaluate(const State& s)const{return model_->evaluate(s.q,s.v,gravity_);}
  double mechanical(const State& s)const{auto e=evaluate(s);return .5*inner(s.v,multiply(e.mass,s.v))+e.potential;}
  Dense normals(const State& s)const{Dense n(2);for(int i=0;i<2;++i){if(std::abs(s.q[i]-model_->lower[i])<1e-10)n[i]=1;else if(std::abs(s.q[i]-model_->upper[i])<1e-10)n[i]=-1;}return n;}
  // Contact geometry: one authored rigid plane, world Up normal. The signed gap is
@@ -223,14 +222,13 @@ class CoupledDynamics {
   Dense tau(2);for(int i=0;i<2;++i){std::string stem=i?"elbow":"shoulder";if(config_["power"].get<bool>()&&config_[stem+"_drive"].get<bool>()&&battery_>1e-12){double target=number(config_[stem+"_target_deg"])*pi/180,cap=number(config_[stem+"_torque_limit_N_m"]);tau[i]=(std::max)(-cap,(std::min)(cap,kp_[i]*(target-s_.q[i])-kd_[i]*s_.v[i]));}}return tau;
  }
 public:
- CoupledDynamics(const J& data,double gravity,V shift,double dt=1/300.,size_t contribution_workers=1):recipe_(data.at("recipe")),shift_(shift),gravity_{0,-gravity,0},dt_(dt){
-  require(contribution_workers>=1&&contribution_workers<=4,"coupled_contribution_worker_count");if(contribution_workers>1)contribution_executor_=std::make_shared<ContributionExecutor>(contribution_workers);
+ CoupledDynamics(const J& data,double gravity,V shift,double dt=1/300.):recipe_(data.at("recipe")),shift_(shift),gravity_{0,-gravity,0},dt_(dt){
   require(recipe_.at("schema")=="chimera.coupled_scene.v1"&&recipe_.at("coordinates")==J::array({"shoulder_flexion","elbow_flexion"}),"coupled_dynamics_schema");require(dt>0&&dt<=1/300.,"coupled_timestep");require(recipe_.at("substeps")==4,"coupled_substeps");model_=std::make_shared<Model>(data.at("model"),recipe_.at("coordinates").get<std::vector<std::string>>());hand_=model_->body(recipe_.at("hand_body"));local_=recipe_.at("hand_point_m").get<V>();config_=recipe_.at("defaults");initial_store_=number(recipe_.at("battery_initial_J"));require(initial_store_>=0,"coupled_store_initial");
   plane_world_y_=number(recipe_.at("contact_plane_height_m"));require(std::isfinite(plane_world_y_),"coupled_contact_plane_invalid");radius_=number(recipe_.at("proxy_radius_m"));require(radius_>0,"coupled_contact_radius_invalid");plane_model_y_=plane_world_y_-shift_[1];
   require(config_.contains("contact_enabled")&&config_["contact_enabled"].is_boolean(),"coupled_contact_flag_invalid");contact_=config_["contact_enabled"].get<bool>();
   require(config_.contains("contact_friction")&&config_["contact_friction"].is_number()&&number(config_["contact_friction"])>=0&&number(config_["contact_friction"])<=1,"coupled_friction_flag_invalid");mu_=number(config_["contact_friction"]);
   {State probe;probe.q=model_->defaults;probe.v=Dense(2);require(gap(probe)>1e-6,"coupled_contact_initial_penetration");}
-  auto e=model_->evaluate(model_->defaults,Dense(2),gravity_,contribution_executor_.get());double freq=2*pi*number(recipe_["servo_frequency_Hz"]),zeta=number(recipe_["servo_damping_ratio"]),decay=number(recipe_["passive_decay_rate_s"]);require(freq>=0&&zeta>=0&&decay>=0,"coupled_drive_parameters");for(int i=0;i<2;++i){kp_.push_back(e.mass[3*i]*freq*freq);kd_.push_back(2*zeta*e.mass[3*i]*freq);damping_.push_back(e.mass[3*i]*decay);}reset();
+  auto e=model_->evaluate(model_->defaults,Dense(2),gravity_);double freq=2*pi*number(recipe_["servo_frequency_Hz"]),zeta=number(recipe_["servo_damping_ratio"]),decay=number(recipe_["passive_decay_rate_s"]);require(freq>=0&&zeta>=0&&decay>=0,"coupled_drive_parameters");for(int i=0;i<2;++i){kp_.push_back(e.mass[3*i]*freq*freq);kd_.push_back(2*zeta*e.mass[3*i]*freq);damping_.push_back(e.mass[3*i]*decay);}reset();
  }
  double timestep()const{return dt_;}const Dense& angles()const{return s_.q;}const Dense& speeds()const{return s_.v;}const Model& model()const{return *model_;}
  void reset(){s_=State{};s_.q=model_->defaults;s_.v=Dense(2);ticks_=empty_events_=0;last_torque_=Dense(2);battery_=initial_store_;brake_=0;initial_potential_=evaluate(s_).potential;}
