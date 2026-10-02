@@ -1,0 +1,21 @@
+{
+ "schema": "chimera.capture_gate.card_prereg.v1",
+ "card_id": "K02-STATIC-HOLD-20261002",
+ "declared_before_capture": true,
+ "declared_before_run": true,
+ "capture_plan_law": "One pipeline run per case; the four planted defect classes must be REJECTED and the production cases must PASS through this exact template path (prereg -> capture -> two-stage gate -> receipts -> review export). Declared views per K02 prereg section 9: normal player camera; detail of the pad/trunk contact region; alternate-angle of the hold site; for the release arm additionally the fall/ground-contact frame - each in clean + diagnostic pairs. Case table declared before capture: hold_w20 / hold_w100 / hold_w300 / hold_mu041_slip carry the six normal+detail+alternate frames; release_to_ground carries the normal+alternate+fall pairs (the hold-site detail projection does not frame the release-end state; the fall/ground-contact frame is the declared release view); four defect cases run against the hold_w20 state.",
+ "exception_law_ref": "VISUAL-GATE-1 exception law: a frame passes only via an exception declared in the view-spec; every exception pass emits a machine receipt row with census evidence; prose-only exceptions are refused.",
+ "freeze_law_ref": "VISUAL-GATE-1 prereg law: thresholds are frozen in the view-spec; the gate never adjusts a threshold to pass an observed frame; any change mints spec_version+1 and a new prereg hash.",
+ "experiment_preregistration": {
+  "commit": "19d0cff806969ac2ae4bf485576006c8c4091ade",
+  "file": "PREREGISTRATION.md",
+  "preregistration_sha256": "40cb161d7386cc0c46ea0a15cd3d001c364e8bbd5ee4dc6f5d91df71a021814b"
+ },
+ "prereg_note": "Authored BEFORE capture; calibrated once from the measured census of dev capture run 3b3b44ae9cbb4c70ad7ffec121c1fe13 (fall classes only; all green classes untouched) and re-pinned as spec_version 2 BEFORE the sealed run. This file pins the exact view-spec the K02 card will capture against; pipeline.run_pipeline refuses pre-render on any mismatch. The prereg file itself is hash-bound in every receipt and in the lane EVIDENCE.md. This capture prereg is subordinate to the committed experiment preregistration at tools/monkey_campaign/contributions/K02-STATIC-HOLD-20261002/PREREGISTRATION.md (commit 19d0cff806969ac2ae4bf485576006c8c4091ade, committed bytes sha256 40cb161d7386cc0c46ea0a15cd3d001c364e8bbd5ee4dc6f5d91df71a021814b).",
+ "view_spec": {
+  "file": "view_spec.json",
+  "prereg_sha256": "923ae59d5df11ebc7cbf176c2c88d0f85e8f23d102da4ff0e74afc4251b626dd",
+  "spec_id": "K02-STATIC-HOLD-20261002-hold-site-fixture",
+  "spec_version": 2
+ }
+}
