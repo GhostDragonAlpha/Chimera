@@ -1,0 +1,21 @@
+{
+ "schema": "chimera.capture_gate.card_prereg.v1",
+ "card_id": "MAT2-X04",
+ "declared_before_capture": true,
+ "declared_before_run": true,
+ "capture_plan_law": "One pipeline run per case; the four planted defect classes must be REJECTED and the production cases must PASS through this exact template path (prereg -> capture -> two-stage gate -> receipts -> review export). Production cases carry the ACTUAL committed capture frames of the frozen 39-frame plan (prereg section 3) re-bound from the sealed run's own frames artifact: V1 carries the 29 clean motion-axis frames + 3 diagnostic frames, V2 the 2 clean + 1 diagnostic detail frames, V3 the 2 clean + 2 diagnostic alternate-angle frames (the repeatability pairs ride their family case). Defect cases run against V1 frames at the diagnostic tick 4470 and the clean tick 4260: defect_label_missing_but_claimed (beauty panel erased, mask intact -> COLOCATION_MISMATCH), defect_body_recolor_shared (a declared share of body beauty pixels repainted with another declared object's palette color -> COLOCATION_MISMATCH), defect_subject_absent (body absent in both channels -> SUBJECT_MASK_BELOW_FLOOR), defect_clean_layer_leak (the state-label layer drawn on a CLEAN frame in both channels -> UNDECLARED_MASK_ID).",
+ "exception_law_ref": "VISUAL-GATE-1 exception law: a frame passes only via an exception declared in the view-spec; every exception pass emits a machine receipt row with census evidence; prose-only exceptions are refused. This profile declares NO occluder (A6): expected_occluded is empty in every class and occlusion_or_xray_mode is depth_tested on every manifest row.",
+ "freeze_law_ref": "VISUAL-GATE-1 prereg law: thresholds are frozen in the view-spec; the gate never adjusts a threshold to pass an observed frame; any change mints spec_version+1 and a new prereg hash. Floors were calibrated once from the resumed attempt's unsealed dev capture of the same frozen frame plan (29/3/2/1/2/2 frames, measured minima body 386/400/6249/6230/136/136, layers 45323/9537/44927) and pinned at half-to-decade margins BELOW the minima BEFORE any sealed capture; no sealed frame adjusted a threshold.",
+ "experiment_preregistration": {
+  "commit": "06f76dd1d55c42628d72aa473526f6f8ec3f0a3e",
+  "file": "PREREGISTRATION.md",
+  "preregistration_sha256": "2e62487fa4569990c1e569b6829295fa6a7f498b0d07a12c97f1ebbcac56d418"
+ },
+ "prereg_note": "Authored BEFORE any sealed capture of this resumed attempt (wk-x45-impl resume, 2026-10-02). The card_prereg + view_spec pair is the standing two-stage capture-gate template law (capture-gate-template v1, TEMPLATE_MANIFEST pinned verbatim in capture_card/); the resumed dispatch assigns it as the capture acceptance gate alongside the frozen prereg's own capture law (ONE FFV1 video + decode probes + the pinned visual_capture validator), which remains UNCHANGED and runs in full. The frozen experiment preregistration text predates the template's production-enforcement ruling and does not name it; this subordinate capture prereg discloses that gap for the chain-stop ruling instead of silently expanding the frozen text. The prereg file itself is hash-bound in every receipt. This capture prereg is subordinate to the committed experiment preregistration at tools/monkey_campaign/contributions/MAT2-X04/PREREGISTRATION.md (commit 06f76dd1d55c42628d72aa473526f6f8ec3f0a3e, committed bytes sha256 2e62487fa4569990c1e569b6829295fa6a7f498b0d07a12c97f1ebbcac56d418).",
+ "view_spec": {
+  "file": "view_spec.json",
+  "prereg_sha256": "6856ea5c8ae0010e16096d02609f8758e6af6ef5ec5845850cc9bb8b54b6c8ea",
+  "spec_id": "MAT2-X04-presentation-fixture",
+  "spec_version": 1
+ }
+}
