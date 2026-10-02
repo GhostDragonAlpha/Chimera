@@ -264,3 +264,101 @@ path outside the sealed package is read at run time.
 - Development (non-gated) shakedown runs in Phase B may surface float-noise
   facts; any window rescale follows the amendment law (Section 7) BEFORE the
   receipt run, disclosed like G04's a1/a2.
+
+## 11. Amendments
+
+### Amendment a1 (pre-receipt-run; disclosed with the shakedown facts that forced each item)
+
+Development shakedown runs (sealed, dev receipts
+`E:/ChimeraWork/task-runner/results/02e40de558d3448ba0a1159ea4864faa`,
+`.../3e957015c25b4776888555ba7f877a80`, `.../300ef7aa961a40fb8583cb264a2a72e4`,
+`.../d9b0ef60ca444f6c88fdc1b718b1b1bc`, `.../b90304ebe9714b9195425c6fcca52941`;
+base 492285596f79d3a5904556ff39adba5ae6fe29ce) surfaced the following facts.
+Every item below changes declarations, not windows: all comparison windows
+(1e-9 family, 1e-6 F_n, share*1e-10 release bars) are UNCHANGED. The final
+dev shakedown (b90304ebe9714b9195425c6fcca52941, sealed manifest
+`aaab2681760043f29fc88a173afc3090...`, receipt sha256
+`b7931d06895307bc512840e9c9bc7891bba3ae6e954433d0753685095ae9b318`) runs the
+amended battery 16/16 green with byte-identical determinism; it is the
+shakedown, NOT the receipt run.
+
+- **a1.1 (exact Arm T closed forms).** The draft's Arm T forms treated the
+  facet normal as radial and the friction direction as exactly azimuthal.
+  The exact law of the pinned module gives: with `t_az` the azimuthal
+  direction at the facet centroid and `n` the facet outward normal, the
+  solver's contact solve projects the twist onto the facet plane, so
+  `jn = press − P_az·(n·t_az)` per hold tick (the twist's out-of-plane
+  projection AUGMENTS the normal impulse; `n·t_az = −0.032828053831529716`);
+  the stick test is `P_az·s ≤ mu_s·jn` with the projection factor
+  `s = |t_az − n(n·t_az)| = 0.9994610141879642`; stick friction is
+  `jt = P_az·s`; and the resisting torque's exact lever is the axis-to-facet-
+  plane distance `d = 0.03682179057119474 m` for EVERY contact point on the
+  facet plane (the recorded point's radial distance is NOT the lever; the
+  linear factor `(p × t_unit)_z = n·p = d` is contact-point independent —
+  stronger than the draft's [rho_lo, rho_hi] band, which is superseded).
+  Exact frozen values: P_az=0.10 → jn = 0.30328280538315294 (F_n 60.65656107663059 N),
+  jt = 0.09994610141879642, tau_z = 0.7360388829700623 N·m; P_az=0.17 →
+  jn = 0.30558076915136007 (F_n 61.11615383027201 N), jt = 0.16990837241195392,
+  tau_z = 1.2512661010491057 N·m; P_az=0.19 (slip) → jn = 0.30623733022799066
+  (F_n 61.24746604559813 N), jt = mu_k·jn = 0.12249493209119627,
+  tau_z = 0.9020965470989502 N·m; slip velocity step
+  `(P_az·s − mu_k·jn)/6.15 = 0.01095978221211657 m/s per tick`.
+  Stick margins: 0.17·s = 0.16990837 vs bound 0.18334846 (STICK);
+  0.19·s = 0.18989759 vs bound 0.18374240 (SLIP). Arm V forms are unchanged
+  (gravity is exactly tangential there). Measured agreement after the fix:
+  tau 1.251266101048998 vs 1.2512661010491057 (1.1e-13) and
+  0.902096547098954 vs 0.9020965470989502 (3.8e-15).
+- **a1.2 (pad contact face 1e-3 m, centered).** The heritage tetra face
+  (0.1 m legs, one-sided) overlapped SEVERAL lateral facets at once; in the
+  Arm T slip row the first-processed candidate pair could be a NEIGHBOR facet
+  whose normal is rotated ~11.25 degrees, changing the effective law. The pad
+  contact face is now a 1e-3 m square CENTERED on the facet centroid
+  (TETRA_SCALE 0.01; placement `origin = cen − (ey+ez)·(face/2) + n·offset`),
+  giving single-facet contact by construction. The solver module is untouched.
+- **a1.3 (Arm T hold = 7 ticks).** With the slip row drifting azimuthally,
+  a second facet entered the swept candidate set at hold tick 8 (measured:
+  tris [0, 63], a recorded two-contact tick). hold = 7 keeps every hold tick
+  single-facet (drift 1.53e-3 m against a 3.6e-3 m half-width) and every
+  hold tick matches the closed forms to <= 1e-13. The 30-tick structure
+  becomes HOLD 7 + RELEASE 10 for Arm T only; Arm V keeps HOLD 20 + RELEASE 10.
+- **a1.4 (release law, vertical wall).** The draft's "gap exceeds 1e-3 m by
+  end of release" is physically wrong for a VERTICAL wall: a pad falling
+  along the plane keeps the offset gap. Declared instead: Arm V and Arm T
+  stick rows keep `gap ∈ [0.9·PAD_OFFSET_M, 2·PAD_OFFSET_M]` at every release
+  tick; the Arm T slip row (which slides off the facet) requires
+  `gap_last ≥ 1e-3 m` with monotone growth (window 1e-9) after separation.
+  The separation signature remains: zero retained force + free fall.
+- **a1.5 (channel-off transient, Arm T slip row only).** Measured: at the
+  first release tick the pad can still be inside the contact margin, and a
+  two-contact tick can carry a residual normal impulse (measured 0.205661048
+  N·s, jt 0.082264419 N·s, with facet 63 in the pair set). This tick is
+  RECORDED in full in the trace; the declared release evaluation starts at
+  the first fully separated tick: at most one transient tick; transient
+  `jn ≤ press + |P_az| + 1e-6` and `jt ≤ mu_k·(press + |P_az|) + 1e-6`; from
+  separation, per-tick displacement increments grow by exactly `g·DT^2`
+  (measured to 1e-12) with (jn, jt) at the share*1e-10 bars, gap monotone,
+  final gap >= 1e-3. Arm V rows keep the certified G04 release bars unchanged.
+- **a1.6 (cumulative displacement references).** The certified G04 receipt's
+  `disp_release_m` is cumulative from tick 1. Every release displacement
+  reference in this card is `disp_hold + release-only closed form`.
+- **a1.7 (R3 per-channel).** The pinned mesh's lateral facets are NOT exactly
+  congruent (per-channel n·t_az differs at ~1e-3). R3 compares each channel
+  against ITS OWN facet constants (`facet_constants(tri)`), and the
+  cross-channel spread is RECORDED, not asserted (measured jt spread 5.95e-7).
+- **a1.8 (R4 refused).** Halving DT requires overriding the frozen module
+  constants — unlawful under the never-fork pin. R4 is REFUSED before
+  execution; impulse-law linearity remains covered by R2 (press scale).
+- **a1.9 (FB1 discriminator).** A hidden release weld is INVISIBLE in the
+  contact records (it is a channel, not a contact force): the discriminator
+  is the free-fall displacement divergence (measured tampered-vs-ref
+  divergence 5.37e-3 against the 1e-9 window; the clean leg passes at
+  1.45e-13). FB5's axis offset is (1e-3, 0, 0) on the torque measurement only
+  (measured delta 0.0338180027 N·m, outside the 1e-9 window; the same clean
+  trace passes).
+- **a1.10 (P-class literal scan).** The forbidden-literal scan fragments the
+  literals ('lambda'+'_min', 'penalty'+' stiffness') so the scanner cannot
+  match its own source text (measured self-match failure in shakedown run 2).
+
+Nothing in a1 touches: the mu placeholders, the Arm V 12-row sweep and its
+windows, the four measured quantities, the X-check set, the input pins, or
+any comparison window.
