@@ -1,0 +1,411 @@
+{
+ "background": {
+  "beauty_color": [
+   24,
+   26,
+   30
+  ],
+  "mask_code": [
+   0,
+   0,
+   0
+  ]
+ },
+ "fixture_geometry": {
+  "declared_pad_extent_m": 0.1,
+  "draw_order": "painter depth sort, far first; declared order trunk(depth 0) then pads by mean projected depth then base_marker; diag_layer always last",
+  "facet_azimuth_deg": {
+   "pad_0": 356.2555,
+   "pad_1": 120.0052,
+   "pad_2": 232.5052
+  },
+  "frame_wh": [
+   320,
+   240
+  ],
+  "grasp_band_z_m": 0.386,
+  "projections": {
+   "alternate": {
+    "center_xyz": [
+     0.0,
+     0.0,
+     0.75
+    ],
+    "elev_deg": 15.0,
+    "image_center_px": [
+     160,
+     120
+    ],
+    "note": "alternate-angle of the grasp site: azimuth 60 deg, elevation 15 deg",
+    "phi_deg": 60.0,
+    "scale_px_per_m": 150.0
+   },
+   "detail": {
+    "center_xyz": [
+     0.0,
+     0.0,
+     0.436
+    ],
+    "elev_deg": 30.0,
+    "image_center_px": [
+     160,
+     120
+    ],
+    "note": "detail of the hand/trunk contact region: close-up at the grasp band from the pad_2 azimuth",
+    "phi_deg": 232.5052,
+    "scale_px_per_m": 900.0
+   },
+   "normal": {
+    "center_xyz": [
+     0.0,
+     0.0,
+     0.75
+    ],
+    "elev_deg": 0.0,
+    "image_center_px": [
+     160,
+     120
+    ],
+    "note": "normal player camera: side view from the pad_0 azimuth",
+    "phi_deg": 356.2555,
+    "scale_px_per_m": 150.0
+   }
+  },
+  "trunk_height_m": 1.158,
+  "trunk_radius_m": 0.037
+ },
+ "objects": {
+  "base_marker": {
+   "beauty_palette": [
+    [
+     150,
+     60,
+     160
+    ]
+   ],
+   "mask_code": [
+    40,
+    200,
+    200
+   ],
+   "role": "subject"
+  },
+  "diag_layer": {
+   "beauty_palette": [
+    [
+     230,
+     230,
+     230
+    ],
+    [
+     230,
+     160,
+     30
+    ]
+   ],
+   "mask_code": [
+    240,
+    240,
+    240
+   ],
+   "role": "prop"
+  },
+  "pad_0": {
+   "beauty_palette": [
+    [
+     40,
+     90,
+     200
+    ],
+    [
+     25,
+     60,
+     150
+    ],
+    [
+     200,
+     225,
+     255
+    ]
+   ],
+   "mask_code": [
+    40,
+    200,
+    40
+   ],
+   "role": "subject"
+  },
+  "pad_1": {
+   "beauty_palette": [
+    [
+     200,
+     140,
+     30
+    ],
+    [
+     150,
+     100,
+     20
+    ],
+    [
+     255,
+     230,
+     160
+    ]
+   ],
+   "mask_code": [
+    40,
+    40,
+    200
+   ],
+   "role": "subject"
+  },
+  "pad_2": {
+   "beauty_palette": [
+    [
+     90,
+     180,
+     90
+    ],
+    [
+     60,
+     140,
+     60
+    ],
+    [
+     200,
+     255,
+     200
+    ]
+   ],
+   "mask_code": [
+    200,
+    200,
+    40
+   ],
+   "role": "subject"
+  },
+  "trunk": {
+   "beauty_palette": [
+    [
+     96,
+     72,
+     48
+    ]
+   ],
+   "mask_code": [
+    200,
+    40,
+    40
+   ],
+   "role": "subject"
+  }
+ },
+ "preregistration": {
+  "declared_before_run": true,
+  "exception_law": "A frame passes only via an exception declared in this spec. Every exception pass emits a machine receipt row carrying the frozen law citation and measured census evidence. Prose-only exceptions are refused.",
+  "freeze_law": "Thresholds are frozen in this spec. The gate never adjusts a threshold to pass an observed frame. Any threshold or geometry change mints spec_version+1 and a new prereg hash; the receipt carries the hash of the spec actually applied. Calibration of floors/bounds from development renders happens ONLY at authoring time before the sealed run; the sealed spec_version is the freeze."
+ },
+ "schema": "chimera.visualgate.view_spec.v1",
+ "spec_id": "K01-CLIMB-20261001-grasp-site-fixture",
+ "spec_version": 2,
+ "view_classes": {
+  "alternate_clean": {
+   "co_location_min_ratio": 0.9,
+   "expected_occluded": [
+    {
+     "justification": {
+      "census_required": true,
+      "exception_class": "DECLARED_OCCLUSION",
+      "geometry_ref": "fixture_geometry.projections.alternate (phi 60 deg, elev 15 deg): pad_0 facet azimuth 356.2555 deg partially hidden behind the trunk band, 87-94 px visible (measured census at calibration)",
+      "law_ref": "capture-gate-template v1 occlusion exception protocol (TEMPLATE_MANIFEST.json sha256 1c4d1dca...); K01 prereg section 9 declared views (calibrated bound frozen at spec_version 2)"
+     },
+     "occluder_id": "trunk",
+     "subject_id": "pad_0"
+    },
+    {
+     "justification": {
+      "census_required": true,
+      "exception_class": "DECLARED_OCCLUSION",
+      "geometry_ref": "fixture_geometry.projections.alternate (phi 60 deg, elev 15 deg): pad_2 facet azimuth 232.5052 deg fully hidden behind the trunk band, 0 px visible (measured census at calibration)",
+      "law_ref": "capture-gate-template v1 occlusion exception protocol (TEMPLATE_MANIFEST.json sha256 1c4d1dca...); K01 prereg section 9 declared views (calibrated bound frozen at spec_version 2)"
+     },
+     "occluder_id": "trunk",
+     "subject_id": "pad_2"
+    }
+   ],
+   "min_visible_pixels": {
+    "base_marker": 200,
+    "pad_1": 40,
+    "trunk": 1200
+   },
+   "occluded_subject_max_px": 140,
+   "occluder_min_pixels": 100
+  },
+  "alternate_diag": {
+   "co_location_min_ratio": 0.9,
+   "expected_occluded": [
+    {
+     "justification": {
+      "census_required": true,
+      "exception_class": "DECLARED_OCCLUSION",
+      "geometry_ref": "fixture_geometry.projections.alternate (phi 60 deg, elev 15 deg): pad_0 partially hidden behind the trunk band; diagnostic overlay draws its channel mark by declared overlay law (measured census at calibration)",
+      "law_ref": "capture-gate-template v1 occlusion exception protocol (TEMPLATE_MANIFEST.json sha256 1c4d1dca...); K01 prereg section 9 declared views (calibrated bound frozen at spec_version 2)"
+     },
+     "occluder_id": "trunk",
+     "subject_id": "pad_0"
+    },
+    {
+     "justification": {
+      "census_required": true,
+      "exception_class": "DECLARED_OCCLUSION",
+      "geometry_ref": "fixture_geometry.projections.alternate (phi 60 deg, elev 15 deg): pad_2 fully hidden behind the trunk band; diagnostic overlay draws its channel mark by declared overlay law (measured census at calibration)",
+      "law_ref": "capture-gate-template v1 occlusion exception protocol (TEMPLATE_MANIFEST.json sha256 1c4d1dca...); K01 prereg section 9 declared views (calibrated bound frozen at spec_version 2)"
+     },
+     "occluder_id": "trunk",
+     "subject_id": "pad_2"
+    }
+   ],
+   "min_visible_pixels": {
+    "base_marker": 200,
+    "diag_layer": 25,
+    "pad_1": 40,
+    "trunk": 1200
+   },
+   "occluded_subject_max_px": 140,
+   "occluder_min_pixels": 100
+  },
+  "approach_normal_clean": {
+   "co_location_min_ratio": 0.9,
+   "expected_occluded": [],
+   "min_visible_pixels": {
+    "base_marker": 150,
+    "trunk": 1000
+   },
+   "occluded_subject_max_px": 0,
+   "occluder_min_pixels": 100
+  },
+  "approach_normal_diag": {
+   "co_location_min_ratio": 0.9,
+   "expected_occluded": [],
+   "min_visible_pixels": {
+    "base_marker": 150,
+    "diag_layer": 90,
+    "trunk": 1000
+   },
+   "occluded_subject_max_px": 0,
+   "occluder_min_pixels": 100
+  },
+  "detail_clean": {
+   "co_location_min_ratio": 0.9,
+   "expected_occluded": [],
+   "min_visible_pixels": {
+    "pad_0": 1200,
+    "pad_1": 2500,
+    "pad_2": 2800,
+    "trunk": 6000
+   },
+   "occluded_subject_max_px": 0,
+   "occluder_min_pixels": 100
+  },
+  "detail_diag": {
+   "co_location_min_ratio": 0.9,
+   "expected_occluded": [],
+   "min_visible_pixels": {
+    "diag_layer": 70,
+    "pad_0": 1200,
+    "pad_1": 2500,
+    "pad_2": 2800,
+    "trunk": 6000
+   },
+   "occluded_subject_max_px": 0,
+   "occluder_min_pixels": 100
+  },
+  "geom_normal_clean": {
+   "co_location_min_ratio": 0.9,
+   "expected_occluded": [],
+   "min_visible_pixels": {
+    "base_marker": 150,
+    "trunk": 1000
+   },
+   "occluded_subject_max_px": 0,
+   "occluder_min_pixels": 100
+  },
+  "geom_normal_diag": {
+   "co_location_min_ratio": 0.9,
+   "expected_occluded": [],
+   "min_visible_pixels": {
+    "base_marker": 150,
+    "diag_layer": 8,
+    "trunk": 1000
+   },
+   "occluded_subject_max_px": 0,
+   "occluder_min_pixels": 100
+  },
+  "normal_clean": {
+   "co_location_min_ratio": 0.9,
+   "expected_occluded": [
+    {
+     "justification": {
+      "census_required": true,
+      "exception_class": "DECLARED_OCCLUSION",
+      "geometry_ref": "fixture_geometry.projections.normal (phi 356.2555 deg): pad_1 facet azimuth behind the trunk near surface; partial tangential sliver visible (measured census at calibration: 30-33 px)",
+      "law_ref": "capture-gate-template v1 occlusion exception protocol (TEMPLATE_MANIFEST.json sha256 1c4d1dca...); K01 prereg section 9 declared views (calibrated bound frozen at spec_version 2)"
+     },
+     "occluder_id": "trunk",
+     "subject_id": "pad_1"
+    },
+    {
+     "justification": {
+      "census_required": true,
+      "exception_class": "DECLARED_OCCLUSION",
+      "geometry_ref": "fixture_geometry.projections.normal (phi 356.2555 deg): pad_2 facet azimuth behind the trunk near surface; partial tangential sliver visible (measured census at calibration: 30-33 px)",
+      "law_ref": "capture-gate-template v1 occlusion exception protocol (TEMPLATE_MANIFEST.json sha256 1c4d1dca...); K01 prereg section 9 declared views (calibrated bound frozen at spec_version 2)"
+     },
+     "occluder_id": "trunk",
+     "subject_id": "pad_2"
+    }
+   ],
+   "min_visible_pixels": {
+    "base_marker": 200,
+    "pad_0": 60,
+    "trunk": 1000
+   },
+   "occluded_subject_max_px": 90,
+   "occluder_min_pixels": 100
+  },
+  "normal_diag": {
+   "co_location_min_ratio": 0.9,
+   "expected_occluded": [
+    {
+     "justification": {
+      "census_required": true,
+      "exception_class": "DECLARED_OCCLUSION",
+      "geometry_ref": "fixture_geometry.projections.normal (phi 356.2555 deg): pad_1 facet azimuth behind the trunk near surface; partial tangential sliver visible (measured census at calibration: 30-33 px); diagnostic overlay draws its channel mark by declared overlay law",
+      "law_ref": "capture-gate-template v1 occlusion exception protocol (TEMPLATE_MANIFEST.json sha256 1c4d1dca...); K01 prereg section 9 declared views (calibrated bound frozen at spec_version 2)"
+     },
+     "occluder_id": "trunk",
+     "subject_id": "pad_1"
+    },
+    {
+     "justification": {
+      "census_required": true,
+      "exception_class": "DECLARED_OCCLUSION",
+      "geometry_ref": "fixture_geometry.projections.normal (phi 356.2555 deg): pad_2 facet azimuth behind the trunk near surface; partial tangential sliver visible (measured census at calibration: 30-33 px); diagnostic overlay draws its channel mark by declared overlay law",
+      "law_ref": "capture-gate-template v1 occlusion exception protocol (TEMPLATE_MANIFEST.json sha256 1c4d1dca...); K01 prereg section 9 declared views (calibrated bound frozen at spec_version 2)"
+     },
+     "occluder_id": "trunk",
+     "subject_id": "pad_2"
+    }
+   ],
+   "min_visible_pixels": {
+    "base_marker": 200,
+    "diag_layer": 15,
+    "pad_0": 60,
+    "trunk": 1000
+   },
+   "occluded_subject_max_px": 90,
+   "occluder_min_pixels": 100
+  }
+ }
+}
