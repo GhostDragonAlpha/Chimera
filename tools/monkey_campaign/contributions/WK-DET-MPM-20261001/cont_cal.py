@@ -1,6 +1,6 @@
 """det-mpm contention-launch calibration (NON-EVIDENCE mechanics check).
 
-AMENDMENT-4 version: measures the solo execution time of one contention_kernel
+AMENDMENT-5 version (cal4): optional argv[2] = iters (e.g. 1024 for the r2r variant). measures the solo execution time of one contention_kernel
 launch on cuda:0 in BOTH determinism modes, because the R2R path records
 (key, value) scatter records (bounded by deterministic_max_records) and has a
 completely different per-launch cost than the NG path:
@@ -23,6 +23,7 @@ import sys
 import time
 
 OUT_DIR = sys.argv[1]
+CAL_ITERS = int(sys.argv[2]) if len(sys.argv) > 2 else None
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 import importlib.util  # noqa: E402
@@ -37,7 +38,7 @@ def load_module(mode_name, tag):
     ]
     try:
         spec = importlib.util.spec_from_file_location(
-            f"armv5_{tag}", os.path.join(HERE, "run_mpm_arm_v5.py"))
+            f"armv6_{tag}", os.path.join(HERE, "run_mpm_arm_v6.py"))
         mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(mod)
         return mod
@@ -46,13 +47,14 @@ def load_module(mode_name, tag):
 
 
 def measure(mod):
+    iters = mod.CONTENTION_ITERS_EFFECTIVE
     dev = wp.get_device("cuda:0")
     arr = wp.zeros(mod.CONTENTION_WINDOW, dtype=float, device=dev)
     stream = wp.Stream(device=dev)
     for _ in range(2):
         wp.launch(
             mod.contention_kernel, dim=mod.CONTENTION_DIM,
-            inputs=[arr, mod.CONTENTION_ITERS], device=dev, stream=stream,
+            inputs=[arr, iters], device=dev, stream=stream,
             block_dim=mod.CONTENTION_BLOCK,
         )
     wp.synchronize_stream(stream)
@@ -61,7 +63,7 @@ def measure(mod):
         t0 = time.perf_counter()
         wp.launch(
             mod.contention_kernel, dim=mod.CONTENTION_DIM,
-            inputs=[arr, mod.CONTENTION_ITERS], device=dev, stream=stream,
+            inputs=[arr, iters], device=dev, stream=stream,
             block_dim=mod.CONTENTION_BLOCK,
         )
         wp.synchronize_stream(stream)
@@ -90,12 +92,12 @@ cal = {
     "warmups_per_mode": 2,
     "dim": mod_r2r.CONTENTION_DIM,
     "block_dim": mod_r2r.CONTENTION_BLOCK,
-    "iters_per_launch": mod_r2r.CONTENTION_ITERS,
+    "iters_per_launch": mod_r2r.CONTENTION_ITERS_EFFECTIVE,
     "window_floats": mod_r2r.CONTENTION_WINDOW,
-    "atomics_per_launch": mod_r2r.CONTENTION_DIM * mod_r2r.CONTENTION_ITERS,
+    "atomics_per_launch": mod_r2r.CONTENTION_DIM * mod_r2r.CONTENTION_ITERS_EFFECTIVE,
     "deterministic_max_records": int(wp.config.deterministic_max_records),
     "nvidia_smi_csv": smi.stdout.strip(),
-    "harness": "run_mpm_arm_v5.py",
+    "harness": "run_mpm_arm_v6.py",
 }
 os.makedirs(OUT_DIR, exist_ok=True)
 with open(os.path.join(OUT_DIR, "calibration.json"), "w") as f:
