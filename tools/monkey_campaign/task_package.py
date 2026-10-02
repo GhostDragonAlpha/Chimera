@@ -14,6 +14,15 @@ source Git object database at the pinned base) and temporary scratch
 (slot-*/scratch); unknown paths are never touched. Budget checks are admission
 and polling controls, not OS quotas; RAM is never treated as a cleanup
 substitute.
+
+Failure-condition wave (wk-storage-failure, 2026-09-29): admission reservation
+is now atomic across slots (global admission lock around the check-then-reserve
+pair; the per-slot lock alone allowed two simultaneous admissions to both pass
+against the same free space before either lease existed); a lease whose recorded
+owner process is still alive is never reclaimed (recovery preserves it and
+records a hold); receipts record allocated size-on-disk next to logical sizes;
+the holds ledger refuses anonymous entries at write time and gains a lint that
+flags already-recorded anonymous indefinite holds.
 """
 import argparse
 from contextlib import contextmanager
@@ -129,10 +138,78 @@ def free_bytes(path):
     return shutil.disk_usage(str(path)).free
 
 
+def file_allocated(path):
+    """Size on disk (allocated bytes) of one file. Windows reports the
+    allocation size via GetFileInformationByHandleEx(FileStandardInfo), which
+    reflects cluster rounding and sparse/compressed storage. Logical sizes
+    elsewhere use st_size; the distinction belongs in receipts, not in prose."""
+    p=Path(path)
+    if os.name!='nt':
+        st=p.stat();return (getattr(st,'st_blocks',0) or 0)*512 or st.st_size
+    import ctypes as c
+    from ctypes import wintypes as w
+    class StandardInfo(c.Structure):
+        _fields_=[('AllocationSize',c.c_longlong),('EndOfFile',c.c_longlong),
+                  ('NumberOfLinks',w.DWORD),('DeletePending',w.BOOLEAN),('Directory',w.BOOLEAN),('Reserved',c.c_byte*2)]
+    k=c.WinDLL('kernel32',use_last_error=True)
+    k.CreateFileW.argtypes=[w.LPCWSTR,w.DWORD,w.DWORD,c.c_void_p,w.DWORD,w.DWORD,w.HANDLE];k.CreateFileW.restype=w.HANDLE
+    k.GetFileInformationByHandleEx.argtypes=[w.HANDLE,c.c_int,c.c_void_p,w.DWORD];k.GetFileInformationByHandleEx.restype=w.BOOL
+    k.CloseHandle.argtypes=[w.HANDLE]
+    invalid=c.c_void_p(-1).value
+    # FILE_READ_ATTRIBUTES, share all, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS.
+    h=k.CreateFileW(str(p),0x80,0x7,None,3,0x02000000,None)
+    if not h or h==invalid:raise OSError('allocation_query_failed: '+str(p))
+    try:
+        info=StandardInfo()
+        if not k.GetFileInformationByHandleEx(h,1,c.byref(info),c.sizeof(info)):
+            raise OSError('allocation_query_failed: '+str(p))
+        return max(0,int(info.AllocationSize))
+    finally:k.CloseHandle(h)
+
+
+def tree_allocated(path):
+    """Allocated bytes of a file tree; directories contribute their files only."""
+    total=0
+    for base,dirs,files in os.walk(path):
+        for name in files:total+=file_allocated(Path(base)/name)
+    return total
+
+
+def pid_alive(pid):
+    """Best-effort liveness of a recorded owner process. A terminated process
+    whose handle is still held elsewhere must NOT count as alive, or a crashed
+    runner's slot could never be recovered: liveness is exit-code STILL_ACTIVE,
+    not handle existence. Used only to PRESERVE data (a live-looking lease is
+    never reclaimed); never used to delete."""
+    try:pid=int(pid)
+    except (TypeError,ValueError):return False
+    if pid<=0:return False
+    if os.name!='nt':
+        try:os.kill(pid,0);return True
+        except OSError:return False
+    import ctypes as c
+    from ctypes import wintypes as w
+    k=c.WinDLL('kernel32',use_last_error=True)
+    k.OpenProcess.argtypes=[w.DWORD,w.BOOL,w.DWORD];k.OpenProcess.restype=w.HANDLE
+    k.GetExitCodeProcess.argtypes=[w.HANDLE,c.c_void_p];k.GetExitCodeProcess.restype=w.BOOL
+    k.CloseHandle.argtypes=[w.HANDLE]
+    h=k.OpenProcess(0x1000,False,pid)  # PROCESS_QUERY_LIMITED_INFORMATION
+    if not h:return c.get_last_error()==5  # access denied still proves it exists
+    try:
+        code=w.DWORD(0)
+        if not k.GetExitCodeProcess(h,c.byref(code)):return c.get_last_error()==5
+        return code.value==259  # STILL_ACTIVE: not yet terminated -> alive
+    finally:k.CloseHandle(h)
+
+
 def record_hold(root, kind, owner, reason, next_action, path=''):
     """Holds ledger: anything preserved indefinitely gets a named owner, reason,
-    and resolution action. Append-only evidence; nothing is deleted based on it."""
+    and resolution action. Append-only evidence; nothing is deleted based on it.
+    Anonymous indefinite holds are refused at write time; use lint_holds to flag
+    entries already recorded before this rule."""
     root=Path(root);root.mkdir(parents=True,exist_ok=True)
+    if not str(owner).strip() or not str(reason).strip() or not str(next_action).strip():
+        raise ValueError('anonymous_hold_refused_owner_reason_next_action_required')
     entry=dict(date=time.strftime('%Y-%m-%dT%H:%M:%S%z'),kind=kind,owner=owner,
                reason=reason,next_action=next_action,path=str(path))
     with lock(root/'holds.lock'):
@@ -149,6 +226,21 @@ def read_holds(root=RUNNER):
     return json.loads(p.read_text(encoding='utf-8')) if p.exists() else dict(schema=HOLDS_SCHEMA,holds=[])
 
 
+def lint_holds(root=RUNNER):
+    """Ledger lint: every indefinite hold must carry a named owner, a reason, a
+    next action and a date. Anonymous indefinite holds are flagged for operator
+    resolution; they are never silently deleted or rewritten by the runner."""
+    ledger=read_holds(root)
+    violations=[]
+    for i,h in enumerate(ledger.get('holds',[])):
+        missing=[k for k in ('owner','reason','next_action','date') if not str(h.get(k,'') or '').strip()]
+        if missing:
+            violations.append(dict(index=i,kind=h.get('kind',''),path=h.get('path',''),
+                                   violation='anonymous_indefinite_hold',missing_fields=missing))
+    return dict(schema=ledger.get('schema'),holds=len(ledger.get('holds',[])),
+                violations=violations,ok=not violations)
+
+
 def classify_runner(root, path):
     """Directory policy for the runner root: protected evidence / temporary
     scratch / runner metadata / unknown. Unknown paths are never touched."""
@@ -157,6 +249,7 @@ def classify_runner(root, path):
     except ValueError:return 'outside'
     if not r.parts:return 'runner_root'
     if r.parts[0]=='results':return 'protected_evidence'
+    if r.parts[0]=='admission.lock':return 'runner_metadata'
     if r.parts[0].startswith('slot-'):
         if len(r.parts)>=2 and r.parts[1]=='scratch':return 'temporary_scratch'
         if len(r.parts)==2 and r.parts[1] in ('job.json','lease.json','slot.lock'):return 'runner_metadata'
@@ -383,6 +476,16 @@ def recover_locked(root, sroot):
             record_hold(root,'lease_preserved','unidentified (invalid slot lease)','invalid_stale_lease_schema',
                         'operator inspection; runner refuses to discard an unidentifiable lease',lease)
             raise ValueError('invalid_stale_lease_preserved')
+        # T4 (wk-storage-failure wave): a lease whose recorded owner process is
+        # still alive is NEVER reclaimed. Recovery runs only under this slot's
+        # lock, so a live pid here means an unidentified external owner: preserve
+        # everything and record a hold. This check can only refuse; it never
+        # decides deletion. A dead owner (the crashed-runner case) still recovers.
+        pid=stale.get('pid')
+        if isinstance(pid,int) and pid!=os.getpid() and pid_alive(pid):
+            record_hold(root,'lease_preserved','runner pid '+str(pid)+' (live recorded owner)','live_lease_owner_present',
+                        'operator identification of the live owner; lease and scratch preserved while it runs',lease)
+            raise ValueError('live_lease_owner_present_preserved')
     scratch=sroot/'scratch'
     if not scratch.exists():
         if stale is not None:
@@ -439,26 +542,34 @@ def recover_locked(root, sroot):
     elif c.get_last_error()!=2:
         raise OSError('recovery_job_lookup_failed')
     pre_total=sum(inventory(scratch).values())
+    pre_alloc=tree_allocated(scratch)
     result.mkdir(parents=True,exist_ok=True)
-    artifacts={};total=0;log_bytes=0
+    artifacts={};art_alloc={};total=0;total_alloc=0;log_bytes=0
     for name in m.get('keep',[]):
         name=relpath(name);p=inside(scratch,name)
         if not p.is_file():continue
+        fa=file_allocated(p)
         total+=p.stat().st_size
         if total>PACKAGE_LIMIT:raise ValueError('recovery_output_budget_exceeded_preserved')
         dest=result/'artifacts'/name;dest.parent.mkdir(parents=True,exist_ok=True)
         shutil.copyfile(p,dest);hsh=sha(p.read_bytes())
         if sha(dest.read_bytes())!=hsh:raise ValueError('recovery_copy_verification_failed')
-        artifacts[name]=hsh
+        artifacts[name]=hsh;art_alloc[name]=fa;total_alloc+=fa
     log=inside(scratch,'runner.log')
     if log.is_file():
         with log.open('rb') as f:f.seek(max(0,log.stat().st_size-1024**2));data=f.read()
-        (result/'runner.log').write_bytes(data);artifacts['runner.log']=sha(data);log_bytes=len(data)
+        la=file_allocated(log)
+        (result/'runner.log').write_bytes(data);artifacts['runner.log']=sha(data);art_alloc['runner.log']=la
+        log_bytes=len(data);total_alloc+=la
+    # T6: recovery receipts carry allocated size-on-disk next to logical sizes.
     receipt=dict(job=jid,state='INTERRUPTED_RECOVERED',artifacts=artifacts,cleanup_verified=False,
                  bytes={'schema':BYTES_SCHEMA,'units':'bytes','scratch_peak_bytes':pre_total,
-                        'scratch_at_cleanup_bytes':pre_total,'retained_bytes':total+log_bytes,
+                        'scratch_at_cleanup_bytes':pre_total,'scratch_at_cleanup_allocated_bytes':pre_alloc,
+                        'retained_bytes':total+log_bytes,'retained_allocated_bytes':total_alloc,
                         'reclaimed_bytes':pre_total-total-log_bytes,
-                        'declared_budget_bytes':(stale or {}).get('declared_bytes')})
+                        'reclaimed_allocated_bytes':max(0,pre_alloc-total_alloc),
+                        'declared_budget_bytes':(stale or {}).get('declared_bytes')},
+                 artifact_allocated_bytes=art_alloc)
     write_json(result/'recovery.json',receipt)
     remove_owned(scratch,sroot)
     if stale is not None:lease.unlink()  # stale lease consumed together with its scratch
@@ -484,14 +595,16 @@ def _run_slot(sealed, command, keep, timeout, root, slot, job_limit, resources):
     if root.resolve()!=root:raise ValueError('runner_root_reparse_refused')
     sroot=inside(root,'slot-'+str(slot));sroot.mkdir(exist_ok=True)
     jid=uuid.uuid4().hex; result=root/'results'/jid
+    manifest_sha=sha((sealed/'manifest.json').read_bytes())
     with lock(sroot/'slot.lock'):
         scratch=sroot/'scratch'
         recover_locked(root,sroot)
         memory=runner_resources.admission(resources)
         if not memory['allowed']:
             return {'state':'BUSY','reason':'memory_reserve','retry_after_seconds':10,'memory':memory}
-        # A1/A2: space reservation BEFORE admission. The job is admitted only if
-        # its declared budget fits free disk beyond aggregate active reservations.
+        # A1/A2: space reservation BEFORE admission. The precheck below fails fast
+        # outside the lock; the AUTHORITATIVE check is re-run inside the global
+        # admission lock, immediately before the lease is written.
         space=space_admission(root,job_limit+OUTPUT_LIMIT)
         if not space['allowed']:
             return {'state':'BUSY','reason':'disk_space_reserve','retry_after_seconds':10,'space':space}
@@ -499,8 +612,34 @@ def _run_slot(sealed, command, keep, timeout, root, slot, job_limit, resources):
             record_hold(root,'results_preserved','campaign results store','retained_results_budget_exceeded',
                         'anchor required evidence via anchor.py, then retire results; admission refused meanwhile',root/'results')
             raise ValueError('retained_results_budget_exceeded_anchor_and_retire_results')
-        scratch.mkdir();result.mkdir(parents=True)
-        receipt={'job':jid,'state':'STARTING','sealed_manifest_sha256':sha((sealed/'manifest.json').read_bytes()),
+        # T1 defect fix (wk-storage-failure wave): reservation is atomic across
+        # slots. The per-slot lock alone left a window between the reservation
+        # check and the lease write, so two simultaneous admissions on different
+        # slots could both pass against the same free space before either lease
+        # existed and over-commit the disk. The global admission lock covers the
+        # check-then-reserve pair, so a concurrent admission always sees every
+        # earlier lease before its own check. A loser leaves no partial state:
+        # nothing is created before the in-lock check passes.
+        deadline=time.monotonic()+10
+        while True:
+            try:
+                with lock(root/'admission.lock'):
+                    space=space_admission(root,job_limit+OUTPUT_LIMIT)
+                    if not space['allowed']:
+                        return {'state':'BUSY','reason':'disk_space_reserve','retry_after_seconds':10,'space':space}
+                    write_json(sroot/'job.json',dict(schema=JOB_SCHEMA,job=jid,sealed=str(sealed),keep=list(keep),result=str(result)))
+                    scratch.mkdir();result.mkdir(parents=True)
+                    # A3: the running job holds a lease; cleanup verifies lease identity first.
+                    write_json(sroot/'lease.json',dict(schema=LEASE_SCHEMA,job=jid,pid=os.getpid(),slot=slot,
+                               started_at=time.time(),declared_bytes=job_limit,retained_cap_bytes=OUTPUT_LIMIT,
+                               sealed_manifest_sha256=manifest_sha,result=str(result)))
+                break
+            except SlotBusy:
+                if time.monotonic()>deadline:
+                    return {'state':'BUSY','reason':'disk_space_reserve','retry_after_seconds':10,
+                            'space':dict(admission_lock='contended',free_bytes=free_bytes(root))}
+                time.sleep(.2)
+        receipt={'job':jid,'state':'STARTING','sealed_manifest_sha256':manifest_sha,
                  'base':m['package']['base'],'command':command,'slot':slot,'cleanup_verified':False,
                  'declared_budget_bytes':job_limit}
         receipt['resource_profile']=resources
@@ -508,11 +647,6 @@ def _run_slot(sealed, command, keep, timeout, root, slot, job_limit, resources):
         receipt['space_admission']=space
         receipt['artifact_store_class']=classify_runner(root,result)
         tree=None;drained=True;preserved=False;peak=0
-        write_json(sroot/'job.json',dict(schema=JOB_SCHEMA,job=jid,sealed=str(sealed),keep=list(keep),result=str(result)))
-        # A3: the running job holds a lease; cleanup verifies lease identity first.
-        write_json(sroot/'lease.json',dict(schema=LEASE_SCHEMA,job=jid,pid=os.getpid(),slot=slot,started_at=time.time(),
-                   declared_bytes=job_limit,retained_cap_bytes=OUTPUT_LIMIT,
-                   sealed_manifest_sha256=receipt['sealed_manifest_sha256'],result=str(result)))
         (scratch/'.chimera-runner-id').write_text(jid)
         try:
             shutil.copytree(sealed/'files',scratch,dirs_exist_ok=True)
@@ -541,34 +675,42 @@ def _run_slot(sealed, command, keep, timeout, root, slot, job_limit, resources):
                 except Exception as exc:receipt['process_drain_error']=str(exc)
             if drained:
                 try:
-                    artifacts={};retained=0
+                    artifacts={};art_alloc={};retained=0;retained_alloc=0
                     # Always retain a bounded diagnostic tail, even after timeout.
                     log=scratch/'runner.log'
                     if log.exists():
                         with log.open('rb') as f:
                             f.seek(max(0,log.stat().st_size-1024**2));data=f.read()
+                        la=file_allocated(log)
                         (result/'runner.log').write_bytes(data);artifacts['runner.log']=sha(data);retained+=len(data)
+                        retained_alloc+=la;art_alloc['runner.log']=la
                     total=0
                     for name in keep:
                         name=relpath(name);p=inside(scratch,name)
                         if not p.is_file():
                             receipt.setdefault('missing_outputs',[]).append(name);continue
+                        fa=file_allocated(p)
                         total+=p.stat().st_size
                         if total>OUTPUT_LIMIT:raise ValueError('retained_output_budget_exceeded')
                         dest=result/'artifacts'/name;dest.parent.mkdir(parents=True,exist_ok=True)
                         shutil.copyfile(p,dest)
                         h=sha(p.read_bytes())
                         if sha(dest.read_bytes())!=h:raise ValueError('output_preservation_failed')
-                        artifacts[name]=h
+                        artifacts[name]=h;art_alloc[name]=fa;retained_alloc+=fa
                     retained+=total
                     if receipt.get('missing_outputs'):receipt['state']='FAILED'
                     receipt['artifacts']=artifacts
+                    # T6: per-artifact allocated size-on-disk, next to logical sizes.
+                    receipt['artifact_allocated_bytes']=art_alloc
                     # A7: byte accounting. created-at-cleanup == retained + reclaimed.
-                    end_bytes=sum(inventory(scratch).values())
+                    end_bytes=sum(inventory(scratch).values());end_alloc=tree_allocated(scratch)
                     receipt['bytes']={'schema':BYTES_SCHEMA,'units':'bytes',
                                       'scratch_peak_bytes':max(peak,end_bytes),
                                       'scratch_at_cleanup_bytes':end_bytes,
-                                      'retained_bytes':retained,'reclaimed_bytes':end_bytes-retained,
+                                      'scratch_at_cleanup_allocated_bytes':end_alloc,
+                                      'retained_bytes':retained,'retained_allocated_bytes':retained_alloc,
+                                      'reclaimed_bytes':end_bytes-retained,
+                                      'reclaimed_allocated_bytes':max(0,end_alloc-retained_alloc),
                                       'declared_budget_bytes':job_limit}
                     # A3/A9: lease identity and directory policy gate deletion.
                     verify_lease(sroot,jid)
@@ -615,15 +757,24 @@ def main():
     r=sub.add_parser('run');r.add_argument('--sealed',required=True);r.add_argument('--keep',action='append',default=[])
     r.add_argument('--slot',type=int,default=None,help='Omit for automatic selection from the configured pool');r.add_argument('--timeout',type=float,default=600)
     r.add_argument('--job-limit',type=float,default=JOB_LIMIT,help='Declared per-job scratch budget in bytes, reserved before admission')
+    r.add_argument('--root',default=None,help='Runner root override for isolated testing; default is the canonical runner root')
     r.add_argument('command',nargs=argparse.REMAINDER)
     a=sub.add_parser('apply');a.add_argument('--sealed',required=True);a.add_argument('--target',required=True)
     h=sub.add_parser('holds');h.add_argument('--root',default=None,help='Runner root holding holds_ledger.json')
+    h.add_argument('--lint',action='store_true',help='Flag anonymous indefinite holds instead of printing the ledger')
     x=ap.parse_args()
-    if x.op=='create':out=create(x.source,x.base,x.package,x.owner,x.task,x.read,x.write)
-    elif x.op=='seal':out=seal(x.package)
-    elif x.op=='apply':out=apply(x.sealed,x.target)
-    elif x.op=='holds':out=read_holds(x.root) if x.root else read_holds()
-    else:out=run(x.sealed,x.command[1:] if x.command[:1]==['--'] else x.command,x.keep,x.timeout,slot=x.slot,job_limit=int(x.job_limit))
+    try:
+        if x.op=='create':out=create(x.source,x.base,x.package,x.owner,x.task,x.read,x.write)
+        elif x.op=='seal':out=seal(x.package)
+        elif x.op=='apply':out=apply(x.sealed,x.target)
+        elif x.op=='holds':out=lint_holds(x.root or RUNNER) if x.lint else read_holds(x.root or RUNNER)
+        else:out=run(x.sealed,x.command[1:] if x.command[:1]==['--'] else x.command,x.keep,x.timeout,
+                     slot=x.slot,job_limit=int(x.job_limit),root=Path(x.root) if x.root else RUNNER)
+    except SlotBusy as exc:
+        # A contended slot/package lock is BUSY with exit 75, never a traceback;
+        # the refused attempt touched nothing (documented retry contract).
+        print(json.dumps({'state':'BUSY','reason':'lock_busy','detail':str(exc)[:300],'retry_after_seconds':10},indent=2))
+        raise SystemExit(75)
     print(json.dumps(out,indent=2))
     if out.get('state')=='BUSY':raise SystemExit(75)
     if out.get('state') in ('FAILED','BLOCKED'):raise SystemExit(2)
