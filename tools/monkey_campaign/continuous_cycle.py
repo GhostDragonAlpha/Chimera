@@ -71,8 +71,14 @@ def join(registry,agent_id,task_id=None):
                 return packet
             return k.packet(c,a,'RESUME_ATTEMPT')
         # Retire only this caller's obsolete/excess review at its own checkpoint.
+        # An explicit --task start is an intentional correction/revisit request:
+        # an identity-bound review assignment on a DIFFERENT card must not
+        # outrank it. Only same-card reviews resume here; other cards' review
+        # records stay untouched for this worker's next identity-only startup.
         from review_allocation import resume_allowed, available
         for c in b['cards'].values():
+            if task_id and c['id'] != task_id:
+                continue
             for review in c.get('worker_reviews', []):
                 if review['agent_id'] == agent_id and review['state'] == 'WORKING':
                     if resume_allowed(c, review):
