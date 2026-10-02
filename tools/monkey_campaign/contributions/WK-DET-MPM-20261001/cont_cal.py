@@ -1,6 +1,6 @@
 """det-mpm contention-launch calibration (NON-EVIDENCE mechanics check).
 
-Imports contention_kernel from run_mpm_arm_v3.py (byte-identical kernel object,
+Imports contention_kernel from run_mpm_arm_v4.py (byte-identical kernel object,
 no duplication) and measures the solo execution time of one launch on cuda:0:
 2 warmups, then 5 timed solo launches (launch -> synchronize_stream -> stop),
 median reported. AMENDMENT-2 uses the median as T_launch_solo_ms in the fixed
@@ -26,7 +26,7 @@ sys.argv = [
 ]
 import importlib.util  # noqa: E402
 
-spec = importlib.util.spec_from_file_location("armv3", os.path.join(HERE, "run_mpm_arm_v3.py"))
+spec = importlib.util.spec_from_file_location("armv4", os.path.join(HERE, "run_mpm_arm_v4.py"))
 mod = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mod)
 import warp as wp  # noqa: E402
@@ -69,7 +69,7 @@ cal = {
     "window_floats": mod.CONTENTION_WINDOW,
     "atomics_per_launch": mod.CONTENTION_DIM * mod.CONTENTION_ITERS,
     "nvidia_smi_csv": smi.stdout.strip(),
-    "harness": "run_mpm_arm_v3.py",
+    "harness": "run_mpm_arm_v4.py",
 }
 os.makedirs(OUT_DIR, exist_ok=True)
 with open(os.path.join(OUT_DIR, "calibration.json"), "w") as f:
