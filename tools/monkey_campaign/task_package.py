@@ -23,6 +23,15 @@ owner process is still alive is never reclaimed (recovery preserves it and
 records a hold); receipts record allocated size-on-disk next to logical sizes;
 the holds ledger refuses anonymous entries at write time and gains a lint that
 flags already-recorded anonymous indefinite holds.
+
+Inventory-poll wave (wk-storage-r2, 2026-10-01): the live budget poll no
+longer kills a job when a transient file vanishes between listing and stat
+(receipt 044d1dbd: WinError 2 on .git\\HEAD.lock churned by a git command
+inside scratch); only the poll skips such races, strict accounting is
+unchanged, and genuinely missing declared outputs still fail the job. The
+same wave accepts DIRECTORY-form declared outputs (--keep outputs/<suite>)
+as delivered when the directory exists, preserving and hashing its files —
+previously a green suite with a directory keep was marked FAILED as missing.
 """
 import argparse
 from contextlib import contextmanager
@@ -107,16 +116,48 @@ def lock(path):
                 f.seek(0); msvcrt.locking(f.fileno(), msvcrt.LK_UNLCK, 1)
 
 
-def inventory(root):
+def inventory(root, skip_transient=False):
+    """Map relative posix path -> logical size for every file under root.
+
+    Strict mode (default) is an exact snapshot for seal/verify/cleanup
+    accounting: an entry that disappears mid-walk is an error, so those
+    callers refuse and preserve instead of guessing.
+
+    skip_transient=True is ONLY for the live budget poll of a running job's
+    scratch. A job may legitimately create and delete short-lived files while
+    it runs -- a git command inside scratch writes and removes .git/HEAD.lock
+    (defect receipt 044d1dbd: the 0.1s poll hit WinError 2 on HEAD.lock
+    between listing and stat and KILLED the job). A path that is listed but
+    vanishes before stat() is a transient filesystem race on a transient
+    file: it is skipped for that poll cycle, and the next 0.1s poll re-walks
+    the tree (bounded: a vanished file stays vanished, so a skip can never
+    loop or mask growth; every surviving file is still counted each cycle).
+
+    This is deliberately distinct from a genuinely missing DECLARED output:
+    declared outputs are judged after the job exits by the keep-list check
+    (p.is_file() -> missing_outputs -> FAILED), which stays untouched. A
+    transient lock that vanishes is never an output; an output that was
+    never produced still fails the job. PermissionError and reparse
+    entries keep strict treatment in both modes."""
+    def walk_error(exc):
+        # A listed directory (or the tree root) that vanished before its
+        # scandir is the same race as a vanished file; only the live poll
+        # tolerates it. Strict mode passes no onerror at all, so every
+        # existing caller keeps byte-identical walk semantics.
+        if isinstance(exc, FileNotFoundError):return
+        raise exc
     out = {}
-    for base, dirs, files in os.walk(root):
+    for base, dirs, files in os.walk(root, **({'onerror':walk_error} if skip_transient else {})):
         for name in dirs+files:
             p = Path(base)/name
             if p.is_symlink() or (hasattr(p, 'is_junction') and p.is_junction()):
                 raise ValueError('reparse_entry_refused')
         for name in files:
             p = Path(base)/name
-            out[p.relative_to(root).as_posix()] = p.stat().st_size
+            try:out[p.relative_to(root).as_posix()] = p.stat().st_size
+            except FileNotFoundError:
+                if not skip_transient:raise
+                continue
     return out
 
 
@@ -547,14 +588,23 @@ def recover_locked(root, sroot):
     artifacts={};art_alloc={};total=0;total_alloc=0;log_bytes=0
     for name in m.get('keep',[]):
         name=relpath(name);p=inside(scratch,name)
-        if not p.is_file():continue
-        fa=file_allocated(p)
-        total+=p.stat().st_size
-        if total>PACKAGE_LIMIT:raise ValueError('recovery_output_budget_exceeded_preserved')
-        dest=result/'artifacts'/name;dest.parent.mkdir(parents=True,exist_ok=True)
-        shutil.copyfile(p,dest);hsh=sha(p.read_bytes())
-        if sha(dest.read_bytes())!=hsh:raise ValueError('recovery_copy_verification_failed')
-        artifacts[name]=hsh;art_alloc[name]=fa;total_alloc+=fa
+        # storage-r2 wave: a declared output may be a FILE or a DIRECTORY
+        # (suite output tree). A directory that exists counts as delivered;
+        # its files are preserved and hashed per file. Same rule as the
+        # post-run keep loop in _run_slot, so a crash cannot silently drop
+        # a directory-form declared output (it was skipped here before).
+        if p.is_dir():entries=[q for q in sorted(p.rglob('*')) if q.is_file()]
+        elif p.is_file():entries=[p]
+        else:continue
+        for fp in entries:
+            fa=file_allocated(fp)
+            total+=fp.stat().st_size
+            if total>PACKAGE_LIMIT:raise ValueError('recovery_output_budget_exceeded_preserved')
+            rel=fp.relative_to(scratch).as_posix()
+            dest=result/'artifacts'/rel;dest.parent.mkdir(parents=True,exist_ok=True)
+            shutil.copyfile(fp,dest);hsh=sha(fp.read_bytes())
+            if sha(dest.read_bytes())!=hsh:raise ValueError('recovery_copy_verification_failed')
+            artifacts[rel]=hsh;art_alloc[rel]=fa;total_alloc+=fa
     log=inside(scratch,'runner.log')
     if log.is_file():
         with log.open('rb') as f:f.seek(max(0,log.stat().st_size-1024**2));data=f.read()
@@ -661,7 +711,9 @@ def _run_slot(sealed, command, keep, timeout, root, slot, job_limit, resources):
                 start=time.monotonic()
                 while tree.p.poll() is None:
                     if time.monotonic()-start>timeout: raise TimeoutError('job_timeout')
-                    sz=sum(inventory(scratch).values());peak=max(peak,sz)
+                    # Live poll: skip transient vanished-file races (git lock
+                    # churn inside scratch); strict elsewhere, see inventory().
+                    sz=sum(inventory(scratch,skip_transient=True).values());peak=max(peak,sz)
                     if sz>job_limit:raise ValueError('job_storage_budget_exceeded')
                     time.sleep(.1)
                 receipt['exit_code']=tree.p.returncode
@@ -687,16 +739,27 @@ def _run_slot(sealed, command, keep, timeout, root, slot, job_limit, resources):
                     total=0
                     for name in keep:
                         name=relpath(name);p=inside(scratch,name)
-                        if not p.is_file():
+                        # storage-r2 wave (router-pr sharp edge): a declared
+                        # output may be a FILE or a DIRECTORY (suite output
+                        # tree). A directory that exists counts as delivered;
+                        # its files are preserved and hashed per file. Only a
+                        # genuinely absent declared path is missing_outputs —
+                        # the law that missing declared outputs fail the job
+                        # is unchanged for both forms.
+                        if p.is_dir():entries=[q for q in sorted(p.rglob('*')) if q.is_file()]
+                        elif p.is_file():entries=[p]
+                        else:
                             receipt.setdefault('missing_outputs',[]).append(name);continue
-                        fa=file_allocated(p)
-                        total+=p.stat().st_size
-                        if total>OUTPUT_LIMIT:raise ValueError('retained_output_budget_exceeded')
-                        dest=result/'artifacts'/name;dest.parent.mkdir(parents=True,exist_ok=True)
-                        shutil.copyfile(p,dest)
-                        h=sha(p.read_bytes())
-                        if sha(dest.read_bytes())!=h:raise ValueError('output_preservation_failed')
-                        artifacts[name]=h;art_alloc[name]=fa;retained_alloc+=fa
+                        for fp in entries:
+                            fa=file_allocated(fp)
+                            total+=fp.stat().st_size
+                            if total>OUTPUT_LIMIT:raise ValueError('retained_output_budget_exceeded')
+                            rel=fp.relative_to(scratch).as_posix()
+                            dest=result/'artifacts'/rel;dest.parent.mkdir(parents=True,exist_ok=True)
+                            shutil.copyfile(fp,dest)
+                            h=sha(fp.read_bytes())
+                            if sha(dest.read_bytes())!=h:raise ValueError('output_preservation_failed')
+                            artifacts[rel]=h;art_alloc[rel]=fa;retained_alloc+=fa
                     retained+=total
                     if receipt.get('missing_outputs'):receipt['state']='FAILED'
                     receipt['artifacts']=artifacts
