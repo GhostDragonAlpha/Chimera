@@ -12,10 +12,16 @@ Read installed instruction revisions and actual command results; an implementati
 branch or proposed document does not prove deployment. Historical receipts remain
 evidence of their recorded revision, not instructions for the current queue.
 
+The current operating method (file packages, continuous scheduler, acceptance chain,
+compiler stack, disk doctrine, memory/resume) is mapped end-to-end in
+[WORKFLOW.md](WORKFLOW.md); a new worker reads it alongside
+[NO_WORKTREES.md](../tools/monkey_campaign/NO_WORKTREES.md) first.
+
 ## Find the procedure
 
 | Keyword or question | Canonical starting point |
 | --- | --- |
+| CURRENT METHOD, file packages, scheduler, acceptance chain | [Workflow - the current operating method](WORKFLOW.md) |
 | STARTUP, autonomous entry, next assignment | [MONKEY_RUN.md](MONKEY_RUN.md) |
 | WORKFLOW, overall sequence | [Fleet workflow](FLEET_WORKFLOW.md) |
 | DISASTER RECOVERY, new PC, backup, install, dependencies | [Replacement-PC checklist](DISASTER_RECOVERY.md) |
