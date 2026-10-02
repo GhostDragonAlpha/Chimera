@@ -1,0 +1,94 @@
+{
+ "schema": "chimera.visualgate.view_spec.v1",
+ "spec_id": "MAT2-X04-presentation-fixture",
+ "spec_version": 1,
+ "preregistration": {
+  "declared_before_run": true,
+  "freeze_law": "Thresholds are frozen in this spec. The gate never adjusts a threshold to pass an observed frame. Any threshold or geometry change mints spec_version+1 and a new prereg hash; the receipt carries the hash of the spec actually applied.",
+  "exception_law": "A frame passes only via an exception declared in this spec. Every exception pass emits a machine receipt row carrying the frozen law citation and measured census evidence. Prose-only exceptions are refused."
+ },
+ "background": {
+  "beauty_color": [168, 198, 150],
+  "mask_code": [0, 0, 0]
+ },
+ "objects": {
+  "monkey_body": {
+   "beauty_palette": [[120, 80, 60], [200, 60, 50], [60, 90, 200]],
+   "mask_code": [250, 10, 10],
+   "role": "subject"
+  },
+  "w10_diagnostic_marks": {
+   "beauty_palette": [[0, 255, 0], [255, 140, 0], [180, 30, 30], [20, 20, 20], [30, 90, 200], [210, 210, 210]],
+   "mask_code": [10, 250, 250],
+   "role": "prop"
+  },
+  "x04_state_labels": {
+   "beauty_palette": [[250, 250, 250], [15, 15, 15], [0, 90, 220]],
+   "mask_code": [10, 250, 10],
+   "role": "prop"
+  },
+  "x04_event_strip": {
+   "beauty_palette": [[255, 238, 200], [90, 45, 10]],
+   "mask_code": [10, 10, 250],
+   "role": "prop"
+  },
+  "x04_debug_inset": {
+   "beauty_palette": [[232, 242, 232]],
+   "mask_code": [250, 250, 10],
+   "role": "prop"
+  }
+ },
+ "fixture_geometry": {
+  "frame_wh": [960, 540],
+  "draw_order": ["monkey_body", "w10_diagnostic_marks", "x04_state_labels", "x04_event_strip", "x04_debug_inset"],
+  "rects_xyxy": {
+   "x04_debug_inset": [640, 40, 948, 190],
+   "x04_event_strip": [12, 500, 300, 532],
+   "x04_state_labels": [12, 40, 300, 190]
+  }
+ },
+ "view_classes": {
+  "V1_clean": {
+   "min_visible_pixels": {"monkey_body": 300},
+   "co_location_min_ratio": 0.9,
+   "occluder_min_pixels": 0,
+   "occluded_subject_max_px": 0,
+   "expected_occluded": []
+  },
+  "V1_diag": {
+   "min_visible_pixels": {"monkey_body": 300, "w10_diagnostic_marks": 150, "x04_state_labels": 40000, "x04_event_strip": 8000, "x04_debug_inset": 40000},
+   "co_location_min_ratio": 0.9,
+   "occluder_min_pixels": 0,
+   "occluded_subject_max_px": 0,
+   "expected_occluded": []
+  },
+  "V2_clean": {
+   "min_visible_pixels": {"monkey_body": 5000},
+   "co_location_min_ratio": 0.9,
+   "occluder_min_pixels": 0,
+   "occluded_subject_max_px": 0,
+   "expected_occluded": []
+  },
+  "V2_diag": {
+   "min_visible_pixels": {"monkey_body": 5000, "w10_diagnostic_marks": 150, "x04_state_labels": 40000, "x04_event_strip": 8000, "x04_debug_inset": 40000},
+   "co_location_min_ratio": 0.9,
+   "occluder_min_pixels": 0,
+   "occluded_subject_max_px": 0,
+   "expected_occluded": []
+  },
+  "V3_clean": {
+   "min_visible_pixels": {"monkey_body": 100},
+   "co_location_min_ratio": 0.9,
+   "occluder_min_pixels": 0,
+   "occluded_subject_max_px": 0,
+   "expected_occluded": []
+  },
+  "V3_diag": {
+   "min_visible_pixels": {"monkey_body": 100, "w10_diagnostic_marks": 150, "x04_state_labels": 40000, "x04_event_strip": 8000, "x04_debug_inset": 40000},
+   "co_location_min_ratio": 0.9,
+   "occluder_min_pixels": 0,
+   "occluded_subject_max_px": 0,
+   "expected_occluded": []
+  }
+ }
+}

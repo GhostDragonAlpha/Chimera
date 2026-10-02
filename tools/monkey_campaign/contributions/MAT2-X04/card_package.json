@@ -1,0 +1,48 @@
+{
+ "schema": "chimera.x04_card_package.v1",
+ "object_id": "mat2_x04_card_package",
+ "revision": 1,
+ "identity": {
+  "task_id": "MAT2-X04",
+  "task_id_short": "X04",
+  "title": "Render readable animal and environment state on the certified walking line",
+  "criteria_sha256": "e5c1d5517a78d74f22eb4692236dcd716d0f82c9e49c9586023b913a56a0e72a",
+  "attempt_id": "50ff462483fd487db3ec9d38fa656f92",
+  "agent_id": "wk-x04-arrival-1",
+  "resume_agent": "wk-x45-impl",
+  "base_head": "a07ac859d4ef16bb34d4006a75c4de8dbee462b4",
+  "publication_branch": "review/MAT2-X04",
+  "prereg_commit": "06f76dd1d55c42628d72aa473526f6f8ec3f0a3e",
+  "preregistration_sha256": "2e62487fa4569990c1e569b6829295fa6a7f498b0d07a12c97f1ebbcac56d418",
+  "date_frozen": "2026-10-01",
+  "resumed": "2026-10-02"
+ },
+ "workflow": {
+  "law": "NO_WORKTREES pinned file package; the package directory is the write scope",
+  "package_id": "084e850083f74560bdc403cf210bd703",
+  "package_reads": ["tools/monkey_campaign/contributions/MAT2-X04"],
+  "package_writes": ["tools/monkey_campaign/contributions/MAT2-X04"]
+ },
+ "certified_line": {
+  "scene": "cpu-walk-scene/1.0.0",
+  "build_id": "cpu-walk-scene-build-N",
+  "seed": 20260920,
+  "horizon_ticks": 10500,
+  "cycle_ticks": 213,
+  "window_consumed_ticks": [4260, 4686],
+  "frame_plan_frames": 39
+ },
+ "capture": {
+  "frozen_law": "ONE FFV1 video + decode probes + pinned visual_capture.validate_manifest (prereg section 3; unchanged)",
+  "standing_gate": "capture-gate-template v1 two-stage (palette stage-0 + object-ID mask co-location stage-1), embedded verbatim under capture_card/ with TEMPLATE_MANIFEST.json; assigned by the resumed dispatch; disclosed in capture_card/card/card_prereg.json for the chain-stop ruling",
+  "view_spec": "capture_card/card/view_spec.json",
+  "view_spec_prereg_sha256": "6856ea5c8ae0010e16096d02609f8758e6af6ef5ec5845850cc9bb8b54b6c8ea",
+  "production_cases": 3,
+  "defect_cases": 4
+ },
+ "honesty": {
+  "absent_inventory": ["A1 climbing controller", "A2 native engine frame", "A3 cosmetic skin", "A4 audio cues (X05)", "A5 session/inspector overlays", "A6 occlusion/camera-collision probes", "A7 human feel/readability-as-felt"],
+  "visual_acceptance": "false by design; independent picture review remains required",
+  "closure": "the sealed run alone does not close the card; lead-approved exact-head PR with full qualification evidence remains"
+ }
+}
