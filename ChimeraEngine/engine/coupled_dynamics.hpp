@@ -1,5 +1,6 @@
 #pragma once
 #include "coupled_articulation.hpp"
+#include "combine_core.hpp"
 #include <memory>
 #if defined(CHIMERA_CONTACT_TRACE)
 #include <cstdio>
@@ -94,8 +95,18 @@ class CoupledDynamics {
   force=Dense{0,0};lambda_n=0;lambda_t=0;mode=0;
  }
  Rate rate(const State& s,const Dense& tau,bool live,bool plane=false)const{
-  auto e=evaluate(s);auto inv=inverse_spd(e.mass,2);auto external=e.force(hand_,local_,V{0,-number(config_["load_N"]),0});Dense rhs(2);double heat=0;
-  for(int i=0;i<2;++i){rhs[i]=tau[i]+e.gravity[i]-e.bias[i]+external[i]-damping_[i]*s.v[i];heat+=damping_[i]*s.v[i]*s.v[i];}
+  auto e=evaluate(s);auto inv=inverse_spd(e.mass,2);auto external=e.force(hand_,local_,V{0,-number(config_["load_N"]),0});
+  // S-B (combine_core.hpp): the five independent RHS contributions -- drive
+  // torque, gravity, bias, hand load, passive damping -- are DECLARED
+  // (sb_contribution_ids, canonical order) and combined in the FIXED textual
+  // order; the damping heat ledger accumulates in the same coordinate order.
+  // The serial default (no executor / one worker) is the original inline
+  // statement byte-for-byte; workers 2..4 (measured independent-config
+  // batches only, never a live default) compute the terms over the #319
+  // executor seam and fold them in the same canonical order bit-identically
+  // (negation is exact; a-b rounds identically to a+(-b)).
+  auto sb=combine::generalized_force(tau,e.gravity,e.bias,external,s.v,damping_,contribution_executor_.get());
+  Dense rhs=std::move(sb.rhs);double heat=sb.heat;
   auto free=multiply(inv,rhs);
   bool friction=contact_&&live&&mu_>0;
   if(!contact_||!live){auto normal=normals(s);for(int i=0;i<2;++i)if(std::abs(s.v[i])>1e-9)normal[i]=0;auto p=reaction(free,inv,normal);auto correction=multiply(inv,p);for(int i=0;i<2;++i)free[i]+=correction[i];return {s.v,free,p,heat};}
