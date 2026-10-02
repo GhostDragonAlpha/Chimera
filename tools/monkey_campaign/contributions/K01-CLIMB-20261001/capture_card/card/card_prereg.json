@@ -1,0 +1,21 @@
+{
+ "capture_plan_law": "One pipeline run per case; the four planted defect classes must be REJECTED and the production cases must PASS through this exact template path (prereg -> capture -> two-stage gate -> receipts -> review export). Declared views per K01 prereg section 9: normal player camera, detail of the hand/trunk contact region, alternate-angle of the grasp site, each in clean + diagnostic pairs; the approach terminal state and the recorded-config geometry state declare their reduced frame sets in the case table before the run.",
+ "card_id": "K01-CLIMB-20261001",
+ "declared_before_capture": true,
+ "declared_before_run": true,
+ "exception_law_ref": "VISUAL-GATE-1 exception law: a frame passes only via an exception declared in the view-spec; every exception pass emits a machine receipt row with census evidence; prose-only exceptions are refused.",
+ "experiment_preregistration": {
+  "commit": "cdfaa8cc1535dbe723097aa1277385aeb2aa79d3",
+  "file": "PREREGISTRATION.md",
+  "preregistration_sha256": "227a06c83180b68846b921e3ea36a0b594b5395d331fd487d9c36cdac764a65e"
+ },
+ "freeze_law_ref": "VISUAL-GATE-1 prereg law: thresholds are frozen in the view-spec; the gate never adjusts a threshold to pass an observed frame; any change mints spec_version+1 and a new prereg hash.",
+ "prereg_note": "Authored BEFORE capture. This file pins the exact view-spec the K01 card will capture against; pipeline.run_pipeline refuses pre-render on any mismatch. The prereg file itself is hash-bound in every receipt and in the lane EVIDENCE.md. This capture prereg is subordinate to the committed experiment preregistration at tools/monkey_campaign/contributions/K01-CLIMB-20261001/PREREGISTRATION.md (commit cdfaa8cc1535dbe723097aa1277385aeb2aa79d3).",
+ "schema": "chimera.capture_gate.card_prereg.v1",
+ "view_spec": {
+  "file": "view_spec.json",
+  "prereg_sha256": "f9746e93287dcaff31fe9fcd3ce8b25d28dd40e9cce27df7d3dc59bc1fd77b21",
+  "spec_id": "K01-CLIMB-20261001-grasp-site-fixture",
+  "spec_version": 2
+ }
+}
