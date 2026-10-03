@@ -1,0 +1,16 @@
+{
+  "schema": "chimera.capture_gate.card_prereg.v1",
+  "card_id": "CAPTURE-GATE-DEMO-CARD",
+  "prereg_note": "Authored BEFORE capture. This file pins the exact view-spec the demo card will capture against; pipeline.run_pipeline refuses pre-render on any mismatch. The prereg file itself is hash-bound in every receipt and in the lane EVIDENCE.md.",
+  "declared_before_run": true,
+  "declared_before_capture": true,
+  "freeze_law_ref": "VISUAL-GATE-1 prereg law: thresholds are frozen in the view-spec; the gate never adjusts a threshold to pass an observed frame; any change mints spec_version+1 and a new prereg hash.",
+  "exception_law_ref": "VISUAL-GATE-1 exception law: a frame passes only via an exception declared in the view-spec; every exception pass emits a machine receipt row with census evidence; prose-only exceptions are refused.",
+  "view_spec": {
+    "file": "view_spec.json",
+    "spec_id": "capture-gate-demo-card-mask-fixture",
+    "spec_version": 1,
+    "prereg_sha256": "3a3a776e17a1af61d580fae3973943841a7256e00315c26b8b31c37e28648d98"
+  },
+  "capture_plan_law": "One pipeline run per case; the four planted defect classes must be REJECTED and the healthy/declared cases must PASS through this exact template path (prereg -> capture -> two-stage gate -> receipts -> review export)."
+}

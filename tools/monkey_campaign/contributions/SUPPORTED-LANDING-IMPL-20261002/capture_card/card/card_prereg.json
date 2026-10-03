@@ -1,0 +1,21 @@
+{
+ "capture_plan_law": "One pipeline run per case; the four planted defect classes must be REJECTED and the production cases must PASS through this exact template path (prereg -> capture -> two-stage gate -> receipts -> review export). Declared views per LANDING-20261002 prereg section 10: the release/fall frame mid-fall; the FIRST-CONTACT frame (the impact tick, from the trace's recorded tick); the rest frame at the declared window end - each in clean + diagnostic pairs. Case table declared before capture: landing_midfall / landing_first_contact / landing_rest_end carry their two declared frames each; four defect cases run against the landing_midfall state.",
+ "card_id": "SUPPORTED-LANDING-IMPL-20261002",
+ "declared_before_capture": true,
+ "declared_before_run": true,
+ "exception_law_ref": "VISUAL-GATE-1 exception law: a frame passes only via an exception declared in the view-spec; every exception pass emits a machine receipt row with census evidence; prose-only exceptions are refused.",
+ "experiment_preregistration": {
+  "commit": "10b05f9ff912edd2c3fc1f2d8f4fcc8c261d01ed",
+  "file": "tools/monkey_campaign/contributions/LANDING-20261002/PREREGISTRATION.md",
+  "preregistration_sha256": "40caec008862e79407eab409967406c1b6dc02aa63b9de08a5b00cf02c57dcdd"
+ },
+ "freeze_law_ref": "VISUAL-GATE-1 prereg law: thresholds are frozen in the view-spec; the gate never adjusts a threshold to pass an observed frame; any change mints spec_version+1 and a new prereg hash.",
+ "prereg_note": "Authored BEFORE capture; the DEV PROVISIONAL spec_version 1 carries authoring-time placeholder floors pending the measured census of the dev calibration run; the SEALED run captures against the calibrated frozen spec (version minted +1 at freeze) per the K01 spec-version calibration law. This file pins the exact view-spec the card captures against; pipeline.run_pipeline refuses pre-render on any mismatch. The prereg file itself is hash-bound in every receipt and in the lane EVIDENCE.md. This capture prereg is subordinate to the committed experiment preregistration at tools/monkey_campaign/contributions/LANDING-20261002/PREREGISTRATION.md (commit 10b05f9ff912edd2c3fc1f2d8f4fcc8c261d01ed, committed bytes sha256 40caec008862e79407eab409967406c1b6dc02aa63b9de08a5b00cf02c57dcdd).",
+ "schema": "chimera.capture_gate.card_prereg.v1",
+ "view_spec": {
+  "file": "view_spec.json",
+  "prereg_sha256": "1438c631b5410105405b025f836c881f97a35b9c347e782dd4c9535d07df2f47",
+  "spec_id": "SUPPORTED-LANDING-IMPL-20261002-landing-fixture",
+  "spec_version": 1
+ }
+}
