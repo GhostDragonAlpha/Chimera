@@ -1,0 +1,72 @@
+{
+ "schema": "chimera.compiler_packet_result.v1",
+ "packet_id": "PKT-G3-CONNECTION-HANDGROUND",
+ "criteria_sha256": "21ec15791b561cc5569a476826e3e9c8158404e2be3587a598e329a3275e10f4",
+ "generated_utc": "2026-10-03T21:47:25.743516+00:00",
+ "worker_arrival_id": "wk-connection-handground",
+ "per_test_results": [
+  {
+   "test_id": "T.CONN_counted_once",
+   "verdict": "PASS",
+   "observed": "solve_contact calls == records every tick; per-record impulse_on_b == -impulse_on_a bitwise; reciprocity exactly 0.0 N*s (G04 X3 form); anchor == -contact bitwise; both side ledgers re-read bitwise from the same record list; 10/10 refusal probes bit incl. abi_exchange_writer_violation x2; tampered double-write residual 2.1282425346 N*s >> 1e-12",
+   "window": "exact (G04 X3 worst 0.0 N*s)",
+   "evidence_path": "E:/ChimeraWork/task-runner/results/07d5233191bd4cac99fc1f6d0e8491df/artifacts/outputs/seam_result.json"
+  },
+  {
+   "test_id": "T.CONN_friction_pair",
+   "verdict": "PASS",
+   "observed": "stick records arrest (worst vt_post 2.936886406370373e-17 m/s vs 1e-12 bar); slip records carry jt == mu_k_pair*jn exactly (worst dev 0.0 N*s); zero-mu control: every seam record jt == 0.0 and the stack slides under full press (trigger-borne dp carried by the recursion identity); cone headroom min 0.0; friction-model discriminator 0.19698662693603947 m/s >> observed zero-mu slide",
+   "window": "1e-9 / 1e-12 (G04 X2 windows)",
+   "evidence_path": "E:/ChimeraWork/task-runner/results/07d5233191bd4cac99fc1f6d0e8491df/artifacts/outputs/seam_result.json"
+  },
+  {
+   "test_id": "T.CONN_release",
+   "verdict": "PASS",
+   "observed": "separated ticks (6): n_records==0, W_contact==0.0 J, W_press==0.0 J exactly (pairpath S4 P4.1 form); release bars share_kg*1e-10 = 3.3459993333333336e-10 N*s satisfied (observed separated worsts jn 0.0 / jt 0.0); free-fall recursion worst 2.0816681711721685e-17 m/s; closed-form drop 0.005150195307601285 m vs measured 0.005150195307601288 m; landing recorded transient at tick 20; latch re-arm refused by name",
+   "window": "share-scaled bars + 1e-9 free-fall windows (G04 X4)",
+   "evidence_path": "E:/ChimeraWork/task-runner/results/07d5233191bd4cac99fc1f6d0e8491df/artifacts/outputs/seam_result.json"
+  },
+  {
+   "test_id": "T.CONN_ledger",
+   "verdict": "PASS",
+   "observed": "m*dv == press + weld(0.0) + trigger + gravity + contact + anchor every body/tick/scenario, worst 7.197012093545021e-16 N*s; pair-per-record reduced-mass loss worst 4.0766001685454967e-17 J; energy worst 1.6696713456276768e-16 J; replay worst 3.337609495337747e-17 N*s (G04 X6 + pairpath P5 classes); unrecorded-impulse discriminator 0.001 N*s >> 1e-12",
+   "window": "1e-12 N*s",
+   "evidence_path": "E:/ChimeraWork/task-runner/results/07d5233191bd4cac99fc1f6d0e8491df/artifacts/outputs/seam_result.json"
+  }
+ ],
+ "receipts": [
+  {
+   "sealed_manifest_sha256": "712372f24f9def5f9f54d9d1accbbff1bd19a18cb01e1dd264818f6a4472834b",
+   "run_job_id": "07d5233191bd4cac99fc1f6d0e8491df",
+   "state": "PASSED",
+   "cleanup_verified": true,
+   "artifact_sha256": {
+    "runner.log": "645e2e69d5e5ae9d198da05053d4a0309b92071b70f286391b5f935a81ad01bf",
+    "outputs/seam_result.json": "897ba42d08df098e8d5b5ee592d9e5f6b4027f38b28ece0f8febd58acd23ba54"
+   }
+  }
+ ],
+ "fixture_based": true,
+ "named_debts_encountered": [
+  "NB-01 (mu_s measured pin absent; fx.mu_placeholders 0.6 NAMED_PLACEHOLDER; every capacity-like number inherits it linearly; none claimed here)",
+  "NB-02 (mu_k measured pin absent; fx.mu_placeholders 0.4 NAMED_PLACEHOLDER)",
+  "NB-03 (x_press ABSENT; fx.press_actuation 0.3 N*s/channel/tick is a declared fixture; actuator_qualified false)",
+  "NB-04 (x_share ABSENT; fx.equal_share_partition scales the release bars only; equal-share is a model of the balance, not a measured partition)",
+  "x_reach ABSENT: translation-only placements; no transform composed (A09 frame law)",
+  "pair_run stays declared_pending: the co-instantiated runtime scene is owed by the assembly packet; physlang-v0 refusal recorded (pairpath precedent)"
+ ],
+ "deviations": [
+  "the contract cites the walk plane as plateau_height_m; the pinned F05 store bytes carry the same +0.004 m value under plateau_z_m (verified against the bytes; recorded in the receipt cross_check_notes)",
+  "the nonzero release noise-floor observation (G04 X4 worsts) belongs to the vertical-grip seam; at the flat walk-plane seam the constructed separation records exact zeros and the share-scaled bars are verified as computed upper bounds"
+ ],
+ "claims": [
+  "T.CONN_counted_once: counted-once reciprocity across the seam re-verified at the pinned solver (fixture-based; G04 X3 form)",
+  "T.CONN_friction_pair: elementwise_min pair rule, stick arrest, slip cap, zero-mu control re-verified across the seam (fixture-based; G04 X2 windows)",
+  "T.CONN_release: separation removes support exactly + share-scaled release bars + latch re-verified (fixture-based; G04 X4 / pairpath S4 forms)",
+  "T.CONN_ledger: m*dv == press + weld(0) + gravity + contact + anchor + pair-per-record loss closure re-verified (fixture-based; G04 X6 windows)",
+  "NO integrated qualification is claimed; the membrane interiors stayed hidden; no capacity number is asserted"
+ ],
+ "sergeant_review_required": true,
+ "seam_result_sha256": "897ba42d08df098e8d5b5ee592d9e5f6b4027f38b28ece0f8febd58acd23ba54",
+ "result_id": "aaeee0cbebc64243ad8b396efd7648d8"
+}
