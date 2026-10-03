@@ -1,0 +1,198 @@
+{
+  "schema": "chimera.mathspec.spec.v1",
+  "spec_version": "1.0.0",
+  "spec_id": "spec.hand_press_seam.v1",
+  "title": "The hand membrane's press channel + observation seam as the frozen ABI construction context (packet PKT-G3-MEMBRANE-HAND, criteria f3dbf093, pin 069c6857)",
+  "authority": {
+    "authorization": "Packet PKT-G3-MEMBRANE-HAND (external contract pc.hand_ground_contact.v1, sha256 a54313760c766764fb95302ebe0bee1fbc65f343770a8b9930657f2a6a3f2104); preregistration pinned at commit 069c6857c7635d24356b70c37f0acbac6fdf1818 (blob sha256 e573d55df48fb1ced37c241057ec7c5dd1cec592c7e8393d1def04c28429cfc0); Lieutenant rulings 1 and 2 at the pin (scoped spec conformance via the ABI validators; unitless mapping for slot_f32)",
+    "claims_scope": "the HAND side of conn.hand_ground_contact.v1 only: the press channel state, the press release latch and the observation-seam delivery, verified fixture_based at the declared G04 operating point. NO integrated qualification, NO pair run (contract obligation pair_run stays owed by the assembly task), NO ground interior, NO actuator claim (x_press ABSENT, NB-03)",
+    "no_new_physics": true
+  },
+  "conventions": {
+    "press_state_encoding": "press_channel_state carries the armed per-channel impulse magnitude: armed = press_channel_jn_ns_per_tick (0.3 N*s), released = 0.0 N*s EXACTLY; no third state exists (contract valid_input_ranges: a record outside {armed, released} is a structural fault, not a value)",
+    "impulse_units": "jn/jt are per-tick impulses in N*s at press_dt_s 0.005 s; operating force is the DECLARED /dt conversion (0.3/0.005 = 60 N); no cross-tick memory (contract timing.per_tick_semantics)",
+    "slot_f32_mapping": "the contract unit slot_f32 (dimensionless float32 delivered observation slots) has no dimension in the pinned spec grammar's canonical-unit table (spec_unit_unknown, verified 2026-10-02); it is declared 'unitless' in this document under this mapping note. The contract's unit rows stay verbatim in the task result (Lieutenant ruling 2)",
+    "one_exchange_quantity": "this grammar types ONE exchange quantity per connection: jn (the contract's primary transferred quantity, protocol normal_press_impulse). jt is the connection's second READ-ONLY seam record (single writer: the ground side); it is carried in the implementation's window view and delivered controller-side through the declared 32-slot table (ch*_jt_Ns), never mis-typed as a second exchange or an invented second connection",
+    "ground_section_scope": "membrane.ground.v1 appears ONLY as the frozen contract-side external reference (the owned/published seam records jn/jt of the pinned port contract) so the connection consumes PUBLISHED states per the grammar. It is NOT an authored interior: the interior law forbids reading or declaring the neighbor's interior",
+    "observation_delivery": "the 32-slot float32 table is delivered through the pinned MAT2-G05 seam implementation and its named delivery gates (undeclared_field, timing_unbound, timing_drift, named_absent_occupied, privileged_source, nonfinite_value, dim_mismatch); the x_* namespace and the six-name privileged registry stay refused"
+  },
+  "membranes": [
+    {
+      "membrane_id": "membrane.hand.v1",
+      "kind": "press_channel_seam",
+      "title": "Hand membrane press channel + release latch + observation seam (endpoint a, port.grip_contact; hand-side components only)",
+      "identity_note": "Structural declaration of the hand-side seam components against the external contract. The sealed G04 contact ran on declared fixture pads through the pinned M06 solver; the anatomical hand surface has never contacted anything (decl.hand_ground.v1 identity_note carried); the pair run stays declared_pending.",
+      "owned_state": [
+        {
+          "var": "press_channel_state",
+          "unit": "N*s",
+          "domain": {"min_inclusive": 0.0, "max_inclusive": 0.3},
+          "description": "The hand's OWNED press channel state (contract state_ownership[2], single writer: membrane.hand.v1; the ground membrane never writes it). armed carries the declared per-channel impulse; released is exactly 0.0 N*s (G07 X1: W_press == 0.0 J on every release tick)"
+        },
+        {
+          "var": "grasp_observation_table",
+          "unit": "unitless",
+          "description": "The declared 32-slot float32 controller-facing observation table (contract unit slot_f32; mapping in conventions). Delivered through the pinned G05 seam gates with the mandatory timing block; declared-only keys (4 timing + 32 slots); G05 sealed battery 390 accepted / 0 refused, worst float32 delivery error 1.2003610327937508e-08"
+        }
+      ],
+      "parameters": [
+        {
+          "var": "press_channel_jn_ns_per_tick",
+          "unit": "N*s",
+          "value": 0.3,
+          "provenance": {
+            "class": "measured",
+            "store_path": "E:/ChimeraWork/monkey-coordination/evidence-store/MAT2-G04/numerical/experiment_receipt.json",
+            "sha256": "0d622f3610a4d23f52655908effe474694867a20e639747dc48535a419319ce8",
+            "source": "press_channel.jn_ns = 0.3 of the pinned G04 receipt (declared fixture input at the demonstrated F03 S1 operating point; actuator_qualified false)",
+            "derivation": "carried verbatim from the sealed operating point; operating force 60.0 N is the DECLARED /dt conversion; x_press (the measured actuator bound behind the press) is ABSENT (blocker NB-03) and is never filled by this value"
+          }
+        },
+        {
+          "var": "press_dt_s",
+          "unit": "s",
+          "value": 0.005,
+          "provenance": {
+            "class": "measured",
+            "store_path": "E:/ChimeraWork/monkey-coordination/evidence-store/MAT2-G04/numerical/experiment_receipt.json",
+            "sha256": "0d622f3610a4d23f52655908effe474694867a20e639747dc48535a419319ce8",
+            "source": "press_channel.dt_s = 0.005 of the pinned G04 receipt (M06 frozen declarations, record-g convention)",
+            "derivation": "the contract timing.tick_dt_s row carried verbatim; the ONLY admissible timestep of this component"
+          }
+        },
+        {
+          "var": "release_bar_jn_ns",
+          "unit": "N*s",
+          "value": 6.341478508833337e-11,
+          "provenance": {
+            "class": "measured",
+            "store_path": "E:/ChimeraWork/monkey-coordination/evidence-store/MAT2-G04/report/REPORT.md",
+            "sha256": "dfca5b5556efe018ca09be4577bf6fbb5df38bb5c9ebc33d15bd18646ba349c8",
+            "source": "G04 X4 release row (share-scaled bars, amendment a2): every release tick jn <= 6.341478508833337e-11 N*s",
+            "derivation": "carried as a BAR per the packet rule ('re-verification must reproduce their windows, not re-derive new bars'); the a2 scaling law is share_kg * 1e-10 N*s per release tick"
+          }
+        },
+        {
+          "var": "release_bar_jt_ns",
+          "unit": "N*s",
+          "value": 2.5365914035333348e-11,
+          "provenance": {
+            "class": "measured",
+            "store_path": "E:/ChimeraWork/monkey-coordination/evidence-store/MAT2-G04/report/REPORT.md",
+            "sha256": "dfca5b5556efe018ca09be4577bf6fbb5df38bb5c9ebc33d15bd18646ba349c8",
+            "source": "G04 X4 release row (share-scaled bars, amendment a2): every release tick jt <= 2.5365914035333348e-11 N*s",
+            "derivation": "carried as a BAR per the packet rule; never re-derived"
+          }
+        }
+      ],
+      "published_states": ["press_channel_state", "grasp_observation_table"],
+      "ports": {
+        "inputs": [
+          {
+            "port_id": "in.jn",
+            "quantity_ref": "jn",
+            "type": "scalar_real",
+            "unit": "N*s",
+            "sign_convention": "jn >= 0 presses the two surfaces together (contract direction_sign_conventions); READ-ONLY seam record written ONCE by the ground side at the contact stage; the hand re-reads, never re-writes (seam S1 counted-once + S2 reciprocity)",
+            "connection_ref": "conn.hand_ground_contact.v1"
+          }
+        ],
+        "outputs": [
+          {
+            "port_id": "out.press_channel_state",
+            "quantity_ref": "press_channel_state",
+            "type": "scalar_real",
+            "unit": "N*s",
+            "sign_convention": "armed: the declared per-channel impulse press_channel_jn_ns_per_tick each hold tick; released: exactly 0.0; owned and written by the hand membrane only (G07 X1 release account)",
+            "connection_ref": "conn.hand_ground_contact.v1"
+          }
+        ]
+      },
+      "preconditions": [
+        {
+          "id": "pre.hand.press_point_is_declared_fixture",
+          "expr": "press_channel_jn_ns_per_tick == 0.3"
+        }
+      ],
+      "invariants": [
+        {
+          "id": "inv.hand.press_state_in_declared_set",
+          "expr": "abs(press_channel_state * (press_channel_state - press_channel_jn_ns_per_tick)) <= 0.0"
+        },
+        {
+          "id": "inv.hand.jn_nonnegative",
+          "expr": "jn >= 0.0"
+        }
+      ],
+      "refusal_conditions": [
+        {
+          "id": "ref.hand.press_state_structural_fault",
+          "expr": "abs(press_channel_state * (press_channel_state - press_channel_jn_ns_per_tick)) > 0.0",
+          "refusal_code": "ref.hand.press_state_not_armed_nor_released"
+        },
+        {
+          "id": "ref.hand.jn_outside_declared_convention",
+          "expr": "jn < 0.0",
+          "refusal_code": "ref.hand.jn_outside_declared_convention"
+        }
+      ]
+    },
+    {
+      "membrane_id": "membrane.ground.v1",
+      "kind": "external_contract_reference",
+      "title": "CONTRACT-SIDE EXTERNAL REFERENCE ONLY - the neighbor's interior stays HIDDEN (interior law)",
+      "identity_note": "This section carries ONLY the frozen port contract's state_ownership rows (jn/jt owner membrane.ground.v1, readers include membrane.hand.v1) so the connection consumes PUBLISHED states per the grammar. Source: PORT_CONTRACT.hand_ground_contact.v1 (sha256 a54313760c766764fb95302ebe0bee1fbc65f343770a8b9930657f2a6a3f2104) state_ownership rows, byte-pinned and re-verified at build. No evolution, no parameters, no ports, no interior physics is authored here; the single writer of both records is the pinned M06 solver at the contact stage (bind B01/B02), and this task never reads the neighbor lane's workspace.",
+      "owned_state": [
+        {
+          "var": "jn",
+          "unit": "N*s",
+          "description": "contact normal impulse per channel per tick; written ONCE by the pinned M06 solver at the contact inside the single-writer step_tick (stage order pressure->material->contact); pad-side and trunk-side ledgers re-read, never re-write"
+        },
+        {
+          "var": "jt",
+          "unit": "N*s",
+          "description": "contact tangential impulse (Coulomb elementwise_min pair); same single-writer law; opposes the tangential tendency within the mu cone"
+        }
+      ],
+      "published_states": ["jn", "jt"]
+    }
+  ],
+  "connections": [
+    {
+      "connection_id": "conn.hand_ground_contact.v1",
+      "kind": "normal_press_impulse",
+      "members": ["membrane.hand.v1", "membrane.ground.v1"],
+      "consumed": [
+        {"from_membrane": "membrane.ground.v1", "quantity_ref": "jn"},
+        {"from_membrane": "membrane.ground.v1", "quantity_ref": "jt"}
+      ],
+      "exchange": {
+        "quantity_ref": "jn",
+        "unit": "N*s",
+        "sign_convention": "jn >= 0 presses the two surfaces together; applied bitwise +/-1/m to both sides and counted once (contract pair_rules counted_once_reciprocity); THE ONE typed exchange quantity of this connection in this grammar (jt is the connection's second READ-ONLY seam record per conventions.one_exchange_quantity)",
+        "expr": "jn",
+        "owner_membrane": "membrane.ground.v1",
+        "owner_rule": "per the pinned port contract state_ownership (jn owner membrane.ground.v1, single writer M06 solve_tick contact stage, bind B01); the exchange-record owner exposes exchange_contribution() and the hand membrane must NOT (ABI ONE-writer law, refusal abi_exchange_writer_violation)"
+      }
+    }
+  ],
+  "numerics": {
+    "method": "declared_per_tick_impulse",
+    "supported_methods": ["declared_per_tick_impulse"],
+    "dt_s": 0.005,
+    "admissibility": [
+      {"dt_s": 0.005, "source": "contract timing.tick_dt_s = press_dt_s (M06 frozen declarations); the ONLY admissible timestep; any other dt is refused spec_dt_not_admissible before any payload"}
+    ],
+    "assumptions": [
+      "the seam is the GENERATED per-tick contact class: jn/jt are written at the contact stage each tick and carry no cross-tick memory; the only latching state crossing the seam is press_channel_state (contract timing.per_tick_semantics)",
+      "this document is the ABI construction context; the acceptance battery re-verifies the sealed obligations at the pinned inputs through the pinned M06/G04/G05/G07 modules (imported, hash-asserted, never forked)"
+    ]
+  },
+  "assembly": {
+    "assembly_id": "assembly.hand_press_seam.v1",
+    "members": ["membrane.hand.v1", "membrane.ground.v1"],
+    "connections": ["conn.hand_ground_contact.v1"],
+    "claims_scope_note": "structural declaration of the document grammar only; the co-instantiated pair RUN remains declared_pending (contract verification_obligations.pair_run, owed by the assembly task pair.hand_ground.v1). No assembly is executed under this document",
+    "transfer_law_note": "DELIBERATELY ABSENT: the grammar's first-class transfer_law (applied_by assembly, exactly one per-member entry targeting the member's own state) is defined for the continuous ODE-exchange class. This seam is the GENERATED per-tick contact class with the ground interior HIDDEN; authoring a ground-side transfer entry would violate the interior law and a zero/identity constant would violate the named-variable law. Per Lieutenant Ruling 1 the validator's resulting refusal list is recorded verbatim and asserted to be the ONLY refusals of this document"
+  }
+}
