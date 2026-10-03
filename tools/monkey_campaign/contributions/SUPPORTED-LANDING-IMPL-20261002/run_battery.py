@@ -358,6 +358,30 @@ def _findings(checks, d):
                            'observed is a SUPPORTED PREDICTION (correction '
                            '#3 wording law)',
         })
+    p6 = checks['P6']
+    for dd in p6['destinations']:
+        if dd['ke_normal_removed_delta_J'] > 1e-9:
+            findings.append({
+                'class': 'impact_normal_tilt_closed_form_delta',
+                'finding':
+                    '%s: the z-only closed form 0.5*share*vn_pre^2 '
+                    '(%.17g J) vs the from-impulse jn^2/(2*share) '
+                    '(%.17g J) differ by %.3g J - the recorded contact '
+                    'normal\'s tilt off +z (the same recorded deviation '
+                    'family as the P3 steady-gap finding: the pad arrives '
+                    'through the persistent-contact branch near the floor '
+                    'plane\'s shared triangle boundary, where the closest '
+                    'feature normal is not exactly +z). The load-bearing '
+                    'identities hold: the P4a impulse identity is inside '
+                    'the 1e-9 N*s bar and the destination closure closes '
+                    'at %.3g J.'
+                    % (dd['pad'], dd['ke_normal_removed_derived_J'],
+                       dd['ke_normal_removed_from_jn_J'],
+                       dd['ke_normal_removed_delta_J'],
+                       dd['destination_closure_residual_J']),
+                'disposition': 'recorded finding; routed to the '
+                               'Lieutenant with the chain stop',
+            })
     return findings
 
 

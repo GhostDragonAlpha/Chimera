@@ -60,12 +60,15 @@ DEFECT_CASES = [
     ("defect_wrong_pad_color_share", "midfall_clean",
      DEFECT_WRONG_BODY_COLOR_SHARE, "COLOCATION_MISMATCH"),
     ("defect_shared_color_inflation_absent", "midfall_clean",
-     DEFECT_SHARED_COLOR_INFLATION_ABSENT, "SUBJECT_MASK_BELOW_FLOOR"),
+     DEFECT_SHARED_COLOR_INFLATION_ABSENT, "COLOCATION_MISMATCH"),
     ("defect_subject_absent", "midfall_clean",
      DEFECT_SUBJECT_ABSENT, "SUBJECT_MASK_BELOW_FLOOR"),
-    ("defect_undeclared_occlusion", "midfall_clean",
+    ("defect_undeclared_occlusion", "contact_clean",
      DEFECT_UNDECLARED_OCCLUSION, "OCCLUDED_SUBJECT_VISIBLE"),
 ]
+DEFECT_BASE_STATES = {
+    "defect_undeclared_occlusion": "landing_first_contact",
+}
 
 
 def sha256_file(path):
@@ -87,8 +90,9 @@ def run_cases(out_root, states):
     plan = [(cid, frames, states[key], None, "PRODUCTION")
             for cid, frames, key in PRODUCTION_CASES]
     plan += [(cid, [(cid + "__1", vc)],
-              dict(states["landing_midfall"], defect=defect), defect,
-              "DEFECT")
+              dict(states[DEFECT_BASE_STATES.get(cid,
+                                                   "landing_midfall")],
+                   defect=defect), defect, "DEFECT")
              for cid, vc, defect, _exp in DEFECT_CASES]
     for case_id, frames_plan, state, defect, kind in plan:
         out_dir = os.path.join(out_root, "cases", case_id)

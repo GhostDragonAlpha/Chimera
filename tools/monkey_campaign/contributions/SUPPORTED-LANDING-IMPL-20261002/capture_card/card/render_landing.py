@@ -23,13 +23,19 @@ the relation, the renderer resolves it deterministically from the recorded
 state.
 
 Defect injection exists ONLY to prove the normal pipeline rejects the four
-planted defect classes through THIS card's spec (fixture-only):
-- WRONG_BODY_COLOR_SHARE: pad_1 renders (mask intact) but its beauty
-  pixels carry pad_0's palette color. Co-location kills it.
-- SHARED_COLOR_INFLATION_ABSENT: pad_1 truly absent while a small band of
-  the trunk silhouette carries pad_1's exact base color (totals inflate;
-  the pad_1 occlusion cap / mask accounting kills it).
-- SUBJECT_ABSENT: pad_2 is not rendered at all.
+planted defect classes through THIS card's spec (fixture-only). In this
+card's declared classes pad_0 is the VISIBLE subject and the declared
+occluder in every view (pads 1/2 are declared occluded behind it), so the
+defects target pad_0 and the trunk per the K02 targeting law (a defect
+must bite on an expectation the class actually declares):
+- WRONG_BODY_COLOR_SHARE: pad_0 renders (mask intact) but its beauty
+  pixels carry pad_1's palette color. Co-location kills it.
+- SHARED_COLOR_INFLATION_ABSENT: pad_1 absent while a 20% band of the
+  trunk silhouette carries pad_1's exact base color (beauty inside the
+  TRUNK's mask footprint without the trunk palette; the trunk
+  co-location ratio kills it).
+- SUBJECT_ABSENT: pad_0 is not rendered at all (its mask floor and its
+  occluder floor both bite).
 - UNDECLARED_OCCLUSION: pad_1 (declared occluded behind pad_0 in the
   midfall class) is fixture-composed to the front-most fully-visible
   azimuth slot with pad_0 dropped - an arrangement the class never
@@ -228,8 +234,13 @@ def make_renderer(state, spec):
     def pad_color(k, family, diag):
         base = palette("pad_%d" % k, 0)
         if not diag:
-            if defect == "WRONG_BODY_COLOR_SHARE" and k == 1:
-                return palette("pad_0", 0)
+            if defect == "WRONG_BODY_COLOR_SHARE" and k == 0:
+                # pad_0 is the VISIBLE subject in every declared class:
+                # painting its beauty with pad_1's palette color (mask
+                # intact) is the shared-color defect the co-location
+                # defense bites on (the K02 law: the defect must target a
+                # subject the class expects VISIBLE).
+                return palette("pad_1", 0)
             return base
         modes = state.get("pad_modes") or []
         mode = modes[k] if k < len(modes) else None
@@ -237,8 +248,8 @@ def make_renderer(state, spec):
             return palette("pad_%d" % k, 1)
         if mode == "slip":
             return palette("pad_%d" % k, 2)
-        if defect == "WRONG_BODY_COLOR_SHARE" and k == 1:
-            return palette("pad_0", 1)
+        if defect == "WRONG_BODY_COLOR_SHARE" and k == 0:
+            return palette("pad_1", 1)
         return base
 
     def render(view_class, frame_id, defect=None):
@@ -278,23 +289,38 @@ def make_renderer(state, spec):
                        palette("trunk", 0), code_of("trunk")))
 
         pads = state.get("pad_verts")
-        if pads and defect != "SHARED_COLOR_INFLATION_ABSENT" \
-                and defect != "SUBJECT_ABSENT":
+        if pads:
             inj_angle = None
             drop_front = False
-            if defect == "UNDECLARED_OCCLUSION" and family == "midfall":
+            if defect == "UNDECLARED_OCCLUSION" and family == "contact":
                 # fixture-only: rotate pad_1 (declared occluded behind
-                # pad_0 in the midfall class) into pad_0's azimuth slot
+                # pad_0 in the contact class) into pad_0's azimuth slot
                 # and drop pad_0, so pad_1 renders front-most fully
                 # visible -- an arrangement the class never preregistered.
+                # The contact class is the calibrated composition site:
+                # its production rear-pad counts (120/131 px) sit far
+                # under its cap, and the composed pad_1 renders at
+                # pad_0-like scale (~5000 px) so the cap accounting bites
+                # with wide deterministic margins (a class-wide cap
+                # cannot separate the midfall production counts: pad_2's
+                # genuine 760 px EXCEEDS the composed pad_1's 490 px).
+                # Rotation: pad_1 is rotated INTO pad_0's azimuth slot,
+                # i.e. by (az(pad_0) - az(pad_1)) around z (the K02 law's
+                # phi - az(subject), with phi == az(pad_0) in this card).
                 inj_angle = math.radians(
-                    projections["midfall"]["phi_deg"]
-                    - facet_az["pad_0"])
+                    facet_az["pad_0"] - facet_az["pad_1"])
                 drop_front = True
             for k, verts in enumerate(pads):
                 if drop_front and k == 0:
                     continue
-                if defect == "SUBJECT_ABSENT" and k == 2:
+                if defect == "SUBJECT_ABSENT" and k == 0:
+                    # pad_0 is the VISIBLE subject and the declared
+                    # occluder in every class: its absence is the
+                    # subject-absence defect the mask floor bites on (the
+                    # K02 law: the dropped body must be one the class
+                    # expects VISIBLE with a floor).
+                    continue
+                if defect == "SHARED_COLOR_INFLATION_ABSENT" and k == 1:
                     continue
                 quad = [tuple(v) for v in verts]
                 if inj_angle is not None and k == 1:
@@ -316,10 +342,15 @@ def make_renderer(state, spec):
             painter.paint(fn(), color, code)
 
         if defect == "SHARED_COLOR_INFLATION_ABSENT":
-            # fixture-only: pad_1's exact base color painted onto a small
-            # band of the trunk silhouette (beauty WITHOUT mask support).
+            # fixture-only: pad_1's exact base color painted onto a band
+            # of the trunk silhouette (beauty WITHOUT mask support). In
+            # this card's classes pad_1 is declared occluded (its absence
+            # alone fires nothing), so the isolated failure mode is the
+            # TRUNK co-location mismatch: the band is 20% of the trunk's
+            # in-frame extent, driving the trunk's declared-palette ratio
+            # below the 0.9 floor.
             band_y1 = ty1
-            band_y0 = ty1 - 0.08 * (ty1 - ty0)
+            band_y0 = ty1 - 0.20 * (ty1 - ty0)
             painter.paint(_rect_pixels(tx0, band_y0, tx1, band_y1),
                           palette("pad_1", 0), None)
 
