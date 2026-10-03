@@ -1,0 +1,326 @@
+{
+ "schema": "chimera.visualgate.view_spec.v1",
+ "spec_id": "MAT2-X05-visible-motion-fixture",
+ "spec_version": 3,
+ "preregistration": {
+  "declared_before_run": true,
+  "freeze_law": "Thresholds are frozen in this spec. The gate never adjusts a threshold to pass an observed frame. Any threshold or geometry change mints spec_version+1 and a new prereg hash; the receipt carries the hash of the spec actually applied.",
+  "exception_law": "A frame passes only via an exception declared in this spec. Every exception pass emits a machine receipt row carrying the frozen law citation and measured census evidence. Prose-only exceptions are refused."
+ },
+ "background": {
+  "beauty_color": [
+   168,
+   198,
+   150
+  ],
+  "mask_code": [
+   0,
+   0,
+   0
+  ]
+ },
+ "objects": {
+  "monkey_body": {
+   "beauty_palette": [
+    [
+     120,
+     80,
+     60
+    ],
+    [
+     200,
+     60,
+     50
+    ],
+    [
+     60,
+     90,
+     200
+    ]
+   ],
+   "mask_code": [
+    250,
+    10,
+    10
+   ],
+   "role": "subject"
+  },
+  "x05_velocity_instrument": {
+   "beauty_palette": [
+    [
+     252,
+     252,
+     252
+    ],
+    [
+     10,
+     82,
+     10
+    ],
+    [
+     90,
+     20,
+     120
+    ]
+   ],
+   "mask_code": [
+    10,
+    250,
+    10
+   ],
+   "role": "prop"
+  },
+  "landmark_tree_far": {
+   "beauty_palette": [
+    [
+     94,
+     61,
+     38
+    ],
+    [
+     34,
+     94,
+     44
+    ]
+   ],
+   "mask_code": [
+    10,
+    10,
+    250
+   ],
+   "role": "prop"
+  },
+  "landmark_tree_near": {
+   "beauty_palette": [
+    [
+     84,
+     51,
+     30
+    ],
+    [
+     26,
+     82,
+     36
+    ]
+   ],
+   "mask_code": [
+    250,
+    250,
+    10
+   ],
+   "role": "prop"
+  },
+  "landmark_rock_far": {
+   "beauty_palette": [
+    [
+     132,
+     132,
+     126
+    ]
+   ],
+   "mask_code": [
+    10,
+    250,
+    250
+   ],
+   "role": "prop"
+  },
+  "landmark_rock_near": {
+   "beauty_palette": [
+    [
+     108,
+     108,
+     102
+    ]
+   ],
+   "mask_code": [
+    250,
+    10,
+    250
+   ],
+   "role": "prop"
+  },
+  "w10_diagnostic_marks": {
+   "beauty_palette": [
+    [
+     0,
+     255,
+     0
+    ],
+    [
+     255,
+     140,
+     0
+    ],
+    [
+     180,
+     30,
+     30
+    ],
+    [
+     20,
+     20,
+     20
+    ],
+    [
+     30,
+     90,
+     200
+    ],
+    [
+     210,
+     210,
+     210
+    ]
+   ],
+   "mask_code": [
+    100,
+    100,
+    100
+   ],
+   "role": "prop"
+  },
+  "x04_state_labels": {
+   "beauty_palette": [
+    [
+     250,
+     250,
+     250
+    ],
+    [
+     15,
+     15,
+     15
+    ],
+    [
+     0,
+     90,
+     220
+    ]
+   ],
+   "mask_code": [
+    200,
+    10,
+    10
+   ],
+   "role": "prop"
+  },
+  "x04_event_strip": {
+   "beauty_palette": [
+    [
+     255,
+     238,
+     200
+    ],
+    [
+     90,
+     45,
+     10
+    ]
+   ],
+   "mask_code": [
+    10,
+    200,
+    10
+   ],
+   "role": "prop"
+  },
+  "x04_debug_inset": {
+   "beauty_palette": [
+    [
+     232,
+     242,
+     232
+    ]
+   ],
+   "mask_code": [
+    200,
+    200,
+    10
+   ],
+   "role": "prop"
+  }
+ },
+ "fixture_geometry": {
+  "frame_wh": [
+   960,
+   540
+  ],
+  "draw_order": [
+   "monkey_body",
+   "x05_velocity_instrument",
+   "landmark_tree_far",
+   "landmark_tree_near",
+   "landmark_rock_far",
+   "landmark_rock_near",
+   "w10_diagnostic_marks",
+   "x04_state_labels",
+   "x04_event_strip",
+   "x04_debug_inset"
+  ],
+  "rects_xyxy": {
+   "x05_velocity_instrument": [
+    12,
+    8,
+    300,
+    40
+   ],
+   "x04_state_labels": [
+    12,
+    40,
+    300,
+    190
+   ],
+   "x04_event_strip": [
+    12,
+    500,
+    300,
+    532
+   ],
+   "x04_debug_inset": [
+    640,
+    40,
+    948,
+    190
+   ]
+  }
+ },
+ "view_classes": {
+  "x05_clean": {
+   "min_visible_pixels": {
+    "monkey_body": 300,
+    "x05_velocity_instrument": 400,
+    "landmark_tree_far": 120,
+    "landmark_tree_near": 120,
+    "landmark_rock_far": 25,
+    "landmark_rock_near": 25
+   },
+   "co_location_min_ratio": 0.9,
+   "occluder_min_pixels": 0,
+   "occluded_subject_max_px": 0,
+   "expected_occluded": []
+  },
+  "x05_diag": {
+   "min_visible_pixels": {
+    "monkey_body": 300,
+    "x05_velocity_instrument": 400,
+    "landmark_tree_far": 60,
+    "landmark_tree_near": 120,
+    "landmark_rock_near": 25,
+    "w10_diagnostic_marks": 25,
+    "x04_state_labels": 40000,
+    "x04_event_strip": 8000,
+    "x04_debug_inset": 40000
+   },
+   "co_location_min_ratio": 0.9,
+   "occluder_min_pixels": 0,
+   "occluded_subject_max_px": 0,
+   "expected_occluded": []
+  }
+ },
+ "floor_calibration_notes": {
+  "clean_floors": "FROZEN BY THE PREREG (section 5): body 300 (the X04 V1 census 385-418 px at this exact view), instrument 400 (the declared strip is 9537 px), tree 120, rock 25.",
+  "diag_floors": "Authored BEFORE the sealed GREEN capture, disclosed (spec_version 3; v1/v2 were REFUSED evidence, never GREEN): on DIAGNOSTIC frames the frozen render order makes the L1 panel (x[12,300] y[40,190]) overlap the projected tree_far footprint (bbox x[58,124] y[78,205]) and COMPLETELY COVER the projected rock_far footprint (bbox x[145,190] y[157,187] - measured census: 743-769 palette px on every clean frame, 0 on every diagnostic frame of the v1/v2 evidence runs). The DIAG class therefore does NOT expect landmark_rock_far at all (v2's floor 0 still trips the template gate's co-location ratio on an empty footprint - the template's law, untouched); landmark_tree_far keeps a 60 px floor (partially covered), w10_diagnostic_marks 25 (the surviving contact pads + corner chip). The CLEAN-class floors are the prereg's own frozen numbers and are UNTOUCHED. The tick remains readable in the L2 declared layer.",
+  "clean_law": "The X04-diagnostic and W10-diagnostic objects are declared so that any of their pixels on a CLEAN frame fail stage-1 accounting (UNDECLARED_MASK_ID): X05's clean law preserves X04 P7's substance."
+ }
+}
