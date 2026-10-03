@@ -1,0 +1,17 @@
+{
+ "worst_ledger_J_rounded": 30.970714,
+ "worst_balance_error_J": 30.970713623726674,
+ "worst_store_balance_error_J": 30.970713623726652,
+ "worst_tick": 300,
+ "frozen": {
+  "worst_ledger_J": 30.970714,
+  "ticks_covered": 302,
+  "refusal_tick": 302,
+  "engine_base_dx_m": 0.9131
+ },
+ "match": {
+  "ledger_rounded": true,
+  "ticks": true,
+  "base_dx": true
+ }
+}
