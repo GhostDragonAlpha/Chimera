@@ -1,0 +1,37 @@
+{
+ "schema": "chimera.hand_remediation.vpl1_control_table.v1",
+ "preregistration_r1_sha256": "9213bf7d91ed9a6e6b2c5bbddc05d5ee36db63c600dfce42b559632f6f565da9",
+ "amendment_1_sha256": "018f0bc120c0fa44cdcc1f611ab883764eb91e2d668975573f792218b93f94ac",
+ "frozen_before_instrument_runs": true,
+ "truth_note": "C6/C7 truths are constructed bone-vertex depths: rigid translations of the C1 base pose along the sealed radial, bisected (60 iterations) on the closed-form cylinder SDF until the deepest pad-covered vertex depth equals d_target. C8's truth is the rigid 2.0e-3 m radial intrusion of a NON-covered body past its exact measured tangency (the sealed C2->C3 construction pattern: the body's exact distance is measured first, then inward by d0 + inward). C9's truth is the C1 separated scene. C10's truth is the conversion identity of the frozen mapping (F = K_eff*u at the four measured depths). All truths are rigid transforms / closed-form identities, analytically known independent of the pad classification.",
+ "c1_translation": [0.0879314944410896, 0.041904375, -0.0015560000000000003],
+ "c2_c3_radial": [0.9984734699438955, -0.05523341215420948, 0.0],
+ "c6": {
+  "body": "distal_thumb",
+  "d_target": 0.003,
+  "expected_class": "PAD_CONTACT",
+  "expected_u": 0.001,
+  "truth": "deepest pad-covered vertex depth 3.0e-3 m = t + u (u = 1.0e-3 m inside the declared window)"
+ },
+ "c7": {
+  "body": "distal_thumb",
+  "d_target": 0.005,
+  "expected_class": "PAD_REFUSED_DEPTH",
+  "truth": "deepest pad-covered vertex depth 5.0e-3 m > window edge 4.0e-3 m (50*tau-scale gross, an order beyond the faceting column)"
+ },
+ "c8": {
+  "body": "midph2",
+  "inward": 0.002,
+  "expected": "PAD_CONTACT on the C6 tip AND GENUINE_PENETRATION on midph2 (depth ~2.0e-3 m, <= inward + 1.0e-3)",
+  "truth": "the pad engages on the tip while a NON-covered bone is translated 2.0e-3 m inward past its exact measured tangency from its C1-clear position: the pad must NOT mask the bone penetration (the F1 trigger; any other classification = instrument_invalid_pad_masks_bone)"
+ },
+ "c9": {
+  "expected": "zero pad rows at the C1 separated scene (all five covered bodies PAD_NO_CONTACT)"
+ },
+ "c10": {
+  "identity": "F = K_eff * u at the four measured depths (Kumar/Liu/Schloerb/Srinivasan 2015, PMC4403516; verified independently by this lane)",
+  "depths_m": [0.0002, 0.0004, 0.0006, 0.0008],
+  "expected_forces_N": [0.024, 0.048, 0.072, 0.096],
+  "mask_area_validation": "the recorded distal_thumb mask area must sit within 2x of the declared A_thumb = 5.160493e-05 m^2; outside = FINDING, never a re-tune"
+ }
+}
