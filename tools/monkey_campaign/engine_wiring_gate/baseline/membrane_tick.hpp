@@ -3,12 +3,10 @@
 
 #include <array>
 #include "joint_binding.hpp"
-#include "combine_core.hpp"
 #include <atomic>
 #include <cstdint>
 #include <deque>
 #include <functional>
-#include <memory>
 #include <mutex>
 #include <string>
 #include <string>
@@ -183,27 +181,6 @@ public:
     // Compact reflex summary for the route response (state_json carries
     // the full reflex_* field set the page could read).
     std::string reflex_summary_json() const;
-
-    // ─── COMBINE-CORE WIRING (engine lift of wk-runtime-combine's approved
-    // ─── combine core; first consumer = THIS tick's ordered-pass tail).
-    // Worker count for the deterministic combine scheduler that routes the
-    // fall pass's ground-force windows (combine_core.hpp over the PR #319
-    // contribution_executor.hpp seam). THE SERIAL LAW (PR #319, verbatim
-    // authority): the live dynamics default is ONE worker; 2..4 exist for
-    // the measured independent-config qualification (byte-identity across
-    // 1/2/4 workers must be proven by the anchored gate receipts BEFORE any
-    // default change -- nothing here changes the default). Values outside
-    // 1..4 refuse by name (combine_thread_budget_exceeded law) and keep the
-    // previous count. Returns true when the count was applied.
-    bool set_contribution_workers(size_t workers);
-    size_t contribution_workers() const { return combine_workers_; }
-
-    // The last tick's combine receipt (canonical store digest, routed
-    // contributions, ledger digest; "combine_unrouted" while no window has
-    // run). Read by the qualification capture; no physics claim.
-    const std::string& last_combine_receipt() const {
-        return last_combine_receipt_;
-    }
 
     // ─── AN2: THE ONE-LIMB PARTITION (prereg:
     // ─── docs/evidence/agent_fleet/SHIP/ONE_LIMB/PREREG.md, membranes
@@ -456,20 +433,6 @@ private:
     // first integrating tick sees the init-reset 0/0 and calls a live
     // body inert -- the measured window-4 race).
     std::atomic<uint64_t> ground_evals_{0};
-    // COMBINE-CORE WIRING (the ordered-pass tail's deterministic combine;
-    // serial law: the default 1 worker constructs NO executor instance, so
-    // the live tick has zero background threads and byte-identical folds).
-    // Ordered-pass ownership registry (S-F, from the tail's own comments):
-    //   membrane.pass.reflex_detect / .startle / .breath  reflex_-owned fields
-    //   membrane.pass.stance   stance_th_, ankle pins 17/18, lean reports
-    //   membrane.pass.gait     hip/knee pin roles 13-16, gait_phase_, logs
-    //   membrane.pass.fall     root_y_, root_vy_, g_contact_n_, ground_evals_
-    // The fall pass routes its ground-force windows through the scheduler
-    // (combine_core.hpp); cross-owner routing is refused by name.
-    size_t combine_workers_ = 1;
-    std::shared_ptr<chimera::multibody::ContributionExecutor>
-        contribution_executor_;
-    std::string last_combine_receipt_ = "combine_unrouted";
     // F1 STANCE state (see set_stance above). Default OFF; the lead owns
     // the policy flip after the bars pass (the gravity precedent).
     static constexpr uint8_t ANKLE_PIN_L = 17, ANKLE_PIN_R = 18;

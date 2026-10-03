@@ -419,23 +419,6 @@ void MembraneTick::apply_travel(std::vector<float>& verts9,
     }
 }
 
-bool MembraneTick::set_contribution_workers(size_t workers) {
-    // THE SERIAL LAW (PR #319): the live default is ONE worker. A count
-    // outside 1..4 refuses by name (the combine core's thread-budget law)
-    // and keeps the previous count. 2..4 construct the bounded executor
-    // (no nesting, no fleet scheduling -- the seam's own contract); going
-    // back to 1 destroys it, so the live path has zero background threads.
-    if (workers < 1 || workers > 4) return false;
-    if (workers == combine_workers_) return true;
-    combine_workers_ = workers;
-    contribution_executor_ =
-        workers > 1 ? std::make_shared<chimera::multibody::ContributionExecutor>(
-                          workers)
-                    : nullptr;
-    last_combine_receipt_ = "combine_unrouted";
-    return true;
-}
-
 void MembraneTick::step(std::vector<float>& verts9, float dt) {
     if (!has_scene_ || !ready_.load(std::memory_order_acquire)) return;
     if (tri_verts_.size() != cells_.size() * 3) return;   // hardened
@@ -865,163 +848,28 @@ void MembraneTick::step(std::vector<float>& verts9, float dt) {
     // un-offset verts, so a uniform translation cannot leak into any
     // volume, normal or pressure -- dV = 0 by construction.
     if (gravity_on_) {
-        // ═══ COMBINE-CORE WIRING (wk-engine-wiring; engine lift of the
-        // approved wk-runtime-combine core, combine_core.hpp, over the PR
-        // #319 contribution_executor.hpp seam). The fall pass's ground-force
-        // evaluation is the ordered-pass tail's FIRST routed consumer:
-        //   window 1  fall.ground_min.<k>   per-chunk lowest-vertex scan
-        //                                  (exact min; canonical chunk order)
-        //   owner     folds the chunk minima -- the ONLY combiner (the
-        //                                  S-A calling-owner law)
-        //   window 2  fall.integrate        penalty spring + root DOF, one
-        //                                  owner contribution
-        //   witness   ground_evals_ fetch_add -- UNCHANGED, once per tick
-        //   window 3  the root translation: disjoint per-chunk vertex
-        //                                  writes through the executor seam
-        //                                  (the S-A fixed-slots pattern)
-        // THE SERIAL LAW (PR #319): the live default is ONE worker --
-        // combine_workers_==1 constructs no executor and every fold below
-        // is the original serial arithmetic, byte-for-byte. Workers 2..4
-        // exist only for the measured, separately gated whole-game
-        // qualification (byte-identity across 1/2/4 workers, GNU+MSVC).
-        // The chunk law is WORKER-COUNT-INVARIANT: exactly four canonical
-        // chunks at every worker count, so the contribution set, the
-        // canonical combine order, the store digest and every value are
-        // byte-identical across 1/2/4 workers by construction (an exact
-        // min and disjoint writes cannot reorder; the integration is one
-        // serial owner step).
         const size_t nvg = verts9.size() / 9;
-        constexpr size_t kFallChunks = 4;
-        const char* const kPass = "membrane.pass.fall";
-        auto chunk_begin = [&](size_t k) { return k * nvg / kFallChunks; };
-        auto chunk_end = [&](size_t k) { return (k + 1) * nvg / kFallChunks; };
-        auto chunk_id = [&](size_t k) {
-            std::string s = "00";
-            s[0] = char('0' + (int)(k / 10));
-            s[1] = char('0' + (int)(k % 10));
-            return s;
-        };
-        chimera::multibody::ContributionExecutor* xexec =
-            contribution_executor_.get();
-        chimera::combine::OwnedStateStore store;
-        store.register_state("fall.contact_n", kPass);
-        store.register_state("fall.root_vy", kPass);
-        store.register_state("fall.root_y", kPass);
-        size_t applied = 0;
-        std::string routed;
-
-        // -- window 1: the ground-min scan contributions (pure, exact) ----
-        {
-            std::vector<chimera::combine::Contribution> mins;
-            for (size_t k = 0; k < kFallChunks; ++k) {
-                const size_t begin = chunk_begin(k), end = chunk_end(k);
-                if (begin >= end) continue;          // empty chunk: no state
-                const std::string sid = "fall.miny." + chunk_id(k);
-                store.register_state(sid, kPass);
-                chimera::combine::Contribution c;
-                c.contribution_id = "fall.ground_min." + chunk_id(k);
-                c.owner_membrane = kPass;
-                c.produces = {sid};
-                c.compute = [begin, end, &verts9,
-                             sid](std::size_t) {
-                    float local = verts9[begin * 9 + 1];
-                    for (size_t v = begin + 1; v < end; ++v)
-                        local = std::min(local, verts9[v * 9 + 1]);
-                    chimera::combine::ContributionResult r;
-                    r.states[sid] = (double)local;   // float->double: exact
-                    return r;
-                };
-                mins.push_back(std::move(c));
-            }
-            chimera::combine::CombineScheduler window(std::move(mins), xexec,
-                                                      store);
-            auto report = window.run_window();
-            applied += report.applied;
-            for (const auto& row : report.routed) routed += row + ";";
-        }
-        // -- OWNER combine: fold the chunk minima in canonical id order.
-        //    min is exact, so the fold's value is the serial scan's value;
-        //    no chunk present (nvg == 0) keeps 0, as before.
-        float lo = 0.f;
-        {
-            bool have = false;
-            for (size_t k = 0; k < kFallChunks; ++k) {
-                const std::string sid = "fall.miny." + chunk_id(k);
-                if (!store.has(sid)) continue;
-                const float value = (float)store.read(sid);  // exact roundtrip
-                lo = have ? std::min(lo, value) : value;
-                have = true;
-            }
-        }
+        float lo = nvg ? verts9[0 * 9 + 1] : 0.f;
+        for (size_t v = 1; v < nvg; ++v)
+            lo = std::min(lo, verts9[v * 9 + 1]);
         lo += root_y_;                       // world lowest point this tick
         const float depth = std::max(0.f, -lo);
-        const float F = k_ground_ * depth + c_ground_ * std::max(0.f, -root_vy_);
+        float F = k_ground_ * depth + c_ground_ * std::max(0.f, -root_vy_);
         const float F_cap = 50.f * mass_kg_ * G_EARTH;   // floor, not launcher
-        const float contact_n = std::min(F, F_cap);
-        const float dts = std::min(std::max(dt, 0.f), 0.05f);  // stall guard
-        // -- window 2: the integrate contribution (one owner step, serial at
-        //    every worker count -- the root DOF is a coupled scalar).
-        {
-            const float pre_root_y = root_y_, pre_root_vy = root_vy_;
-            chimera::combine::Contribution integrate;
-            integrate.contribution_id = "fall.integrate";
-            integrate.owner_membrane = kPass;
-            integrate.produces = {"fall.root_vy", "fall.root_y",
-                                  "fall.contact_n"};
-            integrate.compute = [=](std::size_t) {
-                float vy = pre_root_vy, y = pre_root_y;
-                if (dts > 0.f) {
-                    vy += (contact_n / mass_kg_ - G_EARTH) * dts;
-                    vy = std::min(std::max(vy, -30.f), 30.f);
-                    y += vy * dts;
-                    if (y > 3.f)  { y = 3.f;  if (vy > 0.f) vy = 0.f; }
-                    if (y < -3.f) { y = -3.f; if (vy < 0.f) vy = 0.f; }
-                }
-                chimera::combine::ContributionResult r;
-                r.states["fall.contact_n"] = (double)contact_n;
-                r.states["fall.root_vy"] = (double)vy;
-                r.states["fall.root_y"] = (double)y;
-                return r;
-            };
-            std::vector<chimera::combine::Contribution> one;
-            one.push_back(std::move(integrate));
-            chimera::combine::CombineScheduler window(std::move(one), xexec,
-                                                      store);
-            auto report = window.run_window();
-            applied += report.applied;
-            for (const auto& row : report.routed) routed += row + ";";
-        }
-        // Owner commit: the store is the ONLY routed door for these fields
-        // (a non-owner write is refused by name; float round-trips through
-        // the double store are exact).
-        g_contact_n_ = (float)store.read("fall.contact_n");
-        root_vy_ = (float)store.read("fall.root_vy");
-        root_y_ = (float)store.read("fall.root_y");
+        g_contact_n_ = std::min(F, F_cap);
         // one completed ground-force evaluation under the flag: the
         // arm-on-readiness witness set_gravity(true) waits for
         ground_evals_.fetch_add(1, std::memory_order_release);
-        // -- window 3: the root translation; disjoint per-chunk vertex
-        //    writes (each vertex exactly once -- the executor's own slots
-        //    contract; identical bytes at any worker count).
-        if (xexec && xexec->workers() > 1) {
-            xexec->for_each(kFallChunks, [&](std::size_t k) {
-                const size_t begin = chunk_begin(k), end = chunk_end(k);
-                for (size_t v = begin; v < end; ++v)
-                    verts9[v * 9 + 1] += root_y_;
-            });
-        } else {
-            for (size_t v = 0; v < nvg; ++v)
-                verts9[v * 9 + 1] += root_y_;
+        float dts = std::min(std::max(dt, 0.f), 0.05f);  // stall guard
+        if (dts > 0.f) {
+            root_vy_ += (g_contact_n_ / mass_kg_ - G_EARTH) * dts;
+            root_vy_ = std::min(std::max(root_vy_, -30.f), 30.f);
+            root_y_ += root_vy_ * dts;
+            if (root_y_ > 3.f)  { root_y_ = 3.f;  if (root_vy_ > 0.f) root_vy_ = 0.f; }
+            if (root_y_ < -3.f) { root_y_ = -3.f; if (root_vy_ < 0.f) root_vy_ = 0.f; }
         }
-        // The tick's combine receipt (canonical store digest + the routed
-        // contribution list + the witness count), for the qualification
-        // capture. No physics claim; determinism is the claim.
-        std::string receipt = "combine_windows=3;chunks=" +
-            std::to_string(kFallChunks) + ";applied=" + std::to_string(applied) +
-            ";" + routed + "store_digest=" + store.digest() +
-            ";witness=" + std::to_string(ground_evals_.load(
-                               std::memory_order_acquire));
-        last_combine_receipt_.swap(receipt);
+        for (size_t v = 0; v < nvg; ++v)
+            verts9[v * 9 + 1] += root_y_;
     }
 
     // ═══ C1r: AUTONOMIC BREATHING (THE ABSOLUTE LAST surface pass) ══════
