@@ -1,0 +1,407 @@
+{
+ "background": {
+  "beauty_color": [
+   24,
+   26,
+   30
+  ],
+  "mask_code": [
+   0,
+   0,
+   0
+  ]
+ },
+ "calibration_note": "spec_version 3 = THE FROZEN SPEC (the K01 spec-version calibration law; v2's midfall occlusion cap 420 was a calibration error caught by the gate in the sealed run 689c7e7049744e41981816c20a9ce70b: the class-wide cap must admit pad_2's genuine production visibility 760 px, which EXCEEDS the fixture-composed defect pad_1's 490 px, so the undeclared-occlusion defect composition moved to the contact class where the separation is wide). Floors, occluder floors and occlusion caps calibrated from the measured production censuses (identical across dev run 3ed3e098f6794ccd8c7535672c2bd8b5 and sealed run 689c7e7049744e41981816c20a9ce70b - the renders are deterministic byte-identical): midfall ground_plane 13245 / pad_0 910 / trunk 4507 / pad_1 374 / pad_2 760 px; contact ground_plane 38971 / pad_0 5089 / trunk 5305 / pad_1 120 / pad_2 131; rest ground_plane 12406 / pad_0 910 / trunk 4052 / pad_1 21 / pad_2 21; diag layers 323/841/1042. The gate never adjusts a threshold to pass an observed frame; any change mints spec_version+1 and a new prereg hash.",
+ "fixture_geometry": {
+  "declared_floor": {
+   "body_id": "landing.ground_plane",
+   "extent_m": [
+    0.6,
+    0.6
+   ],
+   "matter_id": "declared_fixture_ground",
+   "placement_law": "z_floor = min_k(lowest pad vertex z at release) - d(60); d(60) = g*DT^2*(60*61/2) derived at run from the pinned solver constants; the projections declare their centers RELATIVE to the floor surface (center_floor_rel_z) and the renderer resolves them deterministically from the recorded state"
+  },
+  "declared_pad_extent_m": 0.1,
+  "draw_order": "painter depth sort, far first; declared order ground_plane(depth of its projected quad) then trunk(depth 0) then pads by mean projected depth; diag_layer always last",
+  "facet_azimuth_deg": {
+   "pad_0": 356.2555,
+   "pad_1": 120.0052,
+   "pad_2": 232.5052
+  },
+  "frame_wh": [
+   320,
+   240
+  ],
+  "grasp_band_z_m": 0.386,
+  "projections": {
+   "contact": {
+    "center_floor_rel_z": 0.02,
+    "elev_deg": 15.0,
+    "image_center_px": [
+     160,
+     120
+    ],
+    "note": "the FIRST-CONTACT frame: close view at the recorded impact tick framing the pads at the declared floor plane",
+    "phi_deg": 356.2555,
+    "scale_px_per_m": 900.0
+   },
+   "midfall": {
+    "center_floor_rel_z": 0.22,
+    "elev_deg": 15.0,
+    "image_center_px": [
+     160,
+     120
+    ],
+    "note": "the release/fall frame mid-fall: side view from the pad_0 azimuth framing the grasp band, the fall path and the declared floor plane",
+    "phi_deg": 356.2555,
+    "scale_px_per_m": 380.0
+   },
+   "rest": {
+    "center_floor_rel_z": 0.12,
+    "elev_deg": 15.0,
+    "image_center_px": [
+     160,
+     120
+    ],
+    "note": "the rest frame at the declared window end: side view from the pad_0 azimuth framing the pads at rest on the declared floor plane",
+    "phi_deg": 356.2555,
+    "scale_px_per_m": 380.0
+   }
+  },
+  "trunk_height_m": 1.158,
+  "trunk_radius_m": 0.037
+ },
+ "objects": {
+  "diag_layer": {
+   "beauty_palette": [
+    [
+     230,
+     230,
+     230
+    ],
+    [
+     230,
+     160,
+     30
+    ]
+   ],
+   "mask_code": [
+    240,
+    240,
+    240
+   ],
+   "role": "prop"
+  },
+  "ground_plane": {
+   "beauty_palette": [
+    [
+     70,
+     70,
+     82
+    ]
+   ],
+   "mask_code": [
+    150,
+    150,
+    60
+   ],
+   "role": "subject"
+  },
+  "pad_0": {
+   "beauty_palette": [
+    [
+     40,
+     90,
+     200
+    ],
+    [
+     25,
+     60,
+     150
+    ],
+    [
+     200,
+     225,
+     255
+    ]
+   ],
+   "mask_code": [
+    40,
+    200,
+    40
+   ],
+   "role": "subject"
+  },
+  "pad_1": {
+   "beauty_palette": [
+    [
+     200,
+     140,
+     30
+    ],
+    [
+     150,
+     100,
+     20
+    ],
+    [
+     255,
+     230,
+     160
+    ]
+   ],
+   "mask_code": [
+    40,
+    40,
+    200
+   ],
+   "role": "subject"
+  },
+  "pad_2": {
+   "beauty_palette": [
+    [
+     90,
+     180,
+     90
+    ],
+    [
+     60,
+     140,
+     60
+    ],
+    [
+     200,
+     255,
+     200
+    ]
+   ],
+   "mask_code": [
+    200,
+    200,
+    40
+   ],
+   "role": "subject"
+  },
+  "trunk": {
+   "beauty_palette": [
+    [
+     96,
+     72,
+     48
+    ]
+   ],
+   "mask_code": [
+    200,
+    40,
+    40
+   ],
+   "role": "subject"
+  }
+ },
+ "preregistration": {
+  "declared_before_run": true,
+  "exception_law": "A frame passes only via an exception declared in this spec. Every exception pass emits a machine receipt row carrying the frozen law citation and measured census evidence. Prose-only exceptions are refused.",
+  "freeze_law": "Thresholds are frozen in this spec. The gate never adjusts a threshold to pass an observed frame. Any threshold or geometry change mints spec_version+1 and a new prereg hash; the receipt carries the hash of the spec actually applied. Calibration of floors/bounds from development renders happens ONLY at authoring time before the sealed run; the sealed spec_version is the freeze."
+ },
+ "schema": "chimera.visualgate.view_spec.v1",
+ "spec_id": "SUPPORTED-LANDING-IMPL-20261002-landing-fixture",
+ "spec_version": 3,
+ "view_classes": {
+  "contact_clean": {
+   "co_location_min_ratio": 0.9,
+   "expected_occluded": [
+    {
+     "justification": {
+      "census_required": true,
+      "exception_class": "DECLARED_OCCLUSION",
+      "geometry_ref": "fixture_geometry.projections.contact (phi 356.2555 deg, elev 15, scale 900): pad_1 facet azimuth 120 deg renders behind the front pad_0 hull and the trunk strip; measured census at calibration 120 px (dev run 3ed3e098f6794ccd8c7535672c2bd8b5, contact_clean__first_contact)",
+      "law_ref": "capture-gate-template v1 occlusion exception protocol (TEMPLATE_MANIFEST.json sha256 1c4d1dcad9af98c73e1aa4ebb46bff6359b9992e390b38c37fae578e779a59a7); LANDING-20261002 prereg section 10 declared views; frozen at spec_version 2"
+     },
+     "occluder_id": "pad_0",
+     "subject_id": "pad_1"
+    },
+    {
+     "justification": {
+      "census_required": true,
+      "exception_class": "DECLARED_OCCLUSION",
+      "geometry_ref": "fixture_geometry.projections.contact (phi 356.2555 deg, elev 15, scale 900): pad_2 facet azimuth 232 deg renders behind the front pad_0 hull and the trunk strip; measured census at calibration 131 px (dev run 3ed3e098f6794ccd8c7535672c2bd8b5, contact_clean__first_contact)",
+      "law_ref": "capture-gate-template v1 occlusion exception protocol (TEMPLATE_MANIFEST.json sha256 1c4d1dcad9af98c73e1aa4ebb46bff6359b9992e390b38c37fae578e779a59a7); LANDING-20261002 prereg section 10 declared views; frozen at spec_version 2"
+     },
+     "occluder_id": "pad_0",
+     "subject_id": "pad_2"
+    }
+   ],
+   "min_visible_pixels": {
+    "ground_plane": 25000,
+    "pad_0": 3000,
+    "trunk": 3000
+   },
+   "occluded_subject_max_px": 250,
+   "occluder_min_pixels": 3000
+  },
+  "contact_diag": {
+   "co_location_min_ratio": 0.9,
+   "expected_occluded": [
+    {
+     "justification": {
+      "census_required": true,
+      "exception_class": "DECLARED_OCCLUSION",
+      "geometry_ref": "fixture_geometry.projections.contact (phi 356.2555 deg, elev 15, scale 900): pad_1 renders behind the front pad_0 hull and the trunk strip; diagnostic overlay draws its marks by declared overlay law; measured census at calibration 91 px (dev run 3ed3e098f6794ccd8c7535672c2bd8b5, contact_diag__first_contact)",
+      "law_ref": "capture-gate-template v1 occlusion exception protocol (TEMPLATE_MANIFEST.json sha256 1c4d1dcad9af98c73e1aa4ebb46bff6359b9992e390b38c37fae578e779a59a7); LANDING-20261002 prereg section 10 declared views; frozen at spec_version 2"
+     },
+     "occluder_id": "pad_0",
+     "subject_id": "pad_1"
+    },
+    {
+     "justification": {
+      "census_required": true,
+      "exception_class": "DECLARED_OCCLUSION",
+      "geometry_ref": "fixture_geometry.projections.contact (phi 356.2555 deg, elev 15, scale 900): pad_2 renders behind the front pad_0 hull and the trunk strip; diagnostic overlay draws its marks by declared overlay law; measured census at calibration 131 px (dev run 3ed3e098f6794ccd8c7535672c2bd8b5, contact_diag__first_contact)",
+      "law_ref": "capture-gate-template v1 occlusion exception protocol (TEMPLATE_MANIFEST.json sha256 1c4d1dcad9af98c73e1aa4ebb46bff6359b9992e390b38c37fae578e779a59a7); LANDING-20261002 prereg section 10 declared views; frozen at spec_version 2"
+     },
+     "occluder_id": "pad_0",
+     "subject_id": "pad_2"
+    }
+   ],
+   "min_visible_pixels": {
+    "diag_layer": 400,
+    "ground_plane": 25000,
+    "pad_0": 3000,
+    "trunk": 3000
+   },
+   "occluded_subject_max_px": 250,
+   "occluder_min_pixels": 3000
+  },
+  "midfall_clean": {
+   "co_location_min_ratio": 0.9,
+   "expected_occluded": [
+    {
+     "justification": {
+      "census_required": true,
+      "exception_class": "DECLARED_OCCLUSION",
+      "geometry_ref": "fixture_geometry.projections.midfall (phi 356.2555 deg, elev 15, scale 380): pad_1 facet azimuth 120 deg renders partially behind the front pad_0 hull (lateral separation ~24 px at ~38 px pad width) and the trunk strip; measured census at calibration 374 px (dev run 3ed3e098f6794ccd8c7535672c2bd8b5, midfall_clean__midfall); the class-wide cap admits pad_2's genuine 760 px",
+      "law_ref": "capture-gate-template v1 occlusion exception protocol (TEMPLATE_MANIFEST.json sha256 1c4d1dcad9af98c73e1aa4ebb46bff6359b9992e390b38c37fae578e779a59a7); LANDING-20261002 prereg section 10 declared views; frozen at spec_version 2"
+     },
+     "occluder_id": "pad_0",
+     "subject_id": "pad_1"
+    },
+    {
+     "justification": {
+      "census_required": true,
+      "exception_class": "DECLARED_OCCLUSION",
+      "geometry_ref": "fixture_geometry.projections.midfall (phi 356.2555 deg, elev 15, scale 380): pad_2 facet azimuth 232 deg renders partially behind the front pad_0 hull and the trunk strip; measured census at calibration 760 px (dev run 3ed3e098f6794ccd8c7535672c2bd8b5, midfall_clean__midfall)",
+      "law_ref": "capture-gate-template v1 occlusion exception protocol (TEMPLATE_MANIFEST.json sha256 1c4d1dcad9af98c73e1aa4ebb46bff6359b9992e390b38c37fae578e779a59a7); LANDING-20261002 prereg section 10 declared views; frozen at spec_version 2"
+     },
+     "occluder_id": "pad_0",
+     "subject_id": "pad_2"
+    }
+   ],
+   "min_visible_pixels": {
+    "ground_plane": 8000,
+    "pad_0": 500,
+    "trunk": 2500
+   },
+   "occluded_subject_max_px": 1100,
+   "occluder_min_pixels": 500
+  },
+  "midfall_diag": {
+   "co_location_min_ratio": 0.9,
+   "expected_occluded": [
+    {
+     "justification": {
+      "census_required": true,
+      "exception_class": "DECLARED_OCCLUSION",
+      "geometry_ref": "fixture_geometry.projections.midfall (phi 356.2555 deg, elev 15, scale 380): pad_1 facet azimuth 120 deg renders partially behind the front pad_0 hull (lateral separation ~24 px at ~38 px pad width) and the trunk strip; measured census at calibration 374 px (dev run 3ed3e098f6794ccd8c7535672c2bd8b5, midfall_clean__midfall); the class-wide cap admits pad_2's genuine 760 px",
+      "law_ref": "capture-gate-template v1 occlusion exception protocol (TEMPLATE_MANIFEST.json sha256 1c4d1dcad9af98c73e1aa4ebb46bff6359b9992e390b38c37fae578e779a59a7); LANDING-20261002 prereg section 10 declared views; frozen at spec_version 2"
+     },
+     "occluder_id": "pad_0",
+     "subject_id": "pad_1"
+    },
+    {
+     "justification": {
+      "census_required": true,
+      "exception_class": "DECLARED_OCCLUSION",
+      "geometry_ref": "fixture_geometry.projections.midfall (phi 356.2555 deg, elev 15, scale 380): pad_2 renders partially behind the front pad_0 hull and the trunk strip; diagnostic overlay draws its marks by declared overlay law; measured census at calibration 728 px (dev run 3ed3e098f6794ccd8c7535672c2bd8b5, midfall_diag__midfall)",
+      "law_ref": "capture-gate-template v1 occlusion exception protocol (TEMPLATE_MANIFEST.json sha256 1c4d1dcad9af98c73e1aa4ebb46bff6359b9992e390b38c37fae578e779a59a7); LANDING-20261002 prereg section 10 declared views; frozen at spec_version 2"
+     },
+     "occluder_id": "pad_0",
+     "subject_id": "pad_2"
+    }
+   ],
+   "min_visible_pixels": {
+    "diag_layer": 150,
+    "ground_plane": 8000,
+    "pad_0": 500,
+    "trunk": 2500
+   },
+   "occluded_subject_max_px": 1100,
+   "occluder_min_pixels": 500
+  },
+  "rest_clean": {
+   "co_location_min_ratio": 0.9,
+   "expected_occluded": [
+    {
+     "justification": {
+      "census_required": true,
+      "exception_class": "DECLARED_OCCLUSION",
+      "geometry_ref": "fixture_geometry.projections.rest (phi 356.2555 deg, elev 15, scale 380): at the rest frame the rear pads' silhouettes are almost fully covered by the front pad_0 hull; measured census at calibration 21 px per rear pad (dev run 3ed3e098f6794ccd8c7535672c2bd8b5, rest_clean__rest_end)",
+      "law_ref": "capture-gate-template v1 occlusion exception protocol (TEMPLATE_MANIFEST.json sha256 1c4d1dcad9af98c73e1aa4ebb46bff6359b9992e390b38c37fae578e779a59a7); LANDING-20261002 prereg section 10 declared views; frozen at spec_version 2"
+     },
+     "occluder_id": "pad_0",
+     "subject_id": "pad_1"
+    },
+    {
+     "justification": {
+      "census_required": true,
+      "exception_class": "DECLARED_OCCLUSION",
+      "geometry_ref": "fixture_geometry.projections.rest (phi 356.2555 deg, elev 15, scale 380): measured census at calibration 21 px (dev run 3ed3e098f6794ccd8c7535672c2bd8b5, rest_clean__rest_end)",
+      "law_ref": "capture-gate-template v1 occlusion exception protocol (TEMPLATE_MANIFEST.json sha256 1c4d1dcad9af98c73e1aa4ebb46bff6359b9992e390b38c37fae578e779a59a7); LANDING-20261002 prereg section 10 declared views; frozen at spec_version 2"
+     },
+     "occluder_id": "pad_0",
+     "subject_id": "pad_2"
+    }
+   ],
+   "min_visible_pixels": {
+    "ground_plane": 8000,
+    "pad_0": 500,
+    "trunk": 2200
+   },
+   "occluded_subject_max_px": 150,
+   "occluder_min_pixels": 500
+  },
+  "rest_diag": {
+   "co_location_min_ratio": 0.9,
+   "expected_occluded": [
+    {
+     "justification": {
+      "census_required": true,
+      "exception_class": "DECLARED_OCCLUSION",
+      "geometry_ref": "fixture_geometry.projections.rest (phi 356.2555 deg, elev 15, scale 380): rear pad silhouettes almost fully covered by the front pad_0 hull; diagnostic overlay draws its marks by declared overlay law; measured census at calibration 15/21 px (dev run 3ed3e098f6794ccd8c7535672c2bd8b5, rest_diag__rest_end)",
+      "law_ref": "capture-gate-template v1 occlusion exception protocol (TEMPLATE_MANIFEST.json sha256 1c4d1dcad9af98c73e1aa4ebb46bff6359b9992e390b38c37fae578e779a59a7); LANDING-20261002 prereg section 10 declared views; frozen at spec_version 2"
+     },
+     "occluder_id": "pad_0",
+     "subject_id": "pad_1"
+    },
+    {
+     "justification": {
+      "census_required": true,
+      "exception_class": "DECLARED_OCCLUSION",
+      "geometry_ref": "fixture_geometry.projections.rest (phi 356.2555 deg, elev 15, scale 380): measured census at calibration 21 px (dev run 3ed3e098f6794ccd8c7535672c2bd8b5, rest_diag__rest_end)",
+      "law_ref": "capture-gate-template v1 occlusion exception protocol (TEMPLATE_MANIFEST.json sha256 1c4d1dcad9af98c73e1aa4ebb46bff6359b9992e390b38c37fae578e779a59a7); LANDING-20261002 prereg section 10 declared views; frozen at spec_version 2"
+     },
+     "occluder_id": "pad_0",
+     "subject_id": "pad_2"
+    }
+   ],
+   "min_visible_pixels": {
+    "diag_layer": 500,
+    "ground_plane": 8000,
+    "pad_0": 500,
+    "trunk": 2200
+   },
+   "occluded_subject_max_px": 150,
+   "occluder_min_pixels": 500
+  }
+ }
+}
