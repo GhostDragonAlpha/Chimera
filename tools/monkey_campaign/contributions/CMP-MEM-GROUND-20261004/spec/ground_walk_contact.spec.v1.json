@@ -1,0 +1,435 @@
+{
+  "schema": "chimera.mathspec.spec.v1",
+  "spec_version": "1.0.0",
+  "spec_id": "spec.ground_walk_contact.v1",
+  "title": "The ground membrane's walk surface + seam contact-record ownership against external contract pc.hand_ground_contact.v1 (packet PKT-G3-MEMBRANE-GROUND, fixture-based)",
+  "authority": {
+    "authorization": "Packet PKT-G3-MEMBRANE-GROUND (IMPLEMENT_MEMBRANE membrane.ground.v1), worker wk-membrane-ground, criteria_sha256 d0b0364349f6b203f8cf3d8f0f5077548d22afb82f476893c35f274a42508699, prereg committed BEFORE implementation at lane commit 447e3b7f; executed under NO_WORKTREES.md (file packages; runner seal/run only)",
+    "claims_scope": "fixture-based membrane implementation + seam-ownership verification ONLY: the walk surface, the seam contact records (jn as the graph exchange record, jt as the declared ground-owned derived record), and the elementwise_min pair rule are exercised against the DECLARED fixture exterior of the hand side; no integrated qualification, no co-instantiation with the real membrane.hand.v1 (the pair RUN remains declared_pending, owed by the assembly task of pair.hand_ground.v1), no measured-volar re-pin, no new physics",
+    "no_new_physics": true,
+    "external_contract": {
+      "contract_id": "pc.hand_ground_contact.v1",
+      "contract_version": "1.0.0",
+      "sha256": "a54313760c766764fb95302ebe0bee1fbc65f343770a8b9930657f2a6a3f2104",
+      "pinned_copy": "pinned_inputs/pc.hand_ground_contact.v1.json (byte-exact; drift-refused by both modules at build)"
+    }
+  },
+  "conventions": {
+    "impulse_vs_force": "the exchange quantity q_jn is an IMPULSE per tick (N*s at the frozen tick_dt_s 0.005 s); the applied transfer and the ledger bookings are per-window impulse books (N*s), the G04 seam law (ledger identity m*dv == press + weld + gravity + contact + anchor, window 1e-12 N*s); the DECLARED /dt force conversion (60 N = 0.3/0.005) is a derived view, never a second book",
+    "predicate_literals": "literals inside predicate expressions are dimensionless constants compared in the declared unit of the quantity",
+    "contract_to_graph_mapping": "the frozen mathspec class carries ONE exchange quantity per two-member connection, so the contract's PRIMARY transferred quantity jn is the graph exchange record (the contract's own words: 'the connection's primary transferred quantity'); the contract's SECOND record jt is declared in declared_records below as the ground-owned derived record booked through a per-window ledger entry pair; the contract's single authoritative connection keeps ITS id conn.hand_ground_contact.v1",
+    "clocks": "this spec binds the CONTRACT's frozen tick_dt_s 0.005 s (press_dt_s, M06 frozen declarations); the W03 walk-scene clock tick_hz 300 is a DIFFERENT declared fixture and is deliberately not unified (the two fixtures' clocks are declared, never averaged)"
+  },
+  "membranes": [
+    {
+      "membrane_id": "membrane.ground.v1",
+      "kind": "walk_surface_contact",
+      "title": "Ground membrane: the authored walk plane (single writer: the composition flatten), the declared slope envelope, the walk-class verdict law, and the seam's contact-record ownership",
+      "owned_state": [
+        {
+          "var": "walk_plane_height",
+          "unit": "m",
+          "description": "the authored plateau the hand's contact surface meets (contract consumed_inputs walk_plane_height). SINGLE WRITER: the composition flatten (F05 composed_meta transform.reground.flatten, plateau_height_m +0.004); the declaration's initial case IS that writer's record; no runtime writer ever re-writes it and any second writer is refused by the pinned owner store (the packet's T.GROUND_plane_identity). The walk plane is NEVER the terrain-grid read (-32.293460845947266 m class; F05 FB4/f05_grid_plane_mismatch)",
+          "domain": {
+            "min_inclusive": 0.004,
+            "max_inclusive": 0.004
+          }
+        }
+      ],
+      "parameters": [
+        {
+          "var": "slope_envelope_m_per_m",
+          "unit": "m/m",
+          "value": 0.05,
+          "provenance": {
+            "class": "synthetic",
+            "source": "AUTHORED_DECLARED: F05 P2 max_slope_bound 0.05 m/m on the pinned clearing declaration (contract consumed_inputs slope_envelope_m_per_m; declared_dependencies row, store_path MAT2-F05/source/terrain_meta.json sha256 ff15fb1db3dcc128a531d21ef64d3ab62ae78190b64db36f70b5d273c1425681); valid_input_ranges min 0.0 max 0.05 INCLUSIVE",
+            "derivation": "outside the envelope the walk-class surface verdict is OUTSIDE and the ground membrane reports it; it does not silently clamp (contract valid_input_ranges outside_behavior, verbatim); changing it is a declaration/contract version change, not a parameter edit"
+          }
+        },
+        {
+          "var": "press_dt_s",
+          "unit": "s",
+          "value": 0.005,
+          "provenance": {
+            "class": "synthetic",
+            "source": "AUTHORED_DECLARED: contract timing tick_dt_s 0.005 (press_channel.dt_s, M06 frozen declarations; G04 receipt press_channel.dt_s 0.005, sha256 0d622f3610a4d23f52655908effe474694867a20e639747dc48535a419319ce8)",
+            "derivation": "the frozen declaration; changing it is a contract version change (packet explicit_assumptions), not a parameter edit"
+          }
+        },
+        {
+          "var": "walk_class_easy_lt_deg",
+          "unit": "unitless",
+          "value": 10.0,
+          "provenance": {
+            "class": "synthetic",
+            "source": "AUTHORED_DECLARED: F05 terrain_meta walk_core class rules easy <10 deg (class histogram row easy_lt10deg 3743766; thresholds AUTHORED-DECLARED for a reference earth-contract biped, NOT qualified for this walker - TERRAIN_REPORT section 8 item 6, carried as declared class vocabulary only)",
+            "derivation": "the declared verdict-class threshold table reproduced by T.GROUND_walk_class; the thresholds bound the CLASS TABLE, they are not a walker qualification"
+          }
+        },
+        {
+          "var": "walk_class_moderate_lt_deg",
+          "unit": "unitless",
+          "value": 20.0,
+          "provenance": {
+            "class": "synthetic",
+            "source": "AUTHORED_DECLARED: F05 terrain_meta walk_core class rules moderate 10-20 deg (class histogram row moderate_10_20deg 227474)",
+            "derivation": "declared class vocabulary, as above"
+          }
+        },
+        {
+          "var": "walk_class_steep_lt_deg",
+          "unit": "unitless",
+          "value": 30.0,
+          "provenance": {
+            "class": "synthetic",
+            "source": "AUTHORED_DECLARED: F05 terrain_meta walk_core class rules steep 20-30 deg, impassable >=30 deg (histogram rows steep_20_30deg 9361, impassable 0)",
+            "derivation": "declared class vocabulary, as above"
+          }
+        }
+      ],
+      "published_states": [
+        "walk_plane_height"
+      ],
+      "ports": {
+        "inputs": [
+          {
+            "port_id": "in.q_jn",
+            "quantity_ref": "q_jn",
+            "type": "scalar_real",
+            "unit": "N*s",
+            "sign_convention": "port.walk_surface_contact (contract endpoint b, direction inout): jn >= 0 presses the two surfaces together; the record is written ONCE per tick at the contact by THIS membrane (the seam's contact-record owner, contract state_ownership jn single_writer_law) and applied bitwise equal/opposite to both sides; released/separated = exactly 0.0, support is never invented after separation",
+            "connection_ref": "conn.hand_ground_contact.v1"
+          }
+        ],
+        "outputs": [
+          {
+            "port_id": "out.walk_plane_height",
+            "quantity_ref": "walk_plane_height",
+            "type": "scalar_real",
+            "unit": "m",
+            "sign_convention": "the ground-owned surface state the seam consumes (contract coordinate_frames earth_contract_local_frame: walk plane at +0.004 m, single writer the composition flatten); never the terrain-grid read",
+            "connection_ref": "conn.hand_ground_contact.v1"
+          }
+        ]
+      },
+      "evolution": [
+        {
+          "target": "walk_plane_height",
+          "expr": "0.0 * walk_plane_height / press_dt_s",
+          "unit": "m/s"
+        }
+      ],
+      "preconditions": [
+        {
+          "id": "pre.ground.press_dt_positive",
+          "expr": "press_dt_s > 0.0"
+        },
+        {
+          "id": "pre.ground.envelope_nonnegative",
+          "expr": "slope_envelope_m_per_m >= 0.0"
+        }
+      ],
+      "invariants": [
+        {
+          "id": "inv.ground.plane_authored",
+          "expr": "walk_plane_height == 0.004"
+        }
+      ],
+      "refusal_conditions": [
+        {
+          "id": "ref.ground.jn_negative",
+          "expr": "q_jn < 0.0",
+          "refusal_code": "ref.ground.jn_negative_press_record",
+          "law": "the sign convention is jn >= 0 (presses together); a negative record is a structural fault, not a value (contract direction_sign_conventions jn)"
+        }
+      ]
+    },
+    {
+      "membrane_id": "membrane.hand_fixture_stub.v1",
+      "kind": "declared_fixture_exterior",
+      "title": "DECLARED FIXTURE EXTERIOR of the hand side (fx.hand_press_impulse): the press channel state the ground consumes; NOT membrane.hand.v1's interior",
+      "identity_note": "INTERIOR LAW: membrane.hand.v1's interior stays hidden (packet owned_scope read_only + Captain parallel-membrane order). This member carries exactly the contract's hand-side seam EXTERIOR as declared fixtures: the press channel state (owned by the hand side, contract state_ownership press_channel_state owner membrane.hand.v1; the ground membrane never writes it) running at the declared fixture impulse while the hand side is UNFINISHED (packet explicit_assumptions). It is a named fixture stand-in, not the hand membrane; its presses are fixture presses (actuator_qualified false, x_press ABSENT)",
+      "owned_state": [
+        {
+          "var": "press_channel_state",
+          "unit": "N*s",
+          "description": "the press channel state per tick: the armed impulse magnitude (fixture fx.hand_press_impulse jn 0.3 N*s per channel per tick) or exactly 0.0 when released (release REMOVES support; G07 X1 release account). OWNER: the hand side (here, its declared fixture exterior); the ground membrane never writes it. No third state exists; a record outside {armed, released} is a structural fault (contract valid_input_ranges press_channel_state)",
+          "domain": {
+            "min_inclusive": 0.0,
+            "max_inclusive": 0.3
+          }
+        }
+      ],
+      "parameters": [
+        {
+          "var": "press_channel_jn_ns_per_tick",
+          "unit": "N*s",
+          "value": 0.3,
+          "provenance": {
+            "class": "synthetic",
+            "source": "AUTHORED_DECLARED fixture input at the demonstrated F03 S1 operating point (fx.hand_press_impulse: G04 receipt press_channel.jn_ns 0.3, sha256 0d622f36...); actuator_qualified false; x_press ABSENT (blocker NB-03, debt owner G04 successor actuator qualification A08-U1; ports 0/8 honest refusal stands)",
+            "derivation": "the DECLARED fixture value only; values above the (unknown) actuator bound are inadmissible for qualification claims; any admission waits on NB-03 (contract valid_input_ranges jn)"
+          }
+        },
+        {
+          "var": "press_dt_s",
+          "unit": "s",
+          "value": 0.005,
+          "provenance": {
+            "class": "synthetic",
+            "source": "AUTHORED_DECLARED: press_channel.dt_s (M06 frozen declarations; contract contract_parameters press_dt_s)",
+            "derivation": "frozen declaration; the fixture's declared clock"
+          }
+        }
+      ],
+      "published_states": [
+        "press_channel_state"
+      ],
+      "ports": {
+        "inputs": [
+          {
+            "port_id": "in.q_jn",
+            "quantity_ref": "q_jn",
+            "type": "scalar_real",
+            "unit": "N*s",
+            "sign_convention": "port.grip_contact (contract endpoint a, direction inout): this member CONSUMES the contact record read-only (its ledgers re-read, never re-write); it never produces the seam's contact record (the exchange-record owner is membrane.ground.v1, contract state_ownership jn/jt)",
+            "connection_ref": "conn.hand_ground_contact.v1"
+          }
+        ],
+        "outputs": [
+          {
+            "port_id": "out.press_channel_state",
+            "quantity_ref": "press_channel_state",
+            "type": "scalar_real",
+            "unit": "N*s",
+            "sign_convention": "direction out (contract direction_sign_conventions press_channel_state): owned and written by the hand side (here its declared fixture exterior); armed carries the impulse magnitude, released is exactly 0 N*s; the ground side consumes its effect through jn only",
+            "connection_ref": "conn.hand_ground_contact.v1"
+          }
+        ]
+      },
+      "evolution": [
+        {
+          "target": "press_channel_state",
+          "expr": "0.0 * press_channel_state / press_dt_s",
+          "unit": "N"
+        }
+      ],
+      "preconditions": [
+        {
+          "id": "pre.stub.press_nonnegative",
+          "expr": "press_channel_state >= 0.0"
+        },
+        {
+          "id": "pre.stub.fixture_bound",
+          "expr": "press_channel_state <= press_channel_jn_ns_per_tick"
+        }
+      ],
+      "invariants": [
+        {
+          "id": "inv.stub.no_third_state",
+          "expr": "press_channel_state <= press_channel_jn_ns_per_tick"
+        }
+      ],
+      "refusal_conditions": [
+        {
+          "id": "ref.stub.press_state_negative",
+          "expr": "press_channel_state < 0.0",
+          "refusal_code": "ref.stub.press_state_negative"
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "connection_id": "conn.hand_ground_contact.v1",
+      "kind": "normal_press_impulse",
+      "title": "The contract's ONE authoritative connection (same id); exchange record = the primary transferred quantity jn, owned by membrane.ground.v1",
+      "members": [
+        "membrane.hand_fixture_stub.v1",
+        "membrane.ground.v1"
+      ],
+      "parameters": [
+        {
+          "var": "mu_hand",
+          "unit": "unitless",
+          "value": 0.6,
+          "provenance": {
+            "class": "synthetic",
+            "source": "NAMED_PLACEHOLDER (fx.mu_placeholders): placeholders.mu_s (M06 contact_law.json block constants, synthetic_authored; contract consumed_inputs mu_s + contract_parameters mu_s); debt_owner: G04 measured-volar acquisition (FRICTION_SOURCES section-5 arm F-A), blocker NB-01; FRICTION_SOURCES verdict GAP: 'there is NO lawful measured pin for the primary pair today'; REPIN ORDER 2 holds; the L1/L2 human-volar envelope (0.5-3.0 at 0.03-1.64 N) is falsifier-band context ONLY, never a re-pin",
+            "derivation": "the hand side of the elementwise_min pair rule; every capacity number inherits the placeholder linearly; a ground-side re-pin alone cannot raise the pair mu and vice versa"
+          }
+        },
+        {
+          "var": "mu_surface",
+          "unit": "unitless",
+          "value": 0.6,
+          "provenance": {
+            "class": "synthetic",
+            "source": "NAMED_PLACEHOLDER (fx.mu_placeholders, ground-side row): the W03 walk scene's contact_friction 0.6 and the M06/F03 0.6 placeholder row (FRICTION_SOURCES P1/P2, DECLARED PLACEHOLDER); debt_owner: G04 measured-volar acquisition, blockers NB-01/NB-02; mu_k 0.4 is carried by the SAME named fixture and is BELOW the low-load measured floor (0.5-3.0) - the three-band verdict",
+            "derivation": "the ground/surface side of the elementwise_min pair rule (pair_friction_rule elementwise_min, M06 pair_mu :299 + FRICTION_SOURCES section 1.2 item 5 + section 7 lesson 2); single-side re-pins cannot raise the pair mu; the placeholder retires only when NB-01/NB-02 retire in a store-pinned artifact"
+          }
+        }
+      ],
+      "consumed": [
+        {
+          "from_membrane": "membrane.hand_fixture_stub.v1",
+          "quantity_ref": "press_channel_state"
+        }
+      ],
+      "exchange": {
+        "quantity_ref": "q_jn",
+        "unit": "N*s",
+        "sign_convention": "THE seam's contact normal impulse record (contract exchanged_quantities jn, protocol normal_press_impulse): jn >= 0 presses the two surfaces together; written ONCE per window at the contact stage by the owner membrane.ground.v1 (contract state_ownership jn single_writer_law: 'written ONCE by the pinned M06 solver at the contact'); armed ticks carry the declared fixture impulse; released/separated ticks are exactly 0.0 - support is never invented after separation (contract pair_rules separation_removes_support)",
+        "expr": "press_channel_state",
+        "owner_membrane": "membrane.ground.v1",
+        "owner_rule": "the contract's state_ownership table: jn (and the derived jt record) are owned by membrane.ground.v1 with readers membrane.hand.v1 + pair.hand_ground.v1; press_channel_state is owned by the hand side and only consumed; the graph exchange-record owner is the MEMBER the contract assigns (bind B01 state_owner)"
+      },
+      "transfer_law": {
+        "applied_by": "assembly",
+        "exactly_once": true,
+        "per_membrane": [
+          {
+            "membrane_id": "membrane.hand_fixture_stub.v1",
+            "target": "press_channel_state",
+            "expr": "(q_jn - q_jn) / press_dt_s",
+            "declared_meaning": "the fixture press state is DECLARED (armed 0.3 / released 0.0), not contact-driven: its contact-driven rate is exactly zero and the booking lives in the ledger entry (S2: the impulse enters each side's ledger with the sign of its own surface normal)",
+            "ledger_entry": {
+              "entry_id": "ground_seam.jn.into_hand_fixture",
+              "unit": "N*s",
+              "value_expr": "q_jn",
+              "sign_convention": "+: the pad-side ledger books the record once per tick (re-read, never re-written); G04 X3 pad-side book"
+            }
+          },
+          {
+            "membrane_id": "membrane.ground.v1",
+            "target": "walk_plane_height",
+            "expr": "0.0 * walk_plane_height / press_dt_s",
+            "declared_meaning": "the authored plane is INVARIANT under the anchored reaction (the world is anchored; G04 X3: trunk anchor == -contact every tick): the plane's contact-driven rate is exactly zero and the reaction books into the ground-side ledger entry",
+            "ledger_entry": {
+              "entry_id": "ground_seam.jn.into_ground",
+              "unit": "N*s",
+              "value_expr": "-q_jn",
+              "sign_convention": "-: the world-anchor reaction books bitwise opposite to the pad-side entry (S2 reciprocity; G04 X3 worst 0.0 N*s)"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "declared_records": {
+    "law": "LABELED EXTRA SECTION of this spec (the frozen format validator intentionally ignores unknown keys; THIS lane's harness and BOTH member modules parse and enforce it through the same closed parser spec_lang, with the frozen validator's absence of coverage declared here honestly). It carries the contract's SECOND seam record and the surface verdict law, which the ONE-exchange-per-connection class cannot carry as a second graph record",
+    "records": [
+      {
+        "record_id": "jt",
+        "owner_membrane": "membrane.ground.v1",
+        "unit": "N*s",
+        "expr": "min(mu_hand, mu_surface) * q_jn",
+        "law": "the contact tangential impulse record (contract exchanged_quantities jt, state_ownership jt owner membrane.ground.v1): the Coulomb elementwise_min pair cone at the fixture contact; the fixture carries no measured tangential tendency, so the record sits at the cone bound (the slip arm; jt <= mu_pair * jn elementwise, contract direction_sign_conventions jt); the stick arm and the sealed G04 displacement numbers (stick arrest worst 1.3877787808120304e-17 m/s; zero-mu control slides 0.05150250000055512 m under full press) belong to the sealed M06 mechanism and are NOT re-declared here",
+        "ledger_entry_ids": [
+          "ground_seam.jt.into_hand_fixture",
+          "ground_seam.jt.into_ground"
+        ],
+        "entry_sign_conventions": {
+          "ground_seam.jt.into_hand_fixture": "+jt_ground_y positive is the forward push-off direction in the ground frame (contract jt sign_convention, pairpath S2); the pad-side ledger books it once per tick",
+          "ground_seam.jt.into_ground": "bitwise opposite of the pad-side jt entry (S2 reciprocity; G04 X3 window: reciprocity exact, worst 0.0 N*s)"
+        },
+        "window": "cone window jt <= mu_pair * jn + 1e-9 every record; reciprocity exact (bitwise zero-sum); a single-side re-pin cannot raise the pair mu (packet T.GROUND_pair_rule)"
+      },
+      {
+        "record_id": "walk_class",
+        "owner_membrane": "membrane.ground.v1",
+        "unit": "unitless",
+        "law": "the walk-surface verdict row carries TWO declared layers, exactly as F05 declares them: (1) the terrain difficulty CLASS of the true slope (F05 terrain_meta walk_core classes: water / easy_lt10deg / moderate_10_20deg / steep_20_30deg / impassable_ge30deg; thresholds declared in the ground parameters from the sealed class rules; declared vocabulary, NOT a walker qualification - TERRAIN_REPORT section 8 item 6), and (2) the WALK verdict against the declared slope envelope slope_envelope_m_per_m 0.05 m/m INCLUSIVE: outside the envelope the verdict is OUTSIDE, reported with the TRUE slope and NEVER clamped (contract valid_input_ranges slope_envelope_m_per_m outside_behavior, verbatim); water is a surface-kind row (the static sheet), not a slope row",
+        "verdict_rule": "slope_m_per_m > slope_envelope_m_per_m -> {verdict: OUTSIDE, outside: true, class: <terrain class of the true slope>}; else {verdict: INSIDE, outside: false, class: <terrain class>}; the boundary itself (0.05 m/m exactly) is INSIDE (contract range inclusive at max 0.05); water -> {verdict: WATER, class: water}"
+      }
+    ],
+    "separation_law": "when the press channel is released (press_channel_state == 0.0 exactly) the record set for the pair is empty: q_jn == 0.0 exactly, jt == 0.0 exactly, and every seam ledger entry books exactly 0.0 - support is never invented after separation (contract pair_rules separation_removes_support; the record-level analog of the sealed G04 X4 release bars and G07 accounted release)",
+    "conserved_quantity_omitted": "no conserved state functional is declared: the anchored world stores no energy and the seam closes per-window through the paired ledger entries (checked bitwise zero every window), not through a conserved scalar; the frozen format's conserved_quantity slot is therefore honestly omitted rather than filled with a decorative identity"
+  },
+  "assembly": {
+    "assembly_id": "assembly.ground_walk.v1",
+    "members": [
+      "membrane.hand_fixture_stub.v1",
+      "membrane.ground.v1"
+    ],
+    "connections": [
+      "conn.hand_ground_contact.v1"
+    ],
+    "initial_states": [
+      {
+        "case_id": "armed_hold",
+        "use": "the fixture operating point fx.hand_press_impulse (armed): the press channel applies its declared per-tick impulse at the contact",
+        "values": {
+          "walk_plane_height": 0.004,
+          "press_channel_state": 0.3
+        }
+      },
+      {
+        "case_id": "released",
+        "use": "the release latch's released state (fx release account): the press channel records exactly zero and the seam's support is removed",
+        "values": {
+          "walk_plane_height": 0.004,
+          "press_channel_state": 0.0
+        }
+      }
+    ]
+  },
+  "numerics": {
+    "method": "explicit_euler",
+    "supported_methods": [
+      "explicit_euler"
+    ],
+    "dt_s": 0.005,
+    "horizon_s": 0.05,
+    "assumptions": [
+      "one declared Euler step per window at the CONTRACT's frozen tick dt 0.005 s (the exchange record and every ledger booking are computed from the WINDOW-START view, zero-order hold; the record carries no cross-tick memory - the per-tick instance set has no authored existence outside the tick, contract timing per_tick_semantics)",
+      "the exchange record and both jt ledger entries derive from the ONE shared closure per connection (the compiled spec AST); every accessor agrees BITWISE every window (proven by the generated wiring's per-window one-quantity proof)",
+      "the only latching state crossing the seam is press_channel_state; its per-case value is DECLARED (armed_hold 0.3 / released 0.0) and constant over the horizon; the release latch's re-arm law is the hand side's interior and is NOT declared here",
+      "the declared state_linf_tol window below is the 1e-9 seam window of the packet (recursion windows); the seam identities themselves are checked BITWISE (exact 0.0 reciprocity, G04 X3)"
+    ],
+    "admissibility": [
+      {
+        "dt_s": 0.005,
+        "checkpoint_s": [
+          0.005,
+          0.05
+        ],
+        "state_linf_tol": {
+          "unit": "N*s",
+          "value": 1e-09
+        },
+        "conserved_drift_tol": {
+          "unit": "N*s",
+          "value": 1e-12
+        }
+      }
+    ],
+    "declaration_note": "the admissible timestep/tolerance table was declared in this spec BEFORE any run (the only admissible dt is the contract's frozen 0.005 s); the harness reads it from these bytes and may not tune it; the conserved_drift_tol row is declared for format completeness and is unused because no conserved state functional is declared (see declared_records.conserved_quantity_omitted)"
+  },
+  "qualification": {
+    "analytic_reference": {
+      "class_id": "fixture_contact_record_identity",
+      "law": "the EXACT identity reference for the fixture contact class: the jn record equals the armed press impulse (0.3 N*s) bitwise on armed ticks and exactly 0.0 on release ticks; jt == min(mu_hand, mu_surface) * jn bitwise; the walk plane stays bitwise 0.004; computed directly from the declared fixture values in the spec bytes, never reading the runtime store",
+      "reference_status": "identity_reference: this is NOT an ODE analytic solution; the frozen spec_runtime.analytic_reference refuses this class id by name (harness_analytic_reference_class_unknown) and the harness never calls it - the refusal itself is part of the class boundary this lane respects"
+    },
+    "integration_checks": [
+      {
+        "id": "ACC::T.GROUND_plane_identity",
+        "kind": "structural"
+      },
+      {
+        "id": "ACC::T.GROUND_walk_class",
+        "kind": "structural"
+      },
+      {
+        "id": "ACC::T.GROUND_seam_records",
+        "kind": "numerical_evidence"
+      },
+      {
+        "id": "ACC::T.GROUND_pair_rule",
+        "kind": "numerical_evidence"
+      }
+    ]
+  }
+}

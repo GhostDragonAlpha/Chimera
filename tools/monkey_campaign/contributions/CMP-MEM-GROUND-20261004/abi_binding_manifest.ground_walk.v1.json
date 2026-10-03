@@ -1,0 +1,35 @@
+{
+  "schema": "chimera.membrane_abi.binding_manifest.v1",
+  "abi_version": "chimera.membrane_abi.v1",
+  "manifest_id": "abi_binding_manifest.ground_walk.v1",
+  "assembly_id": "assembly.ground_walk.v1",
+  "spec_relative_path": "spec/ground_walk_contact.spec.v1.json",
+  "generated_bindings_relative_path": "generated/bindings.ground_walk.v1.py",
+  "implementations": [
+    {
+      "membrane_id": "membrane.ground.v1",
+      "module_file": "membrane_ground.py",
+      "module_sha256": "1684d3b23d7461274b39626b3b4dabcaa1b6b26968b3ccf21e906ceb39d4dbfe",
+      "wraps": {
+        "file": "membrane_ground.py",
+        "sha256": "1684d3b23d7461274b39626b3b4dabcaa1b6b26968b3ccf21e906ceb39d4dbfe",
+        "lane_of_record": "E:/ChimeraWork/monkey-coordination/membrane-ground (wk-membrane-ground, packet PKT-G3-MEMBRANE-GROUND)"
+      }
+    },
+    {
+      "membrane_id": "membrane.hand_fixture_stub.v1",
+      "module_file": "membrane_hand_fixture_stub.py",
+      "module_sha256": "6b9218c5aed7348f50a966697680ce12530a0ae0ea03daa8d49e8e67d0e463b2",
+      "wraps": {
+        "file": "membrane_hand_fixture_stub.py",
+        "sha256": "6b9218c5aed7348f50a966697680ce12530a0ae0ea03daa8d49e8e67d0e463b2",
+        "lane_of_record": "E:/ChimeraWork/monkey-coordination/membrane-ground (wk-membrane-ground, the DECLARED FIXTURE EXTERIOR of the hand side; NOT membrane.hand.v1's interior - interior law)"
+      }
+    }
+  ],
+  "provenance_labels": {
+    "status": "SEPARATELY LABELED -- provenance attestations are process claims, never part of the ABI surface (ABI section 6)",
+    "law": "lane_of_record strings are lane-process attestations of record, NOT derivable facts; the interior law means membrane.hand.v1's implementation was never read, listed or referenced - that absence is a process attestation, not a machine-verified fact",
+    "abi_role": "the ABI surface (chimera.membrane_abi.v1) carries NO provenance fields by design"
+  }
+}

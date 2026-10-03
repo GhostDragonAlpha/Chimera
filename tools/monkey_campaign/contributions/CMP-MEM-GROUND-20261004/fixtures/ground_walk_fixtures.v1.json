@@ -1,0 +1,345 @@
+{
+  "schema": "chimera.membrane_ground.fixtures.v1",
+  "fixtures_id": "fx.ground_walk.v1",
+  "title": "The declared fixtures of the membrane-ground lane (packet PKT-G3-MEMBRANE-GROUND): probes, windows, variant fixtures with preregistered expectations; NOTHING here is tuned to pass - values come from the packet, the contract and the pinned evidence",
+  "fixture_class": "FIXTURE_BASED (packet fixture_rule): every result produced with these fixtures is fixture-based and never discharges an integrated-qualification gate",
+  "declared_fixture_values": {
+    "fx.hand_press_impulse": {
+      "jn_ns_per_channel": 0.3,
+      "dt_s": 0.005,
+      "class": "AUTHORED_DECLARED",
+      "blocker": "NB-03",
+      "debt_owner": "G04 successor actuator qualification (A08-U1); actuator_qualified false; x_press ABSENT",
+      "pinned_in": "pinned_inputs/g04_experiment_receipt.json press_channel + contract contract_parameters"
+    },
+    "fx.mu_placeholders": {
+      "mu_s": 0.6,
+      "mu_k": 0.4,
+      "class": "NAMED_PLACEHOLDER",
+      "blockers": [
+        "NB-01",
+        "NB-02"
+      ],
+      "debt_owner": "G04 measured-volar acquisition (FRICTION_SOURCES verdict GAP; REPIN ORDER 2 holds)",
+      "pinned_in": "contract consumed_inputs/contract_parameters + pinned_inputs/FRICTION_SOURCES.md"
+    },
+    "walk_plane_height_m": 0.004,
+    "slope_envelope_m_per_m": 0.05,
+    "walk_class_thresholds_deg": {
+      "easy_lt": 10.0,
+      "moderate_lt": 20.0,
+      "steep_lt": 30.0
+    }
+  },
+  "runs": {
+    "window_count": 10,
+    "dt_s": 0.005,
+    "horizon_s": 0.05,
+    "initial_cases": [
+      "armed_hold",
+      "released"
+    ],
+    "determinism_seeds": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "max_workers": 4
+  },
+  "expected_seam_armed_hold": {
+    "law": "preregistered before any run (lane PREREGISTRATION.md section 2, ACC::T.GROUND_seam_records / pair_rule)",
+    "record_q_jn_every_window": 0.3,
+    "record_bitwise": true,
+    "ledger_entries_per_window": {
+      "ground_seam.jn.into_hand_fixture": {
+        "value": 0.3,
+        "count_per_window": 1
+      },
+      "ground_seam.jn.into_ground": {
+        "value": -0.3,
+        "count_per_window": 1
+      },
+      "ground_seam.jt.into_hand_fixture": {
+        "value": 0.18,
+        "count_per_window": 1
+      },
+      "ground_seam.jt.into_ground": {
+        "value": -0.18,
+        "count_per_window": 1
+      }
+    },
+    "reciprocity": "into_hand + into_ground == 0.0 BITWISE for BOTH jn and jt, every window (G04 X3 window: worst 0.0 N*s)",
+    "applies_per_window": {
+      "state.q_jn.hand_ground_contact.v1": 1
+    },
+    "applies_actor": "membrane.ground.v1",
+    "applies_contribution": "contribution.hand_ground_contact.exchange",
+    "plane_runtime_applies": 0,
+    "press_runtime_applies": 0,
+    "cone_window": "jt <= mu_pair * jn + 1e-9 every window"
+  },
+  "expected_seam_released": {
+    "record_q_jn_every_window": 0.0,
+    "record_exact_zero": true,
+    "all_ledger_entries_exact_zero": true,
+    "law": "separation removes support; the record-level analog of the sealed G04 X4 release bars; no partial press anywhere (contract pair_rules separation_removes_support)"
+  },
+  "walk_class_probes": [
+    {
+      "probe_id": "probe.flat",
+      "slope_m_per_m": 0.0,
+      "expect_class": "easy_lt10deg",
+      "expect_outside": false,
+      "expect_verdict": "INSIDE"
+    },
+    {
+      "probe_id": "probe.mound_max_measured",
+      "slope_m_per_m": 0.03795552514626025,
+      "expect_class": "easy_lt10deg",
+      "expect_outside": false,
+      "note": "F05 measured mound max grade, inside the declared envelope",
+      "expect_verdict": "INSIDE"
+    },
+    {
+      "probe_id": "probe.boundary_exact",
+      "slope_m_per_m": 0.05,
+      "expect_class": "easy_lt10deg",
+      "expect_outside": false,
+      "note": "contract valid_input_ranges inclusive at 0.05; atan(0.05)=2.8624 deg",
+      "expect_verdict": "INSIDE"
+    },
+    {
+      "probe_id": "probe.boundary_epsilon_out",
+      "slope_m_per_m": 0.050000000001,
+      "expect_verdict": "OUTSIDE",
+      "expect_outside": true,
+      "expect_reported_slope": 0.050000000001,
+      "note": "OUTSIDE reported with the TRUE slope, never clamped | the terrain CLASS is still declared for the true slope; the envelope verdict is OUTSIDE, reported and never clamped"
+    },
+    {
+      "probe_id": "probe.outside_0p06",
+      "slope_m_per_m": 0.06,
+      "expect_verdict": "OUTSIDE",
+      "expect_outside": true,
+      "note": "3.43 deg - inside every class band but OUTSIDE the declared envelope: the envelope, not the degree table, is the walk verdict boundary | the terrain CLASS is still declared for the true slope; the envelope verdict is OUTSIDE, reported and never clamped"
+    },
+    {
+      "probe_id": "probe.easy_band",
+      "slope_m_per_m_source": "tan(radians(9.9))",
+      "expect_class": "easy_lt10deg",
+      "expect_verdict": "OUTSIDE",
+      "note": " | the terrain CLASS is still declared for the true slope; the envelope verdict is OUTSIDE, reported and never clamped"
+    },
+    {
+      "probe_id": "probe.moderate_band",
+      "slope_m_per_m_source": "tan(radians(10.1))",
+      "expect_class": "moderate_10_20deg",
+      "expect_verdict": "OUTSIDE",
+      "note": " | the terrain CLASS is still declared for the true slope; the envelope verdict is OUTSIDE, reported and never clamped"
+    },
+    {
+      "probe_id": "probe.moderate_band_2",
+      "slope_m_per_m_source": "tan(radians(19.9))",
+      "expect_class": "moderate_10_20deg",
+      "expect_verdict": "OUTSIDE",
+      "note": " | the terrain CLASS is still declared for the true slope; the envelope verdict is OUTSIDE, reported and never clamped"
+    },
+    {
+      "probe_id": "probe.steep_band",
+      "slope_m_per_m_source": "tan(radians(20.1))",
+      "expect_class": "steep_20_30deg",
+      "expect_verdict": "OUTSIDE",
+      "note": " | the terrain CLASS is still declared for the true slope; the envelope verdict is OUTSIDE, reported and never clamped"
+    },
+    {
+      "probe_id": "probe.steep_band_2",
+      "slope_m_per_m_source": "tan(radians(29.9))",
+      "expect_class": "steep_20_30deg",
+      "expect_verdict": "OUTSIDE",
+      "note": " | the terrain CLASS is still declared for the true slope; the envelope verdict is OUTSIDE, reported and never clamped"
+    },
+    {
+      "probe_id": "probe.impassable_band",
+      "slope_m_per_m_source": "tan(radians(30.1))",
+      "expect_class": "impassable_ge30deg",
+      "expect_verdict": "OUTSIDE",
+      "note": " | the terrain CLASS is still declared for the true slope; the envelope verdict is OUTSIDE, reported and never clamped"
+    },
+    {
+      "probe_id": "probe.water_row",
+      "surface_kind": "water",
+      "slope_m_per_m": 0.0,
+      "expect_class": "water",
+      "note": "the static sheet is a surface-kind verdict row (terrain_meta water.kind); the stack has no fluid",
+      "expect_verdict": "WATER"
+    }
+  ],
+  "walk_class_falsifiers": {
+    "clamp_probe": {
+      "law": "the clamping mutant min(slope, envelope) classifies 0.06 m/m as INSIDE/easy - contradicting the module's OUTSIDE row; the harness asserts the difference (the check bites)",
+      "probe_slope_m_per_m": 0.06
+    },
+    "variant_envelope_below_measured": {
+      "variant_id": "var.envelope_0p01",
+      "patch": {
+        "path": "membranes[0].parameters[slope_envelope_m_per_m].value",
+        "value": 0.01
+      },
+      "probe_slope_m_per_m": 0.03795552514626025,
+      "expect_verdict": "OUTSIDE",
+      "note": "a declared envelope below the measured mound grade is load-bearing (f05_declared_bound_below_measured heritage): the verdict turns OUTSIDE at the measured grade"
+    }
+  },
+  "variant_fixtures": [
+    {
+      "variant_id": "var.mu_surface_repin_0p9",
+      "kind": "re_pin_surface_side",
+      "patch": {
+        "path": "connections[0].parameters[mu_surface].value",
+        "value": 0.9
+      },
+      "expected": {
+        "pair_mu": 0.6,
+        "jt_record_bitwise_equal_nominal": true,
+        "jt_record_value": 0.18,
+        "jn_record_value": 0.3,
+        "law": "a ground-side re-pin alone cannot raise the pair mu (elementwise_min)"
+      }
+    },
+    {
+      "variant_id": "var.mu_hand_repin_3p0",
+      "kind": "re_pin_hand_side",
+      "patch": {
+        "path": "connections[0].parameters[mu_hand].value",
+        "value": 3.0
+      },
+      "expected": {
+        "pair_mu": 0.6,
+        "jt_record_bitwise_equal_nominal": true,
+        "jt_record_value": 0.18,
+        "jn_record_value": 0.3,
+        "law": "a hand-side re-pin alone cannot raise the pair mu"
+      }
+    },
+    {
+      "variant_id": "var.zero_mu_hand_control",
+      "kind": "zero_mu_control",
+      "patch": {
+        "path": "connections[0].parameters[mu_hand].value",
+        "value": 0.0
+      },
+      "expected": {
+        "pair_mu": 0.0,
+        "jt_record_exact_zero": true,
+        "jn_record_value": 0.3,
+        "law": "the record-level zero-mu control: zero mu kills tangential support exactly; the sealed G04 displacement number (0.05150250000055512 m) belongs to the M06 mechanism and is NOT re-declared here"
+      }
+    },
+    {
+      "variant_id": "var.declared_defect_max_rule",
+      "kind": "declared_defect",
+      "patch": {
+        "path": "declared_records.records[jt].expr",
+        "value": "max(mu_hand, mu_surface) * q_jn"
+      },
+      "expected": {
+        "defect_flips_property": true,
+        "law": "with the pair rule as elementwise_MAX a single-side re-pin RAISES the pair mu and the jt records change - the 'cannot raise' property is VIOLATED on this mutant, proving the T.GROUND_pair_rule check bites (chk.8-style deliberate defect)"
+      }
+    },
+    {
+      "variant_id": "var.plane_0p005_mutant",
+      "kind": "refusal_mutant",
+      "patch": {
+        "path": "assembly.initial_states[armed_hold].values.walk_plane_height",
+        "value": 0.005
+      },
+      "expected": {
+        "validate_spec_refusal_code": "spec_initial_state_domain",
+        "law": "the authored plane is +0.004 m exactly; any other height is a different ground instance (contract valid_input_ranges walk_plane_height outside_behavior)"
+      }
+    },
+    {
+      "variant_id": "var.plane_grid_read_mutant",
+      "kind": "refusal_mutant",
+      "patch": {
+        "path": "assembly.initial_states[armed_hold].values.walk_plane_height",
+        "value": -32.293460845947266
+      },
+      "expected": {
+        "validate_spec_refusal_code": "spec_initial_state_domain",
+        "law": "binding the walk plane to the terrain-grid bilinear read is 32 m-class wrong (F05 FB4 f05_grid_plane_mismatch); the mutant cannot even enter the store"
+      }
+    },
+    {
+      "variant_id": "var.dt_0p001_mutant",
+      "kind": "refusal_mutant",
+      "patch": {
+        "path": "numerics.dt_s",
+        "value": 0.001
+      },
+      "expected": {
+        "validate_spec_refusal_code": "spec_dt_not_admissible",
+        "law": "the only admissible dt is the contract's frozen 0.005 s (declared admissibility table)"
+      }
+    }
+  ],
+  "combine_probes": [
+    {
+      "probe_id": "probe.combine.nonowner_plane_write",
+      "constructed_trigger": "a probe contribution with actor membrane.hand_fixture_stub.v1 producing state.walk_plane_height.ground.v1",
+      "expected_refusal_code": "combine_non_owner_write",
+      "expected_store_hash_unchanged": true,
+      "verifies": "T.GROUND_plane_identity F-trigger 1 (no second writer)"
+    },
+    {
+      "probe_id": "probe.combine.double_plane_write",
+      "constructed_trigger": "two probe contributions both producing state.walk_plane_height.ground.v1",
+      "expected_refusal_code": "combine_double_state_write",
+      "expected_store_hash_unchanged": true,
+      "verifies": "T.GROUND_plane_identity F-trigger 2 (written once)"
+    },
+    {
+      "probe_id": "probe.combine.nonowner_record_write",
+      "constructed_trigger": "a probe contribution with actor membrane.hand_fixture_stub.v1 producing state.q_jn.hand_ground_contact.v1, with the owner's exchange writer ABSENT from the probe assembly",
+      "expected_refusal_code": "combine_non_owner_write",
+      "expected_store_hash_unchanged": true,
+      "verifies": "T.GROUND_seam_records F-trigger 2 (the consumer cannot write the owner's record)"
+    },
+    {
+      "probe_id": "probe.combine.record_second_writer",
+      "constructed_trigger": "the same stub-actor probe contribution WITH the owner's exchange writer present: two writers of ONE record per window",
+      "expected_refusal_code": "combine_double_state_write",
+      "expected_store_hash_unchanged": true,
+      "verifies": "T.GROUND_seam_records (S1 counted-once bites: a second writer of the record is refused)"
+    },
+    {
+      "probe_id": "probe.mutant.signflip_ground_jn",
+      "constructed_trigger": "an exchange contribution whose ground-side jn ledger entry books +q instead of -q",
+      "expected": {
+        "s2_reciprocity_sum": 0.6,
+        "s2_check_holds": false
+      },
+      "verifies": "T.GROUND_seam_records F-trigger 3 (the bitwise reciprocity check is not vacuous: it FAILS on the sign-flip mutant)"
+    }
+  ],
+  "module_mutants": [
+    {
+      "file": "fixtures_invalid/mutant_stub_with_writer.py",
+      "expected_refusal_code": "abi_exchange_writer_violation",
+      "checked_by": "graph_runtime.validate_built_graph",
+      "verifies": "T.GROUND_seam_records F-trigger 1 (the ONE-writer law per connection)"
+    },
+    {
+      "file": "fixtures_invalid/mutant_wrong_abi_version.py",
+      "expected_refusal_code": "abi_version_mismatch",
+      "checked_by": "membrane_abi.validate_module"
+    },
+    {
+      "file": "fixtures_invalid/mutant_ground_drifted_pin.py",
+      "expected_refusal_code": "spec_pinned_input_drift",
+      "checked_by": "the frozen-input gate at build"
+    }
+  ]
+}
