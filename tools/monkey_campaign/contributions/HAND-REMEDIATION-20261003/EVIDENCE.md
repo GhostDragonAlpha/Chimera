@@ -316,3 +316,272 @@ trigger for real: the first construction of C8 failed the battery and the
 driver refused instrument_invalid_pad_masks_bone — the falsifier path is
 proven able to bite (fixed pre-seal: the C8 construction now intrudes past
 the body's MEASURED exact tangency, the sealed C2->C3 pattern).
+
+---
+
+# PHASE 6 — stage 1 PUBLISHED (PR #333, astra 28e372ff, APPROVE w/ full recompute); the raised-cap amendment + stage-2 prep (PRE-RUN; no raised-cap run exists)
+
+## 15. Publication record (received)
+
+- PR #333 MERGED at astra `28e372ff`; review APPROVE with full recompute;
+  the lane's two minor findings carried in the publication note verbatim.
+
+## 16. Phase-6 artifacts (this lane)
+
+| artifact | sha256 |
+|---|---|
+| R1_AMENDMENT_2.md (DRAFT for the Lieutenant's pin: the raised-cap declaration CAP_POST_PAD = 1500 = all pad-satisfied rows; compute cost from stage-1 throughput 63.5 ms/cell -> ~75 s S1; frozen count-floor predictions P5 >= 84 (q_c) / P6 >= 14 (q_zero), NO which-rows prediction; the three receipt-convention fixes) | `e96e09a1a925b12d68763139958eaae5897e27c027ecd3670336f5df5bc597cf` |
+| R1_STAGE2_CAPACITY_PREP.md (stage-2 prep ONLY: inputs/law/method/honest reading/F2-F3 triggers; waits for the FINAL survivor set) | `cf85a805fe311c95a554697fabe0ea63cdd83583fdf0d0525649e44bd65f2dad` |
+| package/files/.../vpl1_pad.py (REVISED, UNSEALED: AMENDMENT_2_SHA pin + CAP_POST_PAD) | `4f4b6925bf8682f17f544ad9c9b3b424370a4c27f2e968d5bd18468d1c485daa` |
+| package/files/.../run_stage1_pad.py (REVISED, UNSEALED: raised cap in the post-pad stage; digit_scan_gate names its artifact + correct sha `a4f9b626...`; predictions keyed per posture, not update()d; receipt-level run_class + delta_note; P5/P6 floor verification) | `c9e68190c6871c3b932f37c43fdf1ce45b7054c7a71947932495f3894c8b36ab` |
+
+Revision smoke (bounded grid, no results taken): all gates green;
+post_pad_s0_only_cap = 0 at both postures (the raised cap runs every
+satisfied row); arithmetic ok. The raised-cap seal happens ONLY after the
+Lieutenant pins AMENDMENT-2 (the code pins its committed sha and refuses on
+drift); the run executes on explicit release.
+
+---
+
+# PHASE 7 — AMENDMENT-2 PINNED + THE RAISED-CAP RUN EXECUTED AND PASSED
+
+## 17. Pins in force
+
+- AMENDMENT-2 pinned: commit `ccb60023568fb7c4d2cbd8d8e4855c0f5c18d372` on
+  review/HAND-REMEDIATION-20261003 (parent = the stage-1 publication
+  `1f700f3f`); committed blob content sha256 `e96e09a1...` = this lane's
+  draft (byte-verified by the Lieutenant; re-verified by this lane from the
+  object store before execution).
+- The published tree at the pin commit was verified to carry EXACTLY the
+  stage-1 sealed bytes (vpl1_pad `54af4a49...`, driver `33392b97...`, table
+  `9cd8a56d...`, screen `6b924e87...`, instrument `9514c5b1...`) — so the
+  raised-cap revision rebased cleanly with a 2-file delta.
+
+## 18. The raised-cap package and run
+
+| artifact | sha256 |
+|---|---|
+| package/package.json (task HAND-REMEDIATION-20261003-R1-RAISED-CAP, base `ccb60023...`) | `39720c5cc8d51de9c268edaf474d811b706fc1023b731858e28852ab8a936418` |
+| vpl1_pad.py (raised-cap revision: AMENDMENT_2_SHA pin + CAP_POST_PAD = 1500) | `4f4b6925bf8682f17f544ad9c9b3b424370a4c27f2e968d5bd18468d1c485daa` |
+| run_stage1_pad.py (raised-cap revision: cap raise; digit_scan_gate names its artifact + sha `a4f9b626...`; predictions keyed per posture; run_class + delta_note; P5/P6 floors) | `770ddd9a8c16d994afcfdf89e96340b9d00e549fc67237e5318a71ee4d0e1569` |
+| FINAL seal: package/sealed/c4006dae631e4411922e2e5ba6d0996b/manifest.json (changed files: EXACTLY run_stage1_pad.py + vpl1_pad.py vs the pin commit) | manifest sha256 `c0c3fe755c3c52156a085444eebe7825900004800d092284f8e385a514706e23`; change.patch `708b91bf0662cc1ae02fe372e0b7b55b32a2ab99dbf685b739fb46455c7c22d1` |
+| runner receipt: job `e4a5447bcef64b328f33d1f74cfd892d`, state PASSED, exit 0, SLOT 3, cleanup_verified true | `cb47edd28444c57e0ed1370516d693d714eafd7b5225c1d0875d38a189fc0439` |
+| stage1_pad_receipt.json (runner-retained) | `4df5f48020c4dd601b7d6fc7c3047c4eb3c1e5c829bf450e07427c32c3835900` |
+| stage1_pad_report.txt (runner-retained) | `3414973156bc80540572c99c80af7ca187ac18369aa600e9afe5dc77e891676f` |
+
+Slot note (CORRECTED 2026-10-03, see section 26 C1 — the original note
+misattributed other lanes' runner rows as this lane's attempts): this
+lane's two slot-2 attempts were refused by the runner with BUSY responses
+(`"state": "BUSY", "reason": "lock_busy"`, retry_after_seconds 10 — the
+runner's stdout, this lane's only slot-state evidence) and left NO runner
+rows at all. The two preserved FAILED slot-2 rows in the window are OTHER
+LANES' jobs, preserved and correctly attributed to them:
+`b892365d...` (19:03:54, the PAIR-ASSEMBLY retry,
+CMP-ASMB-HG/test_pair.py) and `39257153...` (19:09:01, the
+ASSEMBLY-INPUTS run_phase2.py, which retained six artifacts). The declared
+fallback slot 3 took the run; nothing was deleted by this lane.
+
+## 19. THE RAISED-CAP RESULTS (the full set; runner-verified)
+
+- VERDICT: `PAD_ADMITTED_SURVIVORS_PRESENT_RAISED_CAP`;
+  post-pad survivors total **354** (q_c 314 + q_zero 40).
+- q_c_PRIMARY: ALL 826 pad-satisfied rows exact-adjudicated
+  (post_pad_s0_only_cap = 0): **314 FULL-SET survivors**, 394
+  S2_REJECT_DEEP (the opposing declared tip distph3), 118
+  S2_REJECT_NO_CONTACT. P5 TRUE (floor 84).
+- q_zero_CONTROL: ALL 358 rows adjudicated: **40 survivors**, 292 deep,
+  26 no-contact. P6 TRUE (floor 14).
+- P1-P4 TRUE and IDENTICAL to stage 1 (the S0 mirror reproduced the sealed
+  receipt byte-identically again; the pad class splits are identical:
+  826/614/0 at q_c). P3: distph2 486 rows, pad-satisfied 0, refused 486 —
+  cause 2 remains untouched by the pad at the full set.
+- Identity gates both ok; battery C1-C10 ok; pad determinism slice 16/16;
+  wall 659.8 s (S1 clock 120.5 s vs the declared ~75 s estimate — the
+  delta is the per-cell exact work at deep-fold rows; within budget).
+- The three convention fixes CONFIRMED in the receipt: delta_note present;
+  run_class `stage1_pad_raised_cap (AMENDMENT-2)`; digit_scan_gate names
+  `digit-scan/final_run_job1/grasp_screen_digit_receipt_job1.json` with sha
+  `a4f9b626...` (no v2.0-receipt mislabel); predictions keyed per posture
+  (`predictions[q_c_PRIMARY][P1]`, ...).
+- The FINAL survivor set for stage 2: 354 placements (314 q_c + 40
+  q_zero), each carrying its pad row (class, u, witness, DECLARED-MODEL-
+  FORCE) and anchor-envelope record — the input the capacity prep
+  (`cf85a805...`) waits for.
+
+---
+
+# PHASE 8 — THE ERRATUM CARRIED (PR #335, astra 2944ea90; the P1 re-scoring is the governing label for this lane's records)
+
+## 20. The label mapping (carried VERBATIM for the review; the erratum is a RESULT, never an error; no run invalidated)
+
+- GOVERNING LABEL FOR P1 (superseding the coded label in this lane's
+  raised-cap receipt): **"P1 partially falsified as literally frozen
+  (534+292+128, identical at the raised cap)"** — the outcome decomposition
+  of the 954 q_c TIP_DEEP rows: 534 PAD_CONTACT + 292 PAD_ABSORBED
+  (u = 0, outside the literally-frozen u-range "(0, 2.0e-3]") + 128
+  PAD_REFUSED_DEPTH; identical at the stage-1 cap and at the raised cap.
+- This lane's raised-cap receipt's "P1-P4 all TRUE" labels carry the SAME
+  code-scoring convention the adjudication corrected (the coded P1 verdict
+  scored the pinned falsifier-condition list, under which the u = 0
+  absorbed class was not a named contradiction). The coded labels remain
+  in the receipt bytes as the record of what the code scored; the ERRATUM'S
+  label above is the governing reading for every downstream citation.
+- STANDING RESULTS (the erratum leaves them intact): the P5/P6 floor
+  verdicts (q_c 314 >= 84; q_zero 40 >= 14 — the capped samples
+  representative, slightly conservative) are the NEW results and stand.
+  P3's full-set confirmation stands (distph2 486 rows, pad-satisfied 0).
+  P2/P4 stand as coded.
+- The stage-2 prereg is authored against this corrected reading: the
+  absorbed band is an EXPLICIT predicted class (S2-P2), every falsifier's
+  contradiction teeth are stated against the FULL outcome space, and every
+  cited quantity names its instrument-quantity code path.
+
+## 21. Slot-2 preservation note (CORRECTED 2026-10-03, see section 26 C1)
+
+This lane's slot-2 refusals left NO runner rows (BUSY responses on the
+runner stdout only — slot-state evidence). The two preserved FAILED slot-2
+rows in the window are OTHER LANES' jobs, kept and correctly attributed:
+`b892365d...` (the PAIR-ASSEMBLY retry, CMP-ASMB-HG/test_pair.py) and
+`39257153...` (the ASSEMBLY-INPUTS run_phase2.py, six retained artifacts).
+The declared fallback slot 3 took the raised-cap run (job `e4a5447b...`,
+PASSED, cleanup_verified true).
+
+---
+
+# PHASE 9 — THE STAGE-2 PREREG DRAFT (authored against the corrected reading; for the Lieutenant's pin; no stage-2 run exists)
+
+## 22. Phase-9 artifact
+
+| artifact | sha256 |
+|---|---|
+| R1_STAGE2_PREREG.md (DRAFT: the capacity outcome space {CAP_SATISFIED, CAP_EXCEEDED, ARM_NONFINITE_REFUSED} with coverage arithmetic; S2-P1 full-set capacity coverage at the declared-model forces; S2-P2 the EXPLICIT ABSORBED-BAND prediction (exactly 6 u=0 survivors, identically zero force/tau, the 348/6 split reproduced); S2-P3 the chain-structure bite; S2-P4 non-vacuity via the constructed 60 N-class CAP_EXCEEDED case; the quantity code-path table incl. the d_receipt-vs-d_covered_max naming law; the not-claims section) | `2d7ff4172388fff75bb6bf46710a3c8c8857933d6c315166f3d7f7371610b3ec` |
+
+Receipt-basis numbers cited by the draft (from the raised-cap receipt
+`4df5f480...`): 354 survivors = 348 PAD_CONTACT + 6 PAD_ABSORBED (6 q_c +
+0 q_zero); contact force columns 1.21e-3 - 2.29e-1 N; the survivor-set
+input is pinned to the raised-cap receipt bytes.
+
+---
+
+# PHASE 10 — STAGE-2 PREREG PINNED + THE CAPACITY RUN EXECUTED AND PASSED
+
+## 23. Pins in force
+
+- Stage-2 prereg pinned: commit `662362e335e0078fc93d4c1bb0ee856875efa34f1`
+  (per the Lieutenant's citation `662362e3`) on
+  review/HAND-REMEDIATION-20261003; committed blob content sha256
+  `2d7ff417...` = this lane's draft (byte-verified by the Lieutenant;
+  re-verified by this lane from the object store).
+- The tree at the pin carries the stage-1 vpl1_pad (`54af4a49...`) — the
+  stage-2 module defines its own AMENDMENT_2_SHA literal (the stage-1
+  module predates amendment-2).
+
+## 24. The stage-2 package and run
+
+| artifact | sha256 |
+|---|---|
+| package/package.json (task HAND-REMEDIATION-20261003-R1-STAGE2, base `662362e3...`) | `6a9ebd77ddc351ed42011924598cafbf61f456a53ceb1981d9f2d664cd31adea` |
+| stage2_capacity.py (NEW: the map-gated jacobian machinery, the outcome-space classifier, the F2 chain-structure check) | `b0836daa1877c176ee2716ee59170d50bf714f434f61fac9aa602540d10cf3bf` |
+| run_stage2_capacity.py (NEW: the driver — pins, identity gates, per-survivor capacity, S2-P1..P4) | `d399a3a6b69962da9ef61f705dc4aa9a2db32bd1c41d0ae36e85689c923bb283` |
+| raised_cap_receipt.json (NEW copy; the survivor-set input, pinned `4df5f480...`) | in-package copy of the raised-cap receipt |
+| jacobian_map.json (NEW copy; the map of record, pinned `96a4610f...`) | in-package copy |
+| FINAL seal: package/sealed/8cd676bc73164367a1a87ab37fd031d7/manifest.json (changed: jacobian_map.json, raised_cap_receipt.json, run_stage2_capacity.py, stage2_capacity.py) | manifest sha256 `f8dde9e3460950e7e64d9002b01f1f30353942cc13cb80c193f6c62ba4bb341c`; change.patch `a2aa55159e7764f7de35030c41fa5215cadc04ebae9dff7cca12245bd587142f` |
+| runner receipt: job `3e9768f72f794e26824386c75bc07210`, state PASSED, exit 0, SLOT 3, cleanup_verified true | `adad65e42c06e00934af196ec797f768faaded0875d0ab17db1c6851d53b2bb7` |
+| stage2_capacity_receipt.json (runner-retained) | `8b93464c6ee206570c60fd00a750a2229ea650b0afaf589b8bbce6ed0bde174d` |
+| stage2_capacity_report.txt (runner-retained) | `b33d80e90f3501936d1fc803237bd0f812a9f3c4a3d469aa7f3f851ef9a7b017` |
+
+Slot note (CORRECTED 2026-10-03, per the section 26 C1 lesson): this
+lane's stage-2 slot-2 attempt was refused by the runner with a BUSY
+response (`"reason": "lock_busy"`, stdout only) and left NO runner row;
+the preserved FAILED slot-2 row `6b0ed8b4...` in the window is NOT this
+lane's job and is not attributed to this lane. Slot 3 took the run;
+nothing deleted.
+
+## 25. THE STAGE-2 RESULTS (the runner-verified receipt; the not-claims section governs every reading)
+
+- VERDICT: `STAGE2_CAPACITY_SATISFIED_FULL_SET`. Wall 6.8 s.
+- Outcome space CLOSED over 354: q_c 314/314 `CAP_SATISFIED` +
+  q_zero 40/40 `CAP_SATISFIED`; 0 CAP_EXCEEDED; 0 ARM_NONFINITE_REFUSED;
+  coverage arithmetic exact both postures.
+- S2-P1 TRUE (all 354 satisfied at the DECLARED-MODEL-FORCE magnitudes;
+  binding joints recorded per survivor). S2-P2 TRUE (the absorbed band:
+  exactly 6 u = 0 survivors — 6 q_c + 0 q_zero — zero force, zero tau, 0
+  violations). S2-P3 TRUE (the off-chain trigger FIRED:
+  thumb/mcp2_flexion -> off_chain_structural_zero). S2-P4 TRUE
+  (non-vacuity: the constructed 60 N-class force classifies CAP_EXCEEDED,
+  binding mutation_wrist_abduction, worst 2.8308 N*m — the comparison
+  bites).
+- Jacobian identity gates: the map's PRIMARY columns reproduced by the
+  column law from the map's own joint_records (diffs = []), and the sealed
+  FK reproduced the map's joint_records (22 joints).
+- Receipt conventions: run_class `stage2_capacity`, delta_note present,
+  governing_labels carries the erratum's P1 label verbatim, survivor-set
+  input named + pinned, per-posture keyed blocks.
+- THE GOVERNING READING (the pinned not-claims): this stage is ladder
+  consistency at the pad's <= 0.23 N declared-model forces — it is NOT a
+  grasp-capacity qualification; the press channel is ABSENT (TC-8 = 0/8);
+  the same-hands finding stands; stages 3-5 own the rest of the ladder.
+
+---
+
+# 26. CORRECTIONS AND DISCLOSURES (dated 2026-10-03; the Sergeant raised-cap verdict, CHANGES_REQUIRED - NARROW: the sealed run itself APPROVE-grade)
+
+## C1 (MUST FIX - APPLIED above, in sections 18/21/24, in place)
+
+The original slot-2 narratives in sections 18/21 (and the same defect in
+section 24) borrowed OTHER LANES' runner rows as this lane's attempts:
+`b892365d...` (19:03:54) is the PAIR-ASSEMBLY retry
+(CMP-ASMB-HG/test_pair.py - the disputed physics finding) and
+`39257153...` (19:09:01) is the ASSEMBLY-INPUTS run_phase2.py (six
+retained artifacts, not "only runner.log"). THE TRUE RECORD: this lane's
+slot-2 refusals left NO runner rows at all (the reviewer's exhaustive
+window scan found exactly three result dirs); this lane's only slot-state
+evidence is the runner's BUSY stdout responses
+(`"reason": "lock_busy"`, retry_after_seconds 10). The two named rows are
+other lanes' jobs, preserved, correctly attributed to them. THE LESSON
+(now law for this lane): EXECUTION NARRATIVES NEVER BORROW OTHER LANES'
+ROWS AS THEIR OWN ATTEMPTS - the same claims-vs-record class the erratum
+polices.
+
+## C2 (MUST DISCLOSE - APPLIED; the retention disclosure)
+
+The raised-cap seal directory `package/sealed/c4006dae631e4411922e2e5ba6d0996b/`
+(manifest sha256 `c0c3fe755c3c52156a085444eebe7825900004800d092284f8e385a514706e23`;
+change.patch `708b91bf0662cc1ae02fe372e0b7b55b32a2ab99dbf685b739fb46455c7c22d1`;
+the 16-file sealed tree) WAS DELETED during the stage-2 packaging
+recreation (this lane's `rm -rf` of the package dir), contradicting the
+retention promise, undisclosed until this entry. The recorded hashes stand;
+the Sergeant reviewer's PRE-DELETION VERIFICATION is the reconstruction
+basis for the deleted delta. The SAME deletion class applies to the
+stage-1 seal directory `package/sealed/db7a8649101b43dab4428dba44bd4907/`
+(manifest `0737f0c2f9f0b8051db1bd6dab5d4a71d28eb0e250742ae31a2e90ec221be1e8`;
+change.patch `4cf28d1574096f929d37fe2c683253b9b5c6d114a2d22c6d6b41bfa9abbf986d`),
+deleted in the earlier package recreation - disclosed here in the same
+entry. THE MECHANICAL FIX (now law): publications CAPTURE SEAL BYTES
+(manifest + patch) INTO A RETAINED STORE AT PUBLICATION TIME - hash
+records alone do not preserve a deleted delta. APPLIED IMMEDIATELY: the
+surviving stage-2 seal `8cd676bc73164367a1a87ab37fd031d7` is captured into
+`seal-store/` (`8cd676bc..._manifest.json` sha256 `f8dde9e3460950e7e64d9002b01f1f30353942cc13cb80c193f6c62ba4bb341c`;
+`8cd676bc..._change.patch` sha256 `a2aa55159e7764f7de35030c41fa5215cadc04ebae9dff7cca12245bd587142f`),
+and every future seal of this lane is captured at creation.
+
+## The commission-citation convention (adopted)
+
+A stale EVIDENCE sha was cited in a commission (the file grew during the
+stage-2 work). FIX (standing convention): the EVIDENCE sha is FROZEN and
+stated IN this file's newest dated entry BEFORE the next review dispatch;
+the frozen sha for the NEXT dispatch is the section-26-closing hash
+recorded below.
+
+## The publication merge note (carried)
+
+`2944ea90` (the erratum) is NOT an ancestor of the branch tip; the
+publication carries an EXPLICIT merge/rebase step. Recorded for every
+future citation of astra hashes from this lane.
+
+## The frozen EVIDENCE hash for the next review dispatch
+
+recorded after this section: see the hash line below (the file is frozen
+at that hash until the next dated entry).
+
+FROZEN EVIDENCE SHA256 (section 26, dated 2026-10-03): `410c16ad2e74eb40e1ccb1751d9118e95a29c60305826c56f5e1c8095f9496aa`
