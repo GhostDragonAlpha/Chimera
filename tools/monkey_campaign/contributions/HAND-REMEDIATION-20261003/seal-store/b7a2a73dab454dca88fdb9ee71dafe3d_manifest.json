@@ -1,0 +1,287 @@
+{
+  "schema": "chimera.sealed_package.v1",
+  "package": {
+    "schema": "chimera.file_package.v1",
+    "id": "8bd06d8997454dfdbbb70240d639d26f",
+    "owner": "wk-hand-remediation",
+    "task": "HAND-REMEDIATION-20261003-R1-STAGE5",
+    "source": "E:\\PythonChimera",
+    "base": "e9c1a1e9c678151484e375af11aa969970c08e12",
+    "reads": [
+      "tools/monkey_campaign/MONKEY_COMPLETION_MAP.md",
+      "tools/science_funnel/data/macaque_arm/Geometry/hand.vtp",
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003"
+    ],
+    "writes": [
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003"
+    ],
+    "inputs": {
+      "tools/monkey_campaign/MONKEY_COMPLETION_MAP.md": {
+        "oid": "120be54d95faac9ccaeec9dae97124b513c7d7f6",
+        "mode": "100644",
+        "size": 44321,
+        "sha256": "0e3984578b0cae38ab435daaa77cc10559cceeadbaf9885c3f31b979a362ecae"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/ERRATUM_R1_STAGE1.md": {
+        "oid": "850504431cded859565dac00c5849d466dcd30c4",
+        "mode": "100644",
+        "size": 6344,
+        "sha256": "d37c4d82bfa22f35d05b041cefa3a9d0abc7f6793b0a7391f8c1eba321304433"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/EVIDENCE.md": {
+        "oid": "ba50bc15d77d5a854d6fff937c4ef0453727c814",
+        "mode": "100644",
+        "size": 54474,
+        "sha256": "9bec211a6fa9b5309adb9ea158bf0dd02737f85c227768043f5e2b41a19595fe"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/PREREGISTRATION.md": {
+        "oid": "7a756ae0960bffd0695585bb34bd9e1f5af5ea68",
+        "mode": "100644",
+        "size": 13011,
+        "sha256": "897ca164ac5a63437c465783af2dd8f9c743d6c587d5423f4d3cec1b7190bdaf"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/PREREGISTRATION_R1_PAD_LAYER.md": {
+        "oid": "fbd832b29b1fb8507e10f4f643451d9f8ce9a3b6",
+        "mode": "100644",
+        "size": 12006,
+        "sha256": "9213bf7d91ed9a6e6b2c5bbddc05d5ee36db63c600dfce42b559632f6f565da9"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/R1_AMENDMENT_1.md": {
+        "oid": "f306af566898f793e5b28975c9aaf5b1f524a88d",
+        "mode": "100644",
+        "size": 13484,
+        "sha256": "018f0bc120c0fa44cdcc1f611ab883764eb91e2d668975573f792218b93f94ac"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/R1_AMENDMENT_2.md": {
+        "oid": "34468532454668d80af3de7251f71befc14783d6",
+        "mode": "100644",
+        "size": 6475,
+        "sha256": "e96e09a1a925b12d68763139958eaae5897e27c027ecd3670336f5df5bc597cf"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/R1_COLLISION_ADJUDICATION_AMENDMENT_1.md": {
+        "oid": "113fe30a001926092d4c518043387326730b1910",
+        "mode": "100644",
+        "size": 7469,
+        "sha256": "95640c48fb2d5a61894ba9953798ec9a6c0d704ccb8161e81892a9d920545abc"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/R1_COLLISION_ADJUDICATION_PREREG.md": {
+        "oid": "1932f0f1155b5c90625016b5c99d0fde98d4d365",
+        "mode": "100644",
+        "size": 7172,
+        "sha256": "1362f92fa410fe743ecc0d2639e54105c2167fcd21f47f4b1317acc5de4855dd"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/R1_STAGE2_PREREG.md": {
+        "oid": "feb8807a85e661a621e59a96c8acf0ae31deb753",
+        "mode": "100644",
+        "size": 8181,
+        "sha256": "2d7ff4172388fff75bb6bf46710a3c8c8857933d6c315166f3d7f7371610b3ec"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/R1_STAGE3_PREREG.md": {
+        "oid": "8a659ac0c3e36233a87ed295968ec2cc8b936392",
+        "mode": "100644",
+        "size": 8054,
+        "sha256": "4dfb62e0ebff878752e4ef69cc127ce49528ae787e58e3ed5706afe0c0c8204e"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/R1_STAGE4_PREREG.md": {
+        "oid": "9220e7da14a18bb240a3774388331223e203a5d7",
+        "mode": "100644",
+        "size": 7682,
+        "sha256": "4438c4d76c2d904d08a09eb1f29db55b25bdccaeb399f2d8db26ad0d78e5dfc1"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/R1_STAGE5_PREREG.md": {
+        "oid": "22863965a8a41e49b198aaa559801d18bc1f02b0",
+        "mode": "100644",
+        "size": 10588,
+        "sha256": "f13ea61c227c9fe655b7ee69d78985ed0f820b60d81b579336fa146a1ae1d2bf"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/control_input_table.json": {
+        "oid": "a474866940e46e0deaccf03628eb430475cf476a",
+        "mode": "100644",
+        "size": 4373,
+        "sha256": "d8aacc23b27e2caaf60304c0e9a4fe711ac51245c0ca3bf6d021d8f7b5164bf2"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/control_input_table_vpl1.json": {
+        "oid": "456dbcd7ae0507aab38a69fe71e2f416d033b11d",
+        "mode": "100644",
+        "size": 2600,
+        "sha256": "9cd8a56d89bdbe403a0c8513f04a32b2a43de85eea3d38c34f39931be9317783"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/grasp_screen.py": {
+        "oid": "8e7e6ad4e6140728f4d2aa5a1965180a83b5f00a",
+        "mode": "100644",
+        "size": 32821,
+        "sha256": "6b924e87151f5e2235b9d9c023be85d0f7602d42020b37df4ba7bf58c0e9e0ea"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/grasp_screen_receipt_sealed_v20.json": {
+        "oid": "eec4bb364b15e5a71477681df5a0176612f7cf28",
+        "mode": "100644",
+        "size": 708466,
+        "sha256": "065328e4942a0bb8794138a96966aa8a3267fcd15ce084b9fb0490dff76b19ec"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/instrument_v2.py": {
+        "oid": "dd211c2b172d8b4da3b749f8a56f6ba0f405cb2e",
+        "mode": "100644",
+        "size": 86297,
+        "sha256": "9514c5b15a27948c65563070f16dffee4a5a28347c281a5d7e255fe93e516ddd"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/mesh_input_table.json": {
+        "oid": "29d2245c5f1b9d704d64e8d44bd92b95253ade60",
+        "mode": "100644",
+        "size": 10525,
+        "sha256": "6e5f3bac345a278eaa994203d48df71fa3a4d5d3f6d9be3e9c59f3b08491cfb2"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/mutation_structure.json": {
+        "oid": "ae20704500e2a929d4d6b3f75aa026556c44d90a",
+        "mode": "100644",
+        "size": 51481,
+        "sha256": "48b037593f63ec473947d787077ab6fbcd3b364afd15765bff508e7d54f45649"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/raised_cap_stage1_pad_receipt.json": {
+        "oid": "78fdf5bdfdc1bd1c49ad3fedec85c154093b22bc",
+        "mode": "100644",
+        "size": 949450,
+        "sha256": "4df5f48020c4dd601b7d6fc7c3047c4eb3c1e5c829bf450e07427c32c3835900"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/run_stage1_pad.py": {
+        "oid": "837548f95f3ec9eaa883953c18c14fcd338b2d61",
+        "mode": "100644",
+        "size": 29861,
+        "sha256": "33392b97f275c640d3a5e562f88996cbb3881e9cbd6621e897dd1167bd94a884"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/seal-store/6d4ac09c2c5c40ce887a5f03989b923a_change.patch": {
+        "oid": "d8ed71051bfbcdd93c28f9b7a9eb02e94b6d5677",
+        "mode": "100644",
+        "size": 1026248,
+        "sha256": "932630ac7653583a3727daec7c963114b5d6f08da0d1d6555b1a89b4711fb947"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/seal-store/6d4ac09c2c5c40ce887a5f03989b923a_manifest.json": {
+        "oid": "43841c98aa5911d0cc55dd867dfff3f3d35aff28",
+        "mode": "100644",
+        "size": 11100,
+        "sha256": "9c68f541f3f9c330a0e6b064ea05b1d654c99d50ab103b69b5e61a4da0b7901b"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/seal-store/8cd676bc73164367a1a87ab37fd031d7_change.patch": {
+        "oid": "9164baabfb732fa84eb91e245ff6e32722f54ae9",
+        "mode": "100644",
+        "size": 3604459,
+        "sha256": "a2aa55159e7764f7de35030c41fa5215cadc04ebae9dff7cca12245bd587142f"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/seal-store/8cd676bc73164367a1a87ab37fd031d7_manifest.json": {
+        "oid": "facf422cb04540b0299412ceb6f7fd80849d1ab7",
+        "mode": "100644",
+        "size": 10894,
+        "sha256": "f8dde9e3460950e7e64d9002b01f1f30353942cc13cb80c193f6c62ba4bb341c"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/seal-store/988b2cf0fa0b4b6eb4335c1b9612b35d_change.patch": {
+        "oid": "1f505d6b18b7cdc691bc109f0eeb36663d82b668",
+        "mode": "100644",
+        "size": 17607,
+        "sha256": "d1e5ec112a389c613fe097c91f420b62393830632fe7b2ae766c50b9cb5357a3"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/seal-store/988b2cf0fa0b4b6eb4335c1b9612b35d_manifest.json": {
+        "oid": "12dafb62d07094250c443db34b81c1d52ff01a3c",
+        "mode": "100644",
+        "size": 15820,
+        "sha256": "7f9d9db7deccd6759543873b0301ad3c9563a78f63c3dad76bd93f5a5c0fb402"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/stage1_pad_receipt.json": {
+        "oid": "fb554cc84b8e4820ff45418fd2a5d75a0601fc0e",
+        "mode": "100644",
+        "size": 754517,
+        "sha256": "2b52b55d25767348cab7892fcd6dd2f8478ef05d97b4cd4b7ef332cba0161f7b"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/stage2_capacity_receipt.json": {
+        "oid": "20586a29b9e13e8eb08b7c497341aaadd7171063",
+        "mode": "100644",
+        "size": 300774,
+        "sha256": "8b93464c6ee206570c60fd00a750a2229ea650b0afaf589b8bbce6ed0bde174d"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/stage2_capacity_report.txt": {
+        "oid": "965997745480fd1cf91e6116ac7e59ad42d15b9a",
+        "mode": "100644",
+        "size": 1407,
+        "sha256": "b33d80e90f3501936d1fc803237bd0f812a9f3c4a3d469aa7f3f851ef9a7b017"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/stage3_forces_receipt.json": {
+        "oid": "9000da60352b7a64ae56fbdc1e6eb4d80aef4bf4",
+        "mode": "100644",
+        "size": 183277,
+        "sha256": "63ec1a8e38abc0ba1a05ae594db1241cc2acc642d1d82e7eebb3d945a167d01f"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/stage3_forces_report.txt": {
+        "oid": "0cb6f21ec621a7009be1754451d4ba263a873d19",
+        "mode": "100644",
+        "size": 1131,
+        "sha256": "6043b24e11d03cca0fdaff04300334150fdf05d7a7a85da2755c04f62900d8af"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/stage4_grasp_receipt.json": {
+        "oid": "582788a794160dd76aa716a99815e2a1ab6c9305",
+        "mode": "100644",
+        "size": 14594,
+        "sha256": "53914096eaddce71379e7cde43c737e30b25240177b182d90f6d1d6b0702309e"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/stage4_grasp_report.txt": {
+        "oid": "34a70cbbc022c81380735e075ffb7836cca6738c",
+        "mode": "100644",
+        "size": 462,
+        "sha256": "30ee708478f822c987a052cd493b465112eb027e2091c241a40565c5e2c647c9"
+      },
+      "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/vpl1_pad.py": {
+        "oid": "1bad227585bdb131cd13aa92fac0069b02d3f467",
+        "mode": "100644",
+        "size": 20264,
+        "sha256": "54af4a49ce57736cf0d90fe2a5d57ea98dd24d568efcae635b8e20479575794e"
+      }
+    }
+  },
+  "changes": [
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/run_stage5_runtime.py",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/sealed_g04/MAT2-F03/assets/trunk_01_mesh.json",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/sealed_g04/MAT2-G04/grip_contact.py",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/sealed_g04/MAT2-M06/local_contact.py"
+  ],
+  "files": {
+    "tools/monkey_campaign/MONKEY_COMPLETION_MAP.md": "0e3984578b0cae38ab435daaa77cc10559cceeadbaf9885c3f31b979a362ecae",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/control_input_table.json": "d8aacc23b27e2caaf60304c0e9a4fe711ac51245c0ca3bf6d021d8f7b5164bf2",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/control_input_table_vpl1.json": "9cd8a56d89bdbe403a0c8513f04a32b2a43de85eea3d38c34f39931be9317783",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/ERRATUM_R1_STAGE1.md": "d37c4d82bfa22f35d05b041cefa3a9d0abc7f6793b0a7391f8c1eba321304433",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/EVIDENCE.md": "9bec211a6fa9b5309adb9ea158bf0dd02737f85c227768043f5e2b41a19595fe",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/grasp_screen.py": "6b924e87151f5e2235b9d9c023be85d0f7602d42020b37df4ba7bf58c0e9e0ea",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/grasp_screen_receipt_sealed_v20.json": "065328e4942a0bb8794138a96966aa8a3267fcd15ce084b9fb0490dff76b19ec",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/instrument_v2.py": "9514c5b15a27948c65563070f16dffee4a5a28347c281a5d7e255fe93e516ddd",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/mesh_input_table.json": "6e5f3bac345a278eaa994203d48df71fa3a4d5d3f6d9be3e9c59f3b08491cfb2",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/mutation_structure.json": "48b037593f63ec473947d787077ab6fbcd3b364afd15765bff508e7d54f45649",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/PREREGISTRATION.md": "897ca164ac5a63437c465783af2dd8f9c743d6c587d5423f4d3cec1b7190bdaf",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/PREREGISTRATION_R1_PAD_LAYER.md": "9213bf7d91ed9a6e6b2c5bbddc05d5ee36db63c600dfce42b559632f6f565da9",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/R1_AMENDMENT_1.md": "018f0bc120c0fa44cdcc1f611ab883764eb91e2d668975573f792218b93f94ac",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/R1_AMENDMENT_2.md": "e96e09a1a925b12d68763139958eaae5897e27c027ecd3670336f5df5bc597cf",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/R1_COLLISION_ADJUDICATION_AMENDMENT_1.md": "95640c48fb2d5a61894ba9953798ec9a6c0d704ccb8161e81892a9d920545abc",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/R1_COLLISION_ADJUDICATION_PREREG.md": "1362f92fa410fe743ecc0d2639e54105c2167fcd21f47f4b1317acc5de4855dd",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/R1_STAGE2_PREREG.md": "2d7ff4172388fff75bb6bf46710a3c8c8857933d6c315166f3d7f7371610b3ec",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/R1_STAGE3_PREREG.md": "4dfb62e0ebff878752e4ef69cc127ce49528ae787e58e3ed5706afe0c0c8204e",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/R1_STAGE4_PREREG.md": "4438c4d76c2d904d08a09eb1f29db55b25bdccaeb399f2d8db26ad0d78e5dfc1",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/R1_STAGE5_PREREG.md": "f13ea61c227c9fe655b7ee69d78985ed0f820b60d81b579336fa146a1ae1d2bf",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/raised_cap_stage1_pad_receipt.json": "4df5f48020c4dd601b7d6fc7c3047c4eb3c1e5c829bf450e07427c32c3835900",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/run_stage1_pad.py": "33392b97f275c640d3a5e562f88996cbb3881e9cbd6621e897dd1167bd94a884",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/run_stage5_runtime.py": "4a46af6ceaf41a03a8f0b9b694da01ea261678df6afe50cd6f82a975495632c4",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/stage1_pad_receipt.json": "2b52b55d25767348cab7892fcd6dd2f8478ef05d97b4cd4b7ef332cba0161f7b",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/stage2_capacity_receipt.json": "8b93464c6ee206570c60fd00a750a2229ea650b0afaf589b8bbce6ed0bde174d",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/stage2_capacity_report.txt": "b33d80e90f3501936d1fc803237bd0f812a9f3c4a3d469aa7f3f851ef9a7b017",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/stage3_forces_receipt.json": "63ec1a8e38abc0ba1a05ae594db1241cc2acc642d1d82e7eebb3d945a167d01f",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/stage3_forces_report.txt": "6043b24e11d03cca0fdaff04300334150fdf05d7a7a85da2755c04f62900d8af",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/stage4_grasp_receipt.json": "53914096eaddce71379e7cde43c737e30b25240177b182d90f6d1d6b0702309e",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/stage4_grasp_report.txt": "30ee708478f822c987a052cd493b465112eb027e2091c241a40565c5e2c647c9",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/vpl1_pad.py": "54af4a49ce57736cf0d90fe2a5d57ea98dd24d568efcae635b8e20479575794e",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/seal-store/6d4ac09c2c5c40ce887a5f03989b923a_change.patch": "932630ac7653583a3727daec7c963114b5d6f08da0d1d6555b1a89b4711fb947",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/seal-store/6d4ac09c2c5c40ce887a5f03989b923a_manifest.json": "9c68f541f3f9c330a0e6b064ea05b1d654c99d50ab103b69b5e61a4da0b7901b",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/seal-store/8cd676bc73164367a1a87ab37fd031d7_change.patch": "a2aa55159e7764f7de35030c41fa5215cadc04ebae9dff7cca12245bd587142f",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/seal-store/8cd676bc73164367a1a87ab37fd031d7_manifest.json": "f8dde9e3460950e7e64d9002b01f1f30353942cc13cb80c193f6c62ba4bb341c",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/seal-store/988b2cf0fa0b4b6eb4335c1b9612b35d_change.patch": "d1e5ec112a389c613fe097c91f420b62393830632fe7b2ae766c50b9cb5357a3",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/seal-store/988b2cf0fa0b4b6eb4335c1b9612b35d_manifest.json": "7f9d9db7deccd6759543873b0301ad3c9563a78f63c3dad76bd93f5a5c0fb402",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/sealed_g04/MAT2-F03/assets/trunk_01_mesh.json": "3b17441764714c5e5e9c7a43c3253b3271a0f508954095e1960a57820cef6ee7",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/sealed_g04/MAT2-G04/grip_contact.py": "0d6375484c350039468b31a2f7db2895d3365412aee52ce98de72b4173d69245",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/sealed_g04/MAT2-M06/local_contact.py": "1cd662b30343011eb4a0a01e461a1e82b00482d0371857c8e42d6bec8f9a28dc"
+  },
+  "patch_sha256": "1d8ee5270da5bee42671542f3a958536680c967602e3bea3240e629742c20ed7",
+  "created_at": 1791091680.4873466
+}
