@@ -195,3 +195,261 @@ prereg, carrying the F1 sub-window amendment + the harmonized sign handling).
 Supersession note: the chain-stop-2 entry's walk-identity sentence and its carrier
 wording are SUPERSEDED by CORRECTION-1 (F2, F4) - the sealed receipts, the verdicts,
 and every byte-level fact of that entry stand unchanged.
+
+
+---
+
+# THE N1 PREREG DRAFT (record-only entry; dated 2026-10-04; owner wk-vpl1-native)
+
+The Lieutenant authorized THE N1 FORCE-FEEDING TIER (the named-next rung from the
+#348 publication; the completion audit next action) with the fresh-review two
+preconditions ENFORCED AT PIN TIME. The draft is authored; NO implementation
+exists at draft time.
+
+| artifact | sha256 | provenance |
+|---|---|---|
+| PREREGISTRATION_N1_FEED.md (THE N1 DRAFT; the pin target) | `58fd70493fb05c964b025a2ff30da17af8fb6b231d455ce652a2f7dd1f6c3a5d` | recomputed here from the lane file bytes |
+
+- PRECONDITION 1 (Section 2): the F1 sub-window amendment declared pre-run -
+  OPTION (a) ADOPTED (the sub-window excluded from PAD_CONTACT; the named class
+  PAD_ENGAGED_UNCOMPRESSED; ZERO force by the amended unilateral law
+  p = max(0, k*u/t)); OPTION (b) DECLINED (amending the frozen window edges after
+  the N0 results = the anti-tuning law violation).
+
+- PRECONDITION 2 (Section 3): the harmonized sign handling - ONE classifier, the
+  probe path = the row path classifier over constructed inputs; agreement
+  structural; any residual divergence a declared delta.
+
+- THE G08 PARITY RE-BIND (Section 5): the three-tier basis declared - Tier 1 the
+  identity floor (mode0 + N0-gated vs the W03 anchors byte-exact); Tier 2 the
+  REQUIRED feed-on divergence (byte-identity anywhere = feed_inert_failure, the
+  causal claim dies); Tier 3 the DECLARED BOUNDS from the physical account
+  (max total pad force 0.40961 N = 0.68% of band BW; dx/dy divergence <= 0.01 m;
+  refusal tick within +-15 of the padless 302; breaches = routed FINDINGS, never
+  moved constants).
+
+- CARRIED: the binding gate (extended serialization + T1/T2); the closed outcome
+  space w/ the causal classes (FEED_APPLIED/FEED_ZERO + the reality teeth); the k
+  FORMULA frozen; the not-claims at maximum (N1 makes the pad push - the grasp
+  still needs the press channel; TC-8 0/8 stands); the anti-masking invariant
+  absolute; the arm set mode0 / N0-gated (= the feed-off control) / N1-feed-on /
+  feed-on determinism re-run.
+
+Draft status: DRAFT for the Lieutenant pin (separate-first). The committed bytes
+are the freeze; the implementation package must pin those bytes and refuse on
+drift.
+
+
+---
+
+# CHAIN STOP 3 - THE N1 FORCE-FEEDING TIER EXECUTED AND PASSED (dated 2026-10-04; owner wk-vpl1-native)
+
+Per the pinned N1 prereg (pin b48eda23, bytes 58fd7049...; the explicit astra
+merge): the two preconditions EXECUTED AT THE CLASSIFIER LEVEL (the F1
+sub-window amendment = the named class PAD_ENGAGED_UNCOMPRESSED + the
+unilateral p = max(0,k*u/t); the harmonized ONE-classifier sign handling),
+the declared additive-force injection (the pad generalized column J_tip^T f
+via the engine own Evaluation::force at ONE rhs line per coordinate,
+tick-start zero-order hold), the three-tier G08 parity re-bind, the carried
+binding gate + tampers, the closed causal outcome space, the k FORMULA
+frozen.
+
+| artifact | sha256 | provenance |
+|---|---|---|
+| package-n1/package.json (base = the N1 pin b48eda23e1f0786383e2855a0436d580b2fd6069; task VPL1-NATIVE-20261009-N1-FEED)
+4aea5bb736139346a9876c5dcffd29eaf8926851ebd5f78ff1656a86cd896833
+recomputed here
+| INSTRUMENT_N1_FEED_PATCH.py (the N1 additive-force patcher; N0_include_repoint + N1_enum/classname/state/members/ctor/load_fix/f1_classifier/probe_harmonized/inject/serializer/feed_methods + the driver hooks/checks)
+e4dd33a5608986ab19df49bb4d28011ef6f1ede73d9ec4a4e7cc3d624a9eb36d
+recomputed here
+| run_battery_n1.py (the sealed N1 orchestrator)
+9571526ca8d7dd86403c0f9dbd0185bb08fb2348badb9f70e0cf125e86d18d07
+recomputed here
+| SEALED OF RECORD 24e7edd166394f2ea831b91b072e46a5: manifest
+244608f39aad7826e2e801b870343a156bfd3d9b5b4b37c437b29bc087244f31
+= 244608f39aad7826e2e801b870343a156bfd3d9b5b4b37c437b29bc087244f31
+| SEALED OF RECORD 24e7edd1 change.patch (captured into seal-store/ at creation - the C2 law)
+45d01636bddbff92e714307f059859b5e2663e6c4cc511b7f8a1b381d2a34622
+45d01636bddbff92e714307f059859b5e2663e6c4cc511b7f8a1b381d2a34622
+| RUNNER OF RECORD job 80300c4014264686962f3314ce77f5e4: PASSED, exit 0, slot 2, cleanup_verified true, base b48eda23, sealed manifest 244608f3...
+8efe56bc1234cee24398eee9c7f1b72420f758b3fff0123198035a6f9761eb14
+recomputed here
+| runner.log (retained copy)
+a079f355b3e8f96c9fc06cc7f48f15aab02fb18672c2f3db2b8600932dd3e16e
+recomputed here
+| n1_receipt.json (the battery receipt of record)
+bda8e25968ccdc2e30f99f268496fe244f913f791f2a96f2e18b1abc3fbc08d9
+bda8e25968ccdc2e30f99f268496fe244f913f791f2a96f2e18b1abc3fbc08d9
+| result.json (the runner canonical declared result)
+0faba2d9c673d3f5fb63f1f739c287df60abdd54a1be4eb5e27b5d582879c424
+0faba2d9c673d3f5fb63f1f739c287df60abdd54a1be4eb5e27b5d582879c424
+| build_log.txt (the FULL MSVC build log)
+6e3081f92181d44a4da05457c77fbc4db196235494bba3bab31e699da70c7409
+6e3081f92181d44a4da05457c77fbc4db196235494bba3bab31e699da70c7409
+| n1_summary.txt
+2699ab284d6e876e678c6ed15a6c5c8e7c86371164b8954811037166470da289
+2699ab284d6e876e678c6ed15a6c5c8e7c86371164b8954811037166470da289
+| DERIVED gait_controller_n1.hpp (in-slot; regenerable from the pinned chain)
+897689ea0d8f246aba581e5e1aee584120d1274a129320691991ce0c3180b77e
+cited from the receipt instrument manifest
+| DERIVED gait_unit_viswalk_dump_n1.cpp (in-slot; regenerable)
+56c53e5e433736593d4e2609a6456a79a486b4c7048191bb5359881511a68c20
+cited from the receipt instrument manifest
+
+## THE THREE-TIER PARITY VERDICTS (the G08 re-bind; the diverged-anchor record)
+
+- TIER 1 (the identity floor): mode0 AND N0-gated reproduce the sealed W03
+  anchors BIT-EXACTLY (stdout 8c537cdb..., stderr c6f9b6c0..., qdumps
+  b47b709c... x2). N1-P1 TRUE.
+
+- *** TIER 2 (the REQUIRED divergence - THE DIVERGED-ANCHOR RECORD: the first
+  anchors in the campaign that PROVE the physics changed): the feed-on arm
+  DIVERGED from both the W03 anchors and the feed-off control; the divergence
+  onset = line 300 (the first byte-differing states line, at the declared
+  window); the PRE-ONSET streams byte-identical (the anti-masking-to-onset
+  proof - N1-P4 TRUE: the rigid solve untouched until the first pad force).
+  N1-P2 TRUE: the feed is REAL - a byte-identical feed-on arm would have been
+  feed_inert_failure.***
+
+- TIER 3 (the declared bounds from the physical account): the base-translation
+  divergence at the last common tick dq3 = 2.364e-06 m, dq4 = 8.269e-07 m
+  (bounds 0.01 m each); the refusal tick shift 0 (bound 15); in_bounds TRUE.
+  N1-P5 TRUE.
+
+## THE VERDICTS (the runner-verified receipt)
+
+- N1-P3 SUB-WINDOW LAW: TRUE - 3 PAD_ENGAGED_UNCOMPRESSED rows (the exact F1
+  defect rows of N0, now the named class), ZERO force, flag FALSE; ZERO
+  CONTACT rows with u <= 0 (the F1 defect class structurally gone); the
+  negative-u probe -> NO_FORCE (the harmonized sign handling).
+
+- N1-P6 SIGN LAW: TRUE - every CONTACT force positive (anti-penetration);
+  the force exists ONLY on PAD_CONTACT rows.
+
+- N1-P5 PHYSICAL ACCOUNT: TRUE - the impulse identity (recorded vs the rows
+  re-derivation, 1e-12 relative) + the spring-work identity
+  (pad_work +1.3937e-3 J = -U_stored, the conservative closed form within the
+  declared 5% bound) + the Tier-3 bounds.
+
+- N1-P7 CAPTURE + DETERMINISM: TRUE - GATE_PASS (the extended serialization
+  incl. the feed flag + per-tip forces; the in-run byte-equality gate); T1 AND
+  T2 MUTANT_REJECTED; the feed-on arm byte-identical across the independent
+  re-run.
+
+## THE NUMBERS (the causal pad, recorded)
+
+- ticks_feeded = 3 (the planted window); impulse_cum = 2.9757e-03 N*s;
+  pad_work_cum = +1.3937e-03 J (the body pushed up as the spring returned);
+  the feed-on refusal tick UNCHANGED (302) - the declared bounds held with
+  orders of magnitude of margin.
+
+## THE NOT-CLAIMS (all held)
+
+NO grasp-completion claim - the pad now PUSHES (~0.41 N max, the declared
+account) and the grasp still needs the press channel: TC-8 = 0/8; x_press
+ABSENT; the same-hands debt; friction PLACEHOLDER; the mass lineage
+UNRESOLVED; walking certification NOT inherited (G08); the product runtime
+EXCLUDED (MembraneTick untouched); the pad NOT a support element; Prony
+NAMED-NOT-MODELED; the canonical coexistence text + the complete ladder
+label CITED per CORRECTION-1 F4 (the carrier = the stage-5 receipt
+f37b2e9e...). Sergeant review requested through the Lieutenant; author
+self-review certifies nothing.
+
+
+---
+
+# CORRECTION-2 - THE SGT N1 VERDICT LANDED (record-only corrections + the corrected sealed run; dated 2026-10-04; owner wk-vpl1-native)
+
+THE VERDICT: CHANGES_REQUIRED - ONE CORRECTION CYCLE. The diverged-anchor
+record + the parity tiers + the F1 amendment + the impulse identity + the
+injection discipline + the not-claims ALL VERIFIED CLEAN - preserved.
+TWO FINDINGS, BOTH FIXED, RE-SEALED, RE-RUN:
+
+- FINDING A (the feed-off control arm never executed): FIXED - the n0gated
+  arm EXECUTES with GAITPHYS_VPL1=1 (+_OUT), FEED/DESCRIPTORS unset (the
+  prereg Section-4 control; never a mode0 duplicate). The executed control
+  arm still reproduces the W03 anchors byte-exactly AND the Tier-2
+  feed-on-vs-control divergence is now IN-RUN evidence.
+
+- FINDING B (THE PHANTOM ENERGY - MATERIAL): FIXED. The tautology (pad_work
+  += -dU with U_stored += dU from the SAME dU) and its dead 5% floor are
+  REMOVED. The pad-work channel REIMPLEMENTED per the pinned prereg Section
+  8: the FORCE-X-DISPLACEMENT accumulator (an independent integration). The
+  closed form survives ONLY as the GUARDED unilateral cross-check (both
+  endpoints clamped at u=0; the first-contact tick integrates from u=0 -
+  the phantom-release fix) - AND IT FIRED:
+
+  *** THE HONEST ENERGY FIGURE (the ONLY publishable one): the Section-8
+  accumulator pad_work = -1.278977e-03 J (NEGATIVE: the pad absorbed net
+  energy during the planted strike - the tips descended against the ramping
+  pad force). The guarded unilateral closed form nets -1.12113e-04 J; the
+  residual 1.39109e-03 J = the declared strike-tick discretization (the
+  tick-start force x the full-tick displacement vs the within-tick ramp)
+  plus the domain boundary - RECORDED IN THE RECEIPT AND ROUTED, declared in
+  the delta_note. THE +1.3937e-03 J FIGURE OF THE SUPERSEDED RUN IS RETIRED
+  AND NEVER REPUBLISHED; the "body pushed up as the spring returned"
+  narration is WITHDRAWN as unsupported at the strike tick.***
+
+| artifact | sha256 | provenance |
+|---|---|---|
+| SUPERSEDED seal 24e7edd166394f2ea831b91b072e46a5 (the phantom-energy run; its receipt RETIRED from citation)
+244608f39aad7826e2e801b870343a156bfd3d9b5b4b37c437b29bc087244f31
+244608f39aad7826e2e801b870343a156bfd3d9b5b4b37c437b29bc087244f31
+| SUPERSEDED seal c618d3392b1244fcaaa81f79c9d4cca0 (the A/B fixes; the verdict-level crosscheck label mis-filtered - NOT_RUN)
+99504d71d92ff6481ffe6d4d1108d16b1d126f3d7b2e1a6b32b0355d7e3ede13
+99504d71d92ff6481ffe6d4d1108d16b1d126f3d7b2e1a6b32b0355d7e3ede13
+| SEALED OF RECORD 9edba2ce82e04a8d9aa52c408d42d4bd: manifest
+7556b48e6c8d9fa4613fe8960714ae784c92708544fe4509f42c9f9e5a707be7
+7556b48e6c8d9fa4613fe8960714ae784c92708544fe4509f42c9f9e5a707be7
+| SEALED OF RECORD 9edba2ce change.patch (captured at creation - the C2 law)
+1d21a9d8e7c5ac0634f0e70f83b829169224a1107be70b30f01017283c0581bd
+recomputed here
+| INSTRUMENT_N1_FEED_PATCH.py (the corrected patcher: the Section-8 accumulator + the guarded cross-check + the load fix)
+d16fe9b51e3b550b41734cf2111b4bff0dcfac48de5efb3ab82759da130a57ed
+recomputed here
+| run_battery_n1.py (the corrected orchestrator: the true control arm + the crosscheck status)
+f762a1d060ef50b7ad550bac8399fc53b273c466b6bb37033da49aa666888f9d
+recomputed here
+| RUNNER OF RECORD job 0d49fb7c954f48ccb330a1e880fa124a: PASSED, exit 0, slot 2, cleanup_verified true, base b48eda23, manifest 7556b48e...
+7a6f2ae24eed8b57f08a5f4342dc2c71bb41c04e45adbc3dcd31183ae7ed6974
+recomputed here
+| n1_receipt.json (the corrected receipt of record)
+7a97ceacfbb90c7cc7b4daad4cfaf41f334ad9dc6cdedacff68c45681a577b0f
+recomputed here
+| result.json
+0faba2d9c673d3f5fb63f1f739c287df60abdd54a1be4eb5e27b5d582879c424
+recomputed here
+| build_log.txt
+fdcc9e48f0416d2333d8f141d8bc2e59681f5bab077846f6159684721ffcce91
+recomputed here
+| n1_summary.txt
+2699ab284d6e876e678c6ed15a6c5c8e7c86371164b8954811037166470da289
+recomputed here
+
+## THE CORRECTED RUN (job 0d49fb7c; every preserved verdict re-verified)
+
+- Tier 1: mode0 AND the GENUINE n0gated control byte-exact vs the W03 anchors
+  (the control arm executed per Section 4 - Finding A fixed).
+- Tier 2: the feed-on arm DIVERGED from the executed control; onset line 300;
+  the pre-onset streams byte-identical (the anti-masking-to-onset proof).
+- Tier 3: dq3 = 2.364e-06 m, dq4 = 8.269e-07 m (bounds 0.01 m); the refusal
+  tick shift 0 (bound 15) - in_bounds TRUE.
+- Gate: GATE_PASS; T1/T2 MUTANT_REJECTED; determinism byte-identical.
+
+- THE CROSS-CHECK STATUS AT THE VERDICT LEVEL: FIRED_FAILED (visible, never
+  silent). The failed cross-check is a RECORDED RESULT routed to the
+  Lieutenant with the residual declared in the delta_note.
+
+## THE TWO LESSONS, INTO THE LAW (the Sergeant wording, verbatim)
+
+1. A CUMULATIVE BOOKED AS THE NEGATIVE OF ITS OWN INCREMENT IS NOT A CHECK.
+2. A CLOSED-FORM ENERGY EVALUATED OUTSIDE ITS LAW DOMAIN BOOKS PHANTOM
+   RELEASE - BOUND THE ACCUMULATOR DOMAIN OR RECONCILE AGAINST AN INDEPENDENT
+   INTEGRATION.
+
+(carried with the CORRECTION-1 lessons: the anchor-floor element gating-or-
+removed; the sub-window class law; the W03I set).
+
+STATUS: the corrected run of record stands for the fresh review; on PASS the
+publication fires WITH THE HONEST ENERGY FIGURE (the Section-8 accumulator
+and the fired cross-check + the routed residual, never the retired figure).
