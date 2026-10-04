@@ -1,0 +1,205 @@
+{
+  "_intent": "AUTHORED ownership binding for the real anatomy packet. Every matter representation is owned by exactly one component; transported and root-reference mass are declared but never counted or validated, so the membrane/body double-count boundary is authored, not inferred. REVISION 2: component frames bound to the authored frame tree (see mechanical_requirements.json); 8 zero-mass membrane bond components added for the 8 anatomical ports; the 9 transported claims are UNCHANGED and stay uncounted.",
+  "_revision": {
+    "author": "wk-assembly-inputs",
+    "date": "2026-10-03",
+    "decision": "local_frame_id values name authored frames in mechanical_requirements.json; membrane bond components carry inline mass {declared: none} because the v1 volume contract admits no thin-sheet mass - the segment claims remain the only matter owners and stay counts_toward_component_mass=false.",
+    "parent_content_sha256": "6711671030b914af97a79b97bef0cf290eac301acee995a14b80286a7544d4a0",
+    "revision": 2,
+    "violation_observables": "the assembly root coincides with the anatomy packet's fitted target frame (identity placement: origin [0,0,0], identity basis, scale_to_m 1.0, metres, right-handed). This is an AUTHORED decision (prepared_root_frame_definition.json each_value_needs_astra): the adapter refuses to derive it. Violation observable: any whole-assembly pose offset at a consuming build; the LV-1 launch emission receipt binds whatever placement the consuming build actually loaded."
+  },
+  "components": [
+    {
+      "component_id": "seg-pelvis",
+      "kind": "rigid_body",
+      "local_frame_id": "frame:assembly-root",
+      "mass": null
+    },
+    {
+      "component_id": "seg-femur_r",
+      "kind": "rigid_body",
+      "local_frame_id": "frame:seg-femur_r",
+      "mass": null
+    },
+    {
+      "component_id": "seg-tibia_r",
+      "kind": "rigid_body",
+      "local_frame_id": "frame:seg-tibia_r",
+      "mass": null
+    },
+    {
+      "component_id": "seg-femur_l",
+      "kind": "rigid_body",
+      "local_frame_id": "frame:seg-femur_l",
+      "mass": null
+    },
+    {
+      "component_id": "seg-tibia_l",
+      "kind": "rigid_body",
+      "local_frame_id": "frame:seg-tibia_l",
+      "mass": null
+    },
+    {
+      "component_id": "seg-humerus",
+      "kind": "rigid_body",
+      "local_frame_id": "frame:seg-humerus",
+      "mass": null
+    },
+    {
+      "component_id": "seg-radius",
+      "kind": "rigid_body",
+      "local_frame_id": "frame:seg-radius",
+      "mass": null
+    },
+    {
+      "component_id": "seg-humerus_l",
+      "kind": "rigid_body",
+      "local_frame_id": "frame:seg-humerus_l",
+      "mass": null
+    },
+    {
+      "component_id": "seg-radius_l",
+      "kind": "rigid_body",
+      "local_frame_id": "frame:seg-radius_l",
+      "mass": null
+    },
+    {
+      "component_id": "mem-radius-BIClong-P11",
+      "kind": "membrane_patch",
+      "local_frame_id": "frame:seg-radius",
+      "mass": {
+        "declared": "none"
+      },
+      "mass_claims": []
+    },
+    {
+      "component_id": "mem-radius-BICshort-P8",
+      "kind": "membrane_patch",
+      "local_frame_id": "frame:seg-radius",
+      "mass": {
+        "declared": "none"
+      },
+      "mass_claims": []
+    },
+    {
+      "component_id": "mem-radius-BRD-P3",
+      "kind": "membrane_patch",
+      "local_frame_id": "frame:seg-radius",
+      "mass": {
+        "declared": "none"
+      },
+      "mass_claims": []
+    },
+    {
+      "component_id": "mem-radius-PT-P5",
+      "kind": "membrane_patch",
+      "local_frame_id": "frame:seg-radius",
+      "mass": {
+        "declared": "none"
+      },
+      "mass_claims": []
+    },
+    {
+      "component_id": "mem-radius_l-BIClong_l-P11",
+      "kind": "membrane_patch",
+      "local_frame_id": "frame:seg-radius_l",
+      "mass": {
+        "declared": "none"
+      },
+      "mass_claims": []
+    },
+    {
+      "component_id": "mem-radius_l-BICshort_l-P8",
+      "kind": "membrane_patch",
+      "local_frame_id": "frame:seg-radius_l",
+      "mass": {
+        "declared": "none"
+      },
+      "mass_claims": []
+    },
+    {
+      "component_id": "mem-radius_l-BRD_l-P3",
+      "kind": "membrane_patch",
+      "local_frame_id": "frame:seg-radius_l",
+      "mass": {
+        "declared": "none"
+      },
+      "mass_claims": []
+    },
+    {
+      "component_id": "mem-radius_l-PT_l-P5",
+      "kind": "membrane_patch",
+      "local_frame_id": "frame:seg-radius_l",
+      "mass": {
+        "declared": "none"
+      },
+      "mass_claims": []
+    }
+  ],
+  "mass_claims": [
+    {
+      "assert_mass_status": "root_reference_frame_only",
+      "claim_ref": "anatomy:actual_monkey_fit:physiology:pelvis",
+      "component_id": "seg-pelvis",
+      "counts_toward_component_mass": false,
+      "reason": "root reference frame only: identity scale carries the original mass as a reference-frame quantity; it does not measure or validate pelvis size"
+    },
+    {
+      "assert_mass_status": "transported_source_effective",
+      "claim_ref": "anatomy:actual_monkey_fit:physiology:femur_r",
+      "component_id": "seg-femur_r",
+      "counts_toward_component_mass": false,
+      "reason": "transported source-effective mass under a uniform density-scale assumption; it is excluded from the component-mass sum so the same matter is never counted twice and is never promoted to validated tissue mass here"
+    },
+    {
+      "assert_mass_status": "transported_source_effective",
+      "claim_ref": "anatomy:actual_monkey_fit:physiology:tibia_r",
+      "component_id": "seg-tibia_r",
+      "counts_toward_component_mass": false,
+      "reason": "transported source-effective mass under a uniform density-scale assumption; it is excluded from the component-mass sum so the same matter is never counted twice and is never promoted to validated tissue mass here"
+    },
+    {
+      "assert_mass_status": "transported_source_effective",
+      "claim_ref": "anatomy:actual_monkey_fit:physiology:femur_l",
+      "component_id": "seg-femur_l",
+      "counts_toward_component_mass": false,
+      "reason": "transported source-effective mass under a uniform density-scale assumption; it is excluded from the component-mass sum so the same matter is never counted twice and is never promoted to validated tissue mass here"
+    },
+    {
+      "assert_mass_status": "transported_source_effective",
+      "claim_ref": "anatomy:actual_monkey_fit:physiology:tibia_l",
+      "component_id": "seg-tibia_l",
+      "counts_toward_component_mass": false,
+      "reason": "transported source-effective mass under a uniform density-scale assumption; it is excluded from the component-mass sum so the same matter is never counted twice and is never promoted to validated tissue mass here"
+    },
+    {
+      "assert_mass_status": "transported_source_effective",
+      "claim_ref": "anatomy:actual_monkey_fit:physiology:humerus",
+      "component_id": "seg-humerus",
+      "counts_toward_component_mass": false,
+      "reason": "transported source-effective mass under a uniform density-scale assumption; it is excluded from the component-mass sum so the same matter is never counted twice and is never promoted to validated tissue mass here"
+    },
+    {
+      "assert_mass_status": "transported_source_effective",
+      "claim_ref": "anatomy:actual_monkey_fit:physiology:radius",
+      "component_id": "seg-radius",
+      "counts_toward_component_mass": false,
+      "reason": "transported source-effective mass under a uniform density-scale assumption; it is excluded from the component-mass sum so the same matter is never counted twice and is never promoted to validated tissue mass here"
+    },
+    {
+      "assert_mass_status": "transported_source_effective",
+      "claim_ref": "anatomy:actual_monkey_fit:physiology:humerus_l",
+      "component_id": "seg-humerus_l",
+      "counts_toward_component_mass": false,
+      "reason": "transported source-effective mass under a uniform density-scale assumption; it is excluded from the component-mass sum so the same matter is never counted twice and is never promoted to validated tissue mass here"
+    },
+    {
+      "assert_mass_status": "transported_source_effective",
+      "claim_ref": "anatomy:actual_monkey_fit:physiology:radius_l",
+      "component_id": "seg-radius_l",
+      "counts_toward_component_mass": false,
+      "reason": "transported source-effective mass under a uniform density-scale assumption; it is excluded from the component-mass sum so the same matter is never counted twice and is never promoted to validated tissue mass here"
+    }
+  ],
+  "schema_version": "chimera.assembly_ownership.v1"
+}
