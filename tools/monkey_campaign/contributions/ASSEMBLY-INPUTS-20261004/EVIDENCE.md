@@ -260,3 +260,56 @@ executed exactly once each.
 4. **Fixture dependency law:** run_fixtures requires the material-volume compiler upstream
    (fixture claims are compiler-materialized); any fixture rerun without `tools/material_volume.py`
    refuses unknown_claim_reference.
+
+## P2.6 Collaborator-wave routings folded in (2026-10-03, SGT re-issue)
+
+Both routings arrived through the Lieutenant's re-issue; this lane owns the packet inputs, so both
+ride this record. TEXT-ONLY round: the recovered wrapper source, the Sep-24 preserved report, and
+every sealed artifact are byte-unchanged (wrapper re-verified `aaaada16...` this session).
+
+### (1) Root-frame coordination ruling (collaborator record `12f0cfb5`, relayed identifier)
+
+- CITATION AS COORDINATION REFERENCE: the collaborator wave's authorized synthetic root-frame
+  values are EXACTLY what this lane authored. Programmatic match recorded this session against the
+  applied `tools/assembly_handoff/inputs/mechanical_requirements.json` frames[0]:
+  frame_id `frame:assembly-root`; parent_frame_id null; coordinate_unit m; scale_to_m 1.0;
+  origin_m [0,0,0]; basis_rows identity; handedness right — the identity basis is +X right /
+  +Y up / +Z anterior under the packet's own coordinate conventions
+  (right [1,0,0], up [0,1,0], anterior [0,0,1], right-handed; packet sha `a4475550...`).
+  The ruling record itself was NOT found on this host's searched paths (monkey-coordination,
+  E:/Chimera/parallel-budget-probe); the citation is by the routing's identifier `12f0cfb5` and the
+  values were verified against the authored document, not against a local copy of the ruling.
+- **DECLARED VIOLATION `SYNTHETIC_ASSEMBLY_ROOT_PLACEMENT`** (added to this record; cross-reference
+  the authored document's `_root_placement_decision` field, which carries the same declaration and
+  its violation observables): the assembly root placement is a SYNTHETIC, AUTHORIZED placement —
+  its uncertainty stays VISIBLE in every manifest that consumes it; it is NEVER a measured landmark
+  and never promoted to one.
+- SCOPE LINE (binding): the ruling supplies ONLY the root fields. NOTHING synthetic is promoted
+  toward qualification by it: counted mass stays 0.0, the density and stiffness debts stay named,
+  and the F2 verdict stands (no ready-on-unvalidated-density refutation event occurred; READY-REAL
+  remains honestly FALSE).
+
+### (2) Readiness-wrapper staleness (collaborator record `39f33b27`, relayed identifier) — NAMED FINDING W-RPR-1
+
+- EVIDENCE (re-verified this session): the wrapper `tools/assembly_handoff/real_packet_readiness.py`
+  (content sha `aaaada16d77e571326fff28db89e504aecfd632c2d323b11dc1f511805bd6d5d`, blob `634c431e`
+  at `43b599a7`; tree copy byte-identical, 16,518 B) special-cases ownership presence at lines
+  104-111 (`if OWNERSHIP_INPUT.is_file():` admit, else declare absent) but lines 113-117 append
+  `material_volume_document` and `mechanical_requirements` as declared ABSENT **UNCONDITIONALLY** —
+  even when the canonical JSONs exist at `INPUTS/<role>.json`.
+- THE TRAP IS NOW LIVE: this lane's authored `mechanical_requirements.json` EXISTS at the canonical
+  path, so any tree rerun of the wrapper would report `required_input_absent(mechanical_requirements)`
+  DESPITE presence — repeat staleness, exactly the collaborator finding.
+- RECONCILIATION CHOSEN: NAMED FINDING with the wrapper's OWN DEBT (the alternative — editing the
+  recovered hash-pinned source — would break the restored-bytes provenance and is a publication-path
+  act, not a lane act). The Sep-24 preserved report `out/real_packet_readiness.json` was NOT touched.
+  The wrapper's own debt, named: its example bundle builder predates the authored inputs and needs
+  the lines 113-117 loop made presence-conditional (mirror lines 104-111) plus its comment block
+  (lines 100-103) updated; owner of any such fix: the publication path as a scoped proposal on top
+  of blob `634c431e`.
+- LAWFUL CURRENT PATH (no wrapper edit needed): the direct-bundle class this lane already executed
+  in sealed run `763a174e8a5c462db683385404913bf6` — the bundle admits the canonical authored
+  documents by path and the adapter core (`assembly_handoff.py`, which has NO such special-case)
+  reports the true authored state (manifest digest `26721b8ac8f8c8301fb73e40c8e15f9f313223ccb89a580f7a6b08c75f32324b`,
+  honest FALSE). Until the wrapper fix is published, wrapper output MUST NOT be cited as the
+  authored-state readiness; the stage-5 sealed report is the citation of record.
