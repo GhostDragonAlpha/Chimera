@@ -1,0 +1,140 @@
+[
+  {
+    "path": "tools/assembly_handoff/assembly_handoff.py",
+    "blob": "0dd7077c5ad4ceae93a11a05bc7d52d69cf3edcc",
+    "sha256": "1a0615ff043cc6465c786ab50d1ae1c68a5854a5e6fb922608ac05ddd8974eab",
+    "bytes": 83978
+  },
+  {
+    "path": "tools/assembly_handoff/produce_inputs.py",
+    "blob": "7365aa043d158e6fc73225dd3bec87e37781848f",
+    "sha256": "9ac51d2607616d8a14915865bd2dfa27d504546495cb237d04cfbb2529700774",
+    "bytes": 23655
+  },
+  {
+    "path": "tools/assembly_handoff/real_packet_readiness.py",
+    "blob": "634c431e22b6d15400a3760e44171548e56b2569",
+    "sha256": "aaaada16d77e571326fff28db89e504aecfd632c2d323b11dc1f511805bd6d5d",
+    "bytes": 16518
+  },
+  {
+    "path": "tools/assembly_handoff/run_fixtures.py",
+    "blob": "ca8d0ecd146264144dc6a06b60042aecd9619f04",
+    "sha256": "613df590d1791004c2e284fbe76dc62691a1bbc64ef09e8bea68159f27cda3cb",
+    "bytes": 17139
+  },
+  {
+    "path": "tools/assembly_handoff/DERIVATION.md",
+    "blob": "6c64797629afb0f938fed10475ca99d4b5541852",
+    "sha256": "3e5e48d0b849cad381a570376aa22b6a2d6325a9da54916506a5bc3553f033fc",
+    "bytes": 5763
+  },
+  {
+    "path": "tools/assembly_handoff/inputs/ownership_bindings.json",
+    "blob": "c6c7006b819fde49bfc7bc0308907ac0bce02668",
+    "sha256": "364fb4238c8b92c8afd477b05b6e4b52fbac7d6bc5fa79136853d45611ab735b",
+    "bytes": 5769
+  },
+  {
+    "path": "tools/assembly_handoff/inputs/material_volume_document.cannot_produce.json",
+    "blob": "e3e45869fcb977643236aa363ddb7eb635f60d3b",
+    "sha256": "912b72fcc2f2659a956a0d14d12ee8728db83787ef8c9580d1e36a44536a7c43",
+    "bytes": 1413
+  },
+  {
+    "path": "tools/assembly_handoff/inputs/mechanical_requirements.cannot_produce.json",
+    "blob": "8c13c1c5e48178ab0e8e1b2d258caa7ae4f11448",
+    "sha256": "639a4a4b7ab6039ad61a23aced8d838f01ee744d44efcb042e01d0303cfe40b6",
+    "bytes": 4270
+  },
+  {
+    "path": "tools/assembly_handoff/inputs/prepared_root_frame_definition.json",
+    "blob": "f11ff153084eeeb16f2bdbe83b4e862374c0028b",
+    "sha256": "58b36024f26abd9914c83fbbce43f693694173412719a2a39ca493c862d2f57b",
+    "bytes": 2307
+  },
+  {
+    "path": "tools/material_volume.py",
+    "blob": "3d46b030e75d6200a1764aadf72d81be9942bcdc",
+    "sha256": "a4eb96e6d59c51d9c673ad6df8675639cd0b25a1652b0f6f5203de737a4327ec",
+    "bytes": 47382
+  },
+  {
+    "path": "tools/assembly_handoff/fixtures/complete_assembly.json",
+    "blob": "454eed7818e656cef1409c24b194d36c4a7ac457",
+    "sha256": "d21c2d67c249a0435347409f7981e6e966d3a29374c5932c3722ba7ff8c207c1",
+    "bytes": 1305
+  },
+  {
+    "path": "tools/assembly_handoff/fixtures/duplicate_mass_ownership.json",
+    "blob": "ddd0d18351b0fcd75de7b1de6fc197d3631df6fb",
+    "sha256": "0b2847faaa6d0aa12a4eb6dc6b4fecfea095a2af2fce31bf89a238edc80e8209",
+    "bytes": 1142
+  },
+  {
+    "path": "tools/assembly_handoff/fixtures/parts/PROVENANCE.md",
+    "blob": "0b0f6efc07024d0b553dc3880f9f02da9345e7ef",
+    "sha256": "6941c501922c880313e05c7b3dba29b20edf0114a481888d875295987d4d8692",
+    "bytes": 3321
+  },
+  {
+    "path": "tools/assembly_handoff/fixtures/parts/anatomy_synthetic.json",
+    "blob": "fcaf0f2e48f99bb2885f66b6f3d93970bb5b2791",
+    "sha256": "e11886ade87b566ee931ed6e2e11c0d3c7c8a43ec40583e6e818610466d6a883",
+    "bytes": 2027
+  },
+  {
+    "path": "tools/assembly_handoff/fixtures/parts/candidates_synthetic.json",
+    "blob": "a6e169ee566713994cdc580d58f35357e942dca6",
+    "sha256": "6a04f617e561c56cbfe50c79bfae03e8514399c6c37479b013c864890375eb94",
+    "bytes": 3323
+  },
+  {
+    "path": "tools/assembly_handoff/fixtures/parts/material_volume_synthetic.json",
+    "blob": "ac54c2351122d82f456e4b58f8420a6eecf2cb0e",
+    "sha256": "6930306eccb2e09d2fae46a7e2e74b0fcdedbda1a4973f171b1c5ea34d1862df",
+    "bytes": 1436
+  },
+  {
+    "path": "tools/assembly_handoff/fixtures/parts/ownership_anatomy_transport_only.json",
+    "blob": "b89de21d39668cafa382f25dbcf6e2cdd6fcbf85",
+    "sha256": "6d9df8ebfe5ea9939683de9ad5782de33a3e7c46697111f2ff5c64e25c484be2",
+    "bytes": 2432
+  },
+  {
+    "path": "tools/assembly_handoff/fixtures/parts/ownership_complete.json",
+    "blob": "6345eab25f64c930ee069a675a5f492c7ac9ce99",
+    "sha256": "21c8019c13de338a7bae8d470e7a45c719e3f36051180ce6730a8cfa6c56dff8",
+    "bytes": 2448
+  },
+  {
+    "path": "tools/assembly_handoff/fixtures/parts/ownership_duplicate.json",
+    "blob": "67e32cc40257cfe278cc012469fc9fd9300a4384",
+    "sha256": "ee75fea45cbb3492831c0ea8f02c4431964446ae0c9e7b5b9f71901e75ecc10a",
+    "bytes": 2139
+  },
+  {
+    "path": "tools/assembly_handoff/fixtures/parts/requirements_complete.json",
+    "blob": "0f4a90eaf20bc304e5ad834ed82eaa2d3ede52e7",
+    "sha256": "6e67c1944fc5514ed89aaa8469e975c2936a92c1e545512fafe54147558ed444",
+    "bytes": 4529
+  },
+  {
+    "path": "tools/assembly_handoff/fixtures/parts/requirements_waypoint_incomplete.json",
+    "blob": "0f28dbc3228f87cce76a5caec574444435b395aa",
+    "sha256": "8a0f72bb72014e7cf3af28865066617aead07a26c75a58c799935ca1b5099583",
+    "bytes": 4708
+  },
+  {
+    "path": "tools/assembly_handoff/fixtures/unresolved_anatomy_mass.json",
+    "blob": "8b83793b731da8e1aedc9c2c910ca01c914690b8",
+    "sha256": "5fea103d28605c12216cf3ff701d07962347691026cc599ba8aa6bdcd2c2a963",
+    "bytes": 1190
+  },
+  {
+    "path": "tools/assembly_handoff/fixtures/waypoint_not_attachment.json",
+    "blob": "813cdcbdbc8a130d0b5a71e3d2c4bbb9cf456ee6",
+    "sha256": "661a79bfaf44502cea2cb2d97fbd6f61c4206918684bc0c282378a8944a84a38",
+    "bytes": 1451
+  }
+]

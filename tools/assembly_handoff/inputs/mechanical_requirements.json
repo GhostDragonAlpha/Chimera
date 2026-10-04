@@ -1,0 +1,784 @@
+{
+  "_author": "wk-assembly-inputs",
+  "_authored": "2026-10-03",
+  "_derivation_note": "frame origin/basis are byte-copies of the packet segment fitted_origin/frame_basis; anchor positions are q = frame_basis^T @ (fitted_pos_global - fitted_origin), the packet's own fitted_pos_local direction, round-trip verified against the packet's printed fitted_pos_local and fitted_pos_global.",
+  "_root_placement_decision": "the assembly root coincides with the anatomy packet's fitted target frame (identity placement: origin [0,0,0], identity basis, scale_to_m 1.0, metres, right-handed). This is an AUTHORED decision (prepared_root_frame_definition.json each_value_needs_astra): the adapter refuses to derive it. Violation observable: any whole-assembly pose offset at a consuming build; the LV-1 launch emission receipt binds whatever placement the consuming build actually loaded.",
+  "_spread_declaration": "bond spread s=0.005 m (4 anchor corners per port, declared); patch side 0.02 m circumscribes the anchor square; patch_area_m2=0.0004; weights uniform 0.25 (declared). Violation observables: bond patch size and load share at any future gate/force join.",
+  "_stiffness_debt": "kappa_areal_n_m3 and k_couple_min_n_m_per_rad are deliberately ABSENT: no measured macaque tendon-bone attachment areal stiffness or minimum couple stiffness exists in the corpus (C17 zero lawful stiffness pins). The attachments stay attachment_parameter_missing / mechanically unqualified - the honest state. Nothing is invented for these fields.",
+  "attachments": [
+    {
+      "anchor_frame_id": "frame:seg-radius",
+      "anchors_local_m": [
+        [
+          0.013202326172617074,
+          0.005957034560652795,
+          -0.001149712953332822
+        ],
+        [
+          0.0032023261726170727,
+          0.005957034560652795,
+          -0.001149712953332822
+        ],
+        [
+          0.0032023261726170727,
+          -0.004042965439347205,
+          -0.001149712953332822
+        ],
+        [
+          0.013202326172617074,
+          -0.004042965439347205,
+          -0.001149712953332822
+        ]
+      ],
+      "attachment_id": "att-radius-BIClong-P11",
+      "body_component_id": "seg-radius",
+      "endpoints": [
+        {
+          "authored_role": "first_endpoint",
+          "component_id": "seg-radius",
+          "endpoint_id": "att-radius-BIClong-P11/body",
+          "local_frame_id": "frame:seg-radius",
+          "port_candidate_id": "cand:attachment_candidates_actual:radius:BIClong-P11",
+          "position_m": [
+            0.008202326172617073,
+            0.0009570345606527946,
+            -0.001149712953332822
+          ]
+        },
+        {
+          "authored_role": "last_endpoint",
+          "component_id": "mem-radius-BIClong-P11",
+          "endpoint_id": "att-radius-BIClong-P11/membrane",
+          "local_frame_id": "frame:seg-radius",
+          "position_m": [
+            0.008202326172617073,
+            0.0009570345606527946,
+            -0.001149712953332822
+          ]
+        }
+      ],
+      "membrane_component_id": "mem-radius-BIClong-P11",
+      "patch_area_m2": 0.0004,
+      "weights": [
+        0.25,
+        0.25,
+        0.25,
+        0.25
+      ]
+    },
+    {
+      "anchor_frame_id": "frame:seg-radius",
+      "anchors_local_m": [
+        [
+          0.013202326172617074,
+          0.005957034560652795,
+          -0.001149712953332822
+        ],
+        [
+          0.0032023261726170727,
+          0.005957034560652795,
+          -0.001149712953332822
+        ],
+        [
+          0.0032023261726170727,
+          -0.004042965439347205,
+          -0.001149712953332822
+        ],
+        [
+          0.013202326172617074,
+          -0.004042965439347205,
+          -0.001149712953332822
+        ]
+      ],
+      "attachment_id": "att-radius-BICshort-P8",
+      "body_component_id": "seg-radius",
+      "endpoints": [
+        {
+          "authored_role": "first_endpoint",
+          "component_id": "seg-radius",
+          "endpoint_id": "att-radius-BICshort-P8/body",
+          "local_frame_id": "frame:seg-radius",
+          "port_candidate_id": "cand:attachment_candidates_actual:radius:BICshort-P8",
+          "position_m": [
+            0.008202326172617073,
+            0.0009570345606527946,
+            -0.001149712953332822
+          ]
+        },
+        {
+          "authored_role": "last_endpoint",
+          "component_id": "mem-radius-BICshort-P8",
+          "endpoint_id": "att-radius-BICshort-P8/membrane",
+          "local_frame_id": "frame:seg-radius",
+          "position_m": [
+            0.008202326172617073,
+            0.0009570345606527946,
+            -0.001149712953332822
+          ]
+        }
+      ],
+      "membrane_component_id": "mem-radius-BICshort-P8",
+      "patch_area_m2": 0.0004,
+      "weights": [
+        0.25,
+        0.25,
+        0.25,
+        0.25
+      ]
+    },
+    {
+      "anchor_frame_id": "frame:seg-radius",
+      "anchors_local_m": [
+        [
+          0.05472155357553692,
+          0.005432233913373518,
+          0.006266150950476081
+        ],
+        [
+          0.04472155357553693,
+          0.005432233913373518,
+          0.006266150950476081
+        ],
+        [
+          0.04472155357553693,
+          -0.004567766086626482,
+          0.006266150950476081
+        ],
+        [
+          0.05472155357553692,
+          -0.004567766086626482,
+          0.006266150950476081
+        ]
+      ],
+      "attachment_id": "att-radius-BRD-P3",
+      "body_component_id": "seg-radius",
+      "endpoints": [
+        {
+          "authored_role": "first_endpoint",
+          "component_id": "seg-radius",
+          "endpoint_id": "att-radius-BRD-P3/body",
+          "local_frame_id": "frame:seg-radius",
+          "port_candidate_id": "cand:attachment_candidates_actual:radius:BRD-P3",
+          "position_m": [
+            0.049721553575536925,
+            0.00043223391337351806,
+            0.006266150950476081
+          ]
+        },
+        {
+          "authored_role": "last_endpoint",
+          "component_id": "mem-radius-BRD-P3",
+          "endpoint_id": "att-radius-BRD-P3/membrane",
+          "local_frame_id": "frame:seg-radius",
+          "position_m": [
+            0.049721553575536925,
+            0.00043223391337351806,
+            0.006266150950476081
+          ]
+        }
+      ],
+      "membrane_component_id": "mem-radius-BRD-P3",
+      "patch_area_m2": 0.0004,
+      "weights": [
+        0.25,
+        0.25,
+        0.25,
+        0.25
+      ]
+    },
+    {
+      "anchor_frame_id": "frame:seg-radius",
+      "anchors_local_m": [
+        [
+          0.029710016174815203,
+          0.00350442418113995,
+          0.0044740553575331535
+        ],
+        [
+          0.0197100161748152,
+          0.00350442418113995,
+          0.0044740553575331535
+        ],
+        [
+          0.0197100161748152,
+          -0.00649557581886005,
+          0.0044740553575331535
+        ],
+        [
+          0.029710016174815203,
+          -0.00649557581886005,
+          0.0044740553575331535
+        ]
+      ],
+      "attachment_id": "att-radius-PT-P5",
+      "body_component_id": "seg-radius",
+      "endpoints": [
+        {
+          "authored_role": "first_endpoint",
+          "component_id": "seg-radius",
+          "endpoint_id": "att-radius-PT-P5/body",
+          "local_frame_id": "frame:seg-radius",
+          "port_candidate_id": "cand:attachment_candidates_actual:radius:PT-P5",
+          "position_m": [
+            0.024710016174815202,
+            -0.0014955758188600497,
+            0.0044740553575331535
+          ]
+        },
+        {
+          "authored_role": "last_endpoint",
+          "component_id": "mem-radius-PT-P5",
+          "endpoint_id": "att-radius-PT-P5/membrane",
+          "local_frame_id": "frame:seg-radius",
+          "position_m": [
+            0.024710016174815202,
+            -0.0014955758188600497,
+            0.0044740553575331535
+          ]
+        }
+      ],
+      "membrane_component_id": "mem-radius-PT-P5",
+      "patch_area_m2": 0.0004,
+      "weights": [
+        0.25,
+        0.25,
+        0.25,
+        0.25
+      ]
+    },
+    {
+      "anchor_frame_id": "frame:seg-radius_l",
+      "anchors_local_m": [
+        [
+          0.013202326172617074,
+          0.005957034329134592,
+          0.0011497131460512522
+        ],
+        [
+          0.0032023261726170727,
+          0.005957034329134592,
+          0.0011497131460512522
+        ],
+        [
+          0.0032023261726170727,
+          -0.004042965670865408,
+          0.0011497131460512522
+        ],
+        [
+          0.013202326172617074,
+          -0.004042965670865408,
+          0.0011497131460512522
+        ]
+      ],
+      "attachment_id": "att-radius_l-BIClong_l-P11",
+      "body_component_id": "seg-radius_l",
+      "endpoints": [
+        {
+          "authored_role": "first_endpoint",
+          "component_id": "seg-radius_l",
+          "endpoint_id": "att-radius_l-BIClong_l-P11/body",
+          "local_frame_id": "frame:seg-radius_l",
+          "port_candidate_id": "cand:attachment_candidates_actual:radius_l:BIClong_l-P11",
+          "position_m": [
+            0.008202326172617073,
+            0.0009570343291345918,
+            0.0011497131460512522
+          ]
+        },
+        {
+          "authored_role": "last_endpoint",
+          "component_id": "mem-radius_l-BIClong_l-P11",
+          "endpoint_id": "att-radius_l-BIClong_l-P11/membrane",
+          "local_frame_id": "frame:seg-radius_l",
+          "position_m": [
+            0.008202326172617073,
+            0.0009570343291345918,
+            0.0011497131460512522
+          ]
+        }
+      ],
+      "membrane_component_id": "mem-radius_l-BIClong_l-P11",
+      "patch_area_m2": 0.0004,
+      "weights": [
+        0.25,
+        0.25,
+        0.25,
+        0.25
+      ]
+    },
+    {
+      "anchor_frame_id": "frame:seg-radius_l",
+      "anchors_local_m": [
+        [
+          0.013202326172617074,
+          0.005957034329134592,
+          0.0011497131460512522
+        ],
+        [
+          0.0032023261726170727,
+          0.005957034329134592,
+          0.0011497131460512522
+        ],
+        [
+          0.0032023261726170727,
+          -0.004042965670865408,
+          0.0011497131460512522
+        ],
+        [
+          0.013202326172617074,
+          -0.004042965670865408,
+          0.0011497131460512522
+        ]
+      ],
+      "attachment_id": "att-radius_l-BICshort_l-P8",
+      "body_component_id": "seg-radius_l",
+      "endpoints": [
+        {
+          "authored_role": "first_endpoint",
+          "component_id": "seg-radius_l",
+          "endpoint_id": "att-radius_l-BICshort_l-P8/body",
+          "local_frame_id": "frame:seg-radius_l",
+          "port_candidate_id": "cand:attachment_candidates_actual:radius_l:BICshort_l-P8",
+          "position_m": [
+            0.008202326172617073,
+            0.0009570343291345918,
+            0.0011497131460512522
+          ]
+        },
+        {
+          "authored_role": "last_endpoint",
+          "component_id": "mem-radius_l-BICshort_l-P8",
+          "endpoint_id": "att-radius_l-BICshort_l-P8/membrane",
+          "local_frame_id": "frame:seg-radius_l",
+          "position_m": [
+            0.008202326172617073,
+            0.0009570343291345918,
+            0.0011497131460512522
+          ]
+        }
+      ],
+      "membrane_component_id": "mem-radius_l-BICshort_l-P8",
+      "patch_area_m2": 0.0004,
+      "weights": [
+        0.25,
+        0.25,
+        0.25,
+        0.25
+      ]
+    },
+    {
+      "anchor_frame_id": "frame:seg-radius_l",
+      "anchors_local_m": [
+        [
+          0.05472155312340707,
+          0.0054322329868816705,
+          -0.006266150946388652
+        ],
+        [
+          0.04472155312340707,
+          0.0054322329868816705,
+          -0.006266150946388652
+        ],
+        [
+          0.04472155312340707,
+          -0.00456776701311833,
+          -0.006266150946388652
+        ],
+        [
+          0.05472155312340707,
+          -0.00456776701311833,
+          -0.006266150946388652
+        ]
+      ],
+      "attachment_id": "att-radius_l-BRD_l-P3",
+      "body_component_id": "seg-radius_l",
+      "endpoints": [
+        {
+          "authored_role": "first_endpoint",
+          "component_id": "seg-radius_l",
+          "endpoint_id": "att-radius_l-BRD_l-P3/body",
+          "local_frame_id": "frame:seg-radius_l",
+          "port_candidate_id": "cand:attachment_candidates_actual:radius_l:BRD_l-P3",
+          "position_m": [
+            0.04972155312340707,
+            0.0004322329868816704,
+            -0.006266150946388652
+          ]
+        },
+        {
+          "authored_role": "last_endpoint",
+          "component_id": "mem-radius_l-BRD_l-P3",
+          "endpoint_id": "att-radius_l-BRD_l-P3/membrane",
+          "local_frame_id": "frame:seg-radius_l",
+          "position_m": [
+            0.04972155312340707,
+            0.0004322329868816704,
+            -0.006266150946388652
+          ]
+        }
+      ],
+      "membrane_component_id": "mem-radius_l-BRD_l-P3",
+      "patch_area_m2": 0.0004,
+      "weights": [
+        0.25,
+        0.25,
+        0.25,
+        0.25
+      ]
+    },
+    {
+      "anchor_frame_id": "frame:seg-radius_l",
+      "anchors_local_m": [
+        [
+          0.029710016176672144,
+          0.0035044241536672533,
+          -0.0044740552871579235
+        ],
+        [
+          0.019710016176672143,
+          0.0035044241536672533,
+          -0.0044740552871579235
+        ],
+        [
+          0.019710016176672143,
+          -0.006495575846332747,
+          -0.0044740552871579235
+        ],
+        [
+          0.029710016176672144,
+          -0.006495575846332747,
+          -0.0044740552871579235
+        ]
+      ],
+      "attachment_id": "att-radius_l-PT_l-P5",
+      "body_component_id": "seg-radius_l",
+      "endpoints": [
+        {
+          "authored_role": "first_endpoint",
+          "component_id": "seg-radius_l",
+          "endpoint_id": "att-radius_l-PT_l-P5/body",
+          "local_frame_id": "frame:seg-radius_l",
+          "port_candidate_id": "cand:attachment_candidates_actual:radius_l:PT_l-P5",
+          "position_m": [
+            0.024710016176672144,
+            -0.001495575846332747,
+            -0.0044740552871579235
+          ]
+        },
+        {
+          "authored_role": "last_endpoint",
+          "component_id": "mem-radius_l-PT_l-P5",
+          "endpoint_id": "att-radius_l-PT_l-P5/membrane",
+          "local_frame_id": "frame:seg-radius_l",
+          "position_m": [
+            0.024710016176672144,
+            -0.001495575846332747,
+            -0.0044740552871579235
+          ]
+        }
+      ],
+      "membrane_component_id": "mem-radius_l-PT_l-P5",
+      "patch_area_m2": 0.0004,
+      "weights": [
+        0.25,
+        0.25,
+        0.25,
+        0.25
+      ]
+    }
+  ],
+  "frames": [
+    {
+      "basis_rows": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "coordinate_unit": "m",
+      "frame_id": "frame:assembly-root",
+      "handedness": "right",
+      "origin_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "parent_frame_id": null,
+      "scale_to_m": 1.0
+    },
+    {
+      "basis_rows": [
+        [
+          0.2000793303698446,
+          0.9797505324762531,
+          -0.007560136986393674
+        ],
+        [
+          -0.9761243979890706,
+          0.19866105362783007,
+          -0.08783476203619578
+        ],
+        [
+          -0.08455425009560011,
+          0.02495355453595513,
+          0.9961063692732779
+        ]
+      ],
+      "coordinate_unit": "m",
+      "frame_id": "frame:seg-femur_l",
+      "handedness": "right",
+      "origin_m": [
+        0.011271609216928482,
+        0.22199319124221803,
+        0.007508317194879055
+      ],
+      "parent_frame_id": "frame:assembly-root",
+      "scale_to_m": 1.0
+    },
+    {
+      "basis_rows": [
+        [
+          -0.2000793303698446,
+          -0.9797505324762531,
+          -0.007560136986393674
+        ],
+        [
+          -0.9761243979890706,
+          0.19866105362783007,
+          0.08783476203619578
+        ],
+        [
+          -0.08455425009560011,
+          0.02495355453595513,
+          -0.9961063692732779
+        ]
+      ],
+      "coordinate_unit": "m",
+      "frame_id": "frame:seg-femur_r",
+      "handedness": "right",
+      "origin_m": [
+        -0.011271609216928482,
+        0.22199319124221803,
+        0.007508317194879055
+      ],
+      "parent_frame_id": "frame:assembly-root",
+      "scale_to_m": 1.0
+    },
+    {
+      "basis_rows": [
+        [
+          -0.5992212654221013,
+          0.7996939851597396,
+          -0.0377280421605738
+        ],
+        [
+          -0.7981975725108325,
+          -0.6004072579398682,
+          -0.0489056218746167
+        ],
+        [
+          -0.06176172199469742,
+          0.0008091430421937417,
+          0.9980905945773596
+        ]
+      ],
+      "coordinate_unit": "m",
+      "frame_id": "frame:seg-humerus",
+      "handedness": "right",
+      "origin_m": [
+        -0.06762262344360352,
+        0.38285919666290286,
+        -0.001143796229735017
+      ],
+      "parent_frame_id": "frame:assembly-root",
+      "scale_to_m": 1.0
+    },
+    {
+      "basis_rows": [
+        [
+          0.5992212654221013,
+          -0.7996939851597396,
+          -0.0377280421605738
+        ],
+        [
+          -0.7981975725108325,
+          -0.6004072579398682,
+          0.0489056218746167
+        ],
+        [
+          -0.06176172199469742,
+          0.0008091430421937417,
+          -0.9980905945773596
+        ]
+      ],
+      "coordinate_unit": "m",
+      "frame_id": "frame:seg-humerus_l",
+      "handedness": "right",
+      "origin_m": [
+        0.06762262344360352,
+        0.38285919666290286,
+        -0.001143796229735017
+      ],
+      "parent_frame_id": "frame:assembly-root",
+      "scale_to_m": 1.0
+    },
+    {
+      "basis_rows": [
+        [
+          -0.45584373480967805,
+          -0.33147918130275006,
+          0.8260315016981026
+        ],
+        [
+          -0.8900578864387171,
+          0.16783031756342195,
+          -0.4238277283222572
+        ],
+        [
+          0.0018569391502837888,
+          -0.9284150671275319,
+          -0.3715400582811666
+        ]
+      ],
+      "coordinate_unit": "m",
+      "frame_id": "frame:seg-radius",
+      "handedness": "right",
+      "origin_m": [
+        -0.11548098385334016,
+        0.3191090774536133,
+        -0.0060765563324093825
+      ],
+      "parent_frame_id": "frame:assembly-root",
+      "scale_to_m": 1.0
+    },
+    {
+      "basis_rows": [
+        [
+          0.45584373480967805,
+          0.331479014964431,
+          0.8260315684481885
+        ],
+        [
+          -0.8900578864387171,
+          0.16783023221704998,
+          0.42382776211831047
+        ],
+        [
+          0.0018569391502837888,
+          -0.9284151419446914,
+          0.37153987132582494
+        ]
+      ],
+      "coordinate_unit": "m",
+      "frame_id": "frame:seg-radius_l",
+      "handedness": "right",
+      "origin_m": [
+        0.11548098385334016,
+        0.3191090774536133,
+        -0.0060765563324093825
+      ],
+      "parent_frame_id": "frame:assembly-root",
+      "scale_to_m": 1.0
+    },
+    {
+      "basis_rows": [
+        [
+          0.0,
+          -0.6946284212706094,
+          0.7193687207288768
+        ],
+        [
+          0.9472879103047964,
+          0.2304738998804251,
+          0.22254751507100637
+        ],
+        [
+          -0.32038354356984705,
+          0.6814492921978924,
+          0.6580131056237554
+        ]
+      ],
+      "coordinate_unit": "m",
+      "frame_id": "frame:seg-thorax_dummy",
+      "handedness": "right",
+      "origin_m": [
+        0.0,
+        0.30289999008178714,
+        0.016119999736547472
+      ],
+      "parent_frame_id": "frame:assembly-root",
+      "scale_to_m": 1.0
+    },
+    {
+      "basis_rows": [
+        [
+          -0.014283260913915357,
+          0.7576003067669396,
+          -0.6525624595732611
+        ],
+        [
+          -0.9984881586777127,
+          0.023837614676208277,
+          0.04952943677187939
+        ],
+        [
+          0.05307904895583549,
+          0.6522833305498368,
+          0.756114456447406
+        ]
+      ],
+      "coordinate_unit": "m",
+      "frame_id": "frame:seg-tibia_l",
+      "handedness": "right",
+      "origin_m": [
+        0.031416146606206896,
+        0.12371430158615113,
+        -0.0010048373090103268
+      ],
+      "parent_frame_id": "frame:assembly-root",
+      "scale_to_m": 1.0
+    },
+    {
+      "basis_rows": [
+        [
+          0.014283260913915357,
+          -0.7576003067669396,
+          -0.6525624595732611
+        ],
+        [
+          -0.9984881586777127,
+          0.023837614676208277,
+          -0.04952943677187939
+        ],
+        [
+          0.05307904895583549,
+          0.6522833305498368,
+          -0.756114456447406
+        ]
+      ],
+      "coordinate_unit": "m",
+      "frame_id": "frame:seg-tibia_r",
+      "handedness": "right",
+      "origin_m": [
+        -0.031416146606206896,
+        0.12371430158615113,
+        -0.0010048373090103268
+      ],
+      "parent_frame_id": "frame:assembly-root",
+      "scale_to_m": 1.0
+    }
+  ],
+  "schema_version": "chimera.mechanical_requirements.v1",
+  "units": "SI (m, kg, s); angles in rad"
+}
