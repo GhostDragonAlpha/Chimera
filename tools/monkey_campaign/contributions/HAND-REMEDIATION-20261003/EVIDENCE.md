@@ -585,3 +585,63 @@ recorded after this section: see the hash line below (the file is frozen
 at that hash until the next dated entry).
 
 FROZEN EVIDENCE SHA256 (section 26, dated 2026-10-03): `410c16ad2e74eb40e1ccb1751d9118e95a29c60305826c56f5e1c8095f9496aa`
+
+---
+
+# PHASE 12 — STAGE-3 PREREG PINNED + THE CONTACT-FORCES RUN EXECUTED AND PASSED
+
+## 27. Pins in force
+
+- Stage-3 prereg pinned: commit `6c1aa445f2fa81fb1ec5c5e393e8fa7c4f645a5c`
+  on review/HAND-REMEDIATION-20261003 (parent `662362e3...`);
+  committed blob content sha256 `4dfb62e0...` = this lane's draft
+  (byte-verified by the Lieutenant; re-verified by this lane from the
+  object store).
+
+## 28. The stage-3 package and run
+
+| artifact | sha256 |
+|---|---|
+| package/package.json (task HAND-REMEDIATION-20261003-R1-STAGE3, base `6c1aa445...`) | `314251f15baa0eb8eeeb792910efa093b2d9c47b99ba767b6ac2aae7179cfdf4` |
+| stage3_forces.py (NEW: the frozen tick law, the closed-form cumulative identity, the mu law forms) | `81b17b2792dccb59f5ad51390c819df5478822fd02e2af46d4a548d10ab288e1` |
+| run_stage3_forces.py (NEW: the driver — pins, per-survivor ticked sequences, the outcome partition, S3-P1..P5) | `0c41e0d373e05262ec2b4a638540b16b8bf2ec785b2105c5f5de68c860b095e5` |
+| FINAL seal `6d4ac09c2c5c40ce887a5f03989b923a`: manifest sha256 `9c68f541f3f9c330a0e6b064ea05b1d654c99d50ab103b69b5e61a4da0b7901b`; change.patch sha256 `932630ac7653583a3727daec7c963114b5d6f08da0d1d6555b1a89b4711fb947` — CAPTURED INTO seal-store/ AT CREATION (the C2 law) | |
+| runner receipt: job `2b355a46de924a3b82acedf2862b5379`, state PASSED, exit 0, SLOT 3, cleanup_verified true | `5340ccb199c1f132151967777e19a6bb86f4498ddc9589ded56fa33207326328` |
+| stage3_forces_receipt.json (runner-retained) | `63ec1a8e38abc0ba1a05ae594db1241cc2acc642d1d82e7eebb3d945a167d01f` |
+| stage3_forces_report.txt (runner-retained) | `6043b24e11d03cca0fdaff04300334150fdf05d7a7a85da2755c04f62900d8af` |
+
+Slot note (the corrected record discipline): slot 2 was skipped after the
+prior lock_busy observations; slot 3 took the run directly; no slot-2 rows
+were created by this lane and none are attributed to it.
+
+## 29. THE STAGE-3 RESULTS (the runner-verified receipt; the not-claims govern)
+
+- VERDICT: `STAGE3_FORCES_IDENTITY_FULL_SET`. Wall 0.34 s.
+- OUTCOME PARTITION over 354 (coverage exact both postures):
+  q_c_PRIMARY 314 = 308 IDENTITY_CLOSED + 6 ZERO_FORCE_CLASS + 0
+  IDENTITY_MISMATCH; q_zero_CONTROL 40 = 40 IDENTITY_CLOSED + 0 + 0.
+- S3-P1 TRUE: all 348 PAD_CONTACT survivors IDENTITY_CLOSED (308 + 40);
+  0 violations (no tick carries a signed reversal; every cumulative
+  impulse matches the independent closed form within 1e-12 relative).
+- S3-P2 TRUE: exactly 6 ZERO_FORCE_CLASS (6 q_c + 0 q_zero — the absorbed
+  band, all 40 ticks F = 0, J = 0).
+- S3-P3 TRUE: mu = 0 -> `NON_CLOSING_AT_MU0` (the law-form divergence;
+  no P_req evaluated).
+- S3-P4 TRUE: mu = 0.6 -> `CLOSES`, P_req = 54.68840727038889 N (the
+  positive control bites; the 54.69 N vs the 60 N declared ceiling is the
+  A6 law form at the placeholder, CONDITIONAL-CALCULATION, never a
+  measured hold).
+- S3-P5 TRUE: the constructed reversal case records min signed force
+  -0.2292 N and classifies IDENTITY_MISMATCH — the instrumentation shows
+  reversals, never absorbs them.
+- Dev-smoke defect caught and fixed PRE-SEAL (the erratum lesson applied
+  to this lane's own scoring): the first smoke scored S3-P1 against all
+  314 q_c survivors (falsely false through the 6 absorbed rows); the
+  pinned text scores the PAD_CONTACT class (348) — the scoring was fixed
+  to the pinned words BEFORE any sealed run.
+- THE GOVERNING READING (the pinned not-claims): friction PLACEHOLDER
+  (A5); no monkey-bark value exists; NO solver integration claimed (the
+  identity here is the declared law form on constructed schedules); the
+  36 N figure stays conditional on model + mu = 0.6; TC-8 = 0/8; the
+  same-hands finding stands; no hold or grasp result exists in this
+  class — the hold law is stage 4's, on its own gates.

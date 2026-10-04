@@ -1,0 +1,14 @@
+==============================================================================
+GATE. all 9 in-package pins MATCH (stage-2 prereg 2d7ff4172388fff7 / raised-cap receipt 4df5f48020c4dd60 / jacobian map 96a4610ffb37e672).
+INHERITED INPUT GATE ok=True pins=14.
+JACOBIAN IDENTITY vs the map of record (column law + sealed FK at CANDIDATE:PRIMARY): ok=True diffs=[]
+ZERO-POSTURE JOINT RECORDS: 22 joints via the sealed FK (the map has no zero-posture record; declared in the prereg method).
+------------------------------------------------------------------------------
+POSTURE q_c_PRIMARY survivors=314 classes={"ARM_NONFINITE_REFUSED": 0, "CAP_EXCEEDED": 0, "CAP_SATISFIED": 314} coverage_ok=True absorbed=6 s2p2_violations=0
+------------------------------------------------------------------------------
+POSTURE q_zero_CONTROL survivors=40 classes={"ARM_NONFINITE_REFUSED": 0, "CAP_EXCEEDED": 0, "CAP_SATISFIED": 40} coverage_ok=True absorbed=0 s2p2_violations=0
+S2-P3 CHAIN-STRUCTURE TRIGGER: fired=True reason=off_chain_structural_zero
+S2-P4 NON-VACUITY: injected 60.0 N -> CAP_EXCEEDED binding=mutation_wrist_abduction worst=2.8307661605608043
+==============================================================================
+PREDICTIONS: {"q_c_PRIMARY": {"S2_P1": true, "S2_P2": true, "S2_P3": true, "S2_P4": true}, "q_zero_CONTROL": {"S2_P1": true, "S2_P2": true}}
+VERDICT: STAGE2_CAPACITY_SATISFIED_FULL_SET
