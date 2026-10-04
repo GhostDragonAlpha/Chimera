@@ -88,6 +88,16 @@ stage-1 PLACEMENT predicate and is NOT applied in the strict collision
 classes; r_joint = 5.0e-3 lives ONLY inside the 19 certified joint-region
 scopes of `adjudicate_pair`. THE 40 q_zero rows are COMPARISON POSTURES,
 labeled as such, never substitutes for the q_c family.
+NOTE 2 (the reviewer's ruling on the reconciliation scope): the
+as-frozen per-(theta, mirror) reconciliation against the R2 rows is
+IMPOSSIBLE without adding the R2 receipt as an input (the sealed v2.0
+receipt carries no r2 key). THE LAWFUL RESOLUTION, ADOPTED: the labeled
+summary (the two families named, the construction offsets recorded) PLUS
+the evidence-verified ranges (q_c 2.83-9.63 mm; q_zero 25.6-26.0 mm)
+STAND AS THE RECONCILIATION RECORD; the families structurally never
+conflate (the reviewer verified the R2 rows are unused in the
+classification); and AT MINIMUM the driver emits the EXPLICIT unmatched
+q_zero count = 40 (implemented, per the review's floor).
 REFERENCE NOTE (the Buffy-Freebuff offer, attributed proposal-only): the
 review-only replay-package offer was sought for its adapter design; its
 bytes were not locatable in this lane's reachable stores at authoring
