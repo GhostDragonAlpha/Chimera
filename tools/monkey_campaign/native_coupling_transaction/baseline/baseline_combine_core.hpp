@@ -229,16 +229,6 @@ class OwnedStateStore {
 
     std::size_t applies() const noexcept { return applies_; }
 
-    // Commit an already validated candidate without allocating or throwing.
-    // All store-observable state, including statuses and the apply count,
-    // crosses the transaction boundary together.
-    void swap(OwnedStateStore& other) noexcept {
-        owners_.swap(other.owners_);
-        values_.swap(other.values_);
-        status_.swap(other.status_);
-        std::swap(applies_, other.applies_);
-    }
-
  private:
     std::map<std::string, std::string> owners_;
     std::map<std::string, double> values_;
@@ -306,9 +296,8 @@ class CombineScheduler {
 
     // One explicit window: run every contribution (slot per canonical index),
     // combine in the fixed canonical order, route through the owners.
-    // Stage every routed value, status, counter and scheduler record privately.
-    // A refused window changes none of them. Callers still own the surrounding
-    // tick transaction and callbacks must obey their declared purity contract.
+    // Refusals restore nothing here -- the store rejects refused writes
+    // byte-identically and the caller owns the tick's failure law.
     struct WindowReport {
         std::size_t contributions = 0;
         std::size_t applied = 0;
@@ -328,13 +317,6 @@ class CombineScheduler {
             for (std::size_t index = 0; index < n; ++index)
                 results[index] = contributions_[index].compute(index);
         }
-        // Copying can itself fail, but the live state is still untouched. Keep
-        // prior successful-window routing semantics: this repair changes only
-        // failed-window behavior, not the scheduler's lifetime/output contract.
-        OwnedStateStore staged_store = store_;
-        auto staged_routed = routed_;
-        auto staged_ledger = ledger_bytes_;
-
         // Canonical combine: canonical contribution order (the vector IS the
         // sorted order), sorted state ids per contribution, canonical ledger.
         for (std::size_t index = 0; index < n; ++index) {
@@ -348,26 +330,20 @@ class CombineScheduler {
                         "combine_undeclared_contribution_output",
                         "contribution_id " + c.contribution_id +
                         " state_id " + sid);
-                if (staged_routed.count(sid))
+                if (routed_.count(sid))
                     throw Refusal("combine_double_state_write",
                                   "state_id " + sid + " writers " +
-                                  staged_routed[sid] + "," + c.contribution_id);
-                staged_routed[sid] = c.contribution_id;
-                staged_store.apply(sid, produced.second, c.owner_membrane);
+                                  routed_[sid] + "," + c.contribution_id);
+                routed_[sid] = c.contribution_id;
+                store_.apply(sid, produced.second, c.owner_membrane);
                 report.routed.push_back(c.contribution_id + "->" + sid);
                 ++report.applied;
             }
             for (const auto& entry : results[index].ledger)
-                staged_ledger.push_back(c.contribution_id + '>' +
+                ledger_bytes_.push_back(c.contribution_id + '>' +
                                         entry.canonical_bytes());
         }
-        staged_store.advance_all("accepted");
-        // Standard-allocator container swaps and OwnedStateStore::swap do not
-        // allocate. No failure can expose a partially committed window after
-        // this point; report construction is already complete.
-        store_.swap(staged_store);
-        routed_.swap(staged_routed);
-        ledger_bytes_.swap(staged_ledger);
+        store_.advance_all("accepted");
         return report;
     }
 
