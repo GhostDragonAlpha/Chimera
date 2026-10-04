@@ -1,0 +1,489 @@
+{
+ "collision_identity_correction": "ACCEPTED AND VERIFIED from the stored rows (2026-10-03): the 354 survivors are ACTUATOR-CAPACITY SURVIVORS, NOT collision-cleared candidates. The 314 q_c survivors match instrument R2 only on (theta_index, mirror) + u - the EXACT ORIGINS differ by 2.83-9.63 mm (this stage's rows carry the s_star mesh-tangency offsets; R2's 1,440/1,440 used the near-zero ANTIPODAL offsets of the GP1-CC3 v1 construction - a different placement family); the 40 q_zero survivors have NO matching R2 set. R2's GENUINE_PENETRATION labels neither clear nor reject the exact candidates. CONSEQUENCE: the 'collision geometry done' ladder wording OVERSTATES - the corrected label is 'pad-geometry + capacity + law-form stages complete; the EXACT-CANDIDATE collision adjudication = a named unmet stage'. THIS RUN's law-form partitions are UNAFFECTED (declared-model scope fences them).",
+ "controls": {
+  "S4_P3_mu0": {
+   "cls": "NON_CLOSING",
+   "code_path": "static_law at mu=0: the closure diverges (A6 law form)",
+   "quantity": "P_req_N",
+   "value": null
+  },
+  "S4_P4_side_by_side": {
+   "capacity_debt_row": {
+    "cap_n_m": 0.8875,
+    "quantity": "joint torque tau at cmc_abduction under the DECLARED 60 N press",
+    "reading": "a TORQUE-vs-CAP exceeded: the press channel has no actuator derivation (TC-8 0/8)",
+    "source": "the capacity stage / actuator-map frontier",
+    "value_n_m": 1.391986171
+   },
+   "law_form_cell": {
+    "cls": "HOLD_EXCEEDED",
+    "n": 2,
+    "p_req_n": 82.03261090558334,
+    "reading": "10.037998"
+   },
+   "non_conflation_note": "a FORCE-ceiling reading (P_req vs the declared 60 N fixture) and a TORQUE-vs-CAP reading (tau vs the 0.8875 N*m cap) are DIFFERENT quantities; both are recorded, neither substitutes for the other; both remain CONDITIONAL-CALCULATIONS at declared inputs"
+  }
+ },
+ "coverage_ok": true,
+ "delta_note": "new stage: the 4x5 (reading, n) law grid - the G01 hold/transfer forms as CONDITIONAL-CALCULATIONS at declared inputs; NO survivor-set geometry is consumed (the capacity stage owns the placements); the erratum's governing P1 label carried in governing_labels; the n=1 transfer class is the explicit named undefined class.",
+ "governing_labels": {
+  "P1": "P1 partially falsified as literally frozen (534+292+128, identical at the raised cap) - PR #335, astra 2944ea90; the governing label for every downstream citation of the stage-1/raised-cap P1"
+ },
+ "grid": [
+  {
+   "n": 1,
+   "reading": "5.4",
+   "static": {
+    "cls": "HOLD_EXCEEDED",
+    "code_path": "static_law: W/(n*mu_s) vs the declared 60 N ceiling (A3/A6)",
+    "quantity": "P_req_N",
+    "value": 88.25985000000001
+   },
+   "transfer": {
+    "cls": "TRANSFER_UNDEFINED_AT_N1",
+    "code_path": "transfer_law: (m*g*DT)/(n-1) - division by zero at n=1; the undefined cell is NAMED, never dropped",
+    "quantity": "transfer_N_s",
+    "value": null
+   }
+  },
+  {
+   "n": 2,
+   "reading": "5.4",
+   "static": {
+    "cls": "HOLD_CLOSES",
+    "code_path": "static_law: W/(n*mu_s) vs the declared 60 N ceiling (A3/A6)",
+    "quantity": "P_req_N",
+    "value": 44.12992500000001
+   },
+   "transfer": {
+    "cls": "TRANSFER_EXCEEDED",
+    "code_path": "transfer_law: (m*g*DT)/(n-1) vs mu_s*jn = 0.18 N*s (A3/A6)",
+    "quantity": "transfer_N_s",
+    "value": 0.26477955000000003
+   }
+  },
+  {
+   "n": 3,
+   "reading": "5.4",
+   "static": {
+    "cls": "HOLD_CLOSES",
+    "code_path": "static_law: W/(n*mu_s) vs the declared 60 N ceiling (A3/A6)",
+    "quantity": "P_req_N",
+    "value": 29.419950000000004
+   },
+   "transfer": {
+    "cls": "TRANSFER_CLOSES",
+    "code_path": "transfer_law: (m*g*DT)/(n-1) vs mu_s*jn = 0.18 N*s (A3/A6)",
+    "quantity": "transfer_N_s",
+    "value": 0.13238977500000002
+   }
+  },
+  {
+   "n": 4,
+   "reading": "5.4",
+   "static": {
+    "cls": "HOLD_CLOSES",
+    "code_path": "static_law: W/(n*mu_s) vs the declared 60 N ceiling (A3/A6)",
+    "quantity": "P_req_N",
+    "value": 22.064962500000004
+   },
+   "transfer": {
+    "cls": "TRANSFER_CLOSES",
+    "code_path": "transfer_law: (m*g*DT)/(n-1) vs mu_s*jn = 0.18 N*s (A3/A6)",
+    "quantity": "transfer_N_s",
+    "value": 0.08825985000000001
+   }
+  },
+  {
+   "n": 5,
+   "reading": "5.4",
+   "static": {
+    "cls": "HOLD_CLOSES",
+    "code_path": "static_law: W/(n*mu_s) vs the declared 60 N ceiling (A3/A6)",
+    "quantity": "P_req_N",
+    "value": 17.651970000000002
+   },
+   "transfer": {
+    "cls": "TRANSFER_CLOSES",
+    "code_path": "transfer_law: (m*g*DT)/(n-1) vs mu_s*jn = 0.18 N*s (A3/A6)",
+    "quantity": "transfer_N_s",
+    "value": 0.06619488750000001
+   }
+  },
+  {
+   "n": 1,
+   "reading": "6.15",
+   "static": {
+    "cls": "HOLD_EXCEEDED",
+    "code_path": "static_law: W/(n*mu_s) vs the declared 60 N ceiling (A3/A6)",
+    "quantity": "P_req_N",
+    "value": 100.5181625
+   },
+   "transfer": {
+    "cls": "TRANSFER_UNDEFINED_AT_N1",
+    "code_path": "transfer_law: (m*g*DT)/(n-1) - division by zero at n=1; the undefined cell is NAMED, never dropped",
+    "quantity": "transfer_N_s",
+    "value": null
+   }
+  },
+  {
+   "n": 2,
+   "reading": "6.15",
+   "static": {
+    "cls": "HOLD_CLOSES",
+    "code_path": "static_law: W/(n*mu_s) vs the declared 60 N ceiling (A3/A6)",
+    "quantity": "P_req_N",
+    "value": 50.25908125
+   },
+   "transfer": {
+    "cls": "TRANSFER_EXCEEDED",
+    "code_path": "transfer_law: (m*g*DT)/(n-1) vs mu_s*jn = 0.18 N*s (A3/A6)",
+    "quantity": "transfer_N_s",
+    "value": 0.3015544875
+   }
+  },
+  {
+   "n": 3,
+   "reading": "6.15",
+   "static": {
+    "cls": "HOLD_CLOSES",
+    "code_path": "static_law: W/(n*mu_s) vs the declared 60 N ceiling (A3/A6)",
+    "quantity": "P_req_N",
+    "value": 33.50605416666667
+   },
+   "transfer": {
+    "cls": "TRANSFER_CLOSES",
+    "code_path": "transfer_law: (m*g*DT)/(n-1) vs mu_s*jn = 0.18 N*s (A3/A6)",
+    "quantity": "transfer_N_s",
+    "value": 0.15077724375
+   }
+  },
+  {
+   "n": 4,
+   "reading": "6.15",
+   "static": {
+    "cls": "HOLD_CLOSES",
+    "code_path": "static_law: W/(n*mu_s) vs the declared 60 N ceiling (A3/A6)",
+    "quantity": "P_req_N",
+    "value": 25.129540625
+   },
+   "transfer": {
+    "cls": "TRANSFER_CLOSES",
+    "code_path": "transfer_law: (m*g*DT)/(n-1) vs mu_s*jn = 0.18 N*s (A3/A6)",
+    "quantity": "transfer_N_s",
+    "value": 0.10051816250000001
+   }
+  },
+  {
+   "n": 5,
+   "reading": "6.15",
+   "static": {
+    "cls": "HOLD_CLOSES",
+    "code_path": "static_law: W/(n*mu_s) vs the declared 60 N ceiling (A3/A6)",
+    "quantity": "P_req_N",
+    "value": 20.1036325
+   },
+   "transfer": {
+    "cls": "TRANSFER_CLOSES",
+    "code_path": "transfer_law: (m*g*DT)/(n-1) vs mu_s*jn = 0.18 N*s (A3/A6)",
+    "quantity": "transfer_N_s",
+    "value": 0.075388621875
+   }
+  },
+  {
+   "n": 1,
+   "reading": "6.9",
+   "static": {
+    "cls": "HOLD_EXCEEDED",
+    "code_path": "static_law: W/(n*mu_s) vs the declared 60 N ceiling (A3/A6)",
+    "quantity": "P_req_N",
+    "value": 112.776475
+   },
+   "transfer": {
+    "cls": "TRANSFER_UNDEFINED_AT_N1",
+    "code_path": "transfer_law: (m*g*DT)/(n-1) - division by zero at n=1; the undefined cell is NAMED, never dropped",
+    "quantity": "transfer_N_s",
+    "value": null
+   }
+  },
+  {
+   "n": 2,
+   "reading": "6.9",
+   "static": {
+    "cls": "HOLD_CLOSES",
+    "code_path": "static_law: W/(n*mu_s) vs the declared 60 N ceiling (A3/A6)",
+    "quantity": "P_req_N",
+    "value": 56.3882375
+   },
+   "transfer": {
+    "cls": "TRANSFER_EXCEEDED",
+    "code_path": "transfer_law: (m*g*DT)/(n-1) vs mu_s*jn = 0.18 N*s (A3/A6)",
+    "quantity": "transfer_N_s",
+    "value": 0.338329425
+   }
+  },
+  {
+   "n": 3,
+   "reading": "6.9",
+   "static": {
+    "cls": "HOLD_CLOSES",
+    "code_path": "static_law: W/(n*mu_s) vs the declared 60 N ceiling (A3/A6)",
+    "quantity": "P_req_N",
+    "value": 37.59215833333334
+   },
+   "transfer": {
+    "cls": "TRANSFER_CLOSES",
+    "code_path": "transfer_law: (m*g*DT)/(n-1) vs mu_s*jn = 0.18 N*s (A3/A6)",
+    "quantity": "transfer_N_s",
+    "value": 0.1691647125
+   }
+  },
+  {
+   "n": 4,
+   "reading": "6.9",
+   "static": {
+    "cls": "HOLD_CLOSES",
+    "code_path": "static_law: W/(n*mu_s) vs the declared 60 N ceiling (A3/A6)",
+    "quantity": "P_req_N",
+    "value": 28.19411875
+   },
+   "transfer": {
+    "cls": "TRANSFER_CLOSES",
+    "code_path": "transfer_law: (m*g*DT)/(n-1) vs mu_s*jn = 0.18 N*s (A3/A6)",
+    "quantity": "transfer_N_s",
+    "value": 0.112776475
+   }
+  },
+  {
+   "n": 5,
+   "reading": "6.9",
+   "static": {
+    "cls": "HOLD_CLOSES",
+    "code_path": "static_law: W/(n*mu_s) vs the declared 60 N ceiling (A3/A6)",
+    "quantity": "P_req_N",
+    "value": 22.555295
+   },
+   "transfer": {
+    "cls": "TRANSFER_CLOSES",
+    "code_path": "transfer_law: (m*g*DT)/(n-1) vs mu_s*jn = 0.18 N*s (A3/A6)",
+    "quantity": "transfer_N_s",
+    "value": 0.08458235625
+   }
+  },
+  {
+   "n": 1,
+   "reading": "10.037998",
+   "static": {
+    "cls": "HOLD_EXCEEDED",
+    "code_path": "static_law: W/(n*mu_s) vs the declared 60 N ceiling (A3/A6)",
+    "quantity": "P_req_N",
+    "value": 164.06522181116668
+   },
+   "transfer": {
+    "cls": "TRANSFER_UNDEFINED_AT_N1",
+    "code_path": "transfer_law: (m*g*DT)/(n-1) - division by zero at n=1; the undefined cell is NAMED, never dropped",
+    "quantity": "transfer_N_s",
+    "value": null
+   }
+  },
+  {
+   "n": 2,
+   "reading": "10.037998",
+   "static": {
+    "cls": "HOLD_EXCEEDED",
+    "code_path": "static_law: W/(n*mu_s) vs the declared 60 N ceiling (A3/A6)",
+    "quantity": "P_req_N",
+    "value": 82.03261090558334
+   },
+   "transfer": {
+    "cls": "TRANSFER_EXCEEDED",
+    "code_path": "transfer_law: (m*g*DT)/(n-1) vs mu_s*jn = 0.18 N*s (A3/A6)",
+    "quantity": "transfer_N_s",
+    "value": 0.4921956654335
+   }
+  },
+  {
+   "n": 3,
+   "reading": "10.037998",
+   "static": {
+    "cls": "HOLD_CLOSES",
+    "code_path": "static_law: W/(n*mu_s) vs the declared 60 N ceiling (A3/A6)",
+    "quantity": "P_req_N",
+    "value": 54.68840727038889
+   },
+   "transfer": {
+    "cls": "TRANSFER_EXCEEDED",
+    "code_path": "transfer_law: (m*g*DT)/(n-1) vs mu_s*jn = 0.18 N*s (A3/A6)",
+    "quantity": "transfer_N_s",
+    "value": 0.24609783271675
+   }
+  },
+  {
+   "n": 4,
+   "reading": "10.037998",
+   "static": {
+    "cls": "HOLD_CLOSES",
+    "code_path": "static_law: W/(n*mu_s) vs the declared 60 N ceiling (A3/A6)",
+    "quantity": "P_req_N",
+    "value": 41.01630545279167
+   },
+   "transfer": {
+    "cls": "TRANSFER_CLOSES",
+    "code_path": "transfer_law: (m*g*DT)/(n-1) vs mu_s*jn = 0.18 N*s (A3/A6)",
+    "quantity": "transfer_N_s",
+    "value": 0.16406522181116667
+   }
+  },
+  {
+   "n": 5,
+   "reading": "10.037998",
+   "static": {
+    "cls": "HOLD_CLOSES",
+    "code_path": "static_law: W/(n*mu_s) vs the declared 60 N ceiling (A3/A6)",
+    "quantity": "P_req_N",
+    "value": 32.813044362233335
+   },
+   "transfer": {
+    "cls": "TRANSFER_CLOSES",
+    "code_path": "transfer_law: (m*g*DT)/(n-1) vs mu_s*jn = 0.18 N*s (A3/A6)",
+    "quantity": "transfer_N_s",
+    "value": 0.123048916358375
+   }
+  }
+ ],
+ "lane": "E:/ChimeraWork/monkey-coordination/hand-remediation/",
+ "not_claims": "THIS STAGE DEMONSTRATES NO PHYSICAL HOLD; 'supported' means the frozen law forms close or fail at declared inputs; the same-hands debt stands (0.049 kg hand vs the 10.038 kg line); x_press ABSENT (TC-8 0/8); the 60 N press is a DECLARED fixture; friction PLACEHOLDER (A5); the mass lineage UNRESOLVED (gap 9, per-reading); the goal stays open",
+ "predictions": {
+  "grid": {
+   "S4_P1": {
+    "falsifier": "any cell's class or P_req differing from the frozen partition; any count mismatch; any cell scored in both classes - a RESULT recorded and routed",
+    "frozen_exceeded_cells": [
+     [
+      "10.037998",
+      1
+     ],
+     [
+      "10.037998",
+      2
+     ],
+     [
+      "5.4",
+      1
+     ],
+     [
+      "6.15",
+      1
+     ],
+     [
+      "6.9",
+      1
+     ]
+    ],
+    "ok": true,
+    "partition": {
+     "HOLD_CLOSES": 15,
+     "HOLD_EXCEEDED": 5
+    },
+    "violations": []
+   },
+   "S4_P2": {
+    "falsifier": "any cell differing; the 5+4+11 counts not summing to 20; the n=1 class silently dropped (the absorbed-band lesson)",
+    "frozen_exceeded_cells": [
+     [
+      "10.037998",
+      2
+     ],
+     [
+      "10.037998",
+      3
+     ],
+     [
+      "5.4",
+      2
+     ],
+     [
+      "6.15",
+      2
+     ],
+     [
+      "6.9",
+      2
+     ]
+    ],
+    "frozen_undefined_cells": [
+     [
+      "10.037998",
+      1
+     ],
+     [
+      "5.4",
+      1
+     ],
+     [
+      "6.15",
+      1
+     ],
+     [
+      "6.9",
+      1
+     ]
+    ],
+    "ok": true,
+    "partition": {
+     "TRANSFER_CLOSES": 11,
+     "TRANSFER_EXCEEDED": 5,
+     "TRANSFER_UNDEFINED_AT_N1": 4
+    },
+    "violations": []
+   },
+   "S4_P3": {
+    "falsifier": "a closure at mu = 0 -> instrument invalid, everything carries not",
+    "ok": true
+   },
+   "S4_P4": {
+    "falsifier": "conflating the force-ceiling reading with the torque-cap reading (recorded here so the conflation is checkable)",
+    "ok": true,
+    "side_by_side": {
+     "capacity_debt_row": {
+      "cap_n_m": 0.8875,
+      "quantity": "joint torque tau at cmc_abduction under the DECLARED 60 N press",
+      "reading": "a TORQUE-vs-CAP exceeded: the press channel has no actuator derivation (TC-8 0/8)",
+      "source": "the capacity stage / actuator-map frontier",
+      "value_n_m": 1.391986171
+     },
+     "law_form_cell": {
+      "cls": "HOLD_EXCEEDED",
+      "n": 2,
+      "p_req_n": 82.03261090558334,
+      "reading": "10.037998"
+     },
+     "non_conflation_note": "a FORCE-ceiling reading (P_req vs the declared 60 N fixture) and a TORQUE-vs-CAP reading (tau vs the 0.8875 N*m cap) are DIFFERENT quantities; both are recorded, neither substitutes for the other; both remain CONDITIONAL-CALCULATIONS at declared inputs"
+    }
+   }
+  }
+ },
+ "predictions_ok": {
+  "S4_P1": true,
+  "S4_P2": true,
+  "S4_P3": true,
+  "S4_P4": true
+ },
+ "run_class": "stage4_supported_grasp (the pinned stage-4 prereg 79b26394; the DECLARED-MODEL SCOPE ratified by the Lieutenant)",
+ "schema": "chimera.hand_remediation.stage4_grasp.v1",
+ "scope": {
+  "frozen": "DECLARED-MODEL SCOPE (ratified)",
+  "why": "the press channel has NO actuator derivation (TC-8 0/8); a physical hold run would overclaim"
+ },
+ "stage4_prereg_sha256": "4438c4d76c2d904d08a09eb1f29db55b25bdccaeb399f2d8db26ad0d78e5dfc1",
+ "static_classes": {
+  "HOLD_CLOSES": 15,
+  "HOLD_EXCEEDED": 5
+ },
+ "transfer_classes": {
+  "TRANSFER_CLOSES": 11,
+  "TRANSFER_EXCEEDED": 5,
+  "TRANSFER_UNDEFINED_AT_N1": 4
+ },
+ "verdict": "STAGE4_PARTITIONS_REPRODUCED_FULL_GRID",
+ "wall_clock_s": 0.0006556510925292969
+}

@@ -1,0 +1,7 @@
+==============================================================================
+GATE. the pinned stage-4 prereg bytes MATCH (4438c4d7...).
+STATIC partition: {"HOLD_CLOSES": 15, "HOLD_EXCEEDED": 5} coverage_ok=True
+TRANSFER partition: {"TRANSFER_CLOSES": 11, "TRANSFER_EXCEEDED": 5, "TRANSFER_UNDEFINED_AT_N1": 4}
+S4-P3 MU0 BITE: NON_CLOSING
+PREDICTIONS: {"S4_P1": true, "S4_P2": true, "S4_P3": true, "S4_P4": true}
+VERDICT: STAGE4_PARTITIONS_REPRODUCED_FULL_GRID
