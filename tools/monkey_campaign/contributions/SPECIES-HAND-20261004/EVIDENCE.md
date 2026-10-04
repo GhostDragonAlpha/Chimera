@@ -417,3 +417,202 @@ continuation's own review fails: the honest UNRESOLVED closure (0 verdict-
 bearing bones from this source at this phase's method) stays recorded as
 the fallback and would then close the species-true geometry question for
 this source honestly.
+
+# CHAIN STOP 3 — THE CONTINUATION: STAGE0_INVALID (the honest stop, per the pinned amendment PA1)
+
+## CS3.0 — the pin (verified byte-exact from the origin ref, FETCH_HEAD only)
+
+- Commit adb31d9ffb9538a80a184f0f4a48ccc3372cc4f1 on
+  origin/review/SPECIES-HAND-20261004 (parent c31227e9...);
+  PREREG_AMENDMENT_CONTINUATION.md blob sha256
+  c174effcb2a29a1bba963b39bb8d82d17e9a9f6c2c628ed41c0c16d7a2f1515b — EXACT
+  match to the lane draft; the CS2.E erratum carried (EVIDENCE blob
+  5a15d12b...). Implementation package species-hand/package-cont/ created at
+  the amendment base (4 committed files selected); the only new logic file
+  stage0_continuation.py (C1-C8 implemented exactly as pinned).
+
+## CS3.1 — implementation-defect catches BEFORE any seal (recorded)
+
+Three defects were caught by local compile/selftest probes and fixed before
+the first seal: the plane-distance matmul-vs-grid shape error (einsum fix);
+the rim_caps moveaxis frame error (moveaxis twice is not its own inverse —
+the inverse is moveaxis(tgt, 0, axis)); two draft leftovers. None reached a
+sealed run.
+
+## CS3.2 — THE SELFTEST V6 BATTERY (sealed; the honest verdict)
+
+- Seal: package-cont/sealed/fcc72d128ff348f79b80fec4dde6b3da (manifest
+  sha256 6cca76db8ae5... exact value in the runner receipt), slot 2, job
+  b22604d74cf0499aa23d023f27856b5f, state FAILED exit 1 (the battery's own
+  exit — STAGE0_INVALID), cleanup_verified TRUE.
+- S6-1 (the faithful oblique webbed hand-mimic: five hand-scale tapered
+  rods 2.8-4.4mm wide, joint necks r=1.2mm, webbing sheets 2 voxels,
+  wrist block, forearm stump crossing the box face, 30/30-degree oblique
+  pose, declared oblique wrist plane): **MISS**.
+  - stump_removed TRUE; the C6 fill-validity gate PASSED (median EDT
+    4.51mm, frac 0.875) — but the pass is the DECLARED C4 over-fill risk
+    MANIFESTING: the per-axis 2D slice fills sealed the inter-rod channels
+    (genuine air gaps) into a fat connected mass.
+  - markers = 1, expected 5: the anti-webbing opening (r=1 voxel = 0.3mm)
+    kills the webbing sheets but CANNOT sever the joint necks (a 1.2mm-
+    radius neck survives a 0.3mm erosion as a strand), so all five rods
+    remain connected to the kept wrist material and the opened ridge never
+    splits.
+- S6-2 (closed blob) PASS; S6-3 (hollow-wall tube markerless) PASS;
+  S6-4 (hardware mimic recorded honestly) PASS.
+
+## CS3.3 — THE FINDING (defect is the finding; PA1)
+
+1. THE C5 OPENING RADIUS IS STRUCTURALLY INSUFFICIENT, AND NO RADIUS WORKS:
+   severing a joint neck of ~1.2mm radius requires erosion deeper than
+   1.2mm from each side, while preserving distal phalanges of ~1.4mm
+   half-width requires erosion shallower than 1.4mm. The scales OVERLAP
+   (1.2 vs 1.4mm): morphological opening cannot both sever the necks and
+   preserve the thin bones at this scan/voxel scale. This is not a tuning
+   failure; retuning the radius (or the h floors) would be tune-to-success
+   (the R3 precedent) and is forbidden.
+2. THE C4 OVER-FILL RISK OBSERVED: the per-axis 2D slice fills sealed
+   inter-rod air channels, exactly the declared risk; the gate's pass in
+   S6-1 is therefore NOT evidence of faithful interiors (the deciles/
+   marker structure expose it).
+3. Two pinned separation families have now been MEASURED insufficient on
+   this source class: h-maxima watershed (chain stop 2: the fused masses
+   never split even at h=0.10mm) and morphological opening (this battery).
+   Both fail for the same underlying reason: the fused hand's contact
+   necks and its thin bones share the same geometric scale band.
+
+## CS3.4 — THE CONSEQUENCE (per the pinned amendment PA1 and the
+Lieutenant's released sequence)
+
+- STAGE0_INVALID: the continuation STOPS. The cand2/cand3 re-run was NOT
+  executed (nothing runs on an invalid battery); no re-review request is
+  issued (there is no new extraction to review); the ladder remains closed.
+- THE BRANCH DECISION IS THE LIEUTENANT'S, between:
+  (a) THE CLOSURE (the recorded fallback): the honest UNRESOLVED closure —
+  0 verdict-bearing bones from the Pisa surface-scan source at every method
+  tried this phase (h-maxima watershed; morphological continuation) —
+  recorded chain-wide as the species-true geometry answer for this source;
+  or (b) a NEW declared direction with a DIFFERENT separation principle
+  (e.g., surface-level joint-plane cutting by curvature/min-cut on the
+  mesh — beyond this phase's declared envelope, requiring its own
+  amendment + selftest lineage under the same pin law). No constant
+  retune of the measured-insufficient families is admissible (FA-tuning
+  law; the R3 precedent).
+- This lane's own recommendation, recorded as a finding and NOT a decision:
+  the closure is the evidence-supported branch — two pinned families
+  measured insufficient, the scales overlap, and the honest species-true
+  answer for this source currently is that per-bone geometry is not
+  extractable from the fused surface scan by the methods declared so far.
+
+## CS3.5 — artifacts (sealed)
+
+| artifact | value/sha256 |
+|---|---|
+| selftest v6 receipt (job b22604d7...) | in results; twin at species-hand/stage0_review/stage0_selftest_v6_receipt.json (re-hash at CS3.6) |
+| selftest v6 renders (S6-1 ax0-2) | preserved in the job artifacts map |
+| continuation code stage0_continuation.py | sealed in fcc72d12... (manifest 6cca76db...; full sha in the runner receipt) |
+| memory lesson updated | species-hand memory file, this date |
+
+## CS3.6 — chain position
+
+- The ladder has NEVER run in this lane. No re-review is requested (nothing
+  new to review). The Captain's referral question returns to the Lieutenant
+  with the branch decision above.
+- EVIDENCE.md re-hashed at every append; the CS2.E erratum and CS3 stand as
+  the lane's final state unless the Lieutenant authorizes branch (b).
+
+# CHAIN STOP 4 — THE CLOSURE RECORD (the Lieutenant's branch decision (a), delivered 2026-10-04; the CORRECTION-1 emission model; the lane CLOSES with this record)
+
+## CS4.1 — THE SPECIES-TRUE GEOMETRY ANSWER FOR THE PISA SURFACE-SCAN SOURCE
+
+**Per-bone geometry is NOT extractable from the Pisa rhesus surface scan
+(C 1549, CC BY-SA 4.0, sha256 3f1536a9...) by any method declared this
+phase.** The evidence, three measured families, one root cause:
+
+1. THE H-MAXIMA WATERSHED (the v3/v5/v6 extraction line, sealed jobs
+   cb5d4a64, 906697a1, dbf83080, 59798eff, 728595fc, 6f133d02, b22604d7
+   lineage): the fused hand regions do not split — 1 connected component,
+   1 marker at every h in {0.05..0.50}mm (cand0 diagnostic; cand1 = 3
+   markers, its dominant mass never splitting); the crack-tolerant welds
+   show the whole skeleton is ONE fused surface (2 components skeleton-wide).
+2. THE MORPHOLOGICAL OPENING (the pinned continuation amendment, selftest
+   v6 battery, job b22604d7, STAGE0_INVALID): the scale-law finding — joint
+   necks (~1.2mm radius) and distal phalanges (~1.4mm half-width) OVERLAP
+   in size, so no opening radius can both sever the necks and preserve the
+   thin bones; the C4 per-axis 2D slice fills' over-fill risk also
+   MANIFESTED (slice fills sealed genuine inter-rod air channels).
+3. THE POSE-ALIGNED OBLIQUE CONTINUATION (amendment adb31d9f..., C1-C8):
+   STAGE0_INVALID at selftest v6 per PA1 — the honest stop executed BEFORE
+   any real-data rerun; the re-run never happened; the re-review never
+   triggered; the ladder never acquired any input from this lane.
+
+Retuning any measured-insufficient family is forbidden (tune-to-success;
+the R3 precedent; FA-law). The answer is scoped exactly: it is evidence of
+non-extractability AT THIS SOURCE under the methods declared this phase —
+it is NOT an impossibility proof for all conceivable methods (the docketed
+future paths below are the named exceptions) and NOT a claim about any
+other source.
+
+## CS4.2 — WHAT STANDS POSITIVE
+
+- THE HANDS ARE IDENTIFIED (the Sergeant visual review stands): cand2 = the
+  RIGHT hand, cand3 = the LEFT hand, of the C 1549 skeleton. cand0 = museum
+  hardware (the L1 lesson). The identification is review-derived and
+  carries into any future attempt.
+- THE THIN-SHELL GROUP LAW (C7) and THE FIVE LANE LESSONS (L1-L5, CS2.E)
+  are carried as standing lane law for any successor lane.
+- THE SOURCE ITSELF remains real, licensed (CC BY-SA 4.0, verified at
+  retrieval, byte-exact SHA1 match) and stored
+  (E:/ChimeraWork/research-data/20261004-species-hand/, sha256 3f1536a9...);
+  the acquisition records, the license corrections (the MorphoSource
+  CC-BY-NC shorthand superseded), and every sealed receipt stand.
+
+## CS4.3 — THE DOCKETED FOLLOW-ONS (named future paths, NOT this phase)
+
+1. THE SURFACE-LEVEL JOINT-PLANE SEPARATION: the curvature/min-cut
+   separation principle on the mesh — a DIFFERENT separation family from
+   the two measured-insufficient ones; IF ever pursued it requires a NEW
+   amendment + selftest lineage under the same pin law (the v-lineage
+   pattern: oblique-pose and webbed-fusion synthetics first).
+2. THE OTHER SOURCES: oVert CC0 Macaca records (presence UNVERIFIED; the
+   bot wall blocks per-record license checks — manual operator path named),
+   and any future micro-CT source with lawful terms (the MorphoSource
+   family stays excluded without an authorized human acceptance of its
+   agreement; the species caveat — non-rhesus sources need a
+   transfer justification — is carried).
+
+## CS4.4 — THE PLAYABLE GOAL (the proven answer, quoted from the chain's
+adjudication records; not this lane's claim)
+
+THE PAD-INTERFACE PATH = THE PROVEN SPECIES GEOMETRY ANSWER FOR THE
+PLAYABLE GOAL: the ladder's collision gate closed at the hybrid anatomy
+(0/197,280 tested placements; the PR #344 adjudication 354/354 GENUINE at
+the bone level — THE PAD IS THE INTERFACE), the hybrid anatomy honestly
+labeled as such (human-donor shapes + macaque frame numbers, declared per
+the Captain decision), and the R1 pad-design line proceeding on its own
+record. This closure does not touch that line.
+
+## CS4.5 — THE REFERRAL (closed for this source; the docket stands)
+
+The Captain's species-geometry referral asked whether a species-true
+macaque hand geometry can clear the 74mm trunk where the hybrid cannot.
+The evidence answer delivered by this lane: **the species-true replacement
+is NOT available from this source** — per CS4.1 — so no species-true ladder
+run exists to place on the record, and none can honestly be promised from
+this source. The referral STAYS OPEN only for the docketed future paths
+(CS4.3), which are named, owned by the docket, and NOT this phase.
+
+## CS4.6 — THE LANE CLOSES
+
+- Final state: acquisition + license verification COMPLETE and anchored;
+  the screening prereg + continuation amendment both pinned and
+  byte-verified (c31227e9..., adb31d9f...); three sealed extraction
+  generations + the continuation battery executed with every failure and
+  defect preserved; the visual review passed w/ the gate consequence; the
+  branch decision (a) recorded HERE.
+- The lane claims NOTHING beyond this record: no ladder run, no re-review,
+  no species-true extraction, no capacity claim. The write scope observed
+  throughout: this lane dir, the lane's own package contribution dirs, and
+  the research-data store.
+- Final EVIDENCE.md hash: re-computed at this append (the anchor row for
+  the closure record carries it).
