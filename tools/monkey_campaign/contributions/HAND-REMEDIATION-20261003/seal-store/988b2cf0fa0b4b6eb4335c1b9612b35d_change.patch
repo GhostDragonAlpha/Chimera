@@ -1,0 +1,355 @@
+diff --git a/tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/run_stage4_grasp.py b/tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/run_stage4_grasp.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..66d22a83dd43b942082f231d885681c8eb8888be
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/run_stage4_grasp.py
+@@ -0,0 +1,232 @@
++# run_stage4_grasp.py - HAND-REMEDIATION-20261003 R1 STAGE 4 (released by
++# the Lieutenant on the pinned stage-4 prereg 79b26394 / bytes 4438c4d7...;
++# the declared-model scope RATIFIED).
++#
++# Run class `stage4_supported_grasp`. The 4x5 (reading, n) law grid: 20
++# static outcomes + 20 transfer outcomes (16 defined + 4 explicitly named
++# TRANSFER_UNDEFINED_AT_N1 cells), each against the FROZEN partition
++# below. THE NOT-CLAIMS SECTION OF THE PINNED PREREG GOVERNS EVERY
++# SENTENCE: this stage demonstrates NO PHYSICAL HOLD; "supported" means
++# the frozen law forms close or fail at declared inputs; the same-hands
++# debt stands; TC-8 = 0/8; the goal stays open.
++import hashlib
++import json
++import os
++import sys
++import time
++
++HERE = os.path.dirname(os.path.abspath(__file__))
++sys.path.insert(0, HERE)
++import stage4_grasp as s4  # noqa: E402  the stage-4 law module (this package)
++
++OUT_NAME_RECEIPT = "stage4_grasp_receipt.json"
++OUT_NAME_REPORT = "stage4_grasp_report.txt"
++
++# ---------------------------------------------------------------------------
++# THE FROZEN PARTITIONS (pinned prereg section 3; predictions - a falsified
++# cell is a RESULT recorded and routed, never a re-tune)
++# ---------------------------------------------------------------------------
++FROZEN_STATIC_EXCEEDED = {("10.037998", 1), ("10.037998", 2), ("5.4", 1),
++                          ("6.15", 1), ("6.9", 1)}
++FROZEN_TRANSFER_EXCEEDED = {("5.4", 2), ("6.15", 2), ("6.9", 2),
++                            ("10.037998", 2), ("10.037998", 3)}
++FROZEN_TRANSFER_UNDEF = {(m, 1) for (m, _w) in
++                         [(r[0], r[2]) for r in s4.READINGS]}
++
++
++_emit_lines = []
++
++
++def emit(line=""):
++    _emit_lines.append(line)
++    print(line, flush=True)
++
++
++def sha_of(path):
++    with open(path, "rb") as fh:
++        return hashlib.sha256(fh.read()).hexdigest()
++
++
++def canonical(x):
++    return json.dumps(x, indent=1, sort_keys=True)
++
++
++def pipeline():
++    _t_start = time.time()
++    if sha_of(os.path.join(HERE, "R1_STAGE4_PREREG.md")) != \
++            s4.STAGE4_PREREG_SHA:
++        raise SystemExit("input_pin_mismatch: R1_STAGE4_PREREG.md")
++    emit("=" * 78)
++    emit("GATE. the pinned stage-4 prereg bytes MATCH (4438c4d7...).")
++    grid = []
++    static_classes = {"HOLD_CLOSES": 0, "HOLD_EXCEEDED": 0}
++    transfer_classes = {"TRANSFER_CLOSES": 0, "TRANSFER_EXCEEDED": 0,
++                        "TRANSFER_UNDEFINED_AT_N1": 0}
++    static_bad = []
++    transfer_bad = []
++    for (label, _m, w) in s4.READINGS:
++        for n in s4.NS:
++            cell = dict(reading=label, n=n)
++            st = s4.static_law(w, n)
++            cell["static"] = st
++            static_classes[st["cls"]] += 1
++            if st["cls"] == "HOLD_EXCEEDED" and \
++                    (label, n) not in FROZEN_STATIC_EXCEEDED:
++                static_bad.append(("unexpected_exceeded", label, n,
++                                   st["value"]))
++            if st["cls"] == "HOLD_CLOSES" and \
++                    (label, n) in FROZEN_STATIC_EXCEEDED:
++                static_bad.append(("frozen_exceeded_not_reproduced",
++                                   label, n, st["value"]))
++            tr = s4.transfer_law(w, n)
++            cell["transfer"] = tr
++            transfer_classes[tr["cls"]] += 1
++            if tr["cls"] == "TRANSFER_EXCEEDED" and \
++                    (label, n) not in FROZEN_TRANSFER_EXCEEDED:
++                transfer_bad.append(("unexpected_exceeded", label, n,
++                                     tr["value"]))
++            if tr["cls"] == "TRANSFER_UNDEFINED_AT_N1" and \
++                    (label, n) not in FROZEN_TRANSFER_UNDEF:
++                transfer_bad.append(("unexpected_undefined", label, n))
++            if tr["cls"] in ("TRANSFER_CLOSES", "TRANSFER_EXCEEDED") and \
++                    (label, n) in FROZEN_TRANSFER_UNDEF:
++                transfer_bad.append(("undefined_cell_scored", label, n))
++            grid.append(cell)
++    coverage_ok = (len(grid) == 20
++                   and sum(static_classes.values()) == 20
++                   and sum(transfer_classes.values()) == 20)
++    emit("STATIC partition: %s coverage_ok=%s"
++         % (json.dumps(static_classes, sort_keys=True), coverage_ok))
++    emit("TRANSFER partition: %s"
++         % json.dumps(transfer_classes, sort_keys=True))
++    if not coverage_ok:
++        raise SystemExit("stage4_outcome_space_broken")
++    # ---- S4-P3: the mu=0 bite (retained; re-armed at the G01 forms) ----
++    mu0 = s4.mu0_law(98.4391330867, 3)
++    mu0_ok = mu0["cls"] == "NON_CLOSING"
++    emit("S4-P3 MU0 BITE: %s" % mu0["cls"])
++    # ---- S4-P4: the debt row side-by-side (recorded, never conflated) ----
++    side_by_side = dict(
++        law_form_cell=dict(reading="10.037998", n=2,
++                           cls="HOLD_EXCEEDED",
++                           p_req_n=98.4391330867 / (2 * s4.MU_S)),
++        capacity_debt_row=s4.DEBT_ROW,
++        non_conflation_note=("a FORCE-ceiling reading (P_req vs the "
++                             "declared 60 N fixture) and a TORQUE-vs-CAP "
++                             "reading (tau vs the 0.8875 N*m cap) are "
++                             "DIFFERENT quantities; both are recorded, "
++                             "neither substitutes for the other; both "
++                             "remain CONDITIONAL-CALCULATIONS at declared "
++                             "inputs"))
++    receipt = dict(
++        schema="chimera.hand_remediation.stage4_grasp.v1",
++        run_class="stage4_supported_grasp (the pinned stage-4 prereg "
++                  "79b26394; the DECLARED-MODEL SCOPE ratified by the "
++                  "Lieutenant)",
++        delta_note=("new stage: the 4x5 (reading, n) law grid - the G01 "
++                    "hold/transfer forms as CONDITIONAL-CALCULATIONS at "
++                    "declared inputs; NO survivor-set geometry is consumed "
++                    "(the capacity stage owns the placements); the "
++                    "erratum's governing P1 label carried in "
++                    "governing_labels; the n=1 transfer class is the "
++                    "explicit named undefined class."),
++        governing_labels={"P1": s4.ERRATUM_LABEL},
++        lane="E:/ChimeraWork/monkey-coordination/hand-remediation/",
++        stage4_prereg_sha256=s4.STAGE4_PREREG_SHA,
++        scope=dict(frozen="DECLARED-MODEL SCOPE (ratified)",
++                   why="the press channel has NO actuator derivation "
++                       "(TC-8 0/8); a physical hold run would overclaim"),
++        grid=grid, static_classes=static_classes,
++        transfer_classes=transfer_classes, coverage_ok=coverage_ok,
++        controls=dict(S4_P3_mu0=mu0, S4_P4_side_by_side=side_by_side),
++        not_claims=("THIS STAGE DEMONSTRATES NO PHYSICAL HOLD; "
++                    "'supported' means the frozen law forms close or fail "
++                    "at declared inputs; the same-hands debt stands "
++                    "(0.049 kg hand vs the 10.038 kg line); x_press "
++                    "ABSENT (TC-8 0/8); the 60 N press is a DECLARED "
++                    "fixture; friction PLACEHOLDER (A5); the mass lineage "
++                    "UNRESOLVED (gap 9, per-reading); the goal stays "
++                    "open"),
++        collision_identity_correction=(
++            "ACCEPTED AND VERIFIED from the stored rows (2026-10-03): the "
++            "354 survivors are ACTUATOR-CAPACITY SURVIVORS, NOT "
++            "collision-cleared candidates. The 314 q_c survivors match "
++            "instrument R2 only on (theta_index, mirror) + u - the EXACT "
++            "ORIGINS differ by 2.83-9.63 mm (this stage's rows carry the "
++            "s_star mesh-tangency offsets; R2's 1,440/1,440 used the "
++            "near-zero ANTIPODAL offsets of the GP1-CC3 v1 construction - "
++            "a different placement family); the 40 q_zero survivors have "
++            "NO matching R2 set. R2's GENUINE_PENETRATION labels neither "
++            "clear nor reject the exact candidates. CONSEQUENCE: the "
++            "'collision geometry done' ladder wording OVERSTATES - the "
++            "corrected label is 'pad-geometry + capacity + law-form "
++            "stages complete; the EXACT-CANDIDATE collision adjudication "
++            "= a named unmet stage'. THIS RUN's law-form partitions are "
++            "UNAFFECTED (declared-model scope fences them)."),
++        predictions={},
++    )
++    # ---- predictions ----
++    pred = dict(
++        S4_P1=dict(ok=not static_bad, violations=static_bad[:10],
++                   partition=dict(static_classes, **{}),
++                   frozen_exceeded_cells=sorted(
++                       list(FROZEN_STATIC_EXCEEDED)),
++                   falsifier="any cell's class or P_req differing from "
++                             "the frozen partition; any count mismatch; "
++                             "any cell scored in both classes - a RESULT "
++                             "recorded and routed"),
++        S4_P2=dict(ok=not transfer_bad, violations=transfer_bad[:10],
++                   partition=dict(transfer_classes),
++                   frozen_exceeded_cells=sorted(
++                       list(FROZEN_TRANSFER_EXCEEDED)),
++                   frozen_undefined_cells=sorted(
++                       list(FROZEN_TRANSFER_UNDEF)),
++                   falsifier="any cell differing; the 5+4+11 counts not "
++                             "summing to 20; the n=1 class silently "
++                             "dropped (the absorbed-band lesson)"),
++        S4_P3=dict(ok=bool(mu0_ok),
++                   falsifier="a closure at mu = 0 -> instrument invalid, "
++                             "everything carries not"),
++        S4_P4=dict(ok=True,
++                   side_by_side=side_by_side,
++                   falsifier="conflating the force-ceiling reading with "
++                             "the torque-cap reading (recorded here so "
++                             "the conflation is checkable)"),
++    )
++    receipt["predictions"] = dict(grid=pred)
++    p_ok = {pk: bool(pv["ok"]) for pk, pv in pred.items()}
++    receipt["predictions_ok"] = p_ok
++    all_ok = all(p_ok.values())
++    receipt["verdict"] = ("STAGE4_PARTITIONS_REPRODUCED_FULL_GRID" if all_ok
++                          else "STAGE4_PARTITION_FALSIFIED_ROUTED")
++    receipt["wall_clock_s"] = time.time() - _t_start
++    emit("PREDICTIONS: %s" % json.dumps(p_ok, sort_keys=True))
++    emit("VERDICT: %s" % receipt["verdict"])
++    return receipt
++
++
++def main():
++    outdir = os.environ.get("CHIMERA_OUTPUT_DIR", "outputs")
++    os.makedirs(outdir, exist_ok=True)
++    try:
++        receipt = pipeline()
++        text = "\n".join(_emit_lines) + "\n" if _emit_lines else ""
++    except SystemExit as exc:
++        with open(os.path.join(outdir, "stage4_gate_receipt.json"),
++                  "w", encoding="utf-8", newline="\n") as fh:
++            fh.write(json.dumps(dict(
++                schema="chimera.hand_remediation.gate.v1",
++                ok=False, refusal=str(exc)), indent=1) + "\n")
++        print("REFUSAL: %s" % exc, flush=True)
++        raise SystemExit(3)
++    with open(os.path.join(outdir, OUT_NAME_RECEIPT), "w",
++              encoding="utf-8", newline="\n") as fh:
++        fh.write(canonical(receipt) + "\n")
++    with open(os.path.join(outdir, OUT_NAME_REPORT), "w",
++              encoding="utf-8", newline="\n") as fh:
++        fh.write(text)
++    raise SystemExit(0)
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/stage4_grasp.py b/tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/stage4_grasp.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..41528dc2409309fb29a6d752fa64e4a5bba53fa0
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/stage4_grasp.py
+@@ -0,0 +1,111 @@
++# stage4_grasp.py - HAND-REMEDIATION-20261003 R1 STAGE 4: the supported-
++# grasp rung at DECLARED-MODEL SCOPE - the G01 hold/transfer law forms
++# evaluated as CONDITIONAL-CALCULATIONS at declared inputs, per the pinned
++# stage-4 prereg (79b26394 / 4438c4d7...). Stdlib only; deterministic;
++# serial. NO survivor-set geometry is consumed (the capacity stage owns
++# the placements; stage 4 owns the (reading, n) law grid).
++#
++# THE NOT-CLAIMS (the pinned prereg section 5, governing every reading):
++# THIS STAGE DEMONSTRATES NO PHYSICAL HOLD. "Supported" here means: the
++# frozen law forms CLOSE or FAIL at declared inputs, per reading, with
++# every threshold a CONDITIONAL-CALCULATION. The same-hands debt stands
++# (the 0.049 kg anatomical hand vs the 10.038 kg scene line); the support
++# routes through the declared press channel; x_press is ABSENT (TC-8
++# ports 0/8); the 60 N/channel press is a DECLARED fixture, never an
++# actuator qualification. The playable-monkey goal stays open.
++
++import json
++import math
++import os
++import sys
++
++HERE = os.path.dirname(os.path.abspath(__file__))
++sys.path.insert(0, HERE)
++
++# ---------------------------------------------------------------------------
++# pinned identities (refused on drift)
++# ---------------------------------------------------------------------------
++STAGE4_PREREG_SHA = ("4438c4d76c2d904d08a09eb1f29db55b25bdccaeb399f2d8db26"
++                     "ad0d78e5dfc1")
++
++# ---------------------------------------------------------------------------
++# the frozen inputs (prereg section 1; NEVER tuned post-run)
++# ---------------------------------------------------------------------------
++READINGS = [
++    # (mass label, kg, W_N frozen from the K-spec's quoted std-g lines)
++    ("5.4", 5.4, 52.95591),
++    ("6.15", 6.15, 60.3108975),
++    ("6.9", 6.9, 67.665885),
++    ("10.037998", 10.037998, 98.4391330867),
++]
++NS = (1, 2, 3, 4, 5)
++CEILING_N = 60.0          # A3: the DECLARED fixture press ceiling/channel
++MU_S = 0.6                # A5: the NAMED placeholder
++JN_N_S = 0.3              # A3: the per-tick press impulse
++DT_S = 5.0e-3             # A3: the scene tick
++TRANSFER_CAP_N_S = MU_S * JN_N_S   # 0.18 N*s per channel (A6)
++
++# the recorded debt row (the capacity stage's law-form-vs-cap reading),
++# recorded BESIDE the law-form cells so the two readings of "exceeded"
++# cannot be conflated (the pinned prereg S4-P4)
++DEBT_ROW = dict(source="the capacity stage / actuator-map frontier",
++                quantity="joint torque tau at cmc_abduction under the "
++                         "DECLARED 60 N press",
++                value_n_m=1.391986171, cap_n_m=0.8875,
++                reading="a TORQUE-vs-CAP exceeded: the press channel has "
++                        "no actuator derivation (TC-8 0/8)")
++
++ERRATUM_LABEL = ("P1 partially falsified as literally frozen "
++                 "(534+292+128, identical at the raised cap) - PR #335, "
++                 "astra 2944ea90; the governing label for every downstream "
++                 "citation of the stage-1/raised-cap P1")
++
++
++def sha_of(path):
++    with open(path, "rb") as fh:
++        import hashlib
++        return hashlib.sha256(fh.read()).hexdigest()
++
++
++def canonical(x):
++    return json.dumps(x, indent=1, sort_keys=True)
++
++
++# ---------------------------------------------------------------------------
++# the law forms (A6 + the DERIVATION section 8.2 instance list)
++# ---------------------------------------------------------------------------
++def static_law(w_n, n, mu_s=MU_S, ceiling=CEILING_N):
++    """P_req = W/(n*mu_s) vs the declared ceiling."""
++    p = w_n / (n * mu_s)
++    return dict(quantity="P_req_N", value=p, cls=("HOLD_CLOSES" if p
++                                                  <= ceiling
++                                                  else "HOLD_EXCEEDED"),
++                code_path="static_law: W/(n*mu_s) vs the declared 60 N "
++                          "ceiling (A3/A6)")
++
++
++def transfer_law(w_n, n, dt=DT_S, cap=TRANSFER_CAP_N_S):
++    """(m*g*DT)/(n-1) vs mu_s*jn = 0.18 N*s; n = 1 is the EXPLICIT named
++    undefined class (the institutionalized absorbed-band lesson)."""
++    if n == 1:
++        return dict(quantity="transfer_N_s", value=None,
++                    cls="TRANSFER_UNDEFINED_AT_N1",
++                    code_path="transfer_law: (m*g*DT)/(n-1) - division by "
++                              "zero at n=1; the undefined cell is NAMED, "
++                              "never dropped")
++    v = (w_n * dt) / (n - 1)
++    return dict(quantity="transfer_N_s", value=v,
++                cls=("TRANSFER_CLOSES" if v <= cap else
++                     "TRANSFER_EXCEEDED"),
++                code_path="transfer_law: (m*g*DT)/(n-1) vs mu_s*jn = "
++                          "0.18 N*s (A3/A6)")
++
++
++def mu0_law(w_n, n, mu=0.0):
++    """The mu=0 bite (retained from stage 3, re-armed at the G01 forms):
++    the static form at mu = 0 diverges -> NON_CLOSING."""
++    if mu <= 0.0:
++        return dict(quantity="P_req_N", value=None, cls="NON_CLOSING",
++                    code_path="static_law at mu=0: the closure diverges "
++                              "(A6 law form)")
++    return static_law(w_n, n, mu)

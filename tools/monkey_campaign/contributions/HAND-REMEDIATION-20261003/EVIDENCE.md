@@ -565,13 +565,46 @@ surviving stage-2 seal `8cd676bc73164367a1a87ab37fd031d7` is captured into
 `8cd676bc..._change.patch` sha256 `a2aa55159e7764f7de35030c41fa5215cadc04ebae9dff7cca12245bd587142f`),
 and every future seal of this lane is captured at creation.
 
-## The commission-citation convention (adopted)
+## The commission-citation convention (adopted; STRENGTHENED 2026-10-03)
 
 A stale EVIDENCE sha was cited in a commission (the file grew during the
-stage-2 work). FIX (standing convention): the EVIDENCE sha is FROZEN and
-stated IN this file's newest dated entry BEFORE the next review dispatch;
-the frozen sha for the NEXT dispatch is the section-26-closing hash
-recorded below.
+stage-2 work). STANDING CONVENTION: the EVIDENCE sha is FROZEN and stated
+in this file's newest dated entry BEFORE the next review dispatch.
+
+## The section-26 hash correction (dated 2026-10-03, per the stage-3 review)
+
+The section-26 freeze recorded the hash `410c16ad...f9496aa` BY HAND; the
+hand-copied value DROPPED A LEADING ZERO (a sha256 is 64 hex digits; the
+recorded literal is short one) and the referenced content state can no
+longer be reconstructed byte-exactly (the file grew through phases 10-12).
+THE CORRECTION: the recorded value is marked UNVERIFIED-AS-RECORDED; it is
+NOT a citable identity. THE CONVENTION (now law): EVERY hash line in this
+file is SCRIPT-EMITTED (computed and written by the same script that
+measures the bytes) - hand-copied hashes drop zeros and are prohibited.
+The authoritative current hash is the script-emitted line at the end of
+this file.
+
+## The section-29 condensation omission RESTORED (dated 2026-10-03)
+
+Section 29 condensed away the per-survivor capacity detail of the sealed
+stage-2 receipt (`.../stage2_capacity_receipt.json` sha
+`8b93464c6ee206570c60fd00a750a2229ea650b0afaf589b8bbce6ed0bde174d`).
+RESTORED from those bytes: the binding-joint distribution over all 354
+capacity rows is {mutation_wrist_abduction: 336, mutation_wrist_flexion:
+12, cmc_abduction: 6}; the per-row worst |tau| range is 0 (the 6
+PAD_ABSORBED survivors - zero force, zero torque, the absorbed band made
+physical) to 1.081312e-02 N*m (the PAD_CONTACT class, three orders below
+the 0.8875 N*m cap basis - the capacity stage's ladder-consistency
+reading, never a grasp claim).
+
+## The heredoc disclosure (dated 2026-10-03; relay-only disclosures are unverifiable downstream - the law)
+
+The phase-12 EVIDENCE append was authored through a shell heredoc that
+malfunctioned and appended stray shell lines to this file's tail; the
+stray lines were removed by script in the same session. DISCLOSED HERE IN
+THE FILE ITSELF (a relay-only disclosure in a chat message is
+unverifiable downstream - the law): the tail was inspected post-cleanup
+and ends on the phase-12 not-claims text; no other content was touched.
 
 ## The publication merge note (carried)
 
@@ -584,7 +617,7 @@ future citation of astra hashes from this lane.
 recorded after this section: see the hash line below (the file is frozen
 at that hash until the next dated entry).
 
-FROZEN EVIDENCE SHA256 (section 26, dated 2026-10-03): `410c16ad2e74eb40e1ccb1751d9118e95a29c60305826c56f5e1c8095f9496aa`
+FROZEN EVIDENCE SHA256 (section 26, dated 2026-10-03): `410c16ad2e74eb40e1ccb1751d9118e95a29c60305826c56f5e1c8095f9496aa` - UNVERIFIED-AS-RECORDED (hand-copied; dropped leading zero; see the section-26 hash correction above). NOT a citable identity.
 
 ---
 
@@ -645,3 +678,102 @@ were created by this lane and none are attributed to it.
   36 N figure stays conditional on model + mu = 0.6; TC-8 = 0/8; the
   same-hands finding stands; no hold or grasp result exists in this
   class — the hold law is stage 4's, on its own gates.
+
+[HISTORICAL - SUPERSEDED BY THE FILE-END LINE] SCRIPT-EMITTED EVIDENCE SHA256 (emitted by script 2026-10-03; THE HASH COVERS THIS FILE'S BYTES PRIOR TO THIS LINE - the self-exception rule): 181618a5ded850f6ed78d53adb0eac3c924f4140f54ce2006ac2024cbe25cc74
+(verification: hash this file's bytes up to just before this line, with the trailing single newline retained; the result must equal the stated value.)
+
+
+---
+
+# PHASE 13 — THE THREE RECORD ACTIONS APPLIED + THE STAGE-4 PREREG DRAFT (dated 2026-10-03; for the Lieutenant's pin; no stage-4 run exists)
+
+## 30. The record actions (each dated; the stage-3 review's items, applied)
+
+- THE HEREDOC DISCLOSURE: recorded in the dated entry above (the phase-12
+  heredoc malfunction, the stray shell lines, the script cleanup - IN THIS
+  FILE, per the relay-only law).
+- THE SECTION-26 HASH: marked UNVERIFIED-AS-RECORDED (the hand-copied
+  literal dropped its leading zero and the referenced content state cannot
+  be reconstructed byte-exactly); THE SCRIPT-EMIT LAW adopted - the
+  authoritative identity line at this file's end is script-emitted with
+  the self-exception rule and was independently verified after writing.
+- THE SECTION-29 RESTORATION: the per-survivor capacity detail restored
+  from the sealed stage-2 receipt bytes (binding joints
+  {mutation_wrist_abduction: 336, mutation_wrist_flexion: 12,
+  cmc_abduction: 6}; worst |tau| 0 to 1.081312e-02 N*m).
+
+## 31. The stage-4 prereg draft (DECLARED-MODEL SCOPE)
+
+| artifact | sha256 |
+|---|---|
+| R1_STAGE4_PREREG.md (DRAFT: the scope decision and why; the 4x5 (reading, n) grid; the outcome space incl. the explicit TRANSFER_UNDEFINED_AT_N1 class; the FROZEN partitions S4-P1 15 CLOSES + 5 EXCEEDED (the scene line exceeds at n=1 AND n=2) and S4-P2 11 CLOSES + 5 EXCEEDED + 4 UNDEFINED; S4-P3 the mu=0 bite retained; the quantity code-path table; the honest-absent list with the same-hands debt named) | `4438c4d76c2d904d08a09eb1f29db55b25bdccaeb399f2d8db26ad0d78e5dfc1` |
+
+Scope answer recorded for the pin: stage 4 freezes the DECLARED-MODEL
+SCOPE (the G01 law forms as CONDITIONAL-CALCULATIONS at declared inputs)
+because the press channel has NO actuator derivation (TC-8 0/8) - a
+physical hold run would overclaim. The same-hands debt stands and is
+named.
+
+
+---
+
+# PHASE 14 — STAGE-4 EXECUTED AND PASSED + THE COLLISION-IDENTITY CORRECTION ACCEPTED + THE ADJUDICATION PREREG (dated 2026-10-03)
+
+## 32. THE COLLISION-IDENTITY CORRECTION (ACCEPTED; verified from the stored rows by this lane BEFORE executing)
+
+The collaborator's claim VERIFIES EXACTLY: the 314 q_c survivors' s_star
+offsets span 2.828788e-03 - 9.634829e-03 m (the raised-cap receipt,
+stored rows) against R2's ~0 antipodal construction offset (h_len =
+2.0635200292263314e-06 m, the frozen GP1-CC3 v1 formulation) - the exact
+origins differ by 2.83-9.63 mm; the q_zero survivors carry 2.56-2.60e-02
+m and have NO R2 counterpart. CONSEQUENCE (the corrected label): the 354
+survivors are ACTUATOR-CAPACITY SURVIVORS, NOT collision-cleared
+candidates; R2's GENUINE_PENETRATION labels neither clear nor reject
+them; the 'collision geometry done' ladder wording OVERSTATES. THE
+CORRECTED LABEL: pad-geometry + capacity + law-form stages complete; the
+EXACT-CANDIDATE COLLISION ADJUDICATION = a named unmet stage. The
+stage-3/4 law-form partitions STAND (declared-model scope fences them);
+the LABELS correct. The correction note is embedded in the stage-4
+receipt (`collision_identity_correction`) and the next publication's
+merge message carries the same note.
+
+## 33. THE STAGE-4 RUN (executed as pinned; the correction note embedded)
+
+| artifact | sha256 |
+|---|---|
+| package/package.json (task HAND-REMEDIATION-20261003-R1-STAGE4, base `79b26394...`) | `55f0e22fbdaef7348bd197919bb4e097dce7f653807c4a3e7043a05db89fc4d1` |
+| stage4_grasp.py (NEW: the law-form module) | `baf2a7a31f88f5ae87fa4d5ebf7a65fdc45ef6e044c57e4241ae763bf44332ba` |
+| run_stage4_grasp.py (NEW: the driver - the 4x5 grid, the frozen partitions, the mu=0 bite, the debt-row side-by-side, the correction note) | `0e6c3cfbbe0df304e118ab13b6ecc4127c230a0936d16ff32535633bd7a2bf44` |
+| FINAL seal `988b2cf0fa0b4b6eb4335c1b9612b35d`: manifest sha256 `7f9d9db7deccd6759543873b0301ad3c9563a78f63c3dad76bd93f5a5c0fb402`; change.patch sha256 `d1e5ec112a389c613fe097c91f420b62393830632fe7b2ae766c50b9cb5357a3` - CAPTURED INTO seal-store/ AT CREATION (the C2 law) | |
+| runner receipt: job `ef225dcdca804417be46f73bdb12c3b9`, state PASSED, exit 0, SLOT 3, cleanup_verified true | `e54ec771c1304250ce73c0be821544ec01a10ef6bf84d72ef2bb1c32dcd9152e` |
+| stage4_grasp_receipt.json (runner-retained; the correction note embedded) | `53914096eaddce71379e7cde43c737e30b25240177b182d90f6d1d6b0702309e` |
+| stage4_grasp_report.txt (runner-retained) | `30ee708478f822c987a052cd493b465112eb027e2091c241a40565c5e2c647c9` |
+
+## 34. THE STAGE-4 RESULTS (the runner-verified receipt; the not-claims govern)
+
+- VERDICT: `STAGE4_PARTITIONS_REPRODUCED_FULL_GRID`. All predictions TRUE
+  (S4_P1, S4_P2, S4_P3, S4_P4).
+- STATIC partition: 15 HOLD_CLOSES + 5 HOLD_EXCEEDED - the 5 exceeded
+  cells EXACTLY the frozen ones: (10.037998, n=1) 164.065 N, (10.037998,
+  n=2) 82.033 N, (5.4, n=1) 88.260 N, (6.15, n=1) 100.518 N, (6.9, n=1)
+  112.776 N. The scene line exceeds at n=1 AND n=2.
+- TRANSFER partition: 11 TRANSFER_CLOSES + 5 TRANSFER_EXCEEDED
+  (all four readings at n=2; the scene line also at n=3: 0.2461 N*s) +
+  4 TRANSFER_UNDEFINED_AT_N1 (the explicit named class). 5+4+11 = 20.
+- S4_P3: mu = 0 -> NON_CLOSING (the bite, retained).
+- S4_P4: the debt-row side-by-side recorded (the law-form cell
+  (10.037998, n=2) HOLD_EXCEEDED 82.033 N BESIDE the capacity debt row
+  tau 1.391986171 N*m vs the 0.8875 N*m cap at cmc_abduction - a
+  FORCE-ceiling reading and a TORQUE-vs-CAP reading, DIFFERENT
+  quantities, neither substitutes for the other).
+- THE GOVERNING READING: stage 4 is the DECLARED-MODEL law grid - it
+  demonstrates NO PHYSICAL HOLD; the same-hands debt stands; TC-8 = 0/8;
+  the goal stays open.
+
+## 35. THE EXACT-CANDIDATE COLLISION ADJUDICATION PREREG (the coordinator's action 2; DRAFT for the Lieutenant's pin)
+
+| artifact | sha256 |
+|---|---|
+| R1_COLLISION_ADJUDICATION_PREREG.md (DRAFT: reconciliation-first (the R2 rows labeled a different placement family, retained); the CURRENT UNCHANGED strict instrument (no candidate-specific exemption, no threshold change); the exact 354 (posture, theta, mirror, o, u) tuples; the closed outcome space {COLLISION_CLEAR, GENUINE_PENETRATION, UNRESOLVED_GEOMETRY}; the honest predictions S5-P1 (every candidate GENUINE at its pad-body pair - the basis: the admitted bone vertices sit (pi_c, 4mm] inside the trunk and the strict instrument has no pad), S5-P2 (zero COLLISION_CLEAR - any hit is a MAJOR routed result), S5-P3 (zero trunk-pair UNRESOLVED), S5-P4 (the self-collision sweep recorded)) | `1362f92fa410fe743ecc0d2639e54105c2167fcd21f47f4b1317acc5de4855dd` |
+SCRIPT-EMITTED EVIDENCE SHA256 (script-emitted 2026-10-03; the hash covers this file's bytes PRIOR to this line - the self-exception rule): 4cc7960cebb54d5d8fc14c907728420917d5a651621b8da797eeec86923ce836
+(verification: sha256 of the file bytes strictly before the marker, final newline included as stored, equals the stated value.)
