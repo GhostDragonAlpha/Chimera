@@ -1,0 +1,204 @@
+{
+ "schema": "chimera.compiler_packet_result.v1",
+ "packet_id": "PKT-G3-ASSEMBLY-HANDGROUND",
+ "criteria_sha256": "cc65e2bce2f8ac8bf8de34382826ede1d4d60c4e8f799baba6be509bf659b239",
+ "generated_utc": "2026-10-04T01:52:56.098479+00:00",
+ "worker_arrival_id": "wk-pair-assembly",
+ "per_test_results": [
+  {
+   "test_id": "T.ASMB_support",
+   "verdict": "PASS",
+   "observed": "support identity across the pair (pairpath P1.1 form): jn == press (0.8999999999999999 N*s = the hand channel 0.3 x n=3) + weight stack (0.6564850692 N*s/tick) + measured dp_stack_z; worst exact resid 2.220446049250313e-16 N*s over ticks 6..15; steady-form transient dp_stack_z worst 0.28229894700900926 reported",
+   "window": "1e-12 (exact identity; steady-form transient reported)",
+   "evidence_path": "outputs/pair_result.json"
+  },
+  {
+   "test_id": "T.ASMB_propulsion_attribution",
+   "verdict": "PASS",
+   "observed": "push-off positive and attributed on 10 drive ticks: jt_ground_y in [0.12208557810253684, 0.2956910327215653] > 0; stack attribution worst 9.492406860545088e-15 N*s; body attribution worst 4.440892098500626e-16 N*s (both <= 1e-12)",
+   "window": "1e-12",
+   "evidence_path": "outputs/pair_result.json"
+  },
+  {
+   "test_id": "T.ASMB_slip",
+   "verdict": "PASS",
+   "observed": "at the declared reduced mu (0.12/0.08) the ground slips at the per-record cap jt == mu_k*jn exactly (worst dev 0.0 N*s over 10 drive ticks with slip records); traction strictly reduced: jt abs max 0.13753372068447361 < nominal 0.2956910327215653 (measured-vs-measured)",
+   "window": "measured-vs-measured (sealed pairpath S3 reference: 0.08779835116465305 == 0.08 * 1.0974793895581632)",
+   "evidence_path": "outputs/pair_result.json"
+  },
+  {
+   "test_id": "T.ASMB_zero_mu_control",
+   "verdict": "PASS",
+   "observed": "zero-mu control: every seam record jt == 0.0 exactly; stack y-momentum stays within 1.0269562977782698e-14 N*s across 4 drive ticks (traction-borne propulsion discriminated)",
+   "window": "exact 0",
+   "evidence_path": "outputs/pair_result.json"
+  },
+  {
+   "test_id": "T.ASMB_separation",
+   "verdict": "PASS",
+   "observed": "separation removes support: 6 fall ticks with NO records, W_contact == W_press == 0.0 J exactly; free-fall recursion worst 2.0816681711721685e-17 m/s; closed-form drop 0.005150195307601285 m vs measured 0.0051501953076012845 m; landing recorded transient at tick 20 (never support); release bars share_kg*1e-10 = 3.3459993333333336e-10 N*s satisfied (separated worsts jn 0.0 / jt 0.0)",
+   "window": "1e-9 free-fall",
+   "evidence_path": "outputs/pair_result.json"
+  },
+  {
+   "test_id": "T.ASMB_ledger_classes",
+   "verdict": "PASS",
+   "observed": "all ledger classes inside declared windows across 119 scenario rows: linear 8.943441704861479e-16; reciprocity 0.0; anchor 0.0; energy 1.6653345369377348e-16; pair loss 5.204170427930421e-17; replay 4.2829025528224073e-17; continuity 1.734723475976807e-18; stored 2.1684043449710089e-16; angular 9.226057037300466e-05 within per-tick bound 0.009283323939127314; unmodeled_rotation_couple 0.08408935020815454 REPORTED EVERY TICK (119 rows; the translation-only body line disclosure, never dropped)",
+   "window": "1e-12 / 1e-9 / angular bounds",
+   "evidence_path": "outputs/pair_result.json"
+  },
+  {
+   "test_id": "T.ASMB_runtime_scene",
+   "verdict": "PASS",
+   "observed": "the co-instantiated ABI scene through the GENERATED wiring (sha 3b5d54c9): both PUBLISHED membranes built under their own spec-of-record contexts; graph_runtime.validate_built_graph conformant with 2 writer-scoping rows; contract groups coverage 9/9 (valid=True); per-window one-quantity bitwise proofs in BOTH declared cases (armed 4 windows / released 3 windows, constant-record scene shape); the ground's OWN laws derive the record from the hand's published decision bitwise every window; the REAL release-latch arc on the scene's own channels (release -> silent re-arm refused -> explicit re-arm -> the re-armed decision verified); 5/5 refusal probes bit (incl. abi_exchange_writer_violation, ref.ground.jn_negative_press_record, composition_unwired); composition-owned pieces labeled: per-member context construction (each member builds under its OWN published spec bytes; the wrapped modules byte-exact); the ONE identity translation: the ground's declared consumed slot receives the hand's published press value; the hand composition face: press publication + the declared input port name translation (jn -> q_jn); the pad-side transfer bookings (applied_by assembly)",
+   "window": "seam law + sealed falsifier pattern",
+   "evidence_path": "outputs/pair_result.json"
+  }
+ ],
+ "receipts": [
+  {
+   "sealed_manifest_sha256": "b56b7085e98062ede190fd27098b692f2da2de152bdcd2fbfecb0aa833b6579d",
+   "run_job_id": "bc2509c11afa4f5f93517938f8c06b8d",
+   "state": "PASSED",
+   "exit_code": 0,
+   "cleanup_verified": true,
+   "slot": 2,
+   "result_directory": "E:\\ChimeraWork\\task-runner\\results\\bc2509c11afa4f5f93517938f8c06b8d",
+   "artifact_sha256": {
+    "runner.log": "3d15dad36dc91edf26ba790d7a74dd31f9b7bffc6ba8fd238fa538771e7e41f5",
+    "outputs/pair_result.json": "ff9ee573b38d80e7f6627d240baf6965cf73bedef4966aee041780fcc0f31bd1"
+   },
+   "command": [
+    "C:/Python314/python.exe",
+    "-B",
+    "tools/monkey_campaign/contributions/CMP-ASMB-HG/test_pair.py"
+   ]
+  }
+ ],
+ "fixture_based": true,
+ "fixture_note": "fx.trial_inertia (computed 10.037998/3), fx.trial_placement (translation-only, x_reach ABSENT), fx.mu_placeholders 0.6/0.4 (NB-01/NB-02); every row fixture-based; no integrated-qualification claim anywhere",
+ "named_debts_encountered": {
+  "x_press": "ABSENT (NB-03): declared fixture press only; actuator_qualified false",
+  "x_share": "ABSENT (NB-04): the computed share scales the release bars only",
+  "x_reach": "ABSENT (NB-05): translation-only placements; no transform composed"
+ },
+ "sealed_run_summary": {
+  "all_fatal_pass": true,
+  "enforced_rows_count": 119350,
+  "conformance": {
+   "contract_conformant": true,
+   "rows_checked": 16,
+   "contract_sha256": "a54313760c766764fb95302ebe0bee1fbc65f343770a8b9930657f2a6a3f2104",
+   "g_convention": "record-g 9.81 pinned solver; std-g 9.80665 reference arithmetic only"
+  },
+  "wiring_regeneration": {
+   "regenerated_wiring_sha256": "3b5d54c9efb288856aecbad2a344232ece36d6233237b552ad204512dead7b51",
+   "landed_bindings_sha256": "250c484b81135b26e7875c355df5cd7f6135cf514952c632c875aad4056efbce",
+   "bindings_freshly_emitted": false,
+   "bindings_gate": {
+    "reference_only": true,
+    "formulas_embedded": false,
+    "table_equals_fresh_derivation": true
+   },
+   "byte_identical": true,
+   "receipt_schema": "chimera.mathspec.graph_wiring_generation_receipt.v1",
+   "module_specific_branches": 0,
+   "plan_placement_rows": 3
+  },
+  "mantissa_discipline": {
+   "body_mass_kg": 10.037998,
+   "n_channels": 3,
+   "share_kg": 3.3459993333333333,
+   "share_kg_hex": "0x1.ac49b4c68d5f4p+1",
+   "packet_fixture_share_kg": 3.3459993333333333,
+   "packet_fixture_share_hex": "0x1.ac49b4c68d5f4p+1",
+   "bitwise_match": true,
+   "release_bar_ns": 3.3459993333333336e-10,
+   "release_bar_hex": "0x1.6fe5822947c05p-32",
+   "law": "share_kg = BODY_MASS_KG / 3.0 COMPUTED (never a retyped literal); release bar = share_kg * 1e-10 (F3)"
+  },
+  "carried_findings": {
+   "F1_computed_counts": "all counts computed from the enforced list/store log (conformance rows 119350, scene probes 5, placement rows 3)",
+   "F2_executed_tampered_replay": {
+    "bit": true,
+    "refusal": "enforcement_failed:slip_cap_not_pair_mu_k: {'tick': 13, 'jt': 0.004667297199049172, 'want': 0.004725638414037287}",
+    "checker_mu_k": 0.081,
+    "declared_mu_k": 0.08
+   },
+   "F3_mantissa_discipline": {
+    "body_mass_kg": 10.037998,
+    "n_channels": 3,
+    "share_kg": 3.3459993333333333,
+    "share_kg_hex": "0x1.ac49b4c68d5f4p+1",
+    "packet_fixture_share_kg": 3.3459993333333333,
+    "packet_fixture_share_hex": "0x1.ac49b4c68d5f4p+1",
+    "bitwise_match": true,
+    "release_bar_ns": 3.3459993333333336e-10,
+    "release_bar_hex": "0x1.6fe5822947c05p-32",
+    "law": "share_kg = BODY_MASS_KG / 3.0 COMPUTED (never a retyped literal); release bar = share_kg * 1e-10 (F3)"
+   },
+   "F4_deviations": "all deviations land in result.json deviations"
+  },
+  "scene_probes": [
+   {
+    "probe": "abi_exchange_writer_violation",
+    "bit": true,
+    "got_code": "abi_exchange_writer_violation",
+    "want": "abi_exchange_writer_violation"
+   },
+   {
+    "probe": "ref.ground.jn_negative_press_record",
+    "bit": true,
+    "got_code": "ref.ground.jn_negative_press_record",
+    "want": "ref.ground.jn_negative_press_record"
+   },
+   {
+    "probe": "ref.hand.rearm_without_release",
+    "bit": true,
+    "got_code": "ref.hand.rearm_without_release",
+    "want": "ref.hand.rearm_without_release"
+   },
+   {
+    "probe": "ref.hand.press_state_not_armed_nor_released",
+    "bit": true,
+    "got_code": "ref.hand.press_state_not_armed_nor_released",
+    "want": "ref.hand.press_state_not_armed_nor_released"
+   },
+   {
+    "probe": "interface_pin_drift",
+    "bit": true,
+    "got_code": "interface_pin_drift",
+    "want": "interface_pin_drift"
+   }
+  ],
+  "scene_writer_scoping_rows": 2,
+  "scene_contract_groups_coverage": {
+   "coverage": 9,
+   "valid": true,
+   "schema_major": 2
+  },
+  "obligations": {
+   "X1_press_channel_entry": "sealed_upstream (hand membrane, G04 X1)",
+   "X2_friction_pair": "re-verified here in the physics pair run (fixture-based)",
+   "X4_release": "re-verified here (share-scaled bars + exact zeros)",
+   "G07_accounted_release": "re-verified here (separation leg; fixture-based)",
+   "G05_observation_seam": "sealed_upstream (hand membrane; the observation delivery is not re-exercised in this pair scene)",
+   "pair_run": "advanced by THIS run: the fixture clauses sealed as the assembled pair + the co-instantiated runtime scene built/stepped through the generated wiring; the store/registry advance of declared_pending stays with the Lieutenant (never by self-claim)"
+  }
+ },
+ "deviations": [],
+ "claims": [
+  "the assembled pair run (T.ASMB_support..T.ASMB_ledger_classes) holds as a FIXTURE-BASED sealed run at the pinned inputs (pairpath precedent class)",
+  "the co-instantiated runtime scene (T.ASMB_runtime_scene) runs through the GENERATED wiring with both PUBLISHED membranes; its composition-owned pieces are labeled in the sealed receipt; the advance of the contract's declared_pending pair_run row in the store/registry stays with the Lieutenant",
+  "F2: an EXECUTED tampered replay (checker mu_k 0.081 vs 0.08) FAILED through the full pipeline and is recorded as the discriminator",
+  "no integrated-qualification, PHYSICS_QUALIFIED or TRAINING_READY claim is made (the W09 unsupported-ticks finding governs that gate)"
+ ],
+ "honest_absent": {
+  "x_press": "ABSENT (NB-03): declared fixture press only",
+  "x_share": "ABSENT (NB-04): the computed share scales the release bars only",
+  "x_reach": "ABSENT (NB-05): translation-only placements; no transform composed"
+ },
+ "physlang_v0_refusal": "not triggered: no derivation in this battery outruns the pinned inputs (the clause stays recorded and applicable)",
+ "sergeant_review_required": true,
+ "worker_note": "this result.json is GENERATED from the sealed receipts by assemble_result.py; Sergeant review is requested through the Lieutenant (a worker never approves its own verification)"
+}
