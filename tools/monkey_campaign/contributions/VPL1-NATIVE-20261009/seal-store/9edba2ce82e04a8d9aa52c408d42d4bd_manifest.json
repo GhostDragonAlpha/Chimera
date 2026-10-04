@@ -1,0 +1,113 @@
+{
+  "schema": "chimera.sealed_package.v1",
+  "package": {
+    "schema": "chimera.file_package.v1",
+    "id": "db35cfedc95a4c18906256ba14595c67",
+    "owner": "wk-vpl1-native",
+    "task": "VPL1-NATIVE-20261009-N1-FEED",
+    "source": "E:\\PythonChimera",
+    "base": "b48eda23e1f0786383e2855a0436d580b2fd6069",
+    "reads": [
+      "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009",
+      "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009"
+    ],
+    "writes": [
+      "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009"
+    ],
+    "inputs": {
+      "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/CORRECTION-1_VPL1_NATIVE.md": {
+        "oid": "ef25ea7d5c43e25117c2aa458b19ead5ccf4f6da",
+        "mode": "100644",
+        "size": 6545,
+        "sha256": "bb9273033c8e4af0ec33deacc20e89d5924af589a8865e84ea97a08b70f70b05"
+      },
+      "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/EVIDENCE.md": {
+        "oid": "fead777621247b35f82cdc63c3a21c5cb7c991f6",
+        "mode": "100644",
+        "size": 16852,
+        "sha256": "4459002f1db614528ab34003d367076b8d63cbae78ab4c05783453cfa8591158"
+      },
+      "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/PREREGISTRATION.md": {
+        "oid": "ed8793d158b134a0a6b2e562590f040c8dbba5a3",
+        "mode": "100644",
+        "size": 28708,
+        "sha256": "5f775e0ec13a175229d9e87eaf2d2deefe15380addca05d8ad362b2d6fbd981a"
+      },
+      "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/PREREGISTRATION_N1_FEED.md": {
+        "oid": "e5be79f79f373a807381c1a0aa69aa6b5b73dc20",
+        "mode": "100644",
+        "size": 21883,
+        "sha256": "58fd70493fb05c964b025a2ff30da17af8fb6b231d455ce652a2f7dd1f6c3a5d"
+      },
+      "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/seal-store/721b80af2f044fd4b1e2222792145067_change.patch": {
+        "oid": "de8938f650459179375289a5c1761843085d0233",
+        "mode": "100644",
+        "size": 1936772,
+        "sha256": "15cb1dbf5bed5b2cbc662422555da1151ddc0088394cb758fad1fae3fe166b40"
+      },
+      "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/seal-store/721b80af2f044fd4b1e2222792145067_manifest.json": {
+        "oid": "66e319de210afd99e7121fc5b425c11e1e1435fc",
+        "mode": "100644",
+        "size": 5527,
+        "sha256": "4f9625bbbf4d4b1f8aedd45502bd478272d6f83a5dfa5057c7e579d36c6311f0"
+      },
+      "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/vpl1_receipt.json": {
+        "oid": "89a7ae68adc8f4546283a5514236a508914a8a2c",
+        "mode": "100644",
+        "size": 20665,
+        "sha256": "b63d5cca41a999e04bdf17d5271a29f93dc7f87c621cb9691c8f96e90fddc17d"
+      }
+    }
+  },
+  "changes": [
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/INSTRUMENT_N1_FEED_PATCH.py",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/INSTRUMENT_PATCH.py",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/INSTRUMENT_SIGNED_PATCH.py",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/INSTRUMENT_VPL1_PATCH.py",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/inputs/anchors/dump_run_record.json",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/inputs/anchors/dump_stdout.txt",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/inputs/anchors/states_run1.jsonl",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/inputs/anchors/states_run2.jsonl",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/inputs/anchors/walk_numbers_record.json",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/inputs/build_dump.ps1",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/inputs/coupled_articulation.hpp",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/inputs/earth_environment.hpp",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/inputs/force_models.hpp",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/inputs/gait_controller.hpp",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/inputs/gait_unit_viswalk_dump_orig.cpp",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/inputs/json/json.hpp",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/inputs/scene.json",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/run_battery_n1.py",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/run_battery_vpl1.py"
+  ],
+  "files": {
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/CORRECTION-1_VPL1_NATIVE.md": "bb9273033c8e4af0ec33deacc20e89d5924af589a8865e84ea97a08b70f70b05",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/EVIDENCE.md": "4459002f1db614528ab34003d367076b8d63cbae78ab4c05783453cfa8591158",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/INSTRUMENT_N1_FEED_PATCH.py": "d16fe9b51e3b550b41734cf2111b4bff0dcfac48de5efb3ab82759da130a57ed",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/INSTRUMENT_PATCH.py": "d71777d357a08c161ff1b9934b47175f9c8aead47d3f7da8fcd6d65786424e20",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/INSTRUMENT_SIGNED_PATCH.py": "e4a8d3b51a94c0057b33b8ce4ef5f06df127a4e219b8f326f367c5402788980e",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/INSTRUMENT_VPL1_PATCH.py": "7e0d6c48ffb5fe51230b6bcc09c375dc7e0f0e5d7eb9e3520bec93ec0718bd4e",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/PREREGISTRATION.md": "5f775e0ec13a175229d9e87eaf2d2deefe15380addca05d8ad362b2d6fbd981a",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/PREREGISTRATION_N1_FEED.md": "58fd70493fb05c964b025a2ff30da17af8fb6b231d455ce652a2f7dd1f6c3a5d",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/run_battery_n1.py": "f762a1d060ef50b7ad550bac8399fc53b273c466b6bb37033da49aa666888f9d",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/run_battery_vpl1.py": "68421a6118e5005beb49a4df8593cee36f25570628c30978d48678aef295514d",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/vpl1_receipt.json": "b63d5cca41a999e04bdf17d5271a29f93dc7f87c621cb9691c8f96e90fddc17d",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/inputs/build_dump.ps1": "2e3fcf50933d177c932bacf18dbbcf12f7e79b4346fcfa9512dcddbdb0b33200",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/inputs/coupled_articulation.hpp": "5bd73c2d43b85b229040da1ac779ef3733dc7d4dbe04cbeb1447c03767dc9fb5",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/inputs/earth_environment.hpp": "b4747d349ce201ebadb74227b33725466d16edd860ed421ac590ad789178469a",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/inputs/force_models.hpp": "483b97f4600ce0e4c178bc0d9420de55ae9cb853910e3c38a3e5cf9919f0630c",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/inputs/gait_controller.hpp": "f0ffea12795bd47f7c48f5ed9b8aa98869725467d94a1081b1d942f6fba129bd",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/inputs/gait_unit_viswalk_dump_orig.cpp": "dea2be78762860b201a348824fd6a4a4fe9f2a1dd3f9552157187729568f1cab",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/inputs/scene.json": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/inputs/anchors/dump_run_record.json": "6278f4b02089d62500b5ce48748209a476ccbdb773bc40f1a413bb9e2954bb85",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/inputs/anchors/dump_stdout.txt": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/inputs/anchors/states_run1.jsonl": "b47b709c43a021d24bfee13bb2fe4592167cf205ee0abf9971de462319389c93",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/inputs/anchors/states_run2.jsonl": "b47b709c43a021d24bfee13bb2fe4592167cf205ee0abf9971de462319389c93",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/inputs/anchors/walk_numbers_record.json": "717a721499b5ad4b829d8e50b611b11da38621c1a3f9a80ddb833088286e0d5d",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/inputs/json/json.hpp": "9bea4c8066ef4a1c206b2be5a36302f8926f7fdc6087af5d20b417d0cf103ea6",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/seal-store/721b80af2f044fd4b1e2222792145067_change.patch": "15cb1dbf5bed5b2cbc662422555da1151ddc0088394cb758fad1fae3fe166b40",
+    "tools/monkey_campaign/contributions/VPL1-NATIVE-20261009/seal-store/721b80af2f044fd4b1e2222792145067_manifest.json": "4f9625bbbf4d4b1f8aedd45502bd478272d6f83a5dfa5057c7e579d36c6311f0"
+  },
+  "patch_sha256": "1d21a9d8e7c5ac0634f0e70f83b829169224a1107be70b30f01017283c0581bd",
+  "created_at": 1791115423.0056808
+}
