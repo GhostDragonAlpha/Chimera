@@ -3,6 +3,15 @@
 Architecture directive (operator 2026-09-11): the C++ engine is a FROZEN
 SERVICE; this module writes ZERO C++ and consumes only public engine routes.
 stdlib http.server only — no third-party server dependencies.
+
+LIVE ENGINE surface (wk-play-live 2026-10-01): the viewer may START/STOP the
+engine process itself (the W2 lane's build+launch law: chimera_engine.exe
+built by cmake, launched as ``chimera_engine.exe PORT --no-restore``), POST
+the two PROVEN W2 ingestion payloads to /mesh_bin + /skin_bin after sha256
+verification, and serve the engine's OWN /frame PNG bytes as the only live
+pixels plus /scene + /debug JSON as explicitly-labeled STATE. This adds zero
+C++ and invents zero engine features: every engine byte shown or forwarded
+comes from the engine's public HTTP contract at the pinned revision.
 """
 from __future__ import annotations
 
@@ -10,6 +19,7 @@ import collections
 import hashlib
 import json
 import math
+import subprocess
 import sys
 import tempfile
 import threading
@@ -431,6 +441,507 @@ class CameraPanel:
 
 
 # ---------------------------------------------------------------------------
+# LIVE ENGINE supervisor (wk-play-live): process start/stop, proven-payload
+# ingestion, honest up/down state. Every engine-facing byte here uses the
+# engine's PUBLIC HTTP contract observed at revision e219e324 by the W2
+# engine-up lane (E:/ChimeraWork/monkey-coordination/ingestion-spike/
+# w2-engine-up/ENGINE_UP_RECEIPT.md):
+#   POST /mesh_bin  [u32 N][u32 idxCount][f32 cam*3][f32 slotmode][f32*N*9]
+#                   [u32*idxCount]  -> {"ok":true} after the render thread
+#                   consumed the upload; "size mismatch" refusal otherwise.
+#   POST /skin_bin  [u32 N][u32 B][f32 cam*3][f32*N*14][f32*N*4] -> {"ok":true}.
+#   GET  /scene /debug /frame  (JSON state rows / particle count / PNG readback).
+# THE W2 LAW, restated: /skin_bin loads a REST splat surface with a B=1
+# identity pose — an UPLOAD, not a simulation. Zero physics claims are made
+# anywhere in this surface.
+# ---------------------------------------------------------------------------
+
+# The PROVEN W2 payloads (sha256 + size are the identity; the viewer refuses
+# to POST anything else — no unpinned bytes ever leave the viewer):
+LIVE_TILE_SHA256 = "ab76eec64b5cf608afb036f82bcd1a5cff500165a24ed8db87e7b2647b976ea3"
+LIVE_TILE_BYTES = 98940
+LIVE_BODY_SHA256 = "012b8b330f4dda814fe3a4622a8cd0382b981492590ae5adcdd8ab182cc926eb"
+LIVE_BODY_BYTES = 4320020
+LIVE_BUILD_RECIPE = ("cmake -S ChimeraEngine/engine -B ChimeraEngine/engine/build "
+                     "&& cmake --build ChimeraEngine/engine/build --config Release")
+LIVE_START_TIMEOUT_S = 90.0     # Vulkan init + first frames in flight (observed: seconds)
+LIVE_STOP_TIMEOUT_S = 15.0
+# THE FALSIFIER (declared before implementation): killing the engine must flip
+# every live surface to a named down-state within this bound. Measured by the
+# gated engine-up battery; the page banner flips at its next 1 s poll.
+LIVE_DOWN_FLIP_BOUND_S = 10.0
+
+
+class LiveEngineSupervisor:
+    """Starts/stops the engine process and posts the proven payloads.
+
+    Ownership law: the viewer never adopts, signals or kills a process it did
+    not spawn. If an engine is already answering on the observed URL, start()
+    refuses by name and ingest() may still be used against it.
+    The up-probe is GET /debug (41 bytes when loaded) — deliberately NOT
+    /state, whose body carries every particle (the observer must not starve
+    the observed).
+    """
+
+    def __init__(self, engine: EngineClient, engine_url: str,
+                 exe_path: str | None = None, tile_path: str | None = None,
+                 body_path: str | None = None):
+        self.engine = engine
+        self.engine_url = engine_url
+        try:
+            self.port = int(engine_url.rstrip("/").rsplit(":", 1)[-1])
+        except ValueError:
+            self.port = None
+        self.exe_path = exe_path
+        self.tile_path = tile_path
+        self.body_path = body_path
+        self._lock = threading.Lock()
+        self._out: collections.deque = collections.deque(maxlen=60)
+        self._err: collections.deque = collections.deque(maxlen=60)
+        self.proc: subprocess.Popen | None = None
+        self.started_at: float | None = None
+        self.last_start: dict | None = None
+        self.last_stop: dict | None = None
+        self.last_ingest: dict | None = None
+        self._exe_sha: tuple | None = None      # cached (size, mtime, sha256)
+
+    # -- launch law --------------------------------------------------------
+    def launch_argv(self, exe: str, port: int | None) -> list:
+        """THE W2 LAUNCH LAW (ENGINE_UP_RECEIPT.md): chimera_engine.exe PORT
+        --no-restore. --no-restore so no prior session replays over the
+        freshly ingested state."""
+        return [exe, str(port), "--no-restore"]
+
+    # -- probes ------------------------------------------------------------
+    def up(self) -> bool:
+        """Cheap engine-up probe: GET /debug must answer 200."""
+        try:
+            st, _, _ = self.engine.get("/debug")
+            return st == 200
+        except EngineError:
+            return False
+
+    def _pump(self, handle, sink: collections.deque) -> None:
+        for line in iter(handle.readline, b""):
+            sink.append(line.decode("utf-8", "replace").rstrip())
+        handle.close()
+
+    def _exe_identity(self) -> dict | None:
+        if not self.exe_path:
+            return None
+        p = Path(self.exe_path)
+        if not p.is_file():
+            return {"exe": str(p), "present": False}
+        try:
+            st = p.stat()
+            if self._exe_sha is None or self._exe_sha[0] != st.st_size \
+                    or self._exe_sha[1] != st.st_mtime:
+                self._exe_sha = (st.st_size, st.st_mtime,
+                                 hashlib.sha256(p.read_bytes()).hexdigest())
+            return {"exe": str(p), "present": True, "bytes": st.st_size,
+                    "sha256": self._exe_sha[2]}
+        except OSError as e:
+            return {"exe": str(p), "present": False, "error": str(e)}
+
+    def status(self) -> dict:
+        """The pane's whole honest state. NEVER raises; every field observed."""
+        alive = self.proc is not None and self.proc.poll() is None
+        return {
+            "ok": True,
+            "engine_url": self.engine_url,
+            "port": self.port,
+            "engine_up": self.up(),
+            "exe_configured": bool(self.exe_path),
+            "exe_identity": self._exe_identity(),
+            "tile_path": self.tile_path,
+            "body_path": self.body_path,
+            "pins": {"tile_sha256": LIVE_TILE_SHA256, "tile_bytes": LIVE_TILE_BYTES,
+                     "body_sha256": LIVE_BODY_SHA256, "body_bytes": LIVE_BODY_BYTES},
+            "build_recipe": LIVE_BUILD_RECIPE,
+            "down_flip_bound_s": LIVE_DOWN_FLIP_BOUND_S,
+            "viewer_started": ({"pid": self.proc.pid, "alive": alive,
+                                "started_iso": time.strftime(
+                                    "%Y-%m-%dT%H:%M:%S", time.localtime(self.started_at))
+                                if self.started_at else None}
+                               if self.proc is not None else None),
+            "ingest": self.last_ingest,
+            "last_start": self.last_start,
+            "last_stop": self.last_stop,
+            "stdout_tail": list(self._out)[-15:],
+            "stderr_tail": list(self._err)[-8:],
+        }
+
+    # -- start / stop ------------------------------------------------------
+    def start(self) -> dict:
+        with self._lock:
+            if self.proc is not None and self.proc.poll() is None:
+                return {"ok": False, "state": "already_running",
+                        "error": f"viewer-started engine already running "
+                                 f"(pid {self.proc.pid}) on {self.engine_url}",
+                        "status": {"engine_up": self.up()}}
+            if self.up():
+                return {"ok": False, "state": "engine_already_up",
+                        "error": (f"an engine is already answering on {self.engine_url} — "
+                                  "the viewer will not adopt or kill a process it did "
+                                  "not spawn; ingest may proceed against it"),
+                        "status": {"engine_up": True}}
+            if not self.exe_path:
+                return {"ok": False, "state": "not_configured",
+                        "error": ("engine executable not configured (start the viewer "
+                                  f"with --live-engine-exe PATH). Build recipe: "
+                                  f"{LIVE_BUILD_RECIPE}")}
+            exe = Path(self.exe_path)
+            if not exe.is_file():
+                return {"ok": False, "state": "exe_missing",
+                        "error": (f"engine executable missing at {exe}. "
+                                  f"Build recipe: {LIVE_BUILD_RECIPE}")}
+            argv = self.launch_argv(str(exe), self.port)
+            self._out.clear()
+            self._err.clear()
+            t0 = time.monotonic()
+            try:
+                # The engine persists (session log / snapshot) beside the exe
+                # (W2 disclosure) — cwd is the exe's directory, inside whatever
+                # sandbox the operator chose for the viewer.
+                self.proc = subprocess.Popen(argv, cwd=str(exe.resolve().parent),
+                                             stdout=subprocess.PIPE,
+                                             stderr=subprocess.PIPE)
+            except OSError as e:
+                self.proc = None
+                self.last_start = {"ok": False, "state": "spawn_failed", "error": str(e)}
+                return {"ok": False, "state": "spawn_failed",
+                        "error": f"engine spawn failed: {e}", "argv": argv}
+            self.started_at = time.time()
+            threading.Thread(target=self._pump, args=(self.proc.stdout, self._out),
+                             daemon=True).start()
+            threading.Thread(target=self._pump, args=(self.proc.stderr, self._err),
+                             daemon=True).start()
+            deadline = time.monotonic() + LIVE_START_TIMEOUT_S
+            while time.monotonic() < deadline:
+                if self.proc.poll() is not None:
+                    self.last_start = {"ok": False, "state": "engine_exited_during_startup",
+                                       "exit_code": self.proc.returncode}
+                    return {"ok": False, "state": "engine_exited_during_startup",
+                            "error": (f"engine exited during startup with code "
+                                      f"{self.proc.returncode} (port may be occupied; "
+                                      f"engine writes its own reason to stdout/stderr)"),
+                            "argv": argv,
+                            "stdout_tail": list(self._out)[-10:],
+                            "stderr_tail": list(self._err)[-10:]}
+                if self.up():
+                    waited = round(time.monotonic() - t0, 2)
+                    self.last_start = {"ok": True, "pid": self.proc.pid,
+                                       "waited_s": waited}
+                    return {"ok": True, "state": "up", "pid": self.proc.pid,
+                            "engine": self.engine_url, "argv": argv,
+                            "waited_s": waited,
+                            "note": ("engine process started by the viewer (W2 launch "
+                                     "law); pixels below are the engine's OWN /frame "
+                                     "readback; ingest now posts the proven payloads")}
+            try:
+                self.proc.terminate()
+                self.proc.wait(timeout=LIVE_STOP_TIMEOUT_S)
+            except (subprocess.TimeoutExpired, OSError):
+                pass
+            self.last_start = {"ok": False, "state": "startup_timeout"}
+            return {"ok": False, "state": "startup_timeout",
+                    "error": (f"engine did not answer {self.engine_url} within "
+                              f"{LIVE_START_TIMEOUT_S:.0f}s; startup process terminated"),
+                    "argv": argv,
+                    "stdout_tail": list(self._out)[-10:],
+                    "stderr_tail": list(self._err)[-10:]}
+
+    def stop(self) -> dict:
+        with self._lock:
+            if self.proc is None or self.proc.poll() is not None:
+                return {"ok": False, "state": "not_running",
+                        "error": "no viewer-started engine process is running",
+                        "engine_up": self.up()}
+            pid = self.proc.pid
+            t0 = time.monotonic()
+            self.proc.terminate()      # Windows: TerminateProcess (hard stop)
+            try:
+                self.proc.wait(timeout=LIVE_STOP_TIMEOUT_S)
+            except subprocess.TimeoutExpired:
+                self.proc.kill()
+                try:
+                    self.proc.wait(timeout=LIVE_STOP_TIMEOUT_S)
+                except subprocess.TimeoutExpired:
+                    self.last_stop = {"ok": False, "state": "stop_timeout", "pid": pid}
+                    return {"ok": False, "state": "stop_timeout",
+                            "error": f"engine pid {pid} did not exit within "
+                                     f"{LIVE_STOP_TIMEOUT_S:.0f}s",
+                            "engine_up": self.up()}
+            waited = round(time.monotonic() - t0, 2)
+            self.last_stop = {"ok": True, "pid": pid, "waited_s": waited}
+            return {"ok": True, "state": "stopped", "pid": pid, "waited_s": waited,
+                    "engine_up_after": self.up(),
+                    "note": ("engine force-terminated (Windows TerminateProcess): the "
+                             "engine's graceful-shutdown persistence does NOT run; the "
+                             "pane flips to its named DOWN state")}
+
+    # -- ingestion ---------------------------------------------------------
+    def _verify_payload(self, kind: str, path: str | None,
+                        pin_sha: str, pin_bytes: int) -> tuple[bytes | None, str | None]:
+        label = "tile" if kind == "tile" else "body"
+        if not path:
+            return None, (f"{label} payload path not configured (start the viewer with "
+                          f"--ingest-{label} PATH pointing at the sealed W2 payload)")
+        try:
+            data = Path(path).read_bytes()
+        except OSError as e:
+            return None, f"{label} payload unreadable at {path}: {e}"
+        sha = hashlib.sha256(data).hexdigest()
+        if sha != pin_sha:
+            return None, (f"{label} payload sha256 mismatch: refusing to POST unverified "
+                          f"bytes (pinned {pin_sha[:16]}…, on disk {sha[:16]}… at {path})")
+        if len(data) != pin_bytes:
+            return None, (f"{label} payload byte size mismatch (pinned {pin_bytes}, "
+                          f"on disk {len(data)})")
+        return data, None
+
+    def _json_probe(self, path: str):
+        try:
+            st, body, _ = self.engine.get(path)
+            if st != 200:
+                return {"http": st}
+            return json.loads(body.decode("utf-8", "replace"))
+        except (EngineError, json.JSONDecodeError) as e:
+            return {"error": str(e)}
+
+    @staticmethod
+    def _decode_engine_response(raw: bytes) -> dict:
+        text = raw.decode("utf-8", "replace")
+        try:
+            return {"verbatim": text, "parsed": json.loads(text)}
+        except json.JSONDecodeError:
+            return {"verbatim": text, "parsed": None}
+
+    def ingest(self) -> dict:
+        """Verify pins, POST /mesh_bin then /skin_bin, report the engine's own
+        words verbatim. Never retries, never interprets beyond ok flags."""
+        with self._lock:
+            if not self.up():
+                return {"ok": False, "state": "engine_down",
+                        "error": (f"engine down at {self.engine_url}: nothing to "
+                                  "ingest into (start it first)")}
+            tile, err = self._verify_payload("tile", self.tile_path,
+                                             LIVE_TILE_SHA256, LIVE_TILE_BYTES)
+            if err:
+                return {"ok": False, "state": "tile_refused", "error": err}
+            body, err = self._verify_payload("body", self.body_path,
+                                             LIVE_BODY_SHA256, LIVE_BODY_BYTES)
+            if err:
+                return {"ok": False, "state": "body_refused", "error": err}
+            result = {
+                "ok": False, "state": None,
+                "law": ("/mesh_bin + /skin_bin are UPLOADS: a rest splat surface with "
+                        "a B=1 identity pose (the W2 law). Not a simulation; no physics "
+                        "claimed."),
+                "tile": {"sha256": LIVE_TILE_SHA256, "bytes": LIVE_TILE_BYTES},
+                "body": {"sha256": LIVE_BODY_SHA256, "bytes": LIVE_BODY_BYTES},
+                "scene_before": self._json_probe("/scene"),
+                "debug_before": self._json_probe("/debug"),
+            }
+            st, raw = self.engine.post_raw("/mesh_bin", tile, timeout=60.0)
+            result["tile"].update({"http": st,
+                                   "engine_response": self._decode_engine_response(raw)})
+            parsed = result["tile"]["engine_response"].get("parsed") or {}
+            if st != 200 or parsed.get("ok") is not True:
+                result["state"] = "tile_refused_by_engine"
+                self.last_ingest = result
+                return result
+            st, raw = self.engine.post_raw("/skin_bin", body, timeout=120.0)
+            result["body"].update({"http": st,
+                                   "engine_response": self._decode_engine_response(raw)})
+            parsed = result["body"]["engine_response"].get("parsed") or {}
+            if st != 200 or parsed.get("ok") is not True:
+                result["state"] = "body_refused_by_engine"
+                self.last_ingest = result
+                return result
+            result["scene_after"] = self._json_probe("/scene")
+            result["debug_after"] = self._json_probe("/debug")
+            result["ok"] = True
+            result["state"] = "ingested"
+            result["observed"] = (
+                "both payloads accepted by the engine ({\"ok\":true} after its render "
+                "thread consumed the uploads); /scene + /debug echo the engine's own "
+                "state before/after — acceptance is OBSERVED, not inferred")
+            self.last_ingest = result
+            return result
+
+
+def live_section(live: LiveEngineSupervisor | None) -> str:
+    """Server-built HTML for the LIVE ENGINE pane. The pane's states are
+    DECLARED here and rendered by LIVE_JS from observed fields only:
+      DOWN · UP_NOT_OURS · UP · UP+INGESTED (+ per-request named refusals)."""
+    if live is None:
+        return (""
+                "<fieldset style=\"margin-top:10px\"><legend>LIVE ENGINE</legend>"
+                "<div style=\"font-size:12px;color:#ef476f\">live engine surface "
+                "not configured in this server instance</div></fieldset>")
+    pins = {"tile_sha256": LIVE_TILE_SHA256, "tile_bytes": LIVE_TILE_BYTES,
+            "body_sha256": LIVE_BODY_SHA256, "body_bytes": LIVE_BODY_BYTES}
+    pin_line = (f"proven W2 payloads, sha-pinned: tile {pins['tile_sha256'][:16]}&hellip; "
+                f"({pins['tile_bytes']:,} B) &rarr; /mesh_bin &middot; body "
+                f"{pins['body_sha256'][:16]}&hellip; ({pins['body_bytes']:,} B) "
+                f"&rarr; /skin_bin; anything else is REFUSED before any POST")
+    return (
+        "<fieldset style=\"margin-top:10px\"><legend>LIVE ENGINE &mdash; start/stop "
+        "the real engine (W2 build+launch law), ingest the PROVEN payloads, watch "
+        "the engine's OWN pixels and state</legend>"
+        "<div style=\"font-size:11px;color:#9aa4af\">" + pin_line + "</div>"
+        "<div style=\"font-size:11px;color:#9aa4af\">&bull; launch law: "
+        "<code>chimera_engine.exe PORT --no-restore</code> &mdash; build recipe: "
+        f"<code>{LIVE_BUILD_RECIPE}</code></div>"
+        "<div style=\"font-size:11px;color:#9aa4af\">&bull; the W2 law: /skin_bin "
+        "loads a REST splat surface with a B=1 identity pose &mdash; an UPLOAD, not "
+        "a simulation; zero physics claims</div>"
+        "<div style=\"font-size:11px;color:#9aa4af\">&bull; no viewer-drawn pixels: "
+        "the only live image is the engine's own /frame readback; STATE is the "
+        "engine's /scene + /debug JSON rendered as text, explicitly NOT pixels</div>"
+        "<div style=\"font-size:11px;color:#9aa4af\">&bull; DECLARED pane states: "
+        "DOWN &middot; UP_NOT_OURS (an engine the viewer did not start &mdash; it is "
+        "never adopted or killed) &middot; UP &middot; UP+INGESTED</div>"
+        "<div style=\"font-size:11px;color:#9aa4af\">&bull; FALSIFIER: killing the "
+        f"engine flips this pane to the DOWN state honestly within "
+        f"{LIVE_DOWN_FLIP_BOUND_S:.0f}s (the sealed replays below stay available)</div>"
+        "<div style=\"font-size:11px;color:#9aa4af\">&bull; start/stop/ingest control "
+        "the ENGINE PROCESS only; they never change any scene mode (the goal never "
+        "leaves play mode)</div>"
+        "<div style=\"margin:8px 0\">"
+        "<button id=\"liveStart\">start engine</button> "
+        "<button id=\"liveStop\">stop engine</button> "
+        "<button id=\"liveIngest\">ingest proven payloads (tile+body)</button> "
+        "<button id=\"livePxBtn\">live pixels: off</button> "
+        "<button id=\"liveStateBtn\">refresh STATE</button>"
+        "</div>"
+        "<div id=\"liveStatus\" style=\"font-size:12px;color:#9aa4af\">connecting&hellip;</div>"
+        "<div style=\"margin:8px 0\">"
+        "<img id=\"liveFrame\" alt=\"live engine frame (idle - pixels off)\" "
+        "style=\"max-width:100%;border:1px solid #2a3138;background:#000\">"
+        "</div>"
+        "<div style=\"font-size:11px;color:#8ab4f8;margin-bottom:2px\">STATE &mdash; "
+        "the engine's /scene + /debug JSON (STATE, NOT pixels):</div>"
+        "<pre id=\"liveStateText\" style=\"font-size:11px;color:#9aa4af;"
+        "white-space:pre-wrap;max-height:220px;overflow:auto;margin:0 0 6px\">"
+        "engine down &mdash; no state to show (the sealed replays below remain available)"
+        "</pre>"
+        "<div style=\"font-size:11px;color:#9aa4af\">pixel polling is OFF by default "
+        "(the engine's PNG readback is seconds per frame and megabytes heavy &mdash; "
+        "the observer must not starve the observed)</div>"
+        "<script>" + LIVE_JS + "</script>"
+        "</fieldset>")
+
+
+# The LIVE pane client. Zero page-error tolerance: every fetch carries a
+# .catch, every DOM lookup is guarded, and states render from observed
+# fields only. The pixel pacer keeps at most ONE pending request and lets
+# the engine set the tempo (same law as the main page's pace()).
+LIVE_JS = """
+(function(){
+  var startBtn=document.getElementById('liveStart');
+  var stopBtn=document.getElementById('liveStop');
+  var ingestBtn=document.getElementById('liveIngest');
+  var pxBtn=document.getElementById('livePxBtn');
+  var stateBtn=document.getElementById('liveStateBtn');
+  var statusEl=document.getElementById('liveStatus');
+  var stateEl=document.getElementById('liveStateText');
+  var img=document.getElementById('liveFrame');
+  if(!startBtn||!stopBtn||!ingestBtn||!pxBtn||!statusEl) return;
+  var pxOn=false, pxBusy=false, last=null;
+  function label(s){
+    if(s.engine_up && s.ingest && s.ingest.ok) return 'UP+INGESTED';
+    if(s.engine_up && s.viewer_started && s.viewer_started.alive) return 'UP';
+    if(s.engine_up) return 'UP_NOT_OURS';
+    return 'DOWN';
+  }
+  function render(s){
+    last=s;
+    var parts=['LIVE ENGINE: '+label(s)];
+    parts.push('engine '+(s.engine_up?'answering':'not answering')+' at '+s.engine_url);
+    if(s.viewer_started) parts.push('viewer-started pid '+s.viewer_started.pid
+      +' ('+(s.viewer_started.alive?'running':'exited')+')');
+    else parts.push('no viewer-started process');
+    parts.push(s.exe_identity ? (s.exe_identity.present
+      ? ('exe '+s.exe_identity.sha256.slice(0,16)+'... ('+s.exe_identity.bytes+' B)')
+      : 'exe MISSING at '+s.exe_identity.exe) : 'exe not configured');
+    if(s.ingest) parts.push('last ingest: '+(s.ingest.ok?'ACCEPTED':'refused: '
+      +(s.ingest.error||s.ingest.state)));
+    if(!s.engine_up) parts.push('sealed replays below remain available');
+    statusEl.textContent=parts.join(' | ');
+    startBtn.disabled=!!s.engine_up;
+    stopBtn.disabled=!(s.viewer_started&&s.viewer_started.alive);
+    ingestBtn.disabled=!s.engine_up;
+    if(!s.engine_up && stateEl){
+      stateEl.textContent='engine down - no state to show (the sealed replays below'
+        +' remain available)';
+    }
+  }
+  function poll(){
+    fetch('/api/live/engine').then(function(r){return r.json();}).then(function(d){
+      if(d&&d.ok){ render(d); if(d.engine_up) refreshState(); }
+      else { statusEl.textContent='LIVE ENGINE: status refused: '+(d&&d.error); }
+    }).catch(function(e){ statusEl.textContent='LIVE ENGINE: status fetch failed'
+      +' (shown, not thrown): '+e; });
+  }
+  function act(btn,path,done){
+    btn.disabled=true;
+    fetch(path,{method:'POST'}).then(function(r){return r.json();}).then(function(d){
+      statusEl.textContent='LIVE ENGINE: '+path+' -> '+JSON.stringify(d).slice(0,600);
+      if(done) done(d);
+      poll();
+    }).catch(function(e){
+      statusEl.textContent='LIVE ENGINE: '+path+' failed (shown, not thrown): '+e;
+      poll();
+    });
+  }
+  startBtn.onclick=function(){ act(startBtn,'/api/live/engine/start'); };
+  stopBtn.onclick=function(){ pxToggle(false); act(stopBtn,'/api/live/engine/stop'); };
+  ingestBtn.onclick=function(){ act(ingestBtn,'/api/live/engine/ingest',function(d){
+    if(stateEl&&d){
+      stateEl.textContent='ingest result: '+JSON.stringify(d,null,1).slice(0,4000);
+    }
+  }); };
+  function pxToggle(on){
+    pxOn=on;
+    pxBtn.textContent='live pixels: '+(on?'ON':'off');
+    if(on){ pxPace(); }
+    else if(img){ img.removeAttribute('src'); img.alt='live engine frame (pixels off)'; }
+  }
+  function pxPace(){
+    if(!pxOn||!img) return;
+    if(pxBusy) return;
+    if(typeof TAKE!=='undefined'&&TAKE){ setTimeout(pxPace,1000); return; }
+    pxBusy=true;
+    var t=Date.now();
+    img.onload=function(){ pxBusy=false;
+      img.alt='live engine /frame readback (the engine is the only renderer)';
+      setTimeout(pxPace,1500); };
+    img.onerror=function(){ pxBusy=false;
+      img.alt='live frame REFUSED (named 502 - see /api/live/engine)';
+      setTimeout(pxPace,3000); };
+    img.src='/api/live/frame?t='+t;
+  }
+  pxBtn.onclick=function(){ pxToggle(!pxOn); };
+  function refreshState(){
+    if(!stateEl) return;
+    fetch('/api/live/state').then(function(r){return r.json();}).then(function(d){
+      if(!d.ok){ stateEl.textContent='STATE unavailable: '+(d.error||'?'); return; }
+      stateEl.textContent='engine /scene + /debug JSON - STATE, not pixels:\\n'
+        +JSON.stringify(d.scene)+'\\n'+JSON.stringify(d.debug);
+    }).catch(function(e){
+      stateEl.textContent='STATE fetch failed (shown, not thrown): '+e;
+    });
+  }
+  if(stateBtn) stateBtn.onclick=refreshState;
+  poll();
+  setInterval(poll,1000);
+})();
+"""
+
+
+# ---------------------------------------------------------------------------
 # Movie endpoint (cpp_bridge.encode_movie over the ring)
 # ---------------------------------------------------------------------------
 
@@ -545,6 +1056,7 @@ PAGE = """<!doctype html><html><head><meta charset="utf-8"><title>Chimera Produc
   <a href="/api/movie" target="_blank">movie (mp4 of the ring)</a> ·
   <a href="/api/health" target="_blank">health</a>
   </div>
+<!--LIVE_ENGINE-->
 <!--CERTIFIED_WORLD-->
 <script>
 let misses=0, capOn=false, TAKE=false;
@@ -642,25 +1154,27 @@ function state(){
     const el=document.getElementById('state');
     if(h.engine_up===false){
       el.textContent='ENGINE DOWN - the panes are empty because no engine is running on '+h.engine+
-                     ' (start one; the mirror re-finds its window automatically)';
+                     ' (start one; the mirror re-finds its window automatically)'
+                     +' - the LIVE ENGINE pane below can start/stop one, and the sealed replays below stay available';
       el.style.color='#ef476f';
-    } else {
-      el.style.color='#9aa4af';
-      return fetch('/api/gallery').then(r=>r.json()).then(d=>{
-        const last=d.records[d.records.length-1];
-        if(!last){document.getElementById('state').textContent='engine UP - ring empty (capture paused; that is normal between takes)';return;}
-        const j=last.joints||{}, c=last.chrome||{};
-        document.getElementById('state').textContent=
-          'engine UP  ring['+d.stats.first_index+'..'+d.stats.last_index+']  engine t='+(j.t??'?')
-          +'  current='+(j.current??'?')
-          +'  fps='+(c.fps??'?')+'  stage="'+(c.stage??'?')+'"'
-          +'  sha256='+String(last.sha256).slice(0,16)+'…  '+last.ts_iso;
-      });
-    }}).catch(()=>{});
-  fetch('/api/camera').then(r=>r.json()).then(d=>{
-    const cam=d.state&&d.state.cam?d.state.cam.map(x=>(+x).toFixed(3)).join(', '):'?';
-    document.getElementById('cam').textContent='live cam [r,theta,phi,tx,ty,tz,px,py] = '+cam
-      +'   bookmarks: '+(d.bookmarks||[]).map(b=>b.name).join(', ');
+      return;
+    }
+    el.style.color='#9aa4af';
+    fetch('/api/camera').then(r=>r.json()).then(d=>{
+      const cam=d.state&&d.state.cam?d.state.cam.map(x=>(+x).toFixed(3)).join(', '):'?';
+      document.getElementById('cam').textContent='live cam [r,theta,phi,tx,ty,tz,px,py] = '+cam
+        +'   bookmarks: '+(d.bookmarks||[]).map(b=>b.name).join(', ');
+    }).catch(()=>{});
+    return fetch('/api/gallery').then(r=>r.json()).then(d=>{
+      const last=d.records[d.records.length-1];
+      if(!last){document.getElementById('state').textContent='engine UP - ring empty (capture paused; that is normal between takes)';return;}
+      const j=last.joints||{}, c=last.chrome||{};
+      document.getElementById('state').textContent=
+        'engine UP  ring['+d.stats.first_index+'..'+d.stats.last_index+']  engine t='+(j.t??'?')
+        +'  current='+(j.current??'?')
+        +'  fps='+(c.fps??'?')+'  stage="'+(c.stage??'?')+'"'
+        +'  sha256='+String(last.sha256).slice(0,16)+'…  '+last.ts_iso;
+    });
   }).catch(()=>{});
 }
 function preset(n){fetch('/api/camera',{method:'POST',
@@ -1029,6 +1543,8 @@ class ViewerHandler(BaseHTTPRequestHandler):
                 if getattr(H, "walkfilm", None) is not None:
                     html = html.replace("<!--WALKFILM_PLAYLIST-->",
                                         walkfilm_section(H.walkfilm))
+                if getattr(H, "live", None) is not None:
+                    html = html.replace("<!--LIVE_ENGINE-->", live_section(H.live))
                 self._send(200, html.encode("utf-8"), "text/html; charset=utf-8")
             elif path == "/api/live/glass":
                 st, png, ctype = H.engine.get("/glass")
@@ -1186,6 +1702,31 @@ class ViewerHandler(BaseHTTPRequestHandler):
                                        502)
                         else:
                             self._send(200, data, "image/png")
+            elif path == "/api/live/engine":
+                live = getattr(H, "live", None)
+                if live is None:
+                    self._json({"ok": False,
+                                "error": "live engine surface not configured"}, 502)
+                else:
+                    self._json(live.status())
+            elif path == "/api/live/state":
+                # The engine's OWN /scene + /debug JSON, labeled STATE: this is
+                # state, never pixels. When the engine is down the named
+                # transport refusal escapes as the honest 502 below.
+                st1, body1, _ = H.engine.get("/scene")
+                st2, body2, _ = H.engine.get("/debug")
+                scene = json.loads(body1.decode("utf-8", "replace")) \
+                    if st1 == 200 else {"http": st1}
+                debug = json.loads(body2.decode("utf-8", "replace")) \
+                    if st2 == 200 else {"http": st2}
+                ok = st1 == 200 and st2 == 200
+                self._json({"ok": ok,
+                            "state_kind": ("engine /scene + /debug JSON — STATE, "
+                                           "NOT pixels (pixels are only ever the "
+                                           "engine's own /frame readback)"),
+                            "engine": H.engine.base,
+                            "scene_http": st1, "debug_http": st2,
+                            "scene": scene, "debug": debug}, 200 if ok else 502)
             else:
                 self._json({"ok": False, "error": "unknown route"}, 404)
         except EngineError as e:
@@ -1331,6 +1872,29 @@ class ViewerHandler(BaseHTTPRequestHandler):
             except (json.JSONDecodeError, ValueError) as e:
                 self._json({"ok": False, "error": str(e)}, 400)
             return
+        if path in ("/api/live/engine/start", "/api/live/engine/stop",
+                    "/api/live/engine/ingest"):
+            # LIVE ENGINE controls: start/stop the engine process (the W2
+            # launch law) or POST the proven payloads. Refusals are NAMED
+            # answers (ok:false), never silent; only the supervisor's lock
+            # serializes them (one at a time).
+            live = getattr(H, "live", None)
+            if live is None:
+                self._json({"ok": False,
+                            "error": "live engine surface not configured"}, 502)
+                return
+            try:
+                if path == "/api/live/engine/start":
+                    self._json(live.start())
+                elif path == "/api/live/engine/stop":
+                    self._json(live.stop())
+                else:
+                    self._json(live.ingest())
+            except (EngineError, OSError, ValueError) as e:
+                self._json({"ok": False, "error": str(e)}, 502)
+            except Exception as e:   # a fault must still ANSWER honestly
+                self._json({"ok": False, "error": f"viewer fault: {e!r}"}, 500)
+            return
         if path != "/api/camera":
             self._json({"ok": False, "error": "unknown route"}, 404)
             return
@@ -1363,7 +1927,10 @@ class ViewerHandler(BaseHTTPRequestHandler):
 # ---------------------------------------------------------------------------
 
 
-def make_server(engine_url: str, port: int, history: int = 240) -> ThreadingHTTPServer:
+def make_server(engine_url: str, port: int, history: int = 240,
+                live_engine_exe: str | None = None,
+                ingest_tile: str | None = None,
+                ingest_body: str | None = None) -> ThreadingHTTPServer:
     engine = EngineClient(engine_url)
     ring = RingBuffer(history)
     capture = CaptureThread(engine, ring, period=0.1)
@@ -1374,6 +1941,8 @@ def make_server(engine_url: str, port: int, history: int = 240) -> ThreadingHTTP
         "mirror": EngineWindowMirror(engine_url, int(engine_port)),
         "world": load_certified_world(),
         "walkfilm": load_walkfilm_playlist(),
+        "live": LiveEngineSupervisor(engine, engine_url, live_engine_exe,
+                                     ingest_tile, ingest_body),
     })
     server = ThreadingHTTPServer(("127.0.0.1", port), handler)
     server.daemon_threads = True
@@ -1381,8 +1950,12 @@ def make_server(engine_url: str, port: int, history: int = 240) -> ThreadingHTTP
     return server
 
 
-def serve_forever(engine_url: str, port: int, history: int = 240) -> None:
-    server = make_server(engine_url, port, history)
+def serve_forever(engine_url: str, port: int, history: int = 240,
+                  live_engine_exe: str | None = None,
+                  ingest_tile: str | None = None,
+                  ingest_body: str | None = None) -> None:
+    server = make_server(engine_url, port, history, live_engine_exe,
+                         ingest_tile, ingest_body)
     capture = server.capture_thread
     capture.paused.set()          # PAUSED BY DEFAULT: the ring runs only during
                                   # takes (POST /api/capture) — a 10 Hz stream of
