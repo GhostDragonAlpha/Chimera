@@ -1,0 +1,436 @@
+{
+ "agent_id": "arrival-32436e70ed1e4866a25a29940db1789c",
+ "all_green": true,
+ "attempt_id": "86b87bfe23b14059ac8ed516104340bf",
+ "card_id": "ONT-A04",
+ "checks": [
+  {
+   "measured": {
+    "mesh_scales_identity": true,
+    "n_left_geoms": 27,
+    "n_right_geoms": 27,
+    "vendor_hash_matches": 27
+   },
+   "name": "C1_identity_pins",
+   "ok": true,
+   "per_bone_hashes_verified": true,
+   "prediction": "27/27 vendor STL sha256 match s1 pins; 27 right + 27 left geoms; all mesh scales exactly [1,1,1]"
+  },
+  {
+   "extent_record": {
+    "distal_3distph_anchor_m": 0.1552851087934706,
+    "distal_3distph_record_m": 0.15529,
+    "ray_chain_anchors_m": {
+     "2": 0.09641508474265666,
+     "3": 0.1001740505001804,
+     "4": 0.0890953034518162,
+     "5": 0.07860571329892962,
+     "thumb": 0.06698922524922708
+    },
+    "ray_chain_record_m": {
+     "1": 0.067,
+     "2": 0.0964,
+     "3": 0.1002,
+     "4": 0.0891,
+     "5": 0.0786
+    },
+    "ray_within_RECORD_TOL": true,
+    "within_RECORD_TOL": true
+   },
+   "measured": {
+    "coordinate_unit": "m",
+    "det_chain_rotation": 1.0,
+    "frame_id": "chimanoid_world_m",
+    "hand_r_world_origin_m": [
+     -0.07310000000000001,
+     0.5326470000000001,
+     0.20269900000000005
+    ],
+    "handedness": "right",
+    "max_round_trip_residual_m": 5.551115123125783e-17,
+    "n_bodies_walked": 20,
+    "non_identity_chain_quats": []
+   },
+   "name": "C2_frame_chain_round_trip",
+   "ok": true,
+   "prediction": "hand_r origin == (-0.0731, 0.532647, 0.202699) m; all chain quats identity; x_world = R x_local + t round-trips every anchor/site < 1e-12 m; det(R) = +1"
+  },
+  {
+   "measured": {
+    "acceptance_split": {
+     "clean": true,
+     "criterion": "flexors >0, extensors <0 (all five)",
+     "rows": [
+      {
+       "agree": true,
+       "compartment": "extensor",
+       "expect": "dorsal(-)",
+       "offset_along_n_palm_mm": -3.2637241016625977,
+       "site": "ECRL-P4"
+      },
+      {
+       "agree": true,
+       "compartment": "extensor",
+       "expect": "dorsal(-)",
+       "offset_along_n_palm_mm": -9.095587805356883,
+       "site": "ECRB-P4"
+      },
+      {
+       "agree": true,
+       "compartment": "extensor",
+       "expect": "dorsal(-)",
+       "offset_along_n_palm_mm": -2.6272344825440537,
+       "site": "ECU-P6"
+      },
+      {
+       "agree": true,
+       "compartment": "flexor",
+       "expect": "palm(+)",
+       "offset_along_n_palm_mm": 5.286894945016184,
+       "site": "FCR-P3"
+      },
+      {
+       "agree": true,
+       "compartment": "flexor",
+       "expect": "palm(+)",
+       "offset_along_n_palm_mm": 4.361062234095565,
+       "site": "FCU-P4"
+      }
+     ]
+    },
+    "angle_deg_to_minus_z": 12.24044137190471,
+    "left_stl_in_vendor": false,
+    "limitation": "left <name>_l.stl absent from vendor set; left identity remains construction-level only (preserved limitation)",
+    "n_hat_unsigned": [
+     -0.12842717672759077,
+     0.16869104032883536,
+     0.9772664903651181
+    ],
+    "n_palm_hand_r_local": [
+     0.12842717672759077,
+     -0.16869104032883536,
+     -0.9772664903651181
+    ],
+    "pisiform_sign_rule_dot_mm": -6.965853644732853,
+    "plate_rms_residual_mm": 5.881905378916246,
+    "plate_union_verts": 188358,
+    "sign_applied": -1.0,
+    "xml_z_mirror_max_abs_mm": 0.0
+   },
+   "name": "C3_palm_sign_rederivation",
+   "ok": true,
+   "prediction": "independent pisiform-signed palm-plate re-derivation reproduces n_palm = (+0.128427, -0.168691, -0.977266) hand_r local (12.24 deg from -z), pisiform dot -6.97 mm, rms 5.88 mm, split 5/5 clean, exact XML z-mirror"
+  },
+  {
+   "measured": {
+    "anchor_class_bar_m": 0.0035,
+    "anchor_class_max_surface_m": 1.092867051035512e-05,
+    "anchor_class_max_vertex_m": 0.0008138434069639909,
+    "course_class_enumerated": {
+     "FCU-P4_surface_m": 8.307049385803906e-06,
+     "FCU-P4_vertex_m": 0.016825819990057233
+    },
+    "governing_bar": "R2-A3 anchor class (stricter frozen 19-link rule preserved-fired in s2; not the governing bar)",
+    "site_to_cited_surface_m": {
+     "ECRB-P4": 5.337939591512893e-06,
+     "ECRL-P4": 1.2932090662304989e-06,
+     "ECU-P6": 1.092867051035512e-05,
+     "FCR-P3": 5.031943474745987e-06,
+     "FCU-P4": 8.307049385803906e-06
+    },
+    "site_to_cited_vertex_m": {
+     "ECRB-P4": 0.0006178253691494978,
+     "ECRL-P4": 0.0008138434069639909,
+     "ECU-P6": 0.00010323778984539586,
+     "FCR-P3": 0.0007150387690261273,
+     "FCU-P4": 0.016825819990057233
+    },
+    "vertex_metric_matches_receipt": {
+     "FCU-P4": true
+    }
+   },
+   "name": "C4_anchor_class_landmarks",
+   "ok": true,
+   "prediction": "4 anchor-class sites 0.06-0.81 mm on cited bones; FCU-P4->pisiform ~16.83 mm recorded as COURSE class (enumerated, not identity-decisive); governing bar = R2-A3 anchor class 3.5 mm"
+  },
+  {
+   "measured": {
+    "axis_convention": "birth frame: anterior +z, up +y, creature right at -x (O1)",
+    "coordinate_unit": "m",
+    "elbow_R_m": [
+     -0.11548098385334016,
+     0.3191090774536133,
+     -0.0060765563324093825
+    ],
+    "far_end_b1_extent_mm": 47.0749778328665,
+    "far_end_c1_extent_mm": 18.039346427014085,
+    "far_end_n": 420,
+    "forearm_len_m": 0.06474489854186721,
+    "frame_id": "monkey_birth_world_m",
+    "handedness": "right",
+    "max_axial_r25_m": 0.11125624439963931,
+    "max_axial_r40_m": 0.11135001278591665,
+    "mesh_unit_to_m": 0.065,
+    "mesh_unit_to_m_status": "AUTHORED target prototype scale (cited, not a measurement)",
+    "mirror_max_abs_m": {
+     "elbow_L_R": 0.0,
+     "wrist_L_R": 0.0
+    },
+    "n_faces": 36630,
+    "n_verts": 18459,
+    "region_components_26nn": [
+     168
+    ],
+    "region_n_verts": 907,
+    "region_voxels_8mm": 168,
+    "voxel_note": "component count is the frozen prediction; occupied voxel count is grid-origin-convention dependent and recorded only",
+    "wrist_R_m": [
+     -0.1449945402145386,
+     0.26148236989974977,
+     -0.005956328995525837
+    ]
+   },
+   "name": "C5_target_geometry_coverage_measures",
+   "ok": true,
+   "prediction": "band 111.3/111.4 mm; far end 47.1 x 18.1 mm; single connected component in region (8-mm voxels); L/R anchors exact x-mirrors"
+  },
+  {
+   "measured": {
+    "covered": {
+     "carpals_metacarpals": {
+      "bones": [
+       "pisiform",
+       "lunate",
+       "scaphoid",
+       "triquetrum",
+       "hamate",
+       "capitate",
+       "trapezoid",
+       "trapezium",
+       "1mc",
+       "2mc",
+       "3mc",
+       "4mc",
+       "5mc"
+      ],
+      "count": 13,
+      "target": "band proximal region (region homology only; scale UNDECIDED)"
+     }
+    },
+    "distal_lobation_note": "render shows distal lobe splits; recorded per C2 as sampling-scale lobation, not digit structure",
+    "not_covered": {
+     "phalanges": {
+      "bones": [
+       "thumbprox",
+       "thumbdist",
+       "2proxph",
+       "2midph",
+       "2distph",
+       "3proxph",
+       "3midph",
+       "3distph",
+       "4proxph",
+       "4midph",
+       "4distph",
+       "5proxph",
+       "5midph",
+       "5distph"
+      ],
+      "count": 14,
+      "reason": "no IDENTIFIED digit anatomy in the target: no per-digit bone/joint homologs exist (0 digit joints source+target), no persistent grooves >= 20 mm (C2 lobation); the distal band DOES lobate at fine scales (C2: 8 components at 2-mm voxels [61,53,43,34,26,16,16,16]; cross-section splits in the distal half) and stays ONE region at the 8-mm occupancy scale - none of that resolves into per-digit correspondence, so the 14 phalanges stay UNCOVERED as identified digit anatomy"
+     }
+    },
+    "orientation_does_not_set_scale": true,
+    "port_owner_map": {
+     "ECRB-P4": {
+      "cited_bone": "3mc",
+      "compartment": "extensor",
+      "dist_m": 5.337939591512893e-06
+     },
+     "ECRL-P4": {
+      "cited_bone": "2mc",
+      "compartment": "extensor",
+      "dist_m": 1.2932090662304989e-06
+     },
+     "ECU-P6": {
+      "cited_bone": "5mc",
+      "compartment": "extensor",
+      "dist_m": 1.092867051035512e-05
+     },
+     "FCR-P3": {
+      "cited_bone": "2mc",
+      "compartment": "flexor",
+      "dist_m": 5.031943474745987e-06
+     },
+     "FCU-P4": {
+      "cited_bone": "pisiform",
+      "compartment": "flexor",
+      "dist_m": 8.307049385803906e-06
+     }
+    },
+    "proportion_mismatch_target_forearm_ratio": 1.7183785426383145,
+    "proportion_recorded": {
+     "mismatch_recorded": "3.4-3.5x (C2/I6)",
+     "source hand:forearm": [
+      0.4928,
+      0.5078
+     ],
+     "target paddle:forearm": 1.7184
+    },
+    "scale_alternatives": {
+     "H_ASP": {
+      "definition": "H-LEN + far-end cross-section = palm-cross-section homolog",
+      "s_recorded": [
+       0.716,
+       0.77,
+       0.9
+      ],
+      "status": "UNRESOLVED (recorded, internal tension preserved)"
+     },
+     "H_BODY": {
+      "definition": "region-homology only, P_d authored at 34.4 mm",
+      "s_recorded": 0.2217,
+      "status": "REJECTED as circular by I6; preserved, never used here"
+     },
+     "H_LEN": {
+      "definition": "paddle far-end = 3distph fingertip homolog; uniform s",
+      "s_measured": 0.7167461250133723,
+      "s_recorded": 0.716,
+      "status": "UNRESOLVED (recorded, NOT decided)"
+     }
+    },
+    "source_ids": {
+     "bones": [
+      "pisiform",
+      "lunate",
+      "scaphoid",
+      "triquetrum",
+      "hamate",
+      "capitate",
+      "trapezoid",
+      "trapezium",
+      "1mc",
+      "2mc",
+      "3mc",
+      "4mc",
+      "5mc",
+      "thumbprox",
+      "thumbdist",
+      "2proxph",
+      "2midph",
+      "2distph",
+      "3proxph",
+      "3midph",
+      "3distph",
+      "4proxph",
+      "4midph",
+      "4distph",
+      "5proxph",
+      "5midph",
+      "5distph"
+     ],
+     "ports": [
+      "ECRB-P4",
+      "ECRL-P4",
+      "ECU-P6",
+      "FCR-P3",
+      "FCU-P4"
+     ]
+    },
+    "target_ids": {
+     "anchors": [
+      "wrist_R",
+      "elbow_R"
+     ],
+     "band_region": "distal band axial (0, 111.4] mm r<40 mm from wrist_R along a"
+    }
+   },
+   "name": "C6_correspondence_and_coverage_inventory",
+   "ok": true,
+   "prediction": "identity table complete (27 bones + 5 ports + band + 2 anchors); 13 carpals/metacarpals region-covered; 14 phalanges with ZERO target coverage; scale alternatives recorded UNRESOLVED (H-LEN/H-ASP) and REJECTED-circular (H-BODY); no scale promoted"
+  },
+  {
+   "measured": {
+    "n_palm_hand_r_local": [
+     0.12842717672759077,
+     -0.16869104032883536,
+     -0.9772664903651181
+    ],
+    "source_palm_sign": "CLOSED",
+    "target_face_instrument": {
+     "T_R": [
+      0.89006,
+      -0.455843,
+      0.000951
+     ],
+     "human_verdict_recorded": false,
+     "reference": "forearm_package/audits/HAND_TARGET_VIEWS @ 57beb8b2 (LABELING_CARD.md; face-on +-T_R pair, faces A/B)",
+     "verdict_searched": [
+      "forearm_package",
+      "docs",
+      "agent_logs",
+      "git log --all (palm/handtgt/labeling)"
+     ]
+    },
+    "target_palm_sign": "UNRESOLVED - human labeling verdict missing; no model or worker answer substitutes for it"
+   },
+   "name": "C7_palm_sign_statement",
+   "ok": true,
+   "prediction": "SOURCE sign CLOSED iff C3 ok; TARGET sign INSTRUMENT EXISTS (+-T_R face pair A/B) but HUMAN VERDICT MISSING -> named unresolved item; any target-palm-verdict claim FAILS the card (F-D)"
+  }
+ ],
+ "criteria_sha256": "bf8583ae76c4930f726c4c71861ab9219cdac65eb3913cb29ab6131671505570",
+ "honest_boundary": "Static source+target measurement only. No runtime/native claim, no scale decision, no target palm verdict, no grasp-reach quantity (C16 reach/ROM leg is downstream skill scope, not claimed).",
+ "inputs": {
+  "birth_sha256": "550a5b3ec927ea13614ad250963b23e2948e76a238ac110da9889f339aabfa3c",
+  "pack_sha256": "74b3ab044b7adaed4a0f9349a81f5d3c87441084b2ec8981f4e0afaba50c1662",
+  "reference_receipts": [
+   "LABELING_CARD.md",
+   "PREREG_AMENDMENT_1.md",
+   "chimanoid.xml",
+   "commands.md",
+   "identity_table.md",
+   "prereg.md",
+   "s1_inventory.json",
+   "s2_identity.json",
+   "s2b_cmc_diagnosis.json",
+   "s3_palm_normal.json",
+   "source_hand_measures.txt",
+   "target_hand_region_v3.txt",
+   "target_paddle_measures.txt"
+  ],
+  "vendor_stl_dir": "E:\\PythonChimera\\vendor\\myo_sim\\meshes",
+  "xml_sha256": "7caa32c6e31e319876ea21625b662c5c00e736038f542b38ce6b0cb81aadc8a5"
+ },
+ "prediction_deviations": [
+  {
+   "expected": [
+    0.0005102069919282527,
+    0.0008031461641742977,
+    5.708578452302651e-05,
+    0.0006906098799539781,
+    0.016825819990057233
+   ],
+   "fired": true,
+   "max_abs_diff": 0.01681751294067143,
+   "measured": [
+    5.337939591512893e-06,
+    1.2932090662304989e-06,
+    1.092867051035512e-05,
+    5.031943474745987e-06,
+    8.307049385803906e-06
+   ],
+   "sub_clause": "C4: site-to-cited-bone numbers vs s2 (tol 0.05 mm) \u2014 FIRED at this recording tolerance: the s2 numbers reproduce under the nearest-vertex metric (FCU->pisiform exact), not the exact point-to-surface metric; both metrics are inside the governing 3.5 mm anchor class"
+  },
+  {
+   "expected": 18.1,
+   "fired": true,
+   "max_abs_diff": 0.06065357298591678,
+   "measured": 18.039346427014085,
+   "sub_clause": "C5: far-end c1 extent vs C2 18.1 mm"
+  }
+ ],
+ "preregistration": "PREREGISTRATION.md (frozen before the first probe run)",
+ "schema": "ont-a04.anatomy.numerical.v1",
+ "task_id": "A04"
+}

@@ -1,0 +1,216 @@
+{
+ "all_green": true,
+ "attempt_id": "1a7c477561f647a29f4e4775bb933547",
+ "card_id": "ONT-A05",
+ "checks": [
+  {
+   "deviations": [],
+   "measured": {
+    "bodies": [
+     "hand_r"
+    ],
+    "joints": [
+     [
+      "wrist_dev_r",
+      "hinge"
+     ],
+     [
+      "wrist_flex_r",
+      "hinge"
+     ],
+     [
+      "wrist_3_r",
+      "hinge"
+     ]
+    ],
+    "meshes": [
+     "1mc",
+     "2distph",
+     "2mc",
+     "2midph",
+     "2proxph",
+     "3distph",
+     "3mc",
+     "3midph",
+     "3proxph",
+     "4distph",
+     "4mc",
+     "4midph",
+     "4proxph",
+     "5distph",
+     "5mc",
+     "5midph",
+     "5proxph",
+     "capitate",
+     "hamate",
+     "lunate",
+     "pisiform",
+     "scaphoid",
+     "thumbdist",
+     "thumbprox",
+     "trapezium",
+     "trapezoid",
+     "triquetrum"
+    ],
+    "n_mesh_geoms": 27,
+    "sites": [
+     "ECRB-P4",
+     "ECRL-P4",
+     "ECU-P6",
+     "FCR-P3",
+     "FCU-P4"
+    ]
+   },
+   "name": "C1_source_hand_structure",
+   "ok": true,
+   "prediction": 1
+  },
+  {
+   "deviations": [],
+   "measured": {
+    "matched": 27,
+    "mismatched": [],
+    "missing": [],
+    "pins_source": "a04_winner/identity_table.md",
+    "vendor_stl_dir": "E:\\PythonChimera\\vendor\\myo_sim\\meshes"
+   },
+   "name": "C2_vendor_mesh_identity_27_27",
+   "ok": true,
+   "prediction": 2
+  },
+  {
+   "deviations": [],
+   "measured": {
+    "all_ranges_explicit": true,
+    "copyright_header": true,
+    "digit_bodies": [
+     "distal_thumb",
+     "distph2",
+     "distph3",
+     "distph4",
+     "distph5",
+     "fifthmc",
+     "firstmc",
+     "fourthmc",
+     "midph2",
+     "midph3",
+     "midph4",
+     "midph5",
+     "proximal_thumb",
+     "proxph2",
+     "proxph3",
+     "proxph4",
+     "proxph5",
+     "secondmc",
+     "thirdmc"
+    ],
+    "digit_joints": [
+     "cmc_abduction",
+     "cmc_flexion",
+     "ip_flexion",
+     "mcp2_abduction",
+     "mcp2_flexion",
+     "mcp3_abduction",
+     "mcp3_flexion",
+     "mcp4_abduction",
+     "mcp4_flexion",
+     "mcp5_abduction",
+     "mcp5_flexion",
+     "md2_flexion",
+     "md3_flexion",
+     "md4_flexion",
+     "md5_flexion",
+     "mp_flexion",
+     "pm2_flexion",
+     "pm3_flexion",
+     "pm4_flexion",
+     "pm5_flexion"
+    ],
+    "joint_count": 20,
+    "license_apache_2": true
+   },
+   "name": "C3_vendor_digit_structure",
+   "ok": true,
+   "prediction": 3
+  },
+  {
+   "deviations": [],
+   "measured": {
+    "correspondence_entries": 19,
+    "covered_phalanges": [
+     "thumbprox",
+     "thumbdist",
+     "2proxph",
+     "2midph",
+     "2distph",
+     "3proxph",
+     "3midph",
+     "3distph",
+     "4proxph",
+     "4midph",
+     "4distph",
+     "5proxph",
+     "5midph",
+     "5distph"
+    ],
+    "map_kind": "name-level identity (A04 pins); NOT scale/runtime",
+    "phalanges_covered_count": 14
+   },
+   "name": "C4_correspondence_map",
+   "ok": true,
+   "prediction": 4
+  },
+  {
+   "deviations": [],
+   "measured": {
+    "delta_manifest_sha256": "685bae7f034568e698f4074fd73542bfaddf7e462c5b6828fdc320e8c696f7d7",
+    "delta_summary": {
+     "carried_wrist": [
+      "wrist_dev_r",
+      "wrist_flex_r",
+      "wrist_3_r"
+     ],
+     "excluded": [
+      "scale number",
+      "target-runtime binding",
+      "origin promotion",
+      "palm-sign claim"
+     ],
+     "new_bodies": 19,
+     "new_joints": 20
+    }
+   },
+   "name": "C5_adaptation_delta_recorded",
+   "ok": true,
+   "prediction": 5
+  },
+  {
+   "deviations": [],
+   "measured": {
+    "adaptation_approved": false,
+    "adaptation_status": "UNAPPROVED PROPOSAL (C5 delta); approval is the named done_when gate owned by the lead/operator",
+    "p02_separation_preserved": true,
+    "runtime_binding": "NONE claimed; KEPT_SEPARATE per P02",
+    "scale": "UNDECIDED (H-LEN/H-ASP unresolved, H-BODY circular; nothing promoted)",
+    "source_basis": "MyoSuite myo_sim v0.1.0, Apache-2.0, LICENSE pinned at vendor_myo_sim/LICENSE",
+    "target_palm_sign": "UNRESOLVED (inherited unchanged from A04)"
+   },
+   "name": "C6_approval_status_honest",
+   "ok": true,
+   "prediction": 6
+  }
+ ],
+ "checks_green": 6,
+ "checks_total": 6,
+ "criteria_sha256": "a19ba471bfde65e094f63ef8f3e6d1edc4d55390f5901e1e82f3d6883d18823d",
+ "prediction_deviations": [],
+ "profile_id": "anatomy",
+ "profile_kind": "visible_static",
+ "run_id": "ont-a05-anatomy-20260926-1a7c4775",
+ "runtime_evidence_reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A05\\1a7c477561f647a29f4e4775bb933547\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A05\\evidence\\runtime_receipt.json",
+ "schema": "ont-a05.anatomy.numerical.v1",
+ "state_raw_sha256": "af9d759a0165d3fbf8fc9cb8230462489a81016fabd48a710c811006d2115836",
+ "state_reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A05\\1a7c477561f647a29f4e4775bb933547\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A05\\evidence\\state_snapshot.json",
+ "subject_sha256": "7caa32c6e31e319876ea21625b662c5c00e736038f542b38ce6b0cb81aadc8a5",
+ "task_id": "A05"
+}

@@ -1,0 +1,581 @@
+{
+ "capture_sha256": "64529f881c428e81c0a52e35ef87d915d68ca70ee03e7a405b1d54c9c95ab5f6",
+ "profile_id": "anatomy",
+ "run_id": "ont-a05-anatomy-20260926-1a7c4775",
+ "schema": "chimera.visual_capture_manifest.v1",
+ "subject_sha256": "7944df30c79e54e2004060bdffd3ae27c7fd8796c4c92bd4c978e60d7be1b13e",
+ "task_id": "A05",
+ "tick_interval": [
+  0,
+  0
+ ],
+ "views": [
+  {
+   "artifact_locator": {
+    "kind": "image",
+    "pixel_rectangle": [
+     0,
+     0,
+     642,
+     422
+    ],
+    "region": "pixel_rectangle"
+   },
+   "camera": {
+    "aspect_ratio": 1.5238095238095237,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: single sample, tick 0, no motion",
+    "coordinate_unit": "m",
+    "forward_axis": "-Z",
+    "frame_id": "hand_r_local_m_ortho",
+    "handedness": "right",
+    "interpolation_note": "static capture; no interpolation",
+    "near_far_planes": [
+     0.02,
+     1.5
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orthographic_span": 0.17037877924350017,
+    "projection": "orthographic",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.2789557755720133,
+      "orientation": [
+       0.07434969110678388,
+       0.3388861493919123,
+       0.9160964943371536,
+       0.20098635338207912
+      ],
+      "position": [
+       0.09415037558942504,
+       0.00552660501461355,
+       -0.26324008522165543
+      ],
+      "target": [
+       0.018149999978587038,
+       -0.08314049986469746,
+       -0.009905499852195382
+      ],
+      "tick": 0
+     }
+    ],
+    "state_or_tick_interval": "tick_interval [0, 0]; one fixed measured state (evidence/state_snapshot.json)",
+    "up_axis": "+Y",
+    "viewport_resolution": [
+     640,
+     420
+    ]
+   },
+   "mode": "diagnostic",
+   "pair_id": "row0",
+   "state_binding": {
+    "kind": "state",
+    "sha256": "7944df30c79e54e2004060bdffd3ae27c7fd8796c4c92bd4c978e60d7be1b13e"
+   },
+   "view_id": "whole-creature overview",
+   "visibility": {
+    "label_ids": [
+     "frame_axes",
+     "carpal_centroids",
+     "tendon_sites",
+     "stable_ids"
+    ],
+    "layers": [
+     "outer envelope",
+     "selected bones/joints",
+     "muscle/tendon paths",
+     "attachment sites",
+     "frame axes",
+     "stable 3D labels"
+    ],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "source_hand_assembly",
+     "tendon_sites",
+     "frame_axes"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "source_hand_assembly"
+    ],
+    "selected_ids": [
+     "source_hand_assembly"
+    ],
+    "tag_bindings": [
+     {
+      "label_id": "frame_axes",
+      "subject_id": "frame_axes"
+     },
+     {
+      "label_id": "carpal_centroids",
+      "subject_id": "source_hand_assembly"
+     },
+     {
+      "label_id": "tendon_sites",
+      "subject_id": "tendon_sites"
+     },
+     {
+      "label_id": "stable_ids",
+      "subject_id": "source_hand_assembly"
+     }
+    ]
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "image",
+    "pixel_rectangle": [
+     642,
+     0,
+     642,
+     422
+    ],
+    "region": "pixel_rectangle"
+   },
+   "camera": {
+    "aspect_ratio": 1.5238095238095237,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: single sample, tick 0, no motion",
+    "coordinate_unit": "m",
+    "forward_axis": "-Z",
+    "frame_id": "hand_r_local_m_ortho",
+    "handedness": "right",
+    "interpolation_note": "static capture; no interpolation",
+    "near_far_planes": [
+     0.02,
+     1.5
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orthographic_span": 0.17037877924350017,
+    "projection": "orthographic",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.2789557755720133,
+      "orientation": [
+       0.07434969110678388,
+       0.3388861493919123,
+       0.9160964943371536,
+       0.20098635338207912
+      ],
+      "position": [
+       0.09415037558942504,
+       0.00552660501461355,
+       -0.26324008522165543
+      ],
+      "target": [
+       0.018149999978587038,
+       -0.08314049986469746,
+       -0.009905499852195382
+      ],
+      "tick": 0
+     }
+    ],
+    "state_or_tick_interval": "tick_interval [0, 0]; one fixed measured state (evidence/state_snapshot.json)",
+    "up_axis": "+Y",
+    "viewport_resolution": [
+     640,
+     420
+    ]
+   },
+   "mode": "clean",
+   "pair_id": "row0",
+   "state_binding": {
+    "kind": "state",
+    "sha256": "7944df30c79e54e2004060bdffd3ae27c7fd8796c4c92bd4c978e60d7be1b13e"
+   },
+   "view_id": "whole-creature overview",
+   "visibility": {
+    "label_ids": [],
+    "layers": [],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "source_hand_assembly"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "source_hand_assembly"
+    ],
+    "selected_ids": [],
+    "tag_bindings": []
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "image",
+    "pixel_rectangle": [
+     0,
+     422,
+     642,
+     422
+    ],
+    "region": "pixel_rectangle"
+   },
+   "camera": {
+    "aspect_ratio": 1.5238095238095237,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: single sample, tick 0, no motion",
+    "coordinate_unit": "m",
+    "forward_axis": "-Z",
+    "frame_id": "hand_r_local_m_ortho",
+    "handedness": "right",
+    "interpolation_note": "static capture; no interpolation",
+    "near_far_planes": [
+     0.02,
+     1.5
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orthographic_span": 0.1372876103370016,
+    "projection": "orthographic",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.1233842853491597,
+      "orientation": [
+       0.2664283754082449,
+       0.7745240166196756,
+       0.5424977383363473,
+       0.18661369820191623
+      ],
+      "position": [
+       0.08948427467860437,
+       -0.10908023611924922,
+       -0.10717951080676447
+      ],
+      "target": [
+       0.018149999978587038,
+       -0.08314049986469746,
+       -0.009905499852195382
+      ],
+      "tick": 0
+     }
+    ],
+    "state_or_tick_interval": "tick_interval [0, 0]; one fixed measured state (evidence/state_snapshot.json)",
+    "up_axis": "+Y",
+    "viewport_resolution": [
+     640,
+     420
+    ]
+   },
+   "mode": "diagnostic",
+   "pair_id": "row1",
+   "state_binding": {
+    "kind": "state",
+    "sha256": "7944df30c79e54e2004060bdffd3ae27c7fd8796c4c92bd4c978e60d7be1b13e"
+   },
+   "view_id": "local attachment close-up",
+   "visibility": {
+    "label_ids": [
+     "frame_axes",
+     "carpal_centroids",
+     "tendon_sites",
+     "stable_ids"
+    ],
+    "layers": [
+     "outer envelope",
+     "selected bones/joints",
+     "muscle/tendon paths",
+     "attachment sites",
+     "frame axes",
+     "stable 3D labels"
+    ],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "source_hand_assembly",
+     "tendon_sites",
+     "frame_axes"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "source_hand_assembly"
+    ],
+    "selected_ids": [
+     "source_hand_assembly"
+    ],
+    "tag_bindings": [
+     {
+      "label_id": "frame_axes",
+      "subject_id": "frame_axes"
+     },
+     {
+      "label_id": "carpal_centroids",
+      "subject_id": "source_hand_assembly"
+     },
+     {
+      "label_id": "tendon_sites",
+      "subject_id": "tendon_sites"
+     },
+     {
+      "label_id": "stable_ids",
+      "subject_id": "source_hand_assembly"
+     }
+    ]
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "image",
+    "pixel_rectangle": [
+     642,
+     422,
+     642,
+     422
+    ],
+    "region": "pixel_rectangle"
+   },
+   "camera": {
+    "aspect_ratio": 1.5238095238095237,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: single sample, tick 0, no motion",
+    "coordinate_unit": "m",
+    "forward_axis": "-Z",
+    "frame_id": "hand_r_local_m_ortho",
+    "handedness": "right",
+    "interpolation_note": "static capture; no interpolation",
+    "near_far_planes": [
+     0.02,
+     1.5
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orthographic_span": 0.1372876103370016,
+    "projection": "orthographic",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.1233842853491597,
+      "orientation": [
+       0.2664283754082449,
+       0.7745240166196756,
+       0.5424977383363473,
+       0.18661369820191623
+      ],
+      "position": [
+       0.08948427467860437,
+       -0.10908023611924922,
+       -0.10717951080676447
+      ],
+      "target": [
+       0.018149999978587038,
+       -0.08314049986469746,
+       -0.009905499852195382
+      ],
+      "tick": 0
+     }
+    ],
+    "state_or_tick_interval": "tick_interval [0, 0]; one fixed measured state (evidence/state_snapshot.json)",
+    "up_axis": "+Y",
+    "viewport_resolution": [
+     640,
+     420
+    ]
+   },
+   "mode": "clean",
+   "pair_id": "row1",
+   "state_binding": {
+    "kind": "state",
+    "sha256": "7944df30c79e54e2004060bdffd3ae27c7fd8796c4c92bd4c978e60d7be1b13e"
+   },
+   "view_id": "local attachment close-up",
+   "visibility": {
+    "label_ids": [],
+    "layers": [],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "source_hand_assembly"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "source_hand_assembly"
+    ],
+    "selected_ids": [],
+    "tag_bindings": []
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "image",
+    "pixel_rectangle": [
+     0,
+     844,
+     642,
+     422
+    ],
+    "region": "pixel_rectangle"
+   },
+   "camera": {
+    "aspect_ratio": 1.5238095238095237,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: single sample, tick 0, no motion",
+    "coordinate_unit": "m",
+    "forward_axis": "-Z",
+    "frame_id": "hand_r_local_m_ortho",
+    "handedness": "right",
+    "interpolation_note": "static capture; no interpolation",
+    "near_far_planes": [
+     0.02,
+     1.5
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orthographic_span": 0.1413201916918836,
+    "projection": "orthographic",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.2145813658246256,
+      "orientation": [
+       -0.3640496294908103,
+       -0.5587952256687421,
+       0.6243223563835126,
+       0.406739914880703
+      ],
+      "position": [
+       -0.17693392145252385,
+       -0.06146450859457402,
+       -0.09660946493268913
+      ],
+      "target": [
+       0.018149999978587038,
+       -0.08314049986469746,
+       -0.009905499852195382
+      ],
+      "tick": 0
+     }
+    ],
+    "state_or_tick_interval": "tick_interval [0, 0]; one fixed measured state (evidence/state_snapshot.json)",
+    "up_axis": "+Y",
+    "viewport_resolution": [
+     640,
+     420
+    ]
+   },
+   "mode": "diagnostic",
+   "pair_id": "row2",
+   "state_binding": {
+    "kind": "state",
+    "sha256": "7944df30c79e54e2004060bdffd3ae27c7fd8796c4c92bd4c978e60d7be1b13e"
+   },
+   "view_id": "orthogonal side and oblique views",
+   "visibility": {
+    "label_ids": [
+     "frame_axes",
+     "carpal_centroids",
+     "tendon_sites",
+     "stable_ids"
+    ],
+    "layers": [
+     "outer envelope",
+     "selected bones/joints",
+     "muscle/tendon paths",
+     "attachment sites",
+     "frame axes",
+     "stable 3D labels"
+    ],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "source_hand_assembly",
+     "tendon_sites",
+     "frame_axes"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "source_hand_assembly"
+    ],
+    "selected_ids": [
+     "source_hand_assembly"
+    ],
+    "tag_bindings": [
+     {
+      "label_id": "frame_axes",
+      "subject_id": "frame_axes"
+     },
+     {
+      "label_id": "carpal_centroids",
+      "subject_id": "source_hand_assembly"
+     },
+     {
+      "label_id": "tendon_sites",
+      "subject_id": "tendon_sites"
+     },
+     {
+      "label_id": "stable_ids",
+      "subject_id": "source_hand_assembly"
+     }
+    ]
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "image",
+    "pixel_rectangle": [
+     642,
+     844,
+     642,
+     422
+    ],
+    "region": "pixel_rectangle"
+   },
+   "camera": {
+    "aspect_ratio": 1.5238095238095237,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: single sample, tick 0, no motion",
+    "coordinate_unit": "m",
+    "forward_axis": "-Z",
+    "frame_id": "hand_r_local_m_ortho",
+    "handedness": "right",
+    "interpolation_note": "static capture; no interpolation",
+    "near_far_planes": [
+     0.02,
+     1.5
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orthographic_span": 0.1413201916918836,
+    "projection": "orthographic",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.2145813658246256,
+      "orientation": [
+       -0.3640496294908103,
+       -0.5587952256687421,
+       0.6243223563835126,
+       0.406739914880703
+      ],
+      "position": [
+       -0.17693392145252385,
+       -0.06146450859457402,
+       -0.09660946493268913
+      ],
+      "target": [
+       0.018149999978587038,
+       -0.08314049986469746,
+       -0.009905499852195382
+      ],
+      "tick": 0
+     }
+    ],
+    "state_or_tick_interval": "tick_interval [0, 0]; one fixed measured state (evidence/state_snapshot.json)",
+    "up_axis": "+Y",
+    "viewport_resolution": [
+     640,
+     420
+    ]
+   },
+   "mode": "clean",
+   "pair_id": "row2",
+   "state_binding": {
+    "kind": "state",
+    "sha256": "7944df30c79e54e2004060bdffd3ae27c7fd8796c4c92bd4c978e60d7be1b13e"
+   },
+   "view_id": "orthogonal side and oblique views",
+   "visibility": {
+    "label_ids": [],
+    "layers": [],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "source_hand_assembly"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "source_hand_assembly"
+    ],
+    "selected_ids": [],
+    "tag_bindings": []
+   }
+  }
+ ]
+}
