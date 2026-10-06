@@ -1,0 +1,32 @@
+{
+ "card_id": "ONT-U05",
+ "slot": 3,
+ "planning_ids": [
+  "U05"
+ ],
+ "objective": "Define and implement climb intent seam - One explicit climb/let-go intent reaches the skill selector with versioned semantics; frozen walk contract remains unchanged",
+ "definition_raw_sha256": "57ded6eb2f2cc6aa914d6f68c8efb55b215790fc7a9d0baa5dfd2c49fd1465c1",
+ "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+ "criteria_sha256": "699696427b5c52bad16f970e88af13e5dbfb137533d8d48c890f126676d28f92",
+ "done_when": "One explicit climb/let-go intent reaches the skill selector with versioned semantics; frozen walk contract remains unchanged",
+ "observation": "Requires a reviewed interface decision, not an invented API",
+ "kind": "decision+implementation",
+ "depends_on": [
+  "U01"
+ ],
+ "calculation_ids": [
+  "C12"
+ ],
+ "verification_profile_id": "controls",
+ "publication_branch": "review/ONT-U05",
+ "pr_base": "astra/gait-capture",
+ "task_inbox_at_attempt_start": "empty (kanban_cli inbox --task ONT-U05: messages=[])",
+ "attempt": {
+  "id": "b60923e0331d44b1b4ac03dbd327bc01",
+  "agent_id": "arrival-3c2e330f584e4c399906ec4eff127054",
+  "workspace": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-U05/b60923e0331d44b1b4ac03dbd327bc01",
+  "attempt_branch": "attempt/ont-u05-b60923e0",
+  "base_commit": "56d0116ac20d70962b6d20e60b65380d3ca49d43",
+  "base_note": "then-tip of astra/gait-capture; includes the U01 dependency merge 048b63f41587bc76ecc27a8cf779d3bd94cd3254 (PR #169)"
+ }
+}

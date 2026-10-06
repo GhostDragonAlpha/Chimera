@@ -1,0 +1,15 @@
+== R4 walk-contract hash proof, 2026-09-24 (C1) ==
+-- git blob sha (content-identity across commits, immune to CRLF filters):
+   freeze e028d6fb   : a9e0444fb495be213faf2023378fca11c43c5611
+   reviewed 87c14ca5 : a9e0444fb495be213faf2023378fca11c43c5611
+   HEAD              : a9e0444fb495be213faf2023378fca11c43c5611
+   working tree      : a9e0444fb495be213faf2023378fca11c43c5611
+-- working-tree sha256 (matches the author receipt + both R4 reruns I6.a/I6.b):
+061a2b55f2f5fd145e0fae918e8a9223b1d58be3bce78f1298cd45aa47aa8781 *tools/science_funnel/typeb_export/command_record.py
+7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44 *tools/monkey_campaign/product/input_mapper.py
+-- git diff 87c14ca5..HEAD, both pinned files (empty = byte-identical):
+-- last commit touching command_record.py:
+e028d6fb COMMAND RECORD v1 frozen: the planner's downward currency + THE PROJECTION LAW (versioned record -> family adapter -> fixed actor input). v1 fields: v_forward (m/s, >=0 -- the plant law's own domain), yaw_rate (carried, NO authority -- commanded_heading reserved for a later lane), issued_tick, source. Measured numbers only: in-band [0, 0.763625] (veto-free 137-222 ticks R1-R4), out-of-band machinery-absorbed (R5: 1.30 clamped to the reach annulus by the EXISTING fore clamp -- the adapter never pre-clamps), rate limits DECLARED UNLIMITED at v1 (step commands measured: onset 7 <= hold 15; no rate number invented), zero-speed = the plant law's own x_off=0 (NOT a stop bar -- a different lane's job, noted), the R4 no-constant-seed constraint carried as a planner-owned semantic. The law enforced: decode_v1 reads ONLY the v1 field set (a v2 wire's extra fields can never leak); the v1 adapter routes EXACTLY commanded_target_velocity_x=float64(v_forward) and the actor conditioning is EMPTY -- the old actor gets exactly its old projection. Trailer: Agent: ifreeze
+-- PIPE ARTIFACT WARNING: 'git show <rev>:file | sha256sum' yields 67711759... (LF blob bytes
+   through the pipe) and MUST NOT be read as a mismatch; use git rev-parse <rev>:<path>, or
+   sha256sum the working-tree file (061a2b55...).

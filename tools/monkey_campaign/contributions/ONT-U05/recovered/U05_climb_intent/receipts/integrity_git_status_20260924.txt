@@ -1,0 +1,31 @@
+U05 integrity paste -- 2026-09-24T23:15:35Z
+
+== git status --porcelain (full worktree) ==
+ M tools/monkey_campaign/agents/U02_camera/receipts/latency_run.json
+?? tools/monkey_campaign/agents/F04_contact/
+?? tools/monkey_campaign/agents/R3_product_review/
+?? tools/monkey_campaign/agents/TIE2/
+?? tools/monkey_campaign/agents/U05_climb_intent/
+?? tools/monkey_campaign/product/climb_intent.py
+?? tools/monkey_campaign/product/climb_intent_tests.py
+
+== git status --porcelain -- tools/monkey_campaign ==
+ M tools/monkey_campaign/agents/U02_camera/receipts/latency_run.json
+?? tools/monkey_campaign/agents/F04_contact/
+?? tools/monkey_campaign/agents/R3_product_review/
+?? tools/monkey_campaign/agents/TIE2/
+?? tools/monkey_campaign/agents/U05_climb_intent/
+?? tools/monkey_campaign/product/climb_intent.py
+?? tools/monkey_campaign/product/climb_intent_tests.py
+
+== tracked files MODIFIED by U05 (must be empty) ==
+ M tools/monkey_campaign/agents/U02_camera/receipts/latency_run.json
+
+== the walk-contract hash (I6, start == end) ==
+command_record.py sha256: 061a2b55f2f5fd145e0fae918e8a9223b1d58be3bce78f1298cd45aa47aa8781
+input_mapper.py   sha256: 7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44
+
+== files U05 declares as its own ==
+tools/monkey_campaign/agents/U05_climb_intent/* (brief, prereg, spec, note, receipts/)
+tools/monkey_campaign/product/climb_intent.py
+tools/monkey_campaign/product/climb_intent_tests.py
