@@ -1,0 +1,378 @@
+{
+ "schema": "ont-w01.parity_records_audit.v1",
+ "task_id": "W01",
+ "planning_id": "W01",
+ "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+ "criteria_sha256": "c42bd4f9ce228ebddcb1be6c87b261979c8a38987ff3d5e74ad37536f397be24",
+ "preregistration_blob_oid": "6bd7e3c94e14897ffe0280ebe31f9322b1fc3a5d",
+ "evidence_class": "records/offline (pinned definitions, ledgers, numerical evidence)",
+ "numerical_evidence": true,
+ "archive_tag": "archive/20260925/agent/typeb-gpu-finish-20260922",
+ "pinned_commit": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+ "identities": {
+  "archive_tag_commit": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+  "R-state-host": {
+   "rev": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "path": "tools/science_funnel/typeb_gpu/co8_t41_fixture/state_t40_host.txt",
+   "blob_oid": "2ef1fabe4de9f37471f212a3f9a7b429dc8a9028",
+   "raw_sha256": "e4c994f156cbf837e4ac3f21334c40a40197f9710dc85b3750d7545be0e0e6fc",
+   "size_bytes": 881
+  },
+  "R-state-gpu": {
+   "rev": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "path": "tools/science_funnel/typeb_gpu/co8_t41_fixture/state_t40_gpu.txt",
+   "blob_oid": "2ef1fabe4de9f37471f212a3f9a7b429dc8a9028",
+   "raw_sha256": "e4c994f156cbf837e4ac3f21334c40a40197f9710dc85b3750d7545be0e0e6fc",
+   "size_bytes": 881
+  },
+  "R-state-cpp": {
+   "rev": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "path": "tools/science_funnel/typeb_gpu/co8_t41_fixture/state_t39_cpp.txt",
+   "blob_oid": "1f6105806423ac63a2152d60d4d7e09dde688005",
+   "raw_sha256": "dc81ec7f53edc29aad1ef5324c1b702ab445a3dd2f8a748102b0a8a2477d63d4",
+   "size_bytes": 881
+  },
+  "R-scene": {
+   "rev": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "path": "tools/science_funnel/typeb_gpu/co8_t41_fixture/scene_sha256.txt",
+   "blob_oid": "ccb0b7372c2cc2ae265443b58434f663595b83f1",
+   "raw_sha256": "d62e89dc8409a0fc7bfbec3ef7d00fe0b8c1c43c9f52bb24e94de118b005588a",
+   "size_bytes": 65
+  },
+  "R-cp45": {
+   "rev": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "path": "tools/science_funnel/typeb_gpu/cp_walk45.txt",
+   "blob_oid": "1001c2046cc471581d12f18ca7be7a9b117110fd",
+   "raw_sha256": "64de115b14a8391a5200eb53d42a7d512181344c0ce9a2487e5432bc35274e18",
+   "size_bytes": 46821
+  },
+  "R-hl45": {
+   "rev": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "path": "tools/science_funnel/typeb_gpu/hl_walk45.txt",
+   "blob_oid": "e6e4c9a41267c421f739959f94b9879aaebafd15",
+   "raw_sha256": "879387c2509e43aa1f7a940b03dc9392d81176539e3fdcc2268213c5b13c83eb",
+   "size_bytes": 43383
+  },
+  "R-csub5": {
+   "rev": "7a845267",
+   "path": "tools/science_funnel/typeb_gpu/csub_t5.txt",
+   "blob_oid": "0d794db1bd3de4d59f5721068edb128a4e0ea30a",
+   "raw_sha256": "9666f2f097a7420a81c87be80e8043c75bd3b1ab9002db2ecc0cd79cd51c1060",
+   "size_bytes": 195714
+  },
+  "R-ksub5": {
+   "rev": "7a845267",
+   "path": "tools/science_funnel/typeb_gpu/ksub_t5.txt",
+   "blob_oid": "2b51ef83035f09bfde2aca8f622e96a72c10ecb0",
+   "raw_sha256": "1ed754ab4d0c8c0f76058da7d3a5f6c34f2565a1982f781188217c174a06bbd2",
+   "size_bytes": 201116
+  },
+  "R-csub41": {
+   "rev": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "path": "tools/science_funnel/typeb_gpu/csub41L.err",
+   "blob_oid": "e93a580ba1d08145aff8d89a21bb0db2862bbf7b",
+   "raw_sha256": "5b1fa0c61f3a713260108bd5e8fc356eeac093f9dc8524c1c7a1da80bfbcf4c2",
+   "size_bytes": 470538
+  },
+  "R-ksub41": {
+   "rev": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "path": "tools/science_funnel/typeb_gpu/ksub41N.out",
+   "blob_oid": "eff4fb992f06f3d607dd1ab2d8eb0530efa7bf03",
+   "raw_sha256": "94f7918eef2ca9c86f329df4a1bde8864ba3dca06be558921bc87ddaf16b95ac",
+   "size_bytes": 475136
+  },
+  "R-hlv2": {
+   "rev": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "path": "tools/science_funnel/typeb_gpu/co8_hl_v2.out",
+   "blob_oid": "899bfe584fa030c16c68798440db6b12e02d05cc",
+   "raw_sha256": "fc6c6074bff55e2dd38a326303552ff0f4daf3a9da3d3999d8c9a881acbee04e",
+   "size_bytes": 88692
+  },
+  "R-hlpre": {
+   "rev": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "path": "tools/science_funnel/typeb_gpu/co8_hl_full6.out",
+   "blob_oid": "a02793d3dcedb63066ecbf7da425bc753ef17b3b",
+   "raw_sha256": "8b798435ae011a64e526816b355a046c74c685976fe02b59a7a152c1915c6055",
+   "size_bytes": 88688
+  },
+  "R-gpuv2": {
+   "rev": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "path": "tools/science_funnel/typeb_gpu/co8_dll_v2b_120.txt",
+   "blob_oid": "f3e1fc00bd549b3850ffba2fb6f8f9c2ce31f28f",
+   "raw_sha256": "4c75cb24804eea154abaaa33396e480fcf396326bfd6a18ec81e383e19beb771",
+   "size_bytes": 38004
+  },
+  "R-bars": {
+   "rev": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "path": "tools/science_funnel/validation/typeb_gpu_fullport_20260921/bars_split_b32.json",
+   "blob_oid": "7a82891ef948b5c4d931b0128f49494ef4c9dfe3",
+   "raw_sha256": "f3bdc2a376dce7ebf0d30b04585d505b7a91e7a61187d57c709a896158f5f214",
+   "size_bytes": 2150
+  }
+ },
+ "checks": [
+  {
+   "check": "P1",
+   "prediction": "identities",
+   "verdict": "PASS",
+   "detail": {
+    "missing_records": [],
+    "resolved_commits": [
+     {
+      "rev": "7a845267",
+      "resolves": true
+     },
+     {
+      "rev": "2dee187d",
+      "resolves": true
+     },
+     {
+      "rev": "3ab21e5f",
+      "resolves": true
+     },
+     {
+      "rev": "77023970",
+      "resolves": true
+     },
+     {
+      "rev": "37ab0c8f",
+      "resolves": true
+     },
+     {
+      "rev": "2c1dc8f2",
+      "resolves": true
+     },
+     {
+      "rev": "b643a850",
+      "resolves": true
+     },
+     {
+      "rev": "9376c3d8",
+      "resolves": true
+     },
+     {
+      "rev": "ef3f3554",
+      "resolves": true
+     },
+     {
+      "rev": "055d6c05",
+      "resolves": true
+     },
+     {
+      "rev": "8feea42a",
+      "resolves": true
+     }
+    ],
+    "message_claims": [
+     {
+      "rev": "2dee187d",
+      "claim": "BIT-EXACT THROUGH 41 ALIGNED WALK STATES",
+      "present": true
+     },
+     {
+      "rev": "3ab21e5f",
+      "claim": "census 20/20 SUBPRE + 20/20 TAUFULL + 20/20 SUBFULL",
+      "present": true
+     },
+     {
+      "rev": "3ab21e5f",
+      "claim": "the entire tick-3 and tick-41 interiors line-identical",
+      "present": true
+     },
+     {
+      "rev": "055d6c05",
+      "claim": "HOST REPLAY WALKS PAST TICK 41 to t=100 rc=0",
+      "present": true
+     },
+     {
+      "rev": "055d6c05",
+      "claim": "host-GPU v2 parity t=1..43",
+      "present": true
+     }
+    ],
+    "p02p03_claims": [
+     {
+      "claim": "## 2. W01 \u2014 tick-3 discrete forelimb parity defect",
+      "present": true
+     },
+     {
+      "claim": "Verdict: CLOSED",
+      "present": true
+     }
+    ],
+    "archive_tag_commit": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c"
+   }
+  },
+  {
+   "check": "P2",
+   "prediction": "frozen entry states",
+   "verdict": "PASS",
+   "detail": {
+    "sha256_state_host": "e4c994f156cbf837e4ac3f21334c40a40197f9710dc85b3750d7545be0e0e6fc",
+    "sha256_state_gpu": "e4c994f156cbf837e4ac3f21334c40a40197f9710dc85b3750d7545be0e0e6fc",
+    "host_gpu_bytes_equal": true,
+    "cpp_differs_only_in_tick_label": true,
+    "host_body_equals_hl45_t40": true,
+    "cpp_body_equals_cp45_t39": true,
+    "scene_sha256": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342",
+    "fixture_full_lines": {
+     "host": 1,
+     "gpu": 1,
+     "cpp": 1
+    }
+   }
+  },
+  {
+   "check": "P3",
+   "prediction": "walk pair bit-exact through aligned state 41 incl. tick-3 window",
+   "verdict": "PASS",
+   "detail": {
+    "aligned_equal_through_41": true,
+    "first_divergence_within_1_41": null,
+    "tick3_window_1_4_equal": {
+     "1": true,
+     "2": true,
+     "3": true,
+     "4": true
+    },
+    "first_divergence_within_1_48": 42,
+    "cpp_states": 45,
+    "host_states": 48
+   }
+  },
+  {
+   "check": "P4",
+   "prediction": "defect-era first diverging census record is SUBPRE t=3 sub=3",
+   "verdict": "PASS",
+   "detail": {
+    "census_records": {
+     "csub_t5": 60,
+     "ksub_t5": 60
+    },
+    "first_divergence": {
+     "kind": "SUBPRE",
+     "index_in_kind": 15,
+     "t": 3,
+     "sub": 3,
+     "sub_b": 3,
+     "reason": "physics",
+     "differing_keys": [
+      "q0",
+      "q1",
+      "q10",
+      "q11",
+      "q12",
+      "q13",
+      "q14",
+      "q15"
+     ]
+    },
+    "subpre_first_divergence": {
+     "kind": "SUBPRE",
+     "index_in_kind": 15,
+     "t": 3,
+     "sub": 3,
+     "sub_b": 3,
+     "reason": "physics",
+     "differing_keys": [
+      "q0",
+      "q1",
+      "q10",
+      "q11",
+      "q12",
+      "q13",
+      "q14",
+      "q15"
+     ]
+    },
+    "matches_named_defect": true
+   }
+  },
+  {
+   "check": "P5",
+   "prediction": "post-fix census 20/20 SUBPRE + 20/20 TAUFULL + 20/20 SUBFULL bit-exact",
+   "verdict": "PASS",
+   "detail": {
+    "counts_cpp": {
+     "SUBPRE": 20,
+     "TAUFULL": 20,
+     "SUBFULL": 20
+    },
+    "counts_kernel": {
+     "SUBPRE": 20,
+     "TAUFULL": 20,
+     "SUBFULL": 20
+    },
+    "counts_match_claim": true,
+    "first_divergence": null,
+    "subfull_sublabel_convention_measured": true
+   }
+  },
+  {
+   "check": "P6",
+   "prediction": "v2 host replay walks past tick 41 to t=100 rc=0",
+   "verdict": "PASS",
+   "detail": {
+    "final_tick_summary": "y=0.215657301 vx=0.664807 rc=0 adv=7 refused=0 ticks=100",
+    "expected_final_tick_summary": "y=0.215657301 vx=0.664807 rc=0 adv=7 refused=0 ticks=100",
+    "refused_lines": [],
+    "tick_lines": 17,
+    "full_states_count": 100,
+    "full_states_max_t": 100
+   }
+  },
+  {
+   "check": "P7",
+   "prediction": "pre-v2 vs v2 host identical t=1..40, first divergence at t=41",
+   "verdict": "PASS",
+   "detail": {
+    "first_divergence": 41,
+    "equal_1_40": true,
+    "hlpre_states": 100,
+    "hlv2_states": 100
+   }
+  },
+  {
+   "check": "P8",
+   "prediction": "host-GPU v2 parity on every FULL state t=1..43",
+   "verdict": "PASS",
+   "detail": {
+    "gpu_states": 43,
+    "differing_ticks_1_43": [],
+    "gpu_max_t": 43
+   }
+  },
+  {
+   "check": "P9",
+   "prediction": "frozen bars record matches the pinned measured table",
+   "verdict": "PASS",
+   "detail": {
+    "freefall_parity_pass": true,
+    "freefall_measured_g": 9.806650000000689,
+    "freefall_err": 6.892264536872972e-13,
+    "stand_parity_pass": false,
+    "stand_max_scaled_diff": 0.9511245759469239,
+    "nominal_horizon": 40,
+    "nominal_refused_class": 5,
+    "nominal_hind_fires": 0,
+    "nominal_fore_lifts": 0,
+    "survival_seeds": 64,
+    "survival_median_horizon": 40.0,
+    "survival_max_horizon": 70.0
+   }
+  }
+ ],
+ "done_when": "Frozen entry-state and event traces satisfy the existing CPU/GPU acceptance bar",
+ "done_when_verdict": "SATISFIED_BY_RECORDS",
+ "failed_predictions": [],
+ "boundaries": {
+  "not_claimed": [
+   "live GPU qualification re-runs (TIE2 Q1/Q2, queued; W03 scope)",
+   "C3 clean-window throughput re-measure (W03 scope)",
+   "anchor-version A/B decision (W03/Astra scope)",
+   "trained walking acceptance (W05+)",
+   "walk-level GPU bars green beyond the recorded freefall GREEN (stand/C1/C2 RED residuals charged to W03's class-41 residual, not to the tick-3 event)"
+  ],
+  "nonvisual_reason": "Records profile: the truth of this clause lives in pinned ledgers and numerical traces; no visual artifact is evidence here."
+ }
+}
