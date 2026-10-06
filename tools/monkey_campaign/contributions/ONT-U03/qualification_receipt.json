@@ -1,0 +1,85 @@
+{
+ "agent_id": "arrival-b249a6084f3c4525afde7644b08ead4f",
+ "attempt_id": "593b5ff8b920461581bb715826613ad7",
+ "candidate_suite": {
+  "capture": "tools/monkey_campaign/contributions/ONT-U03/capture_build.py",
+  "card_contract": "tools/monkey_campaign/contributions/ONT-U03/card_task.json",
+  "extraction": "tools/monkey_campaign/contributions/ONT-U03/extract_reference.py",
+  "preregistration": "tools/monkey_campaign/contributions/ONT-U03/PREREGISTRATION.md (frozen before the first probe run 2026-09-26; REVISION A pre-run corrections from the pinned module laws; REVISION B post-first-run corrections recorded FIRED in prediction_deviations; committed before any evidence artifact)",
+  "probe": "tools/monkey_campaign/contributions/ONT-U03/focus_policy_probe.py",
+  "tests": "python -B -m unittest test_focus_policy_probe -v -> 16/16 OK; probe 10/10 checks PASS"
+ },
+ "capture_context": {
+  "capture_sha256": "adae7561713afd235c6140ea4ef4bb99496e25e5916a35bcade9a6280c536b1f",
+  "run_id": "ont-u03-focus-policy-20260926-593b5ff8",
+  "subject_sha256": "e0b23968bb8ee8e7c5449da464948d68cc67bf3cc62db40dd30a73ee8ef0f9d0",
+  "task_id": "U03",
+  "tick_interval": [
+   0,
+   68
+  ]
+ },
+ "card_id": "ONT-U03",
+ "criteria_sha256": "a161edd6e1bb2aaf7f55c96503992b17a008f5ebe111032be01d717846aef625",
+ "definition_raw_sha256": "57ded6eb2f2cc6aa914d6f68c8efb55b215790fc7a9d0baa5dfd2c49fd1465c1",
+ "done_when": "Alt-tab, disconnect and key release clear or age commands under a declared policy; no stuck movement",
+ "done_when_how_satisfied": "The DECLARED policy (the qualified subject focus_policy.py's own docstring) clears: blur (declared alt-tab) and disconnect release everything exactly as physical releases (the mapper's frozen decay lands an exact-zero record and then goes silent); a key release starts the same decay; the age floor drops records already older than MAX_AGE_MS=VALID_MS=100 ms at emission, named. No stuck movement: 5000-schedule fuzz (43,046 delivered records) shows no positive-speed record ever survives a clearing event's decay deadline; scripted timeline shows blur/disconnect/release tails landing EXACT 0.0 within 100 ms then total silence; stale deliveries are dropped by name at the gate; the policy cannot move the body (records-only surface, body == exact record integral, residual 0.0).",
+ "done_when_verified": true,
+ "evidence": {
+  "camera": {
+   "provenance": "chimera.visual_capture_manifest.v1, profile controls, 3 views x diagnostic+clean pairs, trace-bound (state_binding sha = trace.jsonl), all 16 profile camera fields; validated in-process with the campaign's visual_capture.validate_manifest and visual_gate.verify against card_task.json (structurally_valid true) INCLUDING this receipt's camera/visual entries.",
+   "raw_sha256": "361b26992b166b3139181190b8e517268d02b98e30a03ec69bad1c9283023c56",
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-U03/593b5ff8b920461581bb715826613ad7/checkout/tools/monkey_campaign/contributions/ONT-U03/evidence/capture_manifest.json"
+  },
+  "independent_review": null,
+  "independent_review_binding": "No independent worker review of this candidate exists yet (the subject's original integration was lead-authored; this qualification candidate is new work). Independent review of THIS candidate is a REMAINING GATE; at ACCEPTED the lead sets this entry to the named review receipt + raw hash.",
+  "numerical": {
+   "provenance": "10/10 frozen controls checks green over evidence/trace.jsonl (2dd6f2995d0d2987e0f9054346688bdcfdb27962b3cd9ed876619e386d17192f, byte-identical on rerun): 5000-schedule seeded no-stuck fuzz (43,046 delivered records, zero positive-speed deadline violations, zero non-emit sink calls, zero phantom keys), blur/disconnect/key-release decay-to-exact-zero-then-silence, named dropped intent while unfocused, named expiry-floor gate drops (ages 0/15/30 ticks kept, 45+ dropped; healthy clock drops 0), frozen-number object identity incl. MAX_AGE_MS is VALID_MS, blur byte-identical to U01 release_all, no-camera-induced body movement (record-integral residual 0.0), declared obstruction with readable target, bound timing chain; 2 frozen sub-clause mispredictions honestly recorded FIRED in prediction_deviations.",
+   "raw_sha256": "0a7eaee8a2b8f04b4bb9e3d915c6a4c2df610af285c348feee128b92a7ae81c4",
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-U03/593b5ff8b920461581bb715826613ad7/checkout/tools/monkey_campaign/contributions/ONT-U03/evidence/numerical_receipt.json"
+  },
+  "runtime": {
+   "provenance": "The deterministic headless run record: REAL pinned FocusPolicy + InputMapper + CommandRecord seam + FollowCamera over injected integer milliseconds; CPU-only, no GPU, no engine process, no network, operator desktop untouched; trace byte-identical on rerun.",
+   "raw_sha256": "0d0deac14854704231856176191d6733b1a493eb84777332a231b8b9a6284d42",
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-U03/593b5ff8b920461581bb715826613ad7/checkout/tools/monkey_campaign/contributions/ONT-U03/evidence/runtime_receipt.json"
+  },
+  "source": {
+   "provenance": "The PRESERVED records leg: 12 source/record files recovered read-only via git show 9afbddcd:<path> (hashes asserted at probe import; play worktree untouched): the qualified subject focus_policy.py (e0b23968), its frozen falsifier module (f1d7a2fd) and GREEN 41/41 receipt (3e31524f), U01's mapper byte-identical to the qualified PR #152 subject (7a36a45e) with its falsifier (95f44e90) and GREEN 26/26 receipt (00c73e34), the seam (67711759) and the camera referent (d61347f0).",
+   "raw_sha256": "5a6f270927d33aa991fc8bea7ba528898c6e477fa18fc5c2e2173867bf3d3468",
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-U03/593b5ff8b920461581bb715826613ad7/checkout/tools/monkey_campaign/contributions/ONT-U03/reference/EXTRACTION.json"
+  },
+  "visual": {
+   "provenance": "640x360 h264 414 frames @20fps (20.7 s), rendered deterministically from trace.jsonl (three profile views x diagnostic+clean segments x 69 ticks; clean segments are their OWN frames with no diagnostic pixels); bitexact rebuild reproduces the identical file.",
+   "raw_sha256": "adae7561713afd235c6140ea4ef4bb99496e25e5916a35bcade9a6280c536b1f",
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-U03/593b5ff8b920461581bb715826613ad7/checkout/tools/monkey_campaign/contributions/ONT-U03/evidence/capture.mp4"
+  }
+ },
+ "head_sha": null,
+ "head_sha_binding": "Set head_sha to the EXACT reviewed PR head when this receipt is passed to the ACCEPTED review (ontology_queue.qualification requires q.head_sha == reviewed head; the in-tree copy cannot know its own commit hash).",
+ "honest_boundary": "COMPONENT evidence only: the capture pixels of evidence/capture.mp4 are a deterministic CPU visualization of the recorded headless focus-policy trace of the qualified subject (the policy, the mapper and the seam are headless by construction); they are NOT native engine frames, and 'alt-tab' in the trace is the policy's DECLARED on_blur event, never an OS focus change (the observation clause forbids touching the operator's desktop). The REAL run's input->body-EXECUTION leg stays INCOMPLETE exactly as recorded on the merged U01 lineage: the pinned engine refuses gait enablement and has no route consuming V1 speed/heading records (measured), so no trained gait, climbing, new model or full-game completion is claimed; the integrated playable-runtime checkpoint stays with the integration lane.",
+ "pinned_lineage": {
+  "integration_commit": "8fc072f3 (U03 integrated; ancestor of the pinned head; R3 release_all passthrough integrated at d2a0e593; SessionFlow drives it)",
+  "play_head": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+  "sources": {
+   "tools/monkey_campaign/agents/U01_input/PREREGISTRATION.md": "0aadc3cd5fec7e7bd0a7aba0bcfa2a5d05edf8fcb6805eda2ecae92d4d3d1b5f",
+   "tools/monkey_campaign/agents/U01_input/discovery_note.md": "38efdf393bd03b7b1260896e917231f2968963a501a180f4fc01491a02b30849",
+   "tools/monkey_campaign/agents/U01_input/receipts/input_mapper_tests_20260924.txt": "00c73e346298f3880c61f4f30c77f490565c6f630e61f9bf414839ae6f6fa84c",
+   "tools/monkey_campaign/agents/U03_focus/PREREGISTRATION.md": "f078f1fd0ae1db22eb130ec8f2534c6ffce0c98b82b0c36106a9bde8e510d531",
+   "tools/monkey_campaign/agents/U03_focus/brief.md": "3156ab60e40535b25a136d36589c060d0a556c6b950bdf98a92c84f12c1cb801",
+   "tools/monkey_campaign/agents/U03_focus/receipts/focus_policy_tests_20260924.txt": "3e31524f765697290469fcba5f35b11524e9a916e6c9e6d2800aad32e2967552",
+   "tools/monkey_campaign/product/focus_policy.py": "e0b23968bb8ee8e7c5449da464948d68cc67bf3cc62db40dd30a73ee8ef0f9d0",
+   "tools/monkey_campaign/product/focus_policy_tests.py": "f1d7a2fd39dca37729532c41a74f2d061e6d7fc95dedb3da564d13b2b4304fa9",
+   "tools/monkey_campaign/product/follow_camera.py": "d61347f085644e66a5f29ab1e689e2bbd2cd5ff04099856ade70e5da90a791a7",
+   "tools/monkey_campaign/product/input_mapper.py": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+   "tools/monkey_campaign/product/input_mapper_tests.py": "95f44e90998f9728802ff5f7cb8628f18f2026bef1fb2c4de681e5253381216e",
+   "tools/science_funnel/typeb_export/command_record.py": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e"
+  }
+ },
+ "profile_id": "controls",
+ "profile_kind": "motion",
+ "profile_verified": true,
+ "schema": "chimera.ontology_qualification_receipt.v1",
+ "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+ "subject_sha256": "e0b23968bb8ee8e7c5449da464948d68cc67bf3cc62db40dd30a73ee8ef0f9d0",
+ "task_id": "U03"
+}
