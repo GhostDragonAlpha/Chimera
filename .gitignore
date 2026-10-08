@@ -13,6 +13,13 @@ Chimera/Plugins/**/Intermediate/
 *.log
 *.sarif
 $null
+# Evidence-logs continuity substrate: raw traces CITED by docs/evidence/*.md are
+# signal, not spew — they must survive a fresh checkout so cited evidence is
+# actually inheritable. d9a23ff2 force-tracked the backlog once; this negation
+# makes future evidence logs auto-track so no commit needs `git add -f`. The
+# engine-native relay logs ignored further down (ChimeraEngine/native/*.log) are
+# still spew and stay out.
+!docs/evidence/**/*.log
 
 # Multi-agent coordination state (machine-local; advisory locks + volatile
 # heartbeats — committing them would churn every claim/heartbeat)
