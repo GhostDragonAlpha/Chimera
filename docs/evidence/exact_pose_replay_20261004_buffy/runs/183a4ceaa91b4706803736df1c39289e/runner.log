@@ -1,0 +1,30 @@
+test_all_20_bodies_pad_and_anchor_present_without_masking (__main__.ReplayTests.test_all_20_bodies_pad_and_anchor_present_without_masking) ... ok
+test_canonical_combination_reversed_and_partitioned (__main__.ReplayTests.test_canonical_combination_reversed_and_partitioned) ... ok
+test_canonical_order_independent_of_source_order (__main__.ReplayTests.test_canonical_order_independent_of_source_order) ... ok
+test_cli_scientific_refusal_nonzero_and_preserved (__main__.ReplayTests.test_cli_scientific_refusal_nonzero_and_preserved) ... ok
+test_contact_depth_boundary_preserved (__main__.ReplayTests.test_contact_depth_boundary_preserved) ... ok
+test_diagnostic_tamper_and_promotion_refuse (__main__.ReplayTests.test_diagnostic_tamper_and_promotion_refuse) ... ok
+test_duplicate_missing_and_extra_keys_refused (__main__.ReplayTests.test_duplicate_missing_and_extra_keys_refused) ... ok
+test_fixture_release_success_is_not_authority_evidence (__main__.ReplayTests.test_fixture_release_success_is_not_authority_evidence) ... ok
+test_inherited_float_and_anchor_flags_compared_exactly (__main__.ReplayTests.test_inherited_float_and_anchor_flags_compared_exactly) ... ok
+test_joined_pad_metadata_drift_refused (__main__.ReplayTests.test_joined_pad_metadata_drift_refused) ... ok
+test_json_duplicate_and_nonfinite_refused (__main__.ReplayTests.test_json_duplicate_and_nonfinite_refused) ... ok
+test_local_pin_drift_refused (__main__.ReplayTests.test_local_pin_drift_refused) ... ok
+test_missing_pad_or_anchor_records_refuse (__main__.ReplayTests.test_missing_pad_or_anchor_records_refuse) ... ok
+test_no_release_refuses_before_geometry_import (__main__.ReplayTests.test_no_release_refuses_before_geometry_import) ... ok
+test_noncontact_touch_and_contact_clear_refuse (__main__.ReplayTests.test_noncontact_touch_and_contact_clear_refuse) ... ok
+test_partial_and_duplicate_combination_refused (__main__.ReplayTests.test_partial_and_duplicate_combination_refused) ... ok
+test_release_checks_pin_base_hash_and_operation (__main__.ReplayTests.test_release_checks_pin_base_hash_and_operation) ... ok
+test_release_rejects_published_bytes_drift (__main__.ReplayTests.test_release_rejects_published_bytes_drift) ... ok
+test_release_rejects_seal_before_new_prereg_pin (__main__.ReplayTests.test_release_rejects_seal_before_new_prereg_pin) ... ok
+test_retained_failed_or_tampered_control_refuses (__main__.ReplayTests.test_retained_failed_or_tampered_control_refuses) ... ok
+test_scaling_requires_actual_serial_gate (__main__.ReplayTests.test_scaling_requires_actual_serial_gate) ... ok
+test_source_identity_and_foreign_prereg_refuse (__main__.ReplayTests.test_source_identity_and_foreign_prereg_refuse) ... ok
+test_source_parses_and_has_no_placement_solve_calls (__main__.ReplayTests.test_source_parses_and_has_no_placement_solve_calls) ... ok
+test_unknown_raw_class_refused (__main__.ReplayTests.test_unknown_raw_class_refused) ... ok
+test_unsafe_keys_nonfinite_and_shapes_refused (__main__.ReplayTests.test_unsafe_keys_nonfinite_and_shapes_refused) ... ok
+
+----------------------------------------------------------------------
+Ran 25 tests in 0.619s
+
+OK

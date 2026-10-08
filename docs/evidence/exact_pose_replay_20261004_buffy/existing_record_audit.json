@@ -1,0 +1,56 @@
+{
+  "schema": "chimera.existing_record_audit.v1",
+  "execution_class": "SEALED_RECEIPT_METADATA_AUDIT_NOT_COLLISION_REPLAY",
+  "observed_utc": "2026-10-04T02:16:48.428073+00:00",
+  "source_sha256": {
+    "raised_cap_stage1_pad_receipt.json": "4df5f48020c4dd601b7d6fc7c3047c4eb3c1e5c829bf450e07427c32c3835900",
+    "stage2_capacity_receipt.json": "8b93464c6ee206570c60fd00a750a2229ea650b0afaf589b8bbce6ed0bde174d"
+  },
+  "postures": {
+    "q_c_PRIMARY": {
+      "count": 314,
+      "pad_classes": {
+        "PAD_ABSORBED": 6,
+        "PAD_CONTACT": 308
+      },
+      "anchor_classes": {
+        "GENUINE_PENETRATION": 314
+      },
+      "recorded_bone_census": {
+        "1": 314
+      },
+      "pad_body_omitted_count": 314,
+      "anchor_depth_values": [
+        0.019999999999999997
+      ],
+      "cap_classes": {
+        "ARM_NONFINITE_REFUSED": 0,
+        "CAP_EXCEEDED": 0,
+        "CAP_SATISFIED": 314
+      }
+    },
+    "q_zero_CONTROL": {
+      "count": 40,
+      "pad_classes": {
+        "PAD_CONTACT": 40
+      },
+      "anchor_classes": {
+        "GENUINE_PENETRATION": 40
+      },
+      "recorded_bone_census": {
+        "1": 28,
+        "2": 12
+      },
+      "pad_body_omitted_count": 40,
+      "anchor_depth_values": [
+        0.019999999999999997
+      ],
+      "cap_classes": {
+        "ARM_NONFINITE_REFUSED": 0,
+        "CAP_EXCEEDED": 0,
+        "CAP_SATISFIED": 40
+      }
+    }
+  },
+  "fresh_collision_geometry_executed": false
+}

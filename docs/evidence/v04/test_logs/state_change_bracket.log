@@ -1,0 +1,16 @@
+=== case: state_change_bracket ===
+mode: bracket
+expected_behavior: Before/after state differ; change detected.
+start_utc: 2026-09-07T19:52:16Z
+end_utc: 2026-09-07T19:52:18Z
+command: E:\PythonChimera\.venv-ga\Scripts\python.exe E:/PythonChimera/tools/dyad_timed_capture.py --url http://localhost:9877 --endpoint /frame --duration 2.0 --interval 0.5 --out E:/PythonChimera/docs/evidence/v04/test_logs/run_07_bracket
+exit_code: 0
+stdout_first: V04 capture complete.
+stderr_first: 
+PASS/FAIL: PASS
+output_files (0): 
+captures_json: 0 ()
+images: 0 ()
+NOTE: minimal mock only; full 4.1-4.2 mock queued behind V03 PRIORITY 1.
+NOTE: no co-instant claim is made; FRAME_ID_KEYS absence means co_instant_supported=False.
+NOTE: non-atomic state bracket preserved by instrument design (before_start/end, image_start/end, after_start/end).

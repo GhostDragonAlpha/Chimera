@@ -1,0 +1,12 @@
+==============================================================================
+GATE. all 7 in-package pins MATCH (stage-3 prereg 4dfb62e0ebff8787 / raised-cap receipt 4df5f48020c4dd60).
+INHERITED INPUT GATE ok=True pins=14.
+------------------------------------------------------------------------------
+POSTURE q_c_PRIMARY survivors=314 classes={"IDENTITY_CLOSED": 308, "IDENTITY_MISMATCH": 0, "ZERO_FORCE_CLASS": 6} coverage_ok=True violations=0
+------------------------------------------------------------------------------
+POSTURE q_zero_CONTROL survivors=40 classes={"IDENTITY_CLOSED": 40, "IDENTITY_MISMATCH": 0, "ZERO_FORCE_CLASS": 0} coverage_ok=True violations=0
+S3-P3 MU0: NON_CLOSING_AT_MU0 | S3-P4 MU0.6: CLOSES (P_req = 54.68840727038889 N)
+S3-P5 REVERSAL CASE: class=IDENTITY_MISMATCH min_signed_force=-0.22919130820205322 (must be negative)
+==============================================================================
+PREDICTIONS: {"q_c_PRIMARY": {"S3_P1": true, "S3_P2": true, "S3_P3": true, "S3_P4": true, "S3_P5": true}, "q_zero_CONTROL": {"S3_P1": true, "S3_P2": true}}
+VERDICT: STAGE3_FORCES_IDENTITY_FULL_SET

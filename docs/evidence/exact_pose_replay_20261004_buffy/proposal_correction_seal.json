@@ -1,0 +1,12 @@
+{
+  "sealed": "E:\\PythonChimera\\docs\\evidence\\exact_pose_replay_20261004_buffy\\package\\sealed\\a1e9d5f927e94d8185cf6ae7d512cbf2",
+  "manifest_sha256": "e4f973195e9228529bdc689620a7224101e9fa7a8cc65e8ae324ab05de15befe",
+  "patch": "E:\\PythonChimera\\docs\\evidence\\exact_pose_replay_20261004_buffy\\package\\sealed\\a1e9d5f927e94d8185cf6ae7d512cbf2\\change.patch",
+  "changed_files": [
+    "tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/INPUTS.json",
+    "tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/PREREGISTRATION.md",
+    "tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/RUNBOOK.md",
+    "tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/replay.py",
+    "tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/test_replay.py"
+  ]
+}

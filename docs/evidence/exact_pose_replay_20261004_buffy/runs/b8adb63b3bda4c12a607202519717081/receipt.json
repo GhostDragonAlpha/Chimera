@@ -1,0 +1,66 @@
+{
+  "job": "b8adb63b3bda4c12a607202519717081",
+  "state": "PASSED",
+  "sealed_manifest_sha256": "d77b3137772fcf358453a0665016ab4a376136c4f0896f06f08c6fd6eeca07c2",
+  "base": "79b263944d4053b7ee41f97c97b3cc2f732b1b97",
+  "command": [
+    "C:/Python314/python.exe",
+    "-B",
+    "tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/replay.py",
+    "preflight"
+  ],
+  "slot": 2,
+  "cleanup_verified": true,
+  "declared_budget_bytes": 2147483648,
+  "resource_profile": {
+    "schema": "chimera.runner_profile.v1",
+    "host_cpu": "Intel Core i9-13900K",
+    "physical_cores": 24,
+    "logical_processors": 32,
+    "installed_ram_bytes": 137199087616,
+    "agent_target": 12,
+    "agent_ceiling": 15,
+    "cpu_slots": 4,
+    "threads_per_job": 4,
+    "job_memory_gib": 16,
+    "free_memory_reserve_gib": 24,
+    "publication_writers": 1,
+    "agent_limits_enforced_by": "GLM dispatcher; runner does not launch or count API agents"
+  },
+  "memory_admission": {
+    "allowed": true,
+    "available_bytes": 98460672000,
+    "required_bytes": 42949672960
+  },
+  "space_admission": {
+    "allowed": true,
+    "free_bytes": 1679373938688,
+    "reserved_bytes": 4294967296,
+    "incoming_bytes": 2415919104,
+    "required_bytes": 6710886400
+  },
+  "artifact_store_class": "protected_evidence",
+  "exit_code": 0,
+  "artifacts": {
+    "runner.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "outputs/replay/preflight.json": "8cc1f4e507a139dd27d4a9073eff60f566bf2588a2721b72872079303de71c83",
+    "outputs/replay/progress.json": "5b66af60cd3c3d18c923fbacd145b55529130ef1959b1ee51394e632cf3d9929"
+  },
+  "artifact_allocated_bytes": {
+    "runner.log": 0,
+    "outputs/replay/preflight.json": 36864,
+    "outputs/replay/progress.json": 392
+  },
+  "bytes": {
+    "schema": "chimera.byte_accounting.v1",
+    "units": "bytes",
+    "scratch_peak_bytes": 8039391,
+    "scratch_at_cleanup_bytes": 8039391,
+    "scratch_at_cleanup_allocated_bytes": 8106408,
+    "retained_bytes": 33617,
+    "retained_allocated_bytes": 37256,
+    "reclaimed_bytes": 8005774,
+    "reclaimed_allocated_bytes": 8069152,
+    "declared_budget_bytes": 2147483648
+  }
+}

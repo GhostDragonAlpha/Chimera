@@ -1,0 +1,165 @@
+[
+  {
+    "job": "92d1c324c46440f98ad6ed18cca3b154",
+    "state": "PASSED",
+    "cleanup_verified": true,
+    "local_copy": "docs/evidence/exact_pose_replay_20261004_buffy/runs/92d1c324c46440f98ad6ed18cca3b154",
+    "canonical_result_directory": "E:\\ChimeraWork\\task-runner\\results\\92d1c324c46440f98ad6ed18cca3b154",
+    "command": [
+      "C:/Python314/python.exe",
+      "-B",
+      "tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/replay.py",
+      "preflight"
+    ],
+    "seal": "5c899b375c543c2ef48f5d8d4f69619c26c773861090b539bcc3c83359b8ad28"
+  },
+  {
+    "job": "b8adb63b3bda4c12a607202519717081",
+    "state": "PASSED",
+    "cleanup_verified": true,
+    "local_copy": "docs/evidence/exact_pose_replay_20261004_buffy/runs/b8adb63b3bda4c12a607202519717081",
+    "canonical_result_directory": "E:\\ChimeraWork\\task-runner\\results\\b8adb63b3bda4c12a607202519717081",
+    "command": [
+      "C:/Python314/python.exe",
+      "-B",
+      "tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/replay.py",
+      "preflight"
+    ],
+    "seal": "d77b3137772fcf358453a0665016ab4a376136c4f0896f06f08c6fd6eeca07c2"
+  },
+  {
+    "job": "bafb8d7ea432437ab65744879678002a",
+    "state": "PASSED",
+    "cleanup_verified": true,
+    "local_copy": "docs/evidence/exact_pose_replay_20261004_buffy/runs/bafb8d7ea432437ab65744879678002a",
+    "canonical_result_directory": "E:\\ChimeraWork\\task-runner\\results\\bafb8d7ea432437ab65744879678002a",
+    "command": [
+      "C:/Python314/python.exe",
+      "-B",
+      "tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/replay.py",
+      "preflight"
+    ],
+    "seal": "8dedb0d07832eab1d4aa17bc7ff12d5fb24ef72a8b07467c76c496cd1aa59674"
+  },
+  {
+    "job": "d03b64629cf14bbfa4c77e5ba6c30306",
+    "state": "PASSED",
+    "cleanup_verified": true,
+    "local_copy": "docs/evidence/exact_pose_replay_20261004_buffy/runs/d03b64629cf14bbfa4c77e5ba6c30306",
+    "canonical_result_directory": "E:\\ChimeraWork\\task-runner\\results\\d03b64629cf14bbfa4c77e5ba6c30306",
+    "command": [
+      "C:/Python314/python.exe",
+      "-B",
+      "tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/replay.py",
+      "preflight"
+    ],
+    "seal": "8dedb0d07832eab1d4aa17bc7ff12d5fb24ef72a8b07467c76c496cd1aa59674"
+  },
+  {
+    "job": "52ff886a2699453da2a2e841c16ac5c0",
+    "state": "FAILED",
+    "cleanup_verified": true,
+    "local_copy": "docs/evidence/exact_pose_replay_20261004_buffy/runs/52ff886a2699453da2a2e841c16ac5c0",
+    "canonical_result_directory": "E:\\ChimeraWork\\task-runner\\results\\52ff886a2699453da2a2e841c16ac5c0",
+    "command": [
+      "C:/Python314/python.exe",
+      "-B",
+      "tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/replay.py",
+      "control",
+      "--route",
+      "serial"
+    ],
+    "seal": "8dedb0d07832eab1d4aa17bc7ff12d5fb24ef72a8b07467c76c496cd1aa59674"
+  },
+  {
+    "job": "183a4ceaa91b4706803736df1c39289e",
+    "state": "PASSED",
+    "cleanup_verified": true,
+    "local_copy": "docs/evidence/exact_pose_replay_20261004_buffy/runs/183a4ceaa91b4706803736df1c39289e",
+    "canonical_result_directory": "E:\\ChimeraWork\\task-runner\\results\\183a4ceaa91b4706803736df1c39289e",
+    "command": [
+      "C:/Python314/python.exe",
+      "-B",
+      "tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/test_replay.py"
+    ],
+    "seal": "5c899b375c543c2ef48f5d8d4f69619c26c773861090b539bcc3c83359b8ad28"
+  },
+  {
+    "job": "6d5c28ac39aa458699e577f2eb766e5b",
+    "state": "FAILED",
+    "cleanup_verified": true,
+    "local_copy": "docs/evidence/exact_pose_replay_20261004_buffy/runs/6d5c28ac39aa458699e577f2eb766e5b",
+    "canonical_result_directory": "E:\\ChimeraWork\\task-runner\\results\\6d5c28ac39aa458699e577f2eb766e5b",
+    "command": [
+      "C:/Python314/python.exe",
+      "-B",
+      "tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/test_replay.py"
+    ],
+    "seal": "05617bfaf2ce46020e208ee7cc8357b04cd134c6d3072e117506e73875e87639"
+  },
+  {
+    "job": "0a8c1c5f6b3c4a9e901c1d26c6f337db",
+    "state": "PASSED",
+    "cleanup_verified": true,
+    "local_copy": "docs/evidence/exact_pose_replay_20261004_buffy/runs/0a8c1c5f6b3c4a9e901c1d26c6f337db",
+    "canonical_result_directory": "E:\\ChimeraWork\\task-runner\\results\\0a8c1c5f6b3c4a9e901c1d26c6f337db",
+    "command": [
+      "C:/Python314/python.exe",
+      "-B",
+      "tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/test_replay.py"
+    ],
+    "seal": "153234710d1b5c8d840c8311067fbd43354a155a99d48bad1986de721348e7e5"
+  },
+  {
+    "job": "92f3c2e6926c48719710cc7e7bfb9f8f",
+    "state": "FAILED",
+    "cleanup_verified": true,
+    "local_copy": "docs/evidence/exact_pose_replay_20261004_buffy/runs/92f3c2e6926c48719710cc7e7bfb9f8f",
+    "canonical_result_directory": "E:\\ChimeraWork\\task-runner\\results\\92f3c2e6926c48719710cc7e7bfb9f8f",
+    "command": [
+      "C:/Python314/python.exe",
+      "-B",
+      "tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/test_replay.py"
+    ],
+    "seal": "e43e76affb50f5034969c719a712f73a2476e63d6124434a8f8d26328cb800f1"
+  },
+  {
+    "job": "7906447e7e614ef9812a6f94f4ff0727",
+    "state": "PASSED",
+    "cleanup_verified": true,
+    "local_copy": "docs/evidence/exact_pose_replay_20261004_buffy/runs/7906447e7e614ef9812a6f94f4ff0727",
+    "canonical_result_directory": "E:\\ChimeraWork\\task-runner\\results\\7906447e7e614ef9812a6f94f4ff0727",
+    "command": [
+      "C:/Python314/python.exe",
+      "-B",
+      "tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/test_replay.py"
+    ],
+    "seal": "d77b3137772fcf358453a0665016ab4a376136c4f0896f06f08c6fd6eeca07c2"
+  },
+  {
+    "job": "c0bbc08e3ede458fb7cd75da550c8c3e",
+    "state": "PASSED",
+    "cleanup_verified": true,
+    "local_copy": "docs/evidence/exact_pose_replay_20261004_buffy/runs/c0bbc08e3ede458fb7cd75da550c8c3e",
+    "canonical_result_directory": "E:\\ChimeraWork\\task-runner\\results\\c0bbc08e3ede458fb7cd75da550c8c3e",
+    "command": [
+      "C:/Python314/python.exe",
+      "-B",
+      "tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/test_replay.py"
+    ],
+    "seal": "5060eae90ba7b295275420e93e1606f9e448a0e597c147e59e84d33781bab015"
+  },
+  {
+    "job": "bd1f906a05674ddea71dacad7f8460ca",
+    "state": "PASSED",
+    "cleanup_verified": true,
+    "local_copy": "docs/evidence/exact_pose_replay_20261004_buffy/runs/bd1f906a05674ddea71dacad7f8460ca",
+    "canonical_result_directory": "E:\\ChimeraWork\\task-runner\\results\\bd1f906a05674ddea71dacad7f8460ca",
+    "command": [
+      "C:/Python314/python.exe",
+      "-B",
+      "tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/test_replay.py"
+    ],
+    "seal": "8dedb0d07832eab1d4aa17bc7ff12d5fb24ef72a8b07467c76c496cd1aa59674"
+  }
+]

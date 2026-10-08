@@ -1,0 +1,16 @@
+=== case: missing_fields ===
+mode: missing
+expected_behavior: Partial state; UNKNOWN for missing gait/time fields.
+start_utc: 2026-09-07T19:52:08Z
+end_utc: 2026-09-07T19:52:09Z
+command: E:\PythonChimera\.venv-ga\Scripts\python.exe E:/PythonChimera/tools/dyad_timed_capture.py --url http://localhost:9877 --endpoint /state --duration 1.0 --interval 0.5 --out E:/PythonChimera/docs/evidence/v04/test_logs/run_03_missing
+exit_code: 0
+stdout_first: V04 capture complete.
+stderr_first: 
+PASS/FAIL: PASS
+output_files (0): 
+captures_json: 0 ()
+images: 0 ()
+NOTE: minimal mock only; full 4.1-4.2 mock queued behind V03 PRIORITY 1.
+NOTE: no co-instant claim is made; FRAME_ID_KEYS absence means co_instant_supported=False.
+NOTE: non-atomic state bracket preserved by instrument design (before_start/end, image_start/end, after_start/end).

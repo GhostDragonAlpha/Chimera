@@ -1,0 +1,28 @@
+{
+  "captures": 2,
+  "duration_actual_first_last_seconds": 0.5779999999940628,
+  "duration_target_seconds": 1.0,
+  "end_utc": "2026-09-07T19:52:09.262790+00:00",
+  "endpoint": "/state",
+  "interval_target_seconds": 0.5,
+  "missed_deadlines": [
+    {
+      "actual_monotonic": 105852.5,
+      "over_by_seconds": 0.01600000000325963,
+      "seq": 0,
+      "target_monotonic": 105852.484
+    },
+    {
+      "actual_monotonic": 105853.078,
+      "over_by_seconds": 0.07799999999406282,
+      "seq": 1,
+      "target_monotonic": 105853.0
+    }
+  ],
+  "record_json": true,
+  "run_dir": "E:/PythonChimera/docs/evidence/v04/test_logs/run_03_missing\\run_20260907_195208",
+  "save_raw": true,
+  "start_utc": "2026-09-07T19:52:08.689047+00:00",
+  "url": "http://localhost:9877",
+  "verdict": "INCOMPLETE_TIMEOUT"
+}

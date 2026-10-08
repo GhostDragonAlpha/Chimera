@@ -1,0 +1,246 @@
+{
+  "after": {
+    "/light": {
+      "error": "URLError: <urlopen error [WinError 10054] An existing connection was forcibly closed by the remote host>",
+      "parsed": null,
+      "raw": null,
+      "status": null
+    },
+    "/scene": {
+      "error": null,
+      "parsed": {
+        "clock": {
+          "T_stance": 1.832,
+          "omega": 1.321
+        },
+        "gait": {
+          "omega": 7.85,
+          "pack": "test_pack",
+          "steps": 0
+        },
+        "joints": {
+          "knee_L": 100
+        },
+        "playing": true,
+        "show": {
+          "t": 1436.65,
+          "x": 1.0
+        },
+        "status": "TEST",
+        "t": 92.655
+      },
+      "raw": "{\"clock\":{\"T_stance\":1.832,\"omega\":1.321},\"gait\":{\"omega\":7.85,\"pack\":\"test_pack\",\"steps\":0},\"joints\":{\"knee_L\":100},\"playing\":true,\"show\":{\"t\":1436.65,\"x\":1.0},\"status\":\"TEST\",\"t\":92.655}",
+      "status": 200
+    },
+    "/state": {
+      "error": null,
+      "parsed": {
+        "clock": {
+          "T_stance": 1.832,
+          "omega": 1.321
+        },
+        "gait": {
+          "omega": 7.85,
+          "pack": "test_pack",
+          "steps": 0
+        },
+        "joints": {
+          "knee_L": 100
+        },
+        "playing": true,
+        "show": {
+          "t": 1435.15,
+          "x": 1.0
+        },
+        "status": "TEST",
+        "t": 91.155
+      },
+      "raw": "{\"clock\":{\"T_stance\":1.832,\"omega\":1.321},\"gait\":{\"omega\":7.85,\"pack\":\"test_pack\",\"steps\":0},\"joints\":{\"knee_L\":100},\"playing\":true,\"show\":{\"t\":1435.15,\"x\":1.0},\"status\":\"TEST\",\"t\":91.155}",
+      "status": 200
+    },
+    "/studio": {
+      "error": null,
+      "parsed": {
+        "clock": {
+          "T_stance": 1.832,
+          "omega": 1.321
+        },
+        "gait": {
+          "omega": 7.85,
+          "pack": "test_pack",
+          "steps": 0
+        },
+        "joints": {
+          "knee_L": 100
+        },
+        "playing": true,
+        "show": {
+          "t": 1435.65,
+          "x": 1.0
+        },
+        "status": "TEST",
+        "t": 91.655
+      },
+      "raw": "{\"clock\":{\"T_stance\":1.832,\"omega\":1.321},\"gait\":{\"omega\":7.85,\"pack\":\"test_pack\",\"steps\":0},\"joints\":{\"knee_L\":100},\"playing\":true,\"show\":{\"t\":1435.65,\"x\":1.0},\"status\":\"TEST\",\"t\":91.655}",
+      "status": 200
+    },
+    "/studio_chrome": {
+      "error": null,
+      "parsed": {
+        "clock": {
+          "T_stance": 1.832,
+          "omega": 1.321
+        },
+        "gait": {
+          "omega": 7.85,
+          "pack": "test_pack",
+          "steps": 0
+        },
+        "joints": {
+          "knee_L": 100
+        },
+        "playing": true,
+        "show": {
+          "t": 1436.15,
+          "x": 1.0
+        },
+        "status": "TEST",
+        "t": 92.155
+      },
+      "raw": "{\"clock\":{\"T_stance\":1.832,\"omega\":1.321},\"gait\":{\"omega\":7.85,\"pack\":\"test_pack\",\"steps\":0},\"joints\":{\"knee_L\":100},\"playing\":true,\"show\":{\"t\":1436.15,\"x\":1.0},\"status\":\"TEST\",\"t\":92.155}",
+      "status": 200
+    }
+  },
+  "before": {
+    "/light": {
+      "error": null,
+      "parsed": {
+        "clock": {
+          "T_stance": 1.832,
+          "omega": 1.321
+        },
+        "gait": {
+          "omega": 7.85,
+          "pack": "test_pack",
+          "steps": 0
+        },
+        "joints": {
+          "knee_L": 100
+        },
+        "playing": true,
+        "show": {
+          "t": 1434.15,
+          "x": 1.0
+        },
+        "status": "TEST",
+        "t": 90.155
+      },
+      "raw": "{\"clock\":{\"T_stance\":1.832,\"omega\":1.321},\"gait\":{\"omega\":7.85,\"pack\":\"test_pack\",\"steps\":0},\"joints\":{\"knee_L\":100},\"playing\":true,\"show\":{\"t\":1434.15,\"x\":1.0},\"status\":\"TEST\",\"t\":90.155}",
+      "status": 200
+    },
+    "/scene": {
+      "error": null,
+      "parsed": {
+        "clock": {
+          "T_stance": 1.832,
+          "omega": 1.321
+        },
+        "gait": {
+          "omega": 7.85,
+          "pack": "test_pack",
+          "steps": 0
+        },
+        "joints": {
+          "knee_L": 100
+        },
+        "playing": true,
+        "show": {
+          "t": 1433.65,
+          "x": 1.0
+        },
+        "status": "TEST",
+        "t": 89.655
+      },
+      "raw": "{\"clock\":{\"T_stance\":1.832,\"omega\":1.321},\"gait\":{\"omega\":7.85,\"pack\":\"test_pack\",\"steps\":0},\"joints\":{\"knee_L\":100},\"playing\":true,\"show\":{\"t\":1433.65,\"x\":1.0},\"status\":\"TEST\",\"t\":89.655}",
+      "status": 200
+    },
+    "/state": {
+      "error": null,
+      "parsed": {
+        "clock": {
+          "T_stance": 1.832,
+          "omega": 1.321
+        },
+        "gait": {
+          "omega": 7.85,
+          "pack": "test_pack",
+          "steps": 0
+        },
+        "joints": {
+          "knee_L": 100
+        },
+        "playing": true,
+        "show": {
+          "t": 1432.15,
+          "x": 1.0
+        },
+        "status": "TEST",
+        "t": 88.155
+      },
+      "raw": "{\"clock\":{\"T_stance\":1.832,\"omega\":1.321},\"gait\":{\"omega\":7.85,\"pack\":\"test_pack\",\"steps\":0},\"joints\":{\"knee_L\":100},\"playing\":true,\"show\":{\"t\":1432.15,\"x\":1.0},\"status\":\"TEST\",\"t\":88.155}",
+      "status": 200
+    },
+    "/studio": {
+      "error": null,
+      "parsed": {
+        "clock": {
+          "T_stance": 1.832,
+          "omega": 1.321
+        },
+        "gait": {
+          "omega": 7.85,
+          "pack": "test_pack",
+          "steps": 0
+        },
+        "joints": {
+          "knee_L": 100
+        },
+        "playing": true,
+        "show": {
+          "t": 1432.65,
+          "x": 1.0
+        },
+        "status": "TEST",
+        "t": 88.655
+      },
+      "raw": "{\"clock\":{\"T_stance\":1.832,\"omega\":1.321},\"gait\":{\"omega\":7.85,\"pack\":\"test_pack\",\"steps\":0},\"joints\":{\"knee_L\":100},\"playing\":true,\"show\":{\"t\":1432.65,\"x\":1.0},\"status\":\"TEST\",\"t\":88.655}",
+      "status": 200
+    },
+    "/studio_chrome": {
+      "error": null,
+      "parsed": {
+        "clock": {
+          "T_stance": 1.832,
+          "omega": 1.321
+        },
+        "gait": {
+          "omega": 7.85,
+          "pack": "test_pack",
+          "steps": 0
+        },
+        "joints": {
+          "knee_L": 100
+        },
+        "playing": true,
+        "show": {
+          "t": 1433.15,
+          "x": 1.0
+        },
+        "status": "TEST",
+        "t": 89.155
+      },
+      "raw": "{\"clock\":{\"T_stance\":1.832,\"omega\":1.321},\"gait\":{\"omega\":7.85,\"pack\":\"test_pack\",\"steps\":0},\"joints\":{\"knee_L\":100},\"playing\":true,\"show\":{\"t\":1433.15,\"x\":1.0},\"status\":\"TEST\",\"t\":89.155}",
+      "status": 200
+    }
+  }
+}

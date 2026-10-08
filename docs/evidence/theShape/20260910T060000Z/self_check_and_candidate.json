@@ -1,0 +1,75 @@
+{
+  "when": "2026-09-10T06:00:00Z",
+  "candidate": "theShape restart B-path",
+  "physics_unchanged": {
+    "cell_size": 0.02,
+    "cell_count": 6595,
+    "extent_m": 0.959995299577713,
+    "verdict": "HOLDS",
+    "edit_scope": "representation only: part-region coloration + tighter ground; lattice and numbers not changed"
+  },
+  "representation_changes": {
+    "part_colors": "feet/legs/torso/neck/head/face split in asset frame (Y-up) from the same lattice centers",
+    "ground": "tighter ring tied to body footprint, not the full XY hull",
+    "camera": "side-oblique movie camera, membrane units (6.5, 0.25, 4.6)*extent -> actual (4.91, 0.19, 3.47)"
+  },
+  "self_check": {
+    "body_rows_t0": 6595,
+    "body_rows_t1": 6595,
+    "silhouette_foreground_env_diag_t0": 1.1656,
+    "silhouette_foreground_env_diag_t1": 1.2286,
+    "silhouette_diag_delta": 0.0629,
+    "side_profile_curve_mean_abs_diff_per_bin": 0.0648,
+    "color_std_t0_R_G_B": [
+      0.0627,
+      0.0489,
+      0.0322
+    ],
+    "distinct_rounded_color_buckets": 6,
+    "part_counts_t0": {
+      "feet": 398,
+      "legs": 1343,
+      "torso": 4012,
+      "head": 463,
+      "face": 49
+    }
+  },
+  "rendered_frames": {
+    "begin": "ChimeraEngine/.tmp/theShape_restartB_candidate/theShape_restartB_begin.png",
+    "end": "ChimeraEngine/.tmp/theShape_restartB_candidate/theShape_restartB_end.png",
+    "size": [
+      720,
+      540
+    ],
+    "body_bbox_begin": {
+      "x": [
+        317,
+        403
+      ],
+      "y": [
+        230,
+        330
+      ],
+      "h": 100,
+      "w": 86,
+      "aspect_HW": 1.163
+    },
+    "body_bbox_end": {
+      "x": [
+        317,
+        403
+      ],
+      "y": [
+        232,
+        330
+      ],
+      "h": 98,
+      "w": 86,
+      "aspect_HW": 1.14
+    },
+    "body_centroid_y_frac_begin": 0.525,
+    "body_centroid_y_frac_end": 0.526
+  },
+  "bar": 0.6,
+  "claim_not_made": "self-check is passable enough to request a dyad read; this is not a declaration that the blind eye will call it a bear"
+}

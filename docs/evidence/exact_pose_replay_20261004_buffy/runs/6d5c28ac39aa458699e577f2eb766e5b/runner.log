@@ -1,0 +1,48 @@
+test_all_20_bodies_pad_and_anchor_present_without_masking (__main__.ReplayTests.test_all_20_bodies_pad_and_anchor_present_without_masking) ... ok
+test_canonical_combination_reversed_and_partitioned (__main__.ReplayTests.test_canonical_combination_reversed_and_partitioned) ... ok
+test_canonical_order_independent_of_source_order (__main__.ReplayTests.test_canonical_order_independent_of_source_order) ... ok
+test_cli_scientific_refusal_nonzero_and_preserved (__main__.ReplayTests.test_cli_scientific_refusal_nonzero_and_preserved) ... ok
+test_contact_depth_boundary_preserved (__main__.ReplayTests.test_contact_depth_boundary_preserved) ... ok
+test_control_gate_fixture_parity_and_negative_cases (__main__.ReplayTests.test_control_gate_fixture_parity_and_negative_cases) ... ok
+test_control_gate_fixture_raw_byte_mismatch_refuses (__main__.ReplayTests.test_control_gate_fixture_raw_byte_mismatch_refuses) ... ERROR
+test_current_runner_lease_hash_read_only (__main__.ReplayTests.test_current_runner_lease_hash_read_only) ... ok
+test_diagnostic_tamper_and_promotion_refuse (__main__.ReplayTests.test_diagnostic_tamper_and_promotion_refuse) ... ok
+test_duplicate_missing_and_extra_keys_refused (__main__.ReplayTests.test_duplicate_missing_and_extra_keys_refused) ... ok
+test_fixture_release_success_is_not_authority_evidence (__main__.ReplayTests.test_fixture_release_success_is_not_authority_evidence) ... ok
+test_inherited_float_and_anchor_flags_compared_exactly (__main__.ReplayTests.test_inherited_float_and_anchor_flags_compared_exactly) ... ok
+test_joined_pad_metadata_drift_refused (__main__.ReplayTests.test_joined_pad_metadata_drift_refused) ... ok
+test_json_duplicate_and_nonfinite_refused (__main__.ReplayTests.test_json_duplicate_and_nonfinite_refused) ... ok
+test_local_pin_drift_refused (__main__.ReplayTests.test_local_pin_drift_refused) ... ok
+test_missing_pad_or_anchor_records_refuse (__main__.ReplayTests.test_missing_pad_or_anchor_records_refuse) ... ok
+test_no_release_refuses_before_geometry_import (__main__.ReplayTests.test_no_release_refuses_before_geometry_import) ... ok
+test_noncanonical_results_refused (__main__.ReplayTests.test_noncanonical_results_refused) ... ok
+test_noncontact_touch_and_contact_clear_refuse (__main__.ReplayTests.test_noncontact_touch_and_contact_clear_refuse) ... ok
+test_partial_and_duplicate_combination_refused (__main__.ReplayTests.test_partial_and_duplicate_combination_refused) ... ok
+test_release_checks_pin_base_hash_and_operation (__main__.ReplayTests.test_release_checks_pin_base_hash_and_operation) ... ok
+test_release_rejects_published_bytes_drift (__main__.ReplayTests.test_release_rejects_published_bytes_drift) ... ok
+test_release_rejects_seal_before_new_prereg_pin (__main__.ReplayTests.test_release_rejects_seal_before_new_prereg_pin) ... ok
+test_retained_failed_or_tampered_control_refuses (__main__.ReplayTests.test_retained_failed_or_tampered_control_refuses) ... ok
+test_retained_unit_hash_candidate_and_failure_gates (__main__.ReplayTests.test_retained_unit_hash_candidate_and_failure_gates) ... ok
+test_scaling_requires_actual_serial_gate (__main__.ReplayTests.test_scaling_requires_actual_serial_gate) ... ok
+test_source_identity_and_foreign_prereg_refuse (__main__.ReplayTests.test_source_identity_and_foreign_prereg_refuse) ... ok
+test_source_parses_and_has_no_placement_solve_calls (__main__.ReplayTests.test_source_parses_and_has_no_placement_solve_calls) ... ok
+test_unknown_raw_class_refused (__main__.ReplayTests.test_unknown_raw_class_refused) ... ok
+test_unsafe_keys_nonfinite_and_shapes_refused (__main__.ReplayTests.test_unsafe_keys_nonfinite_and_shapes_refused) ... ok
+test_work_unit_preserves_each_body_on_injected_failure (__main__.ReplayTests.test_work_unit_preserves_each_body_on_injected_failure) ... ok
+
+======================================================================
+ERROR: test_control_gate_fixture_raw_byte_mismatch_refuses (__main__.ReplayTests.test_control_gate_fixture_raw_byte_mismatch_refuses)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\task-runner\slot-2\scratch\tools\monkey_campaign\contributions\EXACT-POSE-REPLAY-20261004-BUFFY\test_replay.py", line 345, in test_control_gate_fixture_raw_byte_mismatch_refuses
+    r.atomic_json(units / "receipt.json", receipt)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\task-runner\slot-2\scratch\tools\monkey_campaign\contributions\EXACT-POSE-REPLAY-20261004-BUFFY\replay.py", line 80, in atomic_json
+    os.replace(tmp, path)
+    ~~~~~~~~~~^^^^^^^^^^^
+PermissionError: [WinError 5] Access is denied: 'E:\\ChimeraWork\\task-runner\\slot-2\\scratch\\tmp\\tmpq8e_gwr_\\bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\\receipt.json.tmp' -> 'E:\\ChimeraWork\\task-runner\\slot-2\\scratch\\tmp\\tmpq8e_gwr_\\bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\\receipt.json'
+
+----------------------------------------------------------------------
+Ran 31 tests in 0.591s
+
+FAILED (errors=1)

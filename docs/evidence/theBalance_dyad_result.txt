@@ -1,0 +1,3 @@
+APPEARANCE for `theBalance`: splat movie (E:\PythonChimera\ChimeraEngine\output\appear_theBalance.png -> E:\PythonChimera\ChimeraEngine\output\appear_theBalance.png); the DYAD HOLDS [vision proxy].
+  [vision proxy (omni)] saw "A dark green irregular polygon with a thin lighter-green outline is centered on a near-black background, bisected by dashed yellow horizontal and vertical lines that intersect at a small yellow star marker. Green title text spans the top edge and gray caption text runs along the bottom, giving the impression of a diagram highlighting a central point within a bounded region."; alignment 0.850 >= 0.6 -- the dyad holds.
+Next: prove('theBalance') -- every gate passes.

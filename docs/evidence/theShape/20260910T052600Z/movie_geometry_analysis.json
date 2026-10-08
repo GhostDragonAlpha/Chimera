@@ -1,0 +1,37 @@
+{
+  "utc": "2026-09-10T05:26:00Z",
+  "term": "theShape",
+  "why": "pre-dyad diagnosis of why the current movie reads as a disk, before touching any render",
+  "movie_buffers": {
+    "begin_shape": [7495, 28],
+    "end_shape": [7495, 28],
+    "begin_extent": 0.8801750540733337,
+    "end_extent": 0.8801750540733337,
+    "begin_end_positions_not_identical": true,
+    "max_per_grain_delta": 0.9495745897293091,
+    "p50_per_grain_delta": 0.30957460403442383
+  },
+  "end_frame_geometry": {
+    "x_range": [-0.6933018, 0.6998934],
+    "y_range": [-0.70361024, 0.6945426],
+    "z_range": [-0.51748925, 0.46251076],
+    "xy_centroid_approx": [0.003295809, -0.0045338273],
+    "half_extent_xy": [0.6965976, 0.6990764],
+    "size_range": [0.02, 0.042730857]
+  },
+  "diagnosis": {
+    "xy_extent_is_large": true,
+    "z_extent_is_small": true,
+    "z_extent_vs_xy_ratio": 0.46251076/0.6998934,
+    "read": "the current emit places roughly equal extent in X and Y and much less in Z, so a horizontal turntable is likely to look like a thin disc/radial splat rather than a volumetric quadruped silhouette",
+    "self_check_failed": true,
+    "do_not_send_image_yet": true
+  },
+  "physics_record_unchanged": {
+    "cell_size": 0.02,
+    "cell_count": 6595,
+    "com_gap_magnitude_phase0": 0.6492688258712557,
+    "worst_magnitude_over_8_phases": 0.6528298787325494,
+    "verdict": "HOLDS"
+  }
+}

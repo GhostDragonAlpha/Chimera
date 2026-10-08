@@ -1,0 +1,1109 @@
+{
+  "schema": "chimera-membrane-scale-lab-candidates-v1",
+  "utc": "2026-09-08T22:38:04.777162+00:00",
+  "source_commit": "51cd7212fd6ef2cfda95c330abcc2ff154cc6141",
+  "original_hashes": {
+    "membrane.comp": "80a0981dd1f245aa551035c9336df521d363e33ea8a17137fc5cf60307d7c2ac",
+    "probe.cpp": "2501542b7d70728b1aee82e85c79b62024de1dbf56b56dae46bc3f35ea2e4108",
+    "probe_core.hpp": "b136b9bd7957448d8bca1a45cf8ea56cf8ef9714bf9d948c5e5dc90773ec04d3",
+    "relax.cpp": "1923d89f69dcda93794a02911e980ef8bc869ab9e9ee9f2dcf2a91f0398d23ef",
+    "CMakeLists.txt": "61362c250bba3591f899b616678a4d09c1cf093a1d2ecd5ffb4cbac293173770"
+  },
+  "candidates": {
+    "A_tree_reduction": {
+      "statement": "Serial stage-2 limits GPU utilization for large F",
+      "prediction": "Tree reduction reduces stage-2 time ~log2(F)",
+      "falsifier": "No speedup or energy deviation > 1e-5 J",
+      "patch_file": "E:\\PythonChimera\\tools\\membrane_scale_lab\\membrane_gpu_probe_patches\\membrane_tree_reduction.comp",
+      "correctness_gate": {
+        "regular_n4_r1": {
+          "status": "PASS",
+          "n_vertices": 9,
+          "n_faces": 12,
+          "degree_max": 5,
+          "memory_bytes": 600,
+          "cpu_time_s": 0.000222,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 1.1102230182568394e-16,
+            "assembly_derived_bound_max": 5.960464477539062e-07,
+            "assembly_max_corner_force": 0.5,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "fan_n12": {
+          "status": "PASS",
+          "n_vertices": 13,
+          "n_faces": 12,
+          "degree_max": 12,
+          "memory_bytes": 696,
+          "cpu_time_s": 0.000164,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 1.5836978284333725e-08,
+            "assembly_derived_bound_max": 1.4568311144103063e-06,
+            "assembly_max_corner_force": 0.5091993808746338,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "regular_n8_r1": {
+          "status": "PASS",
+          "n_vertices": 17,
+          "n_faces": 24,
+          "degree_max": 8,
+          "memory_bytes": 1176,
+          "cpu_time_s": 0.000148,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 1.4901161221603232e-08,
+            "assembly_derived_bound_max": 6.743495646333031e-07,
+            "assembly_max_corner_force": 0.3535533845424652,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "fan_n24": {
+          "status": "PASS",
+          "n_vertices": 25,
+          "n_faces": 24,
+          "degree_max": 24,
+          "memory_bytes": 1368,
+          "cpu_time_s": 0.000139,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 2.2785731079721927e-08,
+            "assembly_derived_bound_max": 2.916710286626767e-06,
+            "assembly_max_corner_force": 0.5097320675849915,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "regular_n16_r1": {
+          "status": "PASS",
+          "n_vertices": 33,
+          "n_faces": 48,
+          "degree_max": 16,
+          "memory_bytes": 2328,
+          "cpu_time_s": 0.000151,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 1.4901161207725444e-08,
+            "assembly_derived_bound_max": 1.0878108014367172e-06,
+            "assembly_max_corner_force": 0.2851630747318268,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "fan_n48": {
+          "status": "PASS",
+          "n_vertices": 49,
+          "n_faces": 48,
+          "degree_max": 48,
+          "memory_bytes": 2712,
+          "cpu_time_s": 0.000149,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 4.0936775580480145e-08,
+            "assembly_derived_bound_max": 5.834883040733985e-06,
+            "assembly_max_corner_force": 0.5098598599433899,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "regular_n32_r1": {
+          "status": "PASS",
+          "n_vertices": 65,
+          "n_faces": 96,
+          "degree_max": 32,
+          "memory_bytes": 4632,
+          "cpu_time_s": 0.000176,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 1.862645149230957e-08,
+            "assembly_derived_bound_max": 1.979238504645764e-06,
+            "assembly_max_corner_force": 0.25942274928092957,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "fan_n96": {
+          "status": "PASS",
+          "n_vertices": 97,
+          "n_faces": 96,
+          "degree_max": 96,
+          "memory_bytes": 5400,
+          "cpu_time_s": 0.000159,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 4.143974363657321e-08,
+            "assembly_derived_bound_max": 1.1670489129755879e-05,
+            "assembly_max_corner_force": 0.5098914504051208,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "regular_n64_r1": {
+          "status": "PASS",
+          "n_vertices": 129,
+          "n_faces": 192,
+          "degree_max": 64,
+          "memory_bytes": 9240,
+          "cpu_time_s": 0.000215,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 2.2351741790771484e-08,
+            "assembly_derived_bound_max": 3.85125804314157e-06,
+            "assembly_max_corner_force": 0.2523960471153259,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "fan_n192": {
+          "status": "PASS",
+          "n_vertices": 193,
+          "n_faces": 192,
+          "degree_max": 192,
+          "memory_bytes": 10776,
+          "cpu_time_s": 0.000194,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 3.5629484695931524e-08,
+            "assembly_derived_bound_max": 2.334133841941366e-05,
+            "assembly_max_corner_force": 0.5098993182182312,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "mixed_n4": {
+          "status": "PASS",
+          "n_vertices": 16,
+          "n_faces": 18,
+          "degree_max": 8,
+          "memory_bytes": 960,
+          "cpu_time_s": 0.000138,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 2.7878178265883236e-08,
+            "assembly_derived_bound_max": 6.407130968000274e-07,
+            "assembly_max_corner_force": 0.3359181880950928,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "mixed_n8": {
+          "status": "PASS",
+          "n_vertices": 64,
+          "n_faces": 98,
+          "degree_max": 8,
+          "memory_bytes": 4672,
+          "cpu_time_s": 0.000158,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 2.3222160971947403e-08,
+            "assembly_derived_bound_max": 2.8540108587549184e-07,
+            "assembly_max_corner_force": 0.14963236451148987,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "mixed_n16": {
+          "status": "PASS",
+          "n_vertices": 256,
+          "n_faces": 450,
+          "degree_max": 8,
+          "memory_bytes": 20544,
+          "cpu_time_s": 0.000288,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 1.398711751976478e-08,
+            "assembly_derived_bound_max": 1.562982276936964e-07,
+            "assembly_max_corner_force": 0.08194528520107269,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "mixed_n32": {
+          "status": "PASS",
+          "n_vertices": 1024,
+          "n_faces": 1922,
+          "degree_max": 8,
+          "memory_bytes": 86080,
+          "cpu_time_s": 0.000768,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 6.007600972246507e-09,
+            "assembly_derived_bound_max": 1.1098173757773111e-07,
+            "assembly_max_corner_force": 0.05818639323115349,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "mixed_n64": {
+          "status": "PASS",
+          "n_vertices": 4096,
+          "n_faces": 7938,
+          "degree_max": 8,
+          "memory_bytes": 352320,
+          "cpu_time_s": 0.003052,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 5.743817241277149e-09,
+            "assembly_derived_bound_max": 9.858414529162474e-08,
+            "assembly_max_corner_force": 0.05168648436665535,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "irregular_n219_b50": {
+          "status": "PASS",
+          "n_vertices": 219,
+          "n_faces": 288,
+          "degree_max": 8,
+          "memory_bytes": 14472,
+          "cpu_time_s": 0.000327,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 6.530776395369253e-09,
+            "assembly_derived_bound_max": 1.19380302976424e-07,
+            "assembly_max_corner_force": 0.06258966028690338,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "connected_p2_n8": {
+          "status": "PASS",
+          "n_vertices": 34,
+          "n_faces": 48,
+          "degree_max": 8,
+          "memory_bytes": 2352,
+          "cpu_time_s": 0.000248,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 2.3698891515877563e-08,
+            "assembly_derived_bound_max": 7.417140750476392e-07,
+            "assembly_max_corner_force": 0.38887178897857666,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        }
+      }
+    },
+    "B_persistent_buffers": {
+      "statement": "Per-dispatch allocation dominates small-mesh overhead",
+      "prediction": "Amortized setup cost decreases linearly with iteration count",
+      "falsifier": "Correctness regression on frozen fixtures",
+      "patch_file": "E:\\PythonChimera\\tools\\membrane_scale_lab\\membrane_gpu_probe_patches\\probe_persistent_buffers.hpp",
+      "correctness_gate": {
+        "regular_n4_r1": {
+          "status": "PASS",
+          "n_vertices": 9,
+          "n_faces": 12,
+          "degree_max": 5,
+          "memory_bytes": 600,
+          "cpu_time_s": 0.000222,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 1.1102230182568394e-16,
+            "assembly_derived_bound_max": 5.960464477539062e-07,
+            "assembly_max_corner_force": 0.5,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "fan_n12": {
+          "status": "PASS",
+          "n_vertices": 13,
+          "n_faces": 12,
+          "degree_max": 12,
+          "memory_bytes": 696,
+          "cpu_time_s": 0.000164,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 1.5836978284333725e-08,
+            "assembly_derived_bound_max": 1.4568311144103063e-06,
+            "assembly_max_corner_force": 0.5091993808746338,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "regular_n8_r1": {
+          "status": "PASS",
+          "n_vertices": 17,
+          "n_faces": 24,
+          "degree_max": 8,
+          "memory_bytes": 1176,
+          "cpu_time_s": 0.000148,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 1.4901161221603232e-08,
+            "assembly_derived_bound_max": 6.743495646333031e-07,
+            "assembly_max_corner_force": 0.3535533845424652,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "fan_n24": {
+          "status": "PASS",
+          "n_vertices": 25,
+          "n_faces": 24,
+          "degree_max": 24,
+          "memory_bytes": 1368,
+          "cpu_time_s": 0.000139,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 2.2785731079721927e-08,
+            "assembly_derived_bound_max": 2.916710286626767e-06,
+            "assembly_max_corner_force": 0.5097320675849915,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "regular_n16_r1": {
+          "status": "PASS",
+          "n_vertices": 33,
+          "n_faces": 48,
+          "degree_max": 16,
+          "memory_bytes": 2328,
+          "cpu_time_s": 0.000151,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 1.4901161207725444e-08,
+            "assembly_derived_bound_max": 1.0878108014367172e-06,
+            "assembly_max_corner_force": 0.2851630747318268,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "fan_n48": {
+          "status": "PASS",
+          "n_vertices": 49,
+          "n_faces": 48,
+          "degree_max": 48,
+          "memory_bytes": 2712,
+          "cpu_time_s": 0.000149,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 4.0936775580480145e-08,
+            "assembly_derived_bound_max": 5.834883040733985e-06,
+            "assembly_max_corner_force": 0.5098598599433899,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "regular_n32_r1": {
+          "status": "PASS",
+          "n_vertices": 65,
+          "n_faces": 96,
+          "degree_max": 32,
+          "memory_bytes": 4632,
+          "cpu_time_s": 0.000176,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 1.862645149230957e-08,
+            "assembly_derived_bound_max": 1.979238504645764e-06,
+            "assembly_max_corner_force": 0.25942274928092957,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "fan_n96": {
+          "status": "PASS",
+          "n_vertices": 97,
+          "n_faces": 96,
+          "degree_max": 96,
+          "memory_bytes": 5400,
+          "cpu_time_s": 0.000159,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 4.143974363657321e-08,
+            "assembly_derived_bound_max": 1.1670489129755879e-05,
+            "assembly_max_corner_force": 0.5098914504051208,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "regular_n64_r1": {
+          "status": "PASS",
+          "n_vertices": 129,
+          "n_faces": 192,
+          "degree_max": 64,
+          "memory_bytes": 9240,
+          "cpu_time_s": 0.000215,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 2.2351741790771484e-08,
+            "assembly_derived_bound_max": 3.85125804314157e-06,
+            "assembly_max_corner_force": 0.2523960471153259,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "fan_n192": {
+          "status": "PASS",
+          "n_vertices": 193,
+          "n_faces": 192,
+          "degree_max": 192,
+          "memory_bytes": 10776,
+          "cpu_time_s": 0.000194,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 3.5629484695931524e-08,
+            "assembly_derived_bound_max": 2.334133841941366e-05,
+            "assembly_max_corner_force": 0.5098993182182312,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "mixed_n4": {
+          "status": "PASS",
+          "n_vertices": 16,
+          "n_faces": 18,
+          "degree_max": 8,
+          "memory_bytes": 960,
+          "cpu_time_s": 0.000138,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 2.7878178265883236e-08,
+            "assembly_derived_bound_max": 6.407130968000274e-07,
+            "assembly_max_corner_force": 0.3359181880950928,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "mixed_n8": {
+          "status": "PASS",
+          "n_vertices": 64,
+          "n_faces": 98,
+          "degree_max": 8,
+          "memory_bytes": 4672,
+          "cpu_time_s": 0.000158,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 2.3222160971947403e-08,
+            "assembly_derived_bound_max": 2.8540108587549184e-07,
+            "assembly_max_corner_force": 0.14963236451148987,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "mixed_n16": {
+          "status": "PASS",
+          "n_vertices": 256,
+          "n_faces": 450,
+          "degree_max": 8,
+          "memory_bytes": 20544,
+          "cpu_time_s": 0.000288,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 1.398711751976478e-08,
+            "assembly_derived_bound_max": 1.562982276936964e-07,
+            "assembly_max_corner_force": 0.08194528520107269,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "mixed_n32": {
+          "status": "PASS",
+          "n_vertices": 1024,
+          "n_faces": 1922,
+          "degree_max": 8,
+          "memory_bytes": 86080,
+          "cpu_time_s": 0.000768,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 6.007600972246507e-09,
+            "assembly_derived_bound_max": 1.1098173757773111e-07,
+            "assembly_max_corner_force": 0.05818639323115349,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "mixed_n64": {
+          "status": "PASS",
+          "n_vertices": 4096,
+          "n_faces": 7938,
+          "degree_max": 8,
+          "memory_bytes": 352320,
+          "cpu_time_s": 0.003052,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 5.743817241277149e-09,
+            "assembly_derived_bound_max": 9.858414529162474e-08,
+            "assembly_max_corner_force": 0.05168648436665535,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "irregular_n219_b50": {
+          "status": "PASS",
+          "n_vertices": 219,
+          "n_faces": 288,
+          "degree_max": 8,
+          "memory_bytes": 14472,
+          "cpu_time_s": 0.000327,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 6.530776395369253e-09,
+            "assembly_derived_bound_max": 1.19380302976424e-07,
+            "assembly_max_corner_force": 0.06258966028690338,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "connected_p2_n8": {
+          "status": "PASS",
+          "n_vertices": 34,
+          "n_faces": 48,
+          "degree_max": 8,
+          "memory_bytes": 2352,
+          "cpu_time_s": 0.000248,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 2.3698891515877563e-08,
+            "assembly_derived_bound_max": 7.417140750476392e-07,
+            "assembly_max_corner_force": 0.38887178897857666,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        }
+      }
+    },
+    "C_fused_trial_eval": {
+      "statement": "Host->device transfer latency overlaps poorly with eval",
+      "prediction": "Fusing reduces accepted-step wall-clock for small meshes",
+      "falsifier": "No improvement; correctness unchanged but timing unchanged",
+      "patch_file": "E:\\PythonChimera\\tools\\membrane_scale_lab\\membrane_gpu_probe_patches\\relax_fused_trial_eval.cpp",
+      "correctness_gate": {
+        "regular_n4_r1": {
+          "status": "PASS",
+          "n_vertices": 9,
+          "n_faces": 12,
+          "degree_max": 5,
+          "memory_bytes": 600,
+          "cpu_time_s": 0.000222,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 1.1102230182568394e-16,
+            "assembly_derived_bound_max": 5.960464477539062e-07,
+            "assembly_max_corner_force": 0.5,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "fan_n12": {
+          "status": "PASS",
+          "n_vertices": 13,
+          "n_faces": 12,
+          "degree_max": 12,
+          "memory_bytes": 696,
+          "cpu_time_s": 0.000164,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 1.5836978284333725e-08,
+            "assembly_derived_bound_max": 1.4568311144103063e-06,
+            "assembly_max_corner_force": 0.5091993808746338,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "regular_n8_r1": {
+          "status": "PASS",
+          "n_vertices": 17,
+          "n_faces": 24,
+          "degree_max": 8,
+          "memory_bytes": 1176,
+          "cpu_time_s": 0.000148,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 1.4901161221603232e-08,
+            "assembly_derived_bound_max": 6.743495646333031e-07,
+            "assembly_max_corner_force": 0.3535533845424652,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "fan_n24": {
+          "status": "PASS",
+          "n_vertices": 25,
+          "n_faces": 24,
+          "degree_max": 24,
+          "memory_bytes": 1368,
+          "cpu_time_s": 0.000139,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 2.2785731079721927e-08,
+            "assembly_derived_bound_max": 2.916710286626767e-06,
+            "assembly_max_corner_force": 0.5097320675849915,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "regular_n16_r1": {
+          "status": "PASS",
+          "n_vertices": 33,
+          "n_faces": 48,
+          "degree_max": 16,
+          "memory_bytes": 2328,
+          "cpu_time_s": 0.000151,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 1.4901161207725444e-08,
+            "assembly_derived_bound_max": 1.0878108014367172e-06,
+            "assembly_max_corner_force": 0.2851630747318268,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "fan_n48": {
+          "status": "PASS",
+          "n_vertices": 49,
+          "n_faces": 48,
+          "degree_max": 48,
+          "memory_bytes": 2712,
+          "cpu_time_s": 0.000149,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 4.0936775580480145e-08,
+            "assembly_derived_bound_max": 5.834883040733985e-06,
+            "assembly_max_corner_force": 0.5098598599433899,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "regular_n32_r1": {
+          "status": "PASS",
+          "n_vertices": 65,
+          "n_faces": 96,
+          "degree_max": 32,
+          "memory_bytes": 4632,
+          "cpu_time_s": 0.000176,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 1.862645149230957e-08,
+            "assembly_derived_bound_max": 1.979238504645764e-06,
+            "assembly_max_corner_force": 0.25942274928092957,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "fan_n96": {
+          "status": "PASS",
+          "n_vertices": 97,
+          "n_faces": 96,
+          "degree_max": 96,
+          "memory_bytes": 5400,
+          "cpu_time_s": 0.000159,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 4.143974363657321e-08,
+            "assembly_derived_bound_max": 1.1670489129755879e-05,
+            "assembly_max_corner_force": 0.5098914504051208,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "regular_n64_r1": {
+          "status": "PASS",
+          "n_vertices": 129,
+          "n_faces": 192,
+          "degree_max": 64,
+          "memory_bytes": 9240,
+          "cpu_time_s": 0.000215,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 2.2351741790771484e-08,
+            "assembly_derived_bound_max": 3.85125804314157e-06,
+            "assembly_max_corner_force": 0.2523960471153259,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "fan_n192": {
+          "status": "PASS",
+          "n_vertices": 193,
+          "n_faces": 192,
+          "degree_max": 192,
+          "memory_bytes": 10776,
+          "cpu_time_s": 0.000194,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 3.5629484695931524e-08,
+            "assembly_derived_bound_max": 2.334133841941366e-05,
+            "assembly_max_corner_force": 0.5098993182182312,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "mixed_n4": {
+          "status": "PASS",
+          "n_vertices": 16,
+          "n_faces": 18,
+          "degree_max": 8,
+          "memory_bytes": 960,
+          "cpu_time_s": 0.000138,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 2.7878178265883236e-08,
+            "assembly_derived_bound_max": 6.407130968000274e-07,
+            "assembly_max_corner_force": 0.3359181880950928,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "mixed_n8": {
+          "status": "PASS",
+          "n_vertices": 64,
+          "n_faces": 98,
+          "degree_max": 8,
+          "memory_bytes": 4672,
+          "cpu_time_s": 0.000158,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 2.3222160971947403e-08,
+            "assembly_derived_bound_max": 2.8540108587549184e-07,
+            "assembly_max_corner_force": 0.14963236451148987,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "mixed_n16": {
+          "status": "PASS",
+          "n_vertices": 256,
+          "n_faces": 450,
+          "degree_max": 8,
+          "memory_bytes": 20544,
+          "cpu_time_s": 0.000288,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 1.398711751976478e-08,
+            "assembly_derived_bound_max": 1.562982276936964e-07,
+            "assembly_max_corner_force": 0.08194528520107269,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "mixed_n32": {
+          "status": "PASS",
+          "n_vertices": 1024,
+          "n_faces": 1922,
+          "degree_max": 8,
+          "memory_bytes": 86080,
+          "cpu_time_s": 0.000768,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 6.007600972246507e-09,
+            "assembly_derived_bound_max": 1.1098173757773111e-07,
+            "assembly_max_corner_force": 0.05818639323115349,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "mixed_n64": {
+          "status": "PASS",
+          "n_vertices": 4096,
+          "n_faces": 7938,
+          "degree_max": 8,
+          "memory_bytes": 352320,
+          "cpu_time_s": 0.003052,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 5.743817241277149e-09,
+            "assembly_derived_bound_max": 9.858414529162474e-08,
+            "assembly_max_corner_force": 0.05168648436665535,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "irregular_n219_b50": {
+          "status": "PASS",
+          "n_vertices": 219,
+          "n_faces": 288,
+          "degree_max": 8,
+          "memory_bytes": 14472,
+          "cpu_time_s": 0.000327,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 6.530776395369253e-09,
+            "assembly_derived_bound_max": 1.19380302976424e-07,
+            "assembly_max_corner_force": 0.06258966028690338,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        },
+        "connected_p2_n8": {
+          "status": "PASS",
+          "n_vertices": 34,
+          "n_faces": 48,
+          "degree_max": 8,
+          "memory_bytes": 2352,
+          "cpu_time_s": 0.000248,
+          "checks": {
+            "cpu_reference_finite": true,
+            "assembly_isolation_within_bound": true,
+            "assembly_max_abs_diff": 2.3698891515877563e-08,
+            "assembly_derived_bound_max": 7.417140750476392e-07,
+            "assembly_max_corner_force": 0.38887178897857666,
+            "scatter_csr_agree_within_bound": true,
+            "scatter_max_abs_diff": 0.0,
+            "valid_geometry": true,
+            "pinned_force_recorded": true,
+            "free_dof_force_nonzero": true
+          },
+          "failures": []
+        }
+      }
+    }
+  }
+}

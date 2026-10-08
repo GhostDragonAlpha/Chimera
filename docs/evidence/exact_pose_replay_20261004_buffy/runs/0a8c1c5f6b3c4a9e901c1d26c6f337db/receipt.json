@@ -1,0 +1,63 @@
+{
+  "job": "0a8c1c5f6b3c4a9e901c1d26c6f337db",
+  "state": "PASSED",
+  "sealed_manifest_sha256": "153234710d1b5c8d840c8311067fbd43354a155a99d48bad1986de721348e7e5",
+  "base": "79b263944d4053b7ee41f97c97b3cc2f732b1b97",
+  "command": [
+    "C:/Python314/python.exe",
+    "-B",
+    "tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/test_replay.py"
+  ],
+  "slot": 2,
+  "cleanup_verified": true,
+  "declared_budget_bytes": 2147483648,
+  "resource_profile": {
+    "schema": "chimera.runner_profile.v1",
+    "host_cpu": "Intel Core i9-13900K",
+    "physical_cores": 24,
+    "logical_processors": 32,
+    "installed_ram_bytes": 137199087616,
+    "agent_target": 12,
+    "agent_ceiling": 15,
+    "cpu_slots": 4,
+    "threads_per_job": 4,
+    "job_memory_gib": 16,
+    "free_memory_reserve_gib": 24,
+    "publication_writers": 1,
+    "agent_limits_enforced_by": "GLM dispatcher; runner does not launch or count API agents"
+  },
+  "memory_admission": {
+    "allowed": true,
+    "available_bytes": 98809614336,
+    "required_bytes": 42949672960
+  },
+  "space_admission": {
+    "allowed": true,
+    "free_bytes": 1679391494144,
+    "reserved_bytes": 4294967296,
+    "incoming_bytes": 2415919104,
+    "required_bytes": 6710886400
+  },
+  "artifact_store_class": "protected_evidence",
+  "exit_code": 0,
+  "artifacts": {
+    "runner.log": "b3395ef20f02e62cf7ff37567e0dc2f1fecef1137ce1771a2901dc013f990b72",
+    "outputs/replay/tests.json": "5f2d7d8ba5713c2cc27903d01526a535fc006c3f50a94cd36875e66e88302ef7"
+  },
+  "artifact_allocated_bytes": {
+    "runner.log": 8192,
+    "outputs/replay/tests.json": 536
+  },
+  "bytes": {
+    "schema": "chimera.byte_accounting.v1",
+    "units": "bytes",
+    "scratch_peak_bytes": 8030421,
+    "scratch_at_cleanup_bytes": 8003819,
+    "scratch_at_cleanup_allocated_bytes": 8069688,
+    "retained_bytes": 4744,
+    "retained_allocated_bytes": 8728,
+    "reclaimed_bytes": 7999075,
+    "reclaimed_allocated_bytes": 8060960,
+    "declared_budget_bytes": 2147483648
+  }
+}

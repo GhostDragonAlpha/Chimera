@@ -1,0 +1,120 @@
+{
+ "utc": "2026-09-10T11:25:00Z",
+ "term": "theShape",
+ "task": "SHAPE-SILHOUETTE-02",
+ "source_cloud": "models/genbear2/genbear2_final_engine.splat",
+ "splat_count": {
+  "raw": 182724,
+  "after_alpha_cut": 64309
+ },
+ "alpha_cut": 0.5,
+ "current_lattice": {
+  "cell_size": 0.02,
+  "grid_shape": [
+   24,
+   49,
+   48
+  ],
+  "cell_count": 6595,
+  "origin": [
+   -0.2367284393310547,
+   -0.5074892437458038,
+   -0.48478729486465455
+  ],
+  "world_bbox_min": [
+   -0.2367284393310547,
+   -0.5074892437458038,
+   -0.48478729486465455
+  ],
+  "world_bbox_max": [
+   0.24327156066894534,
+   0.47251075625419614,
+   0.4752127051353455
+  ],
+  "world_extent": [
+   0.48000000000000004,
+   0.98,
+   0.9600000000000001
+  ],
+  "cell_center_com": [
+   0.02868626878115153,
+   -0.026356567475902405,
+   -0.023330130346079867
+  ],
+  "connected_components": 4,
+  "main_component_size": 6589,
+  "fragment_sizes": [
+   3,
+   2,
+   1
+  ]
+ },
+ "original_lattice": {
+  "cell_size": 0.01,
+  "grid_shape": [
+   47,
+   97,
+   94
+  ],
+  "cell_count": 24801,
+  "origin": [
+   -0.2317284393310547,
+   -0.5024892437458038,
+   -0.47978729486465455
+  ],
+  "world_bbox_min": [
+   -0.2317284393310547,
+   -0.5024892437458038,
+   -0.47978729486465455
+  ],
+  "world_bbox_max": [
+   0.23827156066894534,
+   0.46751075625419614,
+   0.4602127051353455
+  ],
+  "world_extent": [
+   0.47000000000000003,
+   0.97,
+   0.9400000000000001
+  ],
+  "cell_center_com": [
+   0.037536711267711506,
+   -0.019618996578350905,
+   -0.02009312930681412
+  ],
+  "connected_components": 131,
+  "main_component_size": 24550
+ },
+ "camera": {
+  "cam_pos": [
+   0.0,
+   -2.3760000000000003,
+   0.6335999999999999
+  ],
+  "spherical": {
+   "r": 2.459,
+   "theta": 3.14159,
+   "phi": -1.3
+  },
+  "fov_y_deg": 45,
+  "near": 0.1,
+  "far": 1000.0,
+  "viewport": "1920x1080 (default)"
+ },
+ "failed_movie": {
+  "render_dir": "E:\\PythonChimera\\.tmp\\theShape_render_test2",
+  "frames": 12,
+  "size_scale": 0.35,
+  "dyad_alignment": 0.2,
+  "dyad_threshold": 0.6,
+  "dyad_verdict": "FAIL_RESTART",
+  "observed": "The sequence shows an abstract image of a tan-brown circular disk set against a black background, with a small irregular dark cluster (carrying faint blue tones) at its center and grainy gray-white speckling along the rim. From first to last frame the brown disk remains centered while the peripheral gray patches shift position around the edge and the central dark clump tilts slightly in orientation."
+ },
+ "analysis": {
+  "ground_plane_angular_radius_deg": 41,
+  "vertical_fov_deg": 45,
+  "bear_fills_vertical_frame_fraction": 0.47,
+  "bear_fills_horizontal_frame_fraction": 0.13,
+  "issue": "Ground plane dominates frame; bear appears as small centered blob on flat gray shadow"
+ }
+}

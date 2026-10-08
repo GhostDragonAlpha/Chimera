@@ -1,0 +1,29 @@
+[
+ {
+  "variant": "m0",
+  "margin": 0.06,
+  "k_eye_px_per_cell": 3.01,
+  "eye_image": "E:\\PythonChimera\\ChimeraEngine\\.tmp\\theShape_render_test\\variant_m0_384.png",
+  "question": "Describe the surface of the object in this image. Is its surface smooth, or does it show a repeating fine structure? If it shows repeating structure, name its shape. Answer in 1-3 sentences.",
+  "report": "The surface appears smooth and uniform in color, with only soft, blurry edges where the brown form meets the darker base. No repeating fine structure or discernible pattern (such as dots, grids, or cells) is visible at this resolution. Therefore, no specific shape of repetition can be named.",
+  "served_model": "qwen3.8-27b-nvfp4-mtp"
+ },
+ {
+  "variant": "m1",
+  "margin": 0.14,
+  "k_eye_px_per_cell": 2.63,
+  "eye_image": "E:\\PythonChimera\\ChimeraEngine\\.tmp\\theShape_render_test\\variant_m1_384.png",
+  "question": "Describe the surface of the object in this image. Is its surface smooth, or does it show a repeating fine structure? If it shows repeating structure, name its shape. Answer in 1-3 sentences.",
+  "report": "The object's surface appears smooth and uniformly colored, showing no discernible repeating fine structure\u2014likely because the image is heavily blurred. Consequently, no particular shape (such as dots, lines, or hexagons) can be identified on its surface.",
+  "served_model": "qwen3.8-27b-nvfp4-mtp"
+ },
+ {
+  "variant": "m2",
+  "margin": 0.25,
+  "k_eye_px_per_cell": 2.24,
+  "eye_image": "E:\\PythonChimera\\ChimeraEngine\\.tmp\\theShape_render_test\\variant_m2_384.png",
+  "question": "Describe the surface of the object in this image. Is its surface smooth, or does it show a repeating fine structure? If it shows repeating structure, name its shape. Answer in 1-3 sentences.",
+  "report": "The object's surface appears smooth and uniformly colored, with only broad, soft-edged regions of brown and gray. There is no visible repeating fine structure or pattern (such as dots, grids, or hexagons) on its surface.",
+  "served_model": "qwen3.8-27b-nvfp4-mtp"
+ }
+]

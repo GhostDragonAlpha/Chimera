@@ -1,0 +1,199 @@
+{
+ "c1": {
+  "per_body": {
+   "distal_thumb": {
+    "cls": "CLEAR",
+    "d": null,
+    "level1_flag": false
+   },
+   "distph2": {
+    "cls": "CLEAR",
+    "d": null,
+    "level1_flag": false
+   },
+   "distph3": {
+    "cls": "CLEAR",
+    "d": null,
+    "level1_flag": false
+   },
+   "distph4": {
+    "cls": "CLEAR",
+    "d": null,
+    "level1_flag": false
+   },
+   "distph5": {
+    "cls": "CLEAR",
+    "d": null,
+    "level1_flag": false
+   },
+   "fifthmc": {
+    "cls": "CLEAR",
+    "d": null,
+    "level1_flag": false
+   },
+   "firstmc": {
+    "cls": "CLEAR",
+    "d": null,
+    "level1_flag": false
+   },
+   "fourthmc": {
+    "cls": "CLEAR",
+    "d": null,
+    "level1_flag": false
+   },
+   "macaque_hand_anchor": {
+    "cls": "CLEAR",
+    "d": null,
+    "level1_flag": false
+   },
+   "midph2": {
+    "cls": "CLEAR",
+    "d": null,
+    "level1_flag": false
+   },
+   "midph3": {
+    "cls": "CLEAR",
+    "d": null,
+    "level1_flag": false
+   },
+   "midph4": {
+    "cls": "CLEAR",
+    "d": null,
+    "level1_flag": false
+   },
+   "midph5": {
+    "cls": "CLEAR",
+    "d": null,
+    "level1_flag": false
+   },
+   "proximal_thumb": {
+    "cls": "CLEAR",
+    "d": null,
+    "level1_flag": false
+   },
+   "proxph2": {
+    "cls": "CLEAR",
+    "d": null,
+    "level1_flag": false
+   },
+   "proxph3": {
+    "cls": "CLEAR",
+    "d": null,
+    "level1_flag": false
+   },
+   "proxph4": {
+    "cls": "CLEAR",
+    "d": null,
+    "level1_flag": false
+   },
+   "proxph5": {
+    "cls": "CLEAR",
+    "d": null,
+    "level1_flag": false
+   },
+   "secondmc": {
+    "cls": "CLEAR",
+    "d": null,
+    "level1_flag": false
+   },
+   "thirdmc": {
+    "cls": "CLEAR",
+    "d": null,
+    "level1_flag": false
+   }
+  },
+  "translation": [
+   0.0879314944410896,
+   0.041904375,
+   -0.0015560000000000003
+  ],
+  "truth": "separated: zero hand-trunk GENUINE_PENETRATION, zero TOUCHING, zero Level-1 flags vs the trunk"
+ },
+ "c2_c3": {
+  "c3_measured_depth": 0.004986966613358613,
+  "d0": 0.08133256426396462,
+  "d_at_touch": 0.0,
+  "gross_translation": [
+   -0.0049923673497194775,
+   0.0002761670607710474,
+   -0.0
+  ],
+  "radial": [
+   0.9984734699438955,
+   -0.05523341215420948,
+   0.0
+  ],
+  "t_touch": 0.08138993452750408,
+  "target_body": "distal_thumb",
+  "truth_c2": "TOUCHING for distal_thumb (exact distance 0 within tau); neither GENUINE_PENETRATION nor PROXY_FALSE_POSITIVE",
+  "truth_c3": "GENUINE_PENETRATION for distal_thumb, depth ~5 mm (50*tau, constructed rigid intrusion)"
+ },
+ "c4_c5": {
+  "child": "proxph2",
+  "direction": [
+   -0.14776685633296777,
+   0.9788104099128654,
+   -0.14175731944305578
+  ],
+  "kind_c4": "gross_active_overlap",
+  "mode": "RIGID_PAIR_TRANSLATION",
+  "pair": [
+   "secondmc",
+   "proxph2"
+  ],
+  "parent": "secondmc",
+  "st_gross": {
+   "active_depth": 0.0014264580458638676,
+   "max_fd": 0.005280000031866864,
+   "state": "GENUINE"
+  },
+  "t_gross": 0.007500000000000003
+ },
+ "c5": {
+  "d_final": 4.9999999999999847e-05,
+  "d_start": 0.00281124171981256,
+  "kind": "RIGID_TRANSLATION",
+  "pair": [
+   "proxph2",
+   "proxph3"
+  ],
+  "translation": [
+   0.002770334058186067,
+   0.00013866071328017812,
+   -6.933035946042879e-05
+  ],
+  "truth": "mesh-mesh distance within [0, tau] by constructed rigid translation (bisection on the exact distance)"
+ },
+ "construction_independence_note": "C1-C3 truths are rigid transforms, analytically known. C4/C5 attempt the kinematic fold first; the fallback is the telescoping rigid translation of the same ADJACENT certified pair (labeled). The battery validates the classification logic (screening, adjudication plumbing, class assignment, ledger scope, sweep); primitive correctness rests on C1-C3, the closed-form cylinder cases, and independent Sergeant review.",
+ "declaration_sha256": "71e31cdd4122e20bfefdf343df28b0e01fc2a51e70cba11296924ca97ce991ea",
+ "fold_probe": {
+  "best": null,
+  "found": false,
+  "scanned": [
+   "secondmc",
+   "proxph2",
+   "mcp2_flexion"
+  ]
+ },
+ "frozen_before_instrument_runs": true,
+ "pi_c": 0.001,
+ "prereg_commit": "b564bdd268a78ee2f7067c331bc8abe012ee2f75",
+ "preregistration_sha256": "897ca164ac5a63437c465783af2dd8f9c743d6c587d5423f4d3cec1b7190bdaf",
+ "r_joint": 0.005,
+ "schema": "chimera.instrument_v2.control_input_table.v1",
+ "tau": 0.0001,
+ "trunk": {
+  "R": 0.037,
+  "axis": [
+   0.0,
+   0.0,
+   1.0
+  ],
+  "hh": 0.579,
+  "origin": [
+   0.0,
+   0.0,
+   0.0
+  ]
+ }
+}

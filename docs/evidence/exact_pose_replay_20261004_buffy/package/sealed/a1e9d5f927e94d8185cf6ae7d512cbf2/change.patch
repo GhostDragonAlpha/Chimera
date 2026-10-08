@@ -1,0 +1,1863 @@
+diff --git a/tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/INPUTS.json b/tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/INPUTS.json
+new file mode 100644
+index 0000000000000000000000000000000000000000..3ca02fad8ae2ecb82c41b90ded37e7ccc773a18b
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/INPUTS.json
+@@ -0,0 +1,183 @@
++{
++  "body_census": [
++    "distal_thumb",
++    "distph2",
++    "distph3",
++    "distph4",
++    "distph5",
++    "fifthmc",
++    "firstmc",
++    "fourthmc",
++    "macaque_hand_anchor",
++    "midph2",
++    "midph3",
++    "midph4",
++    "midph5",
++    "proximal_thumb",
++    "proxph2",
++    "proxph3",
++    "proxph4",
++    "proxph5",
++    "secondmc",
++    "thirdmc"
++  ],
++  "certified_edges": [
++    [
++      "macaque_hand_anchor",
++      "firstmc"
++    ],
++    [
++      "macaque_hand_anchor",
++      "secondmc"
++    ],
++    [
++      "macaque_hand_anchor",
++      "thirdmc"
++    ],
++    [
++      "macaque_hand_anchor",
++      "fourthmc"
++    ],
++    [
++      "macaque_hand_anchor",
++      "fifthmc"
++    ],
++    [
++      "firstmc",
++      "proximal_thumb"
++    ],
++    [
++      "proximal_thumb",
++      "distal_thumb"
++    ],
++    [
++      "secondmc",
++      "proxph2"
++    ],
++    [
++      "proxph2",
++      "midph2"
++    ],
++    [
++      "midph2",
++      "distph2"
++    ],
++    [
++      "thirdmc",
++      "proxph3"
++    ],
++    [
++      "proxph3",
++      "midph3"
++    ],
++    [
++      "midph3",
++      "distph3"
++    ],
++    [
++      "fourthmc",
++      "proxph4"
++    ],
++    [
++      "proxph4",
++      "midph4"
++    ],
++    [
++      "midph4",
++      "distph4"
++    ],
++    [
++      "fifthmc",
++      "proxph5"
++    ],
++    [
++      "proxph5",
++      "midph5"
++    ],
++    [
++      "midph5",
++      "distph5"
++    ]
++  ],
++  "constants": {
++    "ANCHOR_R": 0.0450782444410896,
++    "DEPTH_SEARCH_ITERS": 60,
++    "DEPTH_SEARCH_MAX": 0.02,
++    "PI_C": 0.001,
++    "R_JOINT": 0.005,
++    "SCALE": 0.5384048132470733,
++    "TAU": 0.0001,
++    "TERNARY_ITERS": 120,
++    "TRUNK_H": 1.158,
++    "TRUNK_R": 0.037
++  },
++  "external_pin_note": "Legacy instrument consumes these paths read-only; hashes must match at every run; no geometry evaluated in this metadata census.",
++  "external_read_only_files": {
++    "E:/ChimeraWork/monkey-coordination/assembly-identity/ASSEMBLY_IDENTITY.md": "2ab248bda4db799685a5be9f446bb3e731a47b40b9db1108072cce18bafad035",
++    "E:/ChimeraWork/monkey-coordination/b07-prereqs/RUNTIME_CONTRACT.md": "f33c188bcb561b1946b104340cf36cba366709526c095874684529a599df338c",
++    "E:/ChimeraWork/monkey-coordination/evidence-store/MAT2-A05/workspace_evidence/48b037593f63_mutation_structure.json": "48b037593f63ec473947d787077ab6fbcd3b364afd15765bff508e7d54f45649",
++    "E:/ChimeraWork/monkey-coordination/evidence-store/MAT2-A05/workspace_evidence/9c91124600ab_macaque_hand_mutation.xml": "9c91124600abc67a4a33d78ce79ab1a0604a48b5a9a2e6377d15de05717e5adf",
++    "E:/ChimeraWork/monkey-coordination/evidence-store/MAT2-A09/numerical/grasp_package.json": "0a70adb1029d860ac9504683d77c2e94be2634724c63479f827fcbc8fcd97d24",
++    "E:/ChimeraWork/monkey-coordination/evidence-store/MAT2-B07/unclassified/adoption_record.json": "f6952e8afc778f79a0ede05b61d73dd7c3fabd68789703552cd6136e25ef0199",
++    "E:/ChimeraWork/monkey-coordination/evidence-store/MAT2-D-MASSREG/numerical/mass_register.json": "61fb79b1bf2df8c5e1a5b1bff2ab1c4f41700de25bc7f1a114cbc78fe693cc7a",
++    "E:/ChimeraWork/monkey-coordination/evidence-store/MAT2-G01/report/REPORT.md": "e6d6c432680e503d5a70a1903ed59b52d5044cb8d3c7934da3b0db8acf3293a9",
++    "E:/ChimeraWork/monkey-coordination/evidence-store/MAT2-W04/numerical/w04_certificate.json": "07f05bfa982e066ae67413b04e3367c5ad7570830e99fc32edcb86cbe8d87598",
++    "E:/ChimeraWork/monkey-coordination/g04-friction/FRICTION_SOURCES.md": "336118e929bd0b4fb067db5a448dc2e348fed073007787635549a4cf1cf5868b",
++    "E:/ChimeraWork/monkey-coordination/instrument-v2/INSTRUMENT_V2_DECLARATION.md": "71e31cdd4122e20bfefdf343df28b0e01fc2a51e70cba11296924ca97ce991ea",
++    "E:/ChimeraWork/monkey-coordination/x-aperture/EVIDENCE.md": "4de65fc1b7d007dbf0c2685fe794a59144ef0f80de4f603820215c0e418d7997",
++    "E:/ChimeraWork/monkey-coordination/x-aperture/GRASP_MECHANISMS.md": "e82b5549253830467e0a3b7800470a6f8c142fb5affa41452b07d56fdfe61d48",
++    "E:/PythonChimera/tools/monkey_campaign/MONKEY_COMPLETION_MAP.md": "0e3984578b0cae38ab435daaa77cc10559cceeadbaf9885c3f31b979a362ecae",
++    "E:/PythonChimera/tools/science_funnel/data/macaque_arm/Geometry/hand.vtp": "a06ea7e079c849df07d6eec001e9bcc2ea193ecd3914011c78a993a5faa94fc6",
++    "E:/PythonChimera/vendor/myo_sim/meshes/1mc.stl": "b75e58243a2005af787bc731c5d1aa6b7da4669f36e9bcd7409a430c1cc311b6",
++    "E:/PythonChimera/vendor/myo_sim/meshes/2distph.stl": "39fca9372434520835703ffd34b5cc37a3f15f86ec9841b5fd841acac51adb88",
++    "E:/PythonChimera/vendor/myo_sim/meshes/2mc.stl": "ac3286bfb7281a7d2dc3ff2ac32fcb8f0424764aa97ad526992a10b739334fe2",
++    "E:/PythonChimera/vendor/myo_sim/meshes/2midph.stl": "074318c92e652ba05d26cbe0ad8e781891e2970e6b7415bc63585536e8beda72",
++    "E:/PythonChimera/vendor/myo_sim/meshes/2proxph.stl": "041bf5a60e9376c0c47a3981c312698caa8d28f6d8ca08f59c3222da4244fb9d",
++    "E:/PythonChimera/vendor/myo_sim/meshes/3distph.stl": "d5ecddeac9b4572091a32d386a117ba475a0c784e42d06016ba963432396b612",
++    "E:/PythonChimera/vendor/myo_sim/meshes/3mc.stl": "eaa77802c8afe5a3187293880d0f95b5b2f0367adcb3639c8038993d39ff8f5c",
++    "E:/PythonChimera/vendor/myo_sim/meshes/3midph.stl": "5e0ef3d76f2f99f950e9aefac28131009fa7fad7129f1421f50b5e7086655c88",
++    "E:/PythonChimera/vendor/myo_sim/meshes/3proxph.stl": "48094bce62d115aee9f2527b22061ff1f5656936e647879d83672b2c62c20728",
++    "E:/PythonChimera/vendor/myo_sim/meshes/4distph.stl": "02f01c191dfc86ab5f04d5b092238f6d6c134cbc39977a79542e6fe8b37c3691",
++    "E:/PythonChimera/vendor/myo_sim/meshes/4mc.stl": "ad2fe21562879512367cf2b7ab7016b07d9eda780c72add59cd125d2a232cf42",
++    "E:/PythonChimera/vendor/myo_sim/meshes/4midph.stl": "98ecb5ad76749abd6c32862770f6502aa2cc41a4d919ca73735b052bcb39c79c",
++    "E:/PythonChimera/vendor/myo_sim/meshes/4proxph.stl": "eea82e95eb50e93471d32be3c15dc123b88a44bba06647c3003217eafa9cc44d",
++    "E:/PythonChimera/vendor/myo_sim/meshes/5distph.stl": "a2ca70efdb0a5e59913922676e597ec24b963ace4d41c5fd0d5a3bc7cafdb3f4",
++    "E:/PythonChimera/vendor/myo_sim/meshes/5mc.stl": "46c75922ddc94f982a539f0345c32456d4ba75d1367df0c6aecc82467c775d3d",
++    "E:/PythonChimera/vendor/myo_sim/meshes/5midph.stl": "d383a1f058224f71fc5333c2849673cd2a106652dcd84f13518a4f88e5866324",
++    "E:/PythonChimera/vendor/myo_sim/meshes/5proxph.stl": "b04672ea67df7403705ff58aa89cef984fe9c679177608a934034413b1e339cb",
++    "E:/PythonChimera/vendor/myo_sim/meshes/thumbdist.stl": "95b059723be971e770609000d682a4d41989332d22978fc05cbffd2754c5f93b",
++    "E:/PythonChimera/vendor/myo_sim/meshes/thumbprox.stl": "d55ea0de846c5acf5c89198cb4f4b74e7739f4316120ece0d6fe1c8e7cbb646c"
++  },
++  "input_commit": "79b263944d4053b7ee41f97c97b3cc2f732b1b97",
++  "local_files": {
++    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/ERRATUM_R1_STAGE1.md": "d37c4d82bfa22f35d05b041cefa3a9d0abc7f6793b0a7391f8c1eba321304433",
++    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/EVIDENCE.md": "be4374b77d29c638a53869ef6f13d0ac4bf5202cb9929e1995558890118d1e8f",
++    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/PREREGISTRATION.md": "897ca164ac5a63437c465783af2dd8f9c743d6c587d5423f4d3cec1b7190bdaf",
++    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/PREREGISTRATION_R1_PAD_LAYER.md": "9213bf7d91ed9a6e6b2c5bbddc05d5ee36db63c600dfce42b559632f6f565da9",
++    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/R1_AMENDMENT_1.md": "018f0bc120c0fa44cdcc1f611ab883764eb91e2d668975573f792218b93f94ac",
++    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/R1_AMENDMENT_2.md": "e96e09a1a925b12d68763139958eaae5897e27c027ecd3670336f5df5bc597cf",
++    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/R1_STAGE2_PREREG.md": "2d7ff4172388fff75bb6bf46710a3c8c8857933d6c315166f3d7f7371610b3ec",
++    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/R1_STAGE3_PREREG.md": "4dfb62e0ebff878752e4ef69cc127ce49528ae787e58e3ed5706afe0c0c8204e",
++    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/R1_STAGE4_PREREG.md": "4438c4d76c2d904d08a09eb1f29db55b25bdccaeb399f2d8db26ad0d78e5dfc1",
++    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/control_input_table.json": "d8aacc23b27e2caaf60304c0e9a4fe711ac51245c0ca3bf6d021d8f7b5164bf2",
++    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/control_input_table_vpl1.json": "9cd8a56d89bdbe403a0c8513f04a32b2a43de85eea3d38c34f39931be9317783",
++    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/grasp_screen.py": "6b924e87151f5e2235b9d9c023be85d0f7602d42020b37df4ba7bf58c0e9e0ea",
++    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/grasp_screen_receipt_sealed_v20.json": "065328e4942a0bb8794138a96966aa8a3267fcd15ce084b9fb0490dff76b19ec",
++    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/instrument_v2.py": "9514c5b15a27948c65563070f16dffee4a5a28347c281a5d7e255fe93e516ddd",
++    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/mesh_input_table.json": "6e5f3bac345a278eaa994203d48df71fa3a4d5d3f6d9be3e9c59f3b08491cfb2",
++    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/mutation_structure.json": "48b037593f63ec473947d787077ab6fbcd3b364afd15765bff508e7d54f45649",
++    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/raised_cap_stage1_pad_receipt.json": "4df5f48020c4dd601b7d6fc7c3047c4eb3c1e5c829bf450e07427c32c3835900",
++    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/run_stage1_pad.py": "33392b97f275c640d3a5e562f88996cbb3881e9cbd6621e897dd1167bd94a884",
++    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/seal-store/6d4ac09c2c5c40ce887a5f03989b923a_change.patch": "932630ac7653583a3727daec7c963114b5d6f08da0d1d6555b1a89b4711fb947",
++    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/seal-store/6d4ac09c2c5c40ce887a5f03989b923a_manifest.json": "9c68f541f3f9c330a0e6b064ea05b1d654c99d50ab103b69b5e61a4da0b7901b",
++    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/seal-store/8cd676bc73164367a1a87ab37fd031d7_change.patch": "a2aa55159e7764f7de35030c41fa5215cadc04ebae9dff7cca12245bd587142f",
++    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/seal-store/8cd676bc73164367a1a87ab37fd031d7_manifest.json": "f8dde9e3460950e7e64d9002b01f1f30353942cc13cb80c193f6c62ba4bb341c",
++    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/stage1_pad_receipt.json": "2b52b55d25767348cab7892fcd6dd2f8478ef05d97b4cd4b7ef332cba0161f7b",
++    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/stage2_capacity_receipt.json": "8b93464c6ee206570c60fd00a750a2229ea650b0afaf589b8bbce6ed0bde174d",
++    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/stage2_capacity_report.txt": "b33d80e90f3501936d1fc803237bd0f812a9f3c4a3d469aa7f3f851ef9a7b017",
++    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/stage3_forces_receipt.json": "63ec1a8e38abc0ba1a05ae594db1241cc2acc642d1d82e7eebb3d945a167d01f",
++    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/stage3_forces_report.txt": "6043b24e11d03cca0fdaff04300334150fdf05d7a7a85da2755c04f62900d8af",
++    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/vpl1_pad.py": "54af4a49ce57736cf0d90fe2a5d57ea98dd24d568efcae635b8e20479575794e"
++  },
++  "schema": "chimera.exact_pose_replay.inputs.v1"
++}
+diff --git a/tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/PREREGISTRATION.md b/tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/PREREGISTRATION.md
+new file mode 100644
+index 0000000000000000000000000000000000000000..6188f349eb330621a64905d190eacd06b7897227
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/PREREGISTRATION.md
+@@ -0,0 +1,176 @@
++# Exact-pose grasp collision replay — preregistration proposal
++
++ID: EXACT-POSE-REPLAY-20261004-BUFFY-PRE-1
++Author: Buffy (this Freebuff task; no borrowed fleet identity)
++Written UTC: 2026-10-04. Status: PROPOSAL-ONLY; offered to the existing
++hand-remediation owner for review. NOT an independent execution assignment.
++Ownership/scope correction: Captain direction after the interrupted preparation;
++no scientific replay, control slice, competing attempt or publication is authorized
++for EXACT-POSE-REPLAY-20261004-BUFFY.
++
++## Selection and authority
++
++The initial read-only entry checks found no separate replay assignment in the
++records inspected then; that observation was not a claim or proof of availability.
++The Captain has now confirmed that the hand-remediation lane owns these exact
++314 primary and 40 control poses. A fresh read of its package corroborates owner
++wk-hand-remediation, task HAND-REMEDIATION-20261003-R1-COLLISION-ADJ, base
++adc410451951b9057a9c749e7af84cdb9a063b3a. This supersedes the earlier R1-STAGE4
++status and unclaimed-task premise. No competing attempt will be created or run.
++
++This directory contains a proposal and reusable code/safeguards for that owner's
++review only. The existing lane remains the execution/publication authority; this
++author has no authenticated fleet claim. Existing owner files, claims, geometry,
++thresholds and exemptions remain untouched. Historical seals/receipts are preserved,
++not treated as releases of the revised proposal.
++
++Scope correction: Stage 1 ALREADY adjudicated the anchor VTP against the trunk
++and recorded its result, but that result did not gate the survivor predicate.
++The omitted collision check is the pad-substituted RIGID BONE. The proposed
++replay re-evaluates all bodies at the same stored poses, including that missing
++bone check and the already-adjudicated anchor, and reports diagnostic predicates.
++This is NOT the separate R2 placement construction or a new placement sweep.
++
++## Exact inputs and immutable physics
++
++Input Git revision: 79b263944d4053b7ee41f97c97b3cc2f732b1b97 (available local object;
++not a claim that the shared checkout or remote currently runs that revision).
++Input contribution: tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003.
++
++- raised_cap_stage1_pad_receipt.json SHA256:
++  4df5f48020c4dd601b7d6fc7c3047c4eb3c1e5c829bf450e07427c32c3835900
++- stage2_capacity_receipt.json SHA256:
++  8b93464c6ee206570c60fd00a750a2229ea650b0afaf589b8bbce6ed0bde174d
++- instrument_v2.py SHA256:
++  9514c5b15a27948c65563070f16dffee4a5a28347c281a5d7e255fe93e516ddd
++- grasp_screen.py SHA256:
++  6b924e87151f5e2235b9d9c023be85d0f7602d42020b37df4ba7bf58c0e9e0ea
++- vpl1_pad.py SHA256:
++  54af4a49ce57736cf0d90fe2a5d57ea98dd24d568efcae635b8e20479575794e
++- run_stage1_pad.py SHA256:
++  33392b97f275c640d3a5e562f88996cbb3881e9cbd6621e897dd1167bd94a884
++
++Use the pinned model parser, FK, frame builder and collision instrument unmodified.
++SCALE 0.5384048132470733; tau 1e-4 m; pi_c 1e-3 m;
++r_joint 5e-3 m; trunk radius 0.037 m; trunk height 1.158 m;
++depth bracket 0.02 m and all instrument iteration bounds unchanged.
++Keep VPL-1 thickness, compression window, sign map, stiffness and measured inputs
++unchanged; pad values are inherited record columns, NEVER collision exemptions.
++Preserve CERTIFIED_EDGES exactly (19 joint-region exemptions for body/body tests,
++none for body/trunk). This replay does not add a new body/body sweep; it emits
++that unchanged exemption map and the 20-body census alongside trunk records.
++Anchor is the pinned hand.vtp envelope, NOT new solid anatomy or measured tissue.
++
++## Pose identity and units
++
++Pose key = [posture, theta_index, mirror]; posture order is q_c_PRIMARY then
++q_zero_CONTROL, followed by increasing integer theta_index then mirror.
++Require exactly 314 and 40 unique keys, and a bijection with Stage 2 capacity_rows.
++Also require identical pad_body, pad_class and pad_u for joined rows.
++Use each Stage 1 survivor's stored o/u/s_star verbatim. Do NOT call solve_s_star,
++placement_family, axis_basis, or another placement construction. Rebuild only the
++original two FK postures (primary constants + certified-joint zero control),
++without translating any body or changing q. All geometry is in metres.
++The `pose_sha256` scope is EXACTLY the canonical JSON object
++`{"key": pose_key, "stage1": complete_stage1_row, "stage2": joined_stage2_row}`
++serialized by `canonical()` (sorted keys, compact separators, UTF-8, trailing
++newline) and hashed with SHA256 by `join_rows()`. It does NOT additionally hash
++rebuilt posture values or inherited file pins. The posture NAME is in the pose
++key; posture values are separately recorded/validated as `posture_q`, and
++inherited file pins are separately checked through `INPUTS.json` and bound by
++`inputs_sha256`. Those safeguards are not part of the per-pose hash.
++
++## Replay and outcome space
++
++Each independent unit is one pose key. Evaluate all 20 frames against that row's
++analytic cylinder with iv.adjudicate_body_vs_cylinder(frame, o, u, iv.TAU),
++including the previously omitted pad-substituted rigid bone AND the anchor VTP
++already adjudicated in Stage 1. No early pose rejection
++may suppress a body's record. Store full per-body primitive records, each body
++position/rotation and mesh/sphere identity, raw classes, signed margin, depth,
++Level 1 proxy, exact-triangle and bisection counts when the primitive emits them.
++Do not invent absent distances for sound Level 1 clears.
++
++Run the inherited gs.classify_placement_bones on (a) all 19 bone records, no pad
++omission, and (b) those records plus the anchor envelope as a noncontact record.
++Record both diagnostic verdicts AND the full rejection list; do not only keep
++its first-reject reason. Preserve the inherited two declared contact segments
++(distal_thumb, distph3): CLEAR is no-contact, depth > pi_c refuses; all other
++bodies must be CLEAR. Pad reclassification never changes a rigid-bone raw class.
++The anchor-inclusive verdict is a conservative application of that unchanged
++noncontact predicate to represented envelope geometry; it is NOT a ruling that
++the envelope is certified solid anatomy. If a new exemption, envelope interpretation,
++pad/solid replacement or parameter change is needed to advance grasp, STOP and
++route exact evidence and bounded options to Lieutenant/Astra and the Captain.
++No changed policy is implemented by this replay.
++
++Raw class space is CLEAR / TOUCHING / GENUINE_PENETRATION. Unknown, nonfinite,
++missing geometry, missing frames, pin drift or record-identity discrepancy causes
++REFUSED, with evidence, never a zero or a pass. Replay completion is separate
++from a SURVIVOR diagnostic; a negative result is useful and cannot close playability.
++
++## Frozen predictions and falsifiers (not pass targets)
++
++P1: all 354 Stage 1 keys join exactly one Stage 2 row. Contradictions: missing,
++extra, duplicate, malformed or changed inherited metadata; reject before geometry.
++P2: every replayed pose has exactly the same 20 body IDs including the pad and
++anchor. Contradictions: omitted/duplicate/extra body record, incomplete work unit.
++P3: raw body/trunk results for inherited recorded bodies and anchor reproduce
++those recorded class/margin/depth columns exactly. Contradictions: any exact float
++or class disagreement, including the envelope. Record drift; do not loosen bounds.
++P4: the first four canonical q_zero_CONTROL rows are byte-identical between a
++straight serial primitive loop and the work-unit replay, across independently
++started runner processes and a reversed submission order. Contradiction: ANY
++canonical payload byte difference. Do not scale until this control gate closes.
++P5: adding the omitted rigid-bone check and/or including the already-recorded
++anchor adjudication in the diagnostic predicate prevents at least one old survivor
++from passing the unchanged all-body diagnostic. Contradiction: all 354 pass both
++diagnostics; this is a legitimate falsified prediction, NOT an instrument error.
++The source receipts already record envelope penetration; this is a disclosed
++prediction based on existing evidence, not a blinded trial or fresh measurement.
++P6: deterministic canonical combination closes over exactly 354 pose keys / 7,080
++body records. Contradictions: missing, duplicate, tampered, foreign-input or foreign-
++prereg units; combine MUST refuse and preserve the partials.
++
++## Runner/resource and retention contract
++
++CPU only through E:/PythonChimera/tools/monkey_campaign/task_package.py seal|run.
++No detached process, worktree/clone, GPU request, shared service restart or cleanup.
++Use --slot 2 for bounded preparatory runner checks while automatic selection is
++blocked by the existing slot-0 unsafe_relative_path outputs/ recovery defect.
++This is ordinary approved slot selection, not repairing or bypassing a runner
++refusal; if slot 2 is BUSY honor >=10 s backoff. No --root alternate runner.
++Scientific runs use the same approved runner and a free authorized slot.
++Profile: four slots, <=4 threads/job, 16 GiB aggregate committed memory/job,
++24 GiB host reserve, >=40 GiB memory admission, <=2 GiB scratch/job,
++<=256 MiB retained output/job, <=1 MiB runner diagnostic tail. Planned scientific
++unit timeout 600 s; control timeout 600 s; combination timeout 120 s. No timeout
++increase without declaring it as an operational amendment before rerun.
++A unit's deterministic payload has no wall-clock/process/path/job metadata;
++separate progress records and runner receipts carry execution identity/timing.
++Persist each completed pose atomically under CHIMERA_OUTPUT_DIR/replay/units;
++write progress/error status before exit. Declare --keep outputs/replay (no trailing
++slash) so the runner preserves partial units on failure or timeout. Canonical
++combination validates all input/prereg/pose/body identities before sorting.
++Execution completion requires runner PASSED + cleanup_verified AND content checks.
++Never call queued work launched, fixtures runtime evidence, or author checks approval.
++
++## Mandatory execution boundary
++
++The original proposal preceded implementation. This ownership/scope/hash wording
++revision follows implementation and fixture-only checks; it is an unpublished
++proposal correction, NOT a retroactive scientific preregistration or sealed result.
++EXACT-POSE-REPLAY-20261004-BUFFY remains PROPOSAL-ONLY even if its code passes tests.
++Do not request a new replay claim/release for it or run its scientific operations.
++
++Offer code and safeguards to the existing hand-remediation owner for review. Any
++adoption must follow that lane's own preregistration, pinned candidate, runner,
++control-first validation and independent review rules. Old seals are historical
++preparation artifacts, not approvals; a seal is not a publication commit.
++Only explicitly labeled synthetic proposal regression tests may run here through
++the approved runner; they do not evaluate actual collision geometry or qualify
++the serial control slice. No commit, push or PR is made by this author.
++
++The retained CLI's precommitment/control gates are proposed safeguards, not
++permission to execute. Actual collision replay, serial parity, full-census checks,
++policy decisions and independent acceptance belong to the existing lane.
+diff --git a/tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/RUNBOOK.md b/tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/RUNBOOK.md
+new file mode 100644
+index 0000000000000000000000000000000000000000..307a2721fd2b7b781a8a138c96346f78a1cd46ae
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/RUNBOOK.md
+@@ -0,0 +1,170 @@
++# Exact-pose replay — operator/independent-review handoff
++
++Proposal: EXACT-POSE-REPLAY-20261004-BUFFY. PROPOSAL-ONLY, offered to
++wk-hand-remediation for review. The existing HAND-REMEDIATION-20261003-R1-COLLISION-ADJ
++lane owns the same exact 314 primary and 40 control poses. No competing attempt,
++scientific control slice, replay launch or publication is authorized here.
++No scientific control slice or 354-pose collision replay has run in this proposal.
++
++Read PREREGISTRATION.md and INPUTS.json first. The replay never invokes a
++placement construction: only stored Stage 1 o/u/s_star and the original two FK
++postures. Existing anatomy, constants and 19 exemption edges are unchanged.
++Stage 1 already adjudicated the anchor VTP against the trunk; its recorded
++result did not gate the survivor predicate. The omitted check was the
++pad-substituted rigid bone, NOT anchor adjudication.
++The existing receipt records all 354 anchor depths at
++0.019999999999999997 m, the inherited 20 mm search-bracket edge. New records
++explicitly flag that edge; never describe it as an unbounded exact maximum
++or change the bracket. Collision classes/depth bytes still compare exactly.
++
++## Mandatory admission, not a checklist to bypass
++
++The instructions/schema/commands below are retained design reference for the
++existing owner's review, NOT a procedure to launch this proposal. Adopt any
++useful code in the owner's existing lane and authority, not a new competing task.
++
++1. Ownership is already assigned to wk-hand-remediation. Offer this code and
++   safeguards to that lane; do not provision a second replay task for Buffy.
++   This author has no authenticated fleet claim.
++2. Publication owner commits PREREGISTRATION.md alone first through the existing
++   serialized publication path. Never stage unrelated shared-checkout changes.
++   Publish/verify the exact pin as the project requires. The author did not commit,
++   push, or open a PR; a package seal is not a precommitment publication.
++3. Confirm the policy boundary: anchor-included results are a conservative
++   diagnostic on hand.vtp, NOT a ruling that it is solid anatomy. Raw rigid bone
++   penetration stays a raw failure and cannot be masked by PAD_CONTACT/ABSORBED.
++   A requested geometry/exemption change must go to Astra/Lieutenant and Captain.
++4. Re-create the package against the published prereg pin (or a verified descendant),
++   preserving the old package/seals. Select the pinned HAND-REMEDIATION inputs,
++   this contribution, hand.vtp and vendor meshes, with write scope only this
++   contribution. Verify every INPUTS.json hash; do not silently re-pin changed inputs.
++5. Copy reviewed implementation into that package and seal. Lieutenant supplies
++   an add-only release JSON matching the exact prereg, input, implementation,
++   profile, published pin, sealed base and sealed manifest. This JSON is a
++   cooperative audit record, NOT cryptographic authentication or independent approval.
++
++Release schema (values must be supplied by the designated authority, not fabricated):
++
++```json
++{
++  "schema": "chimera.exact_pose_replay.release.v1",
++  "task": "EXACT-POSE-REPLAY-20261004-BUFFY",
++  "preregistration_sha256": "FULL_SHA256",
++  "inputs_sha256": "FULL_SHA256",
++  "implementation_sha256": "FULL_SHA256",
++  "authority": "Lieutenant",
++  "authority_reference": "ACTUAL_DISPATCH_OR_CAPTAIN_RULING_REFERENCE",
++  "release_id": "ACTUAL_RELEASE_IDENTIFIER",
++  "observed_utc": "ACTUAL_OWNERSHIP_RECHECK_TIME",
++  "owner": "ACTUAL_ISSUED_OWNER",
++  "handoff_reference": "ACTUAL_HANDOFF_IF_OWNER_CHANGED",
++  "ownership_rechecked": true,
++  "source_input_commit": "79b263944d4053b7ee41f97c97b3cc2f732b1b97",
++  "published_prereg_commit": "ACTUAL_40_HEX_COMMIT",
++  "sealed_base_commit": "ACTUAL_40_HEX_COMMIT",
++  "sealed_manifest_sha256": "FULL_SHA256",
++  "resource_profile_sha256": "FULL_SHA256_OF_CURRENT_APPROVED_PROFILE",
++  "unit_timeout_seconds": 600,
++  "geometry_scope": "EXACT_STORED_STAGE1_POSES_NO_PLACEMENT_SOLVE",
++  "anchor_policy": "DIAGNOSTIC_ONLY_NO_SOLID_ANATOMY_RULING",
++  "operations": ["control", "compare-control"],
++  "independent_approval_claimed": false
++}
++```
++
++Do not call schema placeholders credentials or launch evidence. After the control
++slice passes, append a separately authorized release for `replay`/`combine` with
++`control_gate_sha256` binding the retained gate artifact. No implementation or
++sealed-input change between control and scaling. Release files live outside the
++sealed package; otherwise adding the release would change the seal it binds.
++
++## Proposed command interface (owner-review reference ONLY; do not execute here)
++
++Use C:/Python314/python.exe and the canonical task_package.py.
++Run synchronously, no detached processes. Each job has the approved 16 GiB
++committed-memory limit, 24 GiB reserve, <=4 threads, <=2 GiB scratch,
++<=256 MiB retained outputs, <=1 MiB runner log tail. Set 600 seconds per
++control/unit and 120 seconds for combine; budgets are operational, not physics.
++Slot 0 currently has an unrelated unsafe_relative_path outputs/ recovery defect.
++Use `--slot 2` only while that verified-free slot is available; BUSY waits >=10 s.
++Do not repair leases, move old scratch, use an alternate runner root, or infer
++other processes are dead. Runner owns cleanup.
++
++```bash
++PY=C:/Python314/python.exe
++RUNNER=E:/PythonChimera/tools/monkey_campaign/task_package.py
++CODE=tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/replay.py
++# SEALED and RELEASE are actual authority-approved absolute paths.
++"$PY" -B "$RUNNER" run --sealed "$SEALED" --slot 2 --timeout 600 \
++  --keep outputs/replay -- "$PY" -B "$CODE" control --route serial --release "$RELEASE"
++"$PY" -B "$RUNNER" run --sealed "$SEALED" --slot 2 --timeout 600 \
++  --keep outputs/replay -- "$PY" -B "$CODE" control --route units_reversed --release "$RELEASE"
++```
++
++The two independent processes each replay the first FOUR canonical
++q_zero_CONTROL rows, all 20 bodies. Take SERIAL_RESULT and UNITS_RESULT from
++their completed actual runner receipts, not a queued job file.
++
++```bash
++"$PY" -B "$RUNNER" run --sealed "$SEALED" --slot 2 --timeout 120 \
++  --keep outputs/replay -- "$PY" -B "$CODE" compare-control --release "$RELEASE" \
++  --serial-run "$SERIAL_RESULT" --units-run "$UNITS_RESULT"
++```
++
++Comparator requires distinct actual runner jobs, PASSED + cleanup_verified,
++identical base and seal, verified retained artifact hashes, exact four-key census,
++zero inherited raw-column drift, and byte-identical canonical payloads. Fixture
++parity is explicitly not this gate. Copy/reference retained control_gate.json;
++ask the authority for the control-hash-bound scaling release before scaling.
++
++## Independent work units and deterministic combination
++
++A `--keys` file is a JSON list of [posture, theta_index, mirror]. Use the
++canonical metadata preflight keys to partition it; each pose unit depends only
++on pinned input geometry, its original row and the fixed two postures. Select
++one or several keys per runner job to amortize model loading, never >4 local
++jobs total or >4 threads/job. Completion order is irrelevant. The payload has
++no clock/path/PID/job fields. `pose_sha256` binds only the pose key and full
++original Stage 1/2 rows. Candidate/input pins have separate identity fields;
++posture values are separately recorded and validated, not in that pose hash.
++Atomic per-body checkpoints and per-pose units survive a nonzero/timeout under
++declared `--keep outputs/replay`; failed runs remain evidence and do not count
++as completed eligible units for final combination.
++
++```bash
++"$PY" -B "$RUNNER" run --sealed "$SEALED" --slot 2 --timeout 600 \
++  --keep outputs/replay -- "$PY" -B "$CODE" replay --release "$SCALING_RELEASE" \
++  --control-gate "$GATE" --keys "$KEY_SELECTION"
++# Without --keys replay requests the entire 354 set; only do this if measured
++# control timing supports the declared timeout. No unsupported timing estimate.
++```
++
++Final combiner takes one or more exact retained runner unit directories:
++RESULT_DIRECTORY/artifacts/outputs/replay/units. It refuses noncanonical result
++roots, failed/incomplete runner receipts, wrong base/seal, hash drift, duplicates,
++missing/foreign keys, body omissions, source drift, nonfinite/unknown classes and
++promoted scope. Only a complete 354-pose / 7,080-body census may be a full result.
++
++```bash
++"$PY" -B "$RUNNER" run --sealed "$SEALED" --slot 2 --timeout 120 \
++  --keep outputs/replay -- "$PY" -B "$CODE" combine --release "$SCALING_RELEASE" \
++  --control-gate "$GATE" --unit-dir "$UNITS_A" --unit-dir "$UNITS_B"
++```
++
++A raw negative is not an execution failure; any record-identity drift is a stop
++with retained evidence. Independent reviewer must rerun the slice, verify exact
++source identities and full census, and assess the bone-vs-pad and envelope
++interpretation. Author tests cannot certify independence, supported climbing,
++training readiness, real forces, or player runtime.
++
++## Fixture-only proposal regression checks
++
++`test_replay.py` runs only labeled synthetic packaging fixtures, parser/syntax
++checks, hash/combination/gate failures and a fail-closed scientific CLI probe.
++Historical `replay.py preflight` jobs checked pinned bytes and recorded key
++metadata only; none were scientific replay evidence. Under the current
++proposal-only direction, do not launch new preflights, control slices or replay
++attempts here. Only fixture regression checks for this proposal correction run
++through the approved runner with `--keep outputs/replay`; no collision geometry
++is evaluated. No typechecker is configured for this stdlib contribution;
++AST/compile checks are syntax checks, not static type inference.
+diff --git a/tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/replay.py b/tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/replay.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..6ec0a8a7e2af573c3ed8778e8ec61d680f36f62c
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/replay.py
+@@ -0,0 +1,724 @@
++"""Exact Stage 1/2 replay preparation; science requires published precommitment.
++
++No placement construction, anatomy/parameter edits, scheduler mutation or cleanup.
++The imported instrument and screen are hash-pinned, byte-unmodified dependencies.
++"""
++import argparse
++import hashlib
++import importlib
++import json
++import math
++import os
++from pathlib import Path
++import subprocess
++import sys
++import time
++
++HERE = Path(__file__).resolve().parent
++REL = "tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY"
++INHERITED = "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003"
++ROOT = HERE.parents[3]
++POSTURES = ("q_c_PRIMARY", "q_zero_CONTROL")
++COUNTS = {"q_c_PRIMARY": 314, "q_zero_CONTROL": 40}
++CONTACT = ("distal_thumb", "distph3")
++SCHEMA = "chimera.exact_pose_replay.unit.v1"
++TASK = "EXACT-POSE-REPLAY-20261004-BUFFY"
++RUNNER_RESULTS = Path("E:/ChimeraWork/task-runner/results")
++
++
++class Refused(ValueError):
++    pass
++
++
++def require(ok, code):
++    if not ok:
++        raise Refused(code)
++
++
++def sha(data):
++    return hashlib.sha256(data).hexdigest()
++
++
++def canonical(value):
++    return (json.dumps(value, sort_keys=True, separators=(",", ":"),
++                       allow_nan=False) + "\n").encode("utf-8")
++
++
++def unique(pairs):
++    out = {}
++    for key, value in pairs:
++        require(key not in out, "duplicate_json_key:" + key)
++        out[key] = value
++    return out
++
++
++def read_json(path):
++    def constant(value):
++        raise Refused("nonfinite_json:" + value)
++    return json.loads(Path(path).read_bytes(), object_pairs_hook=unique,
++                      parse_constant=constant)
++
++
++def finite(value):
++    if isinstance(value, float):
++        require(math.isfinite(value), "nonfinite_numeric")
++    elif isinstance(value, dict):
++        for child in value.values():
++            finite(child)
++    elif isinstance(value, (list, tuple)):
++        for child in value:
++            finite(child)
++
++
++def atomic_json(path, value):
++    path = Path(path)
++    path.parent.mkdir(parents=True, exist_ok=True)
++    tmp = path.with_name(path.name + ".tmp")
++    with tmp.open("wb") as stream:
++        stream.write(canonical(value))
++        stream.flush()
++        os.fsync(stream.fileno())
++    # Windows filesystem observers may briefly hold the destination without
++    # FILE_SHARE_DELETE. Retry only sharing/access failures for a bounded second;
++    # any permanent error remains a nonzero job with the .tmp bytes preserved.
++    deadline = time.monotonic() + 1.0
++    while True:
++        try:
++            os.replace(tmp, path)
++            break
++        except PermissionError:
++            if time.monotonic() >= deadline:
++                raise
++            time.sleep(0.02)
++
++
++def inputs():
++    return read_json(HERE / "INPUTS.json")
++
++
++def identities():
++    return {"task": TASK,
++            "preregistration_sha256": sha((HERE / "PREREGISTRATION.md").read_bytes()),
++            "inputs_sha256": sha((HERE / "INPUTS.json").read_bytes()),
++            "implementation_sha256": sha((HERE / "replay.py").read_bytes())}
++
++
++def check_files(manifest, root=ROOT, external=True):
++    require(manifest["schema"] == "chimera.exact_pose_replay.inputs.v1",
++            "input_manifest_schema")
++    for name, expected in sorted(manifest["local_files"].items()):
++        path = Path(root) / name
++        require(path.is_file(), "input_missing:" + name)
++        require(sha(path.read_bytes()) == expected, "input_pin_drift:" + name)
++    if external:
++        for name, expected in sorted(manifest["external_read_only_files"].items()):
++            path = Path(name)
++            require(path.is_file(), "external_input_missing:" + name)
++            require(sha(path.read_bytes()) == expected, "external_input_drift:" + name)
++
++
++def pose_key(posture, row):
++    require(posture in POSTURES, "unknown_posture")
++    k, mirror = row.get("theta_index"), row.get("mirror")
++    require(type(k) is int and 0 <= k < 720, "theta_index_invalid")
++    require(type(mirror) is int and mirror in (0, 1), "mirror_invalid")
++    return (posture, k, mirror)
++
++
++def sort_key(key):
++    return (POSTURES.index(key[0]), key[1], key[2])
++
++
++def join_rows(stage1, stage2, expected=COUNTS):
++    require(set(stage1["postures"]) == set(POSTURES), "stage1_posture_census")
++    require(set(stage2["postures"]) == set(POSTURES), "stage2_posture_census")
++    joined = []
++    for posture in POSTURES:
++        a_rows = stage1["postures"][posture]["survivors"]
++        b_rows = stage2["postures"][posture]["capacity_rows"]
++        require(len(a_rows) == expected[posture] and len(b_rows) == expected[posture],
++                "pose_count_mismatch:" + posture)
++        a, b = {}, {}
++        for rows, target in [(a_rows, a), (b_rows, b)]:
++            for row in rows:
++                finite(row)
++                key = pose_key(posture, row)
++                require(key not in target, "duplicate_pose_key:" + repr(key))
++                target[key] = row
++        require(set(a) == set(b), "stage1_stage2_key_mismatch:" + posture)
++        for key in sorted(a, key=sort_key):
++            original, capacity = a[key], b[key]
++            for field in ("pad_body", "pad_class", "pad_u"):
++                require(original[field] == capacity[field], "joined_metadata_drift:" + field)
++            require(original["pad_body"] in CONTACT, "undeclared_pad_contact_body")
++            require(original["pad_class"] in ("PAD_CONTACT", "PAD_ABSORBED"),
++                    "unknown_inherited_pad_class")
++            for field in ("o", "u"):
++                require(isinstance(original[field], list) and len(original[field]) == 3,
++                        "pose_vector_shape:" + field)
++                require(all(type(x) in (int, float) for x in original[field]),
++                        "pose_vector_type:" + field)
++            require(type(original["s_star"]) in (int, float), "s_star_invalid")
++            joined.append({"key": list(key), "stage1": original, "stage2": capacity,
++                           "pose_sha256": sha(canonical({"key": key, "stage1": original,
++                                                         "stage2": capacity}))})
++    return joined
++
++
++def load_rows(manifest):
++    check_files(manifest)
++    source = ROOT / INHERITED
++    return join_rows(read_json(source / "raised_cap_stage1_pad_receipt.json"),
++                     read_json(source / "stage2_capacity_receipt.json"))
++
++
++def metadata(rows, manifest):
++    return {"schema": "chimera.exact_pose_replay.preflight.v1", **identities(),
++            "input_commit": manifest["input_commit"],
++            "execution_class": "METADATA_ONLY_NOT_COLLISION_EVIDENCE",
++            "counts": {p: sum(r["key"][0] == p for r in rows) for p in POSTURES},
++            "keys": [r["key"] for r in rows],
++            "pose_hashes": [r["pose_sha256"] for r in rows],
++            "body_census": manifest["body_census"],
++            "certified_edges": manifest["certified_edges"],
++            "constants": manifest["constants"],
++            "geometry_executed": False,
++            "gates_pending": ["PUBLISHED_PREREG_PIN", "LT_RELEASE",
++                              "SERIAL_CONTROL_PARITY", "FULL_354_REPLAY",
++                              "INDEPENDENT_REVIEW", "RUNTIME_PLAYABILITY"]}
++
++
++def release_gate(release_path, operation, manifest, runner_base=None, git_reader=None):
++    require(release_path is not None, "published_prereg_and_lt_release_required")
++    release = read_json(release_path)
++    require(release.get("schema") == "chimera.exact_pose_replay.release.v1",
++            "release_schema_invalid")
++    for k, v in identities().items():
++        require(release.get(k) == v, "release_identity_mismatch:" + k)
++    require(release.get("authority") in ("Lieutenant", "Captain"), "release_authority_invalid")
++    require(isinstance(release.get("authority_reference"), str)
++            and bool(release["authority_reference"].strip()), "release_reference_missing")
++    require(operation in release.get("operations", []), "operation_not_released")
++    require(release.get("anchor_policy") == "DIAGNOSTIC_ONLY_NO_SOLID_ANATOMY_RULING",
++            "anchor_policy_boundary_not_acknowledged")
++    require(release.get("owner") == "Buffy-Freebuff-20261004" or
++            (isinstance(release.get("owner"), str) and release["owner"].strip()
++             and release.get("handoff_reference")), "release_owner_missing")
++    require(release.get("ownership_rechecked") is True, "ownership_recheck_required")
++    require(release.get("release_id") and release.get("observed_utc"), "release_audit_identity_missing")
++    require(release.get("implementation_sha256") == identities()["implementation_sha256"],
++            "released_implementation_mismatch")
++    require(release.get("sealed_manifest_sha256") == current_seal_sha256(),
++            "released_seal_mismatch")
++    require(release.get("resource_profile_sha256") == sha(Path(
++        "E:/PythonChimera/tools/monkey_campaign/runner_profile.json").read_bytes()),
++        "released_resource_profile_mismatch")
++    require(release.get("unit_timeout_seconds") == 600, "undeclared_unit_timeout")
++    require(release.get("geometry_scope") == "EXACT_STORED_STAGE1_POSES_NO_PLACEMENT_SOLVE",
++            "released_geometry_scope_mismatch")
++    require(release.get("independent_approval_claimed") is False, "release_self_approval_refused")
++    require(operation not in ("replay", "combine") or release.get("control_gate_sha256"),
++            "released_control_gate_hash_required")
++    require(release.get("source_input_commit") == manifest["input_commit"],
++            "release_source_input_mismatch")
++    pin = release.get("published_prereg_commit", "")
++    require(len(pin) == 40 and all(c in "0123456789abcdef" for c in pin),
++            "published_prereg_commit_missing")
++    base = runner_base if runner_base is not None else os.environ.get("CHIMERA_BASE_SHA")
++    require(base is not None and release.get("sealed_base_commit") == base,
++            "released_sealed_base_mismatch")
++    require(base != manifest["input_commit"], "new_prereg_pin_not_in_sealed_base")
++    if git_reader is None:
++        repo = os.environ.get("CHIMERA_SOURCE_REPO")
++        require(repo is not None, "approved_runner_context_required")
++        def git_reader(*args):
++            p = subprocess.run(["git", "-C", repo, *args], capture_output=True, timeout=30)
++            require(p.returncode == 0, "publication_pin_git_check_failed")
++            return p.stdout
++    prereg_bytes = git_reader("show", pin + ":" + REL + "/PREREGISTRATION.md")
++    require(prereg_bytes == (HERE / "PREREGISTRATION.md").read_bytes(),
++            "published_prereg_bytes_drift")
++    git_reader("merge-base", "--is-ancestor", pin, base)
++    # This verifies the owner-supplied release and Git pin, not its authorship.
++    # Independent authority remains the existing publication/dispatch workflow.
++    return release
++
++
++def current_seal_sha256():
++    # The runner owns scratch and writes this job identity before copying files.
++    jid_path = ROOT / ".chimera-runner-id"
++    require(jid_path.is_file(), "approved_runner_job_identity_required")
++    job = jid_path.read_text().strip()
++    require(len(job) == 32 and all(c in "0123456789abcdef" for c in job), "runner_job_identity_invalid")
++    # The lease is created atomically before process launch; final receipts
++    # do not exist yet while a child is running. Never mutate or clean a lease.
++    lease = read_json(ROOT.parent / "lease.json")
++    require(lease.get("schema") == "chimera.runner_lease.v1" and lease.get("job") == job,
++            "runner_lease_identity_mismatch")
++    return lease["sealed_manifest_sha256"]
++
++
++def import_physics():
++    sys.path.insert(0, str(ROOT / INHERITED))
++    return importlib.import_module("instrument_v2"), importlib.import_module("grasp_screen")
++
++
++def build_frames(iv, gs, manifest):
++    require({k: getattr(iv, k) for k in manifest["constants"]} == manifest["constants"],
++            "frozen_constant_drift")
++    require([list(x) for x in iv.CERTIFIED_EDGES] == manifest["certified_edges"],
++            "exemption_map_drift")
++    # Reuse the complete input gate, parser and geometry/FK checks, not a fixture.
++    gate = iv.run_input_gate(str(ROOT / INHERITED / "PREREGISTRATION.md"))[0]
++    require(gate["ok"], "inherited_input_gate_failed")
++    model = gs.build_model()
++    zero = {jn: 0.0 for jn in model[1]}
++    primary = dict(zero)
++    primary.update(iv.Q_C_PRIMARY)
++    frames = {}
++    qs = {POSTURES[0]: primary, POSTURES[1]: zero}
++    for posture in POSTURES:
++        prep = gs.prepare_posture(model, qs[posture], CONTACT)
++        require(sorted(prep.frames) == manifest["body_census"], "model_body_census_drift")
++        frames[posture] = prep.frames
++    return frames, qs, gate
++
++
++def rejection_reasons(records, pi_c):
++    reasons = []
++    for name, record in sorted(records.items()):
++        cls = record["class"]
++        require(cls in ("CLEAR", "TOUCHING", "GENUINE_PENETRATION"),
++                "unknown_collision_class:" + name)
++        finite(record)
++        if name in CONTACT:
++            if cls == "CLEAR":
++                reasons.append("S2_REJECT_NO_CONTACT:" + name)
++            elif cls == "GENUINE_PENETRATION":
++                if record["depth"] is None or record["depth"] > pi_c:
++                    reasons.append("S2_REJECT_DEEP:" + name)
++        elif cls == "GENUINE_PENETRATION":
++            reasons.append("S1_REJECT_NONCONTACT_PENETRATE:" + name)
++        elif cls == "TOUCHING":
++            reasons.append("S1_REJECT_NONCONTACT_TOUCH:" + name)
++    return reasons
++
++
++def record_identity_drift(original, records, anchor):
++    drifts = []
++    seen = set()
++    for name, cls, margin, depth in original["bodies"]:
++        require(name not in seen, "duplicate_inherited_body")
++        seen.add(name)
++        require(name in records, "inherited_body_missing")
++        actual = records[name]
++        if (cls, margin, depth) != (actual["class"], actual.get("d"), actual.get("depth")):
++            drifts.append({"body": name, "expected": [cls, margin, depth],
++                           "actual": [actual["class"], actual.get("d"), actual.get("depth")]})
++    expected = original["anchor_envelope"]
++    actual = records[anchor]
++    e = [expected["cls"], expected["d"], expected["depth"], expected["flag"]]
++    a = [actual["class"], actual.get("d"), actual.get("depth"), actual["level1"]["flag"]]
++    if e != a:
++        drifts.append({"body": anchor, "expected": e, "actual": a})
++    return drifts
++
++
++def unit_payload(row, records, qs, manifest, frame_table, classify):
++    require(sorted(records) == manifest["body_census"], "unit_body_census_mismatch")
++    original = row["stage1"]
++    states = {name: {"cls": value["class"], "d": value.get("d"),
++                     "depth": value.get("depth")} for name, value in records.items()}
++    anchor = "macaque_hand_anchor"
++    bone_verdict, bone_first = classify({n: s for n, s in states.items() if n != anchor}, CONTACT)
++    all_verdict, all_first = classify(states, CONTACT)
++    bone_reasons = rejection_reasons({n: r for n, r in records.items() if n != anchor},
++                                    manifest["constants"]["PI_C"])
++    all_reasons = rejection_reasons(records, manifest["constants"]["PI_C"])
++    require((bone_verdict == "REJECT") == bool(bone_reasons), "bone_predicate_inconsistent")
++    require((all_verdict == "REJECT") == bool(all_reasons), "all_body_predicate_inconsistent")
++    require(bone_first == (bone_reasons[0] if bone_reasons else None), "bone_reason_order_drift")
++    require(all_first == (all_reasons[0] if all_reasons else None), "all_reason_order_drift")
++    payload = {"schema": SCHEMA, **identities(), "key": row["key"],
++            "pose_sha256": row["pose_sha256"], "source_stage1": original,
++            "source_stage2": row["stage2"], "posture_q": qs,
++            "cylinder": {"o": original["o"], "u": original["u"],
++                         "s_star": original["s_star"],
++                         "radius_m": manifest["constants"]["TRUNK_R"],
++                         "height_m": manifest["constants"]["TRUNK_H"]},
++            "body_frames": frame_table,
++            "body_records": [{"body": n, "pad_substituted_in_stage1": n == original["pad_body"],
++                              "anchor_envelope": n == anchor, "collision": records[n],
++                              "depth_bracket_edge": records[n].get("depth") is not None and
++                                  records[n]["depth"] >= math.nextafter(
++                                      manifest["constants"]["DEPTH_SEARCH_MAX"], -math.inf),
++                              "depth_resolution_note": "INHERITED_20MM_BRACKET_NOT_UNBOUNDED_DEPTH_PROOF"}
++                             for n in sorted(records)],
++            "bone_diagnostic": {"verdict": bone_verdict, "reasons": bone_reasons},
++            "anchor_inclusive_diagnostic": {"verdict": all_verdict, "reasons": all_reasons,
++                                            "scope": "REPRESENTED_ENVELOPE_NOT_SOLID_ANATOMY_RULING"},
++            "inherited_record_drifts": record_identity_drift(original, records, anchor),
++            "physical_grasp_qualified": False, "independent_approval": False}
++    # Detach nested lists/dicts from source rows and cached frame identities;
++    # otherwise an in-memory mutation could alter both evidence and its oracle.
++    return json.loads(canonical(payload))
++
++
++def frame_identities(frames):
++    return {name: {"position_m": list(f.pos), "rotation": f.rot,
++                   "sphere_center_m": list(f.sphere_center), "sphere_radius_m": f.sphere_r,
++                   "is_envelope": f.is_envelope,
++                   "represented_mesh_sha256": sha(canonical({"vertices_world_m": f.mesh.verts,
++                                                             "triangles": f.mesh.tris})),
++                   "vertex_count": len(f.mesh.verts), "triangle_count": len(f.mesh.tris)}
++            for name, f in sorted(frames.items())}
++
++
++def evaluate_unit(row, frames, qs, manifest, iv, gs, serial_reference=False, frame_table=None,
++                  checkpoint=None):
++    original = row["stage1"]
++    records = {}
++    # Both routes call only the unmodified primitive. The serial control route
++    # is a straight loop; the work-unit route consumes a sorted independent map.
++    if serial_reference:
++        for name in sorted(frames):
++            records[name] = iv.adjudicate_body_vs_cylinder(
++                frames[name], tuple(original["o"]), tuple(original["u"]), iv.TAU)
++            if checkpoint:
++                checkpoint(records)
++    else:
++        for name, frame in sorted(frames.items()):
++            records[name] = iv.adjudicate_body_vs_cylinder(
++                frame, tuple(original["o"]), tuple(original["u"]), iv.TAU)
++            if checkpoint:
++                checkpoint(records)
++    frame_table = frame_table if frame_table is not None else frame_identities(frames)
++    return unit_payload(row, records, qs, manifest, frame_table, gs.classify_placement_bones)
++
++
++def unit_name(key):
++    return "%s_%03d_%d.json" % tuple(key)
++
++
++def declared_postures():
++    # Metadata only: use literal declared posture constants and pinned joint
++    # names, without importing/evaluating FK or constructing collision frames.
++    import ast
++    source = ROOT / INHERITED
++    mutation = read_json(source / "mutation_structure.json")
++    joints = [j["name"] for b in [mutation["anchor_body"], *mutation["bodies"]]
++              for j in b.get("joints", [])]
++    require(len(joints) == 22 and len(set(joints)) == 22, "declared_joint_census_drift")
++    primary_literal = None
++    for node in ast.parse((source / "instrument_v2.py").read_text()).body:
++        if isinstance(node, ast.Assign) and any(isinstance(t, ast.Name) and t.id == "Q_C_PRIMARY"
++                                              for t in node.targets):
++            primary_literal = ast.literal_eval(node.value)
++    require(primary_literal is not None and set(primary_literal) == set(joints),
++            "declared_primary_posture_missing")
++    return {POSTURES[0]: primary_literal, POSTURES[1]: {j: 0.0 for j in joints}}
++
++
++def validate_unit(unit, row, manifest, posture_values=None):
++    require(unit.get("schema") == SCHEMA, "unit_schema_mismatch")
++    for k, v in identities().items():
++        require(unit.get(k) == v, "unit_identity_mismatch:" + k)
++    require(unit.get("key") == row["key"], "unit_key_mismatch")
++    require(unit.get("pose_sha256") == row["pose_sha256"], "unit_pose_hash_mismatch")
++    require(canonical(unit.get("source_stage1")) == canonical(row["stage1"]) and
++            canonical(unit.get("source_stage2")) == canonical(row["stage2"]),
++            "unit_source_pose_drift")
++    require([r["body"] for r in unit["body_records"]] == manifest["body_census"],
++            "unit_body_census_mismatch")
++    require(sorted(unit["body_frames"]) == manifest["body_census"], "unit_frame_census_mismatch")
++    require(canonical(unit["cylinder"]) == canonical({"o": row["stage1"]["o"], "u": row["stage1"]["u"],
++            "s_star": row["stage1"]["s_star"], "radius_m": manifest["constants"]["TRUNK_R"],
++            "height_m": manifest["constants"]["TRUNK_H"]}), "unit_cylinder_pose_drift")
++    if posture_values is not None:
++        require(canonical(unit["posture_q"]) == canonical(posture_values[row["key"][0]]),
++                "unit_posture_drift")
++    for record in unit["body_records"]:
++        name = record["body"]
++        require(record["pad_substituted_in_stage1"] == (name == row["stage1"]["pad_body"]),
++                "unit_pad_marker_drift")
++        require(record["anchor_envelope"] == (name == "macaque_hand_anchor"), "unit_anchor_marker_drift")
++        frame = unit["body_frames"][name]
++        require(len(frame["position_m"]) == 3 and len(frame["rotation"]) == 3 and
++                all(len(v) == 3 for v in frame["rotation"]), "unit_frame_shape_invalid")
++        require(len(frame["represented_mesh_sha256"]) == 64 and
++                all(c in "0123456789abcdef" for c in frame["represented_mesh_sha256"]),
++                "unit_mesh_identity_invalid")
++        require(frame["is_envelope"] == (name == "macaque_hand_anchor"), "unit_frame_envelope_marker_drift")
++        require(type(frame["vertex_count"]) is int and frame["vertex_count"] > 0 and
++                type(frame["triangle_count"]) is int and frame["triangle_count"] > 0,
++                "unit_mesh_census_invalid")
++        require(type(record["collision"]["level1"]["flag"]) is bool, "unit_proxy_flag_invalid")
++    finite(unit)
++    # Do not trust a unit's stored diagnostic labels during combination.
++    records = {r["body"]: r["collision"] for r in unit["body_records"]}
++    for record in unit["body_records"]:
++        depth = record["collision"].get("depth")
++        require(record["depth_bracket_edge"] == (depth is not None and depth >= math.nextafter(
++                    manifest["constants"]["DEPTH_SEARCH_MAX"], -math.inf)), "unit_depth_bracket_label_drift")
++        require(record["depth_resolution_note"] == "INHERITED_20MM_BRACKET_NOT_UNBOUNDED_DEPTH_PROOF",
++                "unit_depth_resolution_note_drift")
++    for label, rs in [("bone_diagnostic", {n: r for n, r in records.items() if n != "macaque_hand_anchor"}),
++                      ("anchor_inclusive_diagnostic", records)]:
++        reasons = rejection_reasons(rs, manifest["constants"]["PI_C"])
++        require(unit[label]["reasons"] == reasons, "unit_diagnostic_reason_drift")
++        require(unit[label]["verdict"] == ("REJECT" if reasons else "SURVIVOR"),
++                "unit_diagnostic_verdict_drift")
++    require(unit["inherited_record_drifts"] == record_identity_drift(
++        row["stage1"], records, "macaque_hand_anchor"), "unit_record_drift_label_mismatch")
++    require(unit["physical_grasp_qualified"] is False and unit["independent_approval"] is False,
++            "unit_scope_promotion_refused")
++
++
++def combine_units(units, rows, manifest, posture_values=None):
++    wanted = {tuple(r["key"]): r for r in rows}
++    require(len(wanted) == len(rows), "duplicate_expected_pose_key")
++    actual = {}
++    posture_frames = {}
++    for unit in units:
++        key = tuple(unit["key"])
++        require(key in wanted, "foreign_unit_key")
++        require(key not in actual, "duplicate_unit_key")
++        validate_unit(unit, wanted[key], manifest, posture_values=posture_values)
++        frame_digest = sha(canonical(unit["body_frames"]))
++        require(key[0] not in posture_frames or posture_frames[key[0]] == frame_digest,
++                "same_posture_frame_identity_drift")
++        posture_frames[key[0]] = frame_digest
++        actual[key] = unit
++    require(set(actual) == set(wanted), "partial_result_not_full_replay")
++    ordered = [actual[k] for k in sorted(wanted, key=sort_key)]
++    return {"schema": "chimera.exact_pose_replay.combined.v1", **identities(),
++            "execution_class": "OFFLINE_COLLISION_GEOMETRY_NOT_RUNTIME",
++            "input_commit": manifest["input_commit"], "constants": manifest["constants"],
++            "certified_edges": manifest["certified_edges"], "body_census": manifest["body_census"],
++            "pose_count": len(ordered), "body_record_count": sum(len(u["body_records"]) for u in ordered),
++            "counts_by_posture": {p: sum(u["key"][0] == p for u in ordered) for p in POSTURES},
++            "bone_diagnostic_rejected": sum(u["bone_diagnostic"]["verdict"] == "REJECT" for u in ordered),
++            "anchor_inclusive_rejected": sum(u["anchor_inclusive_diagnostic"]["verdict"] == "REJECT" for u in ordered),
++            "inherited_record_drift_count": sum(len(u["inherited_record_drifts"]) for u in ordered),
++            "units_sha256": sha(canonical(ordered)), "units": ordered,
++            "physical_grasp_qualified": False, "independent_approval": False}
++
++
++def retained_receipt(path):
++    path = Path(path).resolve(strict=True)
++    require(path.parent == RUNNER_RESULTS.resolve(strict=True), "noncanonical_runner_result_refused")
++    require(not path.is_symlink(), "runner_result_reparse_refused")
++    receipt = read_json(path / "receipt.json")
++    require(receipt.get("job") == path.name, "runner_result_job_identity_mismatch")
++    return path, receipt
++
++
++def retained_run(path):
++    path, receipt = retained_receipt(path)
++    require(receipt.get("state") == "PASSED" and receipt.get("cleanup_verified") is True,
++            "control_runner_not_completed")
++    for name, digest in receipt.get("artifacts", {}).items():
++        require(not Path(name).is_absolute() and ":" not in name and ".." not in Path(name).parts,
++                "unsafe_runner_artifact_name")
++        candidate = path / "runner.log" if name == "runner.log" else path / "artifacts" / name
++        require(candidate.is_file() and sha(candidate.read_bytes()) == digest,
++                "control_runner_artifact_drift:" + name)
++    control_name = "outputs/replay/control.json"
++    require(control_name in receipt.get("artifacts", {}), "control_runner_artifact_missing")
++    control = read_json(path / "artifacts" / control_name)
++    return receipt, control
++
++
++def retained_units(directories, expected_seal, expected_base):
++    units = []
++    seen_paths = set()
++    for directory in directories:
++        d = Path(directory).resolve(strict=True)
++        # Exact public interface: RESULT/artifacts/outputs/replay/units.
++        require(d.parts[-4:] == ("artifacts", "outputs", "replay", "units"),
++                "unit_directory_not_retained_runner_output")
++        root, receipt = retained_receipt(d.parents[3])
++        require(receipt.get("state") == "PASSED" and receipt.get("cleanup_verified") is True,
++                "unit_runner_not_completed")
++        require(receipt.get("sealed_manifest_sha256") == expected_seal and
++                receipt.get("base") == expected_base, "unit_runner_wrong_candidate")
++        for p in sorted(d.glob("*.json")):
++            require(p.resolve() not in seen_paths, "duplicate_unit_input_path")
++            seen_paths.add(p.resolve())
++            rel = p.relative_to(root / "artifacts").as_posix()
++            require(sha(p.read_bytes()) == receipt.get("artifacts", {}).get(rel),
++                    "unit_runner_artifact_drift:" + rel)
++            units.append(read_json(p))
++    return units
++
++
++def control_rows(rows):
++    return [r for r in rows if r["key"][0] == "q_zero_CONTROL"][:4]
++
++
++def control_gate(serial_path, units_path, rows, manifest):
++    a, serial = retained_run(serial_path)
++    b, units = retained_run(units_path)
++    require(a["base"] == os.environ.get("CHIMERA_BASE_SHA"), "control_comparison_wrong_candidate_base")
++    require(a["sealed_manifest_sha256"] == current_seal_sha256(), "control_comparison_wrong_candidate_seal")
++    require(a["job"] != b["job"], "control_requires_distinct_runner_jobs")
++    require(a["base"] == b["base"] and a["sealed_manifest_sha256"] == b["sealed_manifest_sha256"],
++            "control_seal_or_base_mismatch")
++    require(serial.get("schema") == "chimera.exact_pose_replay.control.v1" and
++            units.get("schema") == "chimera.exact_pose_replay.control.v1", "control_schema_invalid")
++    require(serial.get("route") == "serial" and units.get("route") == "units_reversed",
++            "control_routes_not_distinct")
++    for receipt, route in ((a, "serial"), (b, "units_reversed")):
++        command = receipt.get("command", [])
++        require(len(command) >= 8 and command[1:4] == ["-B", REL + "/replay.py", "control"] and
++                command[4:6] == ["--route", route] and "--release" in command[6:],
++                "control_runner_command_not_scientific_slice")
++    require(serial.get("geometry_executed") is True and units.get("geometry_executed") is True,
++            "fixture_not_control_runtime_evidence")
++    require(serial.get("run_base_commit") == a["base"] and units.get("run_base_commit") == b["base"],
++            "control_declared_base_mismatch")
++    expected = control_rows(rows)
++    s, u = serial["result"], units["result"]
++    for result in (s, u):
++        require(result == combine_units(result["units"], expected, manifest,
++                                        posture_values=declared_postures()), "control_combination_invalid")
++        require(result["inherited_record_drift_count"] == 0, "serial_inherited_record_drift")
++    require(canonical(s) == canonical(u), "serial_control_payload_not_byte_identical")
++    return {"schema": "chimera.exact_pose_replay.control_gate.v1", **identities(),
++            "state": "PASSED", "geometry_executed": True,
++            "serial_runner_job": a["job"], "units_runner_job": b["job"],
++            "serial_run": str(Path(serial_path).resolve()), "units_run": str(Path(units_path).resolve()),
++            "control_payload_sha256": sha(canonical(s)), "control_pose_count": len(expected),
++            "base": a["base"], "sealed_manifest_sha256": a["sealed_manifest_sha256"],
++            "independent_approval": False}
++
++
++def check_control_gate(path, rows, manifest):
++    require(path is not None, "serial_control_gate_required_before_scaling")
++    old = read_json(path)
++    new = control_gate(old["serial_run"], old["units_run"], rows, manifest)
++    require(old == new, "serial_control_gate_drift")
++    require(old["base"] == os.environ.get("CHIMERA_BASE_SHA"), "control_gate_wrong_candidate_base")
++    return old
++
++
++def output_dir():
++    base = os.environ.get("CHIMERA_OUTPUT_DIR")
++    require(base is not None, "approved_runner_output_context_required")
++    out = Path(base) / "replay"
++    out.mkdir(parents=True, exist_ok=True)
++    return out
++
++
++def execute(args, out):
++    manifest = inputs()
++    if args.op == "preflight":
++        rows = load_rows(manifest)
++        atomic_json(out / "preflight.json", metadata(rows, manifest))
++        atomic_json(out / "progress.json", {**identities(), "state": "METADATA_COMPLETED",
++                    "geometry_executed": False, "full_result": False})
++        return
++    # Release check is before any physics import, frame build or collision call.
++    release = release_gate(args.release, args.op, manifest)
++    rows = load_rows(manifest)
++    if args.op in ("replay", "combine"):
++        require(args.control_gate is not None, "serial_control_gate_required_before_scaling")
++        require(sha(Path(args.control_gate).read_bytes()) == release["control_gate_sha256"],
++                "released_control_gate_hash_mismatch")
++    if args.op == "compare-control":
++        result = control_gate(args.serial_run, args.units_run, rows, manifest)
++        atomic_json(out / "control_gate.json", result)
++        return
++    if args.op == "combine":
++        check_control_gate(args.control_gate, rows, manifest)
++        units = retained_units(args.unit_dir, release["sealed_manifest_sha256"],
++                               release["sealed_base_commit"])
++        result = combine_units(units, rows, manifest, posture_values=declared_postures())
++        require(result["pose_count"] == 354 and result["body_record_count"] == 7080,
++                "full_replay_census_broken")
++        require(result["inherited_record_drift_count"] == 0, "full_replay_record_drift_stop")
++        atomic_json(out / "result.json", result)
++        return
++    if args.op == "replay":
++        check_control_gate(args.control_gate, rows, manifest)
++        if args.keys:
++            selected = read_json(args.keys)
++            require(isinstance(selected, list) and bool(selected), "unit_selection_empty")
++            keys = [tuple(x) for x in selected]
++            require(len(keys) == len(set(keys)), "unit_selection_duplicate")
++            all_rows = {tuple(r["key"]): r for r in rows}
++            require(all(k in all_rows for k in keys), "unit_selection_foreign_key")
++            rows = [all_rows[k] for k in sorted(keys, key=sort_key)]
++    else:
++        rows = control_rows(rows)
++    iv, gs = import_physics()
++    frames, qs, input_gate = build_frames(iv, gs, manifest)
++    frame_tables = {p: frame_identities(frames[p]) for p in POSTURES}
++    atomic_json(out / "inherited_input_gate.json", input_gate)
++    completed = []
++    work = list(reversed(rows)) if args.op == "control" and args.route == "units_reversed" else rows
++    for row in work:
++        p = row["key"][0]
++        def checkpoint(records):
++            atomic_json(out / "partial_bodies" / unit_name(row["key"]), {
++                **identities(), "state": "PARTIAL_BODY_RECORDS_NOT_COMPLETE_POSE",
++                "key": row["key"], "pose_sha256": row["pose_sha256"],
++                "completed_body_records": records, "full_result": False})
++        result = evaluate_unit(row, frames[p], qs[p], manifest, iv, gs,
++                               serial_reference=args.op == "control" and args.route == "serial",
++                               frame_table=frame_tables[p], checkpoint=checkpoint)
++        atomic_json(out / "units" / unit_name(row["key"]), result)
++        completed.append(row["key"])
++        atomic_json(out / "progress.json", {**identities(), "state": "PARTIAL",
++                    "completed_keys": sorted(completed, key=sort_key), "requested_pose_count": len(rows),
++                    "geometry_executed": True, "full_result": False})
++        print("completed " + repr(row["key"]), flush=True)
++        require(not result["inherited_record_drifts"], "inherited_record_drift_stop")
++    if args.op == "control":
++        combined = combine_units([read_json(out / "units" / unit_name(r["key"])) for r in rows], rows, manifest,
++                                 posture_values=qs)
++        atomic_json(out / "control.json", {"schema": "chimera.exact_pose_replay.control.v1",
++                    "route": args.route, "geometry_executed": True,
++                    "run_base_commit": os.environ["CHIMERA_BASE_SHA"], "result": combined})
++    atomic_json(out / "progress.json", {**identities(), "state": "UNITS_COMPLETED",
++                "completed_keys": sorted(completed, key=sort_key), "geometry_executed": True,
++                "full_result": False, "next_gate": "CONTROL_COMPARISON_OR_CANONICAL_COMBINATION"})
++
++
++def main():
++    parser = argparse.ArgumentParser(description=__doc__)
++    sub = parser.add_subparsers(dest="op", required=True)
++    sub.add_parser("preflight", help="metadata/pins/key join only; never calls collision geometry")
++    for op in ("control", "replay", "compare-control", "combine"):
++        p = sub.add_parser(op)
++        p.add_argument("--release")
++        if op == "control":
++            p.add_argument("--route", choices=("serial", "units_reversed"), required=True)
++        elif op == "compare-control":
++            p.add_argument("--serial-run", required=True)
++            p.add_argument("--units-run", required=True)
++        else:
++            p.add_argument("--control-gate")
++            if op == "replay":
++                p.add_argument("--keys", help="JSON list of independent pose keys; omitted means all 354")
++            else:
++                p.add_argument("--unit-dir", action="append", required=True)
++    args = parser.parse_args()
++    out = output_dir()
++    atomic_json(out / "progress.json", {**identities(), "state": "STARTED",
++                                       "geometry_executed": False, "full_result": False})
++    try:
++        execute(args, out)
++    except BaseException as exc:
++        # The inherited instrument's GateRefusal derives from SystemExit, not
++        # Exception. Preserve that exact refusal and any partial body records,
++        # then re-raise: this never turns an error/interrupt into a passing job.
++        atomic_json(out / "error.json", {**identities(), "state": "REFUSED_OR_FAILED",
++                    "exception": type(exc).__name__, "reason": str(exc),
++                    "instrument_code": getattr(exc, "code", None),
++                    "instrument_detail": getattr(exc, "detail", None), "full_result": False})
++        raise
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/test_replay.py b/tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/test_replay.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..875d4d8928daaa9634e165ed3d9110bf2011ec05
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/test_replay.py
+@@ -0,0 +1,580 @@
++"""Synthetic packaging/unit tests only; never evidence of live geometry or grasp."""
++import ast
++from copy import deepcopy
++import importlib
++import hashlib
++import json
++import os
++from pathlib import Path
++import subprocess
++import sys
++import tempfile
++import unittest
++from unittest.mock import patch
++
++import replay as r
++
++
++def fixture_rows(n=2):
++    stage1 = {"postures": {}}
++    stage2 = {"postures": {}}
++    for posture in r.POSTURES:
++        a, b = [], []
++        for i in range(n):
++            pad_class = "PAD_ABSORBED" if i == 0 else "PAD_CONTACT"
++            pad_u = 0.0 if i == 0 else 0.001
++            a.append({"theta_index": i, "mirror": i % 2,
++                      "o": [0.0, 0.0, 0.0], "u": [0.0, 0.0, 1.0],
++                      "s_star": 0.01, "pad_body": "distal_thumb",
++                      "pad_class": pad_class, "pad_u": pad_u,
++                      "bodies": [["distph3", "TOUCHING", 0.0, None]],
++                      "anchor_envelope": {"cls": "GENUINE_PENETRATION", "d": None,
++                                          "depth": 0.02, "flag": True}})
++            b.append({"theta_index": i, "mirror": i % 2, "pad_body": "distal_thumb",
++                      "pad_class": pad_class, "pad_u": pad_u, "cls": "CAP_SATISFIED"})
++        stage1["postures"][posture] = {"survivors": a}
++        stage2["postures"][posture] = {"capacity_rows": b}
++    return stage1, stage2
++
++
++def raw_class(cls, depth=None, margin=None):
++    return {"class": cls, "d": margin, "depth": depth,
++            "level1": {"flag": cls != "CLEAR"}}
++
++
++def fixture_unit(row):
++    manifest = r.inputs()
++    records = {name: raw_class("CLEAR") for name in manifest["body_census"]}
++    records["distph3"] = raw_class("TOUCHING", margin=0.0)
++    records["distal_thumb"] = raw_class("GENUINE_PENETRATION", depth=0.003)
++    records["macaque_hand_anchor"] = raw_class("GENUINE_PENETRATION", depth=0.02)
++    # Test the inherited predicate itself, imported byte-unmodified, on fixtures.
++    sys.path.insert(0, str(r.ROOT / r.INHERITED))
++    gs = importlib.import_module("grasp_screen")
++    frames = {name: {"position_m": [0.0, 0.0, 0.0],
++                     "rotation": [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]],
++                     "represented_mesh_sha256": "0" * 64,
++                     "is_envelope": name == "macaque_hand_anchor", "vertex_count": 3, "triangle_count": 1}
++              for name in manifest["body_census"]}
++    return r.unit_payload(row, records, r.declared_postures()[row["key"][0]], manifest, frames,
++                          gs.classify_placement_bones)
++
++
++class ReplayTests(unittest.TestCase):
++    def setUp(self):
++        self.a, self.b = fixture_rows()
++        self.expected = {p: 2 for p in r.POSTURES}
++        self.rows = r.join_rows(self.a, self.b, self.expected)
++        self.manifest = r.inputs()
++        self.seal_patch = patch.object(r, "current_seal_sha256", return_value="d" * 64)
++        self.seal_patch.start()
++        self.addCleanup(self.seal_patch.stop)
++        self.base_patch = patch.dict(os.environ, {"CHIMERA_BASE_SHA": "c" * 40})
++        self.base_patch.start()
++        self.addCleanup(self.base_patch.stop)
++
++    def test_atomic_write_retries_transient_windows_sharing_failure(self):
++        with tempfile.TemporaryDirectory() as tmp:
++            p = Path(tmp) / "progress.json"
++            real_replace = os.replace
++            with patch.object(r.os, "replace", side_effect=[PermissionError("synthetic sharing"), None]) as replace:
++                r.atomic_json(p, {"complete": False})
++                self.assertEqual(replace.call_count, 2)
++                self.assertTrue(p.with_name("progress.json.tmp").exists())
++            real_replace(p.with_name("progress.json.tmp"), p)
++            self.assertEqual(r.read_json(p), {"complete": False})
++
++    def test_atomic_write_permanent_failure_not_swallowed(self):
++        with tempfile.TemporaryDirectory() as tmp:
++            p = Path(tmp) / "progress.json"
++            with patch.object(r.os, "replace", side_effect=PermissionError("permanent")), \
++                 patch.object(r.time, "monotonic", side_effect=[0.0, 2.0]):
++                with self.assertRaisesRegex(PermissionError, "permanent"):
++                    r.atomic_json(p, {"complete": False})
++                self.assertTrue(p.with_name("progress.json.tmp").exists())
++                self.assertFalse(p.exists())
++
++    def test_canonical_order_independent_of_source_order(self):
++        for posture in r.POSTURES:
++            self.a["postures"][posture]["survivors"].reverse()
++            self.b["postures"][posture]["capacity_rows"].reverse()
++        self.assertEqual(r.canonical(self.rows), r.canonical(r.join_rows(self.a, self.b, self.expected)))
++
++    def test_pose_hash_scope_is_exactly_key_and_joined_stage_rows(self):
++        # Independent encoding of the documented scope: no posture_q, file
++        # pins or candidate identities are implicitly added to this digest.
++        for row in self.rows:
++            payload = {"key": row["key"], "stage1": row["stage1"], "stage2": row["stage2"]}
++            encoded = (json.dumps(payload, sort_keys=True, separators=(",", ":"),
++                                  allow_nan=False) + "\n").encode("utf-8")
++            self.assertEqual(row["pose_sha256"], hashlib.sha256(encoded).hexdigest())
++        for changed_field in ("key", "stage1", "stage2"):
++            with self.subTest(changed_field=changed_field):
++                a, b = deepcopy(self.a), deepcopy(self.b)
++                first_a = a["postures"][r.POSTURES[0]]["survivors"][0]
++                first_b = b["postures"][r.POSTURES[0]]["capacity_rows"][0]
++                if changed_field == "key":
++                    first_a["theta_index"] = first_b["theta_index"] = 2
++                elif changed_field == "stage1":
++                    first_a["s_star"] = 0.02
++                else:
++                    first_b["cls"] = "CAP_EXCEEDED"
++                changed = r.join_rows(a, b, self.expected)
++                key = [r.POSTURES[0], first_a["theta_index"], first_a["mirror"]]
++                changed_row = next(row for row in changed if row["key"] == key)
++                self.assertNotEqual(changed_row["pose_sha256"], self.rows[0]["pose_sha256"])
++
++    def test_pose_hash_excludes_separately_bound_posture_values_and_file_pins(self):
++        with patch.object(r, "declared_postures", return_value={"synthetic_q": 123}) as postures, \
++             patch.object(r, "inputs", return_value={"synthetic_file_pin": "f" * 64}) as pins, \
++             patch.object(r, "identities", return_value={"inputs_sha256": "e" * 64}) as identities:
++            joined = r.join_rows(self.a, self.b, self.expected)
++            self.assertEqual([row["pose_sha256"] for row in joined],
++                             [row["pose_sha256"] for row in self.rows])
++            postures.assert_not_called()
++            pins.assert_not_called()
++            identities.assert_not_called()
++
++    def test_duplicate_missing_and_extra_keys_refused(self):
++        for kind in ("duplicate", "missing", "foreign"):
++            with self.subTest(kind=kind):
++                b = deepcopy(self.b)
++                rows = b["postures"][r.POSTURES[0]]["capacity_rows"]
++                if kind == "duplicate":
++                    rows[1] = deepcopy(rows[0])
++                elif kind == "missing":
++                    rows.pop()
++                else:
++                    rows[1]["theta_index"] = 719
++                with self.assertRaises(r.Refused):
++                    r.join_rows(self.a, b, self.expected)
++
++    def test_joined_pad_metadata_drift_refused(self):
++        for field, value in (("pad_body", "distph3"), ("pad_class", "PAD_CONTACT"), ("pad_u", 0.5)):
++            b = deepcopy(self.b)
++            b["postures"][r.POSTURES[0]]["capacity_rows"][0][field] = value
++            with self.assertRaisesRegex(r.Refused, "joined_metadata_drift"):
++                r.join_rows(self.a, b, self.expected)
++
++    def test_unsafe_keys_nonfinite_and_shapes_refused(self):
++        for field, value in (("theta_index", True), ("theta_index", -1), ("mirror", 2),
++                             ("o", [0.0]), ("u", [0.0, float("inf"), 1.0]), ("s_star", None)):
++            a = deepcopy(self.a)
++            a["postures"][r.POSTURES[0]]["survivors"][0][field] = value
++            with self.assertRaises(r.Refused):
++                r.join_rows(a, self.b, self.expected)
++
++    def test_json_duplicate_and_nonfinite_refused(self):
++        with tempfile.TemporaryDirectory() as tmp:
++            p = Path(tmp) / "bad.json"
++            for data in ('{"a":1,"a":2}', '{"a":NaN}', '{"a":Infinity}'):
++                p.write_text(data)
++                with self.assertRaises(r.Refused):
++                    r.read_json(p)
++
++    def test_all_20_bodies_pad_and_anchor_present_without_masking(self):
++        unit = fixture_unit(self.rows[0])
++        self.assertEqual(len(unit["body_records"]), 20)
++        self.assertIn("S2_REJECT_DEEP:distal_thumb", unit["bone_diagnostic"]["reasons"])
++        self.assertIn("S1_REJECT_NONCONTACT_PENETRATE:macaque_hand_anchor",
++                      unit["anchor_inclusive_diagnostic"]["reasons"])
++        self.assertFalse(unit["physical_grasp_qualified"])
++        self.assertEqual(unit["source_stage1"]["pad_class"], "PAD_ABSORBED")
++        self.assertEqual(unit["body_records"][0]["body"], sorted(self.manifest["body_census"])[0])
++
++    def test_inherited_depth_bracket_edge_is_disclosed_not_reinterpreted(self):
++        unit = fixture_unit(self.rows[0])
++        anchor = next(x for x in unit["body_records"] if x["body"] == "macaque_hand_anchor")
++        pad = next(x for x in unit["body_records"] if x["body"] == "distal_thumb")
++        self.assertTrue(anchor["depth_bracket_edge"])
++        self.assertFalse(pad["depth_bracket_edge"])
++        self.assertEqual(anchor["collision"]["depth"], 0.02)
++        anchor["depth_bracket_edge"] = False
++        with self.assertRaisesRegex(r.Refused, "unit_depth_bracket_label_drift"):
++            r.validate_unit(unit, self.rows[0], self.manifest)
++
++    def test_contact_depth_boundary_preserved(self):
++        pi_c = self.manifest["constants"]["PI_C"]
++        for depth, expected in ((pi_c, []), (pi_c + 1e-12, ["S2_REJECT_DEEP:distal_thumb"])):
++            self.assertEqual(r.rejection_reasons({"distal_thumb": raw_class("GENUINE_PENETRATION", depth)},
++                                                 pi_c), expected)
++
++    def test_noncontact_touch_and_contact_clear_refuse(self):
++        records = {"distph3": raw_class("CLEAR"), "firstmc": raw_class("TOUCHING")}
++        self.assertEqual(r.rejection_reasons(records, 1e-3),
++                         ["S2_REJECT_NO_CONTACT:distph3", "S1_REJECT_NONCONTACT_TOUCH:firstmc"])
++
++    def test_unknown_raw_class_refused(self):
++        with self.assertRaisesRegex(r.Refused, "unknown_collision_class"):
++            r.rejection_reasons({"firstmc": raw_class("UNRESOLVED_GEOMETRY")}, 1e-3)
++
++    def test_canonical_combination_reversed_and_partitioned(self):
++        units = [fixture_unit(row) for row in self.rows]
++        first = r.combine_units(units, self.rows, self.manifest)
++        reversed_result = r.combine_units(list(reversed(units)), self.rows, self.manifest)
++        partitioned = r.combine_units(units[::2] + units[1::2], self.rows, self.manifest)
++        self.assertEqual(r.canonical(first), r.canonical(reversed_result))
++        self.assertEqual(r.canonical(first), r.canonical(partitioned))
++        self.assertEqual(first["body_record_count"], 80)
++        self.assertEqual(first["anchor_inclusive_rejected"], 4)
++
++    def test_partial_and_duplicate_combination_refused(self):
++        units = [fixture_unit(row) for row in self.rows]
++        with self.assertRaisesRegex(r.Refused, "partial_result_not_full_replay"):
++            r.combine_units(units[:-1], self.rows, self.manifest)
++        with self.assertRaisesRegex(r.Refused, "duplicate_unit_key"):
++            r.combine_units(units + units[:1], self.rows, self.manifest)
++
++    def test_missing_pad_or_anchor_records_refuse(self):
++        for body in ("distal_thumb", "macaque_hand_anchor"):
++            unit = fixture_unit(self.rows[0])
++            unit["body_records"] = [x for x in unit["body_records"] if x["body"] != body]
++            with self.assertRaisesRegex(r.Refused, "unit_body_census_mismatch"):
++                r.validate_unit(unit, self.rows[0], self.manifest)
++
++    def test_source_identity_and_foreign_prereg_refuse(self):
++        for kind in ("pose", "prereg", "source"):
++            unit = fixture_unit(self.rows[0])
++            if kind == "pose":
++                unit["pose_sha256"] = "0" * 64
++            elif kind == "prereg":
++                unit["preregistration_sha256"] = "0" * 64
++            else:
++                unit["source_stage1"] = deepcopy(unit["source_stage1"])
++                unit["source_stage1"]["o"][0] = 0.123
++            with self.assertRaises(r.Refused):
++                r.validate_unit(unit, self.rows[0], self.manifest)
++
++    def test_diagnostic_tamper_and_promotion_refuse(self):
++        for kind in ("verdict", "reasons", "promotion", "drift"):
++            unit = fixture_unit(self.rows[0])
++            if kind == "verdict":
++                unit["bone_diagnostic"]["verdict"] = "SURVIVOR"
++            elif kind == "reasons":
++                unit["bone_diagnostic"]["reasons"] = []
++            elif kind == "promotion":
++                unit["physical_grasp_qualified"] = True
++            else:
++                unit["inherited_record_drifts"] = [{"wrong": True}]
++            with self.assertRaises(r.Refused):
++                r.validate_unit(unit, self.rows[0], self.manifest)
++
++    def test_inherited_float_and_anchor_flags_compared_exactly(self):
++        unit = fixture_unit(self.rows[0])
++        records = {x["body"]: x["collision"] for x in unit["body_records"]}
++        self.assertEqual(r.record_identity_drift(self.rows[0]["stage1"], records, "macaque_hand_anchor"), [])
++        records["distph3"]["d"] = 1e-20
++        records["macaque_hand_anchor"]["level1"]["flag"] = False
++        self.assertEqual(len(r.record_identity_drift(self.rows[0]["stage1"], records, "macaque_hand_anchor")), 2)
++
++    def test_no_release_refuses_before_geometry_import(self):
++        args = type("Args", (), {"op": "control", "release": None})()
++        with tempfile.TemporaryDirectory() as tmp, patch.object(r, "import_physics") as physics:
++            with self.assertRaisesRegex(r.Refused, "published_prereg_and_lt_release_required"):
++                r.execute(args, Path(tmp))
++            physics.assert_not_called()
++
++    def fixture_release(self):
++        return {"schema": "chimera.exact_pose_replay.release.v1", **r.identities(),
++                "authority": "Lieutenant", "authority_reference": "SYNTHETIC_TEST_ONLY",
++                "source_input_commit": self.manifest["input_commit"],
++                "published_prereg_commit": "a" * 40, "sealed_base_commit": "b" * 40,
++                "operations": ["control", "compare-control", "replay", "combine"],
++                "anchor_policy": "DIAGNOSTIC_ONLY_NO_SOLID_ANATOMY_RULING",
++                "owner": "Buffy-Freebuff-20261004", "ownership_rechecked": True,
++                "release_id": "SYNTHETIC-RELEASE", "observed_utc": "SYNTHETIC-TIME",
++                "sealed_manifest_sha256": "d" * 64,
++                "resource_profile_sha256": r.sha(Path(
++                    "E:/PythonChimera/tools/monkey_campaign/runner_profile.json").read_bytes()),
++                "unit_timeout_seconds": 600,
++                "geometry_scope": "EXACT_STORED_STAGE1_POSES_NO_PLACEMENT_SOLVE",
++                "independent_approval_claimed": False}
++
++    def test_release_checks_pin_base_hash_and_operation(self):
++        good = self.fixture_release()
++        for field, value in (("schema", "wrong"), ("task", "foreign"), ("preregistration_sha256", "0" * 64),
++                             ("authority", "Buffy"), ("authority_reference", ""),
++                             ("published_prereg_commit", "pending"), ("source_input_commit", "c" * 40),
++                             ("operations", []), ("sealed_base_commit", "c" * 40),
++                             ("anchor_policy", "SOLID_ANATOMY"), ("owner", ""),
++                             ("ownership_rechecked", False), ("sealed_manifest_sha256", "e" * 64),
++                             ("implementation_sha256", "e" * 64), ("resource_profile_sha256", "e" * 64),
++                             ("unit_timeout_seconds", 900), ("geometry_scope", "R2"),
++                             ("independent_approval_claimed", True)):
++            release = deepcopy(good)
++            release[field] = value
++            with tempfile.TemporaryDirectory() as tmp:
++                path = Path(tmp) / "fixture.json"
++                r.atomic_json(path, release)
++                with self.assertRaises(r.Refused):
++                    r.release_gate(path, "control", self.manifest, runner_base="b" * 40,
++                                   git_reader=lambda *a: (r.HERE / "PREREGISTRATION.md").read_bytes())
++
++    def test_release_rejects_published_bytes_drift(self):
++        with tempfile.TemporaryDirectory() as tmp:
++            path = Path(tmp) / "fixture.json"
++            r.atomic_json(path, self.fixture_release())
++            with self.assertRaisesRegex(r.Refused, "published_prereg_bytes_drift"):
++                r.release_gate(path, "control", self.manifest, runner_base="b" * 40,
++                               git_reader=lambda *a: b"not the prereg")
++
++    def test_release_rejects_seal_before_new_prereg_pin(self):
++        release = self.fixture_release()
++        release["sealed_base_commit"] = self.manifest["input_commit"]
++        with tempfile.TemporaryDirectory() as tmp:
++            path = Path(tmp) / "fixture.json"
++            r.atomic_json(path, release)
++            with self.assertRaisesRegex(r.Refused, "new_prereg_pin_not_in_sealed_base"):
++                r.release_gate(path, "control", self.manifest, runner_base=self.manifest["input_commit"],
++                               git_reader=lambda *a: b"")
++
++    def test_scaling_requires_actual_serial_gate(self):
++        with self.assertRaisesRegex(r.Refused, "serial_control_gate_required_before_scaling"):
++            r.check_control_gate(None, self.rows, self.manifest)
++
++    def test_local_pin_drift_refused(self):
++        with tempfile.TemporaryDirectory() as tmp:
++            p = Path(tmp) / "code.py"
++            p.write_bytes(b"changed")
++            manifest = {"schema": "chimera.exact_pose_replay.inputs.v1",
++                        "local_files": {"code.py": r.sha(b"original")}}
++            with self.assertRaisesRegex(r.Refused, "input_pin_drift"):
++                r.check_files(manifest, root=Path(tmp), external=False)
++
++    def test_retained_failed_or_tampered_control_refuses(self):
++        with tempfile.TemporaryDirectory() as tmp:
++            root = Path(tmp) / ("f" * 32)
++            root.mkdir()
++            with patch.object(r, "RUNNER_RESULTS", root.parent):
++                r.atomic_json(root / "receipt.json", {"job": root.name, "state": "FAILED", "cleanup_verified": True})
++                with self.assertRaisesRegex(r.Refused, "control_runner_not_completed"):
++                    r.retained_run(root)
++                r.atomic_json(root / "receipt.json", {"job": root.name, "state": "PASSED", "cleanup_verified": True,
++                    "artifacts": {"outputs/replay/control.json": r.sha(b"original")}})
++                r.atomic_json(root / "artifacts/outputs/replay/control.json", {"tampered": True})
++                with self.assertRaisesRegex(r.Refused, "control_runner_artifact_drift"):
++                    r.retained_run(root)
++
++    def test_noncanonical_results_refused(self):
++        with tempfile.TemporaryDirectory() as tmp:
++            with self.assertRaisesRegex(r.Refused, "noncanonical_runner_result_refused"):
++                r.retained_receipt(tmp)
++
++    def synthetic_control_runs(self, root):
++        rows = r.control_rows(self.rows)
++        result = r.combine_units([fixture_unit(row) for row in rows], rows, self.manifest)
++        paths = []
++        for job, route in (("a" * 32, "serial"), ("b" * 32, "units_reversed")):
++            path = root / job
++            payload = {"schema": "chimera.exact_pose_replay.control.v1", "route": route,
++                       "geometry_executed": True, "run_base_commit": "c" * 40, "result": result}
++            output = path / "artifacts/outputs/replay/control.json"
++            r.atomic_json(output, payload)
++            r.atomic_json(path / "receipt.json", {"job": job, "state": "PASSED",
++                "cleanup_verified": True, "base": "c" * 40, "sealed_manifest_sha256": "d" * 64,
++                "command": ["C:/Python314/python.exe", "-B", r.REL + "/replay.py", "control",
++                            "--route", route, "--release", "SYNTHETIC_RELEASE"],
++                "artifacts": {"outputs/replay/control.json": r.sha(output.read_bytes())}})
++            paths.append(path)
++        return paths
++
++    def test_control_gate_fixture_parity_and_negative_cases(self):
++        with tempfile.TemporaryDirectory() as tmp:
++            root = Path(tmp)
++            with patch.object(r, "RUNNER_RESULTS", root):
++                serial, units = self.synthetic_control_runs(root)
++                gate = r.control_gate(serial, units, self.rows, self.manifest)
++                self.assertEqual(gate["state"], "PASSED")
++                self.assertFalse(gate["independent_approval"])
++                self.assertEqual(gate["control_pose_count"], 2)
++                for field, value, reason in (("route", "serial", "control_routes_not_distinct"),
++                                           ("geometry_executed", False, "fixture_not_control_runtime_evidence"),
++                                           ("run_base_commit", "e" * 40, "control_declared_base_mismatch")):
++                    path = units / "artifacts/outputs/replay/control.json"
++                    original = r.read_json(path)
++                    altered = deepcopy(original)
++                    altered[field] = value
++                    r.atomic_json(path, altered)
++                    receipt = r.read_json(units / "receipt.json")
++                    receipt["artifacts"]["outputs/replay/control.json"] = r.sha(path.read_bytes())
++                    r.atomic_json(units / "receipt.json", receipt)
++                    with self.assertRaisesRegex(r.Refused, reason):
++                        r.control_gate(serial, units, self.rows, self.manifest)
++                    r.atomic_json(path, original)
++                    receipt["artifacts"]["outputs/replay/control.json"] = r.sha(path.read_bytes())
++                    r.atomic_json(units / "receipt.json", receipt)
++
++    def test_control_gate_fixture_raw_byte_mismatch_refuses(self):
++        with tempfile.TemporaryDirectory() as tmp:
++            root = Path(tmp)
++            with patch.object(r, "RUNNER_RESULTS", root):
++                serial, units = self.synthetic_control_runs(root)
++                path = units / "artifacts/outputs/replay/control.json"
++                value = r.read_json(path)
++                changed = deepcopy(value["result"]["units"])
++                for unit in changed:
++                    unit["body_frames"]["distph3"]["position_m"][0] = 0.001
++                value["result"] = r.combine_units(changed, r.control_rows(self.rows), self.manifest)
++                r.atomic_json(path, value)
++                receipt = r.read_json(units / "receipt.json")
++                receipt["artifacts"]["outputs/replay/control.json"] = r.sha(path.read_bytes())
++                r.atomic_json(units / "receipt.json", receipt)
++                with self.assertRaisesRegex(r.Refused, "serial_control_payload_not_byte_identical"):
++                    r.control_gate(serial, units, self.rows, self.manifest)
++
++    def test_pose_posture_and_mesh_markers_bound_in_units(self):
++        for field in ("cylinder", "posture", "mesh", "marker", "shape"):
++            unit = fixture_unit(self.rows[0])
++            if field == "cylinder":
++                unit["cylinder"]["o"][0] = 0.05
++            elif field == "posture":
++                unit["posture_q"]["cmc_flexion"] = 0.05
++            elif field == "mesh":
++                unit["body_frames"]["distph3"]["represented_mesh_sha256"] = "short"
++            elif field == "marker":
++                unit["body_records"][0]["pad_substituted_in_stage1"] = False
++            else:
++                unit["body_frames"]["distph3"]["rotation"] = [[1.0]]
++            with self.assertRaises(r.Refused):
++                r.validate_unit(unit, self.rows[0], self.manifest, posture_values=r.declared_postures())
++
++    def test_signed_zero_pose_bytes_must_not_be_silently_changed(self):
++        unit = fixture_unit(self.rows[0])
++        unit["cylinder"]["o"][0] = -0.0
++        with self.assertRaisesRegex(r.Refused, "unit_cylinder_pose_drift"):
++            r.validate_unit(unit, self.rows[0], self.manifest)
++        unit = fixture_unit(self.rows[0])
++        unit["source_stage1"]["o"][0] = -0.0
++        with self.assertRaisesRegex(r.Refused, "unit_source_pose_drift"):
++            r.validate_unit(unit, self.rows[0], self.manifest)
++
++    def test_payload_is_detached_from_input_oracle(self):
++        unit = fixture_unit(self.rows[0])
++        original = deepcopy(self.rows[0])
++        unit["source_stage1"]["o"][0] = 0.5
++        unit["cylinder"]["o"][1] = 0.4
++        self.assertEqual(self.rows[0], original)
++        with self.assertRaisesRegex(r.Refused, "unit_source_pose_drift"):
++            r.validate_unit(unit, self.rows[0], self.manifest)
++
++    def test_same_posture_frames_cannot_drift_between_units(self):
++        units = [fixture_unit(row) for row in self.rows]
++        units[0]["body_frames"]["distph3"]["position_m"][0] = 0.01
++        with self.assertRaisesRegex(r.Refused, "same_posture_frame_identity_drift"):
++            r.combine_units(units, self.rows, self.manifest)
++
++    def test_retained_unit_hash_candidate_and_failure_gates(self):
++        with tempfile.TemporaryDirectory() as tmp:
++            root = Path(tmp)
++            run = root / ("a" * 32)
++            units = run / "artifacts/outputs/replay/units"
++            path = units / "fixture.json"
++            r.atomic_json(path, fixture_unit(self.rows[0]))
++            receipt = {"job": run.name, "state": "PASSED", "cleanup_verified": True,
++                       "base": "b" * 40, "sealed_manifest_sha256": "c" * 64,
++                       "artifacts": {"outputs/replay/units/fixture.json": r.sha(path.read_bytes())}}
++            r.atomic_json(run / "receipt.json", receipt)
++            with patch.object(r, "RUNNER_RESULTS", root):
++                self.assertEqual(len(r.retained_units([units], "c" * 64, "b" * 40)), 1)
++                with self.assertRaisesRegex(r.Refused, "unit_runner_wrong_candidate"):
++                    r.retained_units([units], "e" * 64, "b" * 40)
++                with self.assertRaisesRegex(r.Refused, "duplicate_unit_input_path"):
++                    r.retained_units([units, units], "c" * 64, "b" * 40)
++                path.write_bytes(b"tampered")
++                with self.assertRaisesRegex(r.Refused, "unit_runner_artifact_drift"):
++                    r.retained_units([units], "c" * 64, "b" * 40)
++                receipt["state"] = "FAILED"
++                r.atomic_json(run / "receipt.json", receipt)
++                with self.assertRaisesRegex(r.Refused, "unit_runner_not_completed"):
++                    r.retained_units([units], "c" * 64, "b" * 40)
++
++    def test_work_unit_preserves_each_body_on_injected_failure(self):
++        from types import SimpleNamespace
++        frames = {n: SimpleNamespace(name=n) for n in self.manifest["body_census"]}
++        seen = []
++        def synthetic_primitive(frame, o, u, tau):
++            if len(seen) == 5:
++                raise RuntimeError("SYNTHETIC_FAILURE_AFTER_5_BODIES")
++            seen.append(frame.name)
++            return raw_class("CLEAR")
++        iv = SimpleNamespace(TAU=1e-4, adjudicate_body_vs_cylinder=synthetic_primitive)
++        checkpoints = []
++        with self.assertRaisesRegex(RuntimeError, "SYNTHETIC_FAILURE_AFTER_5_BODIES"):
++            r.evaluate_unit(self.rows[0], frames, {}, self.manifest, iv, None,
++                            frame_table={}, checkpoint=lambda records: checkpoints.append(deepcopy(records)))
++        self.assertEqual([len(x) for x in checkpoints], [1, 2, 3, 4, 5])
++        self.assertEqual(list(checkpoints[-1]), sorted(frames)[:5])
++
++    def test_current_runner_lease_hash_read_only(self):
++        self.seal_patch.stop()
++        with tempfile.TemporaryDirectory() as tmp:
++            root = Path(tmp) / "slot-2/scratch"
++            root.mkdir(parents=True)
++            job = "a" * 32
++            (root / ".chimera-runner-id").write_text(job)
++            r.atomic_json(root.parent / "lease.json", {"schema": "chimera.runner_lease.v1",
++                                                      "job": job, "sealed_manifest_sha256": "b" * 64})
++            with patch.object(r, "ROOT", root):
++                self.assertEqual(r.current_seal_sha256(), "b" * 64)
++                r.atomic_json(root.parent / "lease.json", {"schema": "chimera.runner_lease.v1", "job": "c" * 32})
++                with self.assertRaisesRegex(r.Refused, "runner_lease_identity_mismatch"):
++                    r.current_seal_sha256()
++        self.seal_patch.start()
++
++    def test_cli_scientific_refusal_nonzero_and_preserved(self):
++        with tempfile.TemporaryDirectory() as tmp:
++            p = subprocess.run([sys.executable, "-B", str(r.HERE / "replay.py"), "control", "--route", "serial"],
++                               env={**os.environ, "CHIMERA_OUTPUT_DIR": tmp}, capture_output=True, timeout=30)
++            self.assertNotEqual(p.returncode, 0)
++            error = r.read_json(Path(tmp) / "replay/error.json")
++            self.assertEqual(error["reason"], "published_prereg_and_lt_release_required")
++            self.assertFalse(r.read_json(Path(tmp) / "replay/progress.json")["geometry_executed"])
++
++    def test_inherited_systemexit_refusal_preserved_and_reraised(self):
++        sys.path.insert(0, str(r.ROOT / r.INHERITED))
++        iv = importlib.import_module("instrument_v2")
++        with tempfile.TemporaryDirectory() as tmp, patch.object(r, "output_dir", return_value=Path(tmp)), \
++             patch.object(sys, "argv", ["replay.py", "preflight"]), \
++             patch.object(r, "execute", side_effect=iv.GateRefusal("SYNTHETIC_GATE", "synthetic detail")):
++            with self.assertRaises(iv.GateRefusal):
++                r.main()
++            error = r.read_json(Path(tmp) / "error.json")
++            self.assertEqual(error["instrument_code"], "SYNTHETIC_GATE")
++            self.assertEqual(error["instrument_detail"], "synthetic detail")
++            self.assertFalse(error["full_result"])
++
++    def test_source_parses_and_has_no_placement_solve_calls(self):
++        for path in (r.HERE / "replay.py", Path(__file__)):
++            ast.parse(path.read_text(), filename=str(path))
++        tree = ast.parse((r.HERE / "replay.py").read_text())
++        forbidden = {"solve_s_star", "placement_family", "axis_basis"}
++        calls = [n.func.attr for n in ast.walk(tree) if isinstance(n, ast.Call)
++                 and isinstance(n.func, ast.Attribute)]
++        self.assertFalse(forbidden.intersection(calls))
++
++    def test_fixture_release_success_is_not_authority_evidence(self):
++        with tempfile.TemporaryDirectory() as tmp:
++            path = Path(tmp) / "fixture.json"
++            r.atomic_json(path, self.fixture_release())
++            def fixture_git(*args):
++                return (r.HERE / "PREREGISTRATION.md").read_bytes() if args[0] == "show" else b""
++            got = r.release_gate(path, "control", self.manifest, runner_base="b" * 40, git_reader=fixture_git)
++            self.assertEqual(got["authority_reference"], "SYNTHETIC_TEST_ONLY")
++
++
++def main():
++    suite = unittest.defaultTestLoader.loadTestsFromTestCase(ReplayTests)
++    result = unittest.TextTestRunner(verbosity=2).run(suite)
++    # Syntax compilation is this stdlib-only task's type/syntax check; no
++    # typechecker is configured for this contribution. Never create .pyc files.
++    out = Path(os.environ["CHIMERA_OUTPUT_DIR"]) / "replay"
++    r.atomic_json(out / "tests.json", {"schema": "chimera.exact_pose_replay.tests.v1",
++        **r.identities(), "execution_class": "SYNTHETIC_PACKAGING_TESTS_NOT_GEOMETRY",
++        "tests_run": result.testsRun, "failures": len(result.failures), "errors": len(result.errors),
++        "skipped": len(result.skipped), "passed": result.wasSuccessful(),
++        "geometry_executed": False, "independent_approval": False})
++    raise SystemExit(0 if result.wasSuccessful() else 1)
++
++
++if __name__ == "__main__":
++    main()

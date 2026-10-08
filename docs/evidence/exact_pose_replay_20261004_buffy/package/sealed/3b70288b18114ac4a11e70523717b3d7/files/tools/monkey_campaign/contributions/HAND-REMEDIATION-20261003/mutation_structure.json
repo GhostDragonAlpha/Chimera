@@ -1,0 +1,1785 @@
+{
+ "schema": "chimera.anatomical_assembly.v1",
+ "id": "model.macaque_arm_hand_mutation",
+ "title": "MAT2-A05 first mutation: human myo_sim hand framework modified toward macaque anatomy",
+ "captain_decision": {
+  "decision_id": "A05-DIGIT-MUTATION-20260928",
+  "record": "E:/ChimeraWork/monkey-coordination/kanban-attempts/MAT2-A05/CAPTAIN_DECISION_2_MUTATION.json",
+  "sha256": "3c34168ef28b00b1dc60c2362cc9d2d6ffb273a8c28a1663d9bff729596dd1d7",
+  "authority": "Captain (highest)"
+ },
+ "task": {
+  "task_id": "MAT2-A05",
+  "attempt_id": "b4ad70883ac2480a928dcc828f33c65f",
+  "arrival_id": "arrival-b22e42ce0ecf4204acb2f99d0aecff97",
+  "criteria_sha256": "34411771f7bd5dea2ec2cc4775d44b33df422e5454d283eae40676d1e3346544"
+ },
+ "units": {
+  "length": "m",
+  "angle": "rad",
+  "mass": "kg",
+  "inertia": "kg m^2"
+ },
+ "species_disclosure": "Hybrid derivation: human per-digit topology and base bone shapes; macaque scale, wrist ranges, hand mass, muscle anchors and frame. Declared adaptation per Captain decision 2, not a species-true scan claim.",
+ "sources": [
+  {
+   "id": "source.myo_sim_human_hand",
+   "kind": "model_definition",
+   "name": "Human myo_sim hand framework (mutation base)",
+   "status": "derived_from",
+   "species": "Homo sapiens (MoBL-ARD myo_sim human hand, human-derived base structure)",
+   "source_revision": "33f3ded946f55adbdcf963c99999587aadaf975f",
+   "pins": [
+    {
+     "path": "E:/PythonChimera/vendor/myo_sim/hand/assets/myohand_body.xml",
+     "sha256": "21a6649236801439649ae992459c29bbc020767c2022c4d79de688689462ed28"
+    },
+    {
+     "path": "E:/PythonChimera/vendor/myo_sim/finger/finger_v0.xml",
+     "sha256": "6975e5c56d2adbd41c1b9ad8cdbece90b84611c80288337338adc7951a8b4b5f"
+    }
+   ],
+   "note": "Vendor clone is unpinned upstream MyoHub/myo_sim; rev + file sha256 recorded at use time."
+  },
+  {
+   "id": "source.macaque_arm_constraints",
+   "kind": "model_definition",
+   "name": "Pinned macaque arm research model (mutation constraints)",
+   "status": "extracted",
+   "species": "Macaca mulatta (Limblab monkeyArm research model; original specimen/mesh ancestry unconfirmed per source receipt)",
+   "source_revision": "4fb7dddeec06a0df9525c18f37234a824cb1b5b1",
+   "pins": [
+    {
+     "path": "E:/PythonChimera/tools/science_funnel/data/macaque_arm/monkeyArm_current.osim",
+     "sha256": "4148aee2c8dda1dcb0918496ad7c5e1adcf4ebabde0a68a3e0dc67faec67b895"
+    },
+    {
+     "path": "E:/PythonChimera/tools/science_funnel/data/macaque_arm/Geometry/hand.vtp",
+     "sha256": "a06ea7e079c849df07d6eec001e9bcc2ea193ecd3914011c78a993a5faa94fc6"
+    },
+    {
+     "path": "E:/PythonChimera/tools/creature_graph/data/creature_graph.json",
+     "sha256": "eeaace01160f7a585e3c57fb4a7b2fbe19e2067cd59e1834fb86c972c33eca56"
+    }
+   ]
+  }
+ ],
+ "frame": {
+  "frame_id": "macaque_arm_hand_mutation_frame",
+  "units": "m",
+  "anchor": "macaque hand body origin (wrist joint location 0 0 0 of the macaque wrist custom joint)",
+  "long_axis": "-Y, coincident with hand.vtp span"
+ },
+ "anchor_body": {
+  "id": "ref.macaque_arm_hand_mutation.body.macaque_hand_anchor",
+  "name": "macaque_hand_anchor",
+  "status": "extracted",
+  "physical": {
+   "name": "macaque hand body (verbatim osim values)",
+   "mass_kg": 0.049,
+   "mass_center_m": [
+    0.012,
+    -0.025,
+    0.007
+   ],
+   "inertia_kg_m2": [
+    3.82e-05,
+    1.56e-06,
+    3.82e-05,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "mass_scope": "effective body segment, not isolated visible bone",
+   "mass_note": "anchor mass and digit mass priors are alternative allocation views of the same 0.049 kg macaque hand mass, not additive"
+  },
+  "joints": [
+   {
+    "name": "mutation_wrist_flexion",
+    "coordinates": "wrist_flexion",
+    "axis": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "range": [
+     -1.30899694,
+     1.57079633
+    ],
+    "source": "monkeyArm_current.osim wrist TransformAxis rotation1"
+   },
+   {
+    "name": "mutation_wrist_abduction",
+    "coordinates": "wrist_abduction",
+    "axis": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "range": [
+     -1.04719755,
+     0.78539816
+    ],
+    "source": "monkeyArm_current.osim wrist TransformAxis rotation2"
+   }
+  ],
+  "geometry": [
+   {
+    "asset_id": "geom.macaque_arm.hand (external, extracted graph node)",
+    "path": "Geometry/hand.vtp",
+    "sha256": "a06ea7e079c849df07d6eec001e9bcc2ea193ecd3914011c78a993a5faa94fc6",
+    "source_units_to_m": [
+     0.001,
+     0.001,
+     0.001
+    ],
+    "note": "macaque hand envelope; VTP is not MuJoCo-loadable so the MJCF anchor carries no mesh geom; the binding is recorded here"
+   }
+  ]
+ },
+ "bodies": [
+  {
+   "id": "ref.macaque_arm_hand_mutation.body.firstmc",
+   "kind": "model_definition",
+   "name": "firstmc",
+   "status": "authored",
+   "species": "hybrid: human base structure (myo_sim @33f3ded) scaled toward macaque constraints (macaque_arm research model); species mixing DECLARED per Captain decision A05-DIGIT-MUTATION-20260928",
+   "human_source": {
+    "body": "firstmc",
+    "file": "E:/PythonChimera/vendor/myo_sim/hand/assets/myohand_body.xml",
+    "sha256": "21a6649236801439649ae992459c29bbc020767c2022c4d79de688689462ed28",
+    "offset_m": [
+     0.0072,
+     -0.0054,
+     -0.0025
+    ],
+    "inertial": {
+     "mass": 0.016,
+     "fullinertia": [
+      1.2e-06,
+      7.1e-07,
+      1.3e-06,
+      4.7e-07,
+      2.5e-07,
+      -4.1e-07
+     ]
+    }
+   },
+   "mutation": {
+    "scale": 0.5384048132470733,
+    "pos_m": [
+     0.014259651478848738,
+     -0.013472503641881519,
+     -0.005643020847642575
+    ],
+    "mass_prior_kg": 0.004933920704845815,
+    "mass_prior_formula": "0.049 kg * 0.016 / 0.1589 kg",
+    "carpal_chain_folded_into_anchor": true
+   },
+   "physical": {
+    "name": "firstmc",
+    "mass_kg": 0.004933920704845815,
+    "mass_center_m": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "inertia_kg_m2": [
+     1.0726827491594599e-07,
+     6.346706265860137e-08,
+     1.1620729782560814e-07,
+     4.2013407675412175e-08,
+     2.2347557274155412e-08,
+     -3.6649993929614876e-08
+    ],
+    "mass_scope": "declared training prior; proportional redistribution of the macaque hand mass over digit chains (not additive with the anchor mass)",
+    "frame": "macaque_arm_hand_mutation_frame",
+    "units": "m/rad/kg"
+   },
+   "parent": "ref.macaque_arm_hand_mutation.body.macaque_hand_anchor",
+   "joints": [
+    {
+     "name": "cmc_abduction",
+     "axis": "-0.042399 -0.665286 0.745384",
+     "range": [
+      -0.5,
+      0.78
+     ]
+    },
+    {
+     "name": "cmc_flexion",
+     "axis": "0.495557 0.731736 0.467959",
+     "range": [
+      -0.78,
+      0.7
+     ]
+    }
+   ],
+   "geometry": [
+    {
+     "asset_id": "geom.macaque_arm_hand_mutation.1mc",
+     "stl_sha256": "b75e58243a2005af787bc731c5d1aa6b7da4669f36e9bcd7409a430c1cc311b6",
+     "transform": {
+      "uniform_scale": 0.5384048132470733,
+      "source_units": "m"
+     },
+     "why_scaled_reference": "no macaque phalanx mesh exists in-repo (PR #229/#230 search); vendor human STL reused at recorded mutation scale"
+    }
+   ]
+  },
+  {
+   "id": "ref.macaque_arm_hand_mutation.body.proximal_thumb",
+   "kind": "model_definition",
+   "name": "proximal_thumb",
+   "status": "authored",
+   "species": "hybrid: human base structure (myo_sim @33f3ded) scaled toward macaque constraints (macaque_arm research model); species mixing DECLARED per Captain decision A05-DIGIT-MUTATION-20260928",
+   "human_source": {
+    "body": "proximal_thumb",
+    "file": "E:/PythonChimera/vendor/myo_sim/hand/assets/myohand_body.xml",
+    "sha256": "21a6649236801439649ae992459c29bbc020767c2022c4d79de688689462ed28",
+    "offset_m": [
+     0.0165,
+     -0.0292,
+     -0.0127
+    ],
+    "inertial": {
+     "mass": 0.0079,
+     "fullinertia": [
+      2.6e-07,
+      7.1e-07,
+      2.9e-07,
+      1e-07,
+      4e-08,
+      -6e-08
+     ]
+    }
+   },
+   "mutation": {
+    "scale": 0.5384048132470733,
+    "pos_m": [
+     0.00888367941857671,
+     -0.01572142054681454,
+     -0.006837741128237831
+    ],
+    "mass_prior_kg": 0.0024361233480176213,
+    "mass_prior_formula": "0.049 kg * 0.0079 / 0.1589 kg",
+    "carpal_chain_folded_into_anchor": false
+   },
+   "physical": {
+    "name": "proximal_thumb",
+    "mass_kg": 0.0024361233480176213,
+    "mass_center_m": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "inertia_kg_m2": [
+     2.3241459565121632e-08,
+     6.346706265860137e-08,
+     2.5923166438020278e-08,
+     8.939022909662165e-09,
+     3.5756091638648664e-09,
+     -5.363413745797299e-09
+    ],
+    "mass_scope": "declared training prior; proportional redistribution of the macaque hand mass over digit chains (not additive with the anchor mass)",
+    "frame": "macaque_arm_hand_mutation_frame",
+    "units": "m/rad/kg"
+   },
+   "parent": "ref.macaque_arm_hand_mutation.body.firstmc",
+   "joints": [
+    {
+     "name": "mp_flexion",
+     "axis": "-0.084295 -0.203488 0.975442",
+     "range": [
+      -0.785398,
+      0.698132
+     ]
+    }
+   ],
+   "geometry": [
+    {
+     "asset_id": "geom.macaque_arm_hand_mutation.thumbprox",
+     "stl_sha256": "d55ea0de846c5acf5c89198cb4f4b74e7739f4316120ece0d6fe1c8e7cbb646c",
+     "transform": {
+      "uniform_scale": 0.5384048132470733,
+      "source_units": "m"
+     },
+     "why_scaled_reference": "no macaque phalanx mesh exists in-repo (PR #229/#230 search); vendor human STL reused at recorded mutation scale"
+    }
+   ]
+  },
+  {
+   "id": "ref.macaque_arm_hand_mutation.body.distal_thumb",
+   "kind": "model_definition",
+   "name": "distal_thumb",
+   "status": "authored",
+   "species": "hybrid: human base structure (myo_sim @33f3ded) scaled toward macaque constraints (macaque_arm research model); species mixing DECLARED per Captain decision A05-DIGIT-MUTATION-20260928",
+   "human_source": {
+    "body": "distal_thumb",
+    "file": "E:/PythonChimera/vendor/myo_sim/hand/assets/myohand_body.xml",
+    "sha256": "21a6649236801439649ae992459c29bbc020767c2022c4d79de688689462ed28",
+    "offset_m": [
+     0.014,
+     -0.0259,
+     -0.0101
+    ],
+    "inertial": {
+     "mass": 0.003,
+     "fullinertia": [
+      5e-08,
+      3e-08,
+      5e-08,
+      1e-08,
+      1e-08,
+      -1e-08
+     ]
+    }
+   },
+   "mutation": {
+    "scale": 0.5384048132470733,
+    "pos_m": [
+     0.007537667385459027,
+     -0.0139446846630992,
+     -0.005437888613795441
+    ],
+    "mass_prior_kg": 0.0009251101321585902,
+    "mass_prior_formula": "0.049 kg * 0.003 / 0.1589 kg",
+    "carpal_chain_folded_into_anchor": false
+   },
+   "physical": {
+    "name": "distal_thumb",
+    "mass_kg": 0.0009251101321585902,
+    "mass_center_m": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "inertia_kg_m2": [
+     4.4695114548310825e-09,
+     2.6817068728986486e-09,
+     4.4695114548310825e-09,
+     8.939022909662164e-10,
+     8.939022909662164e-10,
+     -8.939022909662164e-10
+    ],
+    "mass_scope": "declared training prior; proportional redistribution of the macaque hand mass over digit chains (not additive with the anchor mass)",
+    "frame": "macaque_arm_hand_mutation_frame",
+    "units": "m/rad/kg"
+   },
+   "parent": "ref.macaque_arm_hand_mutation.body.proximal_thumb",
+   "joints": [
+    {
+     "name": "ip_flexion",
+     "axis": "-0.050102 -0.479623 0.876043",
+     "range": [
+      -1.309,
+      0.436332
+     ]
+    }
+   ],
+   "geometry": [
+    {
+     "asset_id": "geom.macaque_arm_hand_mutation.thumbdist",
+     "stl_sha256": "95b059723be971e770609000d682a4d41989332d22978fc05cbffd2754c5f93b",
+     "transform": {
+      "uniform_scale": 0.5384048132470733,
+      "source_units": "m"
+     },
+     "why_scaled_reference": "no macaque phalanx mesh exists in-repo (PR #229/#230 search); vendor human STL reused at recorded mutation scale"
+    }
+   ]
+  },
+  {
+   "id": "ref.macaque_arm_hand_mutation.body.secondmc",
+   "kind": "model_definition",
+   "name": "secondmc",
+   "status": "authored",
+   "species": "hybrid: human base structure (myo_sim @33f3ded) scaled toward macaque constraints (macaque_arm research model); species mixing DECLARED per Captain decision A05-DIGIT-MUTATION-20260928",
+   "human_source": {
+    "body": "secondmc",
+    "file": "E:/PythonChimera/vendor/myo_sim/hand/assets/myohand_body.xml",
+    "sha256": "21a6649236801439649ae992459c29bbc020767c2022c4d79de688689462ed28",
+    "offset_m": [
+     0.014685,
+     -0.03762,
+     0.005032
+    ],
+    "inertial": {
+     "mass": 0.02,
+     "fullinertia": [
+      0.0001,
+      0.0001,
+      0.0001,
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "mutation": {
+    "scale": 0.5384048132470733,
+    "pos_m": [
+     0.010055786697015588,
+     -0.02835993513297634,
+     0.003962121020685213
+    ],
+    "mass_prior_kg": 0.006167400881057268,
+    "mass_prior_formula": "0.049 kg * 0.02 / 0.1589 kg",
+    "carpal_chain_folded_into_anchor": true
+   },
+   "physical": {
+    "name": "secondmc",
+    "mass_kg": 0.006167400881057268,
+    "mass_center_m": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "inertia_kg_m2": [
+     8.939022909662164e-06,
+     8.939022909662164e-06,
+     8.939022909662164e-06,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "mass_scope": "declared training prior; proportional redistribution of the macaque hand mass over digit chains (not additive with the anchor mass)",
+    "frame": "macaque_arm_hand_mutation_frame",
+    "units": "m/rad/kg"
+   },
+   "parent": "ref.macaque_arm_hand_mutation.body.macaque_hand_anchor",
+   "joints": [],
+   "geometry": [
+    {
+     "asset_id": "geom.macaque_arm_hand_mutation.2mc",
+     "stl_sha256": "ac3286bfb7281a7d2dc3ff2ac32fcb8f0424764aa97ad526992a10b739334fe2",
+     "transform": {
+      "uniform_scale": 0.5384048132470733,
+      "source_units": "m"
+     },
+     "why_scaled_reference": "no macaque phalanx mesh exists in-repo (PR #229/#230 search); vendor human STL reused at recorded mutation scale"
+    }
+   ]
+  },
+  {
+   "id": "ref.macaque_arm_hand_mutation.body.proxph2",
+   "kind": "model_definition",
+   "name": "proxph2",
+   "status": "authored",
+   "species": "hybrid: human base structure (myo_sim @33f3ded) scaled toward macaque constraints (macaque_arm research model); species mixing DECLARED per Captain decision A05-DIGIT-MUTATION-20260928",
+   "human_source": {
+    "body": "proxph2",
+    "file": "E:/PythonChimera/vendor/myo_sim/hand/assets/myohand_body.xml",
+    "sha256": "21a6649236801439649ae992459c29bbc020767c2022c4d79de688689462ed28",
+    "offset_m": [
+     0.003501,
+     -0.028243,
+     0.00362
+    ],
+    "inertial": {
+     "mass": 0.01,
+     "fullinertia": [
+      0.0001,
+      0.0001,
+      0.0001,
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "mutation": {
+    "scale": 0.5384048132470733,
+    "pos_m": [
+     0.001884955251178004,
+     -0.015206167140537094,
+     0.0019490254239544055
+    ],
+    "mass_prior_kg": 0.003083700440528634,
+    "mass_prior_formula": "0.049 kg * 0.01 / 0.1589 kg",
+    "carpal_chain_folded_into_anchor": false
+   },
+   "physical": {
+    "name": "proxph2",
+    "mass_kg": 0.003083700440528634,
+    "mass_center_m": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "inertia_kg_m2": [
+     8.939022909662164e-06,
+     8.939022909662164e-06,
+     8.939022909662164e-06,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "mass_scope": "declared training prior; proportional redistribution of the macaque hand mass over digit chains (not additive with the anchor mass)",
+    "frame": "macaque_arm_hand_mutation_frame",
+    "units": "m/rad/kg"
+   },
+   "parent": "ref.macaque_arm_hand_mutation.body.secondmc",
+   "joints": [
+    {
+     "name": "mcp2_flexion",
+     "axis": "0.995013 0.09975 0",
+     "range": [
+      0.0,
+      1.5708
+     ]
+    },
+    {
+     "name": "mcp2_abduction",
+     "axis": "-0.054999 0.085899 0.994785",
+     "range": [
+      -0.261799,
+      0.261799
+     ]
+    }
+   ],
+   "geometry": [
+    {
+     "asset_id": "geom.macaque_arm_hand_mutation.2proxph",
+     "stl_sha256": "041bf5a60e9376c0c47a3981c312698caa8d28f6d8ca08f59c3222da4244fb9d",
+     "transform": {
+      "uniform_scale": 0.5384048132470733,
+      "source_units": "m"
+     },
+     "why_scaled_reference": "no macaque phalanx mesh exists in-repo (PR #229/#230 search); vendor human STL reused at recorded mutation scale"
+    }
+   ]
+  },
+  {
+   "id": "ref.macaque_arm_hand_mutation.body.midph2",
+   "kind": "model_definition",
+   "name": "midph2",
+   "status": "authored",
+   "species": "hybrid: human base structure (myo_sim @33f3ded) scaled toward macaque constraints (macaque_arm research model); species mixing DECLARED per Captain decision A05-DIGIT-MUTATION-20260928",
+   "human_source": {
+    "body": "midph2",
+    "file": "E:/PythonChimera/vendor/myo_sim/hand/assets/myohand_body.xml",
+    "sha256": "21a6649236801439649ae992459c29bbc020767c2022c4d79de688689462ed28",
+    "offset_m": [
+     0.00751,
+     -0.041273,
+     0.007326
+    ],
+    "inertial": {
+     "mass": 0.003,
+     "fullinertia": [
+      0.0001,
+      0.0001,
+      0.0001,
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "mutation": {
+    "scale": 0.5384048132470733,
+    "pos_m": [
+     0.004043420147485521,
+     -0.022221581857146455,
+     0.003944353661848059
+    ],
+    "mass_prior_kg": 0.0009251101321585902,
+    "mass_prior_formula": "0.049 kg * 0.003 / 0.1589 kg",
+    "carpal_chain_folded_into_anchor": false
+   },
+   "physical": {
+    "name": "midph2",
+    "mass_kg": 0.0009251101321585902,
+    "mass_center_m": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "inertia_kg_m2": [
+     8.939022909662164e-06,
+     8.939022909662164e-06,
+     8.939022909662164e-06,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "mass_scope": "declared training prior; proportional redistribution of the macaque hand mass over digit chains (not additive with the anchor mass)",
+    "frame": "macaque_arm_hand_mutation_frame",
+    "units": "m/rad/kg"
+   },
+   "parent": "ref.macaque_arm_hand_mutation.body.proxph2",
+   "joints": [
+    {
+     "name": "pm2_flexion",
+     "axis": "0.97517 0.0998334 -0.197677",
+     "range": [
+      0.0,
+      1.5708
+     ]
+    }
+   ],
+   "geometry": [
+    {
+     "asset_id": "geom.macaque_arm_hand_mutation.2midph",
+     "stl_sha256": "074318c92e652ba05d26cbe0ad8e781891e2970e6b7415bc63585536e8beda72",
+     "transform": {
+      "uniform_scale": 0.5384048132470733,
+      "source_units": "m"
+     },
+     "why_scaled_reference": "no macaque phalanx mesh exists in-repo (PR #229/#230 search); vendor human STL reused at recorded mutation scale"
+    }
+   ]
+  },
+  {
+   "id": "ref.macaque_arm_hand_mutation.body.distph2",
+   "kind": "model_definition",
+   "name": "distph2",
+   "status": "authored",
+   "species": "hybrid: human base structure (myo_sim @33f3ded) scaled toward macaque constraints (macaque_arm research model); species mixing DECLARED per Captain decision A05-DIGIT-MUTATION-20260928",
+   "human_source": {
+    "body": "distph2",
+    "file": "E:/PythonChimera/vendor/myo_sim/hand/assets/myohand_body.xml",
+    "sha256": "21a6649236801439649ae992459c29bbc020767c2022c4d79de688689462ed28",
+    "offset_m": [
+     0.003333,
+     -0.024888,
+     0.00122
+    ],
+    "inertial": {
+     "mass": 0.002,
+     "fullinertia": [
+      0.0001,
+      0.0001,
+      0.0001,
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "mutation": {
+    "scale": 0.5384048132470733,
+    "pos_m": [
+     0.0017945032425524955,
+     -0.013399818992093162,
+     0.0006568538721614294
+    ],
+    "mass_prior_kg": 0.0006167400881057269,
+    "mass_prior_formula": "0.049 kg * 0.002 / 0.1589 kg",
+    "carpal_chain_folded_into_anchor": false
+   },
+   "physical": {
+    "name": "distph2",
+    "mass_kg": 0.0006167400881057269,
+    "mass_center_m": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "inertia_kg_m2": [
+     8.939022909662166e-06,
+     8.939022909662166e-06,
+     8.939022909662166e-06,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "mass_scope": "declared training prior; proportional redistribution of the macaque hand mass over digit chains (not additive with the anchor mass)",
+    "frame": "macaque_arm_hand_mutation_frame",
+    "units": "m/rad/kg"
+   },
+   "parent": "ref.macaque_arm_hand_mutation.body.midph2",
+   "joints": [
+    {
+     "name": "md2_flexion",
+     "axis": "0.995004 0.0998334 0",
+     "range": [
+      0.0,
+      1.5708
+     ]
+    }
+   ],
+   "geometry": [
+    {
+     "asset_id": "geom.macaque_arm_hand_mutation.2distph",
+     "stl_sha256": "39fca9372434520835703ffd34b5cc37a3f15f86ec9841b5fd841acac51adb88",
+     "transform": {
+      "uniform_scale": 0.5384048132470733,
+      "source_units": "m"
+     },
+     "why_scaled_reference": "no macaque phalanx mesh exists in-repo (PR #229/#230 search); vendor human STL reused at recorded mutation scale"
+    }
+   ]
+  },
+  {
+   "id": "ref.macaque_arm_hand_mutation.body.thirdmc",
+   "kind": "model_definition",
+   "name": "thirdmc",
+   "status": "authored",
+   "species": "hybrid: human base structure (myo_sim @33f3ded) scaled toward macaque constraints (macaque_arm research model); species mixing DECLARED per Captain decision A05-DIGIT-MUTATION-20260928",
+   "human_source": {
+    "body": "thirdmc",
+    "file": "E:/PythonChimera/vendor/myo_sim/hand/assets/myohand_body.xml",
+    "sha256": "21a6649236801439649ae992459c29bbc020767c2022c4d79de688689462ed28",
+    "offset_m": [
+     0.000477,
+     -0.039239,
+     0.007377
+    ],
+    "inertial": {
+     "mass": 0.02,
+     "fullinertia": [
+      0.0001,
+      0.0001,
+      0.0001,
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "mutation": {
+    "scale": 0.5384048132470733,
+    "pos_m": [
+     0.0024061311104011706,
+     -0.029231612525623354,
+     0.0052246803077496
+    ],
+    "mass_prior_kg": 0.006167400881057268,
+    "mass_prior_formula": "0.049 kg * 0.02 / 0.1589 kg",
+    "carpal_chain_folded_into_anchor": true
+   },
+   "physical": {
+    "name": "thirdmc",
+    "mass_kg": 0.006167400881057268,
+    "mass_center_m": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "inertia_kg_m2": [
+     8.939022909662164e-06,
+     8.939022909662164e-06,
+     8.939022909662164e-06,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "mass_scope": "declared training prior; proportional redistribution of the macaque hand mass over digit chains (not additive with the anchor mass)",
+    "frame": "macaque_arm_hand_mutation_frame",
+    "units": "m/rad/kg"
+   },
+   "parent": "ref.macaque_arm_hand_mutation.body.macaque_hand_anchor",
+   "joints": [],
+   "geometry": [
+    {
+     "asset_id": "geom.macaque_arm_hand_mutation.3mc",
+     "stl_sha256": "eaa77802c8afe5a3187293880d0f95b5b2f0367adcb3639c8038993d39ff8f5c",
+     "transform": {
+      "uniform_scale": 0.5384048132470733,
+      "source_units": "m"
+     },
+     "why_scaled_reference": "no macaque phalanx mesh exists in-repo (PR #229/#230 search); vendor human STL reused at recorded mutation scale"
+    }
+   ]
+  },
+  {
+   "id": "ref.macaque_arm_hand_mutation.body.proxph3",
+   "kind": "model_definition",
+   "name": "proxph3",
+   "status": "authored",
+   "species": "hybrid: human base structure (myo_sim @33f3ded) scaled toward macaque constraints (macaque_arm research model); species mixing DECLARED per Captain decision A05-DIGIT-MUTATION-20260928",
+   "human_source": {
+    "body": "proxph3",
+    "file": "E:/PythonChimera/vendor/myo_sim/hand/assets/myohand_body.xml",
+    "sha256": "21a6649236801439649ae992459c29bbc020767c2022c4d79de688689462ed28",
+    "offset_m": [
+     0.00024,
+     -0.02629,
+     0.001778
+    ],
+    "inertial": {
+     "mass": 0.01,
+     "fullinertia": [
+      0.0001,
+      0.0001,
+      0.0001,
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "mutation": {
+    "scale": 0.5384048132470733,
+    "pos_m": [
+     0.0001292171551792976,
+     -0.014154662540265558,
+     0.0009572837579532964
+    ],
+    "mass_prior_kg": 0.003083700440528634,
+    "mass_prior_formula": "0.049 kg * 0.01 / 0.1589 kg",
+    "carpal_chain_folded_into_anchor": false
+   },
+   "physical": {
+    "name": "proxph3",
+    "mass_kg": 0.003083700440528634,
+    "mass_center_m": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "inertia_kg_m2": [
+     8.939022909662164e-06,
+     8.939022909662164e-06,
+     8.939022909662164e-06,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "mass_scope": "declared training prior; proportional redistribution of the macaque hand mass over digit chains (not additive with the anchor mass)",
+    "frame": "macaque_arm_hand_mutation_frame",
+    "units": "m/rad/kg"
+   },
+   "parent": "ref.macaque_arm_hand_mutation.body.thirdmc",
+   "joints": [
+    {
+     "name": "mcp3_flexion",
+     "axis": "0.980067 0 0.198669",
+     "range": [
+      0.0,
+      1.5708
+     ]
+    },
+    {
+     "name": "mcp3_abduction",
+     "axis": "-0.198669 0 0.980067",
+     "range": [
+      -0.261799,
+      0.261799
+     ]
+    }
+   ],
+   "geometry": [
+    {
+     "asset_id": "geom.macaque_arm_hand_mutation.3proxph",
+     "stl_sha256": "48094bce62d115aee9f2527b22061ff1f5656936e647879d83672b2c62c20728",
+     "transform": {
+      "uniform_scale": 0.5384048132470733,
+      "source_units": "m"
+     },
+     "why_scaled_reference": "no macaque phalanx mesh exists in-repo (PR #229/#230 search); vendor human STL reused at recorded mutation scale"
+    }
+   ]
+  },
+  {
+   "id": "ref.macaque_arm_hand_mutation.body.midph3",
+   "kind": "model_definition",
+   "name": "midph3",
+   "status": "authored",
+   "species": "hybrid: human base structure (myo_sim @33f3ded) scaled toward macaque constraints (macaque_arm research model); species mixing DECLARED per Captain decision A05-DIGIT-MUTATION-20260928",
+   "human_source": {
+    "body": "midph3",
+    "file": "E:/PythonChimera/vendor/myo_sim/hand/assets/myohand_body.xml",
+    "sha256": "21a6649236801439649ae992459c29bbc020767c2022c4d79de688689462ed28",
+    "offset_m": [
+     0.00165,
+     -0.044211,
+     0.00623
+    ],
+    "inertial": {
+     "mass": 0.002,
+     "fullinertia": [
+      0.0001,
+      0.0001,
+      0.0001,
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "mutation": {
+    "scale": 0.5384048132470733,
+    "pos_m": [
+     0.000888367941857671,
+     -0.02380341519846636,
+     0.003354261986529267
+    ],
+    "mass_prior_kg": 0.0006167400881057269,
+    "mass_prior_formula": "0.049 kg * 0.002 / 0.1589 kg",
+    "carpal_chain_folded_into_anchor": false
+   },
+   "physical": {
+    "name": "midph3",
+    "mass_kg": 0.0006167400881057269,
+    "mass_center_m": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "inertia_kg_m2": [
+     8.939022909662166e-06,
+     8.939022909662166e-06,
+     8.939022909662166e-06,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "mass_scope": "declared training prior; proportional redistribution of the macaque hand mass over digit chains (not additive with the anchor mass)",
+    "frame": "macaque_arm_hand_mutation_frame",
+    "units": "m/rad/kg"
+   },
+   "parent": "ref.macaque_arm_hand_mutation.body.proxph3",
+   "joints": [
+    {
+     "name": "pm3_flexion",
+     "axis": "1 0 0",
+     "range": [
+      0.0,
+      1.5708
+     ]
+    }
+   ],
+   "geometry": [
+    {
+     "asset_id": "geom.macaque_arm_hand_mutation.3midph",
+     "stl_sha256": "5e0ef3d76f2f99f950e9aefac28131009fa7fad7129f1421f50b5e7086655c88",
+     "transform": {
+      "uniform_scale": 0.5384048132470733,
+      "source_units": "m"
+     },
+     "why_scaled_reference": "no macaque phalanx mesh exists in-repo (PR #229/#230 search); vendor human STL reused at recorded mutation scale"
+    }
+   ]
+  },
+  {
+   "id": "ref.macaque_arm_hand_mutation.body.distph3",
+   "kind": "model_definition",
+   "name": "distph3",
+   "status": "authored",
+   "species": "hybrid: human base structure (myo_sim @33f3ded) scaled toward macaque constraints (macaque_arm research model); species mixing DECLARED per Captain decision A05-DIGIT-MUTATION-20260928",
+   "human_source": {
+    "body": "distph3",
+    "file": "E:/PythonChimera/vendor/myo_sim/hand/assets/myohand_body.xml",
+    "sha256": "21a6649236801439649ae992459c29bbc020767c2022c4d79de688689462ed28",
+    "offset_m": [
+     0.001365,
+     -0.029047,
+     0.001954
+    ],
+    "inertial": {
+     "mass": 0.002,
+     "fullinertia": [
+      0.0001,
+      0.0001,
+      0.0001,
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "mutation": {
+    "scale": 0.5384048132470733,
+    "pos_m": [
+     0.0007349225700822551,
+     -0.015639044610387738,
+     0.0010520430050847812
+    ],
+    "mass_prior_kg": 0.0006167400881057269,
+    "mass_prior_formula": "0.049 kg * 0.002 / 0.1589 kg",
+    "carpal_chain_folded_into_anchor": false
+   },
+   "physical": {
+    "name": "distph3",
+    "mass_kg": 0.0006167400881057269,
+    "mass_center_m": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "inertia_kg_m2": [
+     8.939022909662166e-06,
+     8.939022909662166e-06,
+     8.939022909662166e-06,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "mass_scope": "declared training prior; proportional redistribution of the macaque hand mass over digit chains (not additive with the anchor mass)",
+    "frame": "macaque_arm_hand_mutation_frame",
+    "units": "m/rad/kg"
+   },
+   "parent": "ref.macaque_arm_hand_mutation.body.midph3",
+   "joints": [
+    {
+     "name": "md3_flexion",
+     "axis": "1 0 0",
+     "range": [
+      0.0,
+      1.5708
+     ]
+    }
+   ],
+   "geometry": [
+    {
+     "asset_id": "geom.macaque_arm_hand_mutation.3distph",
+     "stl_sha256": "d5ecddeac9b4572091a32d386a117ba475a0c784e42d06016ba963432396b612",
+     "transform": {
+      "uniform_scale": 0.5384048132470733,
+      "source_units": "m"
+     },
+     "why_scaled_reference": "no macaque phalanx mesh exists in-repo (PR #229/#230 search); vendor human STL reused at recorded mutation scale"
+    }
+   ]
+  },
+  {
+   "id": "ref.macaque_arm_hand_mutation.body.fourthmc",
+   "kind": "model_definition",
+   "name": "fourthmc",
+   "status": "authored",
+   "species": "hybrid: human base structure (myo_sim @33f3ded) scaled toward macaque constraints (macaque_arm research model); species mixing DECLARED per Captain decision A05-DIGIT-MUTATION-20260928",
+   "human_source": {
+    "body": "fourthmc",
+    "file": "E:/PythonChimera/vendor/myo_sim/hand/assets/myohand_body.xml",
+    "sha256": "21a6649236801439649ae992459c29bbc020767c2022c4d79de688689462ed28",
+    "offset_m": [
+     -0.012046,
+     -0.040519,
+     0.003513
+    ],
+    "inertial": {
+     "mass": 0.02,
+     "fullinertia": [
+      0.0001,
+      0.0001,
+      0.0001,
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "mutation": {
+    "scale": 0.5384048132470733,
+    "pos_m": [
+     -0.004336312365891928,
+     -0.029920770686579605,
+     0.0031442841093629083
+    ],
+    "mass_prior_kg": 0.006167400881057268,
+    "mass_prior_formula": "0.049 kg * 0.02 / 0.1589 kg",
+    "carpal_chain_folded_into_anchor": true
+   },
+   "physical": {
+    "name": "fourthmc",
+    "mass_kg": 0.006167400881057268,
+    "mass_center_m": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "inertia_kg_m2": [
+     8.939022909662164e-06,
+     8.939022909662164e-06,
+     8.939022909662164e-06,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "mass_scope": "declared training prior; proportional redistribution of the macaque hand mass over digit chains (not additive with the anchor mass)",
+    "frame": "macaque_arm_hand_mutation_frame",
+    "units": "m/rad/kg"
+   },
+   "parent": "ref.macaque_arm_hand_mutation.body.macaque_hand_anchor",
+   "joints": [],
+   "geometry": [
+    {
+     "asset_id": "geom.macaque_arm_hand_mutation.4mc",
+     "stl_sha256": "ad2fe21562879512367cf2b7ab7016b07d9eda780c72add59cd125d2a232cf42",
+     "transform": {
+      "uniform_scale": 0.5384048132470733,
+      "source_units": "m"
+     },
+     "why_scaled_reference": "no macaque phalanx mesh exists in-repo (PR #229/#230 search); vendor human STL reused at recorded mutation scale"
+    }
+   ]
+  },
+  {
+   "id": "ref.macaque_arm_hand_mutation.body.proxph4",
+   "kind": "model_definition",
+   "name": "proxph4",
+   "status": "authored",
+   "species": "hybrid: human base structure (myo_sim @33f3ded) scaled toward macaque constraints (macaque_arm research model); species mixing DECLARED per Captain decision A05-DIGIT-MUTATION-20260928",
+   "human_source": {
+    "body": "proxph4",
+    "file": "E:/PythonChimera/vendor/myo_sim/hand/assets/myohand_body.xml",
+    "sha256": "21a6649236801439649ae992459c29bbc020767c2022c4d79de688689462ed28",
+    "offset_m": [
+     -0.00183,
+     -0.023689,
+     -0.000173
+    ],
+    "inertial": {
+     "mass": 0.01,
+     "fullinertia": [
+      0.0001,
+      0.0001,
+      0.0001,
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "mutation": {
+    "scale": 0.5384048132470733,
+    "pos_m": [
+     -0.0009852808082421443,
+     -0.012754271621009922,
+     -9.31440326917437e-05
+    ],
+    "mass_prior_kg": 0.003083700440528634,
+    "mass_prior_formula": "0.049 kg * 0.01 / 0.1589 kg",
+    "carpal_chain_folded_into_anchor": false
+   },
+   "physical": {
+    "name": "proxph4",
+    "mass_kg": 0.003083700440528634,
+    "mass_center_m": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "inertia_kg_m2": [
+     8.939022909662164e-06,
+     8.939022909662164e-06,
+     8.939022909662164e-06,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "mass_scope": "declared training prior; proportional redistribution of the macaque hand mass over digit chains (not additive with the anchor mass)",
+    "frame": "macaque_arm_hand_mutation_frame",
+    "units": "m/rad/kg"
+   },
+   "parent": "ref.macaque_arm_hand_mutation.body.fourthmc",
+   "joints": [
+    {
+     "name": "mcp4_flexion",
+     "axis": "0.900447 0 0.434966",
+     "range": [
+      0.0,
+      1.5708
+     ]
+    },
+    {
+     "name": "mcp4_abduction",
+     "axis": "-0.434966 0 0.900447",
+     "range": [
+      -0.261799,
+      0.261799
+     ]
+    }
+   ],
+   "geometry": [
+    {
+     "asset_id": "geom.macaque_arm_hand_mutation.4proxph",
+     "stl_sha256": "eea82e95eb50e93471d32be3c15dc123b88a44bba06647c3003217eafa9cc44d",
+     "transform": {
+      "uniform_scale": 0.5384048132470733,
+      "source_units": "m"
+     },
+     "why_scaled_reference": "no macaque phalanx mesh exists in-repo (PR #229/#230 search); vendor human STL reused at recorded mutation scale"
+    }
+   ]
+  },
+  {
+   "id": "ref.macaque_arm_hand_mutation.body.midph4",
+   "kind": "model_definition",
+   "name": "midph4",
+   "status": "authored",
+   "species": "hybrid: human base structure (myo_sim @33f3ded) scaled toward macaque constraints (macaque_arm research model); species mixing DECLARED per Captain decision A05-DIGIT-MUTATION-20260928",
+   "human_source": {
+    "body": "midph4",
+    "file": "E:/PythonChimera/vendor/myo_sim/hand/assets/myohand_body.xml",
+    "sha256": "21a6649236801439649ae992459c29bbc020767c2022c4d79de688689462ed28",
+    "offset_m": [
+     -0.003528,
+     -0.040255,
+     0.001345
+    ],
+    "inertial": {
+     "mass": 0.003,
+     "fullinertia": [
+      0.0001,
+      0.0001,
+      0.0001,
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "mutation": {
+    "scale": 0.5384048132470733,
+    "pos_m": [
+     -0.0018994921811356746,
+     -0.021673485757260937,
+     0.0007241544738173137
+    ],
+    "mass_prior_kg": 0.0009251101321585902,
+    "mass_prior_formula": "0.049 kg * 0.003 / 0.1589 kg",
+    "carpal_chain_folded_into_anchor": false
+   },
+   "physical": {
+    "name": "midph4",
+    "mass_kg": 0.0009251101321585902,
+    "mass_center_m": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "inertia_kg_m2": [
+     8.939022909662164e-06,
+     8.939022909662164e-06,
+     8.939022909662164e-06,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "mass_scope": "declared training prior; proportional redistribution of the macaque hand mass over digit chains (not additive with the anchor mass)",
+    "frame": "macaque_arm_hand_mutation_frame",
+    "units": "m/rad/kg"
+   },
+   "parent": "ref.macaque_arm_hand_mutation.body.proxph4",
+   "joints": [
+    {
+     "name": "pm4_flexion",
+     "axis": "0.921061 0 0.389418",
+     "range": [
+      0.0,
+      1.5708
+     ]
+    }
+   ],
+   "geometry": [
+    {
+     "asset_id": "geom.macaque_arm_hand_mutation.4midph",
+     "stl_sha256": "98ecb5ad76749abd6c32862770f6502aa2cc41a4d919ca73735b052bcb39c79c",
+     "transform": {
+      "uniform_scale": 0.5384048132470733,
+      "source_units": "m"
+     },
+     "why_scaled_reference": "no macaque phalanx mesh exists in-repo (PR #229/#230 search); vendor human STL reused at recorded mutation scale"
+    }
+   ]
+  },
+  {
+   "id": "ref.macaque_arm_hand_mutation.body.distph4",
+   "kind": "model_definition",
+   "name": "distph4",
+   "status": "authored",
+   "species": "hybrid: human base structure (myo_sim @33f3ded) scaled toward macaque constraints (macaque_arm research model); species mixing DECLARED per Captain decision A05-DIGIT-MUTATION-20260928",
+   "human_source": {
+    "body": "distph4",
+    "file": "E:/PythonChimera/vendor/myo_sim/hand/assets/myohand_body.xml",
+    "sha256": "21a6649236801439649ae992459c29bbc020767c2022c4d79de688689462ed28",
+    "offset_m": [
+     -0.002317,
+     -0.024789,
+     0.000563
+    ],
+    "inertial": {
+     "mass": 0.002,
+     "fullinertia": [
+      0.0001,
+      0.0001,
+      0.0001,
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "mutation": {
+    "scale": 0.5384048132470733,
+    "pos_m": [
+     -0.0012474839522934689,
+     -0.0133465169155817,
+     0.0003031219098581023
+    ],
+    "mass_prior_kg": 0.0006167400881057269,
+    "mass_prior_formula": "0.049 kg * 0.002 / 0.1589 kg",
+    "carpal_chain_folded_into_anchor": false
+   },
+   "physical": {
+    "name": "distph4",
+    "mass_kg": 0.0006167400881057269,
+    "mass_center_m": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "inertia_kg_m2": [
+     8.939022909662166e-06,
+     8.939022909662166e-06,
+     8.939022909662166e-06,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "mass_scope": "declared training prior; proportional redistribution of the macaque hand mass over digit chains (not additive with the anchor mass)",
+    "frame": "macaque_arm_hand_mutation_frame",
+    "units": "m/rad/kg"
+   },
+   "parent": "ref.macaque_arm_hand_mutation.body.midph4",
+   "joints": [
+    {
+     "name": "md4_flexion",
+     "axis": "0.825336 0 0.564642",
+     "range": [
+      0.0,
+      1.5708
+     ]
+    }
+   ],
+   "geometry": [
+    {
+     "asset_id": "geom.macaque_arm_hand_mutation.4distph",
+     "stl_sha256": "02f01c191dfc86ab5f04d5b092238f6d6c134cbc39977a79542e6fe8b37c3691",
+     "transform": {
+      "uniform_scale": 0.5384048132470733,
+      "source_units": "m"
+     },
+     "why_scaled_reference": "no macaque phalanx mesh exists in-repo (PR #229/#230 search); vendor human STL reused at recorded mutation scale"
+    }
+   ]
+  },
+  {
+   "id": "ref.macaque_arm_hand_mutation.body.fifthmc",
+   "kind": "model_definition",
+   "name": "fifthmc",
+   "status": "authored",
+   "species": "hybrid: human base structure (myo_sim @33f3ded) scaled toward macaque constraints (macaque_arm research model); species mixing DECLARED per Captain decision A05-DIGIT-MUTATION-20260928",
+   "human_source": {
+    "body": "fifthmc",
+    "file": "E:/PythonChimera/vendor/myo_sim/hand/assets/myohand_body.xml",
+    "sha256": "21a6649236801439649ae992459c29bbc020767c2022c4d79de688689462ed28",
+    "offset_m": [
+     -0.021896,
+     -0.034683,
+     -0.004218
+    ],
+    "inertial": {
+     "mass": 0.02,
+     "fullinertia": [
+      0.0001,
+      0.0001,
+      0.0001,
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "mutation": {
+    "scale": 0.5384048132470733,
+    "pos_m": [
+     -0.009639599776375601,
+     -0.026778640196469684,
+     -0.0010181235018502158
+    ],
+    "mass_prior_kg": 0.006167400881057268,
+    "mass_prior_formula": "0.049 kg * 0.02 / 0.1589 kg",
+    "carpal_chain_folded_into_anchor": true
+   },
+   "physical": {
+    "name": "fifthmc",
+    "mass_kg": 0.006167400881057268,
+    "mass_center_m": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "inertia_kg_m2": [
+     8.939022909662164e-06,
+     8.939022909662164e-06,
+     8.939022909662164e-06,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "mass_scope": "declared training prior; proportional redistribution of the macaque hand mass over digit chains (not additive with the anchor mass)",
+    "frame": "macaque_arm_hand_mutation_frame",
+    "units": "m/rad/kg"
+   },
+   "parent": "ref.macaque_arm_hand_mutation.body.macaque_hand_anchor",
+   "joints": [],
+   "geometry": [
+    {
+     "asset_id": "geom.macaque_arm_hand_mutation.5mc",
+     "stl_sha256": "46c75922ddc94f982a539f0345c32456d4ba75d1367df0c6aecc82467c775d3d",
+     "transform": {
+      "uniform_scale": 0.5384048132470733,
+      "source_units": "m"
+     },
+     "why_scaled_reference": "no macaque phalanx mesh exists in-repo (PR #229/#230 search); vendor human STL reused at recorded mutation scale"
+    }
+   ]
+  },
+  {
+   "id": "ref.macaque_arm_hand_mutation.body.proxph5",
+   "kind": "model_definition",
+   "name": "proxph5",
+   "status": "authored",
+   "species": "hybrid: human base structure (myo_sim @33f3ded) scaled toward macaque constraints (macaque_arm research model); species mixing DECLARED per Captain decision A05-DIGIT-MUTATION-20260928",
+   "human_source": {
+    "body": "proxph5",
+    "file": "E:/PythonChimera/vendor/myo_sim/hand/assets/myohand_body.xml",
+    "sha256": "21a6649236801439649ae992459c29bbc020767c2022c4d79de688689462ed28",
+    "offset_m": [
+     -0.001597,
+     -0.021431,
+     -0.001496
+    ],
+    "inertial": {
+     "mass": 0.005,
+     "fullinertia": [
+      0.0001,
+      0.0001,
+      0.0001,
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "mutation": {
+    "scale": 0.5384048132470733,
+    "pos_m": [
+     -0.0008598324867555761,
+     -0.011538553552698028,
+     -0.0008054536006176216
+    ],
+    "mass_prior_kg": 0.001541850220264317,
+    "mass_prior_formula": "0.049 kg * 0.005 / 0.1589 kg",
+    "carpal_chain_folded_into_anchor": false
+   },
+   "physical": {
+    "name": "proxph5",
+    "mass_kg": 0.001541850220264317,
+    "mass_center_m": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "inertia_kg_m2": [
+     8.939022909662164e-06,
+     8.939022909662164e-06,
+     8.939022909662164e-06,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "mass_scope": "declared training prior; proportional redistribution of the macaque hand mass over digit chains (not additive with the anchor mass)",
+    "frame": "macaque_arm_hand_mutation_frame",
+    "units": "m/rad/kg"
+   },
+   "parent": "ref.macaque_arm_hand_mutation.body.fifthmc",
+   "joints": [
+    {
+     "name": "mcp5_flexion",
+     "axis": "0.825336 0 0.564642",
+     "range": [
+      0.0,
+      1.5708
+     ]
+    },
+    {
+     "name": "mcp5_abduction",
+     "axis": "-0.564642 0 0.825336",
+     "range": [
+      -0.261799,
+      0.261799
+     ]
+    }
+   ],
+   "geometry": [
+    {
+     "asset_id": "geom.macaque_arm_hand_mutation.5proxph",
+     "stl_sha256": "b04672ea67df7403705ff58aa89cef984fe9c679177608a934034413b1e339cb",
+     "transform": {
+      "uniform_scale": 0.5384048132470733,
+      "source_units": "m"
+     },
+     "why_scaled_reference": "no macaque phalanx mesh exists in-repo (PR #229/#230 search); vendor human STL reused at recorded mutation scale"
+    }
+   ]
+  },
+  {
+   "id": "ref.macaque_arm_hand_mutation.body.midph5",
+   "kind": "model_definition",
+   "name": "midph5",
+   "status": "authored",
+   "species": "hybrid: human base structure (myo_sim @33f3ded) scaled toward macaque constraints (macaque_arm research model); species mixing DECLARED per Captain decision A05-DIGIT-MUTATION-20260928",
+   "human_source": {
+    "body": "midph5",
+    "file": "E:/PythonChimera/vendor/myo_sim/hand/assets/myohand_body.xml",
+    "sha256": "21a6649236801439649ae992459c29bbc020767c2022c4d79de688689462ed28",
+    "offset_m": [
+     -0.005279,
+     -0.035563,
+     -0.002879
+    ],
+    "inertial": {
+     "mass": 0.002,
+     "fullinertia": [
+      0.0001,
+      0.0001,
+      0.0001,
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "mutation": {
+    "scale": 0.5384048132470733,
+    "pos_m": [
+     -0.0028422390091313,
+     -0.019147290373505668,
+     -0.0015500674573383241
+    ],
+    "mass_prior_kg": 0.0006167400881057269,
+    "mass_prior_formula": "0.049 kg * 0.002 / 0.1589 kg",
+    "carpal_chain_folded_into_anchor": false
+   },
+   "physical": {
+    "name": "midph5",
+    "mass_kg": 0.0006167400881057269,
+    "mass_center_m": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "inertia_kg_m2": [
+     8.939022909662166e-06,
+     8.939022909662166e-06,
+     8.939022909662166e-06,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "mass_scope": "declared training prior; proportional redistribution of the macaque hand mass over digit chains (not additive with the anchor mass)",
+    "frame": "macaque_arm_hand_mutation_frame",
+    "units": "m/rad/kg"
+   },
+   "parent": "ref.macaque_arm_hand_mutation.body.proxph5",
+   "joints": [
+    {
+     "name": "pm5_flexion",
+     "axis": "0.825336 0 0.564642",
+     "range": [
+      0.0,
+      1.5708
+     ]
+    }
+   ],
+   "geometry": [
+    {
+     "asset_id": "geom.macaque_arm_hand_mutation.5midph",
+     "stl_sha256": "d383a1f058224f71fc5333c2849673cd2a106652dcd84f13518a4f88e5866324",
+     "transform": {
+      "uniform_scale": 0.5384048132470733,
+      "source_units": "m"
+     },
+     "why_scaled_reference": "no macaque phalanx mesh exists in-repo (PR #229/#230 search); vendor human STL reused at recorded mutation scale"
+    }
+   ]
+  },
+  {
+   "id": "ref.macaque_arm_hand_mutation.body.distph5",
+   "kind": "model_definition",
+   "name": "distph5",
+   "status": "authored",
+   "species": "hybrid: human base structure (myo_sim @33f3ded) scaled toward macaque constraints (macaque_arm research model); species mixing DECLARED per Captain decision A05-DIGIT-MUTATION-20260928",
+   "human_source": {
+    "body": "distph5",
+    "file": "E:/PythonChimera/vendor/myo_sim/hand/assets/myohand_body.xml",
+    "sha256": "21a6649236801439649ae992459c29bbc020767c2022c4d79de688689462ed28",
+    "offset_m": [
+     -0.002871,
+     -0.020677,
+     -0.002243
+    ],
+    "inertial": {
+     "mass": 0.001,
+     "fullinertia": [
+      0.0001,
+      0.0001,
+      0.0001,
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "mutation": {
+    "scale": 0.5384048132470733,
+    "pos_m": [
+     -0.0015457602188323474,
+     -0.011132596323509736,
+     -0.0012076419961131856
+    ],
+    "mass_prior_kg": 0.00030837004405286344,
+    "mass_prior_formula": "0.049 kg * 0.001 / 0.1589 kg",
+    "carpal_chain_folded_into_anchor": false
+   },
+   "physical": {
+    "name": "distph5",
+    "mass_kg": 0.00030837004405286344,
+    "mass_center_m": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "inertia_kg_m2": [
+     8.939022909662166e-06,
+     8.939022909662166e-06,
+     8.939022909662166e-06,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "mass_scope": "declared training prior; proportional redistribution of the macaque hand mass over digit chains (not additive with the anchor mass)",
+    "frame": "macaque_arm_hand_mutation_frame",
+    "units": "m/rad/kg"
+   },
+   "parent": "ref.macaque_arm_hand_mutation.body.midph5",
+   "joints": [
+    {
+     "name": "md5_flexion",
+     "axis": "0.643112 -0.226804 0.731414",
+     "range": [
+      0.0,
+      1.5708
+     ]
+    }
+   ],
+   "geometry": [
+    {
+     "asset_id": "geom.macaque_arm_hand_mutation.5distph",
+     "stl_sha256": "a2ca70efdb0a5e59913922676e597ec24b963ace4d41c5fd0d5a3bc7cafdb3f4",
+     "transform": {
+      "uniform_scale": 0.5384048132470733,
+      "source_units": "m"
+     },
+     "why_scaled_reference": "no macaque phalanx mesh exists in-repo (PR #229/#230 search); vendor human STL reused at recorded mutation scale"
+    }
+   ]
+  }
+ ],
+ "muscle_anchor_mapping": [
+  {
+   "muscle": "ext_digitorum",
+   "path_point": "ext_digitorum-P3",
+   "location_m": [
+    0.00106101,
+    -0.00804001,
+    0.00594996
+   ],
+   "nearest_mutant_body": "macaque_hand_anchor",
+   "distance_m": 0.010058306369454054
+  },
+  {
+   "muscle": "ext_digitorum",
+   "path_point": "ext_digitorum-P2",
+   "location_m": [
+    0.00222721,
+    -0.0391191,
+    0.00429738
+   ],
+   "nearest_mutant_body": "proxph3",
+   "distance_m": 0.004674974795050801
+  },
+  {
+   "muscle": "flex_digit_profundus",
+   "path_point": "flex_digit_profundus-P4",
+   "location_m": [
+    -0.00139132,
+    -0.0172483,
+    -0.00108922
+   ],
+   "nearest_mutant_body": "fifthmc",
+   "distance_m": 0.012604227792366404
+  }
+ ],
+ "allometry": {
+  "human_hand_length_m": 0.1552851087934706,
+  "macaque_hand_length_m": 0.08360625000000001,
+  "mutation_scale": 0.5384048132470733,
+  "mutant_hand_length_m": 0.08360625000000001,
+  "human_forearm_m": 0.24472600003518163,
+  "macaque_ulna_m": 0.157970763,
+  "human_ratio": 0.6345264041055995,
+  "macaque_ratio": 0.5292514159724607,
+  "mutant_ratio": 0.5292514159724607,
+  "formula": "s = MACAQUE_HAND_LENGTH / HUMAN_HAND_LENGTH; mutant offset = s * human offset (componentwise)",
+  "tolerance": {
+   "identity_1e-9": true,
+   "ratio_1e-3": true
+  }
+ },
+ "envelope_check": {
+  "hand_vtp_bounds_m": [
+   [
+    -0.0124375,
+    -0.0837075,
+    -0.00152775
+   ],
+   [
+    0.020731000000000003,
+    -0.00010125000000000001,
+    0.004639750000000001
+   ]
+  ],
+  "fingertip_positions_m": {
+   "thumb": [
+    0.030680998282884474,
+    -0.043138608851795254,
+    -0.017918650589675848
+   ],
+   "digit2": [
+    0.01777866533823161,
+    -0.07918750312275306,
+    0.010512353978649105
+   ],
+   "digit3": [
+    0.0041586387775203945,
+    -0.08282873487474302,
+    0.010588269057316944
+   ],
+   "digit4": [
+    -0.008468569307563217,
+    -0.07769504498043216,
+    0.004078416460346581
+   ],
+   "digit5": [
+    -0.014887431491094824,
+    -0.06859708044618312,
+    -0.0045812865559193465
+   ]
+  },
+  "note": "Y-span coherence is the preregistered falsifier; radial (X/Z) thumb overshoot is a declared deviation, recorded per axis"
+ },
+ "honest_gaps": [
+  "no macaque per-phalanx proportions exist in-repo; a uniform allometric scale is applied instead",
+  "no per-phalanx macaque mass data; masses are declared proportional training priors",
+  "carpals are not duplicated as mutant bodies; the macaque hand body owns the carpus (mass/geometry)",
+  "muscle/tendon paths are anchor points only; no muscle volume or skin geometry",
+  "no dynamic simulation, no GPU work: pure derivation record"
+ ]
+}

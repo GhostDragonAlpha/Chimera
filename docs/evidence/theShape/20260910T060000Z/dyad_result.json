@@ -1,0 +1,21 @@
+{
+  "when": "2026-09-10T06:00:00Z",
+  "term": "theShape",
+  "restart_path": "B",
+  "dyad_model": "qwen3.8-27b-nvfp4-mtp",
+  "backend": "lmstudio",
+  "lmstudio_url": "http://localhost:1234",
+  "bar": 0.6,
+  "expected": "a brown teddy bear shape built from many small overlapping brown grains or soft blobs, forming the same bear as the smooth cloud but with a visible grain texture -- ROTATING on the spot like a turntable inspection over a dim dark ground that stays STILL: one solid animal (head, ears, body, limbs) at every angle, front and back, NOT hollow, NOT flat, NOT a different object",
+  "observed_begin": "Against a solid black background, a small central cluster shows irregular tan-brown shapes resembling charred logs resting on top of a mottled dark-gray circular base. The overall impression is of a tiny campfire or smoldering coals set in darkness.",
+  "observed_end": "A small cluster of irregular tan and brown lumps sits atop a mound of dark gray speckles, centered within a vast black void. The rounded, blob-like masses suggest a low pile of stones or a hunched figure rendered in muted earth tones.",
+  "observed_combined": "[begin] Against a solid black background, a small central cluster shows irregular tan-brown shapes resembling charred logs resting on top of a mottled dark-gray circular base. The overall impression is of a tiny campfire or smoldering coals set in darkness.\n[end] A small cluster of irregular tan and brown lumps sits atop a mound of dark gray speckles, centered within a vast black void. The rounded, blob-like masses suggest a low pile of stones or a hunched figure rendered in muted earth tones.",
+  "alignment": 0.25,
+  "threshold": 0.6,
+  "verdict": "FAIL_RESTART",
+  "frames": {
+    "begin": "ChimeraEngine\\.tmp\\theShape_restartB_candidate\\theShape_restartB_begin.png",
+    "end": "ChimeraEngine\\.tmp\\theShape_restartB_candidate\\theShape_restartB_end.png"
+  },
+  "note": "Two independent blind still reads (one-image wall), combined for alignment scoring because theShape claim is one bear turning."
+}

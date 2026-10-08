@@ -1,0 +1,568 @@
+{
+  "schema": "chimera-membrane-scale-lab-cost-model-v1",
+  "utc": "2026-09-08T22:37:53.593545+00:00",
+  "source_commit": "51cd7212fd6ef2cfda95c330abcc2ff154cc6141",
+  "models": {
+    "regular_n4_r1": {
+      "buffer_sizes": {
+        "positions_f32_bytes": 108,
+        "indices_u32_bytes": 144,
+        "gamma_f32_bytes": 48,
+        "csr_offsets_bytes": 40,
+        "csr_corner_idx_bytes": 144,
+        "face_records_bytes": 768,
+        "vertex_forces_bytes": 144,
+        "energy_bytes": 4,
+        "validity_bytes": 48,
+        "total_storage_bytes": 1448
+      },
+      "op_counts": {
+        "face_eval_flops_per_face": 30,
+        "face_eval_total": 360,
+        "csr_gather_ops_per_corner": 3,
+        "csr_gather_total": 108,
+        "energy_reduction_adds": 12,
+        "total_flops": 480
+      },
+      "scaling": {
+        "vertices": "O(V)",
+        "faces": "O(F)",
+        "corners": "O(3F)",
+        "assembly": "O(corners) = O(3F)",
+        "energy": "O(F)",
+        "memory": "O(V + F) = 21 elements"
+      },
+      "n_vertices": 9,
+      "n_faces": 12,
+      "n_corners": 36
+    },
+    "fan_n12": {
+      "buffer_sizes": {
+        "positions_f32_bytes": 156,
+        "indices_u32_bytes": 144,
+        "gamma_f32_bytes": 48,
+        "csr_offsets_bytes": 56,
+        "csr_corner_idx_bytes": 144,
+        "face_records_bytes": 768,
+        "vertex_forces_bytes": 208,
+        "energy_bytes": 4,
+        "validity_bytes": 48,
+        "total_storage_bytes": 1576
+      },
+      "op_counts": {
+        "face_eval_flops_per_face": 30,
+        "face_eval_total": 360,
+        "csr_gather_ops_per_corner": 3,
+        "csr_gather_total": 108,
+        "energy_reduction_adds": 12,
+        "total_flops": 480
+      },
+      "scaling": {
+        "vertices": "O(V)",
+        "faces": "O(F)",
+        "corners": "O(3F)",
+        "assembly": "O(corners) = O(3F)",
+        "energy": "O(F)",
+        "memory": "O(V + F) = 25 elements"
+      },
+      "n_vertices": 13,
+      "n_faces": 12,
+      "n_corners": 36
+    },
+    "regular_n8_r1": {
+      "buffer_sizes": {
+        "positions_f32_bytes": 204,
+        "indices_u32_bytes": 288,
+        "gamma_f32_bytes": 96,
+        "csr_offsets_bytes": 72,
+        "csr_corner_idx_bytes": 288,
+        "face_records_bytes": 1536,
+        "vertex_forces_bytes": 272,
+        "energy_bytes": 4,
+        "validity_bytes": 96,
+        "total_storage_bytes": 2856
+      },
+      "op_counts": {
+        "face_eval_flops_per_face": 30,
+        "face_eval_total": 720,
+        "csr_gather_ops_per_corner": 3,
+        "csr_gather_total": 216,
+        "energy_reduction_adds": 24,
+        "total_flops": 960
+      },
+      "scaling": {
+        "vertices": "O(V)",
+        "faces": "O(F)",
+        "corners": "O(3F)",
+        "assembly": "O(corners) = O(3F)",
+        "energy": "O(F)",
+        "memory": "O(V + F) = 41 elements"
+      },
+      "n_vertices": 17,
+      "n_faces": 24,
+      "n_corners": 72
+    },
+    "fan_n24": {
+      "buffer_sizes": {
+        "positions_f32_bytes": 300,
+        "indices_u32_bytes": 288,
+        "gamma_f32_bytes": 96,
+        "csr_offsets_bytes": 104,
+        "csr_corner_idx_bytes": 288,
+        "face_records_bytes": 1536,
+        "vertex_forces_bytes": 400,
+        "energy_bytes": 4,
+        "validity_bytes": 96,
+        "total_storage_bytes": 3112
+      },
+      "op_counts": {
+        "face_eval_flops_per_face": 30,
+        "face_eval_total": 720,
+        "csr_gather_ops_per_corner": 3,
+        "csr_gather_total": 216,
+        "energy_reduction_adds": 24,
+        "total_flops": 960
+      },
+      "scaling": {
+        "vertices": "O(V)",
+        "faces": "O(F)",
+        "corners": "O(3F)",
+        "assembly": "O(corners) = O(3F)",
+        "energy": "O(F)",
+        "memory": "O(V + F) = 49 elements"
+      },
+      "n_vertices": 25,
+      "n_faces": 24,
+      "n_corners": 72
+    },
+    "regular_n16_r1": {
+      "buffer_sizes": {
+        "positions_f32_bytes": 396,
+        "indices_u32_bytes": 576,
+        "gamma_f32_bytes": 192,
+        "csr_offsets_bytes": 136,
+        "csr_corner_idx_bytes": 576,
+        "face_records_bytes": 3072,
+        "vertex_forces_bytes": 528,
+        "energy_bytes": 4,
+        "validity_bytes": 192,
+        "total_storage_bytes": 5672
+      },
+      "op_counts": {
+        "face_eval_flops_per_face": 30,
+        "face_eval_total": 1440,
+        "csr_gather_ops_per_corner": 3,
+        "csr_gather_total": 432,
+        "energy_reduction_adds": 48,
+        "total_flops": 1920
+      },
+      "scaling": {
+        "vertices": "O(V)",
+        "faces": "O(F)",
+        "corners": "O(3F)",
+        "assembly": "O(corners) = O(3F)",
+        "energy": "O(F)",
+        "memory": "O(V + F) = 81 elements"
+      },
+      "n_vertices": 33,
+      "n_faces": 48,
+      "n_corners": 144
+    },
+    "fan_n48": {
+      "buffer_sizes": {
+        "positions_f32_bytes": 588,
+        "indices_u32_bytes": 576,
+        "gamma_f32_bytes": 192,
+        "csr_offsets_bytes": 200,
+        "csr_corner_idx_bytes": 576,
+        "face_records_bytes": 3072,
+        "vertex_forces_bytes": 784,
+        "energy_bytes": 4,
+        "validity_bytes": 192,
+        "total_storage_bytes": 6184
+      },
+      "op_counts": {
+        "face_eval_flops_per_face": 30,
+        "face_eval_total": 1440,
+        "csr_gather_ops_per_corner": 3,
+        "csr_gather_total": 432,
+        "energy_reduction_adds": 48,
+        "total_flops": 1920
+      },
+      "scaling": {
+        "vertices": "O(V)",
+        "faces": "O(F)",
+        "corners": "O(3F)",
+        "assembly": "O(corners) = O(3F)",
+        "energy": "O(F)",
+        "memory": "O(V + F) = 97 elements"
+      },
+      "n_vertices": 49,
+      "n_faces": 48,
+      "n_corners": 144
+    },
+    "regular_n32_r1": {
+      "buffer_sizes": {
+        "positions_f32_bytes": 780,
+        "indices_u32_bytes": 1152,
+        "gamma_f32_bytes": 384,
+        "csr_offsets_bytes": 264,
+        "csr_corner_idx_bytes": 1152,
+        "face_records_bytes": 6144,
+        "vertex_forces_bytes": 1040,
+        "energy_bytes": 4,
+        "validity_bytes": 384,
+        "total_storage_bytes": 11304
+      },
+      "op_counts": {
+        "face_eval_flops_per_face": 30,
+        "face_eval_total": 2880,
+        "csr_gather_ops_per_corner": 3,
+        "csr_gather_total": 864,
+        "energy_reduction_adds": 96,
+        "total_flops": 3840
+      },
+      "scaling": {
+        "vertices": "O(V)",
+        "faces": "O(F)",
+        "corners": "O(3F)",
+        "assembly": "O(corners) = O(3F)",
+        "energy": "O(F)",
+        "memory": "O(V + F) = 161 elements"
+      },
+      "n_vertices": 65,
+      "n_faces": 96,
+      "n_corners": 288
+    },
+    "fan_n96": {
+      "buffer_sizes": {
+        "positions_f32_bytes": 1164,
+        "indices_u32_bytes": 1152,
+        "gamma_f32_bytes": 384,
+        "csr_offsets_bytes": 392,
+        "csr_corner_idx_bytes": 1152,
+        "face_records_bytes": 6144,
+        "vertex_forces_bytes": 1552,
+        "energy_bytes": 4,
+        "validity_bytes": 384,
+        "total_storage_bytes": 12328
+      },
+      "op_counts": {
+        "face_eval_flops_per_face": 30,
+        "face_eval_total": 2880,
+        "csr_gather_ops_per_corner": 3,
+        "csr_gather_total": 864,
+        "energy_reduction_adds": 96,
+        "total_flops": 3840
+      },
+      "scaling": {
+        "vertices": "O(V)",
+        "faces": "O(F)",
+        "corners": "O(3F)",
+        "assembly": "O(corners) = O(3F)",
+        "energy": "O(F)",
+        "memory": "O(V + F) = 193 elements"
+      },
+      "n_vertices": 97,
+      "n_faces": 96,
+      "n_corners": 288
+    },
+    "regular_n64_r1": {
+      "buffer_sizes": {
+        "positions_f32_bytes": 1548,
+        "indices_u32_bytes": 2304,
+        "gamma_f32_bytes": 768,
+        "csr_offsets_bytes": 520,
+        "csr_corner_idx_bytes": 2304,
+        "face_records_bytes": 12288,
+        "vertex_forces_bytes": 2064,
+        "energy_bytes": 4,
+        "validity_bytes": 768,
+        "total_storage_bytes": 22568
+      },
+      "op_counts": {
+        "face_eval_flops_per_face": 30,
+        "face_eval_total": 5760,
+        "csr_gather_ops_per_corner": 3,
+        "csr_gather_total": 1728,
+        "energy_reduction_adds": 192,
+        "total_flops": 7680
+      },
+      "scaling": {
+        "vertices": "O(V)",
+        "faces": "O(F)",
+        "corners": "O(3F)",
+        "assembly": "O(corners) = O(3F)",
+        "energy": "O(F)",
+        "memory": "O(V + F) = 321 elements"
+      },
+      "n_vertices": 129,
+      "n_faces": 192,
+      "n_corners": 576
+    },
+    "fan_n192": {
+      "buffer_sizes": {
+        "positions_f32_bytes": 2316,
+        "indices_u32_bytes": 2304,
+        "gamma_f32_bytes": 768,
+        "csr_offsets_bytes": 776,
+        "csr_corner_idx_bytes": 2304,
+        "face_records_bytes": 12288,
+        "vertex_forces_bytes": 3088,
+        "energy_bytes": 4,
+        "validity_bytes": 768,
+        "total_storage_bytes": 24616
+      },
+      "op_counts": {
+        "face_eval_flops_per_face": 30,
+        "face_eval_total": 5760,
+        "csr_gather_ops_per_corner": 3,
+        "csr_gather_total": 1728,
+        "energy_reduction_adds": 192,
+        "total_flops": 7680
+      },
+      "scaling": {
+        "vertices": "O(V)",
+        "faces": "O(F)",
+        "corners": "O(3F)",
+        "assembly": "O(corners) = O(3F)",
+        "energy": "O(F)",
+        "memory": "O(V + F) = 385 elements"
+      },
+      "n_vertices": 193,
+      "n_faces": 192,
+      "n_corners": 576
+    },
+    "mixed_n4": {
+      "buffer_sizes": {
+        "positions_f32_bytes": 192,
+        "indices_u32_bytes": 216,
+        "gamma_f32_bytes": 72,
+        "csr_offsets_bytes": 68,
+        "csr_corner_idx_bytes": 216,
+        "face_records_bytes": 1152,
+        "vertex_forces_bytes": 256,
+        "energy_bytes": 4,
+        "validity_bytes": 72,
+        "total_storage_bytes": 2248
+      },
+      "op_counts": {
+        "face_eval_flops_per_face": 30,
+        "face_eval_total": 540,
+        "csr_gather_ops_per_corner": 3,
+        "csr_gather_total": 162,
+        "energy_reduction_adds": 18,
+        "total_flops": 720
+      },
+      "scaling": {
+        "vertices": "O(V)",
+        "faces": "O(F)",
+        "corners": "O(3F)",
+        "assembly": "O(corners) = O(3F)",
+        "energy": "O(F)",
+        "memory": "O(V + F) = 34 elements"
+      },
+      "n_vertices": 16,
+      "n_faces": 18,
+      "n_corners": 54
+    },
+    "mixed_n8": {
+      "buffer_sizes": {
+        "positions_f32_bytes": 768,
+        "indices_u32_bytes": 1176,
+        "gamma_f32_bytes": 392,
+        "csr_offsets_bytes": 260,
+        "csr_corner_idx_bytes": 1176,
+        "face_records_bytes": 6272,
+        "vertex_forces_bytes": 1024,
+        "energy_bytes": 4,
+        "validity_bytes": 392,
+        "total_storage_bytes": 11464
+      },
+      "op_counts": {
+        "face_eval_flops_per_face": 30,
+        "face_eval_total": 2940,
+        "csr_gather_ops_per_corner": 3,
+        "csr_gather_total": 882,
+        "energy_reduction_adds": 98,
+        "total_flops": 3920
+      },
+      "scaling": {
+        "vertices": "O(V)",
+        "faces": "O(F)",
+        "corners": "O(3F)",
+        "assembly": "O(corners) = O(3F)",
+        "energy": "O(F)",
+        "memory": "O(V + F) = 162 elements"
+      },
+      "n_vertices": 64,
+      "n_faces": 98,
+      "n_corners": 294
+    },
+    "mixed_n16": {
+      "buffer_sizes": {
+        "positions_f32_bytes": 3072,
+        "indices_u32_bytes": 5400,
+        "gamma_f32_bytes": 1800,
+        "csr_offsets_bytes": 1028,
+        "csr_corner_idx_bytes": 5400,
+        "face_records_bytes": 28800,
+        "vertex_forces_bytes": 4096,
+        "energy_bytes": 4,
+        "validity_bytes": 1800,
+        "total_storage_bytes": 51400
+      },
+      "op_counts": {
+        "face_eval_flops_per_face": 30,
+        "face_eval_total": 13500,
+        "csr_gather_ops_per_corner": 3,
+        "csr_gather_total": 4050,
+        "energy_reduction_adds": 450,
+        "total_flops": 18000
+      },
+      "scaling": {
+        "vertices": "O(V)",
+        "faces": "O(F)",
+        "corners": "O(3F)",
+        "assembly": "O(corners) = O(3F)",
+        "energy": "O(F)",
+        "memory": "O(V + F) = 706 elements"
+      },
+      "n_vertices": 256,
+      "n_faces": 450,
+      "n_corners": 1350
+    },
+    "mixed_n32": {
+      "buffer_sizes": {
+        "positions_f32_bytes": 12288,
+        "indices_u32_bytes": 23064,
+        "gamma_f32_bytes": 7688,
+        "csr_offsets_bytes": 4100,
+        "csr_corner_idx_bytes": 23064,
+        "face_records_bytes": 123008,
+        "vertex_forces_bytes": 16384,
+        "energy_bytes": 4,
+        "validity_bytes": 7688,
+        "total_storage_bytes": 217288
+      },
+      "op_counts": {
+        "face_eval_flops_per_face": 30,
+        "face_eval_total": 57660,
+        "csr_gather_ops_per_corner": 3,
+        "csr_gather_total": 17298,
+        "energy_reduction_adds": 1922,
+        "total_flops": 76880
+      },
+      "scaling": {
+        "vertices": "O(V)",
+        "faces": "O(F)",
+        "corners": "O(3F)",
+        "assembly": "O(corners) = O(3F)",
+        "energy": "O(F)",
+        "memory": "O(V + F) = 2946 elements"
+      },
+      "n_vertices": 1024,
+      "n_faces": 1922,
+      "n_corners": 5766
+    },
+    "mixed_n64": {
+      "buffer_sizes": {
+        "positions_f32_bytes": 49152,
+        "indices_u32_bytes": 95256,
+        "gamma_f32_bytes": 31752,
+        "csr_offsets_bytes": 16388,
+        "csr_corner_idx_bytes": 95256,
+        "face_records_bytes": 508032,
+        "vertex_forces_bytes": 65536,
+        "energy_bytes": 4,
+        "validity_bytes": 31752,
+        "total_storage_bytes": 893128
+      },
+      "op_counts": {
+        "face_eval_flops_per_face": 30,
+        "face_eval_total": 238140,
+        "csr_gather_ops_per_corner": 3,
+        "csr_gather_total": 71442,
+        "energy_reduction_adds": 7938,
+        "total_flops": 317520
+      },
+      "scaling": {
+        "vertices": "O(V)",
+        "faces": "O(F)",
+        "corners": "O(3F)",
+        "assembly": "O(corners) = O(3F)",
+        "energy": "O(F)",
+        "memory": "O(V + F) = 12034 elements"
+      },
+      "n_vertices": 4096,
+      "n_faces": 7938,
+      "n_corners": 23814
+    },
+    "irregular_n219_b50": {
+      "buffer_sizes": {
+        "positions_f32_bytes": 2628,
+        "indices_u32_bytes": 3456,
+        "gamma_f32_bytes": 1152,
+        "csr_offsets_bytes": 880,
+        "csr_corner_idx_bytes": 3456,
+        "face_records_bytes": 18432,
+        "vertex_forces_bytes": 3504,
+        "energy_bytes": 4,
+        "validity_bytes": 1152,
+        "total_storage_bytes": 34664
+      },
+      "op_counts": {
+        "face_eval_flops_per_face": 30,
+        "face_eval_total": 8640,
+        "csr_gather_ops_per_corner": 3,
+        "csr_gather_total": 2592,
+        "energy_reduction_adds": 288,
+        "total_flops": 11520
+      },
+      "scaling": {
+        "vertices": "O(V)",
+        "faces": "O(F)",
+        "corners": "O(3F)",
+        "assembly": "O(corners) = O(3F)",
+        "energy": "O(F)",
+        "memory": "O(V + F) = 507 elements"
+      },
+      "n_vertices": 219,
+      "n_faces": 288,
+      "n_corners": 864
+    },
+    "connected_p2_n8": {
+      "buffer_sizes": {
+        "positions_f32_bytes": 408,
+        "indices_u32_bytes": 576,
+        "gamma_f32_bytes": 192,
+        "csr_offsets_bytes": 140,
+        "csr_corner_idx_bytes": 576,
+        "face_records_bytes": 3072,
+        "vertex_forces_bytes": 544,
+        "energy_bytes": 4,
+        "validity_bytes": 192,
+        "total_storage_bytes": 5704
+      },
+      "op_counts": {
+        "face_eval_flops_per_face": 30,
+        "face_eval_total": 1440,
+        "csr_gather_ops_per_corner": 3,
+        "csr_gather_total": 432,
+        "energy_reduction_adds": 48,
+        "total_flops": 1920
+      },
+      "scaling": {
+        "vertices": "O(V)",
+        "faces": "O(F)",
+        "corners": "O(3F)",
+        "assembly": "O(corners) = O(3F)",
+        "energy": "O(F)",
+        "memory": "O(V + F) = 82 elements"
+      },
+      "n_vertices": 34,
+      "n_faces": 48,
+      "n_corners": 144
+    }
+  }
+}

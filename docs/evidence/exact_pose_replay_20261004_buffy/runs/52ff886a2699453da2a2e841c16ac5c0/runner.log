@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "E:\ChimeraWork\task-runner\slot-2\scratch\tools\monkey_campaign\contributions\EXACT-POSE-REPLAY-20261004-BUFFY\replay.py", line 724, in <module>
+    main()
+    ~~~~^^
+  File "E:\ChimeraWork\task-runner\slot-2\scratch\tools\monkey_campaign\contributions\EXACT-POSE-REPLAY-20261004-BUFFY\replay.py", line 711, in main
+    execute(args, out)
+    ~~~~~~~^^^^^^^^^^^
+  File "E:\ChimeraWork\task-runner\slot-2\scratch\tools\monkey_campaign\contributions\EXACT-POSE-REPLAY-20261004-BUFFY\replay.py", line 622, in execute
+    release = release_gate(args.release, args.op, manifest)
+  File "E:\ChimeraWork\task-runner\slot-2\scratch\tools\monkey_campaign\contributions\EXACT-POSE-REPLAY-20261004-BUFFY\replay.py", line 192, in release_gate
+    require(release_path is not None, "published_prereg_and_lt_release_required")
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\task-runner\slot-2\scratch\tools\monkey_campaign\contributions\EXACT-POSE-REPLAY-20261004-BUFFY\replay.py", line 35, in require
+    raise Refused(code)
+Refused: published_prereg_and_lt_release_required

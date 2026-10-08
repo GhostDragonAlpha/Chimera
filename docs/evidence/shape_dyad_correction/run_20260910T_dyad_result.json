@@ -1,0 +1,6 @@
+{
+  "expected": "a voxel monkey (ape) figure with a distinct head, ears, body, arms, and legs in a neutral standing pose",
+  "observed": "A horizontal band of vivid magenta fills the top fifth of the frame above a vast dark‑gray plane, on which a small tan 3D cartoon monkey—with a rounded head, two protruding ears, simple eyes, and thin limbs hanging at its sides—stands centered, casting a faint shadow and a thin vertical line beneath its feet.",
+  "alignment": 0.85,
+  "pass": true
+}

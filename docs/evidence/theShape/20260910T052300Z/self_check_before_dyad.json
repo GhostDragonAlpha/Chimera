@@ -1,0 +1,29 @@
+{
+  "utc": "2026-09-10T05:23:00Z",
+  "term": "theShape",
+  "note": "self-check before any blind-eye image is sent, per THE_SHAPE_RESTART_B falsifier rule 3",
+  "buffers": {
+    "t0_shape": [7495, 28],
+    "t1_shape": [7495, 28],
+    "t0_extent": 0.8801750540733337,
+    "t1_extent": 0.8801750540733337
+  },
+  "motion": {
+    "max_per_grain_delta": 0.9495745897293091,
+    "p99_per_grain_delta": 0.8295745849609375,
+    "p50_per_grain_delta": 0.30957460403442383,
+    "cells_with_delta_gt_0.01": 6595,
+    "rounded_unique_pos_t0": 7476,
+    "rounded_unique_pos_t1": 7476
+  },
+  "verdict": "SELF_CHECK_FAILED",
+  "reason": "movie_buffers t0 and t1 are near-mirror blobs at the same extent; the current emit does not yet produce a bear-like silhouette that visibly changes across a turntable. Falsifier (3) active: do not send an image to the dyad until a bear-like bulk shape and real t0->t1 change exist.",
+  "cells_of_lattice": 6595,
+  "physics_record_unchanged": {
+    "cell_size": 0.02,
+    "cell_count": 6595,
+    "com_gap_magnitude_phase0": 0.6492688258712557,
+    "worst_magnitude_over_8_phases": 0.6528298787325494,
+    "verdict": "HOLDS"
+  }
+}

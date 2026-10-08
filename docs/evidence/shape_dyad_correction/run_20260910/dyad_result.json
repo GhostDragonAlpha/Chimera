@@ -1,0 +1,43 @@
+{
+ "utc": "2026-09-10T04:55:53.003693+00:00",
+ "term": "theShape",
+ "size_scale": 0.35,
+ "render_dir": "E:\\PythonChimera\\.tmp\\theShape_render_test2",
+ "frames": [
+  "E:\\PythonChimera\\.tmp\\theShape_render_test2\\cpp_theShape_movie_00_384.png",
+  "E:\\PythonChimera\\.tmp\\theShape_render_test2\\cpp_theShape_movie_01_384.png",
+  "E:\\PythonChimera\\.tmp\\theShape_render_test2\\cpp_theShape_movie_02_384.png",
+  "E:\\PythonChimera\\.tmp\\theShape_render_test2\\cpp_theShape_movie_03_384.png",
+  "E:\\PythonChimera\\.tmp\\theShape_render_test2\\cpp_theShape_movie_04_384.png",
+  "E:\\PythonChimera\\.tmp\\theShape_render_test2\\cpp_theShape_movie_05_384.png",
+  "E:\\PythonChimera\\.tmp\\theShape_render_test2\\cpp_theShape_movie_06_384.png",
+  "E:\\PythonChimera\\.tmp\\theShape_render_test2\\cpp_theShape_movie_07_384.png",
+  "E:\\PythonChimera\\.tmp\\theShape_render_test2\\cpp_theShape_movie_08_384.png",
+  "E:\\PythonChimera\\.tmp\\theShape_render_test2\\cpp_theShape_movie_09_384.png",
+  "E:\\PythonChimera\\.tmp\\theShape_render_test2\\cpp_theShape_movie_10_384.png",
+  "E:\\PythonChimera\\.tmp\\theShape_render_test2\\cpp_theShape_movie_11_384.png"
+ ],
+ "frame_hashes": {
+  "E:\\PythonChimera\\.tmp\\theShape_render_test2\\cpp_theShape_movie_00_384.png": "5e94d03f4c906657b5d6245d0307a529b575f8ea9c045414e339ee57ec0b2df4",
+  "E:\\PythonChimera\\.tmp\\theShape_render_test2\\cpp_theShape_movie_01_384.png": "cdf111f24fb2b89026a414dc7cff61707883ff1f7802d5e843d8fad7f40495c9",
+  "E:\\PythonChimera\\.tmp\\theShape_render_test2\\cpp_theShape_movie_02_384.png": "9f26a58d17a1cdb8b4890ece583e06745dd3e417b9dbaaccca43203a3ea1ddab",
+  "E:\\PythonChimera\\.tmp\\theShape_render_test2\\cpp_theShape_movie_03_384.png": "c159b2485c19f01a04561c0730f827c399ce13bd517667c9509248e198a07266",
+  "E:\\PythonChimera\\.tmp\\theShape_render_test2\\cpp_theShape_movie_04_384.png": "8cc31babf637329698eb6f0768b51e832d3c94d4b21346c809badf782681ea62",
+  "E:\\PythonChimera\\.tmp\\theShape_render_test2\\cpp_theShape_movie_05_384.png": "d14ec8c8734f3509f7f78f085e2bcb2b3c657c85971ac7a5e1105693eba61476",
+  "E:\\PythonChimera\\.tmp\\theShape_render_test2\\cpp_theShape_movie_06_384.png": "21f55660a731bd45fca4771acc6bc48034b0c299b892d45c139cc9a01c254914",
+  "E:\\PythonChimera\\.tmp\\theShape_render_test2\\cpp_theShape_movie_07_384.png": "68bbfc239e0b7734f37bd2a40697e36a98eb16ef17f120549afbdc956002d020",
+  "E:\\PythonChimera\\.tmp\\theShape_render_test2\\cpp_theShape_movie_08_384.png": "897c080ae8ca04fb40db4dbabc19bd43673a3db4d35e3a608d3a23f2131fa3c0",
+  "E:\\PythonChimera\\.tmp\\theShape_render_test2\\cpp_theShape_movie_09_384.png": "8e17e2429c51354c1326fdff1950cd28e9932f201511b97491ae49091b03f889",
+  "E:\\PythonChimera\\.tmp\\theShape_render_test2\\cpp_theShape_movie_10_384.png": "66f53332ecc50fc84766f52c6f4a00bc1813ba0cb7742b60dfccf7b10df5cff9",
+  "E:\\PythonChimera\\.tmp\\theShape_render_test2\\cpp_theShape_movie_11_384.png": "7fb67c3311e1ecdf690332b8ccbe9658cd9fc9f2246faa2f2460ded999d647bc"
+ },
+ "prompt": "These images are frames from a short video, in order (first to last). Describe what you see across the sequence in one or two short sentences: the main colors, the shapes, what it depicts, and how it changes from first frame to last. Describe ONLY what is visually present. Do NOT mention numbers, temperatures, or measurements.",
+ "expected": "a brown teddy bear shape built from many small overlapping brown grains or soft blobs, forming the same bear as the smooth cloud but with a visible grain texture -- ROTATING on the spot like a turntable over a dim dark ground: one solid animal (head, ears, body, limbs) at every angle, front and back, NOT hollow, NOT flat, NOT a different object",
+ "observed": "The sequence shows an abstract image of a tan-brown circular disk set against a black background, with a small irregular dark cluster (carrying faint blue tones) at its center and grainy gray-white speckling along the rim. From first to last frame the brown disk remains centered while the peripheral gray patches shift position around the edge and the central dark clump tilts slightly in orientation.",
+ "alignment": 0.2,
+ "threshold": 0.6,
+ "verdict": "FAIL_RESTART",
+ "served_model": "qwen3.8-27b-nvfp4-mtp",
+ "source": "vision proxy (omni movie)",
+ "note": "size_scale=0.35 makes voxel structure legible (grainy texture, speckling) but overall silhouette still reads as circular disk, not teddy bear. Falsifier (ii) fired: dyad still fails with legible voxels -> mismatch is real content (scene/reading), escalate to new preregistration."
+}

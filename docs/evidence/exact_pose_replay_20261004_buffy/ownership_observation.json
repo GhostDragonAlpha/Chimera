@@ -1,0 +1,89 @@
+{
+  "active_input_owner": {
+    "base": "79b263944d4053b7ee41f97c97b3cc2f732b1b97",
+    "owner": "wk-hand-remediation",
+    "task": "HAND-REMEDIATION-20261003-R1-STAGE4"
+  },
+  "branch": "WK-ENGINE-PATHS-20260929-PR",
+  "controller_session_provisioned": false,
+  "diagnostic_claims": {},
+  "exact_replay_matches": [],
+  "git_head": "7222729eca6e9f97f25061c8b1dc3d229bb703d8",
+  "observed_utc": "2026-10-04T02:03:12.881666+00:00",
+  "queued_directives": [
+    {
+      "attempts_at_criteria": 0,
+      "consumption": "lt_inbox",
+      "criteria_sha256": "bf299b9ef4e44224c654ade1bdf4bbdf25f8eb88e06e284a13aae22f7800d125",
+      "dispatch_key": "MAT2-X05|bf299b9ef4e44224c654ade1bdf4bbdf25f8eb88e06e284a13aae22f7800d125|IMPLEMENT",
+      "first_emitted_utc": "2026-10-01T20:50:58.715257+00:00",
+      "id": "MAT2-X05:bf299b9ef4e44224c654ade1bdf4bbdf25f8eb88e06e284a13aae22f7800d125:IMPLEMENT",
+      "kind": "IMPLEMENT",
+      "priority": 2,
+      "projected_state": "READY",
+      "reason": "development card READY: deps DONE, no WORKING attempt",
+      "status": "OPEN",
+      "task_id": "MAT2-X05",
+      "worker_view": "worker_start.py (or --task MAT2-X05)"
+    },
+    {
+      "attempts_at_criteria": 0,
+      "consumption": "lt_inbox",
+      "criteria_sha256": "425a40b57fc94f1240bda6cdd16ed0b9eb8a68c080e86776f13fabd3b88e9ea1",
+      "dispatch_key": "MAT2-K01|425a40b57fc94f1240bda6cdd16ed0b9eb8a68c080e86776f13fabd3b88e9ea1|IMPLEMENT",
+      "first_emitted_utc": "2026-10-01T21:51:58.734211+00:00",
+      "id": "MAT2-K01:425a40b57fc94f1240bda6cdd16ed0b9eb8a68c080e86776f13fabd3b88e9ea1:IMPLEMENT",
+      "kind": "IMPLEMENT",
+      "priority": 2,
+      "projected_state": "READY",
+      "reason": "development card READY: deps DONE, no WORKING attempt",
+      "status": "OPEN",
+      "task_id": "MAT2-K01",
+      "worker_view": "worker_start.py (or --task MAT2-K01)"
+    }
+  ],
+  "registry_mode": "ACTIVE",
+  "registry_revision": 1695,
+  "roster": {
+    "ceiling": 15,
+    "goal_state": "ACTIVE (the full-loop goal; timers CANCELLED by operator - notification-driven only)",
+    "landed_this_wave": [
+      "wk-storage (DONE; live on #304 head 4f375204; review running)",
+      "wk-packetgen (DONE 43/43; coordination-side)",
+      "wk-reconcile (DONE: C1-C10 matrix + version fix + MPM inspection)",
+      "wk-matiface (DONE 43/43; PR #313 OPEN; review running)",
+      "sgt-geom-rereview (PASS)",
+      "wk-sens (DONE: gate 149/149 + ranked table + funding ladder)",
+      "wk-ports (DONE: v2 frozen c9afcdba, 49/49)",
+      "wk-proof-det (DONE: acceptance held; DEV-1 ratified; review running)",
+      "wk-climb-fix (DONE 83/83: derivation corrected, K-gates reduced to lineage)",
+      "wk-u07-fix (DONE: r1 published at 9a5b9541; review running)",
+      "wk-splat-eval (DONE: ADOPT recommendation; adoption lane dispatched)",
+      "wk-splat-eval (DONE: ADOPT recommendation; adoption lane dispatched)"
+    ],
+    "last_1302": "none",
+    "live_agents": 3,
+    "roster": [
+      "wk-hand-remediation agent_12f307d7 (the raised-cap adjudication run; AMENDMENT-2 pinned ccb60023)",
+      "wk-pair-assembly agent_8439c0d5 (monitoring the live retry b892365d; the diagnostic plan)",
+      "wk-assembly-inputs agent_58ad8086 (phase 2: the recovery + the replay + the authoring)",
+      "sgt-r1-adjudication agent_bab2f400 (the P1/P4 dispute ruling)",
+      "STANDING SERVICES (never counted): scheduler --serve; gpu-queue worker"
+    ],
+    "roster_law": "counts are COMPUTED from roster[] at report time; hand-written counts are the recurring error class",
+    "scanner_top": "THE COLLISION IDENTITY REFRAME accepted (actuator-capacity survivors; the exact-candidate adjudication ordered); stage-4 running; the pair capstone review running; 16 PRs; board 71/95",
+    "shortfall_note": "4 productive subagents of the 10 allowed / 12 target (roster-computed: 3 workers + 1 adjudication review). The dispute resolution is the fleet priority - a published verdict is under challenge and the correction path is armed. No filler. No 1302; machine stable.",
+    "ts": "2026-10-03T21:01:46.108244"
+  },
+  "roster_authority_limit": "Read-only source records, not a live authenticated claim; roster has conflicting dates/counts.",
+  "source_artifacts": {
+    "E:\\ChimeraWork\\monkey-coordination\\LIEUTENANT_RESUME_v2.json": {
+      "mtime_utc": "2026-10-04T02:01:46.110502+00:00",
+      "sha256": "9447fcce0fc4771287e6008d9f2d1a637803eccf535aa61c5ba949471da2aa8c"
+    },
+    "E:\\ChimeraWork\\monkey-coordination\\compiler-scheduler\\next-dispatch-queue.json": {
+      "mtime_utc": "2026-10-04T02:02:18.684364+00:00",
+      "sha256": "4d332ef67a79119828e74df21c91cadd3ae1f9f4b5ac659c6f2c7db4d72e4f8a"
+    }
+  }
+}

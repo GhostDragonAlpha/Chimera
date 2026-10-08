@@ -1,0 +1,420 @@
+{
+ "schema": "chimera.instrument_v2.mesh_input_table.v1",
+ "scale": 0.5384048132470733,
+ "bodies": [
+  {
+   "body": "firstmc",
+   "stl": "1mc.stl",
+   "stl_sha256": "b75e58243a2005af787bc731c5d1aa6b7da4669f36e9bcd7409a430c1cc311b6",
+   "parent": "macaque_hand_anchor",
+   "triangles": 5744,
+   "vertices": 17232,
+   "scaled_aabb_m": [
+    0.015371457,
+    0.021513042,
+    0.013610335
+   ],
+   "sphere_center_m": [
+    0.004171560416644681,
+    -0.008066112142766936,
+    -0.0032366202966682507
+   ],
+   "sphere_radius_m": 0.012408947352870976,
+   "max_edge_m": 0.0022633898603393134
+  },
+  {
+   "body": "proximal_thumb",
+   "stl": "thumbprox.stl",
+   "stl_sha256": "d55ea0de846c5acf5c89198cb4f4b74e7739f4316120ece0d6fe1c8e7cbb646c",
+   "parent": "firstmc",
+   "triangles": 3948,
+   "vertices": 11844,
+   "scaled_aabb_m": [
+    0.00971713,
+    0.015748341,
+    0.010309376
+   ],
+   "sphere_center_m": [
+    0.004565672591309088,
+    -0.008837376485981414,
+    -0.0034048721417793805
+   ],
+   "sphere_radius_m": 0.00857050325480501,
+   "max_edge_m": 0.0025173523055768868
+  },
+  {
+   "body": "distal_thumb",
+   "stl": "thumbdist.stl",
+   "stl_sha256": "95b059723be971e770609000d682a4d41989332d22978fc05cbffd2754c5f93b",
+   "parent": "proximal_thumb",
+   "triangles": 3484,
+   "vertices": 10452,
+   "scaled_aabb_m": [
+    0.006347254,
+    0.008836838,
+    0.006040902
+   ],
+   "sphere_center_m": [
+    0.0028242024696786055,
+    -0.005483383829777207,
+    -0.0018338067174296139
+   ],
+   "sphere_radius_m": 0.0055220949074629615,
+   "max_edge_m": 0.0017096558714700723
+  },
+  {
+   "body": "secondmc",
+   "stl": "2mc.stl",
+   "stl_sha256": "ac3286bfb7281a7d2dc3ff2ac32fcb8f0424764aa97ad526992a10b739334fe2",
+   "parent": "macaque_hand_anchor",
+   "triangles": 8360,
+   "vertices": 25080,
+   "scaled_aabb_m": [
+    0.010991534,
+    0.034939243,
+    0.010909697
+   ],
+   "sphere_center_m": [
+    -0.00038845895942688684,
+    -0.0007645351406421492,
+    -0.00024039763658622757
+   ],
+   "sphere_radius_m": 0.017952333520979486,
+   "max_edge_m": 0.0035707853862788257
+  },
+  {
+   "body": "proxph2",
+   "stl": "2proxph.stl",
+   "stl_sha256": "041bf5a60e9376c0c47a3981c312698caa8d28f6d8ca08f59c3222da4244fb9d",
+   "parent": "secondmc",
+   "triangles": 5122,
+   "vertices": 15366,
+   "scaled_aabb_m": [
+    0.008933212,
+    0.022002451,
+    0.007559742
+   ],
+   "sphere_center_m": [
+    0.0019431028492538113,
+    -0.013488655577347687,
+    0.0018556122784031555
+   ],
+   "sphere_radius_m": 0.011317424252134707,
+   "max_edge_m": 0.002402725884856801
+  },
+  {
+   "body": "midph2",
+   "stl": "2midph.stl",
+   "stl_sha256": "074318c92e652ba05d26cbe0ad8e781891e2970e6b7415bc63585536e8beda72",
+   "parent": "proxph2",
+   "triangles": 2000,
+   "vertices": 6000,
+   "scaled_aabb_m": [
+    0.006259494,
+    0.012780653,
+    0.00408057
+   ],
+   "sphere_center_m": [
+    0.0007144631117399429,
+    -0.008189675483998002,
+    -0.00020324779766568517
+   ],
+   "sphere_radius_m": 0.006828200562771935,
+   "max_edge_m": 0.0023594257999143974
+  },
+  {
+   "body": "distph2",
+   "stl": "2distph.stl",
+   "stl_sha256": "39fca9372434520835703ffd34b5cc37a3f15f86ec9841b5fd841acac51adb88",
+   "parent": "midph2",
+   "triangles": 2206,
+   "vertices": 6618,
+   "scaled_aabb_m": [
+    0.00409403,
+    0.008420651,
+    0.002545578
+   ],
+   "sphere_center_m": [
+    0.0002810472587979339,
+    -0.005343667594372637,
+    5.9762950584904724e-05
+   ],
+   "sphere_radius_m": 0.004418617170440871,
+   "max_edge_m": 0.0013701624920488186
+  },
+  {
+   "body": "thirdmc",
+   "stl": "3mc.stl",
+   "stl_sha256": "eaa77802c8afe5a3187293880d0f95b5b2f0367adcb3639c8038993d39ff8f5c",
+   "parent": "macaque_hand_anchor",
+   "triangles": 8086,
+   "vertices": 24258,
+   "scaled_aabb_m": [
+    0.006496393,
+    0.034776644,
+    0.010082168
+   ],
+   "sphere_center_m": [
+    0.00019920979349730247,
+    0.00038549727165580056,
+    -0.0010913464675746092
+   ],
+   "sphere_radius_m": 0.017528482521462725,
+   "max_edge_m": 0.0024112265426761846
+  },
+  {
+   "body": "proxph3",
+   "stl": "3proxph.stl",
+   "stl_sha256": "48094bce62d115aee9f2527b22061ff1f5656936e647879d83672b2c62c20728",
+   "parent": "thirdmc",
+   "triangles": 5604,
+   "vertices": 16812,
+   "scaled_aabb_m": [
+    0.007336304,
+    0.022839132,
+    0.006472703
+   ],
+   "sphere_center_m": [
+    0.00047325779910575546,
+    -0.014212810049520318,
+    0.0018569583006854732
+   ],
+   "sphere_radius_m": 0.011720717943401394,
+   "max_edge_m": 0.0022088128455706527
+  },
+  {
+   "body": "midph3",
+   "stl": "3midph.stl",
+   "stl_sha256": "5e0ef3d76f2f99f950e9aefac28131009fa7fad7129f1421f50b5e7086655c88",
+   "parent": "proxph3",
+   "triangles": 2234,
+   "vertices": 6702,
+   "scaled_aabb_m": [
+    0.005568183,
+    0.015320847,
+    0.004022422
+   ],
+   "sphere_center_m": [
+    0.00016098313675090635,
+    -0.009146420788876557,
+    0.0005591333939319086
+   ],
+   "sphere_radius_m": 0.007741721648772815,
+   "max_edge_m": 0.002172780666332575
+  },
+  {
+   "body": "distph3",
+   "stl": "3distph.stl",
+   "stl_sha256": "d5ecddeac9b4572091a32d386a117ba475a0c784e42d06016ba963432396b612",
+   "parent": "midph3",
+   "triangles": 2546,
+   "vertices": 7638,
+   "scaled_aabb_m": [
+    0.004597977,
+    0.009059199,
+    0.002719483
+   ],
+   "sphere_center_m": [
+    0.00020943943748577532,
+    -0.0054545790782927536,
+    -8.641394106051047e-05
+   ],
+   "sphere_radius_m": 0.0046535214332897165,
+   "max_edge_m": 0.0012036837276960981
+  },
+  {
+   "body": "fourthmc",
+   "stl": "4mc.stl",
+   "stl_sha256": "ad2fe21562879512367cf2b7ab7016b07d9eda780c72add59cd125d2a232cf42",
+   "parent": "macaque_hand_anchor",
+   "triangles": 6486,
+   "vertices": 19458,
+   "scaled_aabb_m": [
+    0.007707265,
+    0.032396356,
+    0.007210856
+   ],
+   "sphere_center_m": [
+    -1.642128380856321e-05,
+    0.0004778343375442043,
+    -0.00042076336884536505
+   ],
+   "sphere_radius_m": 0.016493989249480836,
+   "max_edge_m": 0.002256494581597801
+  },
+  {
+   "body": "proxph4",
+   "stl": "4proxph.stl",
+   "stl_sha256": "eea82e95eb50e93471d32be3c15dc123b88a44bba06647c3003217eafa9cc44d",
+   "parent": "fourthmc",
+   "triangles": 5264,
+   "vertices": 15792,
+   "scaled_aabb_m": [
+    0.007158092,
+    0.020569217,
+    0.005654866
+   ],
+   "sphere_center_m": [
+    -0.0005338283630600506,
+    -0.012888872310489794,
+    5.464806591209872e-05
+   ],
+   "sphere_radius_m": 0.010541768709483385,
+   "max_edge_m": 0.0021630652522911585
+  },
+  {
+   "body": "midph4",
+   "stl": "4midph.stl",
+   "stl_sha256": "98ecb5ad76749abd6c32862770f6502aa2cc41a4d919ca73735b052bcb39c79c",
+   "parent": "proxph4",
+   "triangles": 2204,
+   "vertices": 6612,
+   "scaled_aabb_m": [
+    0.00511,
+    0.012976633,
+    0.00398958
+   ],
+   "sphere_center_m": [
+    -0.0005117537856657545,
+    -0.007951700750198515,
+    0.00015613739385599425
+   ],
+   "sphere_radius_m": 0.006655475906749779,
+   "max_edge_m": 0.001745515447631062
+  },
+  {
+   "body": "distph4",
+   "stl": "4distph.stl",
+   "stl_sha256": "02f01c191dfc86ab5f04d5b092238f6d6c134cbc39977a79542e6fe8b37c3691",
+   "parent": "midph4",
+   "triangles": 2608,
+   "vertices": 7824,
+   "scaled_aabb_m": [
+    0.004035882,
+    0.009127577,
+    0.003599775
+   ],
+   "sphere_center_m": [
+    -5.760931493319684e-05,
+    -0.005404238283684071,
+    0.00037042257423668167
+   ],
+   "sphere_radius_m": 0.004814269009345313,
+   "max_edge_m": 0.0015571563658980405
+  },
+  {
+   "body": "fifthmc",
+   "stl": "5mc.stl",
+   "stl_sha256": "46c75922ddc94f982a539f0345c32456d4ba75d1367df0c6aecc82467c775d3d",
+   "parent": "macaque_hand_anchor",
+   "triangles": 5016,
+   "vertices": 15048,
+   "scaled_aabb_m": [
+    0.009225566,
+    0.029305912,
+    0.007096714
+   ],
+   "sphere_center_m": [
+    0.0006318180330699211,
+    0.00020217097983983145,
+    -0.0004078416802922569
+   ],
+   "sphere_radius_m": 0.014747707962055422,
+   "max_edge_m": 0.0027851720636310304
+  },
+  {
+   "body": "proxph5",
+   "stl": "5proxph.stl",
+   "stl_sha256": "b04672ea67df7403705ff58aa89cef984fe9c679177608a934034413b1e339cb",
+   "parent": "fifthmc",
+   "triangles": 3742,
+   "vertices": 11226,
+   "scaled_aabb_m": [
+    0.00691581,
+    0.018700954,
+    0.00590307
+   ],
+   "sphere_center_m": [
+    -0.0012079113077590289,
+    -0.011953664051592585,
+    -0.0006918501881112893
+   ],
+   "sphere_radius_m": 0.009457835803758266,
+   "max_edge_m": 0.0021006816539000423
+  },
+  {
+   "body": "midph5",
+   "stl": "5midph.stl",
+   "stl_sha256": "d383a1f058224f71fc5333c2849673cd2a106652dcd84f13518a4f88e5866324",
+   "parent": "proxph5",
+   "triangles": 1566,
+   "vertices": 4698,
+   "scaled_aabb_m": [
+    0.004958708,
+    0.010896237,
+    0.004253936
+   ],
+   "sphere_center_m": [
+    -0.0006094743138977309,
+    -0.007022413923807819,
+    -0.0007007338724960143
+   ],
+   "sphere_radius_m": 0.005586541703140135,
+   "max_edge_m": 0.0019572855522974413
+  },
+  {
+   "body": "distph5",
+   "stl": "5distph.stl",
+   "stl_sha256": "a2ca70efdb0a5e59913922676e597ec24b963ace4d41c5fd0d5a3bc7cafdb3f4",
+   "parent": "midph5",
+   "triangles": 2979,
+   "vertices": 8937,
+   "scaled_aabb_m": [
+    0.003714993,
+    0.007973237,
+    0.003299883
+   ],
+   "sphere_center_m": [
+    -0.0003898051070663432,
+    -0.005067735220247508,
+    -0.00035453957398390616
+   ],
+   "sphere_radius_m": 0.004131011600659058,
+   "max_edge_m": 0.001642889108408964
+  }
+ ],
+ "anchor": {
+  "body": "macaque_hand_anchor",
+  "source": "hand_vtp_bounds_m (A05 envelope_check)",
+  "aabb_lo": [
+   -0.0124375,
+   -0.0837075,
+   -0.00152775
+  ],
+  "aabb_hi": [
+   0.020731000000000003,
+   -0.00010125000000000001,
+   0.004639750000000001
+  ],
+  "sphere_center_m": [
+   0.004146750000000001,
+   -0.041904375,
+   0.0015560000000000003
+  ],
+  "sphere_radius_m": 0.0450782444410896
+ },
+ "trunk": {
+  "kind": "exact analytic cylinder (A4)",
+  "radius_m": 0.037,
+  "diameter_m": 0.074,
+  "height_m": 1.158,
+  "render_segments": 32,
+  "render_sagitta_m": 0.00017816511312871363
+ },
+ "anchor_vtp": {
+  "path": "E:/PythonChimera/tools/science_funnel/data/macaque_arm/Geometry/hand.vtp",
+  "sha256": "a06ea7e079c849df07d6eec001e9bcc2ea193ecd3914011c78a993a5faa94fc6",
+  "points": 1920,
+  "polys": 2114
+ }
+}

@@ -1,0 +1,40 @@
+{
+  "captures": 2,
+  "duration_actual_first_last_seconds": 1.625,
+  "duration_target_seconds": 2.0,
+  "end_utc": "2026-09-07T19:52:11.895224+00:00",
+  "endpoint": "/frame",
+  "interval_target_seconds": 0.25,
+  "missed_deadlines": [
+    {
+      "actual_monotonic": 105855.687,
+      "over_by_seconds": 1.375,
+      "seq": 1,
+      "target_monotonic": 105854.312
+    },
+    {
+      "actual_monotonic": 105857.281,
+      "over_by_seconds": 1.3439999999973224,
+      "seq": 2,
+      "target_monotonic": 105855.937
+    },
+    {
+      "actual_monotonic": 105855.625,
+      "over_by_seconds": 1.5470000000059372,
+      "seq": 0,
+      "target_monotonic": 105854.078
+    },
+    {
+      "actual_monotonic": 105857.25,
+      "over_by_seconds": 1.375,
+      "seq": 1,
+      "target_monotonic": 105855.875
+    }
+  ],
+  "record_json": true,
+  "run_dir": "E:/PythonChimera/docs/evidence/v04/test_logs/run_04_delayed\\run_20260907_195210",
+  "save_raw": true,
+  "start_utc": "2026-09-07T19:52:10.277032+00:00",
+  "url": "http://localhost:9877",
+  "verdict": "INCOMPLETE_TIMEOUT"
+}

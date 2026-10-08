@@ -1,0 +1,18 @@
+{
+  "schema": "chimera-membrane-scale-lab-summary-v1",
+  "utc": "2026-09-08T22:37:43.286558+00:00",
+  "source_commit": "51cd7212fd6ef2cfda95c330abcc2ff154cc6141",
+  "python": "3.14.3",
+  "numpy": "2.2.6",
+  "run_dir": "docs\\evidence\\membrane_scale_lab\\run_20260908T223743.171686Z",
+  "correctness": "11/11 passed",
+  "fixtures_generated": 11,
+  "fixtures_valid": 11,
+  "artifacts": {
+    "fixtures": "fixtures\\fixture_manifest.json",
+    "correctness": "correctness\\correctness_20260908T223743.217596Z.json",
+    "benchmark": "benchmark\\benchmark_20260908T223743.284610Z.json",
+    "candidates": "candidates\\candidates_20260908T223743.285756Z.json",
+    "cost_model": "cost_model\\cost_model_20260908T223743.286290Z.json"
+  }
+}

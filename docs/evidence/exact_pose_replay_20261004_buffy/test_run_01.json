@@ -1,0 +1,64 @@
+{
+  "job": "183a4ceaa91b4706803736df1c39289e",
+  "state": "PASSED",
+  "sealed_manifest_sha256": "5c899b375c543c2ef48f5d8d4f69619c26c773861090b539bcc3c83359b8ad28",
+  "base": "79b263944d4053b7ee41f97c97b3cc2f732b1b97",
+  "command": [
+    "C:/Python314/python.exe",
+    "-B",
+    "tools/monkey_campaign/contributions/EXACT-POSE-REPLAY-20261004-BUFFY/test_replay.py"
+  ],
+  "slot": 2,
+  "cleanup_verified": true,
+  "declared_budget_bytes": 2147483648,
+  "resource_profile": {
+    "schema": "chimera.runner_profile.v1",
+    "host_cpu": "Intel Core i9-13900K",
+    "physical_cores": 24,
+    "logical_processors": 32,
+    "installed_ram_bytes": 137199087616,
+    "agent_target": 12,
+    "agent_ceiling": 15,
+    "cpu_slots": 4,
+    "threads_per_job": 4,
+    "job_memory_gib": 16,
+    "free_memory_reserve_gib": 24,
+    "publication_writers": 1,
+    "agent_limits_enforced_by": "GLM dispatcher; runner does not launch or count API agents"
+  },
+  "memory_admission": {
+    "allowed": true,
+    "available_bytes": 98258571264,
+    "required_bytes": 42949672960
+  },
+  "space_admission": {
+    "allowed": true,
+    "free_bytes": 1679408050176,
+    "reserved_bytes": 4294967296,
+    "incoming_bytes": 2415919104,
+    "required_bytes": 6710886400
+  },
+  "artifact_store_class": "protected_evidence",
+  "exit_code": 0,
+  "artifacts": {
+    "runner.log": "2f7aea88830e1627510948a72120bccd636db5b9c700fa3198b5c34d073eeccf",
+    "outputs/replay/tests.json": "530b18c04c25999cc551ea41886bbc44ff2cb3b7f641cac1c2e2f9f825b17a8c"
+  },
+  "artifact_allocated_bytes": {
+    "runner.log": 4096,
+    "outputs/replay/tests.json": 448
+  },
+  "bytes": {
+    "schema": "chimera.byte_accounting.v1",
+    "units": "bytes",
+    "scratch_peak_bytes": 7978252,
+    "scratch_at_cleanup_bytes": 7978252,
+    "scratch_at_cleanup_allocated_bytes": 8036832,
+    "retained_bytes": 3613,
+    "retained_allocated_bytes": 4544,
+    "reclaimed_bytes": 7974639,
+    "reclaimed_allocated_bytes": 8032288,
+    "declared_budget_bytes": 2147483648
+  },
+  "result_directory": "E:\\ChimeraWork\\task-runner\\results\\183a4ceaa91b4706803736df1c39289e"
+}

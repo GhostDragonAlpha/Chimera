@@ -1,0 +1,42 @@
+[
+ {
+  "tag": "s60_m1",
+  "sigma_frac": 0.6,
+  "margin": 0.14,
+  "k_eye_px_per_cell": 2.59,
+  "eye_image": "E:\\PythonChimera\\ChimeraEngine\\.tmp\\theShape_render_test\\v2_s60_m1_384.png",
+  "question": "Describe the surface of the object in this image. Is its surface smooth, or does it show a repeating fine structure? If it shows repeating structure, name its shape. Answer in 1-3 sentences.",
+  "report": "The object's surface appears smooth and uniformly colored, showing no visible texture or pattern. Because of the heavy blur and low resolution, no repeating fine structure (such as hexagons, triangles, or other shapes) can be discerned on either the brown upper portion or the gray base.",
+  "served_model": "qwen3.8-27b-nvfp4-mtp"
+ },
+ {
+  "tag": "s60_m0",
+  "sigma_frac": 0.6,
+  "margin": 0.06,
+  "k_eye_px_per_cell": 2.97,
+  "eye_image": "E:\\PythonChimera\\ChimeraEngine\\.tmp\\theShape_render_test\\v2_s60_m0_384.png",
+  "question": "Describe the surface of the object in this image. Is its surface smooth, or does it show a repeating fine structure? If it shows repeating structure, name its shape. Answer in 1-3 sentences.",
+  "report": "The object's surface appears as solid, uniform color fills (a brown vertical mass over a gray base) with only soft, blurred edges from low resolution. It does not display any discernible repeating fine structure or geometric pattern; the visible texture is just pixelation/blur rather than an intentional motif. Therefore its surface reads as smooth and featureless at this scale.",
+  "served_model": "qwen3.8-27b-nvfp4-mtp"
+ },
+ {
+  "tag": "s35_m1",
+  "sigma_frac": 0.35,
+  "margin": 0.14,
+  "k_eye_px_per_cell": 2.57,
+  "eye_image": "E:\\PythonChimera\\ChimeraEngine\\.tmp\\theShape_render_test\\v2_s35_m1_384.png",
+  "question": "Describe the surface of the object in this image. Is its surface smooth, or does it show a repeating fine structure? If it shows repeating structure, name its shape. Answer in 1-3 sentences.",
+  "report": "The surface is not smooth; it displays a repeating fine texture rather than a uniform fill. This texture consists of small, regularly spaced dots forming a grid-like (dotted lattice) pattern across the brown region.",
+  "served_model": "qwen3.8-27b-nvfp4-mtp"
+ },
+ {
+  "tag": "s35_m0",
+  "sigma_frac": 0.35,
+  "margin": 0.06,
+  "k_eye_px_per_cell": 2.94,
+  "eye_image": "E:\\PythonChimera\\ChimeraEngine\\.tmp\\theShape_render_test\\v2_s35_m0_384.png",
+  "question": "Describe the surface of the object in this image. Is its surface smooth, or does it show a repeating fine structure? If it shows repeating structure, name its shape. Answer in 1-3 sentences.",
+  "report": "The surface is not smooth; it displays a clear repeating fine texture rather than a uniform fill. This texture consists of a regular array of tiny square dots/pixels arranged in rows and columns, i.e., a square grid (mesh) pattern.",
+  "served_model": "qwen3.8-27b-nvfp4-mtp"
+ }
+]

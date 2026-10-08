@@ -1,0 +1,183 @@
+{
+  "body_census": [
+    "distal_thumb",
+    "distph2",
+    "distph3",
+    "distph4",
+    "distph5",
+    "fifthmc",
+    "firstmc",
+    "fourthmc",
+    "macaque_hand_anchor",
+    "midph2",
+    "midph3",
+    "midph4",
+    "midph5",
+    "proximal_thumb",
+    "proxph2",
+    "proxph3",
+    "proxph4",
+    "proxph5",
+    "secondmc",
+    "thirdmc"
+  ],
+  "certified_edges": [
+    [
+      "macaque_hand_anchor",
+      "firstmc"
+    ],
+    [
+      "macaque_hand_anchor",
+      "secondmc"
+    ],
+    [
+      "macaque_hand_anchor",
+      "thirdmc"
+    ],
+    [
+      "macaque_hand_anchor",
+      "fourthmc"
+    ],
+    [
+      "macaque_hand_anchor",
+      "fifthmc"
+    ],
+    [
+      "firstmc",
+      "proximal_thumb"
+    ],
+    [
+      "proximal_thumb",
+      "distal_thumb"
+    ],
+    [
+      "secondmc",
+      "proxph2"
+    ],
+    [
+      "proxph2",
+      "midph2"
+    ],
+    [
+      "midph2",
+      "distph2"
+    ],
+    [
+      "thirdmc",
+      "proxph3"
+    ],
+    [
+      "proxph3",
+      "midph3"
+    ],
+    [
+      "midph3",
+      "distph3"
+    ],
+    [
+      "fourthmc",
+      "proxph4"
+    ],
+    [
+      "proxph4",
+      "midph4"
+    ],
+    [
+      "midph4",
+      "distph4"
+    ],
+    [
+      "fifthmc",
+      "proxph5"
+    ],
+    [
+      "proxph5",
+      "midph5"
+    ],
+    [
+      "midph5",
+      "distph5"
+    ]
+  ],
+  "constants": {
+    "ANCHOR_R": 0.0450782444410896,
+    "DEPTH_SEARCH_ITERS": 60,
+    "DEPTH_SEARCH_MAX": 0.02,
+    "PI_C": 0.001,
+    "R_JOINT": 0.005,
+    "SCALE": 0.5384048132470733,
+    "TAU": 0.0001,
+    "TERNARY_ITERS": 120,
+    "TRUNK_H": 1.158,
+    "TRUNK_R": 0.037
+  },
+  "external_pin_note": "Legacy instrument consumes these paths read-only; hashes must match at every run; no geometry evaluated in this metadata census.",
+  "external_read_only_files": {
+    "E:/ChimeraWork/monkey-coordination/assembly-identity/ASSEMBLY_IDENTITY.md": "2ab248bda4db799685a5be9f446bb3e731a47b40b9db1108072cce18bafad035",
+    "E:/ChimeraWork/monkey-coordination/b07-prereqs/RUNTIME_CONTRACT.md": "f33c188bcb561b1946b104340cf36cba366709526c095874684529a599df338c",
+    "E:/ChimeraWork/monkey-coordination/evidence-store/MAT2-A05/workspace_evidence/48b037593f63_mutation_structure.json": "48b037593f63ec473947d787077ab6fbcd3b364afd15765bff508e7d54f45649",
+    "E:/ChimeraWork/monkey-coordination/evidence-store/MAT2-A05/workspace_evidence/9c91124600ab_macaque_hand_mutation.xml": "9c91124600abc67a4a33d78ce79ab1a0604a48b5a9a2e6377d15de05717e5adf",
+    "E:/ChimeraWork/monkey-coordination/evidence-store/MAT2-A09/numerical/grasp_package.json": "0a70adb1029d860ac9504683d77c2e94be2634724c63479f827fcbc8fcd97d24",
+    "E:/ChimeraWork/monkey-coordination/evidence-store/MAT2-B07/unclassified/adoption_record.json": "f6952e8afc778f79a0ede05b61d73dd7c3fabd68789703552cd6136e25ef0199",
+    "E:/ChimeraWork/monkey-coordination/evidence-store/MAT2-D-MASSREG/numerical/mass_register.json": "61fb79b1bf2df8c5e1a5b1bff2ab1c4f41700de25bc7f1a114cbc78fe693cc7a",
+    "E:/ChimeraWork/monkey-coordination/evidence-store/MAT2-G01/report/REPORT.md": "e6d6c432680e503d5a70a1903ed59b52d5044cb8d3c7934da3b0db8acf3293a9",
+    "E:/ChimeraWork/monkey-coordination/evidence-store/MAT2-W04/numerical/w04_certificate.json": "07f05bfa982e066ae67413b04e3367c5ad7570830e99fc32edcb86cbe8d87598",
+    "E:/ChimeraWork/monkey-coordination/g04-friction/FRICTION_SOURCES.md": "336118e929bd0b4fb067db5a448dc2e348fed073007787635549a4cf1cf5868b",
+    "E:/ChimeraWork/monkey-coordination/instrument-v2/INSTRUMENT_V2_DECLARATION.md": "71e31cdd4122e20bfefdf343df28b0e01fc2a51e70cba11296924ca97ce991ea",
+    "E:/ChimeraWork/monkey-coordination/x-aperture/EVIDENCE.md": "4de65fc1b7d007dbf0c2685fe794a59144ef0f80de4f603820215c0e418d7997",
+    "E:/ChimeraWork/monkey-coordination/x-aperture/GRASP_MECHANISMS.md": "e82b5549253830467e0a3b7800470a6f8c142fb5affa41452b07d56fdfe61d48",
+    "E:/PythonChimera/tools/monkey_campaign/MONKEY_COMPLETION_MAP.md": "0e3984578b0cae38ab435daaa77cc10559cceeadbaf9885c3f31b979a362ecae",
+    "E:/PythonChimera/tools/science_funnel/data/macaque_arm/Geometry/hand.vtp": "a06ea7e079c849df07d6eec001e9bcc2ea193ecd3914011c78a993a5faa94fc6",
+    "E:/PythonChimera/vendor/myo_sim/meshes/1mc.stl": "b75e58243a2005af787bc731c5d1aa6b7da4669f36e9bcd7409a430c1cc311b6",
+    "E:/PythonChimera/vendor/myo_sim/meshes/2distph.stl": "39fca9372434520835703ffd34b5cc37a3f15f86ec9841b5fd841acac51adb88",
+    "E:/PythonChimera/vendor/myo_sim/meshes/2mc.stl": "ac3286bfb7281a7d2dc3ff2ac32fcb8f0424764aa97ad526992a10b739334fe2",
+    "E:/PythonChimera/vendor/myo_sim/meshes/2midph.stl": "074318c92e652ba05d26cbe0ad8e781891e2970e6b7415bc63585536e8beda72",
+    "E:/PythonChimera/vendor/myo_sim/meshes/2proxph.stl": "041bf5a60e9376c0c47a3981c312698caa8d28f6d8ca08f59c3222da4244fb9d",
+    "E:/PythonChimera/vendor/myo_sim/meshes/3distph.stl": "d5ecddeac9b4572091a32d386a117ba475a0c784e42d06016ba963432396b612",
+    "E:/PythonChimera/vendor/myo_sim/meshes/3mc.stl": "eaa77802c8afe5a3187293880d0f95b5b2f0367adcb3639c8038993d39ff8f5c",
+    "E:/PythonChimera/vendor/myo_sim/meshes/3midph.stl": "5e0ef3d76f2f99f950e9aefac28131009fa7fad7129f1421f50b5e7086655c88",
+    "E:/PythonChimera/vendor/myo_sim/meshes/3proxph.stl": "48094bce62d115aee9f2527b22061ff1f5656936e647879d83672b2c62c20728",
+    "E:/PythonChimera/vendor/myo_sim/meshes/4distph.stl": "02f01c191dfc86ab5f04d5b092238f6d6c134cbc39977a79542e6fe8b37c3691",
+    "E:/PythonChimera/vendor/myo_sim/meshes/4mc.stl": "ad2fe21562879512367cf2b7ab7016b07d9eda780c72add59cd125d2a232cf42",
+    "E:/PythonChimera/vendor/myo_sim/meshes/4midph.stl": "98ecb5ad76749abd6c32862770f6502aa2cc41a4d919ca73735b052bcb39c79c",
+    "E:/PythonChimera/vendor/myo_sim/meshes/4proxph.stl": "eea82e95eb50e93471d32be3c15dc123b88a44bba06647c3003217eafa9cc44d",
+    "E:/PythonChimera/vendor/myo_sim/meshes/5distph.stl": "a2ca70efdb0a5e59913922676e597ec24b963ace4d41c5fd0d5a3bc7cafdb3f4",
+    "E:/PythonChimera/vendor/myo_sim/meshes/5mc.stl": "46c75922ddc94f982a539f0345c32456d4ba75d1367df0c6aecc82467c775d3d",
+    "E:/PythonChimera/vendor/myo_sim/meshes/5midph.stl": "d383a1f058224f71fc5333c2849673cd2a106652dcd84f13518a4f88e5866324",
+    "E:/PythonChimera/vendor/myo_sim/meshes/5proxph.stl": "b04672ea67df7403705ff58aa89cef984fe9c679177608a934034413b1e339cb",
+    "E:/PythonChimera/vendor/myo_sim/meshes/thumbdist.stl": "95b059723be971e770609000d682a4d41989332d22978fc05cbffd2754c5f93b",
+    "E:/PythonChimera/vendor/myo_sim/meshes/thumbprox.stl": "d55ea0de846c5acf5c89198cb4f4b74e7739f4316120ece0d6fe1c8e7cbb646c"
+  },
+  "input_commit": "79b263944d4053b7ee41f97c97b3cc2f732b1b97",
+  "local_files": {
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/ERRATUM_R1_STAGE1.md": "d37c4d82bfa22f35d05b041cefa3a9d0abc7f6793b0a7391f8c1eba321304433",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/EVIDENCE.md": "be4374b77d29c638a53869ef6f13d0ac4bf5202cb9929e1995558890118d1e8f",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/PREREGISTRATION.md": "897ca164ac5a63437c465783af2dd8f9c743d6c587d5423f4d3cec1b7190bdaf",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/PREREGISTRATION_R1_PAD_LAYER.md": "9213bf7d91ed9a6e6b2c5bbddc05d5ee36db63c600dfce42b559632f6f565da9",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/R1_AMENDMENT_1.md": "018f0bc120c0fa44cdcc1f611ab883764eb91e2d668975573f792218b93f94ac",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/R1_AMENDMENT_2.md": "e96e09a1a925b12d68763139958eaae5897e27c027ecd3670336f5df5bc597cf",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/R1_STAGE2_PREREG.md": "2d7ff4172388fff75bb6bf46710a3c8c8857933d6c315166f3d7f7371610b3ec",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/R1_STAGE3_PREREG.md": "4dfb62e0ebff878752e4ef69cc127ce49528ae787e58e3ed5706afe0c0c8204e",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/R1_STAGE4_PREREG.md": "4438c4d76c2d904d08a09eb1f29db55b25bdccaeb399f2d8db26ad0d78e5dfc1",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/control_input_table.json": "d8aacc23b27e2caaf60304c0e9a4fe711ac51245c0ca3bf6d021d8f7b5164bf2",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/control_input_table_vpl1.json": "9cd8a56d89bdbe403a0c8513f04a32b2a43de85eea3d38c34f39931be9317783",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/grasp_screen.py": "6b924e87151f5e2235b9d9c023be85d0f7602d42020b37df4ba7bf58c0e9e0ea",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/grasp_screen_receipt_sealed_v20.json": "065328e4942a0bb8794138a96966aa8a3267fcd15ce084b9fb0490dff76b19ec",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/instrument_v2.py": "9514c5b15a27948c65563070f16dffee4a5a28347c281a5d7e255fe93e516ddd",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/mesh_input_table.json": "6e5f3bac345a278eaa994203d48df71fa3a4d5d3f6d9be3e9c59f3b08491cfb2",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/mutation_structure.json": "48b037593f63ec473947d787077ab6fbcd3b364afd15765bff508e7d54f45649",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/raised_cap_stage1_pad_receipt.json": "4df5f48020c4dd601b7d6fc7c3047c4eb3c1e5c829bf450e07427c32c3835900",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/run_stage1_pad.py": "33392b97f275c640d3a5e562f88996cbb3881e9cbd6621e897dd1167bd94a884",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/seal-store/6d4ac09c2c5c40ce887a5f03989b923a_change.patch": "932630ac7653583a3727daec7c963114b5d6f08da0d1d6555b1a89b4711fb947",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/seal-store/6d4ac09c2c5c40ce887a5f03989b923a_manifest.json": "9c68f541f3f9c330a0e6b064ea05b1d654c99d50ab103b69b5e61a4da0b7901b",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/seal-store/8cd676bc73164367a1a87ab37fd031d7_change.patch": "a2aa55159e7764f7de35030c41fa5215cadc04ebae9dff7cca12245bd587142f",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/seal-store/8cd676bc73164367a1a87ab37fd031d7_manifest.json": "f8dde9e3460950e7e64d9002b01f1f30353942cc13cb80c193f6c62ba4bb341c",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/stage1_pad_receipt.json": "2b52b55d25767348cab7892fcd6dd2f8478ef05d97b4cd4b7ef332cba0161f7b",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/stage2_capacity_receipt.json": "8b93464c6ee206570c60fd00a750a2229ea650b0afaf589b8bbce6ed0bde174d",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/stage2_capacity_report.txt": "b33d80e90f3501936d1fc803237bd0f812a9f3c4a3d469aa7f3f851ef9a7b017",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/stage3_forces_receipt.json": "63ec1a8e38abc0ba1a05ae594db1241cc2acc642d1d82e7eebb3d945a167d01f",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/stage3_forces_report.txt": "6043b24e11d03cca0fdaff04300334150fdf05d7a7a85da2755c04f62900d8af",
+    "tools/monkey_campaign/contributions/HAND-REMEDIATION-20261003/vpl1_pad.py": "54af4a49ce57736cf0d90fe2a5d57ea98dd24d568efcae635b8e20479575794e"
+  },
+  "schema": "chimera.exact_pose_replay.inputs.v1"
+}
