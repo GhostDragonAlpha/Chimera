@@ -63,6 +63,7 @@
   }
   #play-btn:hover{background:rgba(127,212,193,.07);border-color:var(--accent)}
   .fineprint{margin-top:40px;font-size:12.5px;color:var(--faint)}
+  .name-hint{margin-top:10px;font-size:12.5px;color:var(--warn);min-height:1.2em;}
 
   /* ---- play screen ---- */
   #screen-play{flex-direction:row}
@@ -100,6 +101,9 @@
   .verdict.accent{color:var(--accent);border-color:#23413b}
   .verdict.good{color:var(--good);border-color:#22402f;background:#0d1411}
   .verdict.warn{color:var(--warn);border-color:#4a3a22}
+  .verdict.bad{color:#e0725f;border-color:#4a2c28;background:#140d0c}
+  .rupture-retry .btn{border-color:#4a2c28;color:#e0725f}
+  .rupture-retry .btn:hover{background:rgba(224,114,95,.08)}
   .force-row{display:flex;align-items:center;gap:12px}
   /* THE HAND-STRENGTH CONTROL (W2): ONE element now draws what it hits.
      The page used to carry TWO slider-looking bars: the native track inside
@@ -350,6 +354,11 @@
           <button id="gravity-btn" class="btn" type="button" style="width:100%">wake the world's weight</button>
         </div>
         <div id="verdict" class="verdict">the creature waits.</div>
+        <!-- RUPTURE_FAILURE: the recovery control, shown only while this
+             attempt is locked on a burst cell -->
+        <div id="try-again-wrap" class="rupture-retry" style="display:none;margin-top:8px">
+          <button id="try-again-btn" class="btn" type="button" style="width:100%">try again — the cell ruptured</button>
+        </div>
       </section>
 
       <section class="card">
@@ -370,6 +379,9 @@
           <span id="hand-state" class="hint">hand open</span>
         </div>
         <button id="rest-btn" class="btn" type="button" style="width:100%;margin-top:8px">stand at rest</button>
+        <!-- RUPTURE_FAILURE + restart controls (minimal, beside the blood panel) -->
+        <button id="restart-lesson-btn" class="btn" type="button" style="width:100%;margin-top:6px;font-size:12px;color:var(--muted)">restart this lesson</button>
+        <button id="start-over-btn" class="btn" type="button" style="width:100%;margin-top:6px;font-size:12px;color:var(--faint)">start over (clear my saved progress)</button>
         <p class="hint">drag = look around · click = touch · wheel = zoom</p>
       </section>
 
@@ -532,6 +544,15 @@
   var ROOT_VY_SETTLE = 0.05;  // m/s -- gravity_on "settled means settled"
   var ROOT_SETTLE_M  = 0.002; // m  -- the root left its authored rest
   var WOKEN_PA       = 20000; // Pa -- cells_woken wake bar (squeeze only)
+  /* RUPTURE_FAILURE (SPEC new): a held press whose real cell climbs past this
+     gauge pressure has burst the compartment — the lesson FAILS and the
+     attempt locks until recovery. Chosen on the measured force->P map: lesson
+     1's goal is 20 kPa, so 500 kPa gives ~25x headroom (a press that wakes the
+     cell passes safely); the browser-click peak measured ~1.098 MPa and the
+     vertex-snap belly peaks ~2.735 MPa at slider top, so 0.5 MPa sits below
+     those — cranking the slider high and pressing hard on a strong point will
+     reach it. Reachable by force, avoidable by a gentle hand. */
+  var RUPTURE_PA     = 500000; // Pa (0.5 MPa)
   function curLesson() { return LESSONS[lessonIdx] || null; }
   function curState() {
     var l = curLesson();
@@ -539,7 +560,8 @@
     // W1: per-lesson latches -- pairOk (pose_pair, per joint), wokenSet
     // (cells_woken, distinct cell indices), gravityArmed (gravity_on).
     if (!lessonState[l.id]) lessonState[l.id] = { goalMet: false, passed: false,
-      phase: 'goal', pairOk: {}, wokenSet: {}, gravityArmed: false };
+      phase: 'goal', pairOk: {}, wokenSet: {}, gravityArmed: false,
+      ruptured: false, rupturedCell: -1 };
     return lessonState[l.id];
   }
   async function loadLessons() {
@@ -569,6 +591,7 @@
       st0.goalMet = false; st0.phase = 'goal';
       st0.pairOk = {}; st0.wokenSet = {};
       st0.gravityArmed = false;
+      st0.ruptured = false; st0.rupturedCell = -1;   // RUPTURE_FAILURE: clear a burst
       st0.primaryMet = false; st0.alsoMet = false; st0.halfNote = false;
       st0.pairNote = false; st0.forceNote = false; st0.hintShown = false;
     }
@@ -621,6 +644,7 @@
     else if (isGravity) setVerdict("the creature waits at rest — wake the world's weight when you are ready.", '');
     else setVerdict('the creature waits.', '');
     syncTouchTarget();
+    syncRuptureUI();                 // RUPTURE_FAILURE: a new lesson is not burst
   }
 
   /* L1 BY-HAND FIX: the pose-wish control. One row per wish: the joint's
@@ -864,6 +888,36 @@
     linkEl.textContent = text;
   }
 
+  /* RUPTURE_FAILURE: keep the 'try again' control visible only while this
+     attempt is locked on a burst cell. Called every judge poll so it stays in
+     step with st.ruptured without its own timer. */
+  function syncRuptureUI() {
+    var w = $('try-again-wrap');
+    if (!w) return;
+    var l = curLesson();
+    var rup = !!(l && lessonState[l.id] && lessonState[l.id].ruptured);
+    w.style.display = rup ? 'block' : 'none';
+  }
+
+  /* RUPTURE_FAILURE RECOVERY: clear this lesson's judge latches (including the
+     rupture latch) and any held engine touch so the player can immediately
+     re-attempt the SAME lesson. Deliberately does NOT move the card or re-POST
+     poses — it only un-latches, like a trimmed startLesson for one lesson. */
+  function retryLesson() {
+    clearTouch();   // end any held press + send /api/touch_clear (retry-backed)
+    var l = curLesson();
+    if (!l) return;
+    var st = curState();
+    st.ruptured = false; st.rupturedCell = -1;
+    st.goalMet = false; st.phase = 'goal';
+    st.pairOk = {}; st.wokenSet = {}; st.gravityArmed = false;
+    st.primaryMet = false; st.alsoMet = false; st.halfNote = false;
+    st.pairNote = false; st.forceNote = false; st.hintShown = false;
+    pressedCell = -1; pressedNoteShown = false;
+    lessonShownAt = Date.now();
+    setVerdict('the creature waits.', '');
+  }
+
   function postJSON(url, body) {
     return fetch(url, {
       method: 'POST',
@@ -985,7 +1039,41 @@
   var gl = null;
   try { gl = canvas.getContext('webgl2', { antialias: true }); } catch (e) { gl = null; }
 
+  /* CONTEXT-LOSS SAFETY NET. Reassigning canvas.width/height recreates the GL
+     context and fires CONTEXT_LOST_WEBGL, and this page has no other restore
+     path — so a resize would otherwise blank the screen forever (that was the
+     headless-canvas bug). oncontextlost pauses the render loop; oncontextrestored
+     rebuilds programs/buffers/VAOs via initRenderer(), re-pushes the stored mesh
+     into the freshly-created buffers, and resumes. The backing store is still
+     set exactly once (see frame) so this recovers at most one time per resize. */
+  var ctxLive = true;
+  if (gl) {
+    gl.oncontextlost = function (e) { e.preventDefault(); ctxLive = false; return false; };
+    gl.oncontextrestored = function () {
+      ctxLive = true;
+      try { RG = initRenderer(); reuploadMesh(); requestAnimationFrame(frame); } catch (e) {}
+    };
+  }
+
+  /* Re-push the stored topology + verts into freshly-rebuilt buffers after a
+     context restore. loadTopology / pollVerts keep RG.idx / RG.verts in memory;
+     this moves them into the new GL handles that initRenderer just recreated. */
+  function reuploadMesh() {
+    if (!RG) return;
+    if (RG.idx && RG.triCount) {
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, RG.ibo);
+      gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, RG.idx.byteLength, gl.STATIC_DRAW);
+      gl.bufferSubData(gl.ELEMENT_ARRAY_BUFFER, 0, RG.idx);
+    }
+    if (RG.verts) {
+      gl.bindBuffer(gl.ARRAY_BUFFER, RG.vbo);
+      gl.bufferData(gl.ARRAY_BUFFER, RG.verts.byteLength, gl.DYNAMIC_DRAW);
+      gl.bufferSubData(gl.ARRAY_BUFFER, 0, RG.verts);
+    }
+  }
+
   var RG = null;   // renderer state, null when WebGL2 is unavailable
+  var sizeInitialized = false;   // backing store set exactly once (see frame)
   var UP = [0, 1, 0];
 
   function initRenderer() {
@@ -1283,6 +1371,7 @@
 
   /* ================= frame loop (pure local math, 60 fps) ================= */
   function frame() {
+    if (!ctxLive) return;          // paused while the GL context is lost; restore resumes
     requestAnimationFrame(frame);
     pollGamepad(1/60);
     if (!RG) return;
@@ -1291,10 +1380,18 @@
 
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
     var pw = Math.max(1, Math.round(w * dpr)), ph = Math.max(1, Math.round(h * dpr));
-    if (canvas.width !== pw || canvas.height !== ph) {
+
+    /* The backing store is set EXACTLY ONCE (first visible size). Reassigning
+       canvas.width/height recreates the WebGL context (fires CONTEXT_LOST_WEBGL);
+       a safety net at the renderer top (oncontextlost/oncontextrestored) recovers
+       from that single loss by rebuilding resources, so we never resize again.
+       Thereafter only gl.viewport() tracks logical changes, which does NOT
+       recreate the context. */
+    if (!sizeInitialized) {
       canvas.width = pw; canvas.height = ph;
-      gl.viewport(0, 0, pw, ph);
+      sizeInitialized = true;
     }
+    gl.viewport(0, 0, pw, ph);
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     camEye(eyeScratch);
@@ -1302,11 +1399,14 @@
     lookAt(mView, eyeScratch, cam.target, UP);
     mul(mVP, mProj, mView);
 
-    /* grid first, depth write on, so motion reads against the floor */
+    /* grid first as a floor reference, but depth-write OFF so it never
+       occludes the creature: the opaque body draws after and wins every
+       pixel it covers (no depth tie at the floor), exactly like the engine's
+       stencil-occluded scene grid. Grid lines read only on bare floor. */
     gl.useProgram(RG.gridProg);
     gl.uniformMatrix4fv(RG.gVP, false, mVP);
     gl.uniform3f(RG.gColor, 0x22 / 255, 0x30 / 255, 0x3a / 255);
-    gl.depthMask(true);
+    gl.depthMask(false);
     gl.bindVertexArray(RG.gridVao);
     if (!anatomyScene) gl.drawArrays(gl.LINES, 0, RG.gridCount);
 
@@ -1614,6 +1714,13 @@
     if (s.conserve_pct != null) {
       html += '\nconserve: ' + Number(s.conserve_pct).toFixed(2) + ' %';
     }
+    /* RUPTURE_FAILURE: the blood panel names a burst cell so the player sees
+       the physical consequence in the water readout, not only the verdict. */
+    var lR = curLesson();
+    if (lR && lessonState[lR.id] && lessonState[lR.id].ruptured) {
+      html += '\n!! ' + cellPart(lessonState[lR.id].rupturedCell) +
+        ' has RUPTURED — the creature went still.';
+    }
     /* only numbers and our own span go in here — no external text */
     bloodEl.innerHTML = html;
     lastCellsP = psNow;
@@ -1641,6 +1748,7 @@
        implemented HOLDS -- it can neither crash the judge nor pass. */
     if (KNOWN_GOAL_TYPES.indexOf(l.goal.type) < 0) return;
     var st = curState();
+    syncRuptureUI();                 // RUPTURE_FAILURE: keep try-again in step
     if (st.passed) return;
     /* L1 BY-HAND FIX (SPEC §4's HINT_AFTER_MS, now real): when the GOAL
        phase stalls 25 s, the lesson's own hint speaks once. Both judges sat
@@ -1664,6 +1772,24 @@
     // (e.g. -31.9 MPa held by a pose) count as "the player did it".
     var signedP = function (c) { return Number(c.P) || 0; };
     var peakHere = function (c) { return Math.abs(signedP(c)); };
+
+    /* RUPTURE_FAILURE (SPEC new): while the hand STILL holds a press, if any
+       real cell's gauge pressure has climbed past RUPTURE_PA the touched cell
+       has burst — the lesson FAILS and this attempt is locked until recovery.
+       A real physical consequence (the creature went still), not a soft miss:
+       broken zero-volume cells are skipped so engine garbage never bursts it,
+       and it only fires while holding, so pose/gravity lessons are untouched. */
+    if (holding && !st.ruptured) {
+      for (var ru = 0; ru < cells.length; ru++) {
+        var rc = cells[ru];
+        if (!brokenCell(rc) && signedP(rc) >= RUPTURE_PA) { st.ruptured = true; st.rupturedCell = ru; break; }
+      }
+    }
+    if (st.ruptured) {
+      setVerdict('the cell ruptured — the creature went still.', 'bad');
+      syncRuptureUI();
+      return;          // stop counting this attempt; locked until recovery
+    }
 
     /* W4: the wake WHOOSH -- one per false->true crossing of a cell's wake
        bar (WOKEN_PA, squeeze only), memo'd per cell so a held press cannot
@@ -2439,6 +2565,31 @@
   });
 
   $('letgo-btn').addEventListener('click', clearTouch);
+  /* RUPTURE_FAILURE: 'try again' — recover the locked attempt and re-attempt
+     the SAME lesson. */
+  $('try-again-btn').addEventListener('click', retryLesson);
+  /* restart this lesson — reset only the current lesson's judge state, keep
+     progress; recovery is a trimmed startLesson for one lesson. */
+  $('restart-lesson-btn').addEventListener('click', function () {
+    var l = curLesson();
+    if (!l) return;
+    clearTouch();
+    showLesson(lessonIdx);   // resets this lesson's judge (and hides try-again)
+    setVerdict('this lesson restarted — the creature waits.', '');
+  });
+  /* start over — destructive: clears THIS player's saved progress file, then
+     reloads fresh. Guarded by confirm() so a stray click cannot wipe a save. */
+  $('start-over-btn').addEventListener('click', async function () {
+    if (!confirm('Start over? This erases ' + playerName + '\'s saved lesson progress on this device. You can still press \'save progress\' afterwards.')) return;
+    try {
+      await fetch(API.progress + '?name=' + encodeURIComponent(playerName) + '&_erase=1', { method: 'DELETE' });
+    } catch (err) { /* a missing file is already fresh */ }
+    lessonsKnown = {};
+    for (var id in lessonState) delete lessonState[id];
+    seenIntro = false;
+    showLesson(0);
+    setVerdict('progress cleared — the creature waits, fresh.', '');
+  });
   $('rest-btn').addEventListener('click', async function () {
     clearTouch();
     /* L1 BY-HAND FIX: "stand at rest" now means the AUTHORED rest -- the
@@ -2519,7 +2670,27 @@
     var link=line('a','Source and license: Limblab monkeyArmModel');link.href='https://github.com/limblab/monkeyArmModel';link.target='_blank';link.rel='noopener';
   }
   async function enterPlay() {
-    playerName = $('name-input').value.trim() || 'wanderer';
+    var rawName = $('name-input').value.trim();
+    if (!rawName) {
+      // D FIX: an empty name used to silently become 'wanderer' and the PLAY
+      // click would look ignored. Show a visible hint on the start screen so
+      // no state of this page is ever silent; keep focus in the field.
+      var hint = $('name-hint');
+      if (!hint) {
+        hint = document.createElement('p');
+        hint.id = 'name-hint';
+        hint.className = 'name-hint';
+        hint.setAttribute('role', 'alert');
+        hint.style.display = 'none';
+        var pb = $('play-btn');
+        pb.parentNode.insertBefore(hint, pb.nextSibling);
+      }
+      hint.textContent = 'type your name first — the world remembers you by it.';
+      hint.style.display = '';
+      $('name-input').focus();
+      return;
+    }
+    playerName = rawName;
     $('cam-name').textContent = playerName;
     $('screen-start').classList.remove('on');
     $('screen-play').classList.add('on');

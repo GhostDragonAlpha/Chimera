@@ -1,0 +1,11 @@
+{
+  "pageErrors": [
+    "Invalid or unexpected token @ undefined"
+  ],
+  "afterPlay": {
+    "playOn": false,
+    "startOn": true,
+    "lessonTitle": "…",
+    "nameVal": "Tiel-Verify"
+  }
+}

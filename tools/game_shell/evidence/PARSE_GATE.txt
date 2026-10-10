@@ -1,0 +1,2 @@
+root nodes parsed: 1
+PARSE_OK: tree-sitter parsed with zero ERROR/MISSING nodes

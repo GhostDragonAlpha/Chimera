@@ -1,0 +1,7 @@
+fresh_profile=C:\Users\allen\AppData\Local\Temp\chimera-fresh-a31_11qo
+page_errors=0
+console_messages=4
+CONSOLE: [warning] [GroupMarkerNotSet(crbug.com/242999)!:A840180044460000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.
+CONSOLE: [warning] [GroupMarkerNotSet(crbug.com/242999)!:A8D0180044460000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.
+CONSOLE: [warning] [GroupMarkerNotSet(crbug.com/242999)!:A8D0180044460000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.
+CONSOLE: [warning] [GroupMarkerNotSet(crbug.com/242999)!:A8D0180044460000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.

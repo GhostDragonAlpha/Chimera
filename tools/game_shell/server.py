@@ -228,6 +228,38 @@ class Handler(BaseHTTPRequestHandler):
         else:
             self._json({"ok": False, "error": "not found"}, 404)
 
+    # HEAD mirrors GET's routing but sends NO body -- so `curl -sI` (and any
+    # header probe) sees the same status + Cache-Control: no-store without a
+    # 501. /api/* GET responses are untouched; this only answers headers.
+    def do_HEAD(self):
+        p = self.path.split("?", 1)[0]
+        if not _allow(self._client_ip(), p):
+            self.send_response(429)
+            self.send_header("Retry-After", "1")
+            self.send_header("Connection", "close")
+            self.close_connection = True
+            self.end_headers()
+            return
+        if p in ("/", "/index.html"):
+            body = (HERE / "index.html").read_bytes()
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html")
+            self.send_header("Content-Length", str(len(body)))
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+        elif p.startswith("/api/"):
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", "0")
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+        else:
+            self.send_response(404)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", "0")
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+
     def do_POST(self):
         p = self.path.split("?", 1)[0]
         try:
@@ -266,6 +298,26 @@ class Handler(BaseHTTPRequestHandler):
                 self._json({"ok": True})
             except Exception as e:
                 self._json({"ok": False, "error": str(e)}, 400)
+        else:
+            self._json({"ok": False, "error": "no such door"}, 404)
+
+    def do_DELETE(self):
+        # RUPTURE_FAILURE / start-over: erase this player's saved progress file.
+        p = self.path.split("?", 1)[0]
+        if not _allow(self._client_ip(), p):
+            self._deny(429, "too many requests -- slow down")
+            return
+        qs = self.path.split("?", 1)[1] if "?" in self.path else ""
+        params = urllib.parse.parse_qs(qs)
+        if p == "/api/progress" and params.get("_erase") == ["1"]:
+            name = NAME_RE.sub("", params.get("name", [""])[0])[:32]
+            f = PROGRESS / f"{name}.json"
+            if name and f.exists():
+                try:
+                    f.unlink()
+                except OSError:
+                    pass
+            self._json({"ok": True})
         else:
             self._json({"ok": False, "error": "no such door"}, 404)
 

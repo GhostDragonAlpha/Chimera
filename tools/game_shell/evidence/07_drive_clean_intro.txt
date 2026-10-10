@@ -1,0 +1,9 @@
+fresh_profile=C:\Users\allen\AppData\Local\Temp\chimera-clean-intro-t99nl50c
+page_errors=0
+console_messages=1
+CONSOLE: [warning] [GroupMarkerNotSet(crbug.com/242999)!:A840190014030000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.
+intro_appeared=True
+passed=True
+still_passed=True
+intro_open_at_07_10=False
+intro_open_at_07_11=False

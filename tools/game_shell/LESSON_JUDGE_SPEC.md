@@ -63,7 +63,16 @@ const JOINT_INDEX = { hip_L: 13, hip_R: 14, knee_L: 15,
 const ROOT_VY_SETTLE = 0.05;  // m/s — "settled means settled" (tools/gravity_test.py VY_SETTLE)
 const ROOT_SETTLE_M  = 0.002; // m — |root_y| must exceed this: the root left its authored rest
 const WOKEN_PA       = 20000; // Pa — cells_woken: a cell counts as woken at P >= this
+const RUPTURE_PA     = 500000; // Pa (0.5 MPa) — a held press past this BURSTS the cell (FAIL, see §9b)
 ```
+
+**RUPTURE_PA is chosen on the measured force→P map.** Lesson 1's goal is
+20 kPa, so 500 kPa gives ~25× headroom: a press that comfortably wakes the cell
+passes without bursting. The browser-click peak measured ~1.098 MPa and the
+vertex-snap belly peaks ~2.735 MPa at slider top, so 0.5 MPa sits below those —
+cranking the slider high and pressing hard on a strong point reaches it. It is
+reachable by force, avoidable by a gentle hand; lesson copy surfaces it (e.g.
+"press gently — past 0.5 MPa the cell ruptures").
 
 ## 3. Judge state — reset per lesson, latches sticky
 
@@ -109,6 +118,16 @@ async function judgeTick() {
                                                       // the player for it
   const cells = s.cells;
   if (cells.length < (s.n_cells || cells.length)) return;  // partial read: skip
+
+  // RUPTURE_FAILURE (SPEC §9b): while the hand still holds, a real cell past
+  // RUPTURE_PA has burst — FAIL and LOCK this attempt. Broken (zero-volume)
+  // cells are skipped so engine garbage never bursts it. Returns early; no
+  // latch or pass can fire until recovery clears the latch.
+  if (holding && !judge.ruptured) {
+    for (let i = 0; i < cells.length; i++)
+      if (!brokenCell(cells[i]) && signedP(cells[i]) >= RUPTURE_PA) { judge.ruptured = true; judge.rupturedCell = i; break; }
+  }
+  if (judge.ruptured) { verdict("the cell ruptured — the creature went still.", "bad"); return; }
 
   // -- latches (order-independent; sticky) --------------------------------
   const g = lesson.goal;
@@ -339,6 +358,53 @@ Two consequences, both worth telling the player in the lesson copy:
   `membrane_tick.cpp::set_gravity`). So a replayed `the_stand` with the body
   already settled latches on its first poll — correct, a re-passed lesson —
   and a gravity-off reset is clean if the page ever wants one.
+
+## 9b. RUPTURE FAILURE — the physical consequence (new)
+
+A touch lesson is not only winnable; it can be **failed by over-pressing**. This
+is the page's explicit failure state, so the demo has a real physical cost and a
+recoverable loop, not only success.
+
+```js
+// in judgeState(), after signedP() is defined, before any goal latch:
+if (holding && !st.ruptured) {
+  for (let i = 0; i < cells.length; i++)
+    if (!brokenCell(cells[i]) && signedP(cells[i]) >= RUPTURE_PA) {
+      st.ruptured = true; st.rupturedCell = i; break; }
+}
+if (st.ruptured) {
+  setVerdict("the cell ruptured — the creature went still.", "bad");
+  syncRuptureUI();
+  return;   // LOCKED: no goalMet / pass can fire until recovery clears st.ruptured
+}
+```
+
+- **When it fires:** while `holding` is true (so only touch lessons — pose and
+  gravity never set `holding`) and a real, non-broken cell's signed gauge P has
+  climbed past `RUPTURE_PA` (500 kPa). Broken zero-volume cells are skipped, so
+  engine garbage (P up to ~1.6 GPa on V≈0) never bursts a cell.
+- **Consequence:** the lesson FAILS — verdict line + the blood panel both name
+  the burst cell (`!! <part> has RUPTURED — the creature went still.`), and the
+  progress-strip dot for that lesson does NOT fill. The attempt is locked: the
+  judge returns early, so `goalMet`/`pass` can no longer fire on it.
+- **Recovery / retry (§3 of the assignment):** a visible **"try again"** control
+  (`#try-again-wrap`, shown only while `st.ruptured`) calls `retryLesson()`:
+  `clearTouch()` (ends any held press AND sends `/api/touch_clear`, retry-backed)
+  then clears this lesson's latches — `ruptured=false, rupturedCell=-1,
+  goalMet=false, phase='goal'`, plus the pose/woken/gravity/also latches — and
+  resets the verdict to "the creature waits." The player re-attempts the SAME
+  lesson immediately. Lesson switch (`showLesson`) also clears `ruptured`.
+- **Explicit restart (§3):** two sidebar controls beside the blood panel:
+  - **"restart this lesson"** (`#restart-lesson-btn`) — resets only the current
+    lesson's judge state (keeps saved progress).
+  - **"start over"** (`#start-over-btn`) — destructive; `confirm()` first, then
+    `DELETE /api/progress?name=<n>&_erase=1` erases `progress/<name>.json`, and
+    the page reloads its judge fresh (dots empty, intro re-shows).
+
+RUPTURE_PA is chosen on the measured force→P map (§2): ~25× lesson 1's 20 kPa
+goal (so a gentle press passes safely) yet below the ~1.098 MPa browser-click
+peak and ~2.735 MPa vertex peak at slider top (so cranking the slider high and
+pressing hard reaches it). Reachable by force, avoidable by a gentle hand.
 
 ---
 
