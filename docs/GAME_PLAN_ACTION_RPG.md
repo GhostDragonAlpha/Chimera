@@ -1,289 +1,467 @@
-# SEALED — an action RPG built on provable matter
+# SEALED — an action RPG built from living structures
 
 Working title: **SEALED** (alternates: *Tension*, *The Sump*, *Vivarium*).
-Author: Qwen (planner). Date: 2026-10-11.
-Status: ACTIVE — §10 DECIDED 2026-10-11 by the user: Option B, grow
-the current engine. No external engine host (Godot and Unreal rejected).
-This plan is the bridge from the verified demo (commit e70a7fe5, live at
-http://127.0.0.1:8210) to a shippable game. Every mechanic below is either
-already implemented and verified in this repo, or is a stated extension of
-a law we already own. Nothing here invents a system we have no physics for.
+Original concept: Qwen, 2026-10-11. Design and engineering revision: Codex, 2026-10-11.
 
----
+**Confirmed direction:** grow ChimeraEngine itself. The user chose Option B on
+2026-10-11; no Godot or Unreal host. **This document is a game-design proposal**
+and an implementation sequence, not a claim that its proposed systems work today.
+The selected project graph still governs scientific requirements and release gates.
 
-## 1. The pitch in three sentences
+The aim is to turn the membrane inventory into a game where understanding a body
+or structure gives the player more ways to act. The player should come away saying,
+“I made that work,” and “this is the creature I have cared for.”
 
-You are a Warden bonded to a living creature on a sealed, pressure-born
-moon — and everything in that world, you, your creature, every predator,
-every wall, obeys one substrate: stored energy, tension, and topology.
-There are no hit points, no stats, no cooldowns — only energy ledgers that
-never lie, tendons you can feel and cut, and cells that heal or burst.
-Where Star Citizen is wide, SEALED is deep: one honest physics book under
-every object, so the stories it generates are *true*, not scripted.
+## 1. The game we are making
 
-The player-facing promise for the Star Citizen audience: *your thing is
-real and it remembers.* A torn knee tendon is a torn knee tendon — your
-creature limps until you feed it, rest it, and let it scar. That single
-property, applied to combat, traversal, crafting, building and story, is
-the whole game.
+You are a Warden bonded to a creature in the Sump, a world of living shelters,
+strained bridges and animals whose bodies bear the history of their lives.
+You explore, fight, rescue and build by redirecting force and resources through
+those bodies. Your companion is also your climbing partner, load bearer and
+collaborator in improvised machines.
 
-## 2. Design pillars (each one is already a law we own)
+The distinguishing feature is **transferable understanding**. Learning how to brace
+an injured limb teaches you how to support a broken bridge. Learning how to isolate
+a leaking chamber teaches you how to protect the lair. A tendon spool can become a
+splint, a climbing aid, a winch or a trap because its attachments and loading change.
 
-1. **Energy is the only currency.** Battery, food, money, health, XP are
-   the same number in different books. (A1 ledger — implemented, verified
-   to 3e-12 J in tendon_drive.hpp.)
-2. **Damage is topology, not subtraction.** Nothing loses HP. Cells
-   rupture, tendons sever, seals re-form. Disabled, not depleted.
-   (Rupture + sever — both implemented and playable in the demo.)
-3. **The body is a build.** You don't level up; you accumulate energy
-   until a phase change becomes possible, and then your body or structure
-   literally grows. (Build order #2 from THE_MEMBRANE_INVENTORY.md.)
-4. **The ledger is the art.** Energy flow is visible inside every body —
-   light under skin, glow through walls. Readability is not a UI layer;
-   it is the rendering style. (Our readouts become subsurface glow.)
-5. **No fake objects.** If the UI says it, the simulation did it. The
-   graph store keeps every claim provable and replayable.
+This is a third-person action RPG with an emphasis on experimentation. Combat must
+be responsive, exploration must reward curiosity, and care must change what happens
+on the next expedition. Physical consistency gives choices consequences; presentation,
+encounters and pacing make those choices enjoyable.
 
-## 3. What we already have (verified, committed)
+**The first promise is small:** one companion, one damaged crossing, one rescue,
+and several physically distinct ways to bring everyone home.
 
-| Asset | State | Becomes in the game |
+## 2. What the new concepts unlock
+
+The opportunity is in combinations, not in making 42 unrelated features from
+[THE_MEMBRANE_INVENTORY.md](THE_MEMBRANE_INVENTORY.md). Each row below is a proposed
+gameplay application. Its prerequisites remain work unless evidence in §3 says otherwise.
+
+| Physical idea | What the player can do with it | A memorable situation | Engineering prerequisite |
+|---|---|---|---|
+| Independent compartments and shared walls | Isolate a damaged region; divide a store; build redundancy | Sacrifice one bridge chamber to keep the route behind you intact | Closed region graph, one physical owner per shared wall, separate inventories |
+| Tendons, insertion strength and slack | Brace, pull, suspend, tension, release; reroute a load | Turn your climbing line into a temporary leg brace, then recover it | Finite attachment patches, tensile failure, reactions on both endpoints |
+| Capsules, contact and friction | Wedge, lever, pin, trip and stabilize | Beat a stronger predator by denying its footing rather than exhausting a bar | Coupled body dynamics, finite restraints, contact and traction |
+| Punctures, valves and transport | Vent, transfer pressure, isolate leaks, control a passage | Open a pressure door by equalizing it instead of breaking it | Gas/liquid inventories, flow law and transported energy; rupture alone is insufficient |
+| Adhesives, patches and cure | Make temporary repairs, reinforce seams, construct reusable joints | Hold a patch in compression while a companion braces the wall | Material supply, adhesion/cure state, strength and failure under renewed loading |
+| Material differences and geometry | Trade stiffness against weight, flexibility against protection | A stiff splint restores carrying but makes a narrow squeeze harder | Versioned material profiles, section geometry, mass and inertia updates |
+| Touch, proprioception, delays and reflexes | Read strain through the companion; exploit an enemy's limited information | A loaded foothold warns through posture and sound before it fails | Signals caused by contact/load, bounded propagation, interruption controls |
+| Yielding, damage and repaired topology | Track history through function, not just a cosmetic scar | The repaired side of a bridge changes which route is safe next time | Persistent rest state, connectivity, residual strength and serialization |
+| Thermal transfer and phase change | Store heat, soften a seal, release a frozen mechanism, cool a load | Spend scarce charge to thaw a valve, or take the long mechanical route | Temperature, heat capacity, transfer, latent heat and a tested material range |
+| Growth and resource transport | Grow a load path, relocate a room, specialize a companion | Build a light shelter now or retain the material for tomorrow's climbing organ | Matter input, construction work, feasible geometry and stable topology insertion |
+| Environmental and ecological feedback | Change access, food routes and shelter conditions | A repaired water route brings grazing animals back, attracting predators later | Explicit resource sources/sinks and scoped agents; a whole ecosystem is not required |
+
+Prioritize the first six rows for a reusable construction vocabulary. Sensing makes
+their consequences readable. Thermal systems, growth and ecology expand that vocabulary
+after the basic interactions can be played, saved and recovered.
+
+### Three scenes to build toward
+
+**The broken crossing.** Your companion cannot carry the rescued animal across a
+sagging bridge. You can unload supplies, tension a second support, lead both animals
+through separately, or lower the load and haul it up the other side. Each solution
+changes loads and geometry. There is no mission flag requiring one specific solution.
+
+**The injured rival.** A predator returns with a damaged forelimb and favors a different
+stance. You can drive it away, repair it to gain safe passage, or lure it onto ground
+where that stance is a disadvantage. This needs persistent functional damage and an
+AI that observes its own capabilities; it does not need a general social simulation.
+
+**The living workshop.** A lair tendon normally closes a gate. You disconnect it,
+attach it to a hauling frame and use stored tension to raise a chamber for repairs.
+Doing so leaves the gate unsecured. Construction becomes rearranging a useful system,
+with visible consequences, rather than selecting a larger structure from a menu.
+
+These are encounter proposals and acceptance scenarios, not current engine features.
+
+## 3. Starting point: evidence and limits
+
+Reviewed checkout: `E:/PythonChimera`, branch `WK-ENGINE-PATHS-20260929-PR`,
+HEAD `16097866b22d160d69ef2cf6f67802067164d507` at the start of this revision.
+The working tree contains unrelated changes and untracked experiments. This review
+reads their existence without adopting them as finished features. No controller
+session was provisioned for this edit; it is repository-only planning.
+
+| Capability | What the inspected source/evidence supports | What it does not establish |
 |---|---|---|
-| MembraneTick sealed-cell pressure sim | live, verified | every body and structure's "health" |
-| Tendon drive: muscle A7, tendon A8, capsule A5, battery, ledger | live, 5/5 falsifiers | locomotion, combat verbs, exhaustion |
-| Sever (tendon cut → limb limp) | live, playable | the core combat finisher |
-| Rupture (cell burst → topology change) | live | damage, death, terrain destruction |
-| Touch/pressure at vertices, gravity | live | interaction, world weight |
-| LBS binding + rig factory (18 459 verts, 28 joints, referee ROM) | live, pinned | any creature species we rig |
-| Graph store (provable state, sha-pinned assets) | live | the save system / world memory |
-| 12-lesson arc with verdicts, hints, progress | live | the prologue tutorial (reskinned) |
-| Evidence-driven build discipline (falsifier per feature) | culture | keeps the sim honest forever |
+| Energy-based tendon drive | `tendon_drive.hpp` and the round-11 report describe one default-off knee drive; unit checks cover ledger, sever, stall, rest and monotonic behavior | Whole-body locomotion, measured biological parameters, healing or a complete combat system |
+| Tendon accounting | Round 11 reports 759 armed frames, maximum residual about `1.055e-12 J`, and zero violations against its `1e-6 J` guard | A universal world-energy tolerance or a proof of every other solver |
+| Creature appearance and binding | The existing rigged mesh and sealed-cell demo provide a visible body and interaction surface | Correct inertias, independent physical degrees of freedom or stable movement of every limb |
+| Local sever/rupture demonstrations | Existing demo paths provide a starting point for interrupting a force path and changing containment | Spatial weapon contact, arbitrary cracks, conserved leak flow, choking or repair |
+| Follow camera and first lighting pass | Commits `6107d763` and `813c8c76`, with round-11 evidence, add optional follow view, lit materials and ledger feedback | A completed camera for fast combat, shadows, game art or horizontal locomotion; that report explicitly describes single-Y root motion |
+| Lessons and shell | The existing lesson progression, restart and interaction loop are reusable onboarding material | A complete rescue encounter, RPG progression or a finished commercial release |
+| Graph and source/evidence pins | Provenance and versioned descriptions of scientific/content inputs | A runtime save format, rollback, cross-hardware deterministic replay or anti-cheat |
+| Gait and other experiments | Candidate files and earlier receipts exist | Current integration qualification; inspect the relevant graph contract and exact build before relying on them |
 
-The 12 lessons are not thrown away: they become the Warden's training
-prologue, copy rewritten in-world. "FEEL THE MUSCLE" is already the best
-tutorial the game has — it just needs fur.
+Evidence entry points:
 
-## 4. The world and the fiction
+- [Round-11 camera, lighting and ledger report](../tools/game_shell/evidence/round-11/11_camera_light_report.md).
+- [Round-10 playable report](../tools/game_shell/evidence/round-10/10_playable_report.md).
+- [Tendon implementation](../ChimeraEngine/engine/tendon_drive.hpp) and
+  [MembraneTick interface](../ChimeraEngine/engine/membrane_tick.hpp).
+- [Membrane inventory](THE_MEMBRANE_INVENTORY.md), especially its final five-step build order.
+- Graph contracts `req.current_product_focus`, `req.teddy_gpu_matter_kernel`,
+  `req.creature_assembly`, `req.body_environment_interface`, `req.embodied_senses`,
+  `req.engine_game_release` and `req.documentation_admission`.
 
-**The Sump** — a shattered, tidally-locked moon where life never invented
-bones. Every organism is sealed pressure: cells → organs → limbs, exactly
-the membrane model the engine runs. The Warden (player) is bonded to a
-creature — first species: the monkey we already rig — through a shared
-energy network: feeding it charges it; it carries you; its ledger is
-partly yours.
+These are source and historical-evidence references. No fresh physics run or
+playtest was performed merely to revise this document. The first camera/lighting
+slice is already reported complete and should not be reassigned as new work.
 
-Three zones, hand-authored, deep rather than wide (anti-SC stance):
-- **The Fringe** — grazing flats, tutorial, light predators.
-- **The Ribs** — vertical canyon country; traversal is body-gated (you
-  grow the tendons that let you climb, then the world re-reads you).
-- **The Deep Sump** — late game: huge slow fauna, ruin-structures of a
-  dead precursor seal-civilization, the story's energy mystery.
+## 4. Design rules that let the systems combine
 
-## 5. The core loop
+1. **Function follows the physical path.** An attachment, wall, valve or actuator
+   must do the work attributed to it. Severing the path removes its contribution;
+   a hidden hinge or animation must not silently replace it.
+2. **Energy constrains action; it is not the only resource.** Track usable energy,
+   matter, contained fluid/gas, heat and load-bearing structure separately. Food
+   can provide material and chemical energy through a declared reduced process.
+   Money is a social representation; it is not literally joules. A charged but
+   punctured body and an intact exhausted body should create different problems.
+3. **Change a capability, not an invisible score.** Damage affects a load path,
+   seal, sensor or actuator. A health summary may communicate those conditions,
+   but it must not secretly determine physical outcomes.
+4. **Give the player a usable interface.** Attachment previews, strain indicators,
+   material recipes, maps and short tutorials are allowed. “No menus” and “no UI”
+   are not product requirements. Construction must be understandable without
+   knowing the engine's terminology.
+5. **Make experimentation recoverable.** Show a warning before irreversible
+   failure when the character could perceive one. Offer a quick release, a
+   temporary brace and a route home. Permanent injury must not trap a player in
+   a campaign they can no longer play.
+6. **Keep a small vocabulary useful everywhere.** Adding a material or part should
+   create new combinations of existing verbs before it adds another bespoke rule.
 
-Minute-to-minute:
-**Move** on real muscles (sprint drains the shared battery; overexertion
-heats; strain accumulates) → **Feed/hunt** to capture energy → **Fight or
-flee** using disable-combat → **Cache energy** before dark.
+Content has authored parameters and progression rules. Keep measured physical
+inputs, declared synthetic material profiles and game-design choices distinguishable.
+The existing drive's parameters are explicitly synthetic; do not relabel them as
+biologically measured to strengthen the fiction.
 
-Session loop:
-Return to the lair → **deposit energy** → the lair *grows a room* (phase
-change, not a menu) → tend wounds, feed the creature specific muscle
-groups → tomorrow's body is yesterday's diet.
+## 5. The playable vocabulary and control contract
 
-Long loop:
-Accumulate → grow → new capability (climb, swim, carry, sever harder) →
-deeper zone → bigger prey → bigger structures → the Sump's story unlocks
-as *ecology*, not cutscenes: you learn the world because its energy flows
-are real and learnable.
+The first prototype needs **inspect, touch, attach, pull, brace, cut, patch and
+release**, plus locomotion and a finite energy refill. Later verbs include vent,
+transfer, cure and grow, after their physical prerequisites pass.
 
-## 6. Combat: disable, don't deplete
+| Player intention | Engine action | Player feedback | Meaningful limit |
+|---|---|---|---|
+| Move toward a point | A controller requests bounded joint effort and support changes | Foot contact, lean, pace and exertion | Load, balance, traction, available work |
+| Pull or carry | Establish an attachment and a force-limited drive | Visible line tension, posture, slip | Both bodies receive reactions; anchor strength matters |
+| Brace | Add an admitted support or tension path | Deflection changes and load redistributes | Brace weight, fit, buckling/slack and attachment strength |
+| Cut | A tool contact satisfies the admitted failure rule | The specific load path opens; motion changes | Reach, alignment, material and work; a click alone is not cutting |
+| Patch | Consume a compatible patch and attach it across a defect | Containment/stiffness recovery with a visible seam | Fit, remaining damage, cure and renewed loading |
+| Inspect | Reveal information available to the Warden or companion | Shape, pulse, strain, leak direction; optional instrument overlay | Sensor range and access; no unexplained knowledge through walls |
 
-Combat is wrestling with the ledger. Every attack is a real impulse on a
-real body; every injury is one of the two verbs we already ship:
+Use intent-level controls: walk here, hold this, brace there, release now. The
+player should not manually operate every muscle. A grasp preview snaps to valid
+attachment regions while the resulting attachment still has finite strength.
+Input buffering, camera assistance and readable silhouettes improve control without
+injecting unaccounted forces or teleporting bodies.
 
-- **Strike** — impulse → pressure spike → cells rupture where it lands.
-  A ruptured leg-cell leaks pressure; the limb sags.
-- **Sever** — a called shot (grapple, hold, pull past ROM) cuts a tendon.
-  The limb goes limp *forever until healed*. This is the demo's falsifier
-  as a finisher, and it works on you too — which is why combat is tense.
-- **Grapple/choke** — potential difference → flux: pin an enemy's cell
-  pressure and it suffocates on its own gradient.
-- **Armor/structures** — walls are big slow cells; sieges are pressure
-  engineering.
+Keep a **quick release** available during pulls and grapples. It releases the
+constraint; stored energy and momentum continue to evolve. It is not a freeze key.
 
-Enemies obey the identical laws (same kernel, no NPC stat sheet). Fun
-check for Phase 1: one predator, one ravine — does a 90-second chase where
-you can *choose* to maim it or flee it make you whoop? If not, fix combat
-before building anything else.
+## 6. The first vertical slice: “Bring Them Home”
 
-## 7. Building: energy accumulates, structures appear
+**Target session:** 10–15 minutes, a design target to validate with players.
+One compact ravine, one companion, one stranded creature or salvage load, one
+damaged crossing, and one repair alcove. Use the selected monkey appearance.
+Start with the graph's terrestrial reference conditions; the moon setting is
+fiction until a different environment profile is deliberately admitted.
 
-The user's founding requirement, made literal: you carry metabolic energy;
-depositing it past a threshold triggers a phase change — a new sealed room
-grows out of the lair wall, pressurized, alive. Structures are bodies:
-- **Stores** — dormant cells that hold energy (your bank; raidable).
-- **Nurseries** — heal cells faster (re-seal rate up).
-- **Forges** — grow tendon-tools: reach extenders, cutting spurs (sever at
-  range), spring shanks (jump).
-- **The Bond Well** — deep-late: expand the shared ledger; your creature's
-  battery becomes a grid you can spend remotely.
+### The sequence
 
-No blueprints, no tech tree UI. Growth order is gated by accumulated
-energy and by what your body can carry — the inventory's build order is
-literally the progression system.
+1. **Bond.** Touch a supported limb and command a short pull. The companion's
+   posture and response establish that it senses loading and can stall.
+2. **Discover.** Find the crossing and the stranded target. See a strained
+   attachment and a leaking or structurally open chamber, according to the
+   currently qualified damage model. The objective is clear before inspection.
+3. **Choose.** Cross light, brace the bridge, or rig a haul. Provide enough
+   material for two viable approaches, but not effortless completion of all three.
+4. **Commit.** Move the target. Its weight changes the problem. A poor attachment
+   slips or fails with enough warning to permit release and recovery.
+5. **Care.** Repair a damaged component and retest it under a small load.
+   The repair changes a measured capability and remains after save/reload.
+6. **Return.** Reach the alcove with the target and companion. The new resource
+   buys a useful choice: restore a brace, reinforce storage, or retain expedition stock.
 
-## 8. Progression, death, and persistence
+**Success:** target and companion reach the safe area with a stable support path.
+**Recoverable failure:** lose a support, spill a bounded resource, or drop the load
+onto a recoverable ledge. **Terminal failure:** all viable recovery paths are lost;
+offer a checkpoint restart with the reason visible. The first slice does not require
+permadeath, biological regrowth, autonomous predators or an entire settlement.
 
-- **No XP.** Capability = stored energy + grown structures + scars.
-- **Scars persist.** A healed torn tendon regrows weaker or stiffer
-  (parameters change, permanently, in the save graph). Two players'
-  creatures diverge by lived history.
-- **Death is a setback, not a reset.** Creature death = catastrophic
-  re-seal: you wake at the lair, the body is rebuilt from stored energy
-  (costly), and the scars of the death remain. Permadeath off by default,
-  on as a mode for the SC-hardcore crowd.
-- **Save = ledger snapshot.** The graph store already pins state by
-  sha256; a save is a provable world state, replayable — which gives us
-  free anti-cheat, free spectate/replay, and free speedrun verification.
+### The gate
 
-## 9. Graphics direction ("way more detailed" done honestly)
+- An unfamiliar player starts without an agent or developer operating the engine.
+- At least two solutions produce different measured load/attachment histories.
+- A damaged path changes behavior; a patch/brace restores only its stated function.
+- The player can explain the failure and recover using an offered physical action.
+- Saved damage, inventory, attachments and mission state survive reload.
+- Turning off the engineering HUD leaves enough visual/audio feedback to play.
+- Record control confusion, time to first useful action, recoveries and whether
+  the player tries a second solution. A “whoop” is useful feedback, not the sole gate.
 
-Art direction: **the ledger is visible.** Subsurface glow shows charge;
-skin transmits pressure color (taut blue → flaccid grey); severed tendons
-go dark; structures breathe on a pressure clock. This is a *rendering of
-simulation state*, so detail and truth never diverge — the tech demo of
-that look is the real pitch video.
+Initial playtest proposal: five fresh players, at least four complete the objective
+without a developer rescue, and each can identify one physical cause of failure or
+success. These counts are a product hypothesis, not scientific validation or evidence
+that the game is commercially ready. Preserve failures and revise the encounter.
 
-Hard truth, stated plainly: the current engine's renderer is a dev window,
-not a game renderer, and "advanced graphics" is the single largest cost
-item in this plan. The physics kernel is the crown jewel and must stay
-headless, deterministic, and ledger-checked; the renderer should be
-replaceable. The decision on the host is recorded in §10.
+## 7. Combat, companionship and progression
 
-## 10. THE DECISION — RECORDED 2026-10-11: Option B (grow the current engine)
+### Combat is a contest over support and access
 
-- **Option A — Godot 4 host (recommended).** Keep ChimeraEngine as a C++
-  middleware kernel (GDExtension); Godot gives PBR, shadows, animation,
-  UI, input, shipping, and moddability now. Fastest path to "looks like a
-  game"; kernel stays provable. Cost: a bridge layer + porting input/camera
-  out of the engine loop.
-- **Option B — grow the current engine.** Full control, no bridge tax, but
-  we hand-write what Godot gives free (shadows, post, assets pipeline,
-  packaging). Realistically the slowest path to good-looking.
-- **Option C — Unreal 5.** Best out-of-box visuals; worst fit: licensing
-  friction against an open deterministic kernel, and the kernel becomes a
-  plugin guest in someone else's house.
+Begin with a single opponent built from the same bounded components. Its decisions
+can differ from the player's; its physical limits cannot be replaced by a difficulty
+multiplier hidden inside the solver.
 
-**DECIDED: Option B.** The user rejected external engine hosts on
-2026-10-11. ChimeraEngine stays the whole stack — kernel, game layer and
-renderer in one process, no bridge seam. Consequences: the graphics track
-becomes in-engine renderer work (lighting, shadows, materials, then the
-ledger-glow look), sequenced by visual payoff; every renderer system reads
-simulation state directly, which makes the §9 art direction easier, not
-harder. Options A and C above are kept as the rejected-alternatives record.
+An encounter has readable stages: observe posture, provoke a commitment, contest
+support, exploit an opening, then choose escape, capture or a disabling injury.
+Reward correct timing and positioning before permanent cutting. Temporary loss of
+balance, trapped reach, a loaded tendon or a blocked route can all win an encounter.
 
-## 11. Architecture (target shape)
+Do not advertise choking from pressure alone. Respiration requires gas transport
+and resource accounting. Likewise, a generic impulse does not imply a spatially
+correct fracture; the contact and failure model must establish where damage occurs.
 
+Enemies should retreat, protect a compromised side, seek support and avoid obviously
+unsafe loads. Their perception is bounded: contact, line of sight and admitted
+sensors feed a compact local state machine or utility policy. Online language-model
+calls are not part of combat timing, navigation, save validity or the physics loop.
+
+### The companion becomes personal through useful history
+
+Care changes behavior that the player can recognize: a trusted brace placement,
+a remembered route, a preferred resting posture or a repaired region requiring
+different loading. Begin with explicit, saved preferences and capability estimates.
+Do not promise an unsolved general learning system.
+
+Never make a permanent scar a mandatory downward spiral. Offer rehabilitation,
+replaceable supports and alternative body configurations. A visible scar can remain
+while lost function is restored through a different load path. Care must involve
+diagnosis and choice, not repeated waiting timers.
+
+### Progression creates tradeoffs and new combinations
+
+| Progression choice | New opportunity | Cost or disadvantage |
+|---|---|---|
+| Reinforced carrying frame | Haul larger finds; protect a damaged limb | More mass, wider turning clearance |
+| Longer elastic tendon | Reach distant anchors; store a launch impulse | Slack management and a more dangerous recoil |
+| Additional compartment/valve | Survive one leak; redistribute a resource | Extra walls, connections and maintenance |
+| Softer contact surface | Grip and cushion on a particular substrate | Wear, compliance or reduced cutting resistance |
+| Better sensing attachment | Earlier load warning; more precise manipulation | Material/energy cost and exposure to damage |
+| Grown structural branch, later | A new route or support geometry | Matter supply, construction work, time and changed inertia |
+
+These are build directions, not rigid character classes. Unlock knowledge through
+successful inspection, recovered patterns and experiments; unlock construction through
+materials, suitable geometry and available work. Energy accumulation alone must not
+create matter, anatomical information or an instant new room.
+
+The campaign is a chain of places whose constraints invite different assemblies.
+The Fringe teaches support and care; the Ribs rewards rigging and access; the Deep
+Sump adds connected infrastructure and larger consequences. Build one chapter before
+committing to three zones or a 10–20-hour content promise.
+
+## 8. The lair, economy and world memory
+
+The lair is the system the player gradually learns to maintain. Start with a store,
+a repair surface and attachment points. Later add a nursery, a hauling frame,
+pressure storage and a growing shelter. A new room requires an admissible structure,
+material input and energy expenditure; thresholds authorize a construction process
+rather than materializing an unsupported mesh.
+
+The economy has several shortages: useful matter, usable energy, access, time and
+safe transport. This supports rescue, salvage, construction and negotiation alongside
+hunting. Predators should not be the only fuel source, and the only viable route
+through the game should not be increasing destructive power.
+
+Use a small number of authored ecological relationships first. Repairing one water
+route or opening one passage changes where a few creatures can feed or shelter.
+Show the causal chain before building a free-running ecology. Identify external
+energy input and resource regeneration so a closed valley is not secretly creating
+food or doomed to unavoidable depletion.
+
+**Persistence is explicit engineering work.** Save the runtime state required for
+continuation: stable object/component IDs, transforms and velocities, material and
+fluid inventories, stored energy and temperature, damaged topology/rest state,
+attachments, actuator state, AI memory, mission state, clock/RNG state, content and
+solver versions. Include every constitutive internal state actually used by the
+selected model, not just fields displayed in the UI.
+
+Use a versioned checkpoint plus an ordered command/topology-event journal, written
+atomically with one previous known-good checkpoint. Define journal compaction and
+bounded disk use. Graph provenance identifies inputs; it does not substitute for
+runtime serialization. Test an interrupted save, corrupted latest checkpoint, a save
+during a loaded attachment, and reload after a cut and patch.
+
+Replay needs a declared determinism scope and compatibility policy. Multiplayer,
+anti-cheat and speedrun verification each need additional protocols and validation;
+checksums alone establish none of them. Single-player is the initial release target.
+
+## 9. Engineering shape: one engine, explicit boundaries
+
+ChimeraEngine remains the whole runtime stack, with a headless physical core and
+its own renderer. One process does not require every subsystem to mutate the same
+state. Keep boundaries that make the game testable and saveable:
+
+```text
+Player input / bounded NPC observations
+                  |
+          intent and command queue
+                  |
+ fixed simulation clock -> physical state + component/attachment graph
+                  |             |
+           admitted events   inventory / work accounting
+                  |
+          immutable frame snapshot
+             /             \
+  in-engine rendering     gameplay feedback / UI
+                  |
+        checkpoint + ordered event journal
 ```
-[ ChimeraEngine — one process, one build ]
-   kernel (headless core): membrane cells · tendon drives · rupture/sever
-   · ledger invariants · fixed 300 Hz internal step · graph-logged state
-   game layer: camera · input · AI (decides u-commands, never forces) · UI
-   renderer: in-engine upgrades — lighting → shadows → materials → glow
-   content: rig factory (species) · authored zone graphs · lesson copy
-        |
-   graph store (save/memory/pins)
-```
 
-The AI rule is load-bearing: NPCs issue *effort commands* (u in 0..1) to
-the same drives the player uses — no NPC can be stronger than its body,
-and difficulty is literally feeding or starving the opponents.
+The renderer reads a completed snapshot and interpolates appearance where allowed.
+It does not write forces, repair topology or advance the world clock. Graph/HTTP
+inspection must be rate-limited consumers; do not serialize or synchronously log the
+entire world on every physical substep.
 
-## 12. Roadmap — each phase ends playable and fun-checked
+### A component contract that makes combinations safe
 
-- **Phase 0 — DONE.** Demo: body, lessons, tendon drive, sever, restart.
-  (e70a7fe5; visible-browser verified; published to origin
-   WK-SEAL-ENERGY-20261011 2026-10-11.)
-- **Phase 1 — "The Bond" (first build target).** Third-person camera on
-  the monkey in the existing engine; in-engine renderer pass 1 (lighting +
-  materials on the pinned mesh); tendon-drive *locomotion controller*
-  (a policy that turns u-commands into real run/jump — the one genuine R&D
-  risk, budgeted first); one ravine; one predator; disable-combat v1
-  (strike→rupture, grapple→sever); feed/charge loop. Fun gate: the chase
-  whoop test (§6).
-- **Phase 2 — "The Lair".** Energy deposit → grown structures; night
-  pressure; wound care; two species (rig factory earns its keep). Fun
-  gate: the lair grew because *I* played well — and it is on screen.
-- **Phase 3 — "The Ribs".** Body-gated traversal; scars/persistence;
-  sever-mastery combat; death-as-setback. Fun gate: a 2-hour session with
-  zero UI prompts and one story a player retells.
-- **Phase 4 — "The Chorus."** NPC wardens with the same laws; territory
-  and energy-economy conflicts; co-op on the shared ledger (one kernel,
-  lockstep + graph log — provable multiplayer). Ship.
+Every admitted component declares its geometry, material profile, state, typed
+connection points, carried/transported quantities, capacity and failure conditions.
+An attachment has endpoints, an orientation/frame, compatible connection types and
+a finite load path. A wire, tendon and fluid conduit are different port types;
+their visual similarity must not permit invalid transfers.
 
-Graphics track runs parallel from Phase 1, in-engine: lighting pass →
-shadow maps → PBR-ish materials → the glow-through-skin ledger look as the
-first real art milestone.
+An interaction carries an equal-and-opposite force or an explicitly paired transfer
+where the selected law requires one. Discrete topology changes record what was removed,
+created, transferred and dissipated. Separate systems may exchange work through a
+defined interface; they may not each count the same physical wall or stored energy.
 
-## 13. Risks, honestly
+Keep the component catalog small: chamber, wall, tensile element, bounded actuator,
+contact surface, attachment and patch first. Introduce a valve or heater only with
+its transport/thermal contract. Game content combines these admitted components.
 
-1. **Scope.** Star Citizen spent ~$700M on breadth. We compete on depth
-   per square meter: one moon valley, one bond, one physics book. This
-   plan is a 10–20 hour handcrafted game, not a metaverse.
-2. **Locomotion R&D.** Kinematic pose + tendon drives do not run by
-   themselves; a controller (CPG-style or optimization-based, deterministic)
-   is Phase 1's real work. Mitigation: start with walk/lope, not parkour.
-3. **Sim cost.** Deterministic CPU physics bounds creature count: hero
-   creature + a handful of live bodies; herds LOD down to scripted until
-   you touch them. The ledger stays honest at the LOD seam.
-4. **Content pipeline.** Rig factory already generalizes rigs (referee
-   ROM, terminal-segment law) — species count scales with art time, not
-   code time. Art is the new bottleneck; plan for an artist hire/asset buy
-   at Phase 2.
-5. **In-engine renderer cost.** Shadow maps, material pipeline and asset
-   tooling are hand-written work a commercial editor gives free.
-   Mitigation: renderer upgrades are phased by visual payoff, each one
-   reads simulation state directly, and the kernel's ledger invariants
-   never depend on renderer changes.
+### Physical and computational scope
 
-## 14. What "fun" means here (the acceptance test for every feature)
+- Target the graph's fixed **300 Hz** simulation clock independently of rendering.
+  Treat that as a qualification requirement, not proof that every existing demo
+  already runs that way. Catch-up work must be bounded and slow frames reported.
+- Close scale, mass, inertia and coordinate frames before tuning a gait. Do not
+  silently resize an existing many-tonne profile to make it look like a small monkey.
+- Qualify passive dynamics, bounded actuation, balance, then walk/turn/stop.
+  Power removal preserves momentum and passive forces; ground removal permits falling.
+- Respect the resident GPU matter-kernel contract. CPU orchestration and selected
+  reference calculations do not justify moving the production physical world to CPU
+  or using cosmetic skin over an unrelated character solver.
+- Account for usable energy, elastic/kinetic/gravitational storage and modeled heat
+  with explicit external work/flux. Track mass and transported species independently.
+  Give each solver a justified tolerance; a tiny single-joint residual is not a
+  whole-world accuracy promise.
+- Admit damage, repair and growth at explicit simulation boundaries. Reject invalid
+  geometry before publishing it to physics, collision, rendering or the save system.
+- Keep LOD transitions conservative for their declared quantities. Never swap a
+  loaded attached bridge or engaged creature to a visual-only approximation.
 
-A feature ships when a stranger, unprompted, does something the sim didn't
-script and the world *answers truthfully*: they kick a wall and it stays
-dented; they maim a predator and it hunts slower forever; their creature
-refuses a cliff because yesterday's diet didn't grow the tendon. Lessons
-taught the physics; the game must make the physics *personal*.
+### Performance targets to measure
 
-## 15. Version control discipline (push consistently)
+The initial reference machine is the user's RTX 4090 and i9-13900K with 128 GB RAM.
+Test with the local LLM released through the existing GPU handoff mechanism.
+Running the game beside a resident model is a separate operating profile.
 
-Work is not protected until it is committed AND pushed. This repo has
-already lost uncommitted work once (the 273-line incident).
+Start with the companion, one interacting target/opponent, and the local structure.
+Set a provisional 60 FPS presentation target at a declared resolution. Record median
+and p95 frame time, p99 tick/catch-up behavior, control latency, GPU/host memory and
+bytes read back. The 16.7 ms frame interval is a target, not a current measurement.
+Set content and simulation budgets from those results before increasing creature count.
 
-1. **One scoped commit per verified milestone.** A milestone is real when
-   its evidence is reviewed (falsifier passes, gameplay verified). Stage
-   explicit paths only — the tree is shared with other agents; never
-   `git add -A`, never commit files outside the milestone's scope.
-2. **Push every reviewed commit to the configured remote (origin) on the
-   working branch, immediately after review.** Local-only commits do not
-   count as protected work.
-3. **Phase gates are push points.** A phase is not done until its commits
-   are on the remote.
-4. **No force-push, no history rewrites, no pushing other branches or
-   tags.** If a push fails (auth, non-fast-forward), STOP and report —
-   rebasing our own scoped commits onto the remote branch is allowed;
-   rebasing or touching others' commits is not.
-5. **Evidence travels with code.** Each milestone commit includes its
-   evidence files (reports, probe JSONs, screenshots under 5 MB) so the
-   remote is the audit trail.
-6. **Diverged remote branch: publish, then integrate.** If the working
-   branch has diverged on the remote, push our scoped commits to a new
-   branch (WK-<milestone>-<date>) and open a PR. Never rebase, merge or
-   stash in the shared working tree — it holds other agents' uncommitted
-   work (the 273-line incident). Integration happens in a separate
-   `git worktree`, never in the live checkout.
+Bound caches, event journals, transient contact data and inactive objects. Repeatedly
+load, damage, repair, save, unload and revisit the same scene; memory should reach a
+stable plateau. “It fits once” does not establish a usable expedition loop.
 
----
-Phase 1 assignment 1 (per the §10 decision): third-person camera on the
-creature in the existing engine, keyboard-driven tendon already live,
-ledger invariant asserted every frame — then renderer pass 1 (lighting +
-materials on the pinned mesh).
+## 10. Graphics and readability
+
+Keep the confirmed **Option B: grow the current engine**. Godot and Unreal were
+rejected as hosts. Preserve the ability to test the core headlessly and, after
+qualification, let a separate game repository consume a pinned engine interface.
+The repository split in `req.engine_game_release` does not require an external engine.
+
+Give each important condition at least two readable cues: shape/posture plus sound,
+motion plus a material change, or an icon plus a visible seam. Color alone is inadequate.
+Energy glow is a designed visualization of selected state, not a claim that all
+materials physically emit visible light. Distinguish charge, strain and temperature.
+
+Visual work should improve decisions in this order:
+
+1. Refine the existing follow camera: collision, occlusion, recovery after a fall,
+   framing of companion + manipulated object, and optional horizon comfort.
+2. Improve contact readability: stable depth, useful shadows/contact cues, materials
+   that distinguish soft walls, stiff supports and active attachments.
+3. Make load and failure readable: tendon tightening, support deflection, seam opening,
+   leakage when modeled, and an unmistakable successful patch.
+4. Add localized glow, cross-section inspection and selective translucency without
+   turning every normal scene into an engineering display.
+5. Add environmental dressing after geometry and silhouettes remain legible in motion.
+
+Use one coherent small art set. An anatomically elaborate asset that the player cannot
+read under load is less useful than a well-lit, consistent creature and workshop.
+The existing 12 lessons become optional Warden training and contextual exercises;
+do not require a long classroom prologue before the first meaningful expedition.
+
+## 11. Roadmap and release gates
+
+| Milestone | Deliverable | Exit evidence | Defer until later |
+|---|---|---|---|
+| M0 — preserve the baseline | Pinned playable demo; existing camera/lighting and tendon behavior recoverable | Known build, scoped historical receipts, explicit current limitations | Repeating already completed camera work |
+| M1 — a body that carries a consequence | A complete bounded force path, admitted compartment ownership, local sensing, and locomotion/support qualification | Passive drop, stall, support loss, sever and renderer-rate controls; measured scale/inertias | Parkour, multiple species, whole-body biological fidelity |
+| M2 — Bring Them Home | The compact rescue slice with two solutions, failure/recovery and a repair that persists | Physical controls plus observed fresh-player sessions from §6 | Predators if they delay the basic rescue; growth and large zones |
+| M3 — combinations | One opponent, reusable rigging parts, a working lair and a third encounter solved with the same parts | Parts work outside their introductory puzzle; bounded memory across repeated sessions | Broad crafting catalog, detailed metabolism |
+| M4 — one finished chapter | Reliable onboarding, save/recovery, presentation, settings and a coherent expedition arc | Declared hardware/fidelity envelope; offline install/start; user-confirmed game loop | Mandatory co-op or a promised campaign duration |
+| M5 — expand only what worked | Further regions, selected thermal/growth/ecology interactions | Each new mechanism has a physical falsifier and a new player decision | Cosmic simulation and full molecular chemistry unless a later game specifically needs them |
+
+Engine qualification and a named release precede the separate game repository, as
+the graph requires. That release freezes interfaces, evidence scope and compatibility;
+it does not declare all future science finished. Do not turn this design document
+into an automatic controller queue or begin implementing all rows at once.
+
+**Immediate next engineering assignment:** audit the complete force/support path and
+choose one qualified route to a controlled carry/brace interaction. Reconcile existing
+gait experiments before commissioning another controller. If walking remains unqualified,
+use a supported manipulation test to prove attachment, load, cut and repair while the
+locomotion work proceeds; do not present that stationary test as the finished RPG.
+
+## 12. Risk controls that preserve the game
+
+| Risk | Early signal | Response |
+|---|---|---|
+| Physics produces activity but few interesting decisions | Players repeat one strongest action in every encounter | Change geometry, available supports and consequences; test another solution with existing parts |
+| Interaction feels slow or fussy | Players struggle to attach, aim or understand a failure | Improve intent controls, previews, camera and feedback before adding laws |
+| Locomotion consumes the whole project | Candidate controllers never pass power/support controls | Scope a short supported interaction slice; retain the full-body gate and investigate the failing mechanism |
+| Permanent damage punishes experimentation | Players reload after every injury or abandon a companion | Provide reversible supports, repair choices and fair recovery; preserve history without permanent uselessness |
+| More detail exceeds the hardware budget | Long frames or memory growth during topology changes | Bound active scope, measure transition costs, and qualify reduced states rather than hiding failures |
+| Fiction outruns implementation | A label says breathing, healing or growth but only a pose changes | Implement the missing transfer/state or use a narrower description until it is qualified |
+| Infrastructure replaces game development | Workflows and catalogs grow while the rescue remains unplayable | Judge the next task by the player action it enables or the demonstrated blocker it removes |
+| Multiplayer swallows the first release | Work begins on lockstep before saves and single-player recovery work | Ship the single-player contract first; choose replication after determinism and bandwidth tests |
+
+The concept is successful when a player applies something learned in one context to
+another, sees the expected consequence, and cares about the particular body or place
+that consequence changed. Scientific checks establish the mechanism. Player observation
+establishes whether using it is understandable and worth doing again.
+
+## 13. Change and publication discipline
+
+Preserve the original plan in Git history. New mechanics in this revision remain
+proposals until the relevant graph admission and implementation work occur. Existing
+measured evidence retains its original scope and date.
+
+For each implementation milestone, record its prediction and falsifier, scoped source
+changes, exact build/input identities, physical results and observed gameplay failures.
+Commit explicit paths only and preserve other agents' work. Use the applicable
+`Agent: NAME` trailer and the standing publication workflow: publish completed scoped
+commits to the intended branch and verify the remote ref. Never force-push, reset,
+stash or rebase the live shared checkout to obtain a clean-looking result.
+
+Keep review/publication separate from master integration, graph admission and runtime
+deployment. A document revision does not authorize changing those independently.
