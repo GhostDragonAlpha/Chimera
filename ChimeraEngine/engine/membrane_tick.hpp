@@ -63,6 +63,26 @@ public:
     bool tendon_effort(int joint_index, double u);
     bool tendon_sever(int joint_index);
 
+    // PHASE 1 LEDGER GUARD (SEALED Phase 1 assignment 1, 2026-10-11): the
+    // A1 tendon ledger invariant is asserted EVERY frame the drive is
+    // armed (ledger_guard_frame_, called from step() on the render thread).
+    // The getters below are read on the SAME thread (the main loop, right
+    // after step) -- no cross-thread contract is added. On violation the
+    // guard prints to stderr AND raises the pending flag; the main loop
+    // turns a pending violation into one visible engine log line.
+    double ledger_max_err_J() const { return ledger_max_err_J_; }
+    uint64_t ledger_frames() const { return ledger_frames_; }
+    uint64_t ledger_violations() const { return ledger_violations_; }
+    bool ledger_violation_pending() const { return ledger_violation_pending_; }
+    std::string ledger_violation_detail() const { return ledger_violation_detail_; }
+    void ledger_violation_clear() { ledger_violation_pending_ = false; }
+
+    // THE FOLLOW CAMERA (SEALED Phase 1): the creature's root position.
+    // The fall law owns a single rigid DOF along Y (x,z stay at the
+    // authored origin), so the root is (0, root_y, 0). Read on the render
+    // thread, the same thread that runs step().
+    float root_y() const { return root_y_; }
+
     bool load_body_binding(const std::string& body); // admitted JNT3, before seals/controllers
     bool body_active() const { return body_active_.load(std::memory_order_acquire); }
     bool intent_joint(int idx, float force_n);
@@ -345,6 +365,15 @@ private:
     double tendon_battery0_J_ = 0.0;       // battery snapshot at last init
     double tendon_elastic0_J_ = 0.0;       // elastic snapshot at last init
     void   tendon_reset_();                // disarm + re-init (lock held)
+    // PHASE 1 LEDGER GUARD state (render thread only; see the public block):
+    // every armed frame, |drain - (work + heat + dElastic)| must stay
+    // within 1e-6 J. Max error + counts; one stderr summary every 300
+    // frames; a violation prints immediately and sets the pending flag.
+    void     ledger_guard_frame_();        // caller holds seal_mtx_ (step)
+    double   ledger_max_err_J_ = 0.0;
+    uint64_t ledger_frames_ = 0, ledger_violations_ = 0;
+    bool     ledger_violation_pending_ = false;
+    std::string ledger_violation_detail_;
     // THE SEAL v2 / MITOSIS (cut-and-weld, recursive). The wall is the
     // welded cross-section itself; cut points are convex blends over
     // original vertices (merged, <= 8 entries), so the weld holds at any
