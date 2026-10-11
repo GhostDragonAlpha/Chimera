@@ -29,11 +29,26 @@
 //          e^-(1.5/0.9)^2 ~ 0.06 of peak = +0.6/255 at contact, so the ink
 //          law's EXACTLY 55 holds within quantization; the ring dies with the
 //          sweep via (1-t).
+// SEALED PHASE 1 ASSIGNMENT 1 — RENDERER PASS 1 (2026-10-11), DEFAULT OFF.
+// PASS1=0 (the shipped pipeline): the cyclorama below, untouched.
+// PASS1=1 (the opt-in 'v' twin): the ground plane reads the light — one
+// flat albedo, one directional key (the plane's normal is +Y; the key
+// arrives as a vertex-stage varying), one flat ambient. Pass 1, not PBR.
+layout(constant_id = 0) const uint PASS1 = 0u;
 layout(location = 0) in float vDist;
 layout(location = 1) in float vMeshR;
+layout(location = 2) in vec3 vLightDir;
 layout(location = 0) out vec4 fragColor;
 
 void main() {
+    if (PASS1 == 1u) {
+        const vec3 GROUND = vec3(0.42, 0.42, 0.45);   // neutral stone; declared synthetic
+        vec3 L = normalize(vLightDir);
+        float key = max(dot(vec3(0.0, 1.0, 0.0), L), 0.0) * 0.80;
+        float amb = 0.25;
+        fragColor = vec4(GROUND * (amb + key), 1.0);
+        return;
+    }
     const vec3 inner = vec3(55.0 / 255.0);
     const vec3 outer = vec3(34.0 / 255.0, 31.0 / 255.0, 27.0 / 255.0); // E1: warm, luma-equal to 32
     const vec3 stage_far = vec3(0.015, 0.02, 0.06);  // E1: THE clear color (E1_CLEAR_COLOR)

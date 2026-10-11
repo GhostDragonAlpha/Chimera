@@ -1,0 +1,13 @@
+tendon before pose probe: armed False severed True
+1. /tick_pose knee_L 40 (unarmed): {'ok': True}
+   /tick_pose knee_L 40 by index 15: {'ok': True}
+2. reflex arm: {'ok': True, 'reflex': {'reflex_on': True, 'breathing': False, 'flinch': True, 'startle': True, 'pressure_coupling': True, 'breath_cell': -1, 'breath_period_s': 0, 'breath_disp_m': 0, 'flinch_pin_l': -1, 'flinch_pin_r': -1, 'flinch_env_l': 0, 'flinch_env_r': 0, 'startle_env': 0, 'quiet_s': 1e+30, 'block': "flinch:no_drive_resolution (arm gait once to measure this body's drive pins; the resolution persists after disarming)"}}
+   before press: {"damage_sum": 0, "failed": 0, "capacity_sum": 1346990000.0, "force_l": 0, "force_r": 0, "load_l": 0, "load_r": 0, "reflex_cell_count": 36630, "tendon_armed": false, "tendon_severed": true}
+   surface: 18459 verts, y[-0.02,9.97], belly point=(2.328501558235274e-10, 5.144214153289795, 0.7591684460639954)
+   belly press (hit form): {'ok': True}
+   after press: {"damage_sum": 0, "failed": 0, "capacity_sum": 1346990000.0, "force_l": 0, "force_r": 0, "load_l": 0, "load_r": 0, "reflex_cell_count": 36630, "tendon_armed": false, "tendon_severed": true}
+   reflex summary: {"ok": true, "reflex": {"reflex_on": true, "breathing": false, "flinch": true, "startle": true, "pressure_coupling": true, "breath_cell": -1, "breath_period_s": 0, "breath_disp_m": 0, "flinch_pin_l": -1, "flinch_pin_r": -1, "flinch_env_l": 0, "flinch_env_r": 0, "startle_env": 0, "quiet_s": 1e+30, "block": "flinch:no_drive_resolution (arm gait once to measure this body's drive pins; the resolution persists after disarming)"}}
+   touch clear: {'ok': True}
+   after clear: {"damage_sum": 0, "failed": 0, "capacity_sum": 1346990000.0, "force_l": 0, "force_r": 0, "load_l": 0, "load_r": 0, "reflex_cell_count": 36630, "tendon_armed": false, "tendon_severed": true}
+   reflex off: {'ok': True, 'reflex': {'reflex_on': False, 'breathing': False, 'flinch': True, 'startle': True, 'pressure_coupling': True, 'breath_cell': -1, 'breath_period_s': 0, 'breath_disp_m': 0, 'flinch_pin_l': -1, 'flinch_pin_r': -1, 'flinch_env_l': 0, 'flinch_env_r': 0, 'startle_env': 0, 'quiet_s': 1e+30, 'block': "flinch:no_drive_resolution (arm gait once to measure this body's drive pins; the resolution persists after disarming)"}}
+3. tendon after all probes: armed False severed True q_deg -19.095 battery_J 976.5029 ledger frames 1060 violations 0

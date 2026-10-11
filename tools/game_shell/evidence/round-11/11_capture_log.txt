@@ -1,0 +1,15 @@
+== C. engine-native capture (GET /frame) + real keystrokes ==
+window: pid=48360 title='' path=E:\PythonChimera\.tmp\cam-engine\Release\chimera_engine.exe
+  11a_dev_default.png: 7750787 bytes, 1920x1009
+  (toggles OFF: follow-cam off, pass-1 lighting off)
+  posted VK 0x43 keydown=True keyup=True
+  11b_follow_cam.png: 7750787 bytes, 1920x1009
+  posted VK 0x56 keydown=True keyup=True
+  11c_lighting.png: 7750787 bytes, 1920x1009
+11a vs 11b (camera): mean |dRGB| 5.61, pixels changed >12: 28.6%
+11b vs 11c (lighting): mean |dRGB| 85.41, pixels changed >12: 98.4%
+  posted VK 0x56 keydown=True keyup=True
+  posted VK 0x43 keydown=True keyup=True
+  11d_toggles_off_restored.png: 7750787 bytes, 1920x1009
+11a vs 11d (both toggles cycled back OFF): mean |dRGB| 0.00, pixels changed >12: 0.0%
+PASS-C

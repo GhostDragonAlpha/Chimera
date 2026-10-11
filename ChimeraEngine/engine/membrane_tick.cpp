@@ -852,6 +852,10 @@ void MembraneTick::step(std::vector<float>& verts9, float dt) {
                                            tendon_u_cmd_, 0.0, dt);
         if (tendon_pin_ >= 0 && tendon_pin_ < (int)joint_deg_.size())
             joint_deg_[tendon_pin_] = (float)tendon_state_.q;
+        // PHASE 1 LEDGER GUARD (SEALED Phase 1 assignment 1): the A1
+        // invariant is asserted EVERY frame the drive is armed -- the
+        // kernel stays honest as the game layer grows on top of it.
+        ledger_guard_frame_();
     }
 
     // THE MOVEMENT LAW -- THE FALL (prereg appended to
@@ -1081,6 +1085,51 @@ void MembraneTick::tendon_reset_() {          // callers hold seal_mtx_
     chimera::tendon::tendon_drive_init(tendon_params_, tendon_state_);
     tendon_battery0_J_ = tendon_state_.battery_J;
     tendon_elastic0_J_ = tendon_state_.elastic_J;
+    // PHASE 1 LEDGER GUARD: each arm session reports its OWN max error --
+    // the counter restarts with the fresh drive (same law as the
+    // battery0/elastic0 snapshots above).
+    ledger_max_err_J_ = 0.0;
+    ledger_frames_ = 0; ledger_violations_ = 0;
+    ledger_violation_pending_ = false;
+    ledger_violation_detail_.clear();
+}
+
+// PHASE 1 LEDGER GUARD (SEALED Phase 1 assignment 1, 2026-10-11).
+// The A1 tendon ledger invariant, asserted EVERY frame the drive is armed:
+//   battery0 - battery == work + heat + (elastic - elastic0)   [tol 1e-6 J]
+// step_internal books drain = w + h + dE exactly per substep, so the
+// expected error is float64 round-off (~1e-12), never a modeling slack:
+// a real error here means the KERNEL drifted, which is what the guard is
+// for. Max error is tracked; one stderr summary lands every 300 armed
+// frames; a violation prints to stderr immediately AND raises the pending
+// flag the main loop turns into one visible engine log line (LOG panel).
+// Caller holds seal_mtx_ (it is step()'s lock); stderr writes are rare.
+void MembraneTick::ledger_guard_frame_() {
+    const double drain    = tendon_battery0_J_ - tendon_state_.battery_J;
+    const double expected = tendon_state_.work_muscle_J + tendon_state_.heat_J +
+                            (tendon_state_.elastic_J - tendon_elastic0_J_);
+    const double err = std::fabs(drain - expected);
+    if (err > ledger_max_err_J_) ledger_max_err_J_ = err;
+    ++ledger_frames_;
+    if (err > 1e-6) {
+        ++ledger_violations_;
+        ledger_violation_pending_ = true;
+        char vb[256];
+        snprintf(vb, sizeof(vb),
+                 "LEDGER VIOLATION frame %llu: drain %.12e != work+heat+dE %.12e "
+                 "(err %.3e > 1e-6 J)",
+                 (unsigned long long)ledger_frames_, drain, expected, err);
+        fprintf(stderr, "%s\n", vb);
+        fflush(stderr);
+        ledger_violation_detail_ = vb;
+    }
+    if (ledger_frames_ % 300 == 0) {
+        fprintf(stderr,
+                "LEDGER GUARD frame %llu armed: max err %.3e J, violations %llu\n",
+                (unsigned long long)ledger_frames_, ledger_max_err_J_,
+                (unsigned long long)ledger_violations_);
+        fflush(stderr);
+    }
 }
 
 bool MembraneTick::tendon_effort(int joint_index, double u) {
@@ -4739,6 +4788,12 @@ std::string MembraneTick::state_json() const {
       << ",\"tendon_heat_J\":" << tendon_num_(tendon_state_.heat_J)
       << ",\"tendon_elastic_J\":" << tendon_num_(tendon_state_.elastic_J)
       << ",\"tendon_elastic0_J\":" << tendon_num_(tendon_elastic0_J_)
+      // PHASE 1 LEDGER GUARD (SEALED Phase 1 assignment 1): the guard's
+      // running numbers for THIS arm session, readable without scraping
+      // stderr. Additive: the 10 ledger fields above are unchanged.
+      << ",\"tendon_ledger_max_err_J\":" << tendon_num_(ledger_max_err_J_)
+      << ",\"tendon_ledger_frames\":" << ledger_frames_
+      << ",\"tendon_ledger_violations\":" << ledger_violations_
       << ",\"enabled\":" << (enabled_ ? "true" : "false")
       << ",\"reflex_cell_count\":" << cells_.size()
       << ",\"force_l\":" << force_l_ << ",\"force_r\":" << force_r_

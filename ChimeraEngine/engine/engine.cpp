@@ -62,6 +62,14 @@ static float shadow_radius() { return fmaxf(2.0f, 0.65f * (0.5f * g_mesh_sphere 
 // shadow). Consumed by render_tri_shadow.vert via the UBO.
 static float      g_mesh_ymin = 0.0f;
 static float      g_mesh_ymax = 1.0f;
+// SEALED PHASE 1 ASSIGNMENT 1 (2026-10-11) — THE CREATURE ROOT for the
+// third-person follow camera. Measured in the SAME pass that measures the
+// bounding sphere (load_mesh, over the posted mesh the renderer already
+// uploads): the vertex centroid and the y-extent (the creature's height).
+// The follow camera tracks centroid + the sim's rigid root offset, and
+// scales its behind/above distance by the height. Inert unless 'c' is on.
+static float      g_mesh_centroid[3] = {0.0f, 0.0f, 0.0f};
+static float      g_mesh_height = 1.0f;
 
 // ── E1 STAGE BLOCK (fleet-2/E1, 2026-09-13) — light rig + stage constants ────
 // RULE 0 membrane: STATEMENT — the same creature reads as a staged product
@@ -173,6 +181,19 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
         // (bit 30 of lParam = previous key state) so key autorepeat doesn't double-toggle.
         if ((wp & 0xFF) == 'P' && !(lp & 0x40000000) && g_key_engine) {
             g_key_engine->toggle_pose();
+        }
+        // SEALED PHASE 1 ASSIGNMENT 1 (2026-10-11), both DEFAULT-OFF and
+        // edge-triggered by the same law: 'C' toggles the third-person
+        // follow camera (orbit target = creature root, mouse orbit circles
+        // the creature); 'V' toggles renderer pass 1 (skin material + lit
+        // ground plane). With both off the dev orbit and the shipped rig
+        // are the untouched paths. The console gate above already captures
+        // the keyboard while open, so typed commands never flip either.
+        if ((wp & 0xFF) == 'C' && !(lp & 0x40000000) && g_key_engine) {
+            g_key_engine->toggle_follow_cam();
+        }
+        if ((wp & 0xFF) == 'V' && !(lp & 0x40000000) && g_key_engine) {
+            g_key_engine->toggle_pass1_lighting();
         }
         // F1: THE ENGINE STUDIO overlay (same edge-trigger law)
         if ((wp & 0xFF) == VK_F1 && !(lp & 0x40000000) && g_key_engine) {
@@ -1637,7 +1658,14 @@ bool Engine::create_triangle_pipeline() {
     ds.sType             = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
     ds.depthTestEnable   = VK_TRUE;
     ds.depthWriteEnable  = VK_TRUE;
-    ds.depthCompareOp    = VK_COMPARE_OP_LESS;
+    // LESS_OR_EQUAL, not LESS: geometry sitting exactly on the floor plane
+    // (arm base at y=0) ties in depth with the grid's own floor plane. Under a
+    // strict LESS tie fails and the fragment never marks stencil 1, so the opaque
+    // grid twin then paints over the lower arm — THE_STUDIO_GRID_DEPTH occlusion.
+    // Equal-depth now passes and suppresses the grid beneath it; strictly-in-front
+    // already passed under LESS, strictly-behind still fails both, so this only
+    // corrects the tie (strictly additive).
+    ds.depthCompareOp    = VK_COMPARE_OP_LESS_OR_EQUAL;
     ds.depthBoundsTestEnable = VK_FALSE;
     ds.stencilTestEnable = VK_TRUE;                    // test is ALWAYS; this gates the MARK
     ds.front = mark_stencil;
@@ -1672,6 +1700,29 @@ bool Engine::create_triangle_pipeline() {
     if (vkCreateGraphicsPipelines(device_, cache, 1, &gpci, nullptr, &tri_pipeline_) != VK_SUCCESS) {
         fprintf(stderr, "Failed to create triangle graphics pipeline\n");
         return false;
+    }
+    // ══ SEALED PHASE 1 ASSIGNMENT 1 — RENDERER PASS 1 (DEFAULT OFF, 'v') ════
+    // The skin-material twin of the fill pipeline: identical in every state
+    // EXCEPT the fragment shader's PASS1 specialization constant (=1: one
+    // skin albedo, directional key + flat ambient). tri_pipeline_ bakes
+    // PASS1=0 — the shipped path, untouched. Creation failure is non-fatal:
+    // the toggle then simply keeps the shipped shading (never a wall).
+    {
+        static const uint32_t pass1_on = 1u;
+        VkSpecializationMapEntry sme{};
+        sme.constantID = 0; sme.offset = 0; sme.size = sizeof(pass1_on);
+        VkSpecializationInfo si{};
+        si.mapEntryCount = 1; si.pMapEntries = &sme;
+        si.dataSize = sizeof(pass1_on); si.pData = &pass1_on;
+        VkPipelineShaderStageCreateInfo sstages[2] = { stages[0], stages[1] };
+        sstages[1].pSpecializationInfo = &si;
+        gpci.pStages = sstages;
+        if (vkCreateGraphicsPipelines(device_, cache, 1, &gpci, nullptr,
+                                      &tri_skin_pipeline_) != VK_SUCCESS) {
+            fprintf(stderr, "pass1: skin pipeline unavailable -- 'v' keeps the shipped shading\n");
+            tri_skin_pipeline_ = VK_NULL_HANDLE;
+        }
+        gpci.pStages = stages;
     }
     // Wireframe twin: identical in every state except polygon mode — the GPU
     // rasterizes the triangle EDGES as constant 1px lines (device has
@@ -1804,6 +1855,28 @@ bool Engine::create_triangle_pipeline() {
             floor_pipeline_ = VK_NULL_HANDLE;
         } else {
             printf("floor: pipeline created\n");
+        }
+        // ══ SEALED PHASE 1 PASS 1 (DEFAULT OFF, 'v'): the lit-ground twin ════
+        // Same vertex stage (it forwards the key as a varying), floor.frag
+        // specialized with PASS1=1: flat albedo + directional key + ambient,
+        // so the light READS on the plane. floor_pipeline_ keeps PASS1=0 —
+        // the shipped cyclorama. Non-fatal on failure, as the skin twin.
+        if (floor_pipeline_ != VK_NULL_HANDLE) {
+            static const uint32_t pass1_on = 1u;
+            VkSpecializationMapEntry sme{};
+            sme.constantID = 0; sme.offset = 0; sme.size = sizeof(pass1_on);
+            VkSpecializationInfo si{};
+            si.mapEntryCount = 1; si.pMapEntries = &sme;
+            si.dataSize = sizeof(pass1_on); si.pData = &pass1_on;
+            VkPipelineShaderStageCreateInfo fstages[2] = { stages[0], stages[1] };
+            fstages[1].pSpecializationInfo = &si;
+            gpci.pStages = fstages;
+            if (vkCreateGraphicsPipelines(device_, cache, 1, &gpci, nullptr,
+                                          &floor_skin_pipeline_) != VK_SUCCESS) {
+                fprintf(stderr, "pass1: lit-floor pipeline unavailable -- 'v' keeps the cyclorama\n");
+                floor_skin_pipeline_ = VK_NULL_HANDLE;
+            }
+            gpci.pStages = stages;
         }
     } else {
         printf("floor: SKIPPED (vert=%p frag=%p)\n", (void*)floor_vert_mod_, (void*)floor_frag_mod_);
@@ -2057,6 +2130,8 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
     // (pos3 + normal3 + color3).
     float r2max = 0.0f;
     float ymin = 0.0f, ymax = 1.0f;   // H0 defaults sane for degenerate payloads
+    double sx = 0.0, sy = 0.0, sz = 0.0;   // centroid accumulator (pass 1 root)
+    size_t nvert = 0;
     bool first = true;
     for (size_t i = 0; i + 2 < clean.size(); i += 9) {
         float x = clean[i], y = clean[i + 1], z = clean[i + 2];
@@ -2065,9 +2140,20 @@ bool Engine::load_mesh(const std::vector<float>& verts, const std::vector<uint32
         if (first)      { ymin = y; ymax = y; first = false; }
         else if (y < ymin) ymin = y;
         else if (y > ymax) ymax = y;
+        sx += x; sy += y; sz += z; ++nvert;
     }
     g_mesh_sphere = sqrtf(r2max);
     g_mesh_ymin = ymin; g_mesh_ymax = ymax;
+    g_mesh_height = fmaxf(ymax - ymin, 1e-3f);
+    if (nvert) {
+        g_mesh_centroid[0] = (float)(sx / (double)nvert);
+        g_mesh_centroid[1] = (float)(sy / (double)nvert);
+        g_mesh_centroid[2] = (float)(sz / (double)nvert);
+    }
+    fprintf(stderr, "follow-cam root: centroid=(%.3f,%.3f,%.3f) height=%.3f sphere=%.3f\n",
+            g_mesh_centroid[0], g_mesh_centroid[1], g_mesh_centroid[2],
+            g_mesh_height, g_mesh_sphere);
+    fflush(stderr);
     return true;
 }
 
@@ -5034,7 +5120,14 @@ bool Engine::load_frost(const uint8_t* blob, size_t size) {
         VkPipelineDepthStencilStateCreateInfo ds{};
         ds.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
         ds.depthTestEnable = VK_TRUE; ds.depthWriteEnable = VK_TRUE;
-        ds.depthCompareOp = VK_COMPARE_OP_LESS;
+        // LESS_OR_EQUAL, not LESS: the frost body fills the same grid-contract
+        // stencil as create_triangle_pipeline's fill. Geometry sitting exactly on
+        // the floor plane (arm base at y=0) ties in depth with that plane — under a
+        // strict LESS tie fails and the fragment never marks stencil 1, so the opaque
+        // grid twin then paints over the lower arm (THE_STUDIO_GRID_DEPTH occlusion).
+        // Equal-depth now passes and suppresses the grid beneath it; strictly-in-front
+        // already passed under LESS, strictly-behind still fails both — strictly additive.
+        ds.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
         // frost REPLACES the fill when live — the accepted body, so it must mark
         // the stencil exactly like create_triangle_pipeline's fill (grid contract)
         {
@@ -5655,10 +5748,12 @@ bool Engine::load_overlay(const std::vector<float>& verts, const std::vector<uin
 
 void Engine::destroy_triangle_resources() {
     if (floor_pipeline_) { vkDestroyPipeline(device_, floor_pipeline_, nullptr); floor_pipeline_ = VK_NULL_HANDLE; }
+    if (floor_skin_pipeline_) { vkDestroyPipeline(device_, floor_skin_pipeline_, nullptr); floor_skin_pipeline_ = VK_NULL_HANDLE; }
     if (floor_vbuf_) { vkDestroyBuffer(device_, floor_vbuf_, nullptr); vkFreeMemory(device_, floor_vmem_, nullptr); floor_vbuf_ = VK_NULL_HANDLE; }
     if (floor_vert_mod_) { vkDestroyShaderModule(device_, floor_vert_mod_, nullptr); floor_vert_mod_ = VK_NULL_HANDLE; }
     if (floor_frag_mod_) { vkDestroyShaderModule(device_, floor_frag_mod_, nullptr); floor_frag_mod_ = VK_NULL_HANDLE; }
     if (tri_pipeline_) { vkDestroyPipeline(device_, tri_pipeline_, nullptr); tri_pipeline_ = VK_NULL_HANDLE; }
+    if (tri_skin_pipeline_) { vkDestroyPipeline(device_, tri_skin_pipeline_, nullptr); tri_skin_pipeline_ = VK_NULL_HANDLE; }
     if (tri_wire_pipeline_) { vkDestroyPipeline(device_, tri_wire_pipeline_, nullptr); tri_wire_pipeline_ = VK_NULL_HANDLE; }
     if (tri_edge_pipeline_) { vkDestroyPipeline(device_, tri_edge_pipeline_, nullptr); tri_edge_pipeline_ = VK_NULL_HANDLE; }
     if (tri_edge_frag_mod_) { vkDestroyShaderModule(device_, tri_edge_frag_mod_, nullptr); tri_edge_frag_mod_ = VK_NULL_HANDLE; }
@@ -6656,28 +6751,120 @@ void Engine::push_grid_overlay() {
     ui_.set_grid_lines(std::move(lines));
 }
 
+// ══ SEALED PHASE 1 ASSIGNMENT 1 — game camera + pass-1 lighting toggles ════
+// Both DEFAULT-OFF. Called from WndProc (render thread, edge-triggered).
+// The follow camera saves the dev-orbit framing on toggle-on and restores
+// it on toggle-off, so the shipped dev orbit survives a toggle cycle
+// exactly; while OFF, update_camera_matrices never diverges from it.
+void Engine::toggle_follow_cam() {
+    if (!follow_cam_.load(std::memory_order_relaxed)) {
+        // ON: remember the dev framing, then frame the creature from
+        // behind-and-above with the ASSIGNMENT's law, scaled to the
+        // creature's own bounding size (measured at load, not chosen):
+        //   behind = 1.75 x height, above = 0.80 x height
+        // In the spherical orbit law the horizontal offset is radius*cos(phi)
+        // and the vertical one is radius*sin(phi), so
+        //   radius = hypot(behind, above), phi = atan2(above, behind)
+        // reproduces the offset exactly while leaving theta the user's azimuth
+        // (a left-drag then circles the CREATURE). theta is deliberately NOT
+        // touched: "behind" is behind the user's current viewing azimuth.
+        const float h      = fmaxf(g_mesh_height, 1.0f);
+        const float behind = 1.75f * h;
+        const float above  = 0.80f * h;
+        dev_cam_theta_  = g_cam.theta;
+        dev_cam_phi_    = g_cam.phi;
+        dev_cam_radius_ = g_cam.radius;
+        follow_snap_ = true;
+        follow_log_ctr_ = 0;
+        g_cam.phi    = atan2f(above, behind);
+        g_cam.radius = fmaxf(radius_floor(), sqrtf(behind * behind + above * above));
+        follow_cam_.store(true, std::memory_order_relaxed);
+        fprintf(stderr, "FOLLOWCAM on: height=%.3f behind=%.3f above=%.3f radius=%.3f phi=%.3f\n",
+                h, behind, above, g_cam.radius, g_cam.phi);
+        fflush(stderr);
+        log_event("camera", "follow-cam ON ('c'): orbit target = creature root, mouse orbits the creature");
+    } else {
+        follow_cam_.store(false, std::memory_order_relaxed);
+        g_cam.theta  = dev_cam_theta_;
+        g_cam.phi    = dev_cam_phi_;
+        g_cam.radius = dev_cam_radius_;
+        log_event("camera", "follow-cam OFF ('c'): dev orbit restored");
+    }
+}
+
+void Engine::toggle_pass1_lighting() {
+    const bool on = !pass1_lighting_.load(std::memory_order_relaxed);
+    pass1_lighting_.store(on, std::memory_order_relaxed);
+    log_event("renderer", on
+        ? "pass-1 lighting ON ('v'): skin albedo + directional key + ambient (creature + ground)"
+        : "pass-1 lighting OFF ('v'): shipped rig restored");
+}
+
 void Engine::update_camera_matrices(float proj[16], float view[16]) {
     float aspect = static_cast<float>(extent_.width) / static_cast<float>(extent_.height);
     perspective(proj, 45.0f * 3.14159265f / 180.0f, aspect, 0.1f, 1000.0f);
 
     update_camera_input(g_cam, cfg_.dt);
 
+    // ══ SEALED PHASE 1 ASSIGNMENT 1 — THIRD-PERSON FOLLOW CAMERA ═══════════
+    // DEFAULT OFF. While OFF, cam_target IS g_cam.target (same pointer): the
+    // dev orbit below is byte-identical to the shipped path. While ON, the
+    // orbit target is the creature's root position (pushed per frame from
+    // MembraneTick through set_sim_root), exponentially smoothed toward it
+    // (tau ~ 1/8 s: light smoothing, the creature stays framed, never
+    // welded). theta/phi/radius stay the user's, so the SAME left-drag now
+    // rotates the eye AROUND THE CREATURE, not the scene origin, and the
+    // behind-and-above framing was applied at toggle-on (toggle_follow_cam).
+    float* cam_target = g_cam.target;
+    const bool follow = follow_cam_.load(std::memory_order_relaxed);
+    float follow_root[3] = { 0.f, 0.f, 0.f };
+    if (follow) {
+        // THE CREATURE ROOT = the mesh centroid measured at load (the pose/
+        // particle state the renderer already uploads) + the sim's rigid root
+        // offset pushed by MembraneTick (the fall law is a single Y DOF).
+        follow_root[0] = g_mesh_centroid[0] + sim_root_x_.load(std::memory_order_relaxed);
+        follow_root[1] = g_mesh_centroid[1] + sim_root_y_.load(std::memory_order_relaxed);
+        follow_root[2] = g_mesh_centroid[2] + sim_root_z_.load(std::memory_order_relaxed);
+        if (follow_snap_) {
+            follow_target_[0] = follow_root[0];
+            follow_target_[1] = follow_root[1];
+            follow_target_[2] = follow_root[2];
+            follow_snap_ = false;
+        } else {
+            const float k = 1.0f - expf(-8.0f * cfg_.dt);   // light smoothing
+            follow_target_[0] += (follow_root[0] - follow_target_[0]) * k;
+            follow_target_[1] += (follow_root[1] - follow_target_[1]) * k;
+            follow_target_[2] += (follow_root[2] - follow_target_[2]) * k;
+        }
+        cam_target = follow_target_;
+    }
+
     // Build eye position from spherical coords + pan offset
     float c = cosf(g_cam.phi), s = sinf(g_cam.phi);
     float cx = cosf(g_cam.theta), sx = sinf(g_cam.theta);
     float eye[3] = {
-        g_cam.target[0] + g_cam.radius * c * sx + g_cam.pan_x,
-        g_cam.target[1] + g_cam.radius * s              + g_cam.pan_y,
-        g_cam.target[2] - g_cam.radius * c * cx
+        cam_target[0] + g_cam.radius * c * sx + (follow ? 0.f : g_cam.pan_x),
+        cam_target[1] + g_cam.radius * s      + (follow ? 0.f : g_cam.pan_y),
+        cam_target[2] - g_cam.radius * c * cx
     };
     // Up vector = ∂(eye)/∂phi (the direction the camera tilts "up" as elevation increases).
     // This is unit-length for every (theta, phi) — no pole singularity — so the camera can spin
     // continuously over the top (free rotation on both axes) without the old +-1.55 rad stopper.
     float up_vec[3] = {-s * sx, c, s * cx};
-    look_at(view, eye, g_cam.target, up_vec);
+    look_at(view, eye, cam_target, up_vec);
     // publish the eye too: the frost light and anything else that needs "where the
     // camera is" reads last_eye_, so there is exactly one camera law.
     last_eye_[0] = eye[0]; last_eye_[1] = eye[1]; last_eye_[2] = eye[2];
+    if (follow && (follow_log_ctr_++ % 30) == 0) {
+        // verification channel (assignment: "log camera pos + root pos over
+        // ~2 s, show delta bounded") — stderr only, ~10 Hz, follow mode only.
+        const float dx = eye[0] - follow_root[0], dy = eye[1] - follow_root[1],
+                    dz = eye[2] - follow_root[2];
+        fprintf(stderr, "FOLLOWCAM eye=(%.3f,%.3f,%.3f) root=(%.3f,%.3f,%.3f) d=%.3f\n",
+                eye[0], eye[1], eye[2], follow_root[0], follow_root[1], follow_root[2],
+                sqrtf(dx * dx + dy * dy + dz * dz));
+        fflush(stderr);
+    }
     // C1: stash the VP for the gizmo, /project, and the viewport grid.
     //
     // sizeof(proj) is 8, NOT 64 — `float proj[16]` in a parameter list DECAYS TO
@@ -8408,7 +8595,12 @@ bool Engine::frame() {
         // the contact shadow lands on. The shadow (no depth write) blends over
         // it; the mesh's depth-tested draw wins where they overlap.
         if (floor_pipeline_ != VK_NULL_HANDLE && floor_vbuf_ != VK_NULL_HANDLE) {
-            vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, floor_pipeline_);
+            // SEALED PHASE 1 PASS 1 (default OFF): the lit-ground twin while
+            // 'v' is on; the shipped cyclorama otherwise (identical bind).
+            const bool p1_floor = pass1_lighting_.load(std::memory_order_relaxed) &&
+                                  floor_skin_pipeline_ != VK_NULL_HANDLE;
+            vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS,
+                              p1_floor ? floor_skin_pipeline_ : floor_pipeline_);
             vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS,
                                     pipeline_layout_, 0, 1, &desc_sets_[img_idx], 0, nullptr);
             VkBuffer fvb = floor_vbuf_; VkDeviceSize foff = 0;
@@ -8427,8 +8619,14 @@ bool Engine::frame() {
             vkCmdDrawIndexed(cmd_bufs_[img_idx], draw_idx_count, 1, 0, 0, 0);
         }
         if (mesh_mode_ != 1) {
+            // SEALED PHASE 1 PASS 1 (default OFF): while 'v' is on the fill
+            // draws with the skin twin (PASS1=1); otherwise the shipped
+            // selection is untouched (frost twin when frost is on).
+            const bool p1_fill = pass1_lighting_.load(std::memory_order_relaxed) &&
+                                 tri_skin_pipeline_ != VK_NULL_HANDLE;
             vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS,
-                              frost_draw ? tri_frost_pipeline_ : tri_pipeline_);
+                              p1_fill ? tri_skin_pipeline_
+                                      : (frost_draw ? tri_frost_pipeline_ : tri_pipeline_));
             vkCmdBindVertexBuffers(cmd_bufs_[img_idx], 0, 1, &vb, &off);
             vkCmdBindIndexBuffer(cmd_bufs_[img_idx], ib, 0, VK_INDEX_TYPE_UINT32);
             vkCmdDrawIndexed(cmd_bufs_[img_idx], draw_idx_count, 1, 0, 0, 0);

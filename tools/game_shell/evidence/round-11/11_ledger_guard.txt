@@ -1,0 +1,29 @@
+Round-11 D: per-frame energy ledger guard — live run on scratch engine :8119
+(2026-10-11, build .tmp/cam-engine/Release/chimera_engine.exe)
+
+Invariant asserted EVERY armed frame (membrane_tick.cpp:1107 ledger_guard_frame_):
+  | (battery0_J - battery_J) - (work_muscle_J + heat_J + (elastic_J - elastic0_J)) | < 1e-6 J
+Physics unchanged; guard is read-only over the existing tendon fields.
+
+== Engine stderr guard summaries (one per 300 armed frames), r11b_err.log ==
+LEDGER GUARD frame 300 armed: max err 3.002e-13 J, violations 0
+LEDGER GUARD frame 600 armed: max err 7.176e-13 J, violations 0
+LEDGER GUARD frame 900 armed: max err 1.432e-12 J, violations 0
+LEDGER VIOLATION lines: 0
+
+== Probe sequence (_ledger_r11.py, full table in 11_ledger_probe.txt) ==
+arm: POST /tick_effort {"joint_index":15,"u":0.6} -> {'ok': True}
+armed frames observed: 759 (>= 600 required)
+frame  guardMaxErr   viol  httpErr       drain            expected
+     0 0.000e+00      0    0.000e+00     0.000000000      0.000000000
+   156 2.660e-13      0    6.573e-14     10.643416829     10.643416829
+   305 3.002e-13      0    1.066e-13     16.006388810     16.006388810
+   459 6.608e-13      0    3.624e-13     18.425771883     18.425771883
+   609 7.176e-13      0    3.908e-13     19.636470781     19.636470781
+   759 1.055e-12      0    1.055e-12     21.018534087     21.018534087
+
+guard max err (engine counter, tendon_ledger_max_err_J): 1.055e-12 J
+max err recomputed independently over the 10 HTTP ledger fields: 1.055e-12 J
+violations: 0   ->  max err 1.055e-12 J < 1e-6 J  => GUARD PASS
+sever: POST /tick_sever {"joint_index":15} -> {'ok': True} (F_n 0, q falls)
+disarm: POST /tick_effort u<0 -> armed False; guard counters reset per arm session

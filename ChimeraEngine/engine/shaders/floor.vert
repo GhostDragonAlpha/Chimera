@@ -28,10 +28,17 @@ layout(set = 0, binding = 0) uniform Ubo {
 
 layout(location = 0) out float vDist;
 layout(location = 1) out float vMeshR;
+// SEALED PHASE 1 PASS 1 (default OFF): the key, forwarded from the VERTEX
+// stage (the measured-trustworthy UBO reader on this lane) so the lit-floor
+// twin can shade the plane with the SAME light the creature and the contact
+// shadow use. The shipped floor.frag (PASS1=0) never declares this input —
+// an unused vertex output is inert there.
+layout(location = 2) out vec3 vLightDir;
 
 void main() {
     vec3 wp = vec3(aPos.x, ubo.uFloorY, aPos.z);
     gl_Position = ubo.uProj * ubo.uView * vec4(wp, 1.0);
     vDist   = length(aPos.xz);
     vMeshR  = max(ubo.uMeshR, 1.0);   // pre-mesh: fade starts at 1 wu, floor flat near origin
+    vLightDir = ubo.uLightDir.xyz;
 }

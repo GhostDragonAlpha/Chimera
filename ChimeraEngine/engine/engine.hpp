@@ -571,6 +571,25 @@ public:
     void toggle_pose();               // 'P' key: rest (slot 0) <-> wave (slot 1)
     bool skinned_active() const { return skinned_active_; }
 
+    // ── SEALED PHASE 1 ASSIGNMENT 1 (2026-10-11): game camera + pass-1 light ─
+    // BOTH DEFAULT-OFF; with both off every shipped path is untouched.
+    // 'C' toggles the third-person follow camera: the orbit target becomes
+    // the creature's root (light smoothing), so mouse orbit circles the
+    // CREATURE, not the scene origin. 'V' toggles renderer pass 1: the
+    // skin-material twin pipelines (single albedo + directional key +
+    // ambient on the creature and the ground plane).
+    void toggle_follow_cam();       // 'C' key
+    void toggle_pass1_lighting();   // 'V' key
+    bool follow_cam_on() const { return follow_cam_.load(std::memory_order_relaxed); }
+    bool pass1_lighting_on() const { return pass1_lighting_.load(std::memory_order_relaxed); }
+    // The sim creature's root position, pushed once per frame by the main
+    // loop from MembraneTick (render thread; the follow camera consumes it).
+    void set_sim_root(float x, float y, float z) {
+        sim_root_x_.store(x, std::memory_order_relaxed);
+        sim_root_y_.store(y, std::memory_order_relaxed);
+        sim_root_z_.store(z, std::memory_order_relaxed);
+    }
+
 private:
     // H15 joints kernel state
     bool frame_idle_ui();   // THE STUDIO: present ONLY the overlay (nothing loaded — the onboarding case)
@@ -668,6 +687,15 @@ private:
     float                 last_view_[16]{};           // (and the /project verification channel)
     float                 last_eye_[3]{};             // where the camera IS — one law, read by the frost light too
     bool                  last_vp_valid_ = false;
+    // SEALED PHASE 1 ASSIGNMENT 1: follow-camera + pass-1-lighting state.
+    // DEFAULT-OFF; every member below is inert while the toggles are off.
+    std::atomic<bool> follow_cam_{false};
+    std::atomic<bool> pass1_lighting_{false};
+    float             follow_target_[3]{};            // smoothed follow target (world)
+    bool              follow_snap_ = true;            // next follow frame snaps (no swoop on toggle-on)
+    float             dev_cam_theta_ = 0.f, dev_cam_phi_ = 0.f, dev_cam_radius_ = 0.f;  // dev orbit saved on toggle-on, restored on toggle-off
+    std::atomic<float> sim_root_x_{0.f}, sim_root_y_{0.f}, sim_root_z_{0.f};
+    uint64_t          follow_log_ctr_ = 0;            // follow-cam stderr verification log cadence
 
 private:
     bool create_instance();
@@ -989,11 +1017,21 @@ private:
     VkShaderModule floor_vert_mod_ = VK_NULL_HANDLE;        // THE GROUND PLANE — the surface the
     VkShaderModule floor_frag_mod_ = VK_NULL_HANDLE;        // contact shadow lands on (2026-09-03)
     VkPipeline      floor_pipeline_ = VK_NULL_HANDLE;       // opaque quad, position-only verts
+    // SEALED PHASE 1 PASS 1 (default OFF, 'v'): the lit-ground twin — same
+    // vertex stage, floor.frag specialized with PASS1=1 (flat albedo +
+    // directional key + ambient). Null if creation failed: the toggle then
+    // simply keeps the shipped cyclorama (never a wall).
+    VkPipeline      floor_skin_pipeline_ = VK_NULL_HANDLE;
     VkBuffer        floor_vbuf_ = VK_NULL_HANDLE;
     VkDeviceMemory  floor_vmem_ = VK_NULL_HANDLE;
     static constexpr uint32_t FLOOR_VERTS = 6;              // two triangles, xz plane
     VkPipeline      tri_pipeline_ = VK_NULL_HANDLE;   // reuses pipeline_layout_
     VkPipeline      tri_wire_pipeline_ = VK_NULL_HANDLE; // same shaders, VK_POLYGON_MODE_LINE
+    // SEALED PHASE 1 PASS 1 (default OFF, 'v'): the skin-material fill twin
+    // — same vertex stage, render_tri.frag specialized with PASS1=1 (one
+    // skin albedo, directional key + flat ambient). Bound ONLY while the
+    // toggle is on; null on creation failure keeps the shipped shading.
+    VkPipeline      tri_skin_pipeline_ = VK_NULL_HANDLE;
     // GLM-DEMO-CONTRAST-01: opt-in edge-contrast wire twin (constant light
     // edge color in render_tri_edge.frag). Created ONLY when the env var
     // CHIMERA_TRI_EDGE_CONTRAST is set at engine start; when absent this

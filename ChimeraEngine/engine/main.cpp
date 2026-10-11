@@ -4495,6 +4495,16 @@ int main(int argc, char** argv) {
             if (tick_dt > 0.1f) tick_dt = 0.1f;
             g_tick.step(g_tick_verts, tick_dt);
             engine.update_mesh(g_tick_verts, g_tick_vcount);
+            // SEALED PHASE 1 ASSIGNMENT 1: (1) feed the follow camera the
+            // creature's root (the fall law is a single Y DOF; x,z stay at
+            // the authored origin); (2) surface a ledger-guard violation as
+            // ONE visible engine log line (the guard already printed the
+            // numbers to stderr). Both render-thread, right after step().
+            engine.set_sim_root(0.f, g_tick.root_y(), 0.f);
+            if (g_tick.ledger_violation_pending()) {
+                engine.log_event("ledger", g_tick.ledger_violation_detail());
+                g_tick.ledger_violation_clear();
+            }
         }
 
         // Frame cap (frame-stutter fix): uncapped, the engine free-ran at 300-1800 FPS

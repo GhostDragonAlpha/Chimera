@@ -1,0 +1,18 @@
+baseline unarmed: {'tendon_armed': False, 'tendon_severed': False, 'tendon_q_deg': 0, 'tendon_F_n': 222.22222222222243, 'tendon_battery_J': 1000, 'tendon_battery0_J': 1000, 'tendon_work_J': 0, 'tendon_heat_J': 0, 'tendon_elastic_J': 1.1111111111111132, 'tendon_elastic0_J': 1.1111111111111132}
+armed before arm: False guard frames: 0
+arm: {'ok': True}
+armed frames observed: 759 (elapsed 2.5 s)
+frame  guardMaxErr      guardViol  httpErr        drain            expected         q_deg   F_n     battery_J
+     0 0.000e+00         0  0.000e+00  0.000000000  0.000000000     0.00   222.22  1000.000
+   156 2.660e-13         0  6.573e-14  10.643416829  10.643416829    81.47     0.00   989.357
+   305 3.002e-13         0  1.066e-13  16.006388810  16.006388810    97.57     0.00   983.994
+   459 6.608e-13         0  3.624e-13  18.425771883  18.425771883    82.90     0.00   981.574
+   609 7.176e-13         0  3.908e-13  19.636470781  19.636470781    73.36     0.00   980.364
+   759 1.055e-12         0  1.055e-12  21.018534087  21.018534087    74.68     0.00   978.981
+guard max err (engine): 1.055e-12 J | violations: 0 | frames: 759
+max err recomputed over HTTP fields: 1.055e-12 J
+GUARD PASS
+sever: {'ok': True}
+after sever: armed True severed True F_n 0 q_deg -19.478
+disarm: {'ok': True}
+after disarm: armed False severed True guard frames 1060

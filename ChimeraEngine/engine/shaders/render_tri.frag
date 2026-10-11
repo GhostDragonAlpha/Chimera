@@ -36,12 +36,31 @@
 //         V ~ +z in view space), computed in the VERTEX stage — fragment UBO
 //         reads are untrustworthy on this lane.
 // Values mirrored in the E1 STAGE BLOCK (engine.cpp) — change them together.
+// SEALED PHASE 1 ASSIGNMENT 1 — RENDERER PASS 1 (2026-10-11), DEFAULT OFF.
+// PASS1 is a SPECIALIZATION CONSTANT: the shipped pipeline bakes PASS1=0 and
+// runs the exact code path below (unchanged); the opt-in 'v' pipeline bakes
+// PASS1=1 and takes the early-out skin branch — one uniform skin-tone
+// albedo, one directional key (THE LIGHT IS ONE FACT: the same vLightDir
+// varying the shipped rig and the contact shadow share), one flat ambient.
+// Pass 1, not PBR: no fill, no rim, no hemisphere. The engine creates the
+// twin pipeline with PASS1=1 and binds it ONLY while the toggle is on.
+layout(constant_id = 0) const uint PASS1 = 0u;
 layout(location = 0) in vec3 vNormal;
 layout(location = 1) in vec3 vColor;
 layout(location = 2) in vec3 vLightDir;   // THE key (unit length, from the UBO)
 layout(location = 3) in vec3 vViewNormal; // E1: view-space normal (rim only)
 layout(location = 0) out vec4 fragColor;
 void main() {
+    if (PASS1 == 1u) {
+        // pass 1 skin material: one albedo, directional key + flat ambient.
+        const vec3 SKIN = vec3(0.72, 0.55, 0.42);  // warm monkey-tone; declared synthetic
+        vec3 N1 = normalize(vNormal);
+        vec3 K1 = normalize(vLightDir);
+        float key1 = max(dot(N1, K1), 0.0) * 0.90;
+        float amb1 = 0.25;
+        fragColor = vec4(SKIN * (amb1 + key1), 1.0);
+        return;
+    }
     const vec3 FILL_TINT = vec3(0.89, 1.00, 1.28);  // E1: cool; luma weights sum to 1.00
     const vec3 RIM_TINT  = vec3(1.00, 0.84, 0.55);  // E1: gold (3200K-class edge)
     vec3 N  = normalize(vNormal);
