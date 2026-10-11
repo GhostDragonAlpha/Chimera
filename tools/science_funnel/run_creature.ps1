@@ -6,6 +6,16 @@ param(
  [switch]$Anatomy
 )
 $ErrorActionPreference='Stop'
+function Get-FileSha256([string]$Path){
+ # Metadata hashing must never be fatal: Get-FileHash is not resolvable in every
+ # session, and a missing hash must not tear down a healthy stack.
+ try { if(Get-Command Get-FileHash -ErrorAction SilentlyContinue){ return (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash } } catch {}
+ try {
+  $stream=[System.IO.File]::OpenRead($Path)
+  try { $bytes=[System.Security.Cryptography.SHA256]::Create().ComputeHash($stream) } finally { $stream.Dispose() }
+  return ([System.BitConverter]::ToString($bytes) -replace '-','')
+ } catch { return 'unavailable' }
+}
 $projectRoot=(Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
 if($EnginePort -eq $GamePort){throw 'Engine and game ports must differ.'}
 foreach($port in @($EnginePort,$GamePort)){
@@ -42,8 +52,14 @@ try {
  $gameArgs=@('-B','tools/game_shell/server.py',"$GamePort",'--engine',"http://127.0.0.1:$EnginePort")
  if($Anatomy){$gameArgs+=@('--anatomy-scene',(Join-Path $output 'scene.json'))}
  $gameProcess=Start-Process -FilePath $Python -ArgumentList $gameArgs -WorkingDirectory $projectRoot -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $output "game_$stamp.stdout.log") -RedirectStandardError (Join-Path $output "game_$stamp.stderr.log")
- $scene=Get-Content -LiteralPath (Join-Path $output 'scene.json') -Raw | ConvertFrom-Json
- [ordered]@{engine_pid=$engineProcess.Id;game_pid=$gameProcess.Id;engine_port=$EnginePort;game_port=$GamePort;exe=$exe;engine_arguments=$engineArgs;exe_sha256=(Get-FileHash -LiteralPath $exe -Algorithm SHA256).Hash;graph_hash=$scene.graph_hash;scene=(Join-Path $output 'scene.json');launched_utc=[DateTime]::UtcNow.ToString('o');scope=$scene.scope} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $output 'runtime.json') -Encoding utf8
+ # METADATA STEP IS NEVER FATAL: a hash or JSON-write failure must not tear
+ # down a stack that is already up and serving. Report it, keep the stack.
+ try {
+  $scene=Get-Content -LiteralPath (Join-Path $output 'scene.json') -Raw | ConvertFrom-Json
+  [ordered]@{engine_pid=$engineProcess.Id;game_pid=$gameProcess.Id;engine_port=$EnginePort;game_port=$GamePort;exe=$exe;engine_arguments=$engineArgs;exe_sha256=(Get-FileSha256 $exe);graph_hash=$scene.graph_hash;scene=(Join-Path $output 'scene.json');launched_utc=[DateTime]::UtcNow.ToString('o');scope=$scene.scope} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $output 'runtime.json') -Encoding utf8
+ } catch {
+  Write-Warning "runtime.json metadata failed ($($_.Exception.Message)); the launched engine/game stack is left running."
+ }
  Write-Output "Creature: http://127.0.0.1:$GamePort (engine $EnginePort). Existing worlds were left running."
 } catch {
  # Only processes created by this invocation can be stopped here.
