@@ -1246,6 +1246,29 @@ int main(int argc, char** argv) {
             else body = "{\"ok\":false,\"error\":\"refused: unknown joint or "
                         "angle outside admitted limits\"}";
             content_type = "application/json";
+        } else if (p == "/tick_effort" && method == "POST") {
+            // TENDON DRIVE effort command (energy increment, DEFAULT-OFF):
+            // {"joint_index":15,"u":0..1} arms the knee_L drive (first
+            // call) and sets the effort; {"joint_index":15,"u":-1}
+            // disarms: the drive releases the pin (the joint keeps its
+            // last angle) and the ledger state freezes for the read.
+            int jidx = (int)get_double(req_body, "joint_index", -1.0);
+            double u = get_double(req_body, "u", NAN);
+            body = g_tick.tendon_effort(jidx, u)
+                 ? "{\"ok\":true}"
+                 : "{\"ok\":false,\"error\":\"refused: joint_index must "
+                   "be the drive pin (15) and u in [0,1] (u<0 disarms)\"}";
+            content_type = "application/json";
+        } else if (p == "/tick_sever" && method == "POST") {
+            // TENDON DRIVE A8 falsifier: {"joint_index":15} cuts the
+            // tendon transmission while armed (tension -> 0, the joint
+            // falls back to capsule rest). Refused when not armed.
+            int jidx = (int)get_double(req_body, "joint_index", -1.0);
+            body = g_tick.tendon_sever(jidx)
+                 ? "{\"ok\":true}"
+                 : "{\"ok\":false,\"error\":\"refused: not the armed "
+                   "drive pin\"}";
+            content_type = "application/json";
         } else if (p == "/tick_body_bin" && method == "POST") {
             {
                 std::lock_guard<std::mutex> lk(g_volp_mutex);

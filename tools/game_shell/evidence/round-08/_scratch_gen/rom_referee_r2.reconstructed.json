@@ -1,0 +1,21 @@
+{
+ "note": "RECONSTRUCTED for repro-gate diagnosis by Tiel 2026-10-10: values read bit-exact from the pinned pack ROM rows (the only fields differing from a no-overlay generator run). Original .tmp/skeleton/rom_referee_r2.json was gitignored scratch and is gone.",
+ "shipped": {
+  "shoulder": {
+   "ext_stop_deg": -149.0,
+   "flex_stop_deg": 60.0
+  },
+  "elbow": {
+   "ext_stop_deg": -145.0,
+   "flex_stop_deg": 125.0
+  },
+  "hip": {
+   "ext_stop_deg": -159.0,
+   "flex_stop_deg": 119.0
+  },
+  "knee": {
+   "ext_stop_deg": -131.0,
+   "flex_stop_deg": 147.0
+  }
+ }
+}

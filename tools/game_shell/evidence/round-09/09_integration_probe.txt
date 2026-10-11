@@ -1,0 +1,51 @@
+{
+ "engine_ready": true,
+ "scene_rc": 0,
+ "c1_armed_default": false,
+ "c1_fields": true,
+ "c1_pose40_ok": true,
+ "c1_pose40_verts_moved": 1.626940047568181,
+ "c2_arm_ok": true,
+ "c2_q_deg_max": 144.90177259752338,
+ "c2_F_n_max": 218.62005843314807,
+ "c2_battery_min": 973.3101841272838,
+ "c2_shin_mean_disp": 0.8870417136610745,
+ "c2_shin_max_disp": 4.278742497901401,
+ "c2_ledger_err": 1.4175327578413999e-12,
+ "c3_sever_ok": true,
+ "c3_q_pre": 128.49700468977252,
+ "c3_F_after": 0,
+ "c3_severed_flag": true,
+ "c3_q_after": -12.5611444686228,
+ "c3_verts_delta_mean": 0.9288018329536754,
+ "c3_verts_delta_max": 4.480177035205754,
+ "c3_ledger_err": 3.467448550509289e-12,
+ "c4_knee_name_refused": true,
+ "c4_knee_idx_refused": true,
+ "c4_ankle_accepted": true,
+ "c4_ankle_resp": "{'ok': True}",
+ "c5_disarm_ok": true,
+ "c5_armed_after": false,
+ "c5_pose40_ok": true,
+ "c5_pose40_verts_moved": 1.5146354477227377,
+ "c6_ledger_err_max": 3.467448550509289e-12,
+ "c6_pass": true,
+ "c7_wake_passed": true,
+ "c7_knee_passed": true,
+ "c7_sever_q_before": 126.47493926931213,
+ "c7_sever_q_after": 7.0828309684777055,
+ "page_errors": 0
+}
+---- session log ----
+engine 8117 ready: True (0.5s)
+creature_scene rc: 0
+C1 default-off: armed=False fields=True pose40 ok=True maxvert_disp=1.627
+C2 arm: ok=True q_max=144.90deg F_max=218.62N battery 1000.0->973.3J shin disp mean=0.887 max=4.279 ledger_err=1.42e-12
+C3 sever: ok=True q 128.50->-12.56deg F_after=0.000 severed=True shin delta mean=0.929 max=4.480
+C4 refusal: knee_name_refused=True knee_idx_refused=True ankle_L=5 accepted=True {'ok': True}
+C5 disarm: ok=True armed=False pose40 ok=True maxvert_disp=1.515
+C6 ledger: max |drain-(work+heat+delastic)| = 3.467e-12 pass=True
+wake attempt 1: force=15000 pmax=792110 verdict='the cell ruptured — the creature went still.'
+wake attempt 2: force=9000 pmax=450737 verdict='the goal is met — now LET GO, and let the body heal.'
+sever screenshots: q 126.47->7.08 deg (09_sever_before/after.png)
+C7 regression: wake=True knee=True pageErrors=0

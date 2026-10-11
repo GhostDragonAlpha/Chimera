@@ -532432,7 +532432,7 @@
       "mesh": "Saved/meshes/monkey_birth.bin",
       "mesh_sha256": "550a5b3ec927ea13614ad250963b23e2948e76a238ac110da9889f339aabfa3c",
       "binding": "Saved/meshes/monkey_joints.bin",
-      "binding_sha256": "74b3ab044b7adaed4a0f9349a81f5d3c87441084b2ec8981f4e0afaba50c1662",
+      "binding_sha256": "8ef83b7f1f5d707ab29ee1d5be8b944019d2c2e21a19a9aff32eac405dbf496f",
       "vertices": 18459,
       "triangles": 36630,
       "joint_pins": 28,

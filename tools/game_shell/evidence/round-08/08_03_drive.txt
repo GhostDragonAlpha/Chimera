@@ -1,0 +1,28 @@
+tag=08_03 deg=40
+fresh_profile=C:\Users\allen\AppData\Local\Temp\chimera-r08-03-57aofqj8
+wake_the_cell_passed=True
+bend_the_knee_passed=True
+raise_the_hand_passed=True
+hand_L_mean_disp=0.6251 hand_L_max_disp=1.0811
+page_errors=0
+---- session log ----
+fresh profile: C:\Users\allen\AppData\Local\Temp\chimera-r08-03-57aofqj8
+lesson: 'WAKE THE CELL' | 1 / 11
+wake attempt 1: force=15000 N pmax=792110 Pa verdict='the creature waits.'
+REGRESSION wake_the_cell PASSED: True | verdict: 'PASSED — you pressed, the cell woke, and the water healed itself. the world is real.'
+REGRESSION bend_the_knee PASSED: True | verdict: 'PASSED — the creature obeyed a wish, not a touch.'
+progression dots: 11
+lesson 5: 'RAISE THE HAND' | 5 / 11
+pose row joint label: 'wrist_L'
+screenshot: 08_03_hand_rest.png (hand lesson, at rest)
+raise_the_hand PASSED: True | verdict: 'PASSED — you wished with your wrist, and the hand answered.'
+live /verts during pass: hand_L n=1279 mean=0.6251 max=1.0811 (bar: mean > 0.5)
+engine ticks: 800608 | body_model: JNT3_hierarchical
+screenshot: 08_03_hand_raised_passed.png (wrist_L=40, passed)
+rest check: max|verts - rest| after wrist 0 = 0.00e+00
+PAGE ERRORS: 0
+---- screenshot pixel check (post-run) ----
+rest vs raised frames: creature-region changed px (x<900, UI excluded): 1512
+change blob bbox x 522-583 y 425-598 (vertical hand strip at the mirrored hand position; screen x-mirror vs projection: 647-(715-647)=579 vs blob 556)
+arm-zone rightmost bright px: rest x=569 -> raised x=582 (hand silhouette moved 13 px)
+UI-region changes (x>=900) are the lesson card text (title/body/verdict) only.

@@ -3,6 +3,7 @@
 
 #include <array>
 #include "joint_binding.hpp"
+#include "tendon_drive.hpp"
 #include <atomic>
 #include <cstdint>
 #include <deque>
@@ -48,6 +49,20 @@ public:
     bool load_joint_pins(const std::string& body);  // [u32 n][f32 x3 * n]
     bool load_vertbind(const std::string& body);    // [u32 n][u8 * n]
     bool pose_index(int idx, float deg);
+
+    // THE TENDON DRIVE (docs/DECISION_ENERGY_INCREMENT_2026-10-10.md):
+    // ONE energy-based muscle->tendon->joint drive, DEFAULT-OFF, owning
+    // knee_L (pin 15) while armed -- the shipped kinematic game is
+    // untouched until /tick_effort arms it. tendon_effort arms the drive
+    // on its first call (u in [0,1] sets the effort command); u < 0
+    // disarms: the drive releases the pin (the joint keeps its last
+    // angle) and the state freezes for the ledger read; re-arming
+    // re-inits. tendon_sever cuts the tendon transmission (A8 falsifier)
+    // while armed. While armed, pose writes to the owned pin are refused
+    // (the nerve-cut precedent: the drive is the pin's only writer).
+    bool tendon_effort(int joint_index, double u);
+    bool tendon_sever(int joint_index);
+
     bool load_body_binding(const std::string& body); // admitted JNT3, before seals/controllers
     bool body_active() const { return body_active_.load(std::memory_order_acquire); }
     bool intent_joint(int idx, float force_n);
@@ -315,6 +330,21 @@ private:
     std::vector<std::array<float, 3>> joint_pins_;  // the 28 measured pins
     std::vector<float>  joint_deg_;            // pose per pin (radians)
     std::vector<float>  joint_force_;          // standing press per pin, N
+    // THE TENDON DRIVE (docs/DECISION_ENERGY_INCREMENT_2026-10-10.md):
+    // one energy-based actuator, DEFAULT-OFF, owning knee_L (pin 15)
+    // while armed. tendon_reset_ (callers hold seal_mtx_) disarms and
+    // re-inits at every loader rest-reset. The battery0/elastic0 snapshots
+    // are taken at init so the A1 ledger invariant
+    //   battery0 - battery == work + heat + (elastic - elastic0)
+    // closes at ANY read time, not only at run boundaries.
+    chimera::tendon::TendonDriveParams tendon_params_;
+    chimera::tendon::TendonDriveState  tendon_state_;
+    bool   tendon_armed_ = false;
+    int    tendon_pin_ = 15;               // knee_L (leg atlas, gait block)
+    float  tendon_u_cmd_ = 0.f;            // effort command [0,1]
+    double tendon_battery0_J_ = 0.0;       // battery snapshot at last init
+    double tendon_elastic0_J_ = 0.0;       // elastic snapshot at last init
+    void   tendon_reset_();                // disarm + re-init (lock held)
     // THE SEAL v2 / MITOSIS (cut-and-weld, recursive). The wall is the
     // welded cross-section itself; cut points are convex blends over
     // original vertices (merged, <= 8 entries), so the weld holds at any

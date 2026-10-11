@@ -1,0 +1,58 @@
+fresh_profile=C:\Users\allen\AppData\Local\Temp\chimera-r10-6a1yhipe
+gameplay_started=True
+q_key_reached_6=True
+list_reached_6=True
+cards_all_ok=True
+card 01 key='1' title_ok=True body_len=243 hint_len=154 title='WAKE THE CELL'
+card 02 key='2' title_ok=True body_len=243 hint_len=72 title='THE GENTLE HAND'
+card 03 key='3' title_ok=True body_len=283 hint_len=97 title='THE HEALING'
+card 04 key='4' title_ok=True body_len=271 hint_len=110 title='BEND THE KNEE'
+card 05 key='5' title_ok=True body_len=258 hint_len=111 title='RAISE THE HAND'
+card 06 key='6' title_ok=True body_len=422 hint_len=125 title='FEEL THE MUSCLE'
+card 07 key='7' title_ok=True body_len=255 hint_len=142 title='THE WHOLE BODY'
+card 08 key='8' title_ok=True body_len=266 hint_len=141 title='THE BALANCE'
+card 09 key='9' title_ok=True body_len=261 hint_len=102 title='THE HEAVY HAND'
+card 10 key='0' title_ok=True body_len=289 hint_len=101 title='THE CASCADE'
+card 11 key=']' title_ok=True body_len=265 hint_len=133 title='THE STAND'
+card 12 key='`' title_ok=True body_len=278 hint_len=149 title='THE GRADUATION'
+card 13 key='q' title_ok=True body_len=422 hint_len=125 title='FEEL THE MUSCLE'
+slider_value_after_drag=100
+pose_slider_value=40
+flexed=True
+before_readout=battery 999.9 J · tendon 102.3 N · knee 10.3°
+contracted_readout=battery 979.2 J · tendon 0.0 N · knee 132.6° · armed
+severed_shot_caught=True
+severed_readout=battery 964.6 J · tendon 0.0 N · knee -0.1° · SEVERED
+battery_before_J=999.9293715226204
+pass_line_shown=True
+disarm_armed_after_switch=False
+bend_the_knee=True
+wake_the_cell=True
+page_errors=0
+flex={"tendon_armed": true, "tendon_q_deg": 134.05861458259483, "tendon_F_n": 0, "tendon_battery_J": 978.0431065863896, "tendon_severed": false}
+limp={"tendon_armed": true, "tendon_q_deg": -0.11962272206075175, "tendon_F_n": 0, "tendon_battery_J": 964.56191111801, "tendon_severed": true}
+---- session log ----
+fresh profile: C:\Users\allen\AppData\Local\Temp\chimera-r10-6a1yhipe
+gameplay started (#screen-play.on): True
+preset: {"tendon_armed": false, "tendon_q_deg": 10.31, "tendon_F_n": 102.27, "tendon_battery_J": 999.93, "tendon_severed": false}
+CARD {"key": "1", "want": "WAKE THE CELL", "title": "WAKE THE CELL", "index": "1 / 12", "title_ok": true, "body_len": 243, "hint_present": true, "hint_len": 154}
+CARD {"key": "2", "want": "THE GENTLE HAND", "title": "THE GENTLE HAND", "index": "2 / 12", "title_ok": true, "body_len": 243, "hint_present": true, "hint_len": 72}
+CARD {"key": "3", "want": "THE HEALING", "title": "THE HEALING", "index": "3 / 12", "title_ok": true, "body_len": 283, "hint_present": true, "hint_len": 97}
+CARD {"key": "4", "want": "BEND THE KNEE", "title": "BEND THE KNEE", "index": "4 / 12", "title_ok": true, "body_len": 271, "hint_present": true, "hint_len": 110}
+CARD {"key": "5", "want": "RAISE THE HAND", "title": "RAISE THE HAND", "index": "5 / 12", "title_ok": true, "body_len": 258, "hint_present": true, "hint_len": 111}
+CARD {"key": "6", "want": "FEEL THE MUSCLE", "title": "FEEL THE MUSCLE", "index": "6 / 12", "title_ok": true, "body_len": 422, "hint_present": true, "hint_len": 125}
+CARD {"key": "7", "want": "THE WHOLE BODY", "title": "THE WHOLE BODY", "index": "7 / 12", "title_ok": true, "body_len": 255, "hint_present": true, "hint_len": 142}
+CARD {"key": "8", "want": "THE BALANCE", "title": "THE BALANCE", "index": "8 / 12", "title_ok": true, "body_len": 266, "hint_present": true, "hint_len": 141}
+CARD {"key": "9", "want": "THE HEAVY HAND", "title": "THE HEAVY HAND", "index": "9 / 12", "title_ok": true, "body_len": 261, "hint_present": true, "hint_len": 102}
+CARD {"key": "0", "want": "THE CASCADE", "title": "THE CASCADE", "index": "10 / 12", "title_ok": true, "body_len": 289, "hint_present": true, "hint_len": 101}
+CARD {"key": "]", "want": "THE STAND", "title": "THE STAND", "index": "11 / 12", "title_ok": true, "body_len": 265, "hint_present": true, "hint_len": 133}
+CARD {"key": "`", "want": "THE GRADUATION", "title": "THE GRADUATION", "index": "12 / 12", "title_ok": true, "body_len": 278, "hint_present": true, "hint_len": 149}
+CARD {"key": "q", "want": "FEEL THE MUSCLE", "title": "FEEL THE MUSCLE", "index": "6 / 12", "title_ok": true, "body_len": 422, "hint_present": true, "hint_len": 125}
+lesson list (next x5) reached: 6 / 12 FEEL THE MUSCLE
+preset: {"tendon_armed": false, "tendon_q_deg": 10.31, "tendon_F_n": 102.27, "tendon_battery_J": 999.93, "tendon_severed": false}
+FLEX: True q=134.06 F=0.0 batt 999.9->978.0 readout='battery 979.2 J · tendon 0.0 N · knee 132.6° · armed'
+LESSON feel_the_muscle PASSED: True | verdict: 'PASSED — you pulled the tendon with real energy, and watched the wish die when you cut it.'
+LIMP: q=-0.12 sev=True pass_line_in_verdict=True readout='battery 964.6 J · tendon 0.0 N · knee -0.1° · SEVERED'
+LESSON bend_the_knee PASSED: True | verdict: 'PASSED — the creature obeyed a wish, not a touch.'
+  wake_the_cell attempt 1: force=9000 N pmax=477923 Pa verdict='the goal is met — now LET GO, and let the body heal.'
+LESSON wake_the_cell PASSED: True | verdict: 'PASSED — you pressed, the cell woke, and the water healed itself. the world is real.'

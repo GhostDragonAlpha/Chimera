@@ -68,9 +68,14 @@ RATE_LIMITS = {  # class -> (per minute, burst)
     "api": (30, 15),
     "static": (120, 60),
 }
+# feel_the_muscle (round-10): /api/effort rides the STREAM class because the
+# effort slider posts on every input event — a full 0..100 drag is up to 100
+# posts, and the 30/min api bucket would 429 the muscle dead mid-drag (the
+# page swallows the failure, so it would just go limp with no error).
+# /api/sever is one click but joins its family. Same class as /api/pose.
 STREAM_PATHS = {"/api/verts", "/api/state", "/api/frame", "/api/topology",
                 "/api/touch", "/api/touch_clear", "/api/touch_hit",
-                "/api/pose", "/api/gravity"}
+                "/api/pose", "/api/gravity", "/api/effort", "/api/sever"}
 MAX_BODY = 5 * 1024 * 1024   # no honest request body here is bigger
 
 _BUCKETS: dict = {}          # (ip, class) -> (tokens left, last seen)
@@ -279,12 +284,14 @@ class Handler(BaseHTTPRequestHandler):
         # W1 (R4): /api/gravity joins the pose pattern -- the page's own
         # gravity verb for the_stand, proxied to the engine's /tick_gravity.
         if p in ("/api/touch", "/api/touch_clear", "/api/pose", "/api/touch_hit",
-                 "/api/gravity"):
+                 "/api/gravity", "/api/effort", "/api/sever"):
             self._proxy({"/api/touch": "/tick_touch",
                          "/api/touch_clear": "/tick_touch_clear",
                          "/api/pose": "/tick_pose",
                          "/api/touch_hit": "/tick_touch",
-                         "/api/gravity": "/tick_gravity"}[p], "POST", body)
+                         "/api/gravity": "/tick_gravity",
+                         "/api/effort": "/tick_effort",
+                         "/api/sever": "/tick_sever"}[p], "POST", body)
         elif p == "/api/progress":
             try:
                 data = json.loads(body or b"{}")

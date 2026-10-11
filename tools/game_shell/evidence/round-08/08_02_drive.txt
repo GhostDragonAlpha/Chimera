@@ -1,0 +1,16 @@
+tag=08_02 deg=40
+fresh_profile=C:\Users\allen\AppData\Local\Temp\chimera-r08-02b-9fen7raj
+wake_the_cell_passed=True
+bend_the_knee_passed=True
+page_errors=0
+---- session log ----
+fresh profile: C:\Users\allen\AppData\Local\Temp\chimera-r08-02b-9fen7raj
+lesson: 'WAKE THE CELL'
+belly aim px (468,455)
+attempt 1: force=15000 N pmax=792110 Pa verdict='the creature waits.'
+wake_the_cell PASSED: True | verdict: 'PASSED — you pressed, the cell woke, and the water healed itself. the world is real.'
+screenshot: 08_02_knee_0.png (rest)
+bend_the_knee PASSED: True | verdict: 'PASSED — the creature obeyed a wish, not a touch.'
+engine ticks: 483934 | body_model: JNT3_hierarchical
+screenshot: 08_02_knee_bent_foot_follows.png (knee_L=40)
+PAGE ERRORS: 0

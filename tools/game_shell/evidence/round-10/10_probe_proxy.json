@@ -1,0 +1,72 @@
+{
+ "a_tendon_keys": [
+  "tendon_F_n",
+  "tendon_armed",
+  "tendon_battery0_J",
+  "tendon_battery_J",
+  "tendon_elastic0_J",
+  "tendon_elastic_J",
+  "tendon_heat_J",
+  "tendon_q_deg",
+  "tendon_severed",
+  "tendon_work_J"
+ ],
+ "a_pass": true,
+ "b_arm_status": 200,
+ "b_arm_body": {
+  "ok": true
+ },
+ "b_qmax_deg": 117.6829785916374,
+ "b_t_cross_40_s": 0.2067399024963379,
+ "b_battery_min_J": 987.1897542301871,
+ "b_samples_head": [
+  [
+   0.0,
+   0.01,
+   1000.0
+  ],
+  [
+   0.1,
+   29.48,
+   997.9
+  ],
+  [
+   0.21,
+   117.68,
+   987.2
+  ]
+ ],
+ "b_pass": true,
+ "c_sever_status": 200,
+ "c_sever_body": {
+  "ok": true
+ },
+ "c_before": {
+  "tendon_armed": true,
+  "tendon_severed": false,
+  "tendon_q_deg": 120.87477078974605,
+  "tendon_F_n": 0,
+  "tendon_battery_J": 986.7040320457329
+ },
+ "c_after": {
+  "tendon_armed": true,
+  "tendon_severed": true,
+  "tendon_q_deg": -44.99155713855444,
+  "tendon_F_n": 0,
+  "tendon_battery_J": 982.5262491494369
+ },
+ "c_pass": true,
+ "d_disarm_status": 200,
+ "d_armed_after": false,
+ "d_pose_status": 200,
+ "d_pose_body": {
+  "ok": true
+ },
+ "d_pass": true,
+ "e_codes": [
+  200
+ ],
+ "e_429_count": 0,
+ "e_pass": true,
+ "overall": true
+}

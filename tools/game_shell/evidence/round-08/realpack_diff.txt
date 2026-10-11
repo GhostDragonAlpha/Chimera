@@ -1,0 +1,50 @@
+=== joint tables (must be IDENTICAL) ===
+J        identical: True
+AX       identical: True
+ROM      identical: True
+parents  identical: True
+
+=== per-vertex fields: 6102/18459 verts changed any of owner/w/joint2/w2 ===
+changed-vert regions: {'OTHER': 1128, 'hand': 2538, 'foot': 2436}
+  OTHER v=4668 xyz=[1.19 5.79 0.04] shoulder_L(w=0.53,j2=spine_upper,w2=0.47) -> shoulder_L(w=0.50,j2=elbow_L,w2=0.50)
+  OTHER v=4669 xyz=[1.19 5.82 0.12] shoulder_L(w=0.52,j2=spine_upper,w2=0.48) -> shoulder_L(w=0.50,j2=elbow_L,w2=0.50)
+  OTHER v=4671 xyz=[ 1.17  5.78 -0.04] shoulder_L(w=0.53,j2=spine_upper,w2=0.47) -> shoulder_L(w=0.50,j2=elbow_L,w2=0.50)
+  OTHER v=4674 xyz=[1.19 5.86 0.18] shoulder_L(w=0.51,j2=spine_upper,w2=0.49) -> shoulder_L(w=0.50,j2=elbow_L,w2=0.50)
+  OTHER v=4675 xyz=[1.19 5.92 0.22] shoulder_L(w=0.50,j2=spine_upper,w2=0.50) -> shoulder_L(w=0.50,j2=elbow_L,w2=0.50)
+  OTHER v=4676 xyz=[1.44 5.69 0.14] shoulder_L(w=0.62,j2=spine_upper,w2=0.38) -> shoulder_L(w=0.50,j2=elbow_L,w2=0.50)
+  OTHER v=4677 xyz=[1.45 5.74 0.12] shoulder_L(w=0.60,j2=spine_upper,w2=0.40) -> shoulder_L(w=0.50,j2=elbow_L,w2=0.50)
+  OTHER v=4678 xyz=[1.31 5.96 0.15] shoulder_L(w=0.51,j2=spine_upper,w2=0.49) -> shoulder_L(w=0.50,j2=elbow_L,w2=0.50)
+  OTHER v=4679 xyz=[1.31 5.89 0.18] shoulder_L(w=0.52,j2=spine_upper,w2=0.48) -> shoulder_L(w=0.50,j2=elbow_L,w2=0.50)
+  OTHER v=4682 xyz=[1.47 5.79 0.08] shoulder_L(w=0.59,j2=spine_upper,w2=0.41) -> shoulder_L(w=0.50,j2=elbow_L,w2=0.50)
+  OTHER v=4683 xyz=[1.33 6.01 0.11] shoulder_L(w=0.50,j2=spine_upper,w2=0.50) -> shoulder_L(w=0.50,j2=elbow_L,w2=0.50)
+  OTHER v=4685 xyz=[1.3  5.83 0.19] shoulder_L(w=0.53,j2=spine_upper,w2=0.47) -> shoulder_L(w=0.50,j2=elbow_L,w2=0.50)
+  OTHER v=4686 xyz=[1.43 5.63 0.15] shoulder_L(w=0.64,j2=spine_upper,w2=0.36) -> shoulder_L(w=0.50,j2=elbow_L,w2=0.50)
+  OTHER v=4687 xyz=[1.3  5.77 0.18] shoulder_L(w=0.55,j2=spine_upper,w2=0.45) -> shoulder_L(w=0.50,j2=elbow_L,w2=0.50)
+  OTHER v=4688 xyz=[1.42 5.58 0.14] shoulder_L(w=0.66,j2=spine_upper,w2=0.34) -> shoulder_L(w=0.50,j2=elbow_L,w2=0.50)
+  OTHER v=4690 xyz=[1.19 5.92 0.22] shoulder_L(w=0.50,j2=spine_upper,w2=0.50) -> shoulder_L(w=0.50,j2=elbow_L,w2=0.50)
+  OTHER v=4691 xyz=[1.56 5.44 0.11] shoulder_L(w=0.78,j2=spine_upper,w2=0.22) -> shoulder_L(w=0.50,j2=elbow_L,w2=0.50)
+  OTHER v=4692 xyz=[1.57 5.48 0.11] shoulder_L(w=0.77,j2=spine_upper,w2=0.23) -> shoulder_L(w=0.50,j2=elbow_L,w2=0.50)
+  OTHER v=4693 xyz=[1.67 5.26 0.08] shoulder_L(w=0.90,j2=spine_upper,w2=0.10) -> shoulder_L(w=0.50,j2=elbow_L,w2=0.50)
+  OTHER v=4694 xyz=[1.69 5.29 0.08] shoulder_L(w=0.89,j2=spine_upper,w2=0.11) -> shoulder_L(w=0.50,j2=elbow_L,w2=0.50)
+
+=== owner transitions (from -> to), counts ===
+    spine_lower -> ankle_L       888
+    spine_lower -> ankle_R       888
+    spine_lower -> wrist_L       647
+    spine_lower -> wrist_R       647
+      tail_base -> wrist_L       377
+      tail_base -> wrist_R       377
+         knee_L -> ankle_L       311
+         knee_R -> ankle_R       311
+        elbow_L -> wrist_L       215
+        elbow_R -> wrist_R       215
+        wrist_L -> elbow_L       203
+        wrist_R -> elbow_R       203
+        ankle_L -> knee_L        108
+        ankle_R -> knee_R        108
+        wrist_L -> shoulder_L    46
+        wrist_R -> shoulder_R    46
+owner changed: 5590; w/j2/w2-only changed: 512
+
+share law max |w + w2 - 1| = 2.980e-08
+owner range: [0, 27] (decoder requires >= 0)

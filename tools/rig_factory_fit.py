@@ -235,14 +235,25 @@ for name in list(L_landmarks):
         snap[name[:-2] + '_R'] = 0.0   # exact by construction
 
 # extremity tips: measured from the mesh, mirrored for R
+# THE TERMINAL-TIP LAW (2026-10-10, round-08): the old laws took the 30 verts
+# FARTHEST FROM THE JOINT inside a sphere cap (arm<1.2 / leg<1.0). The cap is
+# the bug: the limb beyond the joint is shorter than the cap, so the farthest
+# verts in the cap are PROXIMAL skin (reproduced foot_tip_L (0.496,1.213,0.026)
+# — up the shin; hand_tip_L (1.797,5.131,-0.110) — at the elbow). The tip is
+# the vert EXTREMAL DISTALLY, not radially: project onto the bone's own
+# direction and take the far end of the limb.
+_fw = np.linalg.norm(J['wrist_L'] - J['elbow_L'])          # forearm length
+_wdir = (J['wrist_L'] - J['elbow_L']) / _fw                # elbow->wrist dir
 arm_L = np.linalg.norm(V - J['wrist_L'], axis=1)
-beyond_wrist = np.where((np.linalg.norm(V - J['elbow_L'], axis=1) < arm_L) & (arm_L < 1.2))[0]
-tip_ids = beyond_wrist[np.argsort(-arm_L[beyond_wrist])][:30]
-hand_tip_L = V[tip_ids].mean(axis=0)
-leg_L = np.linalg.norm(V - J['ankle_L'], axis=1)
-beyond_ankle = np.where((np.linalg.norm(V - J['knee_L'], axis=1) < leg_L) & (leg_L < 1.0))[0]
-tip_ids = beyond_ankle[np.argsort(-leg_L[beyond_ankle])][:30]
-foot_tip_L = V[tip_ids].mean(axis=0)
+distal = (V - J['wrist_L']) @ _wdir                        # + = beyond wrist
+beyond_wrist = np.where((arm_L < 2.0 * _fw) & (distal > 0))[0]   # local cap: 2x forearm keeps the hand, excludes the foot (4.3 away)
+tip_ids = beyond_wrist[np.argsort(-distal[beyond_wrist])][:30]
+hand_tip_L = V[tip_ids].mean(axis=0)                       # true fingertip
+# foot: the primate foot points +z (forward); the toe is the +z extremum of
+# the verts BELOW the ankle pivot on the limb's own (+x) side.
+below_ankle = np.where((V[:, 1] < J['ankle_L'][1]) & (V[:, 0] > 0.0))[0]
+tip_ids = below_ankle[np.argsort(-V[below_ankle, 2])][:30]
+foot_tip_L = V[tip_ids].mean(axis=0)                       # true toe
 tail_ids = np.where(V[:, 2] < J['tail_mid'][2] - 0.3)[0]
 tail_d = np.linalg.norm(V[tail_ids] - J['tail_mid'], axis=1)
 tip_ids = tail_ids[np.argsort(-tail_d)][:50]
@@ -305,9 +316,17 @@ assign_name = np.array([owners[b] for b in best])
 # closer to an arm segment than to the spine line, but it belongs to the
 # torso. Rejected claims fall to the nearest AXIAL segment (neck/spine/tail).
 LIMB_CAP = 0.7
+# THE TERMINAL-BAND EXEMPTION (2026-10-10, round-08): the ankle->toe and
+# wrist->fingertip segments OWN their hull (sole, hand) — the cap rejected the
+# foot hull into the axial root (434/499 sole verts -> spine_lower w=1.000,
+# the planted-foot defect). A terminal segment is short and isolated at the
+# limb's end: nearest-segment already cannot reach the torso from it, so the
+# flank-stealing protection the cap exists for does not apply. Axial fallback
+# stays for every other limb claim; the mirror law is untouched.
+terminal_mask = np.array([o.startswith(('ankle', 'wrist')) for o in owners])
 limb_mask = np.array([not (o.startswith(('neck', 'jaw', 'spine', 'tail'))) for o in owners])
 axial_idx = np.where(~limb_mask)[0]
-claim_rejected = limb_mask[best] & (dseg[np.arange(N), best] > LIMB_CAP)
+claim_rejected = limb_mask[best] & (dseg[np.arange(N), best] > LIMB_CAP) & ~terminal_mask[best]
 if claim_rejected.any():
     ri = np.where(claim_rejected)[0]
     best[ri] = axial_idx[np.argmin(dseg[ri][:, axial_idx], axis=1)]
@@ -409,6 +428,22 @@ for i, nme in enumerate(names):
 # loud warning, never a silent fall-back to round-1 numbers (the regression
 # this retires: the envelope re-emit shipped elbow flex 60 where the referee
 # shipped 125).
+# EMBEDDED REFEREE FALLBACK (2026-10-10, Qwen ruling on the round-08 repro
+# gate): .tmp/ is gitignored scratch, so a cleanup could silently regress the
+# pinned pack to the factory ROM_L rows above (elbow ext -145 -> -30, hip flex
+# 119 -> 60, ... — gameplay clamps change while every vertex binding stays
+# identical, the exact silent-authority problem the repro gate caught). When
+# the verdict file is MISSING the fallback below is the REFEREE's verdict, not
+# the factory's: the four B5 round-2 pairs, read bit-exact from the pinned pack
+# (Saved/meshes/monkey_joints.bin, sha256 74b3ab04…c1662) and hash-matched by a
+# full generator run (tools/game_shell/evidence/round-08/08_repro_gate.md).
+# The verdict FILE still wins when present, so future referee runs keep the
+# authority; do NOT re-run rom_referee_r2.py to refresh this table — the
+# hash-match proof is the authority (re-running risks drift).
+ROM_REFEREE_R2 = {
+    'shoulder': (-149.0, 60.0), 'elbow': (-145.0, 125.0),
+    'hip': (-159.0, 119.0), 'knee': (-131.0, 147.0),
+}
 _ref_path = os.path.join(ROOT, '.tmp/skeleton/rom_referee_r2.json')
 if os.path.exists(_ref_path):
     _ref = json.load(open(_ref_path))
@@ -418,8 +453,12 @@ if os.path.exists(_ref_path):
             ROMf[names.index(_pair + _s)] = (_tab['ext_stop_deg'], _tab['flex_stop_deg'])
     print(f"ROM overlay: {len(_shipped)} referee verdicts applied to the pack")
 else:
+    for _pair, (_ext, _flex) in ROM_REFEREE_R2.items():
+        for _s in ('_L', '_R'):
+            ROMf[names.index(_pair + _s)] = (_ext, _flex)
     print("WARNING: no referee verdict file .tmp/skeleton/rom_referee_r2.json — "
-          "pack carries factory fallback ROMs; run tools/rom_referee_r2.py")
+          "applying the EMBEDDED referee ROMs (B5 round-2 verdict, bit-exact to "
+          "the pinned pack); run tools/rom_referee_r2.py to re-measure")
 assign_i32 = np.array([names.index(a) for a in assign_name], np.int32)
 # (w_f32 snapshotted after the second-owner law below — it needs the FINAL
 #  term-1 share; the kernel derives the second share as 1−w.)
@@ -514,6 +553,18 @@ for _fn, (_fm, _fp, _fw) in FACE_BANDS.items():
     _ids = np.where(_fm)[0]
     joint2_name[_ids] = _fp
     w_final[_ids] = _fw
+# TERMINAL BANDS (2026-10-10, round-08 FIX PROOF, 08_rootcause.md): the sole
+# verts ride the foot rigidly — owner ankle_L w=1, blend partner knee_L (the
+# FK parent); hand verts owner wrist_L, partner elbow_L. The envelope's crease
+# fade would hand the sole a 0.5 share of the KNEE transform and re-plant it;
+# the validated proof binds the terminal hull at w=1 against the parent joint
+# (no ankle-crease fade on the foot — accepted for this lesson, the ankle band
+# above the pivot keeps its own envelope).
+_TERM_PARTNER = {'ankle_L': 'knee_L', 'ankle_R': 'knee_R',
+                 'wrist_L': 'elbow_L', 'wrist_R': 'elbow_R'}
+_term_ids = np.where(np.isin(assign_name, list(_TERM_PARTNER)))[0]
+joint2_name[_term_ids] = [_TERM_PARTNER[a] for a in assign_name[_term_ids]]
+w_final[_term_ids] = 1.0
 # THE PACK'S w IS THE FINAL TERM-1 SHARE (the kernel blends w + (1−w) — any
 # other number in the w array makes the second share a lie; the gate's
 # share==1−w check keeps them honest).

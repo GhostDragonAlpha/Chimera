@@ -1,0 +1,5 @@
+tag=08_01 deg=40
+fresh_profile=C:\Users\allen\AppData\Local\Temp\chimera-r08-11i8lmlf
+page_errors=0
+console_messages=1
+CONSOLE: [warning] [GroupMarkerNotSet(crbug.com/242999)!:A84017000C240000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.

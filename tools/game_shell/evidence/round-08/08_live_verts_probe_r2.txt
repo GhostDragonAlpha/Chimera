@@ -1,0 +1,27 @@
+joint idx: knee_L=15 ankle_L=17 wrist_L=11 tail_mid=6 tail_base=5 tail_tip=19
+ROM knee_L=[-131.  147.] ankle_L=[-159.21  131.44] wrist_L=[-30.  60.] tail_mid=[-139.06  138.73]
+tail bands (new pack): base n=331 mid n=406 tip n=28 | old tail_base n=1085 (delta -754)
+matter state: {'on': False, 'iters': 48.0, 'k': 0.2, 'y_ground': -0.0195}
+body_model: JNT3_hierarchical | ticks: 304805
+REST vs mesh: max|live-rest - mesh| = 4.768e-07 (bit-identical: False)
+--- knee_L=40 (name) ---
+  foot_L           n=740 mean=1.4033 max=1.6269
+  sole_L           n=499 mean=1.4474 max=1.6269
+  shin_box         n=125 mean=0.2753 max=0.6316
+  shin_unchanged_bind n=53 mean=0.2247 max=0.6316
+  reset_max_dev    0.00e+00
+--- ankle_L=30 (name) ---
+  foot_L           n=740 mean=0.4507 max=0.7252
+  sole_L           n=499 mean=0.5090 max=0.7252
+  shin_box         n=125 mean=0.0357 max=0.1914
+  reset_max_dev    0.00e+00
+--- wrist_L=40 (name) ---
+  hand_L           n=1279 mean=0.6251 max=1.0811
+  reset_max_dev    0.00e+00
+--- tail_mid=30 (name) ---
+  tail_base_band   n=331 mean=0.2132 max=0.4033
+  tail_mid_band    n=406 mean=0.6413 max=1.4430
+  tail_tip_band    n=28 mean=1.1435 max=1.3808
+  reset_max_dev    0.00e+00
+FINAL at rest: max|v_final - v_rest| = 0.000e+00
+DONE

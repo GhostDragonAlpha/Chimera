@@ -1,0 +1,21 @@
+nv=18459 nj=28
+unassigned verts (owner<0): 0  (JNT3 decoder forbids them)
+
+LEFT FOOT (y<0.16,x>0) n=740 owner: {np.str_('knee_L'): 141, np.str_('spine_lower'): 599}
+SOLE      (y<0.12,x>0.2) n=499 owner: {np.str_('knee_L'): 65, np.str_('spine_lower'): 434}
+sole verts owned by spine_lower (FK ROOT): 434/499, w mean=1.000 -> follow share (1-w) mean=0.000
+ankle_L band n=121 y-range [0.32,1.27] (covers shin ABOVE the ankle pivot y=0.34, never the foot)
+
+knee_L=40 pure-LBS displacement:
+  ankle_L band: mean=0.860 max=1.088
+  shin region:  mean=0.339 max=0.632
+  left foot:    mean=0.237 max=1.329
+  sole:         mean=0.164 max=1.329
+
+foot_tip_L reproduced = [0.496 1.213 0.026]  (ankle pivot [0.461 0.338 0.068]; a true toe would be y~0.1, z>0.4)
+sole distance to the ankle->foot_tip segment: min=0.25 mean=1.18 max=1.65; LIMB_CAP=0.7 rejects 434/499
+
+FIX PROOF (scratch): re-bound 1776 root-owned foot verts (both feet) -> ankle_L
+  knee_L=40 sole displacement: BEFORE 0.164 -> AFTER 1.447
+  knee_L=40 shin displacement: BEFORE 0.339 -> AFTER 0.339 (unchanged)
+  rest pose bit-identical to mesh: True

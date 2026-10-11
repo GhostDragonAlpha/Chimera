@@ -1,0 +1,114 @@
+fresh_profile=C:\Users\allen\AppData\Local\Temp\chimera-r09-02-zcpwjmwg
+dots=12
+muscle_index=6 / 12
+flex_latch=True
+armed_after_sever=True
+disarm_armed=False
+disarm_pose_ok=True
+disarm_page_post=held
+graduation_index=12 / 12
+page_errors=0
+flex={"tendon_armed": true, "tendon_q_deg": 117.81752249597216, "tendon_F_n": 0, "tendon_battery_J": 981.7786995993785, "tendon_severed": false}
+limp={"tendon_armed": true, "tendon_q_deg": -3.0817268191413616, "tendon_F_n": 0, "tendon_battery_J": 969.5115103139119, "tendon_severed": true}
+lesson wake_the_cell: passed=True
+lesson the_gentle_hand: passed=True
+lesson the_healing: passed=True
+lesson bend_the_knee: passed=True
+lesson raise_the_hand: passed=True
+lesson feel_the_muscle: passed=True
+lesson the_whole_body: passed=False
+lesson the_balance: passed=True
+lesson the_heavy_hand: passed=False
+lesson the_cascade: passed=True
+lesson the_stand: passed=True
+lesson the_graduation: passed=False
+---- session log ----
+fresh profile: C:\Users\allen\AppData\Local\Temp\chimera-r09-02-zcpwjmwg
+progression dots: 12
+  wake_the_cell attempt 1: force=9000 N pmax=477923 Pa verdict='the goal is met — now LET GO, and let the body heal.'
+LESSON wake_the_cell PASSED: True | verdict: 'PASSED — you pressed, the cell woke, and the water healed itself. the world is real.'
+  the_gentle_hand attempt 1: force=5000 N pmax=2160890 Pa verdict='the creature waits.'
+LESSON the_gentle_hand PASSED: True | verdict: 'PASSED — a gentle hand: the small water answered a small touch.'
+  the_healing attempt 1: force=9000 N pmax=477923 Pa verdict='the creature waits.'
+LESSON the_healing PASSED: True | verdict: 'PASSED — you let go, and the body healed itself. it never needed you.'
+LESSON bend_the_knee PASSED: True | verdict: 'PASSED — the creature obeyed a wish, not a touch.'
+LESSON raise_the_hand PASSED: True | verdict: 'PASSED — you wished with your wrist, and the hand answered.'
+lesson 6 at index 6 / 12 | effort control present
+FLEX latch: True | armed_before=False | q=117.82deg F=0.00N battery=981.78J armed=True
+LESSON feel_the_muscle PASSED: True | verdict: 'PASSED — you pulled the tendon with real energy, and watched the wish die when you cut it.'
+LIMP latch: True | q=-3.08deg F=0.00N severed=True armed_after_sever=True
+DISARM regression: armed_after_lesson_change=False | /tick_pose knee_L accepted=True resp={'ok': True}
+page pose post button after disarm: held
+  whole_body belly#1 attempt 1: force=9000 N pmax=477923 Pa verdict='the creature waits.'
+  whole_body shin#1 attempt 1: force=1000 N pmax=0 Pa verdict='torso is awake — the lesson still waits for the shins.'
+  whole_body shin#1 attempt 2: force=1500 N pmax=0 Pa verdict='torso is awake — the lesson still waits for the shins.'
+  whole_body shin#1 attempt 3: force=2250 N pmax=0 Pa verdict='torso is awake — the lesson still waits for the shins.'
+  whole_body shin#1 attempt 4: force=3000 N pmax=0 Pa verdict='torso is awake — the lesson still waits for the shins.'
+  whole_body shin#1 attempt 5: force=3500 N pmax=0 Pa verdict='torso is awake — the lesson still waits for the shins.'
+  whole_body shin#1 attempt 6: force=4000 N pmax=0 Pa verdict='torso is awake — the lesson still waits for the shins.'
+LESSON the_whole_body PASSED: False | verdict: 'Press the big body first and let go, then touch low on the legs — below the knee is the shins. The r'
+  whole_body belly#2 attempt 1: force=9000 N pmax=477923 Pa verdict='Press the big body first and let go, then touch low on t'
+  whole_body shin#2 attempt 1: force=1000 N pmax=0 Pa verdict='Press the big body first and let go, then touch low on t'
+  whole_body shin#2 attempt 2: force=1500 N pmax=0 Pa verdict='Press the big body first and let go, then touch low on t'
+  whole_body shin#2 attempt 3: force=2250 N pmax=0 Pa verdict='Press the big body first and let go, then touch low on t'
+  whole_body shin#2 attempt 4: force=3000 N pmax=0 Pa verdict='Press the big body first and let go, then touch low on t'
+  whole_body shin#2 attempt 5: force=3500 N pmax=0 Pa verdict='Press the big body first and let go, then touch low on t'
+  whole_body shin#2 attempt 6: force=4000 N pmax=0 Pa verdict='Press the big body first and let go, then touch low on t'
+LESSON the_whole_body PASSED: False | verdict: 'Press the big body first and let go, then touch low on the legs — below the knee is the shins. The r'
+  whole_body belly#3 attempt 1: force=9000 N pmax=477923 Pa verdict='Press the big body first and let go, then touch low on t'
+  whole_body shin#3 attempt 1: force=1000 N pmax=0 Pa verdict='Press the big body first and let go, then touch low on t'
+  whole_body shin#3 attempt 2: force=1500 N pmax=0 Pa verdict='Press the big body first and let go, then touch low on t'
+  whole_body shin#3 attempt 3: force=2250 N pmax=0 Pa verdict='Press the big body first and let go, then touch low on t'
+  whole_body shin#3 attempt 4: force=3000 N pmax=0 Pa verdict='Press the big body first and let go, then touch low on t'
+  whole_body shin#3 attempt 5: force=3500 N pmax=0 Pa verdict='Press the big body first and let go, then touch low on t'
+  whole_body shin#3 attempt 6: force=4000 N pmax=0 Pa verdict='Press the big body first and let go, then touch low on t'
+LESSON the_whole_body PASSED: False | verdict: 'Press the big body first and let go, then touch low on the legs — below the knee is the shins. The r'
+LESSON the_balance PASSED: True | verdict: 'PASSED — two opposite wishes held at once. that balance is yours.'
+  heavy tap 1: force=35000 verdict='the cell ruptured — the creature went still.'
+  heavy tap 2: force=35000 verdict='the creature waits.'
+  heavy tap 3: force=40250 verdict='the creature waits.'
+  heavy tap 4: force=46287 verdict='the creature waits.'
+  heavy tap 5: force=50000 verdict='the cell ruptured — the creature went still.'
+  heavy tap 6: force=50000 verdict='the creature waits.'
+  heavy tap 7: force=50000 verdict='the creature waits.'
+  heavy tap 8: force=50000 verdict='the creature waits.'
+  heavy tap 9: force=50000 verdict='the creature waits.'
+  heavy tap 10: force=50000 verdict='the cell ruptured — the creature went still.'
+  heavy tap 11: force=50000 verdict='the creature waits.'
+  heavy tap 12: force=50000 verdict='the creature waits.'
+  the_cascade attempt 1: force=6000 N pmax=320675 Pa verdict='the goal is met — now LET GO, and let the body heal.'
+LESSON the_cascade PASSED: True | verdict: 'PASSED — the belly woke and the legs slept through it. sealed means sealed.'
+LESSON the_stand PASSED: True | verdict: 'PASSED — the world turned on its own weight, and the creature stood still in it.'
+  graduation#1 cell1 attempt 1: force=9000 N pmax=477923 Pa verdict='the creature waits.'
+  graduation#1 cell0 attempt 1: force=4000 N pmax=1745750 Pa verdict='the creature waits.'
+  graduation#1 cell3 attempt 1: force=1000 N pmax=0 Pa verdict='the creature waits.'
+  graduation#1 cell3 attempt 2: force=1600 N pmax=0 Pa verdict='the creature waits.'
+  graduation#1 cell3 attempt 3: force=2560 N pmax=0 Pa verdict='the creature waits.'
+  graduation#1 cell3 attempt 4: force=3000 N pmax=0 Pa verdict='the creature waits.'
+  graduation#1 cell3 attempt 5: force=3500 N pmax=0 Pa verdict='the creature waits.'
+  graduation#1 cell3 attempt 6: force=4000 N pmax=0 Pa verdict='the creature waits.'
+LESSON the_graduation PASSED: False | verdict: 'Touch three different places — belly, foot, shin — until three different cells have each crossed 0.0'
+  graduation#2 cell1 attempt 1: force=9000 N pmax=477923 Pa verdict='Touch three different places — belly, foot, shin — until'
+  graduation#2 cell0 attempt 1: force=4000 N pmax=1745750 Pa verdict='the cell ruptured — the creature went still.'
+  graduation#2 cell0 attempt 2: force=2400 N pmax=1045390 Pa verdict='the cell ruptured — the creature went still.'
+  graduation#2 cell0 attempt 3: force=1440 N pmax=625756 Pa verdict='the creature waits.'
+  graduation#2 cell3 attempt 1: force=1000 N pmax=0 Pa verdict='the creature waits.'
+  graduation#2 cell3 attempt 2: force=1600 N pmax=0 Pa verdict='the creature waits.'
+  graduation#2 cell3 attempt 3: force=2560 N pmax=0 Pa verdict='the creature waits.'
+  graduation#2 cell3 attempt 4: force=3000 N pmax=0 Pa verdict='the creature waits.'
+  graduation#2 cell3 attempt 5: force=3500 N pmax=0 Pa verdict='the creature waits.'
+  graduation#2 cell3 attempt 6: force=4000 N pmax=0 Pa verdict='the creature waits.'
+LESSON the_graduation PASSED: False | verdict: 'Touch three different places — belly, foot, shin — until three different cells have each crossed 0.0'
+  graduation#3 cell1 attempt 1: force=9000 N pmax=477923 Pa verdict='Touch three different places — belly, foot, shin — until'
+  graduation#3 cell0 attempt 1: force=4000 N pmax=1745750 Pa verdict='the cell ruptured — the creature went still.'
+  graduation#3 cell0 attempt 2: force=2400 N pmax=1059860 Pa verdict='the cell ruptured — the creature went still.'
+  graduation#3 cell0 attempt 3: force=1440 N pmax=627364 Pa verdict='the cell ruptured — the creature went still.'
+  graduation#3 cell0 attempt 4: force=864 N pmax=405166 Pa verdict='the creature waits.'
+  graduation#3 cell3 attempt 1: force=1000 N pmax=0 Pa verdict='the creature waits.'
+  graduation#3 cell3 attempt 2: force=1600 N pmax=0 Pa verdict='the creature waits.'
+  graduation#3 cell3 attempt 3: force=2560 N pmax=0 Pa verdict='the creature waits.'
+  graduation#3 cell3 attempt 4: force=3000 N pmax=0 Pa verdict='the creature waits.'
+  graduation#3 cell3 attempt 5: force=3500 N pmax=0 Pa verdict='the creature waits.'
+  graduation#3 cell3 attempt 6: force=4000 N pmax=0 Pa verdict='the creature waits.'
+LESSON the_graduation PASSED: False | verdict: 'Touch three different places — belly, foot, shin — until three different cells have each crossed 0.0'
+PAGE ERRORS: 0

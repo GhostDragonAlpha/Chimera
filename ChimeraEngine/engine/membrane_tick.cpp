@@ -837,6 +837,23 @@ void MembraneTick::step(std::vector<float>& verts9, float dt) {
     // values (gait_log in state_json).
     if (gait_on_) gait_step_locked_(verts9, dt);
 
+    // THE TENDON DRIVE (docs/DECISION_ENERGY_INCREMENT_2026-10-10.md):
+    // one energy-based actuator on tendon_pin_ (knee_L), DEFAULT-OFF --
+    // armed only by /tick_effort, so every shipped caller is untouched.
+    // The drive integrates battery->activation->muscle->tendon->joint in
+    // its own 1/300 s substeps (tendon_drive.hpp); this block feeds it the
+    // tick's real dt and writes the pin the SAME way the gait machine
+    // does: joint_deg_ is consumed by NEXT tick's apply_travel, so THE
+    // FALL, the seal volumes and every pressure pass read the same posed
+    // surface as always. Last write wins over the gait block (both are
+    // default-off; while armed the drive owns the pin -- pose refusal).
+    if (tendon_armed_) {
+        chimera::tendon::tendon_drive_step(tendon_params_, tendon_state_,
+                                           tendon_u_cmd_, 0.0, dt);
+        if (tendon_pin_ >= 0 && tendon_pin_ < (int)joint_deg_.size())
+            joint_deg_[tendon_pin_] = (float)tendon_state_.q;
+    }
+
     // THE MOVEMENT LAW -- THE FALL (prereg appended to
     // SEAL_PREREGISTRATION.md). One rigid DOF along Y:
     //   y'' = -g + F_contact/m,
@@ -939,6 +956,7 @@ bool MembraneTick::load_joint_pins(const std::string& body) {
     joint_pins_.clear();
     joint_deg_.assign(n, 0.f);
     joint_force_.assign(n, 0.f);
+    tendon_reset_();   // rest-reset: the tendon drive disarms + re-inits
     for (uint32_t i = 0; i < n; ++i) {
         float x, y, z;
         std::memcpy(&x, body.data() + 4 + i * 12 + 0, 4);
@@ -975,6 +993,7 @@ bool MembraneTick::load_body_binding(const std::string& body) {
     body_binding_=std::move(b);joint_pins_=std::move(pins);cell_joint_=std::move(labels);
     vert_bind_idx_=std::move(indices);vert_bind_w_=std::move(weights);vert_joint_=std::move(dominant);
     joint_deg_.assign(joint_pins_.size(),0.f);joint_force_.assign(joint_pins_.size(),0.f);
+    tendon_reset_();   // rest-reset: the tendon drive disarms + re-inits
     joint_verts_.clear();rig_.clear();rig_angle_.clear();press_off_.clear();press_field_=false;touch_active_=false;
     force_l_=force_r_=0.f;normals_displaced_=false;
     reflex_.breathing=false; // legacy cosmetic breathing bypasses physical volumes
@@ -985,6 +1004,9 @@ bool MembraneTick::load_body_binding(const std::string& body) {
 bool MembraneTick::pose_index(int idx, float deg) {
     std::lock_guard<std::mutex> lk(seal_mtx_);
     if (idx < 0 || idx >= (int)joint_deg_.size()) return false;
+    // TENDON DRIVE ownership: while armed the drive is the ONLY writer of
+    // its pin (the nerve-cut precedent: a route-cuttable channel).
+    if (tendon_armed_ && idx == tendon_pin_) return false;
     if (!std::isfinite(deg) || (!body_active() && std::fabs(deg) > 90.f)) return false;
     float angle=deg*3.14159265358979f/180.f;
     if(body_active() && (deg<body_binding_.limits[2*idx] || deg>body_binding_.limits[2*idx+1])) return false;
@@ -1035,6 +1057,7 @@ bool MembraneTick::pose(const std::string& joint, float deg) {
         auto it=std::find(body_binding_.names.begin(),body_binding_.names.end(),joint);
         if(it==body_binding_.names.end())return false;
         size_t j=it-body_binding_.names.begin();float angle=deg*3.14159265358979f/180.f;
+        if(tendon_armed_ && (int)j==tendon_pin_)return false; // drive owns the pin
         if(deg<body_binding_.limits[2*j] || deg>body_binding_.limits[2*j+1])return false;
         joint_deg_[j]=angle;return true;
     }
@@ -1046,6 +1069,41 @@ bool MembraneTick::pose(const std::string& joint, float deg) {
         }
     }
     return false;
+}
+
+// ─── TENDON DRIVE (docs/DECISION_ENERGY_INCREMENT_2026-10-10.md) ─────────
+// All entry points take seal_mtx_ (the tick lock): the step block reads
+// and writes the state under it, so the endpoints and the render thread
+// serialize exactly like the pose/stance routes do.
+void MembraneTick::tendon_reset_() {          // callers hold seal_mtx_
+    tendon_armed_ = false;
+    tendon_u_cmd_ = 0.f;
+    chimera::tendon::tendon_drive_init(tendon_params_, tendon_state_);
+    tendon_battery0_J_ = tendon_state_.battery_J;
+    tendon_elastic0_J_ = tendon_state_.elastic_J;
+}
+
+bool MembraneTick::tendon_effort(int joint_index, double u) {
+    std::lock_guard<std::mutex> lk(seal_mtx_);
+    if (joint_index != tendon_pin_) return false;   // one drive: knee_L
+    if (std::isnan(u)) return false;
+    if (u < 0.0) {               // DISARM: release the pin, freeze the
+        tendon_armed_ = false;   // state for the ledger read (re-arm
+        tendon_u_cmd_ = 0.f;     // re-inits from full battery)
+        return true;
+    }
+    if (u > 1.0) return false;
+    if (!tendon_armed_) tendon_reset_();            // ARM: fresh drive
+    tendon_armed_ = true;
+    tendon_u_cmd_ = (float)u;
+    return true;
+}
+
+bool MembraneTick::tendon_sever(int joint_index) {
+    std::lock_guard<std::mutex> lk(seal_mtx_);
+    if (joint_index != tendon_pin_ || !tendon_armed_) return false;
+    tendon_state_.severed = true;                   // A8 transmission cut
+    return true;
 }
 
 void MembraneTick::apply_chain(std::vector<float>& verts9) {
@@ -4620,6 +4678,14 @@ void MembraneTick::reflex_off_locked_() {
     reflex_.prev_p_valid = false;
 }
 
+// TENDON DRIVE ledger fields are exact doubles (the 1e-6 ledger audit
+// reads them), so they bypass ostringstream's 6-significant-digit default.
+static std::string tendon_num_(double v) {
+    char b[40];
+    std::snprintf(b, sizeof b, "%.17g", v);
+    return b;
+}
+
 std::string MembraneTick::state_json() const {
     // reads the cell state other threads rewrite — hold the same mutex
     // (bounded by one tick; state reads are not on the render path)
@@ -4658,6 +4724,21 @@ std::string MembraneTick::state_json() const {
       << ",\"ticks\":" << ticks_
       << ",\"body_model\":\"" << (body_active()?"JNT3_hierarchical":"legacy") << "\""
       << ",\"body_actuation\":\"kinematic\""
+      // TENDON DRIVE (docs/DECISION_ENERGY_INCREMENT_2026-10-10.md): the
+      // full A1 ledger. battery0/elastic0 are the snapshots taken at the
+      // last init, so battery0-battery == work+heat+(elastic-elastic0)
+      // closes at any read time. F_n is the live tendon tension [N]
+      // (0 once severed). q is reported in degrees like every pose here.
+      << ",\"tendon_armed\":" << (tendon_armed_ ? "true" : "false")
+      << ",\"tendon_severed\":" << (tendon_state_.severed ? "true" : "false")
+      << ",\"tendon_q_deg\":" << tendon_num_(tendon_state_.q * 57.29577951308232)
+      << ",\"tendon_F_n\":" << tendon_num_(chimera::tendon::tendon_force_n(tendon_params_, tendon_state_))
+      << ",\"tendon_battery_J\":" << tendon_num_(tendon_state_.battery_J)
+      << ",\"tendon_battery0_J\":" << tendon_num_(tendon_battery0_J_)
+      << ",\"tendon_work_J\":" << tendon_num_(tendon_state_.work_muscle_J)
+      << ",\"tendon_heat_J\":" << tendon_num_(tendon_state_.heat_J)
+      << ",\"tendon_elastic_J\":" << tendon_num_(tendon_state_.elastic_J)
+      << ",\"tendon_elastic0_J\":" << tendon_num_(tendon_elastic0_J_)
       << ",\"enabled\":" << (enabled_ ? "true" : "false")
       << ",\"reflex_cell_count\":" << cells_.size()
       << ",\"force_l\":" << force_l_ << ",\"force_r\":" << force_r_

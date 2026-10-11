@@ -353,6 +353,9 @@
         <div id="gravity-btn-wrap" style="display:none">
           <button id="gravity-btn" class="btn" type="button" style="width:100%">wake the world's weight</button>
         </div>
+        <!-- feel_the_muscle: the energy-actuator control (effort slider,
+             live tendon readout, sever button). Built by buildEffortCtrl. -->
+        <div id="effort-btn-wrap" style="display:none"></div>
         <div id="verdict" class="verdict">the creature waits.</div>
         <!-- RUPTURE_FAILURE: the recovery control, shown only while this
              attempt is locked on a burst cell -->
@@ -525,7 +528,8 @@
   var lessonShownAt = 0;       // L1: when the current lesson card was shown
                                // (the 25 s stall hint keys off this)
   var lessonState = {};        // id -> {goalMet, passed, phase}
-  var JOINT_INDEX = { hip_L: 13, hip_R: 14, knee_L: 15, knee_R: 16,
+  var JOINT_INDEX = { wrist_L: 11, wrist_R: 12,
+                      hip_L: 13, hip_R: 14, knee_L: 15, knee_R: 16,
                       ankle_L: 17, ankle_R: 18 };
   /* L1 BY-HAND FIX (judge 2: "the four blood cells are never labeled -- I
      poked the whole body to guess which is which"): the four compartments
@@ -539,7 +543,8 @@
      A lesson whose goal.type is not on this list HOLDS -- it can neither
      crash the judge nor pass by accident. */
   var KNOWN_GOAL_TYPES = ['pressure_above', 'pressure_below', 'pose_reach',
-                          'pose_pair', 'gravity_on', 'cells_woken', 'pressure_isolation'];
+                          'pose_pair', 'gravity_on', 'cells_woken', 'pressure_isolation',
+                          'effort_reach'];
   var POSE_TOL_DEG   = 2;     // pose intent tolerance around the goal deg
   var ROOT_VY_SETTLE = 0.05;  // m/s -- gravity_on "settled means settled"
   var ROOT_SETTLE_M  = 0.002; // m  -- the root left its authored rest
@@ -561,7 +566,7 @@
     // (cells_woken, distinct cell indices), gravityArmed (gravity_on).
     if (!lessonState[l.id]) lessonState[l.id] = { goalMet: false, passed: false,
       phase: 'goal', pairOk: {}, wokenSet: {}, gravityArmed: false,
-      ruptured: false, rupturedCell: -1 };
+      ruptured: false, rupturedCell: -1, flexMet: false };
     return lessonState[l.id];
   }
   async function loadLessons() {
@@ -591,6 +596,7 @@
       st0.goalMet = false; st0.phase = 'goal';
       st0.pairOk = {}; st0.wokenSet = {};
       st0.gravityArmed = false;
+      st0.flexMet = false;                           // effort_reach: flex latch
       st0.ruptured = false; st0.rupturedCell = -1;   // RUPTURE_FAILURE: clear a burst
       st0.primaryMet = false; st0.alsoMet = false; st0.halfNote = false;
       st0.pairNote = false; st0.forceNote = false; st0.hintShown = false;
@@ -617,6 +623,15 @@
       gb.disabled = false;
       gb.textContent = "wake the world's weight";
     }
+    /* feel_the_muscle: the energy-actuator control (effort slider + live
+       tendon readout + sever button). SAFETY: while the engine's tendon is
+       ARMED it REFUSES /tick_pose on that joint (pin 15 = knee_L), so every
+       lesson OTHER than feel_the_muscle disarms first — awaited, so the
+       resetPose below (which posts knee_L) can never be refused. */
+    var isEffort = l.goal.type === 'effort_reach';
+    $('effort-btn-wrap').style.display = isEffort ? 'block' : 'none';
+    if (isEffort) buildEffortCtrl(l);
+    else if (tendonArmed) await disarmEffort();
     // a pressure lesson must start with the body AT REST: a held pose
     // shifts the volumes off v0 and every calm check would dead-end.
     // H10-WALKER FIX: the reset is now AWAITED (and each joint post
@@ -704,6 +719,87 @@
     row.classList.toggle('latched', !!held);
     var btn = $('pose-post' + sfx);
     if (btn && held) btn.textContent = 'held';
+  }
+  /* ================= feel_the_muscle: the energy actuator =================
+     The tendon drives joint 15 (knee_L) from a battery of stored energy:
+     POST /api/effort {joint_index:15, u} (u 0..1 arms and holds; u<0
+     disarms) and POST /api/effort's sibling /api/sever {joint_index:15}.
+     The judge (judgeState/effort branch) latches on the MEASURED state
+     (tendon_q_deg from /api/state), never on the posted u. SAFETY: while
+     armed the engine refuses /tick_pose on 15 — disarmEffort() is awaited
+     by showLesson for every other lesson, rides the rest button, and runs
+     once on page load, so pin 15 is never left armed. */
+  var TENDON_JOINT = 15;
+  var tendonArmed = false;      // what the ENGINE last took (ok:true)
+  async function postEffort(u) {
+    var body = null;
+    try {
+      var res = await postJSON('/api/effort', { joint_index: TENDON_JOINT, u: u });
+      body = await res.json();
+    } catch (err) { body = null; }
+    if (body && body.ok === true) tendonArmed = (u >= 0);
+    return body;
+  }
+  async function disarmEffort() {
+    await postEffort(-1);
+  }
+  function buildEffortCtrl(l) {
+    var wrap = $('effort-btn-wrap');
+    wrap.innerHTML = '';
+    var row = document.createElement('div');
+    row.className = 'pose-row';
+    row.id = 'effort-row';
+    row.innerHTML =
+      '<span class="pose-joint">tendon</span>' +
+      '<input type="range" id="effort-u" min="0" max="100" step="1" value="0"' +
+      ' aria-label="muscle effort">' +
+      '<span class="pose-val" id="effort-val">effort → 0%</span>' +
+      '<button class="btn" id="effort-sever-btn" type="button">sever the tendon</button>';
+    wrap.appendChild(row);
+    var out = document.createElement('div');
+    out.className = 'hint mono';
+    out.id = 'effort-readout';
+    out.textContent = 'battery --- J · tendon --- N · knee --- °';
+    wrap.appendChild(out);
+    var sl = $('effort-u');
+    sl.addEventListener('input', function () {
+      $('effort-val').textContent = 'effort → ' + sl.value + '%';
+      sl.style.setProperty('--fill', Number(sl.value) + '%');
+      postEffort(Number(sl.value) / 100);        // arms on the first post
+    });
+    sl.style.setProperty('--fill', '0%');
+    $('effort-sever-btn').addEventListener('click', async function () {
+      var st = curState();
+      try {
+        var res = await postJSON('/api/sever', { joint_index: TENDON_JOINT });
+        var body = await res.json();
+        if (res.ok && body && body.ok === true) {
+          /* NOTE: sever CUTS the tendon but does NOT disarm the engine —
+             /tick_pose on 15 stays refused until u<0, so tendonArmed
+             STAYS true and showLesson's exit disarm still fires. */
+          /* RACE FIX (round-10): the leg can fall and the judge can PASS
+             while this POST is still in flight. Re-read AFTER the await —
+             a lesson that already passed keeps its PASSED banner; this
+             click must never talk over it. */
+          var st2 = curState();
+          if (st2 && st2.passed) return;
+          if (st.flexMet) setVerdict('the tendon is cut — watch the leg go limp.', 'accent');
+          else setVerdict('the tendon is cut — the muscle can no longer pull.', 'warn');
+        }
+      } catch (err) { /* the link line owns the failure */ }
+    });
+  }
+  function renderEffortReadout(s) {
+    var out = $('effort-readout');
+    if (!out || !$('effort-btn-wrap') ||
+        $('effort-btn-wrap').style.display === 'none') return;
+    if (!s || s.tendon_q_deg === undefined) return;
+    var num = function (x, d) {
+      x = Number(x); return isFinite(x) ? x.toFixed(d) : '---';
+    };
+    out.textContent = 'battery ' + num(s.tendon_battery_J, 1) + ' J · tendon ' +
+      num(s.tendon_F_n, 1) + ' N · knee ' + num(s.tendon_q_deg, 1) + '°' +
+      (s.tendon_severed ? ' · SEVERED' : (s.tendon_armed ? ' · armed' : ''));
   }
   $('lesson-prev').addEventListener('click', function () { showLesson(lessonIdx - 1); });
   $('lesson-next').addEventListener('click', function () { showLesson(lessonIdx + 1); });
@@ -1650,6 +1746,10 @@
       canvas.dataset.surfaceOwner = nativeBodySurface ? "native" : "legacy_preview";
       if (anatomyScene) return true;
       renderBlood(s);
+      window.__tendonState = (s.tendon_q_deg !== undefined)
+        ? { severed: !!s.tendon_severed, armed: !!s.tendon_armed,
+            q: Number(s.tendon_q_deg) } : null;
+      renderEffortReadout(s);   // feel_the_muscle: live battery/force/angle
       judgeState(s);
       renderJudgeDebug();     // runs on the setInterval poll, so the judge
                               // line stays live even with no WebGL frame
@@ -1761,6 +1861,26 @@
     /* pose lessons (pose_reach AND pose_pair) judge on the POSTED intent
        (observePose), never on the poll */
     if (l.goal.type === 'pose_reach' || l.goal.type === 'pose_pair') return;
+    /* effort_reach (feel_the_muscle) judges on the MEASURED tendon state —
+       the flex latches at tendon_q_deg >= deg (the knee really rose, not a
+       posted wish), and with then_sever the lesson passes only after the
+       engine reports the tendon severed AND the measured angle goes limp
+       (< sever_below_deg). No cells needed; runs before the cell guards. */
+    if (l.goal.type === 'effort_reach') {
+      var q = Number(s && s.tendon_q_deg);
+      if (!isFinite(q)) return;
+      if (!st.flexMet && q >= (Number(l.goal.deg) || 0)) {
+        st.flexMet = true; st.goalMet = true;
+        snd('cellWake');
+        setVerdict('the muscle pulls — watch the charge. now cut the tendon.', 'accent');
+      } else if (st.flexMet && s.tendon_severed &&
+                 q < (Number(l.goal.sever_below_deg) || 5)) {
+        st.passed = true;
+        snd('passed');
+        setVerdict(passLine(l, 'the lesson is yours.'), 'good');
+      }
+      return;
+    }
     var cells = (s && s.cells) || [];
     if (!cells.length) return;
     if (s.n_cells && cells.length < s.n_cells) return;   // W1: partial read -- hold
@@ -1981,6 +2101,9 @@
       extra += ' woken=' + Object.keys(st.wokenSet || {}).length + '/' +
                (Number(l.goal.count) || 0);
     if (l.goal.type === 'gravity_on') extra += ' armed=' + !!(st.gravityArmed);
+    if (l.goal.type === 'effort_reach')
+      extra += ' flex=' + !!st.flexMet + ' severed=' +
+               !!(window.__tendonState && window.__tendonState.severed);
     if (l.goal.type === 'pose_pair') {
       var names = [], i;
       for (i = 0; l.goal.joints && i < l.goal.joints.length; i++)
@@ -2002,9 +2125,10 @@
   }
 
   /* ================= KEYBOARD + GAMEPAD (AI + accessibility) =================
-     Keyboard (play screen): 1-9,0 lessons · [ ] prev/next · SPACE hold = press
-     the lesson's target · - / = force down/up · P post pose wishes (pose
-     lessons) · R stand at rest · S save · ESC let go.
+     Keyboard (play screen): 1-9,0 lessons 1-10 · ` the LAST lesson (dynamic) ·
+     q the muscle lesson (feel_the_muscle, by id) · [ ] prev/next ·
+     SPACE hold = press the lesson's target · - / = force down/up · P post
+     pose wishes (pose lessons) · R stand at rest · S save · ESC let go.
      Gamepad: left stick = orbit · A (held) = press the lesson target ·
      B = release · LB/RB = lesson prev/next · RT analog = force while A. */
   var touchTarget = null;       // world point the keyboard/gamepad presses
@@ -2062,11 +2186,31 @@
     if (tgt && (tgt.tagName === 'TEXTAREA' ||
         (tgt.tagName === 'INPUT' && tgt.type !== 'range'))) return;
     var k = e.key;
-    /* L1 BY-HAND FIX: the pack has TEN lessons and the keyboard mapped
-       only 1-5 (judge 2: "only the keyboard 1-5 works"). 1-9 and 0 (the
-       tenth) reach every lesson; [ ] and the arrows cover the rest. */
+    /* L1 BY-HAND FIX, COUNT-AWARE (round-08, count-aware again round-09):
+       digits 1-9 jump to lessons 1-9 and '0' to lesson 10 — the keys never
+       moved. When the pack passes ten lessons the number-row key '`' (left
+       of '1') jumps to the LAST lesson — LESSONS.length - 1, dynamic, never
+       hardcoded: eleven it was lesson 11, twelve (feel_the_muscle at 6) it
+       is lesson 12. No handler on this page claims '`' ('[', ']', ' ',
+       Escape, p, r, s, '-', '='/'+' , 'q' and Enter own everything else; the
+       slider keeps its native arrows). [ ] still step prev/next and reach
+       any lesson. ROUND-10: 'q' is the muscle's OWN key — it jumps to
+       feel_the_muscle BY ID (the pack holds it at 6, not appended last, so
+       a positional 'lesson 12' binding would be wrong; dynamic lookup can
+       never point at the wrong card). 'q' was verified unclaimed first. */
     if ((k >= '1' && k <= '9') || k === '0') {
       showLesson(k === '0' ? 9 : (+k - 1)); e.preventDefault(); return;
+    }
+    if (k === '`' && LESSONS.length > 10) {
+      showLesson(LESSONS.length - 1); e.preventDefault(); return;
+    }
+    if (k === 'q' && LESSONS.length > 11) {
+      for (var qi = 0; qi < LESSONS.length; qi++) {
+        if (LESSONS[qi].id === 'feel_the_muscle') {
+          showLesson(qi); e.preventDefault(); break;
+        }
+      }
+      return;
     }
     if (k === '[') { showLesson(lessonIdx - 1); e.preventDefault(); return; }
     if (k === ']') { showLesson(lessonIdx + 1); e.preventDefault(); return; }
@@ -2598,6 +2742,10 @@
        no page-surfaced way back to the state every pressure lesson's calm
        bar assumes. The engine's off is exact: root_y = root_vy = 0. */
     try { await postJSON('/api/gravity', { on: false }); } catch (err) { /* the world keeps its weight */ }
+    /* SAFETY (feel_the_muscle): rest also disarms the tendon, so the pose
+       reset below (which posts knee_L = pin 15) is never refused and pin
+       15 is never left armed. */
+    await disarmEffort();
     await resetPose();
     setHand('standing at rest — the world back at its authored rest');
   });
@@ -2936,6 +3084,12 @@
   /* ================= boot ================= */
   forceLabel.textContent = forceEl.value + ' N';
   $('name-input').focus();
+
+  /* SAFETY (feel_the_muscle): on page load the tendon is disarmed
+     unconditionally — the engine may have been left armed by an earlier
+     page or tab, and pin 15 must never be held armed behind another
+     lesson's back (postPose's knee reset would be refused). */
+  disarmEffort();
 
   loadTopology();                       // THE WORLD attaches on any machine —
                                         // only the DRAWING needs WebGL2

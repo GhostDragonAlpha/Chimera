@@ -1,0 +1,42 @@
+tag=08_04 keyboard lesson-jump map (count-aware, ` -> lesson 11)
+fresh_profile=C:\Users\allen\AppData\Local\Temp\chimera-r08-04-h6989eoh
+key='1' idx='1 / 11' expected='WAKE THE CELL' observed='WAKE THE CELL' ok=True
+key='2' idx='2 / 11' expected='THE GENTLE HAND' observed='THE GENTLE HAND' ok=True
+key='3' idx='3 / 11' expected='THE HEALING' observed='THE HEALING' ok=True
+key='4' idx='4 / 11' expected='BEND THE KNEE' observed='BEND THE KNEE' ok=True
+key='5' idx='5 / 11' expected='RAISE THE HAND' observed='RAISE THE HAND' ok=True
+key='6' idx='6 / 11' expected='THE WHOLE BODY' observed='THE WHOLE BODY' ok=True
+key='7' idx='7 / 11' expected='THE BALANCE' observed='THE BALANCE' ok=True
+key='8' idx='8 / 11' expected='THE HEAVY HAND' observed='THE HEAVY HAND' ok=True
+key='9' idx='9 / 11' expected='THE CASCADE' observed='THE CASCADE' ok=True
+key='0' idx='10 / 11' expected='THE STAND' observed='THE STAND' ok=True
+key='`' idx='11 / 11' expected='THE GRADUATION' observed='THE GRADUATION' ok=True
+all_digits_ok=True
+brackets_ok=True
+space_ok=True space_delta_pa=469273
+regress key=4 {"title": "BEND THE KNEE", "joint": "knee_L", "pose_visible": true, "slider": true, "post": true, "title_ok": true, "bound": true}
+regress key=5 {"title": "RAISE THE HAND", "joint": "wrist_L", "pose_visible": true, "slider": true, "post": true, "title_ok": true, "bound": true}
+lesson11_screenshot_ok=True
+page_errors=0
+OVERALL: PASS
+---- session log ----
+fresh profile: C:\Users\allen\AppData\Local\Temp\chimera-r08-04-h6989eoh
+start lesson: 'WAKE THE CELL' | 1 / 11
+key '1'  -> 1 / 11 title='WAKE THE CELL' expected='WAKE THE CELL' ok=True
+key '2'  -> 2 / 11 title='THE GENTLE HAND' expected='THE GENTLE HAND' ok=True
+key '3'  -> 3 / 11 title='THE HEALING' expected='THE HEALING' ok=True
+key '4'  -> 4 / 11 title='BEND THE KNEE' expected='BEND THE KNEE' ok=True
+key '5'  -> 5 / 11 title='RAISE THE HAND' expected='RAISE THE HAND' ok=True
+key '6'  -> 6 / 11 title='THE WHOLE BODY' expected='THE WHOLE BODY' ok=True
+key '7'  -> 7 / 11 title='THE BALANCE' expected='THE BALANCE' ok=True
+key '8'  -> 8 / 11 title='THE HEAVY HAND' expected='THE HEAVY HAND' ok=True
+key '9'  -> 9 / 11 title='THE CASCADE' expected='THE CASCADE' ok=True
+key '0'  -> 10 / 11 title='THE STAND' expected='THE STAND' ok=True
+key '`'  -> 11 / 11 title='THE GRADUATION' expected='THE GRADUATION' ok=True
+brackets: ] from 11 -> 'WAKE THE CELL' ok=True | [ -> 'THE GRADUATION' ok=True | ] -> lesson 1 ok=True (lesson 11 title was 'THE GRADUATION')
+space press: p0=0 Pa p1=469273 Pa delta=469273 Pa hand='pressing the torso — 12000 N (space)' ok=True
+regression key '4': title='BEND THE KNEE' joint='knee_L' pose_visible=True slider=True post=True bound=True
+regression key '5': title='RAISE THE HAND' joint='wrist_L' pose_visible=True slider=True post=True bound=True
+lesson 11 via '`': 11 / 11 title='THE GRADUATION' ok=True
+screenshot: 08_04_keyboard_lesson11.png (lesson 11 card)
+PAGE ERRORS: 0

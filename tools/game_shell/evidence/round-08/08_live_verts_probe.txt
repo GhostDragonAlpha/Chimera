@@ -1,0 +1,7 @@
+matter state: {'on': False, 'iters': 48.0, 'k': 0.2, 'y_ground': -0.0195}
+pose knee_L=40: {'ok': True}
+LIVE knee_L=40: foot n=740 mean=0.2373 max=1.3290
+LIVE knee_L=40: sole n=499 mean=0.1641 max=1.3290
+LIVE knee_L=40: shin n=125 mean=0.3389 max=0.6316
+reset: {'ok': True}
+returned to rest: True

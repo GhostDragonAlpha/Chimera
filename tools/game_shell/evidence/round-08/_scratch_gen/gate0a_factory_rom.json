@@ -1,0 +1,18 @@
+{
+ "law": "ROM_R asymmetric stops retired 2026-09-03: measured by folding from OFF-FRAME anchors (the empty-band defect). Pairs now carry the L stop on both sides. Re-measure on this frame.",
+ "retired": {
+  "elbow_R": 166.78,
+  "hip_R": [
+   -104.74,
+   152.23
+  ],
+  "knee_R": [
+   -160.87,
+   151.33
+  ],
+  "ankle_R": [
+   -143.62,
+   143.61
+  ]
+ }
+}
