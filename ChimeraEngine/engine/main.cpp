@@ -94,6 +94,29 @@ struct MeshReq { std::vector<float> verts; std::vector<uint32_t> indices; uint32
 static MeshReq g_mesh_req;
 static MembraneTick g_tick;                    // THE MEMBRANE TICK (Appliance 1)
 
+// ─── B2 SCENE ROUTES (GAME_PLAN_ACTION_RPG.md §13 B2; b2_scene.hpp) ──────
+// Admit a strict chimera.b2_scene.v1 document — two independent rigid
+// parts with gravity + per-part one-sided ground rung on the shared
+// resident runtime. The request body IS the scene document; refusals
+// name themselves. Dispatched AFTER the main route ladder (see the
+// "Not found" tail): the ladder sits at MSVC's block-nesting limit
+// (C1061), so adding branches to it fails the build. route_b2 answers
+// only /tick_b2_* paths and returns empty for every other request.
+static std::string route_b2(const std::string &p, const std::string &method,
+                            const std::string &req_body) {
+    if (p == "/tick_b2_admit" && method == "POST") {
+        std::string why = g_tick.b2_admit(req_body, std::string());
+        if (why.empty()) return "{\"ok\":true,\"schema\":\"chimera.b2_scene.v1\"}";
+        std::string esc;                       // refusal text may carry quotes
+        for (char ch : why) { if (ch == '"' || ch == '\\') esc += '\\'; esc += ch; }
+        return "{\"ok\":false,\"error\":\"refused: " + esc + "\"}";
+    }
+    if (p == "/tick_b2_clear" && method == "POST") { g_tick.b2_clear(); return "{\"ok\":true}"; }
+    if (p == "/tick_b2_state" && method == "GET") return g_tick.b2_telemetry_json();
+    if (p == "/tick_b2_parts" && method == "GET") return g_tick.b2_parts_json();
+    return std::string();
+}
+
 // THE SESSION SNAPSHOT list, shared by status/restore/clear: order matters
 // (mesh first, then the tick payloads their sizes verify against, then the
 // other uploads). /tick_seal has no single blob — its INTENTS append to
@@ -3905,6 +3928,15 @@ int main(int argc, char** argv) {
             body = "Not found";
         }
 
+        // B2 scene routes (route_b2, near g_tick): the /tick_b2_* paths
+        // match no ladder branch and land in the "Not found" tail above;
+        // overwrite it here. Kept out of the ladder itself because the
+        // chain sits at MSVC's block-nesting limit (C1061).
+        {
+            std::string b2b = route_b2(p, method, req_body);
+            if (!b2b.empty()) { body = b2b; content_type = "application/json"; }
+        }
+
         // ── SESSION SNAPSHOT (2026-09-02, the tool-alongside-the-game decree):
         // every successful *_bin upload is written THROUGH to
         // session_snapshot/<endpoint>.blob — a folder of raw bytes, replayed
@@ -4517,19 +4549,22 @@ int main(int argc, char** argv) {
         // F2: every frame's time lands on the status bar's histogram ring
         engine.ui_.push_frame_time(static_cast<float>(ft_ms));
 
+        // measured frame dt for the tick's time-dependent physics
+        // (the hydraulic return decays in real seconds, HR prereg). Hoisted
+        // out of the body gate so the B2 scene gets a real dt even with no
+        // membrane body loaded (B2 is body-independent, b2_scene.hpp).
+        static auto tick_last = std::chrono::high_resolution_clock::now();
+        auto tick_now = std::chrono::high_resolution_clock::now();
+        float tick_dt = std::chrono::duration_cast<std::chrono::microseconds>(
+            tick_now - tick_last).count() / 1e6f;
+        tick_last = tick_now;
+        if (tick_dt < 0.f) tick_dt = 0.f;
+        if (tick_dt > 0.1f) tick_dt = 0.1f;
+
         // THE MEMBRANE TICK (Appliance 1): per-frame cell update on the
         // render thread; the tint streams to the GPU through update_mesh
         // (in-place vertex upload, no reload, no camera).
         if (g_tick.enabled_ && g_tick_vcount > 0) {
-            // measured frame dt for the tick's time-dependent physics
-            // (the hydraulic return decays in real seconds, HR prereg)
-            static auto tick_last = std::chrono::high_resolution_clock::now();
-            auto tick_now = std::chrono::high_resolution_clock::now();
-            float tick_dt = std::chrono::duration_cast<std::chrono::microseconds>(
-                tick_now - tick_last).count() / 1e6f;
-            tick_last = tick_now;
-            if (tick_dt < 0.f) tick_dt = 0.f;
-            if (tick_dt > 0.1f) tick_dt = 0.1f;
             g_tick.step(g_tick_verts, tick_dt);
             engine.update_mesh(g_tick_verts, g_tick_vcount);
             // SEALED PHASE 1 ASSIGNMENT 1: (1) feed the follow camera the
@@ -4543,6 +4578,11 @@ int main(int argc, char** argv) {
                 g_tick.ledger_violation_clear();
             }
         }
+        // B2 (GAME_PLAN_ACTION_RPG.md §13): the two-part scene steps on the
+        // shared resident runtime whether or not a body is loaded; default-
+        // off (no-op until POST /tick_b2_admit), b2_mtx_ only, never seal
+        // state. See MembraneTick::b2_step.
+        g_tick.b2_step((double)tick_dt);
 
         // Frame cap (frame-stutter fix): uncapped, the engine free-ran at 300-1800 FPS
         // and fought llama-server (65%% GPU) for every slice — each inference burst

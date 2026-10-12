@@ -288,6 +288,9 @@ void MembraneTick::init(uint32_t tris, const std::vector<uint32_t>& indices,
     root_y_ = root_vy_ = 0.f;    // a new body starts at its authored rest
     g_contact_n_ = 0.f;          // (gravity_on_ itself survives re-init:
                                  //  the law applies to whatever body loads)
+    // B2: a B2 scene was admitted against the OLD body's construction
+    // packet; it does not survive a mesh swap (the C1 stale-packet class).
+    { std::lock_guard<std::mutex> b2lk(b2_mtx_); b2_.clear(); }
     // F1: a new body starts UN-STANCED -- its frozen support set and
     // derived gain described the OLD geometry and must not survive a
     // mesh swap (the C1 crash class: stale indices into a new body).
@@ -3577,6 +3580,32 @@ bool MembraneTick::set_gravity(bool on) {
         std::this_thread::sleep_for(std::chrono::microseconds(200));
     }
     return true;
+}
+
+// ─── B2: two independent parts on the shared resident runtime ───────────────
+// The routes (main.cpp) admit/clear/read; the render loop drives b2_step.
+// b2_mtx_ serialises all of it (b2_scene.hpp). The scene is body-
+// independent: step() only runs with a membrane body loaded, so B2 gets its
+// own step call from the render loop and never nests under seal_mtx_.
+void MembraneTick::b2_step(double dt) {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    if (b2_.active()) b2_.step(dt);
+}
+std::string MembraneTick::b2_admit(const std::string &json, const std::string &reason) {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    return b2_.admit(json, reason);
+}
+void MembraneTick::b2_clear() {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    b2_.clear();
+}
+std::string MembraneTick::b2_telemetry_json() {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    return b2_.telemetry_json();
+}
+std::string MembraneTick::b2_parts_json() {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    return b2_.parts_json();
 }
 
 // F1: the stance switch (the lead wires POST /tick_stance to this,

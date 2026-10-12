@@ -4,6 +4,7 @@
 #include <array>
 #include "joint_binding.hpp"
 #include "tendon_drive.hpp"
+#include "b2_scene.hpp"
 #include <atomic>
 #include <cstdint>
 #include <deque>
@@ -156,6 +157,19 @@ public:
     // that arithmetic changes. Off = authored rest, exactly. The lead
     // wires POST /tick_gravity -> set_gravity at the build window.
     bool set_gravity(bool on);
+
+    // B2 (GAME_PLAN_ACTION_RPG.md §13): two INDEPENDENT rigid parts on the
+    // shared resident runtime, gravity + support through the coupon's
+    // per-site one-sided ground rung (b2_scene.hpp). Default OFF;
+    // POST /tick_b2_admit is the only arming path; a mesh swap clears it.
+    std::string b2_admit(const std::string &json, const std::string &reason);
+    void b2_clear();
+    std::string b2_telemetry_json();
+    std::string b2_parts_json();
+    // The render loop drives the scene on its own: B2 is independent of
+    // the membrane body, so it steps whether or not a body is loaded
+    // (step() only runs with verts). b2_mtx_ alone; no seal state touched.
+    void b2_step(double dt);
 
     // F1 STANCE (the balance rung; prereg appended to
     // SEAL_PREREGISTRATION.md): the body counters its own lean by
@@ -543,6 +557,11 @@ private:
     // first integrating tick sees the init-reset 0/0 and calls a live
     // body inert -- the measured window-4 race).
     std::atomic<uint64_t> ground_evals_{0};
+    // B2 SCENE state (b2_scene.hpp). Own lock: the tick thread steps it
+    // under seal_mtx_ -> b2_mtx_; the HTTP routes take b2_mtx_ alone, so
+    // admission never blocks the render loop's seal try_lock.
+    mutable std::mutex b2_mtx_;
+    B2Scene b2_;
     // F1 STANCE state (see set_stance above). Default OFF; the lead owns
     // the policy flip after the bars pass (the gravity precedent).
     static constexpr uint8_t ANKLE_PIN_L = 17, ANKLE_PIN_R = 18;
