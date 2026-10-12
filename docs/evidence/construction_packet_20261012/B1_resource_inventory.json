@@ -1,0 +1,528 @@
+{
+  "compiler": "tools/material_volume.py schema chimera.material_volume.v1",
+  "packet": "construction_packet_B1",
+  "refusal_controls": {
+    "dual_claim_cell_status": "conflict",
+    "duplicate_mass_owner": "duplicate_mass_owner_id",
+    "inverted_cell": "inverted_tetrahedron",
+    "open_surface_sheet": "degenerate_tetrahedron",
+    "overlapping_cells": "overlapping_tetrahedra",
+    "thin_sheet_document": "mixed_mass_representations"
+  },
+  "templates": {
+    "template_tapered_layer": {
+      "boundary_face_count": 20,
+      "boundary_face_keys": [
+        [
+          0,
+          1,
+          2
+        ],
+        [
+          0,
+          1,
+          5
+        ],
+        [
+          0,
+          2,
+          3
+        ],
+        [
+          0,
+          3,
+          7
+        ],
+        [
+          0,
+          4,
+          5
+        ],
+        [
+          0,
+          4,
+          7
+        ],
+        [
+          1,
+          2,
+          5
+        ],
+        [
+          2,
+          3,
+          6
+        ],
+        [
+          2,
+          5,
+          6
+        ],
+        [
+          3,
+          6,
+          7
+        ],
+        [
+          4,
+          5,
+          9
+        ],
+        [
+          4,
+          7,
+          11
+        ],
+        [
+          4,
+          8,
+          9
+        ],
+        [
+          4,
+          8,
+          11
+        ],
+        [
+          5,
+          6,
+          9
+        ],
+        [
+          6,
+          7,
+          10
+        ],
+        [
+          6,
+          9,
+          10
+        ],
+        [
+          7,
+          10,
+          11
+        ],
+        [
+          8,
+          9,
+          10
+        ],
+        [
+          8,
+          10,
+          11
+        ]
+      ],
+      "cell_count": 12,
+      "complete": true,
+      "conflicting_cell_ids": [],
+      "connected_components": 1,
+      "geometric_volume_m3": 0.0035000000000000005,
+      "geometry_signature": "b8ddab58b2e11de8114b35821a9e3d1dac0cad274bfc4907440be7762bbd2280",
+      "interface_count": 2,
+      "interfaces": [
+        {
+          "area_m2": 0.05002249493977685,
+          "face_key": [
+            4,
+            5,
+            6
+          ],
+          "normal_a_to_b": [
+            -0.02998650910567101,
+            0.0,
+            0.9995503035223667
+          ],
+          "region_a_id": "region_taper_core",
+          "region_b_id": "region_taper_skin"
+        },
+        {
+          "area_m2": 0.05002249493977685,
+          "face_key": [
+            4,
+            6,
+            7
+          ],
+          "normal_a_to_b": [
+            -0.02998650910567101,
+            0.0,
+            0.9995503035223667
+          ],
+          "region_a_id": "region_taper_core",
+          "region_b_id": "region_taper_skin"
+        }
+      ],
+      "mass_properties": {
+        "cell_count": 12,
+        "center_of_mass_m": [
+          0.22857142857142856,
+          0.12499999999999999,
+          0.02552533089913281
+        ],
+        "inertia_com_kg_m2": [
+          [
+            0.0695882960648106,
+            5.204170427930421e-18,
+            -0.008481085714285718
+          ],
+          [
+            5.204170427930421e-18,
+            0.1656681174933821,
+            -5.149960319306146e-19
+          ],
+          [
+            -0.008481085714285718,
+            -5.149960319306146e-19,
+            0.2330173214285715
+          ]
+        ],
+        "mass_kg": 13.146000000000003,
+        "volume_m3": 0.0035000000000000005
+      },
+      "materials": [
+        {
+          "conditions": "dry, 293 K assumed",
+          "density_kg_m3": 240.0,
+          "density_source": "B1 packet fixture - nominal cork, assumed, not measured",
+          "material_id": "mat_cork_core"
+        },
+        {
+          "conditions": "dry, 293 K assumed",
+          "density_kg_m3": 6100.0,
+          "density_source": "B1 packet fixture - nominal aluminium alloy, assumed, not measured",
+          "material_id": "mat_alloy_skin"
+        }
+      ],
+      "ownership_complete": true,
+      "regions": [
+        {
+          "mass_owner_id": "owner_taper_core",
+          "material_id": "mat_cork_core",
+          "region_id": "region_taper_core",
+          "stiffness_pa": 30000000.0
+        },
+        {
+          "mass_owner_id": "owner_taper_skin",
+          "material_id": "mat_alloy_skin",
+          "region_id": "region_taper_skin",
+          "stiffness_pa": 70000000000.0
+        }
+      ],
+      "resolved_region_subtotals": {
+        "region_taper_core": {
+          "cell_count": 6,
+          "center_of_mass_m": [
+            0.22857142857142862,
+            0.125,
+            0.00742857142857143
+          ],
+          "inertia_com_kg_m2": [
+            [
+              0.0017574422857142863,
+              8.131516293641283e-20,
+              -6.308571428571433e-05
+            ],
+            [
+              8.131516293641283e-20,
+              0.004213156571428574,
+              2.117582368135751e-21
+            ],
+            [
+              -6.308571428571433e-05,
+              2.117582368135751e-21,
+              0.005955714285714288
+            ]
+          ],
+          "mass_kg": 0.3360000000000001,
+          "volume_m3": 0.0014000000000000006
+        },
+        "region_taper_skin": {
+          "cell_count": 6,
+          "center_of_mass_m": [
+            0.22857142857142854,
+            0.12499999999999999,
+            0.026
+          ],
+          "inertia_com_kg_m2": [
+            [
+              0.06771793,
+              6.938893903907228e-18,
+              -0.008418000000000002
+            ],
+            [
+              6.938893903907228e-18,
+              0.1613420371428572,
+              -5.692061405548898e-19
+            ],
+            [
+              -0.008418000000000002,
+              -5.692061405548898e-19,
+              0.2270616071428572
+            ]
+          ],
+          "mass_kg": 12.810000000000002,
+          "volume_m3": 0.0021000000000000003
+        }
+      },
+      "unresolved_cell_ids": [],
+      "vertex_count": 12
+    },
+    "template_wedge_a": {
+      "boundary_face_count": 8,
+      "boundary_face_keys": [
+        [
+          0,
+          1,
+          2
+        ],
+        [
+          0,
+          1,
+          4
+        ],
+        [
+          0,
+          2,
+          5
+        ],
+        [
+          0,
+          3,
+          4
+        ],
+        [
+          0,
+          3,
+          5
+        ],
+        [
+          1,
+          2,
+          5
+        ],
+        [
+          1,
+          4,
+          5
+        ],
+        [
+          3,
+          4,
+          5
+        ]
+      ],
+      "cell_count": 3,
+      "complete": true,
+      "conflicting_cell_ids": [],
+      "connected_components": 1,
+      "geometric_volume_m3": 0.0036000000000000003,
+      "geometry_signature": "6d9914bf9d4eb3d4d2e74949797438f7535582a16c75b83060faabbc322aba55",
+      "interface_count": 0,
+      "interfaces": [],
+      "mass_properties": {
+        "cell_count": 3,
+        "center_of_mass_m": [
+          0.09999999999999999,
+          0.06666666666666668,
+          0.060000000000000005
+        ],
+        "inertia_com_kg_m2": [
+          [
+            0.033264,
+            0.016200000000000003,
+            0.0
+          ],
+          [
+            0.016200000000000003,
+            0.060264,
+            -1.0842021724855044e-19
+          ],
+          [
+            0.0,
+            -1.0842021724855044e-19,
+            0.0702
+          ]
+        ],
+        "mass_kg": 9.72,
+        "volume_m3": 0.0036000000000000003
+      },
+      "materials": [
+        {
+          "conditions": "dry, 293 K assumed",
+          "density_kg_m3": 2700.0,
+          "density_source": "B1 packet fixture - nominal granite, assumed, not measured",
+          "material_id": "mat_granite_a"
+        }
+      ],
+      "ownership_complete": true,
+      "regions": [
+        {
+          "mass_owner_id": "part_wedge_a",
+          "material_id": "mat_granite_a",
+          "region_id": "region_wedge_a",
+          "stiffness_pa": 50000000000.0
+        }
+      ],
+      "resolved_region_subtotals": {
+        "region_wedge_a": {
+          "cell_count": 3,
+          "center_of_mass_m": [
+            0.09999999999999999,
+            0.06666666666666668,
+            0.060000000000000005
+          ],
+          "inertia_com_kg_m2": [
+            [
+              0.033264,
+              0.016200000000000003,
+              0.0
+            ],
+            [
+              0.016200000000000003,
+              0.060264,
+              -1.0842021724855044e-19
+            ],
+            [
+              0.0,
+              -1.0842021724855044e-19,
+              0.0702
+            ]
+          ],
+          "mass_kg": 9.72,
+          "volume_m3": 0.0036000000000000003
+        }
+      },
+      "unresolved_cell_ids": [],
+      "vertex_count": 6
+    },
+    "template_wedge_b": {
+      "boundary_face_count": 8,
+      "boundary_face_keys": [
+        [
+          0,
+          1,
+          2
+        ],
+        [
+          0,
+          1,
+          4
+        ],
+        [
+          0,
+          2,
+          5
+        ],
+        [
+          0,
+          3,
+          4
+        ],
+        [
+          0,
+          3,
+          5
+        ],
+        [
+          1,
+          2,
+          5
+        ],
+        [
+          1,
+          4,
+          5
+        ],
+        [
+          3,
+          4,
+          5
+        ]
+      ],
+      "cell_count": 3,
+      "complete": true,
+      "conflicting_cell_ids": [],
+      "connected_components": 1,
+      "geometric_volume_m3": 0.003366,
+      "geometry_signature": "ea552152fd6c672add82c36f8c73bc08fb906de93d4ad45f137e8c108ade0384",
+      "interface_count": 0,
+      "interfaces": [],
+      "mass_properties": {
+        "cell_count": 3,
+        "center_of_mass_m": [
+          0.07333333333333333,
+          0.11333333333333334,
+          0.045
+        ],
+        "inertia_com_kg_m2": [
+          [
+            0.18753061249999997,
+            0.05490132999999999,
+            1.3010426069826053e-18
+          ],
+          [
+            0.05490132999999999,
+            0.08888437249999998,
+            3.469446951953614e-18
+          ],
+          [
+            1.3010426069826053e-18,
+            3.469446951953614e-18,
+            0.24074379999999998
+          ]
+        ],
+        "mass_kg": 26.423099999999998,
+        "volume_m3": 0.003366
+      },
+      "materials": [
+        {
+          "conditions": "dry, 293 K assumed",
+          "density_kg_m3": 7850.0,
+          "density_source": "B1 packet fixture - nominal carbon steel, assumed, not measured",
+          "material_id": "mat_steel_b"
+        }
+      ],
+      "ownership_complete": true,
+      "regions": [
+        {
+          "mass_owner_id": "part_wedge_b",
+          "material_id": "mat_steel_b",
+          "region_id": "region_wedge_b",
+          "stiffness_pa": 200000000000.0
+        }
+      ],
+      "resolved_region_subtotals": {
+        "region_wedge_b": {
+          "cell_count": 3,
+          "center_of_mass_m": [
+            0.07333333333333333,
+            0.11333333333333334,
+            0.045
+          ],
+          "inertia_com_kg_m2": [
+            [
+              0.18753061249999997,
+              0.05490132999999999,
+              1.3010426069826053e-18
+            ],
+            [
+              0.05490132999999999,
+              0.08888437249999998,
+              3.469446951953614e-18
+            ],
+            [
+              1.3010426069826053e-18,
+              3.469446951953614e-18,
+              0.24074379999999998
+            ]
+          ],
+          "mass_kg": 26.423099999999998,
+          "volume_m3": 0.003366
+        }
+      },
+      "unresolved_cell_ids": [],
+      "vertex_count": 6
+    }
+  }
+}
