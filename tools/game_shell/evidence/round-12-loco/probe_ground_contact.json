@@ -1,0 +1,700 @@
+{
+ "steps": [
+  {
+   "label": "boot",
+   "root_y": 0,
+   "g_contact_n": 0,
+   "body_model": "JNT3_hierarchical"
+  },
+  {
+   "label": "gravity_arm_response",
+   "ok": true
+  },
+  {
+   "label": "gravity_settled",
+   "root_y": 0.00950712,
+   "root_vy": -1.167e-08,
+   "g_contact_n": 135618
+  },
+  {
+   "label": "pose_probe_done",
+   "rows": "[{\"pose\": \"knee_L=-60.0\", \"ok\": true, \"root_y\": 0.00950712, \"g_contact_n\": 135618, \"root_vy\": -1.23901e-08}, {\"pose\": \"hip_L=40.0\", \"ok\": true, \"root_y\": 0.00950712, \"g_contact_n\": 135618, \"root_vy\": -1.15766e-08}, {\"pose\": \"ankle_L=-30.0\", \"ok\": true, \"root_y\": 0.00950712, \"g_contact_n\": 135618, \"root_vy\": -1.94854e-08}, {\"pose\": \"knee_L=0.0\", \"ok\": true, \"root_y\": 2.98554, \"g_contact_n\": 133466, \"root_vy\": -0.220686}, {\"pose\": \"hip_L=0.0\", \"ok\": true, \"root_y\": 2.85114, \"g_contact_n\": 135618, \"root_vy\": -0.223719}, {\"pose\": \"ankle_L=0.0\", \"ok\": true, \"root_y\": 2.71197, \"g_contact_n\": 135618, \"root_vy\": -0.223719}]"
+  },
+  {
+   "label": "effort_arm",
+   "ok": true
+  },
+  {
+   "label": "drive_probe_done",
+   "rows": "[{\"t\": 0.5, \"tendon_q_deg\": 118.51139728348257, \"tendon_F_n\": 0, \"root_y\": 2.60019, \"g_contact_n\": 135618, \"battery_J\": 982.1129691346953, \"ledger_err\": 2.4513724383723456e-13}, {\"t\": 1.0, \"tendon_q_deg\": 131.29324361871855, \"tendon_F_n\": 0, \"root_y\": 2.48814, \"g_contact_n\": 135618, \"battery_J\": 977.9564399198619, \"ledger_err\": 1.1013412404281553e-12}, {\"t\": 1.5, \"tendon_q_deg\": 132.58968786297683, \"tendon_F_n\": 0, \"root_y\": 2.37725, \"g_contact_n\": 135618, \"battery_J\": 975.5390730656616, \"ledger_err\": 1.1013412404281553e-12}, {\"t\": 2.0, \"tendon_q_deg\": 129.2419797217637, \"tendon_F_n\": 0, \"root_y\": 2.26424, \"g_contact_n\": 135618, \"battery_J\": 974.0875790956501, \"ledger_err\": 1.1013412404281553e-12}, {\"t\": 2.5, \"tendon_q_deg\": 127.95756105865411, \"tendon_F_n\": 0, \"root_y\": 2.15199, \"g_contact_n\": 135618, \"battery_J\": 972.8517424275561, \"ledger_err\": 1.9113599591946695e-12}, {\"t\": 3.0, \"tendon_q_deg\": 128.5479693574791, \"tendon_F_n\": 0, \"root_y\": 2.04004, \"g_contact_n\": 135618, \"battery_J\": 971.5765401960857, \"ledger_err\": 2.4940050025179517e-12}, {\"t\": 3.5, \"tendon_q_deg\": 129.08270790129612, \"tendon_F_n\": 0, \"root_y\": 1.92758, \"g_contact_n\": 135618, \"battery_J\": 970.4436471999264, \"ledger_err\": 2.6432189770275727e-12}, {\"t\": 4.0, \"tendon_q_deg\": 129.06595111057476, \"tendon_F_n\": 0, \"root_y\": 1.81576, \"g_contact_n\": 135618, \"battery_J\": 969.3840735697925, \"ledger_err\": 3.0482283364108298e-12}]"
+  },
+  {
+   "label": "loco_arm",
+   "r15": true,
+   "r16": true,
+   "r13": true
+  },
+  {
+   "label": "pose_refusal_owned_pin",
+   "ok": false,
+   "err": "refused: unknown joint or angle outside admitted limits"
+  },
+  {
+   "label": "loco_script_on",
+   "ok": true,
+   "err": null
+  },
+  {
+   "label": "bank_probe_done",
+   "root_y_min": 0.894257,
+   "root_y_max": 1.75147,
+   "g_contact_min": 135618,
+   "g_contact_max": 135618,
+   "max_err_J": 1.8758328224066645e-12,
+   "violations": 0
+  },
+  {
+   "label": "stance_gait_on_jnt3",
+   "stance_ok": true,
+   "stance_err": null,
+   "gait_ok": true,
+   "gait_err": null
+  },
+  {
+   "label": "root_dof_fields",
+   "root_keys": [
+    "root_vy",
+    "root_y"
+   ],
+   "xz_fields": []
+  }
+ ],
+ "boot_state": {
+  "gravity_on": false,
+  "root_y": 0,
+  "root_vy": 0,
+  "g_contact_n": 0,
+  "stance_on": false,
+  "gait_on": false,
+  "tendon_armed": false,
+  "tendon_q_deg": 0,
+  "tendon_F_n": 222.22222222222243,
+  "tendon_battery_J": 1000,
+  "tendon_ledger_max_err_J": 0,
+  "tendon_ledger_violations": 0,
+  "body_model": "JNT3_hierarchical",
+  "n_cells": 2,
+  "sealed": true,
+  "V_lower": 0.402958,
+  "P_lower": 0
+ },
+ "gravity_settled": {
+  "label": "gravity_settled_2s",
+  "t": 1791776331.3066208,
+  "gravity_on": true,
+  "root_y": 0.00950712,
+  "root_vy": -1.167e-08,
+  "g_contact_n": 135618,
+  "stance_on": false,
+  "gait_on": false,
+  "tendon_armed": false,
+  "tendon_q_deg": 0,
+  "tendon_F_n": 222.22222222222243,
+  "tendon_battery_J": 1000,
+  "tendon_ledger_max_err_J": 0,
+  "tendon_ledger_violations": 0,
+  "body_model": "JNT3_hierarchical",
+  "n_cells": 2,
+  "sealed": true,
+  "V_lower": 0.402958,
+  "P_lower": 0,
+  "root_keys": [
+   "root_vy",
+   "root_y"
+  ]
+ },
+ "pose_probe": {
+  "before": {
+   "label": "pose_before",
+   "t": 1791776331.3298707,
+   "gravity_on": true,
+   "root_y": 0.00950712,
+   "root_vy": -1.49163e-08,
+   "g_contact_n": 135618,
+   "stance_on": false,
+   "gait_on": false,
+   "tendon_armed": false,
+   "tendon_q_deg": 0,
+   "tendon_F_n": 222.22222222222243,
+   "tendon_battery_J": 1000,
+   "tendon_ledger_max_err_J": 0,
+   "tendon_ledger_violations": 0,
+   "body_model": "JNT3_hierarchical",
+   "n_cells": 2,
+   "sealed": true,
+   "V_lower": 0.402958,
+   "P_lower": 0,
+   "root_keys": [
+    "root_vy",
+    "root_y"
+   ]
+  },
+  "rows": [
+   {
+    "pose": "knee_L=-60.0",
+    "ok": true,
+    "root_y": 0.00950712,
+    "g_contact_n": 135618,
+    "root_vy": -1.23901e-08
+   },
+   {
+    "pose": "hip_L=40.0",
+    "ok": true,
+    "root_y": 0.00950712,
+    "g_contact_n": 135618,
+    "root_vy": -1.15766e-08
+   },
+   {
+    "pose": "ankle_L=-30.0",
+    "ok": true,
+    "root_y": 0.00950712,
+    "g_contact_n": 135618,
+    "root_vy": -1.94854e-08
+   },
+   {
+    "pose": "knee_L=0.0",
+    "ok": true,
+    "root_y": 2.98554,
+    "g_contact_n": 133466,
+    "root_vy": -0.220686
+   },
+   {
+    "pose": "hip_L=0.0",
+    "ok": true,
+    "root_y": 2.85114,
+    "g_contact_n": 135618,
+    "root_vy": -0.223719
+   },
+   {
+    "pose": "ankle_L=0.0",
+    "ok": true,
+    "root_y": 2.71197,
+    "g_contact_n": 135618,
+    "root_vy": -0.223719
+   }
+  ]
+ },
+ "drive_probe": [
+  {
+   "t": 0.5,
+   "tendon_q_deg": 118.51139728348257,
+   "tendon_F_n": 0,
+   "root_y": 2.60019,
+   "g_contact_n": 135618,
+   "battery_J": 982.1129691346953,
+   "ledger_err": 2.4513724383723456e-13
+  },
+  {
+   "t": 1.0,
+   "tendon_q_deg": 131.29324361871855,
+   "tendon_F_n": 0,
+   "root_y": 2.48814,
+   "g_contact_n": 135618,
+   "battery_J": 977.9564399198619,
+   "ledger_err": 1.1013412404281553e-12
+  },
+  {
+   "t": 1.5,
+   "tendon_q_deg": 132.58968786297683,
+   "tendon_F_n": 0,
+   "root_y": 2.37725,
+   "g_contact_n": 135618,
+   "battery_J": 975.5390730656616,
+   "ledger_err": 1.1013412404281553e-12
+  },
+  {
+   "t": 2.0,
+   "tendon_q_deg": 129.2419797217637,
+   "tendon_F_n": 0,
+   "root_y": 2.26424,
+   "g_contact_n": 135618,
+   "battery_J": 974.0875790956501,
+   "ledger_err": 1.1013412404281553e-12
+  },
+  {
+   "t": 2.5,
+   "tendon_q_deg": 127.95756105865411,
+   "tendon_F_n": 0,
+   "root_y": 2.15199,
+   "g_contact_n": 135618,
+   "battery_J": 972.8517424275561,
+   "ledger_err": 1.9113599591946695e-12
+  },
+  {
+   "t": 3.0,
+   "tendon_q_deg": 128.5479693574791,
+   "tendon_F_n": 0,
+   "root_y": 2.04004,
+   "g_contact_n": 135618,
+   "battery_J": 971.5765401960857,
+   "ledger_err": 2.4940050025179517e-12
+  },
+  {
+   "t": 3.5,
+   "tendon_q_deg": 129.08270790129612,
+   "tendon_F_n": 0,
+   "root_y": 1.92758,
+   "g_contact_n": 135618,
+   "battery_J": 970.4436471999264,
+   "ledger_err": 2.6432189770275727e-12
+  },
+  {
+   "t": 4.0,
+   "tendon_q_deg": 129.06595111057476,
+   "tendon_F_n": 0,
+   "root_y": 1.81576,
+   "g_contact_n": 135618,
+   "battery_J": 969.3840735697925,
+   "ledger_err": 3.0482283364108298e-12
+  }
+ ],
+ "bank_probe": [
+  {
+   "t": 0.25,
+   "root_y": 1.75147,
+   "root_vy": -0.223719,
+   "g_contact_n": 135618,
+   "loco_t_s": 0.250591000309214,
+   "loco_max_err_J": 3.4994229736184934e-13,
+   "loco_frames": 86,
+   "loco_violations": 0,
+   "pins": {
+    "15": {
+     "q_deg": 134.42387776155132,
+     "tau_nm": 4.149526594915531,
+     "ledger_err_J": 2.3447910280083306e-13
+    },
+    "16": {
+     "q_deg": 43.92491585137652,
+     "tau_nm": 0.33533358881388325,
+     "ledger_err_J": 9.947598300641403e-14
+    },
+    "13": {
+     "q_deg": 118.9996829603739,
+     "tau_nm": 4.143923526147423,
+     "ledger_err_J": 1.438849039914203e-13
+    }
+   }
+  },
+  {
+   "t": 0.5,
+   "root_y": 1.69514,
+   "root_vy": -0.223719,
+   "g_contact_n": 135618,
+   "loco_t_s": 0.502374000614509,
+   "loco_max_err_J": 4.694022948115162e-13,
+   "loco_frames": 155,
+   "loco_violations": 0,
+   "pins": {
+    "15": {
+     "q_deg": 74.1277758380787,
+     "tau_nm": 1.677003658995813,
+     "ledger_err_J": 4.618527782440651e-14
+    },
+    "16": {
+     "q_deg": 23.47920809290558,
+     "tau_nm": 2.822910661123799,
+     "ledger_err_J": 4.32764934998886e-13
+    },
+    "13": {
+     "q_deg": 86.08449813072322,
+     "tau_nm": 1.6769719498751037,
+     "ledger_err_J": 5.684341886080802e-14
+    }
+   }
+  },
+  {
+   "t": 0.75,
+   "root_y": 1.63869,
+   "root_vy": -0.223719,
+   "g_contact_n": 135618,
+   "loco_t_s": 0.7646629991941154,
+   "loco_max_err_J": 7.354117315117037e-13,
+   "loco_frames": 223,
+   "loco_violations": 0,
+   "pins": {
+    "15": {
+     "q_deg": -32.652819825178625,
+     "tau_nm": 0.9559428961080721,
+     "ledger_err_J": 4.369837824924616e-13
+    },
+    "16": {
+     "q_deg": 141.59145619531256,
+     "tau_nm": 3.6720258226766447,
+     "ledger_err_J": 6.572520305780927e-13
+    },
+    "13": {
+     "q_deg": -34.52615036736188,
+     "tau_nm": 0.9634987744210315,
+     "ledger_err_J": 2.8421709430404007e-13
+    }
+   }
+  },
+  {
+   "t": 1.0,
+   "root_y": 1.58051,
+   "root_vy": -0.223719,
+   "g_contact_n": 135618,
+   "loco_t_s": 1.0147559980396181,
+   "loco_max_err_J": 8.242295734817162e-13,
+   "loco_frames": 293,
+   "loco_violations": 0,
+   "pins": {
+    "15": {
+     "q_deg": 121.72240522204254,
+     "tau_nm": 3.8820998387462695,
+     "ledger_err_J": 5.471179065352771e-13
+    },
+    "16": {
+     "q_deg": 15.834592350230643,
+     "tau_nm": 0.6178986977465528,
+     "ledger_err_J": 5.080380560684716e-13
+    },
+    "13": {
+     "q_deg": 116.46271390989227,
+     "tau_nm": 3.8821009667829816,
+     "ledger_err_J": 3.055333763768431e-13
+    }
+   }
+  },
+  {
+   "t": 1.25,
+   "root_y": 1.52411,
+   "root_vy": -0.223719,
+   "g_contact_n": 135618,
+   "loco_t_s": 1.2668269977439195,
+   "loco_max_err_J": 8.881784197001252e-13,
+   "loco_frames": 366,
+   "loco_violations": 0,
+   "pins": {
+    "15": {
+     "q_deg": 98.007360114425,
+     "tau_nm": 2.6448376782954246,
+     "ledger_err_J": 4.831690603168681e-13
+    },
+    "16": {
+     "q_deg": -2.3910524077134223,
+     "tau_nm": 1.8769542572988376,
+     "ledger_err_J": 7.105427357601002e-15
+    },
+    "13": {
+     "q_deg": 106.29743238049886,
+     "tau_nm": 2.6320515044539476,
+     "ledger_err_J": 7.531752999057062e-13
+    }
+   }
+  },
+  {
+   "t": 1.5,
+   "root_y": 1.468,
+   "root_vy": -0.223719,
+   "g_contact_n": 135618,
+   "loco_t_s": 1.5363019972573966,
+   "loco_max_err_J": 1.1723955140041653e-12,
+   "loco_frames": 442,
+   "loco_violations": 0,
+   "pins": {
+    "15": {
+     "q_deg": -20.289018112729106,
+     "tau_nm": 0.4891643832404887,
+     "ledger_err_J": 3.694822225952521e-13
+    },
+    "16": {
+     "q_deg": 140.8797310282347,
+     "tau_nm": 4.090575527611161,
+     "ledger_err_J": 3.055333763768431e-13
+    },
+    "13": {
+     "q_deg": -19.034248499242647,
+     "tau_nm": 0.48417025281512593,
+     "ledger_err_J": 1.1510792319313623e-12
+    }
+   }
+  },
+  {
+   "t": 1.75,
+   "root_y": 1.40596,
+   "root_vy": -0.223719,
+   "g_contact_n": 135618,
+   "loco_t_s": 1.7949699964374304,
+   "loco_max_err_J": 1.5347723092418164e-12,
+   "loco_frames": 504,
+   "loco_violations": 0,
+   "pins": {
+    "15": {
+     "q_deg": 74.56741994744448,
+     "tau_nm": 3.389327573995909,
+     "ledger_err_J": 6.963318810448982e-13
+    },
+    "16": {
+     "q_deg": 45.963173336830565,
+     "tau_nm": 1.1106727256464655,
+     "ledger_err_J": 2.7000623958883807e-13
+    },
+    "13": {
+     "q_deg": 69.01028371577951,
+     "tau_nm": 3.389327267273987,
+     "ledger_err_J": 1.4850343177386094e-12
+    }
+   }
+  },
+  {
+   "t": 2.0,
+   "root_y": 1.35003,
+   "root_vy": -0.223719,
+   "g_contact_n": 135618,
+   "loco_t_s": 2.0449799969792366,
+   "loco_max_err_J": 1.8545165403338615e-12,
+   "loco_frames": 570,
+   "loco_violations": 0,
+   "pins": {
+    "15": {
+     "q_deg": 120.13077994610617,
+     "tau_nm": 3.354938826543139,
+     "ledger_err_J": 6.679101716144942e-13
+    },
+    "16": {
+     "q_deg": -21.520216641734727,
+     "tau_nm": 1.229570868284273,
+     "ledger_err_J": 9.947598300641403e-14
+    },
+    "13": {
+     "q_deg": 114.82369267599927,
+     "tau_nm": 3.3549388248073355,
+     "ledger_err_J": 1.8545165403338615e-12
+    }
+   }
+  },
+  {
+   "t": 2.25,
+   "root_y": 1.29343,
+   "root_vy": -0.223719,
+   "g_contact_n": 135618,
+   "loco_t_s": 2.2979469965212047,
+   "loco_max_err_J": 1.8687273950490635e-12,
+   "loco_frames": 622,
+   "loco_violations": 0,
+   "pins": {
+    "15": {
+     "q_deg": 1.4634302541435178,
+     "tau_nm": 0.41777452760068,
+     "ledger_err_J": 8.526512829121202e-13
+    },
+    "16": {
+     "q_deg": 140.16275361761757,
+     "tau_nm": 4.0822254724082745,
+     "ledger_err_J": 5.968558980384842e-13
+    },
+    "13": {
+     "q_deg": 14.404768952621911,
+     "tau_nm": 0.41777452759151534,
+     "ledger_err_J": 1.6058265828178264e-12
+    }
+   }
+  },
+  {
+   "t": 2.5,
+   "root_y": 1.23729,
+   "root_vy": -0.223719,
+   "g_contact_n": 135618,
+   "loco_t_s": 2.548884997377172,
+   "loco_max_err_J": 1.8687273950490635e-12,
+   "loco_frames": 674,
+   "loco_violations": 0,
+   "pins": {
+    "15": {
+     "q_deg": 17.729994237995466,
+     "tau_nm": 2.3371075604008835,
+     "ledger_err_J": 9.094947017729282e-13
+    },
+    "16": {
+     "q_deg": 85.81139783932143,
+     "tau_nm": 2.162892439599174,
+     "ledger_err_J": 6.536993168992922e-13
+    },
+    "13": {
+     "q_deg": 5.663269442290121,
+     "tau_nm": 2.3371075604008174,
+     "ledger_err_J": 1.2505552149377763e-12
+    }
+   }
+  },
+  {
+   "t": 2.75,
+   "root_y": 1.18062,
+   "root_vy": -0.223719,
+   "g_contact_n": 135618,
+   "loco_t_s": 2.8022119966335595,
+   "loco_max_err_J": 1.8687273950490635e-12,
+   "loco_frames": 743,
+   "loco_violations": 0,
+   "pins": {
+    "15": {
+     "q_deg": 139.15479209699217,
+     "tau_nm": 4.023180038884489,
+     "ledger_err_J": 1.0231815394945443e-12
+    },
+    "16": {
+     "q_deg": -25.75394426102071,
+     "tau_nm": 0.5779554637297366,
+     "ledger_err_J": 1.1226575225009583e-12
+    },
+    "13": {
+     "q_deg": 117.81347365893531,
+     "tau_nm": 4.023180038884496,
+     "ledger_err_J": 1.4637180356658064e-12
+    }
+   }
+  },
+  {
+   "t": 3.0,
+   "root_y": 1.11948,
+   "root_vy": -0.223719,
+   "g_contact_n": 135618,
+   "loco_t_s": 3.0755139966495335,
+   "loco_max_err_J": 1.8758328224066645e-12,
+   "loco_frames": 822,
+   "loco_violations": 0,
+   "pins": {
+    "15": {
+     "q_deg": 30.220158680056556,
+     "tau_nm": 0.7983808044512879,
+     "ledger_err_J": 9.379164112033322e-13
+    },
+    "16": {
+     "q_deg": 100.19417750792712,
+     "tau_nm": 3.701619195548707,
+     "ledger_err_J": 9.663381206337363e-13
+    },
+    "13": {
+     "q_deg": 48.381440015991934,
+     "tau_nm": 0.7983808044512971,
+     "ledger_err_J": 1.5063505998114124e-12
+    }
+   }
+  },
+  {
+   "t": 3.25,
+   "root_y": 1.06258,
+   "root_vy": -0.223719,
+   "g_contact_n": 135618,
+   "loco_t_s": 3.3298399965278804,
+   "loco_max_err_J": 1.8758328224066645e-12,
+   "loco_frames": 885,
+   "loco_violations": 0,
+   "pins": {
+    "15": {
+     "q_deg": -11.264560460256472,
+     "tau_nm": 1.6191592512159834,
+     "ledger_err_J": 3.836930773104541e-13
+    },
+    "16": {
+     "q_deg": 108.53543669461824,
+     "tau_nm": 2.925076574268847,
+     "ledger_err_J": 8.810729923425242e-13
+    },
+    "13": {
+     "q_deg": -23.421702026227393,
+     "tau_nm": 1.666900234506352,
+     "ledger_err_J": 1.2931877790833823e-12
+    }
+   }
+  },
+  {
+   "t": 3.5,
+   "root_y": 1.00634,
+   "root_vy": -0.223719,
+   "g_contact_n": 135618,
+   "loco_t_s": 3.581238997168839,
+   "loco_max_err_J": 1.8758328224066645e-12,
+   "loco_frames": 948,
+   "loco_violations": 0,
+   "pins": {
+    "15": {
+     "q_deg": 146.34864715603675,
+     "tau_nm": 4.153080721397986,
+     "ledger_err_J": 1.0516032489249483e-12
+    },
+    "16": {
+     "q_deg": -11.884952431596469,
+     "tau_nm": 0.3931947032046019,
+     "ledger_err_J": 5.826450433232822e-13
+    },
+    "13": {
+     "q_deg": 118.36856635141969,
+     "tau_nm": 4.15367427871441,
+     "ledger_err_J": 1.0800249583553523e-12
+    }
+   }
+  },
+  {
+   "t": 3.75,
+   "root_y": 0.950502,
+   "root_vy": -0.223719,
+   "g_contact_n": 135618,
+   "loco_t_s": 3.8308119978755713,
+   "loco_max_err_J": 1.8758328224066645e-12,
+   "loco_frames": 1015,
+   "loco_violations": 0,
+   "pins": {
+    "15": {
+     "q_deg": 70.28410151881964,
+     "tau_nm": 1.7379332573465107,
+     "ledger_err_J": 1.3500311979441904e-12
+    },
+    "16": {
+     "q_deg": 40.170869493824604,
+     "tau_nm": 2.762472417488813,
+     "ledger_err_J": 7.958078640513122e-13
+    },
+    "13": {
+     "q_deg": 86.97980842146569,
+     "tau_nm": 1.7371948659479242,
+     "ledger_err_J": 1.1368683772161603e-12
+    }
+   }
+  },
+  {
+   "t": 4.0,
+   "root_y": 0.894257,
+   "root_vy": -0.223719,
+   "g_contact_n": 135618,
+   "loco_t_s": 4.102303997380659,
+   "loco_max_err_J": 1.8758328224066645e-12,
+   "loco_frames": 1094,
+   "loco_violations": 0,
+   "pins": {
+    "15": {
+     "q_deg": -26.626515097537965,
+     "tau_nm": 0.9530994839543927,
+     "ledger_err_J": 1.2931877790833823e-12
+    },
+    "16": {
+     "q_deg": 128.3081829195112,
+     "tau_nm": 3.651528534176725,
+     "ledger_err_J": 7.958078640513122e-13
+    },
+    "13": {
+     "q_deg": -34.09137205678254,
+     "tau_nm": 0.9822638799726374,
+     "ledger_err_J": 1.2221335055073723e-12
+    }
+   }
+  }
+ ],
+ "final_state_root_keys": [
+  "root_vy",
+  "root_y"
+ ],
+ "final_state_has_xz": []
+}

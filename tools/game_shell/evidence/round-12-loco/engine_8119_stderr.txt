@@ -1,0 +1,16 @@
+LOCO SPIKE: scratch multi-drive bank enabled (default-off; --loco-spike was passed)
+[load_mesh] degenerate eviction: dropped 206 zero-area tris
+[load_mesh] sliver collapse: neutralized 268 sub-sample tris (width < 0.00346 wu)
+follow-cam root: centroid=(-0.000,5.596,0.406) height=9.991 sphere=9.971
+LEDGER GUARD frame 300 armed: max err 1.101e-12 J, violations 0
+LEDGER GUARD frame 600 armed: max err 1.911e-12 J, violations 0
+LEDGER GUARD frame 900 armed: max err 2.739e-12 J, violations 0
+LOCO LEDGER GUARD frame 300 armed: max err 8.242e-13 J, violations 0
+LOCO LEDGER GUARD frame 600 armed: max err 1.869e-12 J, violations 0
+LOCO LEDGER GUARD frame 900 armed: max err 1.876e-12 J, violations 0
+LOCO LEDGER GUARD frame 1200 armed: max err 1.876e-12 J, violations 0
+LOCO LEDGER GUARD frame 1500 armed: max err 1.876e-12 J, violations 0
+LOCO LEDGER GUARD frame 1800 armed: max err 1.876e-12 J, violations 0
+LOCO LEDGER GUARD frame 2100 armed: max err 1.876e-12 J, violations 0
+LOCO LEDGER GUARD frame 2400 armed: max err 1.876e-12 J, violations 0
+LOCO LEDGER GUARD frame 2700 armed: max err 2.160e-12 J, violations 0

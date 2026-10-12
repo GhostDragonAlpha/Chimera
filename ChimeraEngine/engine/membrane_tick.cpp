@@ -858,6 +858,15 @@ void MembraneTick::step(std::vector<float>& verts9, float dt) {
         ledger_guard_frame_();
     }
 
+    // THE LOCO SPIKE (scratch-only, DEFAULT OFF -- loco_step_locked_ returns
+    // immediately unless --loco-spike armed the scratch flag and a pin is
+    // armed): N tendon drives, each owning its own pin with the same write
+    // law as the single drive above, integrated BEFORE the FALL so the next
+    // tick's travel -- and therefore the FALL's lowest-vertex contact read
+    // -- sees the posed surface. This is the only physical channel by which
+    // muscle activity reaches the root today (pose -> geometry -> contact).
+    if (loco_scratch_allowed_) loco_step_locked_(dt);
+
     // THE MOVEMENT LAW -- THE FALL (prereg appended to
     // SEAL_PREREGISTRATION.md). One rigid DOF along Y:
     //   y'' = -g + F_contact/m,
@@ -961,6 +970,7 @@ bool MembraneTick::load_joint_pins(const std::string& body) {
     joint_deg_.assign(n, 0.f);
     joint_force_.assign(n, 0.f);
     tendon_reset_();   // rest-reset: the tendon drive disarms + re-inits
+    loco_reset_all_locked_();   // LOCO SPIKE rest-reset (scratch bank)
     for (uint32_t i = 0; i < n; ++i) {
         float x, y, z;
         std::memcpy(&x, body.data() + 4 + i * 12 + 0, 4);
@@ -998,6 +1008,7 @@ bool MembraneTick::load_body_binding(const std::string& body) {
     vert_bind_idx_=std::move(indices);vert_bind_w_=std::move(weights);vert_joint_=std::move(dominant);
     joint_deg_.assign(joint_pins_.size(),0.f);joint_force_.assign(joint_pins_.size(),0.f);
     tendon_reset_();   // rest-reset: the tendon drive disarms + re-inits
+    loco_reset_all_locked_();   // LOCO SPIKE rest-reset (scratch bank)
     joint_verts_.clear();rig_.clear();rig_angle_.clear();press_off_.clear();press_field_=false;touch_active_=false;
     force_l_=force_r_=0.f;normals_displaced_=false;
     reflex_.breathing=false; // legacy cosmetic breathing bypasses physical volumes
@@ -1011,6 +1022,8 @@ bool MembraneTick::pose_index(int idx, float deg) {
     // TENDON DRIVE ownership: while armed the drive is the ONLY writer of
     // its pin (the nerve-cut precedent: a route-cuttable channel).
     if (tendon_armed_ && idx == tendon_pin_) return false;
+    // LOCO SPIKE: same ownership law per armed loco pin (scratch-only).
+    if (loco_scratch_allowed_ && loco_find_(idx) >= 0) return false;
     if (!std::isfinite(deg) || (!body_active() && std::fabs(deg) > 90.f)) return false;
     float angle=deg*3.14159265358979f/180.f;
     if(body_active() && (deg<body_binding_.limits[2*idx] || deg>body_binding_.limits[2*idx+1])) return false;
@@ -1062,6 +1075,7 @@ bool MembraneTick::pose(const std::string& joint, float deg) {
         if(it==body_binding_.names.end())return false;
         size_t j=it-body_binding_.names.begin();float angle=deg*3.14159265358979f/180.f;
         if(tendon_armed_ && (int)j==tendon_pin_)return false; // drive owns the pin
+        if(loco_scratch_allowed_ && loco_find_((int)j)>=0)return false; // loco owns it
         if(deg<body_binding_.limits[2*j] || deg>body_binding_.limits[2*j+1])return false;
         joint_deg_[j]=angle;return true;
     }
@@ -1153,6 +1167,196 @@ bool MembraneTick::tendon_sever(int joint_index) {
     if (joint_index != tendon_pin_ || !tendon_armed_) return false;
     tendon_state_.severed = true;                   // A8 transmission cut
     return true;
+}
+
+// ─── LOCO SPIKE (Phase 1 locomotion R&D; scratch-only, DEFAULT OFF) ──────
+// Forward declaration of the state_json number formatter (defined below).
+static std::string tendon_num_(double v);
+// Generalizes the single tendon drive to <= LOCO_MAX pin-owned instances.
+// Every law of the shipped drive is preserved per instance: pin ownership
+// (pose refusal), the A1 ledger invariant asserted every armed frame at
+// tol 1e-6 J, and the joint_deg_ write consumed by NEXT tick's apply_travel.
+// Scratch-only additions: (1) the drive's ROM is clamped to the ADMITTED
+// binding limits of its pin (a scratch actuator cannot pose outside
+// admitted anatomy); (2) an optional scripted anti-phase u(t) shared by the
+// armed instances. Nothing runs unless --loco-spike armed the scratch flag.
+int MembraneTick::loco_find_(int pin) const {
+    for (int i = 0; i < LOCO_MAX; ++i)
+        if (loco_[i].pin == pin && loco_[i].armed) return i;
+    return -1;
+}
+
+void MembraneTick::loco_reset_all_locked_() {
+    for (int i = 0; i < LOCO_MAX; ++i) {
+        loco_[i] = LocoDrive{};
+        chimera::tendon::tendon_drive_init(loco_[i].p, loco_[i].s);
+    }
+    loco_script_on_ = false; loco_t_ = 0.0;
+    loco_max_err_J_ = 0.0; loco_frames_ = 0; loco_violations_ = 0;
+    loco_violation_pending_ = false; loco_violation_detail_.clear();
+}
+
+void MembraneTick::loco_arm_slot_(int slot, int pin) {
+    LocoDrive& d = loco_[slot];
+    d = LocoDrive{};
+    d.pin = pin;
+    chimera::tendon::tendon_drive_init(d.p, d.s);
+    // Clamp the drive's ROM to the admitted binding limits of THIS pin
+    // (degrees in body_binding_.limits -> radians). Only when a binding is
+    // active; without one the module defaults stand (declared synthetic).
+    if (body_active() && pin >= 0 && pin < (int)body_binding_.limits.size() / 2) {
+        const double lo = body_binding_.limits[2 * pin] * 3.14159265358979 / 180.0;
+        const double hi = body_binding_.limits[2 * pin + 1] * 3.14159265358979 / 180.0;
+        if (hi > lo) { d.p.rom_lo = lo; d.p.rom_hi = hi; }
+        // Keep the rest angle inside the admitted window.
+        if (d.p.theta_rest < lo) d.p.theta_rest = lo;
+        if (d.p.theta_rest > hi) d.p.theta_rest = hi;
+    }
+    chimera::tendon::tendon_drive_init(d.p, d.s);
+    d.battery0_J = d.s.battery_J;
+    d.elastic0_J = d.s.elastic_J;
+    d.armed = true;
+}
+
+bool MembraneTick::loco_arm(int joint_index, double u) {
+    std::lock_guard<std::mutex> lk(seal_mtx_);
+    if (!loco_scratch_allowed_) return false;              // scratch gate
+    if (std::isnan(u)) return false;
+    if (joint_index < 0 || joint_index >= (int)joint_deg_.size()) return false;
+    if (joint_index == tendon_pin_ && tendon_armed_) return false;  // shipped drive owns it
+    int slot = loco_find_(joint_index);
+    if (u < 0.0) {                     // DISARM this pin (same law as u<0)
+        if (slot < 0) return false;
+        loco_[slot].armed = false;
+        loco_[slot].u_cmd = 0.0;
+        loco_[slot].pin = -1;          // release the pin for pose
+        return true;
+    }
+    if (u > 1.0) return false;
+    if (slot < 0) {                    // fresh arm: take a free slot
+        slot = -1;
+        for (int i = 0; i < LOCO_MAX; ++i)
+            if (!loco_[i].armed) { slot = i; break; }
+        if (slot < 0) return false;    // LOCO_MAX reached
+        loco_arm_slot_(slot, joint_index);
+    }
+    loco_[slot].u_cmd = u;
+    return true;
+}
+
+bool MembraneTick::loco_disarm(int joint_index) {
+    return loco_arm(joint_index, -1.0);
+}
+
+bool MembraneTick::loco_script(bool on, double freq_hz, double lo, double hi,
+                               double phase_rad, std::string& err) {
+    std::lock_guard<std::mutex> lk(seal_mtx_);
+    if (!loco_scratch_allowed_) { err = "loco_scratch_flag_off"; return false; }
+    if (on) {
+        if (!(freq_hz > 0.0 && freq_hz <= 10.0)) { err = "freq_hz must be in (0,10]"; return false; }
+        if (!(lo >= 0.0 && hi <= 1.0 && lo <= hi)) { err = "need 0<=lo<=hi<=1"; return false; }
+        if (!std::isfinite(phase_rad)) { err = "phase_rad not finite"; return false; }
+        loco_freq_hz_ = freq_hz; loco_lo_ = lo; loco_hi_ = hi;
+        loco_phase_rad_ = phase_rad; loco_t_ = 0.0;
+        loco_script_on_ = true;
+        return true;
+    }
+    loco_script_on_ = false;
+    return true;
+}
+
+// PHASE 1 LEDGER GUARD, per loco instance: the same A1 invariant, the same
+// 1e-6 J tolerance, the same bookkeeping (drain == work + heat + dElastic).
+void MembraneTick::loco_ledger_guard_slot_(int slot) {
+    const LocoDrive& d = loco_[slot];
+    const double drain    = d.battery0_J - d.s.battery_J;
+    const double expected = d.s.work_muscle_J + d.s.heat_J +
+                            (d.s.elastic_J - d.elastic0_J);
+    const double err = std::fabs(drain - expected);
+    if (err > loco_max_err_J_) loco_max_err_J_ = err;
+    if (err > 1e-6) {
+        ++loco_violations_;
+        loco_violation_pending_ = true;
+        char vb[256];
+        snprintf(vb, sizeof(vb),
+                 "LOCO LEDGER VIOLATION pin %d frame %llu: drain %.12e != "
+                 "work+heat+dE %.12e (err %.3e > 1e-6 J)",
+                 d.pin, (unsigned long long)loco_frames_, drain, expected, err);
+        fprintf(stderr, "%s\n", vb);
+        fflush(stderr);
+        loco_violation_detail_ = vb;
+    }
+}
+
+void MembraneTick::loco_step_locked_(float dt) {
+    bool any = false;
+    for (int i = 0; i < LOCO_MAX; ++i) if (loco_[i].armed) { any = true; break; }
+    if (!any) { loco_script_on_ = false; return; }
+    if (loco_script_on_) loco_t_ += (double)dt;
+    ++loco_frames_;
+    for (int i = 0; i < LOCO_MAX; ++i) {
+        LocoDrive& d = loco_[i];
+        if (!d.armed) continue;
+        double u = d.u_cmd;
+        if (loco_script_on_) {
+            // anti-phase scripted activation: instance i gets phase + i*pi
+            const double ph = loco_phase_rad_ + (double)i * 3.14159265358979;
+            u = loco_lo_ + (loco_hi_ - loco_lo_) *
+                0.5 * (1.0 + std::sin(2.0 * 3.14159265358979 * loco_freq_hz_ * loco_t_ + ph));
+            if (u < 0.0) u = 0.0; if (u > 1.0) u = 1.0;
+        }
+        chimera::tendon::tendon_drive_step(d.p, d.s, u, 0.0, dt);
+        if (d.pin >= 0 && d.pin < (int)joint_deg_.size())
+            joint_deg_[d.pin] = (float)d.s.q;   // same write law as the drive/gait
+        loco_ledger_guard_slot_(i);
+    }
+    if (loco_frames_ % 300 == 0) {
+        fprintf(stderr,
+                "LOCO LEDGER GUARD frame %llu armed: max err %.3e J, violations %llu\n",
+                (unsigned long long)loco_frames_, loco_max_err_J_,
+                (unsigned long long)loco_violations_);
+        fflush(stderr);
+    }
+}
+
+std::string MembraneTick::loco_state_json() const {
+    std::ostringstream o;
+    o << "{\"loco_scratch\":" << (loco_scratch_allowed_ ? "true" : "false")
+      << ",\"loco_script\":" << (loco_script_on_ ? "true" : "false")
+      << ",\"loco_t_s\":" << tendon_num_(loco_t_)
+      << ",\"loco_freq_hz\":" << tendon_num_(loco_freq_hz_)
+      << ",\"loco_ledger_max_err_J\":" << tendon_num_(loco_max_err_J_)
+      << ",\"loco_ledger_frames\":" << loco_frames_
+      << ",\"loco_ledger_violations\":" << loco_violations_
+      << ",\"loco_drives\":[";
+    bool first = true;
+    for (int i = 0; i < LOCO_MAX; ++i) {
+        const LocoDrive& d = loco_[i];
+        if (!d.armed) continue;
+        if (!first) o << ",";
+        first = false;
+        const double drain = d.battery0_J - d.s.battery_J;
+        const double expected = d.s.work_muscle_J + d.s.heat_J +
+                                (d.s.elastic_J - d.elastic0_J);
+        o << "{\"slot\":" << i
+          << ",\"pin\":" << d.pin
+          << ",\"u_cmd\":" << tendon_num_(d.u_cmd)
+          << ",\"q_deg\":" << tendon_num_(d.s.q * 57.29577951308232)
+          << ",\"qd_rad_s\":" << tendon_num_(d.s.qd)
+          << ",\"activation\":" << tendon_num_(d.s.a)
+          << ",\"F_n\":" << tendon_num_(chimera::tendon::tendon_force_n(d.p, d.s))
+          << ",\"tau_nm\":" << tendon_num_(chimera::tendon::tendon_actuation_torque_nm(d.p, d.s))
+          << ",\"battery_J\":" << tendon_num_(d.s.battery_J)
+          << ",\"work_J\":" << tendon_num_(d.s.work_muscle_J)
+          << ",\"heat_J\":" << tendon_num_(d.s.heat_J)
+          << ",\"elastic_J\":" << tendon_num_(d.s.elastic_J)
+          << ",\"drain_J\":" << tendon_num_(drain)
+          << ",\"expected_J\":" << tendon_num_(expected)
+          << ",\"ledger_err_J\":" << tendon_num_(std::fabs(drain - expected))
+          << ",\"severed\":" << (d.s.severed ? "true" : "false") << "}";
+    }
+    o << "]}";
+    return o.str();
 }
 
 void MembraneTick::apply_chain(std::vector<float>& verts9) {

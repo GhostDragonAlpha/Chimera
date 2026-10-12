@@ -652,6 +652,16 @@ int main(int argc, char** argv) {
     bool console_hidden = false;
     for (int i = 1; i < argc; ++i)
         if (std::string(argv[i]) == "--hidden") console_hidden = true;
+    // LOCO SPIKE (Phase 1 locomotion R&D, scratch experiment): the ONLY way
+    // the multi-drive tendon bank becomes reachable is this argv flag.
+    // DEFAULT OFF — without --loco-spike every /loco_* route refuses and
+    // step()'s loco hook is skipped, so the shipped game path is unchanged.
+    for (int i = 1; i < argc; ++i)
+        if (std::string(argv[i]) == "--loco-spike") {
+            g_tick.loco_allow_scratch();
+            fprintf(stderr, "LOCO SPIKE: scratch multi-drive bank enabled "
+                            "(default-off; --loco-spike was passed)\n");
+        }
 
     // Physics init (passes cfg so it can set physical params)
     g_physics.init(cfg.n_particles, cfg);
@@ -1268,6 +1278,33 @@ int main(int argc, char** argv) {
                  ? "{\"ok\":true}"
                  : "{\"ok\":false,\"error\":\"refused: not the armed "
                    "drive pin\"}";
+            content_type = "application/json";
+        } else if (p == "/loco_arm" && method == "POST") {
+            // LOCO SPIKE (scratch-only, DEFAULT OFF — needs --loco-spike):
+            // {"joint_index":16,"u":0..1} arms a tendon drive on that pin
+            // (u<0 disarms and releases the pin). Refused without the flag.
+            int jidx = (int)get_double(req_body, "joint_index", -1.0);
+            double u = get_double(req_body, "u", NAN);
+            body = g_tick.loco_arm(jidx, u)
+                 ? "{\"ok\":true}"
+                 : "{\"ok\":false,\"error\":\"refused: loco scratch flag off, "
+                   "bad pin, or u outside [0,1]\"}";
+            content_type = "application/json";
+        } else if (p == "/loco_script" && method == "POST") {
+            // LOCO SPIKE scripted anti-phase activation:
+            // {"on":true,"freq_hz":1.2,"lo":0.05,"hi":0.95,"phase_rad":0}
+            std::string err;
+            bool on = get_bool(req_body, "on", false);
+            double f  = get_double(req_body, "freq_hz", 0.0);
+            double lo = get_double(req_body, "lo", 0.0);
+            double hi = get_double(req_body, "hi", 0.0);
+            double ph = get_double(req_body, "phase_rad", 0.0);
+            bool ok = g_tick.loco_script(on, f, lo, hi, ph, err);
+            body = ok ? "{\"ok\":true}"
+                      : "{\"ok\":false,\"error\":\"" + err + "\"}";
+            content_type = "application/json";
+        } else if (p == "/loco_state" && method == "GET") {
+            body = g_tick.loco_state_json();
             content_type = "application/json";
         } else if (p == "/tick_body_bin" && method == "POST") {
             {

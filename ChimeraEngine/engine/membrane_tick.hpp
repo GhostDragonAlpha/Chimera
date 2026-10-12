@@ -83,6 +83,33 @@ public:
     // thread, the same thread that runs step().
     float root_y() const { return root_y_; }
 
+    // ─── LOCO SPIKE (Phase 1 locomotion R&D, scratch-only) ──────────────
+    // A DEFAULT-OFF generalization of the tendon drive to N pins (<= LOCO_MAX)
+    // so several muscle->tendon->joint actuators can run at once and their
+    // effect on the single-Y root can be MEASURED. Nothing here is reachable
+    // unless the process was launched with the scratch flag --loco-spike
+    // (loco_allow_scratch_ is set once at boot from argv; every entry point
+    // refuses without it, so the shipped single-drive game is byte-identical
+    // in behaviour). Same laws as the single drive: the drive OWNS its pin
+    // while armed (pose refusal), the A1 ledger invariant is asserted every
+    // armed frame per instance (tol 1e-6 J), and the drive writes joint_deg_
+    // exactly as the gait block does (consumed by NEXT tick's apply_travel).
+    // The drive's ROM is additionally clamped to the ADMITTED binding limits
+    // of its pin, so a scratch actuator cannot pose outside admitted anatomy.
+    void loco_allow_scratch() { loco_scratch_allowed_ = true; }  // boot only
+    bool loco_scratch_enabled() const { return loco_scratch_allowed_; }
+    // Arm one drive on a pin (u in [0,1]); u < 0 disarms that pin.
+    bool loco_arm(int joint_index, double u);
+    bool loco_disarm(int joint_index);
+    // Scripted anti-phase drive: while on, armed instance i (in arm order)
+    // runs u_i(t) = lo + (hi-lo) * 0.5 * (1 + sin(2*pi*f*t + phase + i*pi)).
+    bool loco_script(bool on, double freq_hz, double lo, double hi,
+                     double phase_rad, std::string& err);
+    std::string loco_state_json() const;      // per-instance q/a/ledger
+    double   loco_ledger_max_err_J() const { return loco_max_err_J_; }
+    uint64_t loco_ledger_frames() const { return loco_frames_; }
+    uint64_t loco_ledger_violations() const { return loco_violations_; }
+
     bool load_body_binding(const std::string& body); // admitted JNT3, before seals/controllers
     bool body_active() const { return body_active_.load(std::memory_order_acquire); }
     bool intent_joint(int idx, float force_n);
@@ -374,6 +401,30 @@ private:
     uint64_t ledger_frames_ = 0, ledger_violations_ = 0;
     bool     ledger_violation_pending_ = false;
     std::string ledger_violation_detail_;
+    // ─── LOCO SPIKE state (scratch-only; see the public block) ───────────
+    bool loco_scratch_allowed_ = false;   // set once from argv --loco-spike
+    struct LocoDrive {
+        int    pin = -1;                  // owned joint_deg_ pin
+        bool   armed = false;
+        chimera::tendon::TendonDriveParams p;
+        chimera::tendon::TendonDriveState  s;
+        double battery0_J = 0.0, elastic0_J = 0.0;   // ledger snapshots
+        double u_cmd = 0.0;
+    };
+    static constexpr int LOCO_MAX = 4;
+    LocoDrive loco_[LOCO_MAX];
+    bool     loco_script_on_ = false;
+    double   loco_freq_hz_ = 0.0, loco_lo_ = 0.0, loco_hi_ = 0.0;
+    double   loco_phase_rad_ = 0.0, loco_t_ = 0.0;   // scripted clock
+    double   loco_max_err_J_ = 0.0;                  // per-instance max, max'd
+    uint64_t loco_frames_ = 0, loco_violations_ = 0;
+    bool     loco_violation_pending_ = false;
+    std::string loco_violation_detail_;
+    int    loco_find_(int pin) const;       // slot owning pin, -1 if none
+    void   loco_arm_slot_(int slot, int pin);   // caller holds seal_mtx_
+    void   loco_step_locked_(float dt);         // caller holds seal_mtx_
+    void   loco_ledger_guard_slot_(int slot);   // caller holds seal_mtx_
+    void   loco_reset_all_locked_();            // caller holds seal_mtx_
     // THE SEAL v2 / MITOSIS (cut-and-weld, recursive). The wall is the
     // welded cross-section itself; cut points are convex blends over
     // original vertices (merged, <= 8 entries), so the weld holds at any

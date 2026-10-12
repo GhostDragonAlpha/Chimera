@@ -1,0 +1,41 @@
+studio: session log -> session_20261011_235359.jsonl
+floor: building pipeline (modules ok)
+floor: pipeline created
+Compute pipeline created
+THE ENGINE STUDIO: overlay ready (F1)
+Vulkan engine initialized: 2560 x 1440, 2 frames in flight
+Chimera Engine running at http://localhost:8119/state
+  /frame  -> PNG of the current render (membrane if one is loaded)
+  /membrane (POST) -> load a story membrane scene
+Window: 2560x1440, Press Ctrl+C to stop.
+Controls: Left-drag orbit | Scroll zoom | Right-drag pan
+          WASD move | Q/E up-down | Space/Ctrl zoom | R reset | P pose toggle
+          F1 THE ENGINE STUDIO overlay (pipeline board + live status)
+FPS: 53 (frame 54) | ft ms avg 9.53 max 37.32 | >16.7ms: 1 >33ms: 1
+[load_mesh] degenerate eviction: dropped 206 zero-area tris
+[load_mesh] sliver collapse: neutralized 268 sub-sample tris (width < 0.00346 wu)
+follow-cam root: centroid=(-0.000,5.596,0.406) height=9.991 sphere=9.971
+snapshot: session_snapshot/mesh_bin.blob (1104108 B)
+snapshot: session_snapshot/tick_body_bin.blob (296589 B)
+snapshot: seal-tree loaded (451610 B, zero cuts executed)
+session: boot restore -> {"ok":true,"replayed":3,"failed":0,"seal_already":2,"seal_executed":0,"detail":"mesh_bin:ok tick_body_bin:ok tick_seal_state:ok seal:already seal:already "}
+session: boot fit -> {"ok":true,"fit":true}
+FPS: 165 (frame 165) | ft ms avg 1.93 max 9.49 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.44 max 0.74 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.39 max 0.65 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.39 max 2.01 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.39 max 0.62 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.35 max 0.53 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.33 max 0.58 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.33 max 0.58 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.34 max 1.26 | >16.7ms: 0 >33ms: 0
+FPS: 295 (frame 295) | ft ms avg 0.68 max 2.73 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 299) | ft ms avg 0.48 max 0.79 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.50 max 0.93 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.48 max 1.09 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.47 max 0.92 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.47 max 0.89 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.46 max 0.97 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.42 max 0.72 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.42 max 1.05 | >16.7ms: 0 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.39 max 0.70 | >16.7ms: 0 >33ms: 0

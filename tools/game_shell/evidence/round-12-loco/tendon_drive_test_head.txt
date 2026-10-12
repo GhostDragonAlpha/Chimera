@@ -1,0 +1,6 @@
+[PASS] LEDGER: ledger_err=2.483e-12 J (tol 1e-9), drain=28.410126 J work=13.311698 J heat=11.173839 J dE=3.924590 J
+[PASS] SEVER: F=0.0 tau=0.0 q 2.2890->0.0948(rest 0.0) dWorkPost=0.0e+00 drain 4.1499->1.0295 J/0.5s ledger=2.11e-12
+[PASS] STALL: tau_act=4.5000 Nm dWork=0.0e+00 J drain=1.9000 J q-rom_hi=0.0e+00 ledger=1.78e-13
+[PASS] REST: |q|=0.0e+00 |qd|=0.0e+00 after 3 s
+[PASS] MONOTONIC: q_ss = 0.0000 0.5621 1.1242 1.6855 2.2492 rad
+[PASS] total failures: 0
