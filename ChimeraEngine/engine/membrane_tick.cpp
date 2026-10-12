@@ -1096,7 +1096,22 @@ bool MembraneTick::pose(const std::string& joint, float deg) {
 void MembraneTick::tendon_reset_() {          // callers hold seal_mtx_
     tendon_armed_ = false;
     tendon_u_cmd_ = 0.f;
-    chimera::tendon::tendon_drive_init(tendon_params_, tendon_state_);
+    // ROUND-13 LEDGER CONTINUITY FIX: arm at the CURRENT joint angle, not
+    // the fixed rest q=0. The drive owns the pin and writes joint_deg_
+    // every armed frame, so a rest init teleported the limb to q=0 and
+    // baselined the elastic ledger on a pose the limb was not in; combined
+    // with the stale-severed init bug (tendon_drive.hpp) that produced the
+    // round-12 constant 1.1111 J guard error on arm-from-limp/severed.
+    // From the authored rest (fresh binding zeroes joint_deg_, and
+    // theta_rest = 0) q0 = 0 and this is byte-identical to the old init.
+    double q0 = 0.0;
+    if (tendon_pin_ >= 0 && tendon_pin_ < (int)joint_deg_.size())
+        q0 = (double)joint_deg_[tendon_pin_];
+    chimera::tendon::tendon_drive_init_at(tendon_params_, tendon_state_, q0);
+    // The guard's baselines are snapshotted AFTER the re-init, from the
+    // drive's own reported fields (tendon_drive_init_at has cleared
+    // severed before computing elastic_J, so this is the full
+    // tendon+capsule energy at the arm-time angle).
     tendon_battery0_J_ = tendon_state_.battery_J;
     tendon_elastic0_J_ = tendon_state_.elastic_J;
     // PHASE 1 LEDGER GUARD: each arm session reports its OWN max error --

@@ -174,14 +174,36 @@ inline void step_internal(const TendonDriveParams& p, TendonDriveState& s,
 }
 
 } // namespace detail
-// Initialize a resting drive: full battery, zero motion, zero activation.
-inline void tendon_drive_init(const TendonDriveParams& p,
-                              TendonDriveState& s) {
-    s.q = 0.0; s.qd = 0.0; s.a = 0.0;
+// Initialize a drive at joint angle q0 [rad]: full battery, zero motion,
+// zero activation, UNSEVERED. ROUND-13 LEDGER CONTINUITY FIX:
+// (1) severed is cleared BEFORE the elastic baseline is computed. The old
+//     order computed elastic_energy_j with a stale severed==true flag, so
+//     arming from a previously-severed state booked a capsule-only baseline
+//     (0 at q=0) while the first step_internal measured e_old UNSEVERED and
+//     therefore included the tendon pretension 0.5*(EA/L0t)*(L0m-L0t)^2
+//     = 10/9 J. That 1.1111 J appeared in reported elastic_J without ever
+//     being booked to the battery: unbooked energy creation at arm time,
+//     which the per-frame A1 guard correctly flagged (round-12 repro).
+// (2) q0 lets the engine arm at the CURRENT joint angle instead of
+//     teleporting the limb to the fixed rest q=0; the drive's elastic
+//     baseline then reflects the pose the limb is actually in.
+inline void tendon_drive_init_at(const TendonDriveParams& p,
+                                 TendonDriveState& s, double q0) {
+    s.severed = false;
+    s.q = q0; s.qd = 0.0; s.a = 0.0;
     s.battery_J = p.battery_J0;
     s.work_muscle_J = 0.0; s.heat_J = 0.0;
     s.elastic_J = detail::elastic_energy_j(p, s);
-    s.severed = false; s.accumulator = 0.0;
+    s.accumulator = 0.0;
+}
+
+// Initialize a resting drive: full battery, zero motion, zero activation,
+// at the rest angle q = 0. Byte-identical to the pre-round-13 init for any
+// starting state (the severed-flag ordering fix only changes the result for
+// a stale severed==true input, which was the bug).
+inline void tendon_drive_init(const TendonDriveParams& p,
+                              TendonDriveState& s) {
+    tendon_drive_init_at(p, s, 0.0);
 }
 
 // Public step: accumulate real time, run fixed internal steps. Bounded

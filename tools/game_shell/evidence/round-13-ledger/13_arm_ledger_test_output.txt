@@ -1,0 +1,19 @@
+# round-13 offline arm-ledger test output (g++ 15.2.0, -std=c++17 -O2 -I ChimeraEngine/engine)
+# cmd: g++ -std=c++17 -O2 -I ChimeraEngine/engine ChimeraEngine/engine/tests/tendon_arm_ledger_test.cpp -o .tmp/r13/tendon_arm_test.exe
+[PASS] FROM_REST: violations=0 max_err=6.075e-13 J (tol 1e-6), elastic0=1.1111111111111132 J (10/9=1.1111111111111132 J), frames=90
+[PASS] FROM_LIMP: violations=0 max_err=8.846e-13 J (tol 1e-6), q_limp=-0.0285 rad, elastic0=1.310228 J, severed_after_arm=0, frames=90
+[PASS] FROM_SEVERED: violations=0 max_err=7.567e-13 J (tol 1e-6), elastic0=0.138630 J, expected_full_elastic=0.138630 J (capsule-only would be 0.059804 J)
+[PASS] DISARM_REARM: violations=0 max_err=1.153e-12 J (tol 1e-6), re-arm q=1.198370 rad == frozen pin q, session2 counters restarted=1
+[PASS] SENSITIVITY: pre-fix baseline reproduces the bug: violations=90/90 (every frame), max_err=1.1111111111 J ~= pretension 1.1111111111 J
+[PASS] total failures: 0
+exit=0
+
+# existing module suite (regression, unchanged behavior):
+# cmd: g++ -std=c++17 -O2 -I ChimeraEngine/engine ChimeraEngine/engine/tests/tendon_drive_test.cpp -o .tmp/r13/tendon_drive_test.exe
+[PASS] LEDGER: ledger_err=2.483e-12 J (tol 1e-9), drain=28.410126 J work=13.311698 J heat=11.173839 J dE=3.924590 J
+[PASS] SEVER: F=0.0 tau=0.0 q 2.2890->0.0948(rest 0.0) dWorkPost=0.0e+00 drain 4.1499->1.0295 J/0.5s ledger=2.11e-12
+[PASS] STALL: tau_act=4.5000 Nm dWork=0.0e+00 J drain=1.9000 J q-rom_hi=0.0e+00 ledger=1.78e-13
+[PASS] REST: |q|=0.0e+00 |qd|=0.0e+00 after 3 s
+[PASS] MONOTONIC: q_ss = 0.0000 0.5621 1.1242 1.6855 2.2492 rad
+[PASS] total failures: 0
+exit=0
