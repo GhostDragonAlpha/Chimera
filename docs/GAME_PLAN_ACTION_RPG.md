@@ -1,21 +1,24 @@
-# SEALED — an action RPG built from living structures
+# SEALED — build living worlds from reusable matter
 
 Working title: **SEALED** (alternates: *Tension*, *The Sump*, *Vivarium*).
-Original concept: Qwen, 2026-10-11. Design, engineering and cross-genre revision:
-Codex, 2026-10-11. Keep this plan in `GAME_PLAN_ACTION_RPG.md`.
+Original concept: Qwen, 2026-10-11. Design, engineering, genre and matter-construction
+revision: Codex, 2026-10-11. Keep this plan in `GAME_PLAN_ACTION_RPG.md`.
 
 **Confirmed direction:** grow ChimeraEngine itself. The user chose Option B on
 2026-10-11; no Godot or Unreal host. **This document is a game-design proposal**
 and an implementation sequence, not a claim that its proposed systems work today.
 The selected project graph still governs scientific requirements and release gates.
 
-The aim is to turn the membrane inventory into a game where understanding a body
-or structure gives the player more ways to act. The player should come away saying,
-“I made that work,” and “this is the creature I have cared for.”
+**Central direction:** build with reusable functionality, in the spirit of LEGO.
+The matter system is the construction kit: independently shaped material layers,
+membranes, connections and local CA rules compose into tools, creatures, machines
+and places. The genre library describes experiences this foundation can support.
+Building, testing and reusing matter is the core game and the way we author it.
 
-**Reading route:** §§1–6 define the playable core; §§7–8 develop the companion
-and world; §9 collects 60 genre lessons; §10 turns them into encounters, builds
-and a chapter; §§11–14 connect those possibilities to implementation and tests.
+**Reading route:** §3 traces the current physics/rendering paths; §5 describes
+the player’s construction loop; §11 specifies irregular layered matter, interfaces,
+CA updates and rendering integration; §13 gives the construction gates. §§9–10
+retain the genre and encounter library. New mechanisms remain proposals.
 
 ## 1. The game we are making
 
@@ -30,13 +33,20 @@ an injured limb teaches you how to support a broken bridge. Learning how to isol
 a leaking chamber teaches you how to protect the lair. A tendon spool can become a
 splint, a climbing aid, a winch or a trap because its attachments and loading change.
 
-This is a third-person action RPG with an emphasis on experimentation. Combat must
+This is a construction-centered third-person action RPG and systems sandbox.
+The player designs useful assemblies, learns why they work, and adapts them to
+new situations. A layered rescue frame can become a hoist, a bridge support or
+a vehicle component through its actual parts and connections. Each reuse should
+preserve the material behavior learned earlier.
+
+Experimentation must feel immediate and understandable. Combat must
 be responsive, exploration must reward curiosity, and care must change what happens
 on the next expedition. Physical consistency gives choices consequences; presentation,
 encounters and pacing make those choices enjoyable.
 
-**The first promise is small:** one companion, one damaged crossing, one rescue,
-and several physically distinct ways to bring everyone home.
+**The first promise is small:** construct and load-test one asymmetric rescue
+assembly, then use it with one companion at one damaged crossing. Several
+arrangements should offer physically distinct ways to bring everyone home.
 
 ## 2. What the new concepts unlock
 
@@ -115,6 +125,58 @@ These are source and historical-evidence references. No fresh physics run or
 playtest was performed merely to revise this document. The first camera/lighting
 slice is already reported complete and should not be reassigned as new work.
 
+### Construction audit: how matter currently reaches the screen
+
+The construction revision inspected the current working source on 2026-10-11.
+The checkout HEAD is still the revision above, but `main.cpp`, `membrane_tick.cpp`
+and `membrane_tick.hpp` contain other ongoing changes. This is a source audit,
+not a claim about which executable is running. Existing measurements remain scoped
+to their original builds. The game plan is the only project file changed here.
+
+CA means **cellular automata / local material rules** in this project's vocabulary.
+`THE_WOLFRAM_FRAME.md` and `THE_CA_BRIDGE.md` explain the intention: separate triangle
+systems carry material-dependent state and interact through their boundaries. The
+active graph further defines bulk cells, paired interface exchanges, owned physical
+state and GPU residency. Those requirements are more complete than the current
+creature demo. A surface-triangle CA cell and a sealed volume cell are different
+entities in the present code; the construction design must explicitly relate them.
+
+| Inspected path | What exists in this source | What construction still needs |
+|---|---|---|
+| Creature import and tick | `/mesh_bin` queues nine-float vertices (position, normal, RGB) and indices. The render thread loads them, initializes `MembraneTick`, then runs its CPU `step` over the host vertex mirror. `main.cpp`:1047–1085, 4230–4261, 4520–4534 | A collection of independently owned assemblies; one resident physical state and a simulation clock independent of display cadence |
+| Surface CA | `MembraneTick::init/step` builds triangle-edge neighbors and carries load, damage and failure state. Pose/binding travel and local indentation change the mesh. The inspected damage redistribution is in-place and not scaled by dt. `membrane_tick.cpp`:200–266, 422–665 | Material-qualified stress/shear/bending/contact response, explicit update ordering and timestep behavior; a failed triangle must cause the declared physical transition rather than only a tint |
+| Compartment geometry | Horizontal and oblique cuts, connected-component split, shared cut slots and opposite boundary winding exist. New cut vertices retain blends of original vertices. `membrane_tick.hpp`:113–145, 247–285; `membrane_tick.cpp`:1725–1933 | General concave/holey caps, independent daughter motion, shared-wall material mechanics and conservative live edits. The current fan triangulation and eight-ancestor blend limit are bounded mechanisms |
+| Pressure/inventory | Signed volume and linear compressibility pressure are computed from the posed boundary; `w` is explicit but Phase 1 holds it invariant. The inspected pressure block does not apply reciprocal boundary traction. `membrane_tick.cpp`:706–760; `membrane_tick.hpp`:437–451 | Inventory-dependent closure, pressure-force coupling, openings and paired transport. Authoring two sealed daughters does not implement a wound, valve or leak |
+| Material-volume compiler | `tools/material_volume.py` accepts an already conforming tetrahedral complex, checks ownership/topology/overlap, integrates mass/COM/full inertia and emits oriented interfaces | Connect it to geometry creation and the live runtime. It is a CPU reference compiler, not a tetrahedral mesher, elastic solver or existing game editor |
+| Attachment mechanics | `tools/finite_area_attachment/finite_area_attachment.py` contains energy-derived patch attachments with balanced forces and moments; its native coupon explores coupled bodies and a membrane | Integrate qualified formulations into the shared runtime. The standalone coupon's declared energy/stability envelope is not a whole-game qualification |
+| Alternate GPU paths | `joints.comp` has hierarchical skinning and an optional edge-relaxation/ground-clamp pass. `membrane_demo.comp` has trial/accepted surface-tension state and a presentation stage. `GraphSurface` is a separate quasistatic height-field fixture | Reuse applicable buffer/synchronization and law work without treating these different demonstrations as one completed general matter solver |
+| Default mesh presentation | `Engine::update_mesh` uploads the full same-layout vertex stream. The main loop submits `frame()` before this tick/update, so the update supplies a later draw. `engine.cpp`:2160–2177; `main.cpp`:4469–4476, 4520–4534 | Versioned simulation/render snapshots, bounded dirty updates and resident GPU derivation; arbitrary live topology cannot use the same-layout update alone |
+| Visible layers and selection | The triangle pipeline is depth-tested, back-face-culled and opaque. Its vertex stream lacks stable material/layer IDs. Current picking returns a nearest point. `/topology` and `/verts` expose the original outer surface, not every internal seal cap | Multiple assembly surfaces, real boundary extraction, stable face/port picking, cutaway/isolation and an explicit future transparency path |
+
+Two source details are decisive. First, `Engine::load_mesh` can discard/collapse
+render triangles unless `preserve_mesh_topology_` is enabled, while tick initialization
+uses the original index stream (`engine.cpp`:1889–2099). A render triangle number
+therefore cannot be assumed to identify a physical cell. Second, an active shared
+body already refuses competing pose/matter/skin writers (`main.cpp`:739–746).
+Construction should extend that ownership rule, not add another position writer.
+
+The historical breathing displacement is applied after several physical measurements
+in the legacy tick (`membrane_tick.cpp`:905–917). It must retain that limited label
+until replaced by a coupled mechanism. Likewise, recent default-off locomotion-spike
+code is experimental; its presence does not qualify whole-body motion.
+
+The design below follows `req.creature_assembly`, `req.layered_anatomy`,
+`concept.reduced_cell_state`, `req.matter_variables_lod` and
+`req.teddy_gpu_matter_kernel`. It also preserves the material-owned physical-port
+semantics in `PHYSICAL_PORTS.md`: the matter owns a potential interaction field;
+contact activates a compatible law; an active interaction is a separate record.
+This gives automatic physical interaction without requiring players to wire triangle
+pairs manually. Contact still does not invent a bond or its material parameters.
+
+Reference source paths above identify local inspected implementations, including
+reference tools that may not be included on the published document branch. They are
+not a claim that publishing this plan also publishes or deploys those source changes.
+
 ## 4. Design rules that let the systems combine
 
 1. **Function follows the physical path.** An attachment, wall, valve or actuator
@@ -147,6 +209,15 @@ slice is already reported complete and should not be reassigned as new work.
 9. **Make room for several kinds of satisfaction.** Support curiosity, care,
    mastery, improvisation and quiet restoration. Rewards and pacing should
    acknowledge those motives without requiring every activity to become combat.
+10. **A piece carries reusable function.** Geometry, material, interface laws
+    and state determine what an assembly can do. Packaging a machine as a part
+    preserves those internals and exposes useful physical interfaces.
+11. **Layers meet through physical interfaces.** Contact, adhesion, sealing,
+    sliding, nesting and rigid attachment are distinct relationships. Render
+    order, coincident coordinates and scene-parent links cannot substitute for them.
+12. **What the player sees and touches has one physical identity.** A cut,
+    join or repair must agree across material state, contact, selection,
+    rendered boundaries and saved topology.
 
 Content has authored parameters and progression rules. Keep measured physical
 inputs, declared synthetic material profiles and game-design choices distinguishable.
@@ -181,18 +252,72 @@ injecting unaccounted forces or teleporting bodies.
 Keep a **quick release** available during pulls and grapples. It releases the
 constraint; stored energy and momentum continue to evolve. It is not a freeze key.
 
+### The construction loop is the central game loop
+
+**Find or make a useful piece → fit it into an assembly → test the assembly → use
+it in the world → observe wear or failure → recover, improve and reuse it.** The
+same authoring vocabulary serves players and developers. A developer-authored gate
+and a player-built gate must obey the same material and connection rules.
+
+Begin with coarse, useful pieces: an asymmetric beam, an angled plate, a compliant
+pad, a tensile strap and a finite-area fastener. A saved assembly can expose selected
+interaction regions and become another reusable piece. Its internal construction
+remains inspectable; packaging it must not replace its physics with a special-case
+mission script.
+
+| Builder action | What the player sees and chooses | Physical meaning |
+|---|---|---|
+| Shape | Draw/edit an outline, taper an extrusion, or adapt an admitted template | A rest-geometry proposal with units, thickness and material cost; arbitrary invalid geometry is refused with a location and reason |
+| Add a layer | Choose the target side, material, coverage, thickness and grain/fiber direction | A distinct spatial material region or qualified shell, with a declared interface to its neighbor |
+| Place and stack | Translate/rotate freely, align useful faces, optionally use a grid or connector preview | Temporary placement assistance; after release, contact, friction and support decide whether it stays |
+| Connect | Apply a fastener, strap, adhesive or mating connector, with a preview of the affected patch | Compatible material-owned ports activate the declared joint/bond law; attachment area and allowed motion remain visible |
+| Inspect inside | Isolate a layer, show a cross-section or temporarily explode the view | A presentation mode linked to real IDs; it does not separate the physical object or remove its collision |
+| Test | Apply a bounded pull, place a known load, tilt a support or release a restraint | A recoverable local experiment that reveals capacity, motion, weak connections and unknowns |
+| Cut or disassemble | Select a seam, path or component and see the affected connections | A work- and inventory-accounted edit; breaking a bond, opening a cavity and partitioning material are different outcomes |
+| Repair or replace | Fit a compatible patch/part and retest | Restore a declared function with supplied material and work; a repaired assembly keeps its history |
+| Save as a part | Name the recipe and expose useful interfaces | A reusable definition with material requirements, parameter limits and tested conditions; copying it does not duplicate matter |
+
+A snap preview is a convenience, not an invisible weld. Show contact-only placement,
+persistent attachment and containment differently. A rigid panel resting on a soft
+pad may slide, tip or press into it; bonding changes that behavior. A loose object
+inside a container keeps its own motion and pushes back on the walls.
+
+For the first playable build, offer a **rescue cradle**: two unequal rails, an oblique
+cross-brace, a compliant contact pad and two straps. Let the player alter rail spacing,
+strap positions and layer coverage within a qualified range. One arrangement fits
+the narrow passage; another carries the load more stably. The cradle can later become
+a hauling frame, a bridge support or part of a small cart. That transfer of useful
+functionality is the LEGO-like reward.
+
+A supported workshop test comes before carrying the cradle with the creature.
+Use a declared external fixture and finite test load to qualify its construction
+without pretending that locomotion is solved. Once the body can carry/react to it,
+the same assembly enters the rescue encounter. A fluid cushion, powered winch or
+working valve can be added later through the same interfaces after its law qualifies.
+
+Separate **design preview** from **live fabrication**. Preview can move proposed
+parts freely and undo uncommitted edits. In the live world, the tool supplies its
+declared forces/work and the player supplies material; releasing a loaded connector
+can recoil. Sandbox resource settings are explicit scenario settings. Neither an
+undo nor a blueprint is an unlimited source of matter or stored energy.
+
 ## 6. The first vertical slice: “Bring Them Home”
 
 **Target session:** 10–15 minutes, a design target to validate with players.
 One compact ravine, one companion, one stranded creature or salvage load, one
 damaged crossing, and one repair alcove. Use the selected monkey appearance.
+The repair alcove also supplies a compact assembly bench and an admitted kit;
+the player makes one useful construction choice before the crossing.
 Start with the graph's terrestrial reference conditions; the moon setting is
 fiction until a different environment profile is deliberately admitted.
 
 ### The sequence
 
-1. **Bond.** Touch a supported limb and command a short pull. The companion's
-   posture and response establish that it senses loading and can stall.
+1. **Build and bond.** Fit an asymmetric cradle from the admitted rails, pad
+   and strap/brace kit; choose one attachment position and test a small load.
+   Touch a supported limb and command a short pull. The companion's response
+   establishes that it senses loading and can stall. Use a prepared starter
+   assembly when it helps onboarding; the player still makes a real modification.
 2. **Discover.** Find the crossing and the stranded target. See a strained
    attachment and a leaking or structurally open chamber, according to the
    currently qualified damage model. The objective is clear before inspection.
@@ -214,7 +339,9 @@ permadeath, biological regrowth, autonomous predators or an entire settlement.
 ### The gate
 
 - An unfamiliar player starts without an agent or developer operating the engine.
+- The player places or modifies a physical part and observes a useful consequence.
 - At least two solutions produce different measured load/attachment histories.
+- One saved part/assembly also works in a second workshop setup using the same laws.
 - A damaged path changes behavior; a patch/brace restores only its stated function.
 - The player can explain the failure and recover using an offered physical action.
 - Saved damage, inventory, attachments and mission state survive reload.
@@ -592,34 +719,412 @@ construction. Show their tradeoffs without collapsing them into one required gra
 A relaxed player can complete a rescue; an expert can revisit the same scenario to
 master it. Player-selected challenge settings should be saved with any scored result.
 
-## 11. Engineering shape: one engine, explicit boundaries
+## 11. The reusable matter system and its renderer
 
-ChimeraEngine remains the whole runtime stack, with a headless physical core and
-its own renderer. One process does not require every subsystem to mutate the same
-state. Keep boundaries that make the game testable and saveable:
+The following is a proposed extension of the inspected native system, not a
+description of a completed implementation. It connects the builder to the
+project’s existing CA, material, geometry and GPU-rendering direction.
+
+### 11.1 Reusable functionality is the unit of construction
+
+The LEGO analogy describes **composable function**. A useful piece combines geometry,
+material response and places where other matter can interact with it. A beam carries
+load; a strap transmits tension; a hinge allows selected motion while transferring
+reactions; a container retains a particular inventory; a valve changes a transport
+path. These functions should remain useful when rotated, resized within a qualified
+range or put into an assembly that its original author did not anticipate.
+
+The system must support asymmetric pieces and independently shaped layers. Regular
+bricks and grids are convenient authoring templates, not the world's underlying
+restriction. Player construction, creature anatomy and environmental structures use
+the same assembly foundation, with different material profiles and fidelity limits.
+
+| Entity | Owns or describes | Reuse/ownership rule |
+|---|---|---|
+| Material definition | Constitutive/transport/failure laws, units, sources, valid regimes and required state | Immutable versioned description; a material name or display color cannot supply missing coefficients |
+| Part definition | Shape recipe or source geometry, material layout, rest state, permitted parameters and exposed ports | Reusable recipe; different instances have independent state and resource costs |
+| Part instance | Stable ID, local frame and references to its physical owners | Grouping does not duplicate its contents or imply that every child is rigidly attached |
+| Material region/cell | Exclusive material inventory and the history required by its selected law | Bulk cells own matter; any nodal mass assignment is derived from that inventory |
+| Boundary patch | Oriented geometry and the region/material on each side | A surface identifies an interface; triangle count does not determine physical mass |
+| Physical port | A material-owned support region, local frame, applicable laws and relevant conditions | Exists before contact; may cover a whole surface or a localized socket, seam or attachment patch |
+| Active interaction | The participating port/region IDs, affected patch, paired exchanges and persistent interface history | Created/updated by compatible contact, declared embedding or fabrication; processed once |
+| Assembly | Parts, containment, interactions, controllers and exposed descendant ports | Packaging preserves internal ownership and behavior; it can become a reusable part definition |
+| Render binding | Correspondence from drawable vertices/primitives to accepted physical state | Derived view with topology generation; owns no additional mass or hidden physical motion |
+
+Keep the present `Cell`/`SealCell` distinction visible during migration. A named
+cell in a file format must declare whether it is a surface update site, a volumetric
+material element or a compartment inventory. Do not silently reinterpret legacy
+triangle classification as a filled physical solid.
+
+### 11.2 How asymmetric polygon layers become physical matter
+
+Use a **region-and-interface complex** as the canonical assembly description.
+It relates three resolutions: authored shape, mechanical discretization and render
+tessellation. Their mappings are explicit; their vertex counts need not be equal.
+
+An authored layer has a coverage domain, reference surface/volume, thickness field,
+material frame, edge treatment and interfaces. It may taper, curve, branch, terminate
+partway across another layer, surround a cavity or wrap around a corner. Its “up” is
+a local normal/frame, not the world's Y axis. Layer order means spatial adjacency
+on a specified side, not a draw-order integer.
+
+The proposed compiler proceeds as follows:
+
+1. **Establish identity and scale.** Retain the source/recipe, units, handedness,
+   rest frame and material coordinates. Imported appearance may be an authoring
+   guide until it has a valid physical representation. Do not silently resize a
+   creature or solid to make another system's assumptions fit.
+2. **Construct the intended shape.** Start with closed polyhedral templates and
+   planar polygon extrusion; extend to taper, sweep, loft and validated curved
+   patches. A nonplanar polygon needs an explicit surface/tessellation, not an
+   arbitrary hidden choice of diagonal. Holes and disconnected outlines stay explicit.
+3. **Construct real layer thickness.** Offset or loft inner/outer boundaries and
+   close their rims where a finite solid is intended. Detect collisions of offset
+   surfaces at sharp corners and narrow concavities. Use local reconstruction or
+   refuse the requested thickness; moving every vertex along its normal is not a
+   general layer-building algorithm.
+4. **Resolve regions and interfaces.** Classify material, void, fluid and exterior
+   domains. Each material volume has one owner. Identify shared boundaries and
+   triple-junction curves; split intersecting patches into compatible pieces.
+   Spatial overlap is an error or an explicit fabrication operation, never an
+   implicit extra layer of material.
+5. **Triangulate boundaries without changing the intended topology.** Track contour
+   nesting, winding and holes; use a constrained triangulation appropriate to each
+   patch. A concave section or annular cut must not become overlapping fan triangles
+   or a filled hole. Preserve authored creases, layer terminations and port boundaries.
+6. **Fill solid regions where their mechanical model requires it.** Generate a
+   conforming tetrahedral complex for the initial volume-backed path, preserving
+   region and interface labels. `tools/material_volume.py` can validate/integrate
+   such an input; it does not create that mesh for us. A mesh-generation adapter
+   and tests are explicit missing work.
+7. **Validate geometry and material ownership.** Check finite coordinates, scale-aware
+   degeneracy, positive cell volumes, orientation, boundary closure where required,
+   manifold incidence, vertex links, intersections and unintended overlaps/gaps.
+   Validate each region boundary, not merely the union's visible outer surface.
+   A material triple junction can have several incident interface sheets while each
+   individual region still has a valid oriented boundary.
+8. **Integrate inventory and mechanics.** Compute mass, COM and full inertia from
+   the exclusive material layout, then compile the selected nodal/rigid/reduced
+   DOFs, local laws, adjacency, interface patches and required histories. Adding a
+   density is not the same as supplying a constitutive response.
+9. **Build surface and selection bindings.** Extract exposed boundaries, internal
+   inspectable interfaces and their material IDs. Create render and collision
+   representations with lineage back to physical entities. Normals and decorative
+   colors are derived; the layer still exists when it is hidden from view.
+10. **Publish one accepted assembly generation.** Validate resource budgets and
+    command preconditions before installing it into simulation, contact, rendering
+    and persistence together. A refused proposal leaves the previous world intact.
+
+Robust geometry tools are candidates for the offline/compiler step, not a decision
+to replace the engine. CGAL documents polygon-mesh predicates and distinct repair,
+Boolean and meshing packages; its Mesh_3 package addresses labeled volumetric mesh
+generation. Evaluate these algorithms against Chimera's cases, licensing/build
+constraints and reproducibility before choosing an adapter. No dependency is installed
+by this plan. [Polygon mesh processing](https://doc.cgal.org/latest/Polygon_mesh_processing/index.html),
+[3D mesh generation](https://doc.cgal.org/latest/Mesh_3/index.html).
+
+**Three different meanings of a wall must stay distinct:**
+
+- An ideal/reduced shared septum can have one interface ID with opposite incidence
+  in the two compartments. Its physical storage, response and any assigned mass are
+  counted once under the selected model.
+- A finite-thickness wall is its own exclusive material region. Two fluid chambers
+  then meet opposite boundaries of that wall; they do not share the same zero-thickness
+  face. A logical separator can group those two boundaries without creating a second wall.
+- Two laminated sheets are separate material regions joined over a declared interface.
+  They can have different rest shapes, material axes and tessellation. They are not
+  made into one material merely because they are drawn next to each other.
+
+The current material-volume compiler rejects adding independent thin-sheet or
+effective skeletal mass on top of its reconstructed volume mass. Respect that:
+**the first volume-backed implementation gives thickness-bearing layers exclusive
+volume cells.** A later mixed shell/bulk reduction must state which volume it replaces
+and prove its mass/inertia/response mapping. Never add `area × thickness × density`
+to a region that already contains that same layer's material.
+
+Compile independent contacting/sliding parts in separate node/DOF namespaces. The
+reference compiler rejects duplicate positions within its conforming input; it must
+not be used to weld every coincident point from independent parts. Conforming shared
+nodes can represent a qualified continuous/perfectly bonded region. A sliding or
+separable interface needs distinct sides and an explicit coupling. Nonmatching
+meshes require conservative patch interpolation/integration rather than equal vertex
+counts. The weights must reproduce the declared force and moment transfer.
+
+### 11.3 How pieces stack, join and separate
+
+“Put these together” must resolve to a visible physical relationship. The system
+discovers compatible contact between material-owned ports; the player selects the
+piece, preparation and fabrication process that makes a lasting connection possible.
+There is no manual task to connect every pair of triangles.
+
+| Relationship | Geometry and state | What should happen in play |
+|---|---|---|
+| Resting contact | Two distinct surfaces, gap/normal, relative motion and friction state | Loose layers support compression, can slide or lift apart, and transfer no unexplained tensile force |
+| Fastened / bonded patch | Finite support area on both parts, local frames, a declared interface law and strength/history | Area and placement affect stiffness and failure; an off-center pull produces reciprocal torque |
+| Adhesive layer | Supplied third material, its thickness/coverage and any qualified cure law | A prepared joint develops only its declared capability; peeling or debonding can expose the layer again |
+| Hinge / slider / bearing | Compatible support geometry and allowed/constrained relative DOFs | The assembly moves in the intended directions while reactions enter both sides; limit stops have a qualified mechanism |
+| Strap / tendon | Two attachment patches, routed length, slack, tension and any contact with guides | It pulls when taut, goes slack appropriately and can be rerouted into another useful mechanism |
+| Sealed connection | Closed oriented boundary plus a qualified seal/interface condition | It can retain an inventory while remaining flexible; sealing does not automatically imply rigid welding |
+| Conduit / valve | Port opening, two inventories, transport law, aperture and control state | Opening the path exchanges the accounted quantity; closing it changes that path rather than a global pressure flag |
+| Nested enclosure | An outer boundary, an interior domain and independently owned contents | Contents collide, move and push back; organizational parentage does not copy a rigid transform onto them |
+| Embedded / fused construction | Explicitly admitted overlapping/reconstructed region with ownership and state transfer | The fabrication operation resolves the previous material layout; accidental penetration never creates adhesion |
+
+For a patch force, use its real application points and frame. A point connection
+does not automatically resist every rotation; a line or non-collinear area has
+different constraint rank. The finite-area attachment reference is a useful basis
+for this distinction. A connector recipe may contain real small geometry, a qualified
+reduced attachment model, or both without double-counting its physical contribution.
+
+Stacking needs six-degree-of-freedom motion for independent parts, inertia, broad and
+narrow contact detection, friction and coupled reaction forces. The current one-Y
+creature root and lowest-vertex floor support cannot qualify a pile of irregular
+blocks. Start with two bodies and a support, then increase contact complexity only
+after the small cases behave correctly.
+
+Thin layers also need a declared swept-contact/continuous-collision policy or a
+qualified timestep bound with substepping. A fast part must not tunnel through a
+wall between discrete checks. Measure this at the smallest admitted thickness and
+largest admitted relative motion. Numerical contact margins are declared approximations,
+not invisible thick walls that contradict the rendered clearance.
+
+### 11.4 CA rules advance the material; they do not merely decorate it
+
+Keep local rules over an irregular adjacency graph. Surface patches, volume cells,
+bonds and active contacts have different neighborhoods and owned state; proximity
+does not collapse them into one undifferentiated neighbor list. The same material
+and interface rules should operate in a creature, a door and a player-made machine.
+
+A selected state includes material identity, reference/current geometry, inventory,
+momentum/required DOFs, energy, material axes, damage/internal history and physical
+time. Store optional channels only for laws that use them. Node masses may be
+assembled from cell contributions; those masses are not another inventory ledger.
+
+For a selected continuum representation, traction is `t = stress_tensor · normal`
+and patch force is `F = integral_patch(t dA)`, evaluated by the qualified quadrature.
+Constant traction reduces to `F = area * t`. Paired interface contributions and
+their moments enter the same coupled update. Conservative forces can be derived
+from stored energy. Damping,
+friction, active work, heat and matter transfer need their own typed accounts;
+neither temperature nor current is a number to add to a force vector.
+
+An initial production update should have an explicit order:
+
+1. Admit commands/topology transactions at a simulation boundary.
+2. Evaluate accepted geometry, local neighborhoods and broad/narrow contacts.
+3. Evaluate material, interface, actuator and transport contributions from a
+   consistent state; one owner computes each paired exchange.
+4. Gather forces/fluxes or perform the selected coupled constraint solve. Define
+   any internal iterations/substeps and their state-read/write rules.
+5. Advance motion, inventory and constitutive history; check the declared conservation,
+   positivity, validity and model-range conditions.
+6. Commit the accepted state and its geometry generation; derive render/contact
+   consumers and bounded diagnostic observations from that same state.
+
+Use deterministic gathers or another explicitly qualified schedule rather than
+order-dependent in-place damage spreading. Local ownership does not mean each cell
+can independently choose its future: pressure, stiff bonds, contact and waves may
+require synchronization or a coupled solve. Fixed 300 Hz is the existing target;
+the chosen stiffnesses and cell sizes may require smaller coupled substeps. Do not
+change material stiffness to hide instability without declaring a different profile.
+
+Dirty-region scheduling must still advance time-dependent physics: a moving object,
+loaded viscoelastic layer, warm body, pressure difference or in-flight signal can
+change without a new player event. Sleep only under a declared valid equilibrium
+or lazy-advance contract, and wake coupled neighbors when their boundary conditions
+change. A settled world can be cheap without freezing ongoing processes.
+
+For compartment transport, inventory and current geometry jointly determine the
+selected pressure/temperature closure. An internal transfer debits one side and
+credits the other once, with transported momentum and energy where the model requires
+them. Supply and exterior loss are explicit boundaries. The legacy fixed-inventory
+pressure diagnostic is not that implementation. A seal, a hole and a valve each
+change a particular interface, not every compartment in a body.
+
+Use a pressure-force discretization consistent with the same boundary geometry and
+volume/energy closure: boundary motion performs pressure-volume work. For a conservative
+compartment potential, nodal pressure forces follow its derivative through volume;
+thermal reservoirs and dissipative terms remain explicit when the selected model
+needs them. Qualify a closed pressure-volume cycle so returned work, stored energy,
+heat and losses balance under that model. Conserving mass alone does not establish
+energetically correct pressure coupling.
+
+Reuse the existing multi-kernel/DSL and spatial-hierarchy direction. Local bonds,
+contact, shell strain and pressure remain local/coupled passes; eligible far-field
+interactions may use the existing hierarchy strategy. A Barnes–Hut aggregate cannot
+replace a contact patch or constitutive history. The accepted runtime remains the
+native engine with GPU-resident working state, not a separate character simulator.
+
+### 11.5 Construction is a conservative topology transaction
+
+The tool's intention must name what it changes. **Partition a closed volume** makes
+regions with an internal boundary. **Open a wall** makes a transport/contact opening.
+**Sever a bond** removes an interaction. **Cut a solid** changes connected material
+and exposes surfaces. **Detach a module** may release selected connectors while
+leaving its own internal structure intact. **Patch** adds material and interfaces.
+These cannot all be aliases for the current `seal()` operation.
+
+Use an atomic edit transaction with expected object/topology generations:
+
+1. Capture selected physical IDs and the operation's material/work inputs.
+2. Construct candidate geometry/connectivity and the resulting old-to-new lineage.
+3. Validate shape, orientation, ownership, interface compatibility and supported
+   laws; estimate the old-plus-new memory peak before allocating the live replacement.
+4. Transfer material, rest state, damage, momentum and stored energy under the
+   operation's declared model. Account for fracture/surface work, removed material,
+   recoil, supplied work and any resolved dissipation. A geometric split cannot
+   reset a half-empty compartment to full or erase a pre-existing strain history.
+5. Rebuild affected adjacency, contacts, compartment boundaries, port references,
+   render bindings and spatial bounds. Invalidate stale picks and queued commands.
+6. Publish simulation and consumer metadata as one accepted generation at a tick
+   boundary. Retire old GPU buffers only after their consumers complete.
+7. Journal the committed operation with a bounded recovery checkpoint; report a
+   named refusal without partially installing an invalid candidate.
+
+When a connected solid becomes independently moving fragments, their mass, momentum,
+angular momentum and internal state must be transferred consistently with the chosen
+DOF layout. Old cut-vertex blend references are useful authoring lineage, but cannot
+remain a hidden mechanical tether to the original body's skin. Duplicate interface
+DOFs only where the new physical separation requires them and repartition mass once.
+
+Joining loaded parts also needs a policy: align/fabricate with tools, or solve the
+declared constraint capture with accounted impulse and work. Instantly snapping two
+moving bodies into a pose and discarding their relative energy is not a valid live join.
+Preview undo can discard an uncommitted candidate. Live recovery restores a complete
+checkpoint or performs a real compensating operation, never just refunds a recipe
+while retaining its physical outputs.
+
+### 11.6 Render the same accepted matter that the player touches
+
+The intended production connection is:
 
 ```text
-Player input / bounded NPC observations
-                  |
-          intent and command queue
-                  |
- fixed simulation clock -> physical state + component/attachment graph
-                  |             |
-           admitted events   inventory / work accounting
-                  |
-          immutable frame snapshot
-             /             \
-  in-engine rendering     gameplay feedback / UI
-                  |
-        checkpoint + ordered event journal
+shape/material recipe + player fabrication intent
+                 |
+validated region/interface assembly + conservative edit transaction
+                 |
+resident physical IDs, geometry, inventories, histories, ports and contacts
+                 |
+fixed physical clock: local laws / paired exchanges / coupled solve
+                 |
+accepted state + topology generation
+       /                  |                    \
+contact and queries   boundary extraction    bounded snapshot/journal
+                          |
+          render primitive -> boundary patch -> material/region/port IDs
+                          |
+       GPU vertex/material/indirect-draw buffers -> Vulkan presentation
 ```
 
-The renderer reads a completed snapshot and interpolates appearance where allowed.
-It does not write forces, repair topology or advance the world clock. Graph/HTTP
-inspection must be rate-limited consumers; do not serialize or synchronously log the
-entire world on every physical substep.
+Several meshes can therefore coexist without several competing truths. A skin mesh,
+muscle region, rigid support and decorative render refinement refer to shared physical
+owners and their declared interfaces. They can have independent geometry where the
+physics requires it. “One physical state” means coherent ownership and coupling,
+not one flattened, welded surface for every layer.
 
-### A component contract that makes combinations safe
+Extend the renderer/scene interface in the following concrete ways:
+
+- **Many assembly surfaces.** Replace reliance on a single primary mesh plus one
+  overlay with a registry of stable object/boundary ranges and draw records. Share
+  immutable recipe data where useful; mutable geometry/history belong to instances.
+  Bound draw/dispatch counts and update only the affected allocations/ranges.
+- **Material and side identity.** Add a material/layer lookup keyed by physical
+  boundary ID; keep debug tint separate. Specify which material appears on each
+  side, how exposed interiors are shaded, and whether a thin surface is rendered
+  two-sided. Back-face culling must not decide physical sidedness.
+- **Exact correspondence.** Map render triangles/vertices to physical boundary
+  patches or element coordinates, with a topology generation. Render tessellation
+  can refine a curved appearance but cannot silently close a physical opening,
+  erase a seam or create a selectable load-bearing surface that does not exist.
+- **Physical contact correspondence.** Collision queries must use the accepted
+  physical surface or a declared approximation within its contact/error envelope.
+  Author-visible high-detail geometry cannot conceal a materially different collision
+  obstacle. Display and physical LOD are separately measured.
+- **Real internal faces.** Emit visible faces after a cut and inspectable internal
+  boundaries from the region complex. The current original-index `/topology` export
+  is insufficient for seal-tree caps. A wall seen from opposite compartments resolves
+  to the same physical owner, or to the two boundaries of one finite wall region.
+- **Selection that survives editing.** Return object, boundary, layer/port, local or
+  barycentric coordinates and hit normal. Stamp topology generation, displayed state
+  revision and camera/inspection transform. Resolve the hit in that displayed snapshot,
+  map it into physical local coordinates, then revalidate against the current state
+  before committing. A moving or interpolated part can retain the same topology while
+  its visible world-space hit becomes stale. Hidden-layer selection requires an explicit
+  inspection mode; ordinary selection must agree with the visible camera/depth result.
+- **Layer inspection.** First deliver isolate, cutaway and exploded views using the
+  stable mapping. A visual clipping cap is marked diagnostic and owns no invented
+  material. Exploding the view changes display transforms only; editing through it
+  transforms selections back to the real part. Transparency is a separate renderer
+  feature, not already supplied by the opaque triangle path or the splat pipeline.
+- **Synchronization and completion.** Commit topology/state together, synchronize
+  compute writes with vertex/index/storage/indirect consumers as used, and preserve
+  old resources until in-flight work is complete. Distinguish accepted simulation
+  generation, submitted render generation and completed presentation. Never mix new
+  indices with old positions or interpolate across incompatible topology generations.
+
+Vulkan requires explicit coordination of execution and memory access; the existing
+membrane-demo compute-to-vertex barrier is a useful local precedent, not a blanket
+solution for every new buffer or queue. Design barriers/fences around actual producer
+and consumer accesses. [Vulkan synchronization guide](https://docs.vulkan.org/guide/latest/synchronization.html).
+
+First preserve the current triangle representation and existing native renderer.
+Do not introduce a replacement engine, voxel renderer or independent visual skin
+to hide the integration gap. The same solved positions/frames must drive mechanical
+boundaries and their visual bindings. Cosmetic detail may be derived afterward only
+when its nonphysical status and contact-error limits are clear.
+
+### 11.7 A worked layered assembly: the asymmetric rescue cradle
+
+Start with two unequal stiff rails and one diagonal brace. Fit a softer shaped pad
+over part of the rails, leaving an exposed rim. Attach a compliant sling at two
+non-collinear finite-area patches, with different spacing on the two sides. The
+shape is intentionally asymmetric so a symmetric toy case cannot hide incorrect
+frames or torque transfer.
+
+The rails own their solid material volumes; the pad owns a different exclusive
+volume or later qualified shell representation. The sling is a separately supported
+membrane under its selected law. Its connection patches, rather than every nearby
+vertex, transmit load into the rails. Loose pad contact allows slip; a bonded variant
+changes the interface law. A load placed off-center should twist the assembly and
+produce different connection reactions. The rendered deformation and the tool's
+picked surface must follow those same DOFs.
+
+Test three edits: move one attachment within its valid support region; replace the
+pad with a different admitted material; release one loaded strap. Explain the changed
+clearance, compliance or failure through observed mechanics. Save/reload, then reuse
+the same assembled frame as a hoist support. A later chamber module can be added
+below the pad, but its pressure, puncture and valve behavior wait for transport and
+boundary-force qualification.
+
+This is the near-term proof of reusable functionality: **one kit, different
+arrangements, different mechanical results, and a part useful in another genre's
+encounter without a new special-case solver.**
+
+### 11.8 Matter capabilities behind the genre library
+
+The goal is a foundation that can support the library as it grows. Some genres
+need a new physical capability; others need content, sensing, goals or presentation
+over existing matter. Giving every genre its own material simulator would defeat
+the construction idea. The following grouped coverage includes every G01–G60 entry.
+
+| Genre coverage | Reusable foundation to extend | Representative construction | Additional game-layer work |
+|---|---|---|---|
+| G01–G07: action, fighting and traversal | Coupled inertia, support/contact, articulated limits, tensile and compliant attachments, damage | A brace becomes a climbing aid, counterweight or weapon restraint | Intent controls, camera, readable commitment and encounters |
+| G08–G16: ranged pressure, stealth, tracking and escape | Projectile/contact, barrier response, geometry-based sensing/occlusion, optional qualified transport hazards | A tether launcher, quiet supported gate or modular shelter | Bounded perception, threat timing, evidence and extraction objectives |
+| G17–G23: puzzles, inference, instruction and rhythm | Inspectable states, repeatable load paths, finite drives, sensor/controller interfaces and time-consistent response | A balance mechanism, test rig or phased hauling device | Hints, deductions, constrained plans and accessible timing cues |
+| G24–G31: tactics, strategy, defense and stewardship | Composable barriers, routes, capacities and resource-carrying mechanisms | A configurable crossing, defensive diversion or water-access structure | Small actor policies, logistics graphs, objectives and ecology rules |
+| G32–G38: survival, construction, factories and life systems | Layering, fabrication, repair, finite stock/work, transport and later qualified growth | A workshop, container, replaceable tool or habitat module | Recipes, jobs, trade, care and population limits |
+| G39–G44: repeated runs, loadouts, loot and automation | Parameterized qualified parts, property-based interchange, stable save and bounded batch processes | Rebuild a known machine from a constrained kit | Scenario variation, reward policy and understandable build comparison |
+| G45–G54: story, care and shared experiences | Persistent physical identities, salient events, repair history and reliable interaction | A restored place or borrowed assembly with visible history | Authored relationships, quests, social rules; separate future networking/operations |
+| G55–G60: racing, sport, vehicles and creative mastery | Qualified cargo/contact first; wheels, buoyancy, drag or lift only when separately implemented | A cart chassis, load trial, salvage raft or shared blueprint | Course rules, controls, versioned results and later sharing infrastructure |
+
+Physical signals deserve the same discipline as forces. A strain sensor observes
+the local state; a wire or nerve has a declared signal path/delay if modeled; an
+actuator consumes its own power. A signal is information, not a free source of work.
+For logic and automation, begin with a small bounded set of sensors, gates and drives.
+Expand thermal, electrical, hydraulic and growth capabilities only when a concrete
+construction needs them and their physical tests pass.
+
+### Shared component checks
 
 Every admitted component declares its geometry, material profile, state, typed
 connection points, carried/transported quantities, capacity and failure conditions.
@@ -793,8 +1298,8 @@ neither should require a developer to explain what the companion is doing.
 | Milestone | Deliverable | Exit evidence | Defer until later |
 |---|---|---|---|
 | M0 — preserve the baseline | Pinned playable demo; existing camera/lighting and tendon behavior recoverable | Known build, scoped historical receipts, explicit current limitations | Repeating already completed camera work |
-| M1 — a body that carries a consequence | A complete bounded force path, admitted compartment ownership, local sensing, and locomotion/support qualification | Passive drop, stall, support loss, sever and renderer-rate controls; measured scale/inertias | Parkour, multiple species, whole-body biological fidelity |
-| M2 — Bring Them Home | The compact rescue slice with two solutions, failure/recovery and a repair that persists | Physical controls plus observed fresh-player sessions from §6 | Predators if they delay the basic rescue; growth and large zones |
+| M1 — matter that composes | One owned physical state, irregular part compilation, contact and finite-area coupling; complete the body force/support path needed to carry the result | Construction gates B1–B3; passive drop, off-center reaction, sever and display-rate controls; measured mass/inertia | Parkour, large populations, unqualified arbitrary geometry |
+| M2 — build, then Bring Them Home | The compact assembly bench and rescue slice with two arrangements/solutions, failure/recovery and a persistent repair | Construction gate B4 plus physical controls and observed fresh-player sessions from §6 | Predators if they delay construction/rescue; growth and large zones |
 | M3 — combinations | One opponent, reusable rigging parts, a working lair and one selected additional encounter using the same parts; a second only after useful transfer is demonstrated | Parts work outside their introductory puzzle; distinct viable solutions; bounded memory across repeated sessions | Broad crafting catalog, detailed metabolism; the rest of the genre library |
 | M4 — one finished chapter | Reliable onboarding, save/recovery, presentation, accessibility/settings and a coherent expedition arc; test the pacing proposal in §10 | Declared hardware/fidelity envelope; offline install/start; user-confirmed game loop and meaningful return | Mandatory co-op or a promised campaign duration |
 | M5 — expand only what worked | Further regions, selected thermal/growth/ecology interactions | Each new mechanism has a physical falsifier and a new player decision | Cosmic simulation and full molecular chemistry unless a later game specifically needs them |
@@ -804,11 +1309,86 @@ the graph requires. That release freezes interfaces, evidence scope and compatib
 it does not declare all future science finished. Do not turn this design document
 into an automatic controller queue or begin implementing all rows at once.
 
-**Immediate next engineering assignment:** audit the complete force/support path and
-choose one qualified route to a controlled carry/brace interaction. Reconcile existing
-gait experiments before commissioning another controller. If walking remains unqualified,
-use a supported manipulation test to prove attachment, load, cut and repair while the
-locomotion work proceeds; do not present that stationary test as the finished RPG.
+**Immediate next engineering assignment:** reconcile the current geometry and
+attachment reference code into one narrowly scoped construction packet: two
+asymmetric material parts, one loose-contact case and one finite-area connection,
+with the same accepted geometry driving loads, native drawing and selection.
+Choose explicit material/DOF ownership and source identities before coding.
+Use a supported test fixture while whole-body locomotion is qualified; preserve
+the existing body force/support work and reuse its formulations rather than
+creating a separate game physics system.
+
+### Construction qualification: grow the matter system through reusable tests
+
+These gates refine M0–M5; they are not a separate engine or a second mandatory
+campaign. The first workshop and rescue use admitted templates. Free-form shapes,
+new materials and transport enter as their corresponding gates pass. Current creature
+qualification continues against the same ownership and mechanical contracts.
+
+| Gate / milestone | Concrete deliverable | Evidence that permits the next step |
+|---|---|---|
+| B0 / M0 — identify the real path | Pin the current executable/source, materials and mesh; map every position writer and every physical/render consumer | Baseline can be recovered; current demo, standalone references and target architecture are distinguished |
+| B1 / M1 — compile irregular parts | Two asymmetric solid templates, a tapered layer and an open-surface refusal control; stable material/region/boundary IDs and resource inventory | Geometry refusals, positive volumes, mass/COM/inertia, correct interface orientation and no overlapping ownership; original compiler checks reused |
+| B2 / M1 — make contact and attachment physical | Two independent parts, gravity/support, loose contact and one finite-area connector on the first shared resident runtime state | Off-center load gives correct reactions/torque; slide, tip, separate and power/support-removal controls; numerical envelope measured |
+| B3 / M1–M2 — build and see distinct layers | Three dissimilar layers in loose and bonded variants, same initial visible shape, inspection by stable IDs | Distinct shear/slip behavior; no double mass; render/pick/contact agree; delamination exposes the intended material |
+| B4 / M2 — interactively assemble the cradle | Place, connect, test, release, mechanically patch, save and reload admitted parts through transactions | Rejected edits preserve state; no stale selections; loaded release has the declared work/momentum consequence; player can explain and improve a connection |
+| B5 / M3 — reuse function and broaden shape | Reuse the cradle/frame parts in a bridge or hoist; extend cutting/meshing to concavity, holes and branch junctions when qualified | One part/connector works in multiple contexts; torus/concave/triple-junction cases pass; no hand-authored genre-specific replacement physics |
+| B6 / M3–M5 — add working processes | Qualify each needed channel separately: chamber pressure/flux, a valve, finite actuator, sensor, heat transfer or growth | Paired exchanges conserve material inventories and close the energy balance including storage, supplied work, heat and boundary flux; closing or severing a path removes only its contribution |
+| B7 / B2 onward, M4 release gate — bound cost and preserve state | Resident native working set, independent physical clock, bounded topology pools, recovery and compatible render LOD | No routine full-state CPU round trip; declared 4090 memory/frame-time envelope; repeated construction has stable RAM/VRAM/disk use |
+
+Use an **acceptance gallery** that exposes errors a symmetric cube would hide:
+
+1. **Stack two unequal wedges.** One arrangement stands; another slips or tips for
+   an observable reason. Lifting one away leaves no unexplained tensile attachment.
+2. **Shear three layers.** Compare loose, bonded and deliberately debonded interfaces
+   from the same geometry. Check both bodies' forces and moments, not only appearance.
+3. **Partition a lopsided chamber obliquely.** Each region closes with the intended
+   orientation; the separator is counted once and material inventory is preserved.
+4. **Cut a concave or holed section.** The opening, cap and collision agree; a ring's
+   hole remains a hole. Reject unsupported geometry instead of filling it silently.
+5. **Meet at a three-way junction.** No duplicated wall, tiny unintended gap or
+   ambiguous region ownership appears where layers branch or terminate.
+6. **Move a loose object inside a container.** It responds to the enclosure and
+   pushes back; it neither passes through nor inherits a hidden welded transform.
+7. **Refine a thickness-bearing wall.** Mass/inertia and the selected force response
+   stay within declared tolerance; visual subdivision does not add material or strength.
+8. **Sever an off-center loaded connector.** Only its load path disappears; the
+   released state and new visible surfaces match the declared failure/accounting model.
+9. **Open one of two chambers, once transport exists.** Only connected inventories
+   exchange; a patch consumes resources and does not reset pressure/history for free.
+10. **Reject an edit midway through preparation.** No partial geometry, inventory
+    debit, stale contact or orphaned GPU allocation reaches the live world.
+11. **Repeat build → load → cut → repair → save → reload.** IDs or explicit lineage,
+    damage and inventory survive; memory, contact caches and journals reach a bounded
+    plateau under the same declared workload.
+12. **Change display cadence or stop rendering.** Physical-time outcomes remain
+    within the qualified numerical envelope. Submitted, completed and physical
+    generations remain distinguishable during asynchronous presentation.
+13. **Permute IDs and retessellate.** A different triangle order or display LOD
+    does not change material strength, secretly heal a crack or relabel a port.
+14. **Build a second object from the same recipe library.** An oblique support,
+    tension element and finite-area connector work as a brace, hoist or trap without
+    changing their constitutive laws for the quest.
+15. **Select a moving or interpolated part, then delay the edit.** Revalidate the
+    displayed-snapshot hit against current physical state; the operation updates
+    safely or refuses instead of attaching to a stale world-space point.
+16. **Move quickly toward the thinnest admitted wall.** Swept contact or qualified
+    substeps prevent tunneling without silently enlarging the visible obstacle.
+17. **Cycle a chamber's volume after pressure coupling exists.** Boundary work,
+    stored energy, heat and dissipation close under the selected model; a repeatable
+    cycle cannot produce unexplained work while its inventory remains unchanged.
+
+Pair numerical evidence with clean and diagnostic native views of the same accepted
+state. The diagnostics show owners, interfaces, layer IDs, contact normals and relevant
+loads; the clean view must still let the player understand the construction. Record
+camera and input state for comparison. A convincing screenshot is not a force test,
+and a correct force sum is not proof that the player can select the intended seam.
+
+Choose tolerances from the admitted models, scale and reference comparisons before
+running a gate. The single-joint `1e-6 J` guard and the current seal-cut minimum-volume
+threshold are not universal acceptance criteria for all construction materials.
+Small CPU/reference tests can establish formulations; production residency, rendering
+coherence and performance need their own native evidence.
 
 ### Promote a genre idea by evidence, not enthusiasm alone
 
@@ -856,6 +1436,9 @@ stay in the library until both an engineering gate and a player need justify the
 | Permanent damage punishes experimentation | Players reload after every injury or abandon a companion | Provide reversible supports, repair choices and fair recovery; preserve history without permanent uselessness |
 | More detail exceeds the hardware budget | Long frames or memory growth during topology changes | Bound active scope, measure transition costs, and qualify reduced states rather than hiding failures |
 | Fiction outruns implementation | A label says breathing, healing or growth but only a pose changes | Implement the missing transfer/state or use a narrower description until it is qualified |
+| Building is only a visual editor | Parts snap together on screen but loads, interiors or damage disagree | Qualify stacking, reciprocal attachment and layer inspection on one owned state before more templates |
+| Layers silently duplicate matter | Mass changes with tessellation or nested meshes overlap without ownership | Use exclusive material regions or an explicit qualified shell reduction; inspect every shared interface |
+| Geometry edits detach the renderer from physics | Invisible walls, unselectable new faces or stale collisions after cuts | Publish one topology generation with explicit physical-to-render bindings and rejected-edit controls |
 | Genre breadth dilutes the identity | New menus and isolated minigames replace useful physical interactions | Require a new decision, shared verbs and a tested encounter before promoting a library entry |
 | Rewards collapse into one dominant build | Every useful objective favors the same part or stat | Compare tradeoffs across load, clearance, reliability and repair; keep multiple outcome metrics |
 | Variation produces unfair scenarios | A random layout has no feasible return or hides a mandatory warning | Validate a baseline solution, preserve recovery resources and retain failed seeds for diagnosis |
