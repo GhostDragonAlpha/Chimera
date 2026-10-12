@@ -15,10 +15,13 @@ membranes, connections and local CA rules compose into tools, creatures, machine
 and places. The genre library describes experiences this foundation can support.
 Building, testing and reusing matter is the core game and the way we author it.
 
-**Reading route:** §3 traces the current physics/rendering paths; §5 describes
-the player’s construction loop; §11 specifies irregular layered matter, interfaces,
-CA updates and rendering integration; §13 gives the construction gates. §§9–10
-retain the genre and encounter library. New mechanisms remain proposals.
+**Reading route:** §3 traces the current physics/rendering paths; §5 turns
+construction into player experiments; §10 works through a folding carrier,
+storm shelter, chamber pack and a future mobile workshop. §§11.1–11.8 specify
+the matter foundation; §§11.9–11.15 deepen shape recipes, seams, mechanisms,
+fabrication, reusable parts, runtime ownership and numerical examples. §13
+gives the implementation gates. The genre library remains in §9. New mechanisms
+remain proposals, with the small rescue slice still the first delivery target.
 
 ## 1. The game we are making
 
@@ -300,6 +303,78 @@ parts freely and undo uncommitted edits. In the live world, the tool supplies it
 declared forces/work and the player supplies material; releasing a loaded connector
 can recoil. Sandbox resource settings are explicit scenario settings. Neither an
 undo nor a blueprint is an unlimited source of matter or stored energy.
+
+### Make the workshop a game of hypotheses
+
+The interesting building question is **what must remain free, and what must be
+prevented from moving?** A useful machine is often a deliberate mixture of loose,
+elastic and fixed relationships. Make that question playable before presenting a
+large catalog of components.
+
+Give the player a bench with three adjacent spaces: a supply rack, an assembly
+area and a test fixture. Moving between them should be an ordinary action in one
+scene. The fixture can hold one end, pull gently, hang a known load or release a
+support. It makes a claim testable without sending the player through a mission.
+Once mastered, the same methods work in the field with available anchors and a
+companion's bounded assistance.
+
+A first lesson could use the **same three unequal strips** five times. Lay them
+loose: they shift. Join them across a wide patch: they carry a different load.
+Join selected edges with a qualified hinge or compliant seam: they fold.
+Separate them with spacers and connect the edges:
+they form a section whose response depends on shear transfer. Release one seam:
+the structure changes shape. The player is learning a grammar of arrangements,
+not collecting five item definitions. Each response needs its corresponding
+mechanical model; the lesson waits for those models to qualify.
+
+Use a two-scale interaction. A quick placement gesture selects a useful exposed
+patch and suggests a feasible alignment. Holding inspect reveals the actual two
+sides, contact extent, alignment, available motion and preparation. Rotate a
+part around the selected patch without losing the anchor. Cycle through a small
+set of meaningful alignments instead of snapping through every triangle normal.
+Keep unsnapped positioning available. A suggested placement is a preview until
+the physical grasp, fixture or fabrication action completes.
+
+For surface work, use a consistent gesture sequence: choose the physical surface
+and side, mark a region/path, set its width or extent, preview the affected material,
+then fabricate. A brush follows the selected connected surface rather than painting
+through a thin wall. A seam can continue around an edge only by an explicit choice.
+A cut selects its depth scope: one layer, named layers or everything intercepted
+by the declared tool path. Hidden affected layers appear in inspection before the
+operation commits. These actions require richer picking than today's nearest-point
+interface; §11 specifies the needed physical bindings.
+
+The essential feedback is a sentence the player can act on: “this end can still
+rotate,” “the outer layer is peeling,” or “the strip is bearing against the rim.”
+An optional inspection view then reveals the evidence. Avoid a universal green
+“safe” stamp. A bench pull only establishes what happened under that load and
+boundary condition; a different load direction may reveal a different weakness.
+
+Let the player ask “what holds this corner?” by highlighting its actual active
+interfaces and measured reactions. Avoid drawing one supposedly unique force path
+through an indeterminate structure. A second query, “what changes if I release
+this?”, can offer a clearly labeled bounded test or preview; it must not present
+an unperformed simulation as a guaranteed future outcome.
+
+Reward experiments that isolate a cause. Players can duplicate a **recipe** into
+two paid-for test pieces, alter one variable, then compare the outcomes side by
+side. Save the recipe, test conditions and observations as a workshop note. Record
+failed specimens too: a torn interface can teach more than a successful assembly.
+The game can suggest “change the seam width” after repeated failure without
+silently replacing the player's construction with a solved prefab.
+
+Build failure should usually leave a useful next move. Catch a falling part with
+a tether, shore up a sagging span, bypass one failed chamber or convert a rigid
+joint into a supported hinge. Provide accessible scraps, temporary restraints and
+a recovery route in early encounters. Progression gradually asks the player to
+carry their own recovery options. Failure becomes a change in the design problem,
+with material consequences, instead of an automatic restart.
+
+An especially valuable teaching test is to ask the player to **predict a failure
+before loading**. Afterward, let them point to what actually moved first. Success
+is transferable understanding: they widen a support or reroute a pull on a new
+object without being told which recipe to use. Faster menu use is a separate
+usability result, not proof that the matter system is understandable.
 
 ## 6. The first vertical slice: “Bring Them Home”
 
@@ -719,6 +794,154 @@ construction. Show their tradeoffs without collapsing them into one required gra
 A relaxed player can complete a rescue; an expert can revisit the same scenario to
 master it. Player-selected challenge settings should be saved with any scored result.
 
+### Four constructions that grow into different kinds of play
+
+These are proposed mechanism studies, not four new required launch features.
+Start with the folding carrier after the basic construction gates; keep the later
+pressure and instability mechanisms behind their own qualifications. Each study
+should produce a reusable construction lesson, a small test scene and an expedition
+that changes the conditions in which the lesson is applied.
+
+**Study A — the folding carrier: design where motion belongs.** Give the player
+three unequal panels, two admitted hinges, several finite-area mounting patches,
+two tension restraints and a few spacers. The cargo fits on the assembled carrier,
+but the unloaded carrier cannot pass through a narrow turning passage.
+
+The first design uses a rigid perimeter. The second replaces selected connections
+with hinges, then uses restraints to prevent the unwanted motion under load.
+Fold it unloaded, carry the pieces through, unfold, take up the restraints and
+transfer the cargo. The player must leave room for hinge travel and for the folded
+panel thickness. An irregular panel can nest into another's recess; making every
+panel symmetrical may waste space. Verify the entire motion, not only the two
+endpoint shapes. Rigid panels with qualified joints are the initial variant;
+compliant folds come later.
+
+The main puzzle becomes a rescue when one restraint is damaged on the return.
+Possible responses include changing the load position, fitting a replacement
+restraint at a different lever arm, supporting the carrier while replacing its
+connection, or moving the load in smaller portions. Every solution changes the
+actual boundary conditions. A quest script should observe delivery and acceptable
+handling rather than recognize a particular blueprint.
+
+Afterward the player can stand the empty carrier as a partition, use one panel as
+a sled, or reuse the frame in a hoist. Each conversion is permitted only where
+contact, support, geometry and the relevant model make it work. The memorable
+reward is recognizing that a tool designed for one problem has become a small
+library of possible solutions.
+
+**Study B — the storm shelter: choose what gives way first.** Build an asymmetric
+roof over an occupied space using stiff panels, supported flexible connections and
+replaceable load-limiting elements. Begin with an explicit measured pulling fixture
+to stand in for the eventual external load. A physically modeled wind load is a
+later input, not an excuse to apply arbitrary forces to make the scene dramatic.
+
+The player compares three arrangements: every edge fully restrained, one edge
+allowed to rotate with a bounded restraint, and a small replaceable panel designed
+to release before the main frame fails. A released panel needs a qualified tether
+if the design is meant to retain it. The objective includes the space below,
+nearby structures and repairability, so shedding a dangerous piece is not
+automatically success.
+
+Failure order becomes a form of authorship. Put an accessible wear strip where it
+can be replaced; preserve a secondary support when the primary restraint releases;
+route a pull away from the occupant's compartment. A good design makes a severe
+load expensive but recoverable. These are topology and material choices, not an
+item perk called “resilience.” Test the intended sequence under several directions
+and retain cases where another element fails first.
+
+This can support a cooperative repair encounter with a companion: one participant
+holds a temporary support while the other replaces a part. It can also support a
+defensive encounter, a logistics problem about spare parts, or a mystery in which
+the pattern of damage reveals how the shelter was loaded. The same physical record
+supplies those experiences; each needs its own pacing and objectives.
+
+**Study C — the chamber pack: shape becomes a transport network.** After pressure,
+flow and boundary work qualify, construct a pack from three unequal chambers, a
+flexible cover, partitions, accessible valves and a separately powered pump.
+The cover's shape, chamber adjacency and connection graph are all editable.
+Do not treat a drawn dividing line as a sealed wall or a connected tube as a
+functioning valve without its admitted laws.
+
+Ask the player to move an inventory through a route where the pack must change
+shape. One large chamber is simple but shares one failure domain. Several chambers
+can isolate a puncture and redistribute inventory through their actual paths,
+at the cost of partitions, hardware, unused corners and servicing complexity.
+The fluid's selected compressibility, the wall response and the current geometry
+determine what redistribution accomplishes. Merely changing a chamber label
+cannot change the pack's external shape.
+
+Introduce a pinch point that obstructs one conduit when a strap is tightened.
+The player can reroute the conduit, protect its clearance or change the tightening
+sequence. Later, a broken valve forces a choice about which useful volume to
+isolate. A pump consumes power; gravity or another physical pressure source may
+offer a slower alternative. A finite accumulator can store work, not create it.
+
+Reuse the same assemblies as a controlled lifting cushion, part of a drainage
+system, or a fluid-transfer apparatus only after those specific operations qualify.
+A respiratory device, buoyant vehicle or medical organ requires additional
+substantial physics and safety-of-gameplay assumptions; it is not unlocked simply
+because the pack holds a fluid. The expansion path should expose those differences.
+
+**Study D — the walking room: a place assembled from tools.** This is a long-range
+design horizon. Build a shelter around a reusable load-bearing frame, service
+panels, storage, deployable supports and replaceable movement modules. Test each
+movement module under finite power, ground reaction and balance requirements before
+using it to move the shelter. Begin with a hand-moved or qualified wheeled version;
+a walking version waits for actual locomotion qualification.
+
+Now the interesting constraint is that the room has an interior. Stored equipment
+shifts or needs restraint. A folded leg occupies space. A support foot needs a
+clear deployment path. Power and transport lines crossing moving joints need
+qualified routing, slack and protection. The player must choose what remains
+usable during movement and what must be packed away.
+
+Arrival is a transformation process: stop, deploy supports, transfer the load,
+unlock panels and open the workshop. Departure reverses the process without
+forgetting loose contents or leaving an essential brace behind. The shelter can
+become a bridge support, expedition base or mobile rescue station by exposing
+real load-bearing ports. It cannot gain strength by being classified as a building
+instead of a vehicle.
+
+This links base construction, traversal, care, logistics and exploration through
+one persistent object. The player's history lives in the object: an off-center
+repair changes access, an added storage layer changes handling, and an old module
+can be removed to help a settlement. Maintain a viable small version so the idea
+does not depend on city-scale simulation.
+
+### A world that teaches its construction language
+
+Give regions different **available geometries and fabrication capabilities**, not
+only larger enemy numbers. One community works with flat panels and excellent
+fasteners; another has forming jigs for curved shells but limited repair stock.
+A locally practical design may need adaptation elsewhere. Supplies, access,
+manufacturing tools and tested material ranges explain those differences.
+
+Let ruined structures remain partly understandable. A failed brace, an unused
+mounting patch or a sealed access opening can reveal the builder's intention.
+Players salvage functional arrangements as well as matter: a pulley layout,
+a fold sequence or a serviceable valve mount becomes a recipe after inspection
+and the required tests. Avoid making every discovery an instant complete blueprint;
+unknown interiors or material profiles should remain unknown until examined.
+
+Construction can also carry identity. A companion may recognize a familiar grip
+and prefer a harness that permits its tested range of movement. A settlement might
+adopt the player's repair standard because its joints are accessible with local
+tools. Repeated use changes the particular instance, while the recipe captures
+what others can reproduce. Narrative can acknowledge those choices without
+pretending the engine has simulated an entire culture.
+
+The most valuable late-game reward may be **a new way to connect existing things**:
+a serviceable rotating seal, a better forming fixture, a qualified compliant joint
+or a compact finite actuator. Each expands the combinations available from old
+stock. Unlock these only with working mechanisms and a clear new decision. A
+growing list of stronger materials alone would miss the purpose of the matter kit.
+
+For encounter design, change one boundary condition before adding a new subsystem:
+the pull comes from the side, access is narrow, a tool cannot reach the rear seam,
+the load must stay level, or a component must later be recoverable. Those variations
+turn the same pieces into different problems and let designers evaluate how much
+play the construction foundation actually produces.
+
 ## 11. The reusable matter system and its renderer
 
 The following is a proposed extension of the inspected native system, not a
@@ -1124,6 +1347,390 @@ For logic and automation, begin with a small bounded set of sensors, gates and d
 Expand thermal, electrical, hydraulic and growth capabilities only when a concrete
 construction needs them and their physical tests pass.
 
+### 11.9 A shape grammar that preserves what the material remembers
+
+The building system needs more than arbitrary mesh editing. It needs a small
+language whose operations have predictable physical meanings. A shape recipe
+describes the material in its reference configuration; a fabrication process
+determines how that material enters the world; the solver determines its current
+deformation. Keep those three records separate.
+
+| Authoring operation | Geometric meaning | The physical decision it must expose |
+|---|---|---|
+| Outline and fill | A planar domain with explicit outer boundary and holes | Is the result a solid plate, a qualified shell, or only an appearance guide? |
+| Extrude or taper | Sweep a domain through a specified thickness/height field | Where does the extra material come from, and which side stays registered? |
+| Sweep | Move a section along a path with an explicit frame/twist rule | Does the material direction rotate along the path; are sharp bends admissible? |
+| Loft | Connect compatible cross-sections through a defined interpolation | Are narrowing necks, branches and changing hole counts supported or refused? |
+| Wrap and drape | Fit a sheet around a target through deformation/contact | Is the supplied flat pattern stretchable, cut into gores, or formed with a qualified process? |
+| Pleat, corrugate or fold | Introduce repeated shape or a formed crease | Is the crease a physical compliant region, a joint, or merely a tessellation edge? |
+| Laminate or separate | Add/remove an interface relationship between distinct layers | Can they slip, open or peel; what remains connected at their edges? |
+| Rib, hollow or perforate | Reallocate material and create boundaries/cavities | What changes in load path, access, sealing and removed-material inventory? |
+| Cut, stitch or branch | Change material connectivity or add a declared connector | Which surfaces become exposed and which persistent histories survive? |
+
+Begin with editable polygons, thickness and a few sweep templates. More elaborate
+operations enter only when their refusal cases work. A compact grammar can produce
+many constructions while every operation remains understandable and testable.
+
+Make recipes a dependency graph of geometric intentions. Refer to the “outer
+rim,” “left strap support” or a named material region rather than triangle 437.
+Regeneration resolves these references through their construction and lineage.
+Shortening a rail may remove its end patch: mark the dependent strap attachment
+invalid and offer reassignment. Silently choosing the nearest remaining face
+would change the function while pretending to preserve it.
+
+**A layer has material coordinates, not just world-space vertices.** Store its
+reference positions, local tangent directions, thickness field and relevant
+history against stable material entities. A surface chart can identify where a
+seam or fiber path lies; chart coordinates are not an assumption that every curved
+sheet can be flattened without strain. A flat inextensible sheet cannot simply
+be painted onto an arbitrary doubly curved body. The player must accept stretch,
+use several shaped panels, create darts/overlaps, or choose a supported forming
+process. Those alternatives should change costs and failure locations.
+
+For an asymmetric collar, author several patches around the opening, deliberately
+place their physical seams away from the strongest expected pull, and leave a
+removable access panel. Preserve the distinction between a **chart seam** used to
+describe coordinates, a **render seam** used for normals/material presentation,
+and a **physical seam** where material is actually joined or divided. Only the last
+changes connectivity. A texture unwrap must never create a leak.
+
+Similarly, a butt seam, lap seam and tapered seam are geometric recipes over
+admitted laws. The lap consumes overlapping material and extra thickness; the
+taper changes real interface geometry. A drawn line has no attachment area unless
+a declared reduced line model supplies one. Author a patch's width and coverage
+in physical units, so adding render vertices cannot add invisible fasteners.
+
+Material direction is another construction tool. A strip with a qualified
+directional response can be rotated within a layer while retaining the same outer
+shape. Adjacent layers can carry different directions. Preserve those directions
+in the reference material frame through remeshing and update their physical
+orientation through the selected deformation model. Do not redefine fibers from
+the newest triangle edges: changing the triangulation would then change the part.
+
+Layer layout should be editable as **coverage plus relationships**, not a global
+ordered stack. A reinforcement can cover one corner, split around a hole and stop
+before a flexible joint. Record where its edge transfers load into the layer below.
+A terminating layer can concentrate demand at its attachment; hiding that edge
+beneath a smooth render surface does not remove its mechanical significance.
+At branch junctions, inspect every incident material region and interface. There
+may be no single meaningful “top layer” across the entire object.
+
+This enables a useful construction family: one asymmetrical panel can become a
+stiff tray, a foldable shield or a curved enclosure by changing coverage, edge
+connections and forming sequence. Their shared ancestry makes knowledge reusable;
+their actual geometry and constitutive response determine which functions survive.
+
+Keep physical clearance separate from numerical tolerance. A designed vent or
+sliding gap must not disappear when a mesh-weld threshold or contact margin changes.
+The player specifies the intended gap and motion range; engineering chooses and
+qualifies numerical parameters that resolve them. Mirroring an asymmetric part
+also requires an explicit handedness transformation. A mirrored connector may
+need a matching counterpart rather than fit the original socket.
+
+### 11.10 Contact discovers connections; history makes them meaningful
+
+The player should prepare surfaces and bring them together. The engine should
+discover the compatible interactions described in `docs/PHYSICAL_PORTS.md`.
+Authoring a named socket is a convenience; ordinary material-owned surfaces can
+also expose applicable interaction laws. A UI compatibility hint does not create
+a physical bond.
+
+Give each discovered surface relationship a deliberate lifecycle:
+
+```text
+candidate pair
+    -> resolved contact patch
+    -> eligible preparation/fabrication process, if one was requested
+    -> persistent bonded/fastened/sealed interface, if that process succeeds
+    -> slipping, damaged or partly detached interface under its selected law
+    -> separate surviving patches / ordinary contact / open gap
+```
+
+This is an explanatory lifecycle, not a single enum governing every channel.
+A joint may remain mechanically attached after losing its seal, or slide while a
+qualified gasket maintains a seal. Mechanical, transport and other admitted channels
+own their relevant state and couple only through explicit laws. The interface
+record needs owner/port IDs, material-coordinate supports, law/version, persistent
+history and current generation; solver-cache references stay separate.
+
+Broad-phase bounds find possible pairs. Narrow-phase geometry resolves the two
+sides and a usable patch description. Evaluate material compatibility, orientation,
+gap and the requested preparation against that geometry. Sliding contact updates
+its geometry as material points enter and leave; a bonded patch tracks the paired
+material locations established during fabrication. It must not migrate along a
+surface merely because another triangle is now closest.
+
+Persistent identity belongs to the physical region pair and its supported material
+patch, with explicit lineage when it splits or merges. Triangle IDs alone are too
+fragile. A patch can be re-tessellated without becoming fresh adhesive. A split
+must partition relevant history and material inventory; re-contact must not reset
+damage or instantly cure the surface. Numerical warm-start data is a cache with
+an invalidation rule, distinct from physical state that belongs in a save.
+
+One interface owner emits paired contributions. Store application locations on
+both sides and distribute forces through their actual mechanical bindings. Equal
+and opposite net forces are insufficient if their application points introduce
+an unexplained moment. Qualify both resultant force and torque, including couples
+that a finite patch can carry. If a reduced interface cannot represent a demanded
+mode, expose that limitation rather than synthesizing a hidden rotational lock.
+
+Maintain a distinction between **connection compatibility** and **working range**.
+Two ports may mate geometrically while the assembled joint is weak in peel, cannot
+seal that fluid, or requires a fixture during cure. A universal strength score
+conceals exactly the decisions that make construction interesting. Show relevant
+directions, failure modes and the conditions under which a test was performed.
+
+Contact discovery also creates play: sand or a scrap trapped between panels can
+prevent seating; a shifted washer can redirect a pull; a removable spacer can
+preserve a motion gap. These require explicit resolved objects or a qualified
+surface-condition model. Do not invent microscopic contamination during a failure
+unless the player had an observable way to detect or prevent it.
+
+### 11.11 Mechanisms are patterns of permitted motion
+
+Build an assembly's mechanical explanation from its parts, constraints and force
+laws. A hinge recipe should describe which relative motions are permitted, where
+the reactions act and what provides its stops. “Door” is a useful gameplay label;
+it supplies no additional constraint. A flap on a creature and a hatch on a shelter
+can therefore reuse the same qualified connector family.
+
+For supported reduced rigid-body mechanisms, use the local constraint Jacobian to
+diagnose remaining motion around the current configuration. A simple count of
+hinges is inadequate: constraints can be redundant, geometry can approach a
+singularity, and unilateral contact can engage or disengage. Treat this diagnostic
+as a local explanation, not proof of finite-motion feasibility. The motion still
+needs collision checking and physical simulation.
+
+This gives the editor useful language: “this brace removes the intended fold,”
+“both bearings fight the same alignment error,” or “this linkage is close to its
+straightened limit.” Permit a deliberately flexible joint to absorb tolerance
+instead of forcing every assembly into exact rigid geometry. Flexible joints must
+use admitted material response; a silent softening of all constraints would make
+the explanation unreliable.
+
+**Preload is construction history.** Stretching a strap before attaching it stores
+energy and applies reactions to the fixture. Joining already deformed panels can
+create residual stress. Record the installed material correspondence and rest
+configuration under the fabrication model. Releasing the fixture must reveal the
+resulting motion. “Snap into place” is a preview or a powered physical operation,
+not permission to discard penetration, velocity or strain energy.
+
+Several mechanisms then follow from the same vocabulary:
+
+| Mechanism | Where the behavior comes from | The important counterexample |
+|---|---|---|
+| Ratchet | Tooth/pawl contact, permitted motion and a loaded restraint | Removing the pawl removes its hold; changing its orientation changes or prevents engagement according to geometry |
+| Clutch | Controlled normal load and qualified friction/interface behavior | It slips when available torque transfer is exceeded; a control signal supplies no drive energy |
+| Latch | Geometry blocks release until another part moves | Cutting its release cord does not necessarily open a latch already held by load |
+| Spring return | Stored elastic energy in an admitted element | A severed or relaxed element cannot return a mechanism for free |
+| Counterweight | Gravity and changing potential energy | It runs out of travel and needs work to reset |
+| Force limiter | A qualified yielding/slipping/sacrificial element | Its release threshold has direction, rate and history limits; it is not a universal damage cap |
+| Mechanical memory | A stable configuration or explicit hysteretic material state | Saving/loading or remeshing preserves that state instead of returning to a default pose |
+
+More ambitious compliant, buckling or snap-through constructions need formulations
+that represent bending, large deformation and the relevant instability. Constant
+surface tension or a simple hinge icon does not provide them. Scope those as
+later mechanism families with their own energy and recovery tests.
+
+Mechanical logic can begin with a load-sensitive latch: a tray's motion releases
+a gate only when the load overcomes a restrained mechanism. Its threshold emerges
+from the admitted parts and geometry. Another mechanism can remember the event by
+remaining latched. This creates traps, alarms, sorting and timing puzzles without
+giving every block an invisible computer. A powered sensor/controller remains a
+different option with explicit information delay, actuator work and failure behavior.
+
+A later **mechanical delay** can reject a brief bump but respond to a sustained
+pull. In a qualified overdamped spring/damper reduction,
+`c dx/dt + kx = F(t)`. From rest under constant `F0`,
+`x(t) = (F0/k)(1 - exp(-kt/c))`. With illustrative inputs
+`F0 = 100 N`, `k = 10,000 N/m`, `c = 10,000 N s/m`, a contact at `x = 5 mm`
+is reached after `ln(2) s`, approximately `0.693 s`. Its motion transfers force
+to the next part; adding that load changes the prediction. The approximation
+needs an inertial validity range, elastic storage and damping losses. This is a
+specific future constitutive mechanism, not permission to reuse the current
+frame-dependent damage rule as a timer.
+
+Combined with a physical latch, that gives a device which detects a sustained
+load and remembers the event after the input disappears. Reorient it, alter its
+spring or obstruct its travel and its behavior should change through the same
+laws. That makes automation understandable as construction. A small overload
+indicator can become a cargo sorter, a trap trigger or a diagnostic tool without
+separate quest-specific motion scripts.
+
+### 11.12 Fabrication sequence is part of the design
+
+A finished mesh can be geometrically valid and impossible to assemble using the
+available actions. Store an optional process graph with the recipe: acquire parts,
+prepare surfaces, position fixtures, insert parts, tension, join, wait for a
+qualified process, release fixtures and inspect. Dependencies express which
+operations require access or temporary support. This graph describes a proposed
+build process, not a proof that arbitrary assembly planning is solved.
+
+Start by verifying player-authored sequences for admitted templates. Check swept
+insertion clearance, tool reach, room for fastening and whether a part becomes
+trapped when an enclosure closes. Offer alternatives such as a split collar,
+removable rim or access panel. A sealed one-piece shell cannot accept an oversized
+rigid component through a smaller opening merely because its final position fits.
+
+Temporary fixtures are real reusable tools. A jig maintains alignment while an
+adhesive process advances; a prop supports a load until its new brace is connected;
+a winding fixture tensions a spring. Removing the jig is an informative test.
+Its reactions and power limits belong in the simulation. A field companion can
+perform the same holding job only within its qualified grasp/support capabilities.
+
+Make the installation order matter for a few readable reasons. Tightening one
+side first can shift alignment. Closing an inspection panel can hide a future
+repair. Bonding a flexible layer while stretched can produce a curved result after
+release, if the selected constitutive model supports it. Do not introduce random
+crafting penalties to simulate expertise. Expertise is choosing a better sequence,
+fixture, measurement or accessible seam.
+
+Distinguish laboratory fabrication from expedition fabrication. The workshop can
+have stable supports, measured stock and controlled processes. Field work uses
+available geometry, limited access and carried supplies. The same connector can
+be dependable on the bench and awkward on a swaying ledge for observable reasons.
+This creates a natural value for compact repair tools and modular assemblies.
+
+Manufacturing can eventually become its own creative loop: make a jig, use it to
+produce a family of panels, discover their tolerance limitations, then improve
+the jig. A factory transports actual material and spends actual work. A blueprint
+queues a process and reserves inputs; it does not instantiate a fully powered
+machine at zero cost. Keep initial automation to one bounded process, such as
+cutting and fitting replacement straps, after its constituent laws exist.
+
+### 11.13 A reusable part promises a range of behavior
+
+Save reusable functionality with a **recipe and a declared operating envelope**.
+Expose parameters in physical terms: opening size, useful stroke, panel span,
+attachment area, stiffness direction or allowable assembly procedure. Keep source
+material versions and dependency recipes pinned. Instances share immutable
+definitions but own their deformation, inventory, damage and interface state.
+
+An envelope records test conditions and outcomes, not an absolute guarantee.
+A lifting module might have evidence for a given load direction, speed, fixture
+and travel range. Rotating it can change gravity loading or contact; scaling it
+can change mass, slenderness and torque. Recheck the affected conditions when a
+recipe is adapted. Do not keep the old capacity just because the new object shares
+its name or appears similar.
+
+When resizing a component, let the author choose what to preserve. Keeping wall
+thickness fixed, scaling every dimension, preserving an opening, and preserving
+total supplied material are different operations. They cannot all be satisfied
+automatically. A uniform geometric scale factor `s` gives volume/mass factor `s^3`
+for unchanged density, and mass-inertia factor `s^5` about corresponding frames.
+Neither relation establishes a load rating or dynamic similarity. Preview the
+changed quantities and refuse an unsupported adaptation.
+
+An assembly can expose selected descendant ports without hiding its physical
+interior from the engine. The player may use a certified module as one item, then
+open it for repair. Packaging is a cognitive convenience. Replacing its interior
+with a cheaper simulation needs a separate qualified reduction with the appropriate
+boundary behavior, state/history mapping and promotion conditions.
+
+This supports a meaningful design economy. Trade a proven recipe, a measured part,
+or a maintenance service as different goods. An inexpensive module may be easy
+to repair but bulky; a compact one may require an uncommon replacement layer.
+World characters can prefer quiet motion, easy inspection or repairability rather
+than always paying for maximum strength. Player knowledge becomes valuable without
+requiring a conventional rarity ladder.
+
+### 11.14 From a player gesture to one accepted physical result
+
+The proposed runtime needs an explicit integration seam between authoring and the
+existing native renderer. Build it incrementally around the owners identified in
+§3; the present full-mesh import/update endpoints are not a live assembly API.
+
+```text
+gesture + displayed snapshot + selected material/port IDs
+    -> intent command, expected generations, resource reservation
+    -> bounded preparation job for the affected region
+    -> candidate geometry, interfaces, state transfer and consumer bindings
+    -> validation + current-state revalidation
+    -> atomic admission at a physical tick boundary
+    -> accepted state consumed by contact, rendering, picking and persistence
+    -> retire old caches/buffers after their final consumer finishes
+```
+
+Keep preparation asynchronous when expensive, but never install a candidate based
+on stale physical conditions. A moving attachment may require recomputation at
+admission; a changed topology may require refusal and a new preview. Reserve
+material and cap outstanding jobs so rapidly dragging a control cannot allocate
+an unbounded sequence of full mesh candidates. Coalesce superseded previews and
+release their resources. The physical world continues from the last accepted state.
+
+Use stable identity handles for public references and dense indices for resident
+computation. Tables map handles to the current generation and location. Separate
+immutable recipes/material laws from mutable body/cell/interface state and from
+rebuildable caches. A topology transaction produces explicit mappings between old
+and new physical entities; it does not ask the renderer to guess correspondence
+from proximity or triangle order.
+
+Useful resident groups include mechanical DOFs; region/cell state; boundary/port
+records; active interaction state; and derived draw/pick data. Optional law channels
+belong only to instances that need them. Choose actual layouts after measuring the
+qualified kernels and update patterns; this plan does not prescribe a giant
+all-purpose per-cell struct. Passes declare which accepted state they read and
+which candidate quantities they write so synchronization is reviewable.
+
+Memory lifetime is part of the feature. A removed assembly can still have a pick
+readback, contact candidate, pending command or in-flight draw referring to it.
+Invalidate logical references by generation, then reclaim storage when the last
+consumer is finished. Bound retained snapshots and recovery journals separately.
+GPU allocator reuse can keep committed memory reserved while logical live bytes
+drop; measure both and require a stable repeated-use plateau. Do not equate a
+driver allocation counter with proof that the removed object's state is reachable.
+
+For the first integration, make a native vertical slice: two qualified rigid/reduced
+parts derived from admitted material geometry, gravity/support, one contact and one
+finite-area interface, rendered and picked from the accepted state. Then add the
+qualified deformable representation needed by the three-layer experiment. Bind
+newly exposed boundaries to drawing and selection before expanding authoring tools.
+This sequence extends the existing engine without claiming the standalone Python
+compiler or attachment coupon already supplies a complete resident runtime.
+### 11.15 A small numerical design example
+
+Use simple reference calculations to make asymmetry tangible before presenting a
+complex creature. The following values are **illustrative idealized inputs**,
+not measurements of Chimera or a material certification.
+
+Take a rigid tray on two ideal vertical supports at `x = 0` and `x = 0.60 m`.
+Apply a downward `120 N` load at `x = 0.45 m`, ignoring tray weight in this first
+static example. Force and moment balance give:
+
+```text
+R_left + R_right = 120 N
+R_right * 0.60 m = 120 N * 0.45 m
+R_right = 90 N; R_left = 30 N
+```
+
+The visible load lies within the tray, but it uses the right support three times
+as much as the left. Move the same load to `x = 0.70 m`: the equations demand
+`R_left = -20 N`, which an ordinary loose vertical support cannot provide.
+The assumed static two-contact state is infeasible. The system must lose contact,
+move, or obtain an actual restraint. Do not keep the tray level with an invisible
+negative contact force.
+
+Next consider the moment component of another loading example. A `120 N` transverse
+force acting `0.30 m` from an attachment demands `36 N m` of moment. An ideal
+pair of opposite forces separated by `0.04 m` needs magnitude `900 N` on each
+side to carry that moment alone; `0.12 m` separation needs `300 N`. A real patch
+has a distributed stress field and must also carry any net force. This arithmetic
+does not rate its strength, but it explains why attachment placement and orientation
+can matter more than adding another identical fastener at the same location.
+
+Finally, a flat `0.40 m × 0.20 m` three-layer specimen with exclusive thicknesses
+`0.006, 0.003, 0.002 m` and illustrative densities `500, 100, 1200 kg/m³` has
+layer masses `0.240, 0.024, 0.192 kg`, totaling `0.456 kg`, before adding separate
+connector material. Re-tessellating it cannot change those masses. Doubling every
+dimension at the same densities produces `3.648 kg`, not twice the original mass.
+
+These become three small workshop experiments: shift a load, widen a moment-carrying
+attachment, and change a specimen's scale. Compare the qualified runtime against
+the relevant reference assumptions, then deliberately leave those assumptions by
+introducing flexibility, friction or damage. Show where the simple prediction
+stops applying. That transition teaches engineering judgment instead of asking
+the player to memorize a universal formula.
+
 ### Shared component checks
 
 Every admitted component declares its geometry, material profile, state, typed
@@ -1389,6 +1996,31 @@ running a gate. The single-joint `1e-6 J` guard and the current seal-cut minimum
 threshold are not universal acceptance criteria for all construction materials.
 Small CPU/reference tests can establish formulations; production residency, rendering
 coherence and performance need their own native evidence.
+
+### Experiments that measure the depth of the construction kit
+
+After the relevant construction gate passes, use the following small experiments
+to decide whether the proposed depth is useful. They add no automatic release
+requirements for mechanisms outside the chosen slice.
+
+| Experiment | Physical/engineering falsifier | Player question |
+|---|---|---|
+| Same pieces, five connection patterns | Different appearances conceal identical hard-coded behavior, or extra strength appears with render subdivision | Can the player predict which motion a changed seam permits? |
+| Same visible curve, different rest history | Releasing the fixture produces the same outcome because forming/elastic history was discarded | Does the player understand why one part springs back? |
+| Adapt a named attachment through resizing | A deleted patch silently reattaches to a nearby face | Can the player repair an invalid recipe reference deliberately? |
+| Fold through a narrow turning passage | Endpoint poses fit but the swept assembly passes through a wall | Does the player account for intermediate clearance? |
+| Remove the temporary jig | Hidden editor support continues carrying load | Can the player plan a feasible assembly sequence? |
+| Split/remesh a partly failed interface | Damage, cure or sealing state resets or affects unrelated copies | Can the player identify the surviving useful portion? |
+| Repair while retaining a secondary support | A load path vanishes without the expected state/work consequence | Does failure leave a meaningful recovery decision? |
+| Rapid preview/cancel followed by a cut | Old results overwrite newer state, or live/cache memory grows without a bound | Does the editor remain responsive and trustworthy? |
+
+For the first building prototype, give unfamiliar players only a small common kit,
+then observe three tasks: carry a load, fit through an opening and repair one
+connection. Count distinct mechanically valid strategies and record confusion,
+abandoned attempts and recovery choices. Avoid treating raw blueprint counts as
+depth: cosmetic variants may all use the same strategy. A strong result is that
+players transfer a relationship they discovered in task one into a new arrangement
+in task three, and can explain why it works.
 
 ### Promote a genre idea by evidence, not enthusiasm alone
 
