@@ -2183,6 +2183,15 @@ support means reproduction is a test, not an assumption. Draft the construction
 release contract, then scope B9 and S0 together. Do not let release paperwork
 substitute for the multiscale deliverable.
 
+**Status update (2026-10-13):** that ordering is spent — the construction
+release candidate is published at `5a45263f` on
+`WK-ENGINE-PATHS-20260929-PR-GAME` (pinned construction candidate `27314746`,
+84-test regression green, receipt rerun reproducing the B8 candidate's
+equilibrium exactly; see
+`docs/releases/chimera-construction-v0.1.0-rc.1.md`). B9 closed the same day
+(`B9_envelope_evidence.md`); S0 remains open. Workers should verify the
+current pin, not `def4d82d`.
+
 | Gate | Work product | Required evidence / stop condition |
 |---|---|---|
 | B9 — qualification envelope | Material–geometry–solver domain; §11.1 admission and §11.3 contact limits | Known instability reproductions, near-boundary cases, named refusal before mutation, unchanged rejected state, explicit response when live state exits the domain |
@@ -2254,6 +2263,8 @@ qualification continues against the same ownership and mechanical contracts.
 | B5 / M3 — reuse function and broaden shape | Reuse the cradle/frame parts in a bridge or hoist; extend cutting/meshing to concavity, holes and branch junctions when qualified | One part/connector works in multiple contexts; torus/concave/triple-junction cases pass; no hand-authored genre-specific replacement physics |
 | B6 / M3–M5 — add working processes | Qualify each needed channel separately: chamber pressure/flux, a valve, finite actuator, sensor, heat transfer or growth | Paired exchanges conserve material inventories and close the energy balance including storage, supplied work, heat and boundary flux; closing or severing a path removes only its contribution |
 | B7 / B2 onward, M4 release gate — bound cost and preserve state | Resident native working set, independent physical clock, bounded topology pools, recovery and compatible render LOD | No routine full-state CPU round trip; declared 4090 memory/frame-time envelope; repeated construction has stable RAM/VRAM/disk use |
+| B8 / gallery — acceptance gallery + §11.3 swept contact | (see gallery items 1–17) | Closed by `docs/evidence/construction_packet_20261012/B8_gallery_evidence.md`; construction release candidate `docs/releases/chimera-construction-v0.1.0-rc.1.md` |
+| B9 — material–geometry–solver qualification envelope | Named refusals before mutation; unchanged state after rejection; boundary cases; known-failure reproductions; visible runtime response to post-admission exits | Closed by `docs/evidence/construction_packet_20261012/B9_envelope_evidence.md` (battery `test_b9_envelope.py`, 7 tests; envelope contract frozen in release candidate §2.10) |
 
 Use an **acceptance gallery** that exposes errors a symmetric cube would hide:
 

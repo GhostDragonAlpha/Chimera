@@ -157,10 +157,11 @@ These are different claims and this candidate keeps them separate:
 
 ## 5. Applying the §13 reference
 
-The plan file `docs/GAME_PLAN_ACTION_RPG.md` is dirty with another agent's
-uncommitted edits in the shared checkout, so this document cannot add its
-own §13 reference line without committing that agent's work. The line to
-apply when the plan file is next clean, after the B7 gate-table row:
+The plan file's other-agent revision was user-authorized and published
+as-found; the §13 reference lines were then applied on top and are live in
+`docs/GAME_PLAN_ACTION_RPG.md` (B8 and B9 rows appended to the §13
+construction gate table after the B7 row, plus a status update pointing
+future workers at this candidate's pin instead of `def4d82d`):
 
 > | B8 / gallery — acceptance gallery + §11.3 swept contact | (see gallery items 1–17) | Closed by `docs/evidence/construction_packet_20261012/B8_gallery_evidence.md`; construction release candidate `docs/releases/chimera-construction-v0.1.0-rc.1.md` |
 > | B9 — material–geometry–solver qualification envelope | named refusals before mutation; unchanged state after rejection; boundary cases; known-failure reproductions; visible runtime response to post-admission exits | Closed by `docs/evidence/construction_packet_20261012/B9_envelope_evidence.md` (battery `test_b9_envelope.py`, 7 tests; envelope contract frozen in the release candidate §2.10) |
