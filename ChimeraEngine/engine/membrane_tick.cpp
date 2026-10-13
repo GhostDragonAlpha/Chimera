@@ -3607,6 +3607,18 @@ std::string MembraneTick::b2_parts_json() {
     std::lock_guard<std::mutex> lk(b2_mtx_);
     return b2_.parts_json();
 }
+std::string MembraneTick::b2_set_load(const std::string &json) {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    return b2_.set_load(json);
+}
+std::string MembraneTick::b2_set_support(bool on) {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    return b2_.set_support(on);
+}
+std::string MembraneTick::b2_set_gravity(bool on) {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    return b2_.set_gravity(on);
+}
 
 // F1: the stance switch (the lead wires POST /tick_stance to this,
 // next to POST /tick_gravity). Everything measurable is derived here,

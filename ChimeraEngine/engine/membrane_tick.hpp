@@ -166,6 +166,12 @@ public:
     void b2_clear();
     std::string b2_telemetry_json();
     std::string b2_parts_json();
+    // B2 controls (design note §6 item 4): persistent external load on one
+    // part, and the support/gravity switches for the whole scene. Empty
+    // return = accepted; non-empty = refusal text for the route.
+    std::string b2_set_load(const std::string &json);
+    std::string b2_set_support(bool on);
+    std::string b2_set_gravity(bool on);
     // The render loop drives the scene on its own: B2 is independent of
     // the membrane body, so it steps whether or not a body is loaded
     // (step() only runs with verts). b2_mtx_ alone; no seal state touched.

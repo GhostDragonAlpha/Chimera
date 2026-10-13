@@ -36,6 +36,14 @@ public:
     // Static + current part data for /tick_b2_parts (lock held by caller).
     std::string parts_json() const;
 
+    // Controls (B2 gate right column). Empty string on success, refusal
+    // otherwise. set_load: persistent force at a world point on one part
+    // (zero vector removes it). set_support / set_gravity: switch the ground
+    // rung / gravity term for the whole scene (support-removal control).
+    std::string set_load(const std::string &json);
+    std::string set_support(bool on);
+    std::string set_gravity(bool on);
+
 private:
     struct Part {
         std::string id;
@@ -45,6 +53,12 @@ private:
         std::vector<double> verts;               // 3N authored vertex positions (m)
         std::vector<int> tris;                   // 3T boundary triangle indices
         double k_site = 0.0, c_site = 0.0;       // this part's per-site ground rung
+        double mu = 0.0;                         // Coulomb ratio, all contacts (0 = frictionless)
+        // persistent external load (off-center load control): the load rides
+        // the part — the application point is captured in local axes at
+        // set_load time, so its torque arm follows the pose.
+        double load_F[3] = {0, 0, 0};            // N, world frame
+        double load_local[3] = {0, 0, 0};        // m, authored axes
         // dynamic state (world frame)
         double c[3] = {0, 0, 0};                 // COM position
         double R[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
@@ -54,18 +68,32 @@ private:
         double reaction_n = 0.0;                 // summed active ground force (N)
         double pen_step_m = 0.0;                 // max penetration this step
         int contacts_active = 0;
+        double contact_pp_n = 0.0;               // summed active part-part contact force (N)
+        int contacts_pp_active = 0;
+        std::vector<double> ground_fn;           // per-vertex ground rung force this step
         // run envelope
         double pen_run_m = 0.0;                  // max penetration since admit
+        double pen_pp_run_m = 0.0;               // max part-part penetration
     };
 
     // one substep of all parts; returns false on divergence
     bool substep_(double h);
+    // world position of authored vertex vi of p
+    static void world_vert_(const Part &p, size_t vi, double out[3]);
+    // loose contact between two parts: vertices of each against boundary
+    // triangles of the other, one-sided penalty rung (same law as ground),
+    // regularised Coulomb friction; exact Newton-3 pairs accumulated into
+    // the force/torque accumulators of a and b.
+    void pp_pair_(Part &a, Part &b,
+                  double *Fa, double *Ta, double *Fb, double *Tb) const;
     double kinetic_j_() const;
     double potential_j_() const;
     double stored_penalty_j_() const;
 
     std::vector<Part> parts_;
     double gravity_ = 9.81;                      // m/s^2 (down)
+    bool gravity_on_ = true;                     // power-removal control
+    bool support_on_ = true;                     // support-removal control
     bool active_ = false;
     bool diverged_ = false;
     long steps_ = 0;

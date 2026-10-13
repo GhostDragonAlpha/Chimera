@@ -233,13 +233,17 @@ JVal* need(const JVal &o, const char *key, const std::string &where) {
     for (auto &kv : o.obj) if (kv.first == key) return kv.second;
     throw std::runtime_error(where + ": missing required field '" + key + "'");
 }
+JVal* opt(const JVal &o, const char *key) {
+    for (auto &kv : o.obj) if (kv.first == key) return kv.second;
+    return nullptr;
+}
 void req_keys(const JVal &o, std::initializer_list<const char*> allowed,
               std::initializer_list<const char*> optional, const std::string &where) {
     for (auto &kv : o.obj) {
         bool ok = false;
         for (auto a : allowed) if (kv.first == a) ok = true;
+        for (auto a : optional) if (kv.first == a) ok = true;
         if (!ok) throw std::runtime_error(where + ": unknown field '" + kv.first + "'");
-        (void)optional;
     }
 }
 double fnum(const JVal &v, const std::string &where) {
@@ -302,7 +306,7 @@ std::string B2Scene::admit(const std::string &json, const std::string &reason) {
             req_keys(pj, {"id","mass_kg","com_local_m","inertia_com_local_kg_m2",
                           "vertices_local_m","boundary_triangles","pose_c_m","pose_q_wxyz",
                           "ground"},
-                     {}, where);
+                     {"mu"}, where);
             Part p;
             JVal *idj = need(pj, "id", where);
             if (idj->t != JVal::STR || idj->str.empty())
@@ -370,11 +374,17 @@ std::string B2Scene::admit(const std::string &json, const std::string &reason) {
             p.c_site = fnum(*need(*ground, "c_n_s_per_m", where + ".ground"), where + ".ground.c_n_s_per_m");
             if (!(p.k_site > 0.0)) throw std::runtime_error(where + ".ground.k_n_per_m: must be positive");
             if (!(p.c_site >= 0.0)) throw std::runtime_error(where + ".ground.c_n_s_per_m: must be >= 0");
+            if (JVal *mj = opt(pj, "mu")) {            // optional friction ratio
+                p.mu = fnum(*mj, where + ".mu");
+                if (!(p.mu >= 0.0)) throw std::runtime_error(where + ".mu: must be >= 0");
+            }
             built.push_back(std::move(p));
         }
 
         parts_ = std::move(built);
         gravity_ = gravity;
+        gravity_on_ = true;
+        support_on_ = true;
         reason_ = reason.empty() ? why : reason;
         active_ = true;
         diverged_ = false;
@@ -393,43 +403,235 @@ void B2Scene::clear() {
     steps_ = 0;
     e0_j_ = 0.0;
     reason_.clear();
+    gravity_on_ = true;
+    support_on_ = true;
 }
 
-// ─── one fixed substep: per-site one-sided ground rung + rigid integration ───
-// Ported: coupon contact_forces (:754-771) — g = (P - plane_p)·n with plane
-// y = 0, n = +y, so g = P.y; fn = -(k·g + c·ġ); active only when g < 0 &&
-// fn > 0. Integration: coupon step (:854-862) — semi-implicit, world inertia
-// R·I_local·Rᵀ, Euler term -ω×(Iw·ω), rotation by exp(h·[ω]x).
+// ─── controls (gate right column: off-center load, support/power removal) ────
+// set_load applies a persistent force at a world point on one part; the
+// point is captured in the part's local axes so the load rides the pose
+// (a weight sitting on the part, not a thruster chasing it). Zero force
+// removes the load. Routes serialise through b2_mtx_ (membrane_tick.cpp).
+std::string B2Scene::set_load(const std::string &json) {
+    try {
+        if (!active_) return "scene not admitted";
+        JParser jp{json.c_str(), {}, 0};
+        JVal *root = jp.parse();
+        if (root->t != JVal::OBJ) throw std::runtime_error("load document must be a json object");
+        req_keys(*root, {"part","force_n","point_world"}, {}, "load");
+        JVal *idj = need(*root, "part", "load");
+        if (idj->t != JVal::STR) throw std::runtime_error("load.part: string expected");
+        Part *p = nullptr;
+        for (auto &q : parts_) if (q.id == idj->str) { p = &q; break; }
+        if (!p) throw std::runtime_error("load.part: no such part '" + idj->str + "'");
+        std::vector<double> F = num_array(*need(*root, "force_n", "load"), 3, "load.force_n");
+        std::vector<double> pt = num_array(*need(*root, "point_world", "load"), 3, "load.point_world");
+        double d[3] = {pt[0]-p->c[0], pt[1]-p->c[1], pt[2]-p->c[2]};
+        for (int i = 0; i < 3; ++i)   // local = Rᵀ·d
+            p->load_local[i] = d[0]*p->R[i] + d[1]*p->R[3+i] + d[2]*p->R[6+i];
+        for (int k = 0; k < 3; ++k) p->load_F[k] = F[k];
+        return std::string();
+    } catch (const std::exception &e) {
+        return std::string(e.what());
+    }
+}
+std::string B2Scene::set_support(bool on) {
+    if (!active_) return "scene not admitted";
+    support_on_ = on;
+    return std::string();
+}
+std::string B2Scene::set_gravity(bool on) {
+    if (!active_) return "scene not admitted";
+    gravity_on_ = on;
+    return std::string();
+}
+
+void B2Scene::world_vert_(const Part &p, size_t vi, double out[3]) {
+    double pl[3] = {p.verts[3*vi] - p.com_local[0],
+                    p.verts[3*vi+1] - p.com_local[1],
+                    p.verts[3*vi+2] - p.com_local[2]};
+    double r[3]; mat3_v(p.R, pl, r);
+    out[0] = p.c[0] + r[0]; out[1] = p.c[1] + r[1]; out[2] = p.c[2] + r[2];
+}
+
+// ─── loose contact between two parts (B2 gate: "loose contact") ─────────────
+// Same one-sided rung law as the ground (coupon contact_forces :754-771):
+// g = (P − A)·n with n the OUTWARD face normal of the penetrated part;
+// fn = −(k·g + c·ġ), active only when g < 0 && fn > 0. A vertex counts as
+// contacting a triangle only while its projection stays inside the triangle
+// (edges/vertices of the mesh are not modelled — the wedge faces are large
+// compared with the substep displacement, and the acceptance scenarios load
+// faces onto faces). Pair constants: mean of the two parts' rung constants
+// and friction ratios. Force pairs are exact Newton-3 (equal, opposite,
+// same line of action through the contact point).
+void B2Scene::pp_pair_(Part &a, Part &b,
+                       double *Fa, double *Ta, double *Fb, double *Tb) const {
+    const double k_pp = 0.5 * (a.k_site + b.k_site);
+    const double c_pp = 0.5 * (a.c_site + b.c_site);
+    const double mu_pp = 0.5 * (a.mu + b.mu);
+    // direction 0: a's vertices against b's faces; direction 1: mirrored.
+    for (int dir = 0; dir < 2; ++dir) {
+        Part &o = dir ? b : a;   // vertex owner
+        Part &s = dir ? a : b;   // surface owner
+        double *Fo = dir ? Fb : Fa, *To = dir ? Tb : Ta;
+        double *Fs = dir ? Fa : Fb, *Ts = dir ? Ta : Tb;
+        size_t nt = s.tris.size() / 3, nv = o.verts.size() / 3;
+        for (size_t ti = 0; ti < nt; ++ti) {
+            double w0[3], w1[3], w2[3];
+            world_vert_(s, s.tris[3*ti], w0);
+            world_vert_(s, s.tris[3*ti+1], w1);
+            world_vert_(s, s.tris[3*ti+2], w2);
+            double e1[3] = {w1[0]-w0[0], w1[1]-w0[1], w1[2]-w0[2]};
+            double e2[3] = {w2[0]-w0[0], w2[1]-w0[1], w2[2]-w0[2]};
+            double n[3]; cross3(e1, e2, n);
+            double nl = std::sqrt(n[0]*n[0] + n[1]*n[1] + n[2]*n[2]);
+            if (nl < 1e-12) continue;
+            for (int k = 0; k < 3; ++k) n[k] /= nl;
+            // convex part: outward normal points away from the COM
+            double dc[3] = {(w0[0]+w1[0]+w2[0])/3.0 - s.c[0],
+                            (w0[1]+w1[1]+w2[1])/3.0 - s.c[1],
+                            (w0[2]+w1[2]+w2[2])/3.0 - s.c[2]};
+            if (n[0]*dc[0] + n[1]*dc[1] + n[2]*dc[2] < 0.0)
+                for (int k = 0; k < 3; ++k) n[k] = -n[k];
+            for (size_t vi = 0; vi < nv; ++vi) {
+                double P[3]; world_vert_(o, vi, P);
+                double d0[3] = {P[0]-w0[0], P[1]-w0[1], P[2]-w0[2]};
+                double g = d0[0]*n[0] + d0[1]*n[1] + d0[2]*n[2];
+                if (g >= 0.0) continue;
+                // Contact radius: a vertex deeper than 5 cm behind a face
+                // plane is a miss, not a weld. The acceptance scenarios load
+                // faces onto faces with mm-scale penetration, while wedges
+                // sharing the ground/back planes put far vertices' plane
+                // projections exactly on triangle edges -- float noise there
+                // otherwise "contacts" parts 0.8 m apart. 5 cm is an order
+                // below the smallest wedge feature (9 cm).
+                if (g < -0.05) continue;
+                // containment: projected point STRICTLY inside the triangle.
+                // Boundary points must be rejected: two wedges standing on
+                // the same plane share coplanar faces, and a separated
+                // vertex's projection can land exactly on a far triangle's
+                // vertex/edge -- accepting it would weld the parts together
+                // from 0.6 m away. Mesh edges/vertices are not contacts.
+                double q[3] = {P[0]-g*n[0], P[1]-g*n[1], P[2]-g*n[2]};
+                bool inside = true;
+                const double *wv[3] = {w0, w1, w2};   // NOT w0+3*e: w0 is a
+                // 3-element array; walking it off the end reads stack garbage
+                for (int e = 0; e < 3 && inside; ++e) {
+                    const double *va = wv[e], *vb = wv[(e+1)%3];
+                    double ee[3] = {vb[0]-va[0], vb[1]-va[1], vb[2]-va[2]};
+                    double qq[3] = {q[0]-va[0], q[1]-va[1], q[2]-va[2]};
+                    double cc[3]; cross3(ee, qq, cc);
+                    if (cc[0]*n[0] + cc[1]*n[1] + cc[2]*n[2] <= 0.0) inside = false;
+                }
+                if (!inside) continue;
+                // relative velocity at the contact (o's vertex vs s's face)
+                double ra[3] = {P[0]-o.c[0], P[1]-o.c[1], P[2]-o.c[2]};
+                double rb[3] = {q[0]-s.c[0], q[1]-s.c[1], q[2]-s.c[2]};
+                double cra[3], crb[3];
+                cross3(o.omega, ra, cra); cross3(s.omega, rb, crb);
+                double rel[3] = {o.v[0]+cra[0]-s.v[0]-crb[0],
+                                 o.v[1]+cra[1]-s.v[1]-crb[1],
+                                 o.v[2]+cra[2]-s.v[2]-crb[2]};
+                double gn = rel[0]*n[0] + rel[1]*n[1] + rel[2]*n[2];
+                double fn = -(k_pp * g + c_pp * gn);
+                if (fn <= 0.0) continue;
+                // normal pair: the vertex owner penetrates the surface, so
+                // +fn·n goes on o at its vertex, −fn·n on s at the contact.
+                double f[3] = {fn*n[0], fn*n[1], fn*n[2]};
+                for (int k = 0; k < 3; ++k) { Fo[k] += f[k]; Fs[k] -= f[k]; }
+                double t1[3];
+                cross3(ra, f, t1);
+                for (int k = 0; k < 3; ++k) { To[k] += t1[k]; Ts[k] -= t1[k]; }
+                // friction on the surface owner acts along -rel_t; the pair
+                // on o is its opposite. Regularised Coulomb: full μ·fn when
+                // sliding, linearly damped inside |v_t| < 1 mm/s (sticking).
+                if (mu_pp > 0.0) {
+                    double vt[3] = {rel[0]-gn*n[0], rel[1]-gn*n[1], rel[2]-gn*n[2]};
+                    double sp = std::sqrt(vt[0]*vt[0] + vt[1]*vt[1] + vt[2]*vt[2]);
+                    if (sp > 1e-12) {
+                        double sc = -mu_pp * fn / std::max(sp, 1e-3);
+                        double ff[3] = {sc*vt[0], sc*vt[1], sc*vt[2]};
+                        for (int k = 0; k < 3; ++k) { Fo[k] += ff[k]; Fs[k] -= ff[k]; }
+                        double u1[3];
+                        cross3(ra, ff, u1);
+                        for (int k = 0; k < 3; ++k) { To[k] += u1[k]; Ts[k] -= u1[k]; }
+                    }
+                }
+                o.contact_pp_n += fn; ++o.contacts_pp_active;
+                s.contact_pp_n += fn; ++s.contacts_pp_active;
+                double pen = -g;
+                if (pen > o.pen_step_m) o.pen_step_m = pen;
+                if (pen > s.pen_step_m) s.pen_step_m = pen;
+                if (pen > o.pen_pp_run_m) o.pen_pp_run_m = pen;
+                if (pen > s.pen_pp_run_m) s.pen_pp_run_m = pen;
+            }
+        }
+    }
+}
+
+// ─── one fixed substep: forces (ground rung, load, loose contact) then ──────
+// rigid integration of every part. Ported: coupon contact_forces (:754-771) —
+// g = (P - plane_p)·n with plane y = 0, n = +y, so g = P.y; fn = -(k·g + c·ġ);
+// active only when g < 0 && fn > 0. Integration: coupon step (:854-862) —
+// semi-implicit, world inertia R·I_local·Rᵀ, Euler term -ω×(Iw·ω), rotation
+// by exp(h·[ω]x). Forces are accumulated for ALL parts before ANY part is
+// integrated, so the Newton-3 contact pairs act on one consistent state.
 bool B2Scene::substep_(double h) {
-    for (auto &p : parts_) {
-        double F[3] = {0.0, -p.mass * gravity_, 0.0};
-        double tau[3] = {0.0, 0.0, 0.0};
-        double reac = 0.0, pen = 0.0;
-        int nact = 0;
+    const size_t np = parts_.size();
+    std::vector<double> F(3*np, 0.0), T(3*np, 0.0);
+    for (size_t pi = 0; pi < np; ++pi) {
+        Part &p = parts_[pi];
+        p.reaction_n = 0.0; p.pen_step_m = 0.0; p.contacts_active = 0;
+        p.contact_pp_n = 0.0; p.contacts_pp_active = 0;
+        if (gravity_on_) F[3*pi+1] -= p.mass * gravity_;
+        // persistent external load (rides the part: arm captured in local axes)
+        if (p.load_F[0] || p.load_F[1] || p.load_F[2]) {
+            double rl[3]; mat3_v(p.R, p.load_local, rl);
+            for (int k = 0; k < 3; ++k) F[3*pi+k] += p.load_F[k];
+            double lt[3]; cross3(rl, p.load_F, lt);
+            for (int k = 0; k < 3; ++k) T[3*pi+k] += lt[k];
+        }
+        if (!support_on_) { p.ground_fn.assign(p.verts.size()/3, 0.0); continue; }
         size_t nv = p.verts.size() / 3;
+        p.ground_fn.assign(nv, 0.0);
         for (size_t vi = 0; vi < nv; ++vi) {
-            double pl[3] = {p.verts[3*vi] - p.com_local[0],
-                            p.verts[3*vi+1] - p.com_local[1],
-                            p.verts[3*vi+2] - p.com_local[2]};
-            double r[3]; mat3_v(p.R, pl, r);
-            double P[3] = {p.c[0]+r[0], p.c[1]+r[1], p.c[2]+r[2]};
+            double P[3]; world_vert_(p, vi, P);
+            double r[3] = {P[0]-p.c[0], P[1]-p.c[1], P[2]-p.c[2]};
             double cr[3]; cross3(p.omega, r, cr);
             double vsy = p.v[1] + cr[1];
             double fn = -(p.k_site * P[1] + p.c_site * vsy);
             if (P[1] < 0.0 && fn > 0.0) {
-                F[1] += fn;
-                tau[0] += -r[2] * fn;          // (r × (0,fn,0))_x = -r_z·fn
-                tau[2] += r[0] * fn;           // (r × (0,fn,0))_z =  r_x·fn
-                reac += fn;
-                if (-P[1] > pen) pen = -P[1];
-                ++nact;
+                F[3*pi+1] += fn;
+                T[3*pi] += -r[2] * fn;           // (r × (0,fn,0))_x = -r_z·fn
+                T[3*pi+2] += r[0] * fn;          // (r × (0,fn,0))_z =  r_x·fn
+                p.reaction_n += fn;
+                p.ground_fn[vi] = fn;
+                if (-P[1] > p.pen_step_m) p.pen_step_m = -P[1];
+                ++p.contacts_active;
+                // ground friction (slide control on the plane): tangential
+                // velocity is (vx, vz); regularised Coulomb as in pp_pair_.
+                if (p.mu > 0.0) {
+                    double vt[3] = {p.v[0]+cr[0], 0.0, p.v[2]+cr[2]};
+                    double sp = std::sqrt(vt[0]*vt[0] + vt[2]*vt[2]);
+                    if (sp > 1e-12) {
+                        double sc = -p.mu * fn / std::max(sp, 1e-3);
+                        F[3*pi] += sc*vt[0]; F[3*pi+2] += sc*vt[2];
+                        double ft[3] = {sc*vt[0], 0.0, sc*vt[2]};
+                        double tt[3]; cross3(r, ft, tt);
+                        for (int k = 0; k < 3; ++k) T[3*pi+k] += tt[k];
+                    }
+                }
             }
         }
-        p.reaction_n = reac;
-        p.pen_step_m = pen;
-        p.contacts_active = nact;
-        if (pen > p.pen_run_m) p.pen_run_m = pen;
+        if (p.pen_step_m > p.pen_run_m) p.pen_run_m = p.pen_step_m;
+    }
+    for (size_t i = 0; i < np; ++i)
+        for (size_t j = i + 1; j < np; ++j)
+            pp_pair_(parts_[i], parts_[j], &F[3*i], &T[3*i], &F[3*j], &T[3*j]);
 
+    for (size_t pi = 0; pi < np; ++pi) {
+        Part &p = parts_[pi];
+        double *Fp = &F[3*pi], *Tp = &T[3*pi];
         // world inertia Iw = R · diag? no: full I_local — R·I_local·Rᵀ
         double RI[9];
         for (int i = 0; i < 3; ++i) for (int j = 0; j < 3; ++j)
@@ -441,11 +643,11 @@ bool B2Scene::substep_(double h) {
             Iw[3*i+j] = RI[3*i]*p.R[3*j] + RI[3*i+1]*p.R[3*j+1] + RI[3*i+2]*p.R[3*j+2];
         double IwW[3]; mat3_v(Iw, p.omega, IwW);
         double cw[3]; cross3(p.omega, IwW, cw);
-        double rhs[3] = {tau[0]-cw[0], tau[1]-cw[1], tau[2]-cw[2]};
+        double rhs[3] = {Tp[0]-cw[0], Tp[1]-cw[1], Tp[2]-cw[2]};
         double dw[3];
         if (!solve3(Iw, rhs, dw)) return false;
         double omega_new[3] = {p.omega[0]+h*dw[0], p.omega[1]+h*dw[1], p.omega[2]+h*dw[2]};
-        for (int k = 0; k < 3; ++k) p.v[k] += h * F[k] / p.mass;
+        for (int k = 0; k < 3; ++k) p.v[k] += h * Fp[k] / p.mass;
         for (int k = 0; k < 3; ++k) p.c[k] += h * p.v[k];
         for (int k = 0; k < 3; ++k) p.omega[k] = omega_new[k];
         double dR[9]; rot_exp(p.omega, h, dR);
@@ -517,9 +719,12 @@ std::string B2Scene::telemetry_json() const {
     b += ",\"steps\":" + std::to_string(steps_);
     b += ",\"dt_substep_s\":0.00025";
     b += ",\"gravity_m_s2\":" + fmt(gravity_);
+    b += ",\"gravity_on\":"; b += gravity_on_ ? "true" : "false";
+    b += ",\"support_on\":"; b += support_on_ ? "true" : "false";
     double wtot = 0.0, rtot = 0.0, pen = 0.0;
+    const double g_eff = gravity_on_ ? gravity_ : 0.0;   // the power switch is real
     for (auto &p : parts_) {
-        wtot += p.mass * gravity_;
+        wtot += p.mass * g_eff;
         rtot += p.reaction_n;
         pen = std::fmax(pen, p.pen_run_m);
     }
@@ -536,13 +741,26 @@ std::string B2Scene::telemetry_json() const {
         if (i) b += ",";
         b += "{\"id\":\"" + json_escape(p.id) + "\"";
         b += ",\"mass_kg\":" + fmt(p.mass);
-        b += ",\"weight_n\":" + fmt(p.mass * gravity_);
+        b += ",\"weight_n\":" + fmt(p.mass * g_eff);
         b += ",\"reaction_n\":" + fmt(p.reaction_n);
         b += ",\"contacts_active\":" + std::to_string(p.contacts_active);
         b += ",\"pen_step_m\":" + fmt(p.pen_step_m);
         b += ",\"pen_run_m\":" + fmt(p.pen_run_m);
+        b += ",\"contact_pp_n\":" + fmt(p.contact_pp_n);
+        b += ",\"contacts_pp_active\":" + std::to_string(p.contacts_pp_active);
+        b += ",\"pen_pp_run_m\":" + fmt(p.pen_pp_run_m);
+        b += ",\"mu\":" + fmt(p.mu);
+        b += ",\"load_n\":[" + fmt(p.load_F[0]) + "," + fmt(p.load_F[1]) + "," + fmt(p.load_F[2]) + "]";
+        b += ",\"site_reactions_n\":[";
+        for (size_t s = 0; s < p.ground_fn.size(); ++s) {
+            if (s) b += ",";
+            b += fmt(p.ground_fn[s]);
+        }
+        b += "]";
         b += ",\"com_m\":[" + fmt(p.c[0]) + "," + fmt(p.c[1]) + "," + fmt(p.c[2]) + "]";
         b += ",\"speed_m_s\":" + fmt(std::sqrt(dot3(p.v, p.v)));
+        double q[4]; mat3_to_quat(p.R, q);
+        b += ",\"pose_q_wxyz\":[" + fmt(q[0]) + "," + fmt(q[1]) + "," + fmt(q[2]) + "," + fmt(q[3]) + "]";
         b += ",\"ground\":{\"k_n_per_m\":" + fmt(p.k_site) + ",\"c_n_s_per_m\":" + fmt(p.c_site) + "}}";
     }
     b += "]}";

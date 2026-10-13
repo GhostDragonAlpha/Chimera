@@ -102,18 +102,55 @@ static MembraneTick g_tick;                    // THE MEMBRANE TICK (Appliance 1
 // "Not found" tail): the ladder sits at MSVC's block-nesting limit
 // (C1061), so adding branches to it fails the build. route_b2 answers
 // only /tick_b2_* paths and returns empty for every other request.
+static std::string b2_refused_(const std::string &why) {
+    std::string esc;                           // refusal text may carry quotes
+    for (char ch : why) { if (ch == '"' || ch == '\\') esc += '\\'; esc += ch; }
+    return "{\"ok\":false,\"error\":\"refused: " + esc + "\"}";
+}
+// The switch routes accept exactly {"on":true|false}; anything else is a
+// refusal, not a silent default (the controls are measurement instruments).
+static bool b2_parse_on_(const std::string &b, bool &on) {
+    size_t i = b.find("\"on\"");
+    if (i == std::string::npos) return false;
+    i = b.find(':', i + 4);
+    if (i == std::string::npos) return false;
+    ++i;
+    while (i < b.size() && (b[i] == ' ' || b[i] == '\t')) ++i;
+    if (b.compare(i, 4, "true") == 0) { on = true; return true; }
+    if (b.compare(i, 5, "false") == 0) { on = false; return true; }
+    return false;
+}
 static std::string route_b2(const std::string &p, const std::string &method,
                             const std::string &req_body) {
     if (p == "/tick_b2_admit" && method == "POST") {
         std::string why = g_tick.b2_admit(req_body, std::string());
         if (why.empty()) return "{\"ok\":true,\"schema\":\"chimera.b2_scene.v1\"}";
-        std::string esc;                       // refusal text may carry quotes
-        for (char ch : why) { if (ch == '"' || ch == '\\') esc += '\\'; esc += ch; }
-        return "{\"ok\":false,\"error\":\"refused: " + esc + "\"}";
+        return b2_refused_(why);
     }
     if (p == "/tick_b2_clear" && method == "POST") { g_tick.b2_clear(); return "{\"ok\":true}"; }
     if (p == "/tick_b2_state" && method == "GET") return g_tick.b2_telemetry_json();
     if (p == "/tick_b2_parts" && method == "GET") return g_tick.b2_parts_json();
+    if (p == "/tick_b2_load" && method == "POST") {
+        std::string why = g_tick.b2_set_load(req_body);
+        if (why.empty()) return "{\"ok\":true}";
+        return b2_refused_(why);
+    }
+    if (p == "/tick_b2_support" && method == "POST") {
+        bool on = false;
+        if (!b2_parse_on_(req_body, on))
+            return b2_refused_("body must be {\"on\":true|false}");
+        std::string why = g_tick.b2_set_support(on);
+        if (why.empty()) return "{\"ok\":true,\"support_on\":" + std::string(on ? "true" : "false") + "}";
+        return b2_refused_(why);
+    }
+    if (p == "/tick_b2_gravity" && method == "POST") {
+        bool on = false;
+        if (!b2_parse_on_(req_body, on))
+            return b2_refused_("body must be {\"on\":true|false}");
+        std::string why = g_tick.b2_set_gravity(on);
+        if (why.empty()) return "{\"ok\":true,\"gravity_on\":" + std::string(on ? "true" : "false") + "}";
+        return b2_refused_(why);
+    }
     return std::string();
 }
 
