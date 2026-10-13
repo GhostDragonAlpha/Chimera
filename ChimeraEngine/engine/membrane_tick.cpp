@@ -3641,6 +3641,36 @@ std::string MembraneTick::b2_remove_weld(const std::string &json) {
     std::lock_guard<std::mutex> lk(b2_mtx_);
     return b2_.remove_weld(json);
 }
+// B4 interactive assembly transactions (b2_scene.hpp). Same lock, same
+// refusal-text convention as every other b2 control.
+std::string MembraneTick::b2_set_pause(bool on) {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    return b2_.set_pause(on);
+}
+std::string MembraneTick::b2_place(const std::string &json) {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    return b2_.place(json);
+}
+std::string MembraneTick::b2_remove_part(const std::string &json) {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    return b2_.remove_part(json);
+}
+std::string MembraneTick::b2_patch(const std::string &json) {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    return b2_.patch(json);
+}
+std::string MembraneTick::b2_save_json() {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    return b2_.save_json();
+}
+std::string MembraneTick::b2_restore(const std::string &json) {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    return b2_.restore(json);
+}
+std::string MembraneTick::b2_state_hash() {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    return b2_.state_hash();
+}
 
 // F1: the stance switch (the lead wires POST /tick_stance to this,
 // next to POST /tick_gravity). Everything measurable is derived here,

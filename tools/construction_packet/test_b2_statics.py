@@ -157,10 +157,10 @@ class B2Statics(unittest.TestCase):
 
         cases = [
             ("schema", mutate(lambda s: s.update(schema="chimera.b2_scene.v2")), "schema"),
-            ("one part", mutate(lambda s: s["parts"].pop()), "2 or 3 parts"),
-            ("four parts", mutate(lambda s: (s["parts"].append(copy.deepcopy(s["parts"][0])),
-                                              s["parts"].append(copy.deepcopy(s["parts"][1])))),
-             "2 or 3 parts"),
+            ("one part", mutate(lambda s: s["parts"].pop()), "2 to 6 parts"),
+            ("seven parts", mutate(lambda s: [s["parts"].append(copy.deepcopy(s["parts"][0]))
+                                               for _ in range(5)]),
+             "2 to 6 parts"),
             ("negative mass", mutate(lambda s: s["parts"][0].update(mass_kg=-1.0)), "mass_kg"),
             ("asymmetric inertia",
              mutate(lambda s: s["parts"][0]["inertia_com_local_kg_m2"].__setitem__(1, 123.0)),

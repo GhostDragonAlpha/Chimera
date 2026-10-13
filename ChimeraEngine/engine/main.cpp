@@ -187,6 +187,40 @@ static std::string route_b2(const std::string &p, const std::string &method,
         if (why.empty()) return "{\"ok\":true}";
         return b2_refused_(why);
     }
+    // B4 interactive assembly transactions (GAME_PLAN §13 B4). Every edit
+    // is all-or-nothing in the scene (b2_scene.hpp); refusals name the
+    // offending field and leave the state hash untouched.
+    if (p == "/tick_b2_pause" && method == "POST") {
+        bool on = false;
+        if (!b2_parse_on_(req_body, on))
+            return b2_refused_("body must be {\"on\":true|false}");
+        std::string why = g_tick.b2_set_pause(on);
+        if (why.empty()) return "{\"ok\":true,\"paused\":" + std::string(on ? "true" : "false") + "}";
+        return b2_refused_(why);
+    }
+    if (p == "/tick_b2_place" && method == "POST") {
+        std::string why = g_tick.b2_place(req_body);
+        if (why.empty()) return "{\"ok\":true}";
+        return b2_refused_(why);
+    }
+    if (p == "/tick_b2_remove" && method == "POST") {
+        std::string why = g_tick.b2_remove_part(req_body);
+        if (why.empty()) return "{\"ok\":true}";
+        return b2_refused_(why);
+    }
+    if (p == "/tick_b2_patch" && method == "POST") {
+        std::string why = g_tick.b2_patch(req_body);
+        if (why.empty()) return "{\"ok\":true}";
+        return b2_refused_(why);
+    }
+    if (p == "/tick_b2_save" && method == "GET") return g_tick.b2_save_json();
+    if (p == "/tick_b2_restore" && method == "POST") {
+        std::string why = g_tick.b2_restore(req_body);
+        if (why.empty()) return "{\"ok\":true}";
+        return b2_refused_(why);
+    }
+    if (p == "/tick_b2_hash" && method == "GET")
+        return std::string("{\"ok\":true,\"state_hash\":\"") + g_tick.b2_state_hash() + "\"}";
     return std::string();
 }
 

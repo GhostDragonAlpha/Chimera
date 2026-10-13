@@ -109,6 +109,7 @@ void mat3_to_quat(const M3 R, double q[4]) {
 }
 
 std::string fmt(double x) {
+    if (!std::isfinite(x)) return "null";   // telemetry must stay valid JSON
     char buf[64];
     std::snprintf(buf, sizeof buf, "%.9g", x);
     return buf;
@@ -124,6 +125,12 @@ std::string json_escape(const std::string &s) {
 }
 
 // ─── minimal strict JSON reader (no deps; coupon JV precedent) ──────────────
+// Named namespace OUTSIDE the anonymous one: B2Scene::parse_part_ takes a
+// const b2j::JVal& forward-declared in the header at global scope, so the
+// type must not be internal to this TU's anonymous namespace.
+} // anonymous namespace (reopened below; same namespace within the TU)
+
+namespace b2j {
 struct JVal {
     enum T { OBJ, ARR, NUM, STR, BOOL, NUL } t = NUL;
     std::vector<std::pair<std::string, JVal*>> obj;
@@ -228,6 +235,10 @@ struct JParser {
         return v;
     }
 };
+} // namespace b2j
+using namespace b2j;   // existing unqualified JVal/JParser uses resolve here
+
+namespace {            // reopen the anonymous namespace for the helpers below
 
 // ─── validation helpers (coupon req_keys/fnum precedent, :297-308) ──────────
 JVal* need(const JVal &o, const char *key, const std::string &where) {
@@ -264,6 +275,127 @@ std::vector<double> num_array(const JVal &v, size_t len, const std::string &wher
 
 } // namespace
 
+// ─── one part element, validated and appended (admit / place / restore) ─────
+// Shared verbatim by all three so a placed or restored part is admitted by
+// exactly the same law as an admitted one. Optional dynamic fields
+// (velocity_m_s, omega_rad_s, load_n, load_local_m, pose_R_rowmajor) carry
+// the save/restore state; admission documents omit them (spawn at rest).
+void B2Scene::parse_part_(const JVal &pj, const std::string &where,
+                          std::vector<Part> &built) {
+    if (pj.t != JVal::OBJ) throw std::runtime_error(where + ": object expected");
+    req_keys(pj, {"id","mass_kg","com_local_m","inertia_com_local_kg_m2",
+                  "vertices_local_m","boundary_triangles","pose_c_m","pose_q_wxyz",
+                  "ground"},
+             {"mu","velocity_m_s","omega_rad_s","load_n","load_local_m",
+              "pose_R_rowmajor"}, where);
+    Part p;
+    JVal *idj = need(pj, "id", where);
+    if (idj->t != JVal::STR || idj->str.empty())
+        throw std::runtime_error(where + ".id: non-empty string expected");
+    p.id = idj->str;
+    for (auto &q : built)
+        if (q.id == p.id) throw std::runtime_error(where + ".id: duplicate part id '" + p.id + "'");
+    p.mass = fnum(*need(pj, "mass_kg", where), where + ".mass_kg");
+    if (p.mass <= 0.0) throw std::runtime_error(where + ".mass_kg: must be positive");
+    std::vector<double> com = num_array(*need(pj, "com_local_m", where), 3, where + ".com_local_m");
+    for (int i = 0; i < 3; ++i) p.com_local[i] = com[i];
+
+    std::vector<double> I = num_array(*need(pj, "inertia_com_local_kg_m2", where), 9,
+                                      where + ".inertia_com_local_kg_m2");
+    // symmetry (coupon check_proper_rotation analogue for tensors)
+    double imax = 0;
+    for (int i = 0; i < 9; ++i) imax = std::fmax(imax, std::fabs(I[i]));
+    for (int i = 0; i < 3; ++i) for (int j = 0; j < 3; ++j)
+        if (std::fabs(I[3*i+j] - I[3*j+i]) > 1e-9 * (imax + 1.0))
+            throw std::runtime_error(where + ".inertia_com_local_kg_m2: must be symmetric");
+    // positive principal moments + physical triangle inequality
+    // (coupon check_inertia, :289-295)
+    double ev[3];
+    eigen_sym3(I.data(), ev);
+    double lo = std::fmin(ev[0], std::fmin(ev[1], ev[2]));
+    double hi = std::fmax(ev[0], std::fmax(ev[1], ev[2]));
+    double mid = ev[0] + ev[1] + ev[2] - lo - hi;
+    double slack = 1e-9 * std::fmax(std::fabs(ev[0]), std::fmax(std::fabs(ev[1]), std::fabs(ev[2])));
+    if (!(lo > 0.0) || lo + mid < hi - slack)
+        throw std::runtime_error(where + ".inertia_com_local_kg_m2: principal moments must be "
+                                 "positive and satisfy the physical triangle inequality");
+    for (int i = 0; i < 9; ++i) p.inertia_com_local[i] = I[i];
+
+    JVal *vj = need(pj, "vertices_local_m", where);
+    if (vj->t != JVal::ARR || vj->arr.size() < 12 || vj->arr.size() % 3 != 0)
+        throw std::runtime_error(where + ".vertices_local_m: at least 4 vertices (3N numbers) expected");
+    for (size_t i = 0; i < vj->arr.size(); ++i)
+        p.verts.push_back(fnum(*vj->arr[i], where + ".vertices_local_m[" + std::to_string(i) + "]"));
+    size_t nv = p.verts.size() / 3;
+
+    JVal *tj = need(pj, "boundary_triangles", where);
+    if (tj->t != JVal::ARR || tj->arr.size() < 12 || tj->arr.size() % 3 != 0)
+        throw std::runtime_error(where + ".boundary_triangles: at least 4 triangles (3T indices) expected");
+    for (size_t i = 0; i < tj->arr.size(); ++i) {
+        double d = fnum(*tj->arr[i], where + ".boundary_triangles[" + std::to_string(i) + "]");
+        if (d != std::floor(d) || d < 0 || d >= (double)nv)
+            throw std::runtime_error(where + ".boundary_triangles: index out of range");
+        p.tris.push_back((int)d);
+    }
+
+    std::vector<double> pc = num_array(*need(pj, "pose_c_m", where), 3, where + ".pose_c_m");
+    for (int i = 0; i < 3; ++i) p.c[i] = pc[i];
+
+    std::vector<double> q = num_array(*need(pj, "pose_q_wxyz", where), 4, where + ".pose_q_wxyz");
+    double qn = std::sqrt(q[0]*q[0]+q[1]*q[1]+q[2]*q[2]+q[3]*q[3]);
+    if (qn < 0.999 || qn > 1.001)
+        throw std::runtime_error(where + ".pose_q_wxyz: quaternion norm must be within [0.999, 1.001]");
+    for (int i = 0; i < 4; ++i) q[i] /= qn;
+    quat_to_mat3(q.data(), p.R);
+    // The save document carries the rotation matrix verbatim for an exact
+    // round-trip (a quaternion printed at %.17g does not survive
+    // quat->mat->quat bit-for-bit); when present it overrides the
+    // quaternion, after being re-verified at this trust boundary.
+    if (JVal *rj = opt(pj, "pose_R_rowmajor")) {
+        std::vector<double> Rm = num_array(*rj, 9, where + ".pose_R_rowmajor");
+        for (int i = 0; i < 3; ++i) {
+            double L = Rm[3*i]*Rm[3*i] + Rm[3*i+1]*Rm[3*i+1] + Rm[3*i+2]*Rm[3*i+2];
+            if (std::fabs(L - 1.0) > 1e-9)
+                throw std::runtime_error(where + ".pose_R_rowmajor: rows must be unit length");
+        }
+        double n01[3]; cross3(Rm.data(), Rm.data() + 3, n01);
+        double dot01 = n01[0]*Rm[6] + n01[1]*Rm[7] + n01[2]*Rm[8];
+        if (std::fabs(dot01 - 1.0) > 1e-9)
+            throw std::runtime_error(where + ".pose_R_rowmajor: must be right-handed orthonormal");
+        for (int i = 0; i < 9; ++i) p.R[i] = Rm[i];
+    }
+
+    JVal *ground = need(pj, "ground", where);
+    if (ground->t != JVal::OBJ) throw std::runtime_error(where + ".ground: object expected");
+    req_keys(*ground, {"k_n_per_m","c_n_s_per_m"}, {}, where + ".ground");
+    p.k_site = fnum(*need(*ground, "k_n_per_m", where + ".ground"), where + ".ground.k_n_per_m");
+    p.c_site = fnum(*need(*ground, "c_n_s_per_m", where + ".ground"), where + ".ground.c_n_s_per_m");
+    if (!(p.k_site > 0.0)) throw std::runtime_error(where + ".ground.k_n_per_m: must be positive");
+    if (!(p.c_site >= 0.0)) throw std::runtime_error(where + ".ground.c_n_s_per_m: must be >= 0");
+    if (JVal *mj = opt(pj, "mu")) {            // optional friction ratio
+        p.mu = fnum(*mj, where + ".mu");
+        if (!(p.mu >= 0.0)) throw std::runtime_error(where + ".mu: must be >= 0");
+    }
+    // dynamic state (save/restore; absent -> spawn at rest, unloaded)
+    if (JVal *v = opt(pj, "velocity_m_s")) {
+        std::vector<double> a = num_array(*v, 3, where + ".velocity_m_s");
+        for (int i = 0; i < 3; ++i) p.v[i] = a[i];
+    }
+    if (JVal *w = opt(pj, "omega_rad_s")) {
+        std::vector<double> a = num_array(*w, 3, where + ".omega_rad_s");
+        for (int i = 0; i < 3; ++i) p.omega[i] = a[i];
+    }
+    if (JVal *f = opt(pj, "load_n")) {
+        std::vector<double> a = num_array(*f, 3, where + ".load_n");
+        for (int i = 0; i < 3; ++i) p.load_F[i] = a[i];
+    }
+    if (JVal *l = opt(pj, "load_local_m")) {
+        std::vector<double> a = num_array(*l, 3, where + ".load_local_m");
+        for (int i = 0; i < 3; ++i) p.load_local[i] = a[i];
+    }
+    built.push_back(std::move(p));
+}
+
 // ─── admission: strict chimera.b2_scene.v1 ───────────────────────────────────
 std::string B2Scene::admit(const std::string &json, const std::string &reason) {
     try {
@@ -295,93 +427,17 @@ std::string B2Scene::admit(const std::string &json, const std::string &reason) {
         // damping term unstable (h*c/m >> 2) and is physically wrong.
         JVal *parts = need(*root, "parts", "scene");
         if (parts->t != JVal::ARR) throw std::runtime_error("scene.parts: array expected");
-        // B2 qualified exactly two; B3 stacks three dissimilar layers.
-        if (parts->arr.size() < 2 || parts->arr.size() > 3)
-            throw std::runtime_error("scene.parts: B2/B3 needs 2 or 3 parts, got " +
+        // B2 qualified exactly two; B3 stacks three dissimilar layers;
+        // B4 assembles interactively (place/remove transactions), so the
+        // admission document may carry the full cradle up to the scene cap.
+        if (parts->arr.size() < 2 || parts->arr.size() > 6)
+            throw std::runtime_error("scene.parts: B2/B3/B4 needs 2 to 6 parts, got " +
                                      std::to_string(parts->arr.size()));
 
         std::vector<Part> built;
-        for (size_t pi = 0; pi < parts->arr.size(); ++pi) {
-            const JVal &pj = *parts->arr[pi];
-            std::string where = "scene.parts[" + std::to_string(pi) + "]";
-            if (pj.t != JVal::OBJ) throw std::runtime_error(where + ": object expected");
-            req_keys(pj, {"id","mass_kg","com_local_m","inertia_com_local_kg_m2",
-                          "vertices_local_m","boundary_triangles","pose_c_m","pose_q_wxyz",
-                          "ground"},
-                     {"mu"}, where);
-            Part p;
-            JVal *idj = need(pj, "id", where);
-            if (idj->t != JVal::STR || idj->str.empty())
-                throw std::runtime_error(where + ".id: non-empty string expected");
-            p.id = idj->str;
-            for (auto &q : built)
-                if (q.id == p.id) throw std::runtime_error(where + ".id: duplicate part id '" + p.id + "'");
-            p.mass = fnum(*need(pj, "mass_kg", where), where + ".mass_kg");
-            if (p.mass <= 0.0) throw std::runtime_error(where + ".mass_kg: must be positive");
-            std::vector<double> com = num_array(*need(pj, "com_local_m", where), 3, where + ".com_local_m");
-            for (int i = 0; i < 3; ++i) p.com_local[i] = com[i];
-
-            std::vector<double> I = num_array(*need(pj, "inertia_com_local_kg_m2", where), 9,
-                                              where + ".inertia_com_local_kg_m2");
-            // symmetry (coupon check_proper_rotation analogue for tensors)
-            double imax = 0;
-            for (int i = 0; i < 9; ++i) imax = std::fmax(imax, std::fabs(I[i]));
-            for (int i = 0; i < 3; ++i) for (int j = 0; j < 3; ++j)
-                if (std::fabs(I[3*i+j] - I[3*j+i]) > 1e-9 * (imax + 1.0))
-                    throw std::runtime_error(where + ".inertia_com_local_kg_m2: must be symmetric");
-            // positive principal moments + physical triangle inequality
-            // (coupon check_inertia, :289-295)
-            double ev[3];
-            eigen_sym3(I.data(), ev);
-            double lo = std::fmin(ev[0], std::fmin(ev[1], ev[2]));
-            double hi = std::fmax(ev[0], std::fmax(ev[1], ev[2]));
-            double mid = ev[0] + ev[1] + ev[2] - lo - hi;
-            double slack = 1e-9 * std::fmax(std::fabs(ev[0]), std::fmax(std::fabs(ev[1]), std::fabs(ev[2])));
-            if (!(lo > 0.0) || lo + mid < hi - slack)
-                throw std::runtime_error(where + ".inertia_com_local_kg_m2: principal moments must be "
-                                         "positive and satisfy the physical triangle inequality");
-            for (int i = 0; i < 9; ++i) p.inertia_com_local[i] = I[i];
-
-            JVal *vj = need(pj, "vertices_local_m", where);
-            if (vj->t != JVal::ARR || vj->arr.size() < 12 || vj->arr.size() % 3 != 0)
-                throw std::runtime_error(where + ".vertices_local_m: at least 4 vertices (3N numbers) expected");
-            for (size_t i = 0; i < vj->arr.size(); ++i)
-                p.verts.push_back(fnum(*vj->arr[i], where + ".vertices_local_m[" + std::to_string(i) + "]"));
-            size_t nv = p.verts.size() / 3;
-
-            JVal *tj = need(pj, "boundary_triangles", where);
-            if (tj->t != JVal::ARR || tj->arr.size() < 12 || tj->arr.size() % 3 != 0)
-                throw std::runtime_error(where + ".boundary_triangles: at least 4 triangles (3T indices) expected");
-            for (size_t i = 0; i < tj->arr.size(); ++i) {
-                double d = fnum(*tj->arr[i], where + ".boundary_triangles[" + std::to_string(i) + "]");
-                if (d != std::floor(d) || d < 0 || d >= (double)nv)
-                    throw std::runtime_error(where + ".boundary_triangles: index out of range");
-                p.tris.push_back((int)d);
-            }
-
-            std::vector<double> pc = num_array(*need(pj, "pose_c_m", where), 3, where + ".pose_c_m");
-            for (int i = 0; i < 3; ++i) p.c[i] = pc[i];
-
-            std::vector<double> q = num_array(*need(pj, "pose_q_wxyz", where), 4, where + ".pose_q_wxyz");
-            double qn = std::sqrt(q[0]*q[0]+q[1]*q[1]+q[2]*q[2]+q[3]*q[3]);
-            if (qn < 0.999 || qn > 1.001)
-                throw std::runtime_error(where + ".pose_q_wxyz: quaternion norm must be within [0.999, 1.001]");
-            for (int i = 0; i < 4; ++i) q[i] /= qn;
-            quat_to_mat3(q.data(), p.R);
-
-            JVal *ground = need(pj, "ground", where);
-            if (ground->t != JVal::OBJ) throw std::runtime_error(where + ".ground: object expected");
-            req_keys(*ground, {"k_n_per_m","c_n_s_per_m"}, {}, where + ".ground");
-            p.k_site = fnum(*need(*ground, "k_n_per_m", where + ".ground"), where + ".ground.k_n_per_m");
-            p.c_site = fnum(*need(*ground, "c_n_s_per_m", where + ".ground"), where + ".ground.c_n_s_per_m");
-            if (!(p.k_site > 0.0)) throw std::runtime_error(where + ".ground.k_n_per_m: must be positive");
-            if (!(p.c_site >= 0.0)) throw std::runtime_error(where + ".ground.c_n_s_per_m: must be >= 0");
-            if (JVal *mj = opt(pj, "mu")) {            // optional friction ratio
-                p.mu = fnum(*mj, where + ".mu");
-                if (!(p.mu >= 0.0)) throw std::runtime_error(where + ".mu: must be >= 0");
-            }
-            built.push_back(std::move(p));
-        }
+        for (size_t pi = 0; pi < parts->arr.size(); ++pi)
+            parse_part_(*parts->arr[pi],
+                        "scene.parts[" + std::to_string(pi) + "]", built);
 
         parts_ = std::move(built);
         welds_.clear();
@@ -403,6 +459,7 @@ void B2Scene::clear() {
     parts_.clear();
     welds_.clear();
     active_ = false;
+    paused_ = false;
     diverged_ = false;
     steps_ = 0;
     e0_j_ = 0.0;
@@ -540,6 +597,309 @@ std::string B2Scene::remove_weld(const std::string &json) {
                                     }), welds_.end());
         if (welds_.size() == n0)
             throw std::runtime_error("no weld between '" + aj->str + "' and '" + bj->str + "'");
+        return std::string();
+    } catch (const std::exception &e) {
+        return std::string(e.what());
+    }
+}
+
+// ─── B4: interactive assembly transactions (GAME_PLAN §13 B4) ───────────────
+// The gate: "place, connect, test, release, mechanically patch, save and
+// reload admitted parts through transactions". Every edit validates its
+// document fully BEFORE mutating, so a rejected edit provably leaves the
+// scene bit-identical (state_hash over the canonical save document).
+
+std::string B2Scene::set_pause(bool on) {
+    if (!active_) return "scene not admitted";
+    paused_ = on;
+    return std::string();
+}
+
+// place: add one part through the SAME parse law as admission
+// (B2Scene::parse_part_), into a copy of the part list. The scene cap of
+// 6 is enforced here as well as in admit.
+std::string B2Scene::place(const std::string &json) {
+    try {
+        if (!active_) return "scene not admitted";
+        if (parts_.size() >= 6) return "place: scene already holds the cap of 6 parts";
+        JParser jp{json.c_str(), {}, 0};
+        JVal *root = jp.parse();
+        std::vector<Part> built = parts_;              // transaction: edit a copy
+        parse_part_(*root, "place", built);            // throws -> parts_ untouched
+        parts_ = std::move(built);
+        // the energy baseline restarts at the new configuration (the drift
+        // instrument measures evolution AFTER each structural edit)
+        e0_j_ = kinetic_j_() + potential_j_() + stored_penalty_j_();
+        return std::string();
+    } catch (const std::exception &e) {
+        return std::string(e.what());
+    }
+}
+
+// remove_part: release one part by id. Its persistent load dies with it
+// (loads live on the Part), and every weld touching it is dropped with the
+// survivors' indices remapped -- no stale selections can point at a part
+// that is gone. Refuses to empty the scene (that is clear()).
+std::string B2Scene::remove_part(const std::string &json) {
+    try {
+        if (!active_) return "scene not admitted";
+        JParser jp{json.c_str(), {}, 0};
+        JVal *root = jp.parse();
+        if (root->t != JVal::OBJ) throw std::runtime_error("remove document must be a json object");
+        req_keys(*root, {"id"}, {}, "remove");
+        JVal *idj = need(*root, "id", "remove");
+        if (idj->t != JVal::STR) throw std::runtime_error("remove.id: string expected");
+        size_t idx = parts_.size();
+        for (size_t i = 0; i < parts_.size(); ++i)
+            if (parts_[i].id == idj->str) { idx = i; break; }
+        if (idx == parts_.size())
+            throw std::runtime_error("remove: no part with id '" + idj->str + "'");
+        if (parts_.size() <= 1)
+            throw std::runtime_error("remove: refusing to empty the scene (clear it instead)");
+        std::vector<Weld> keep;
+        keep.reserve(welds_.size());
+        for (auto &w : welds_) {
+            if (w.a == idx || w.b == idx) continue;    // stale selection dies
+            Weld n = std::move(w);
+            if (n.a > idx) --n.a;
+            if (n.b > idx) --n.b;
+            keep.push_back(std::move(n));
+        }
+        welds_ = std::move(keep);
+        parts_.erase(parts_.begin() + idx);
+        e0_j_ = kinetic_j_() + potential_j_() + stored_penalty_j_();
+        return std::string();
+    } catch (const std::exception &e) {
+        return std::string(e.what());
+    }
+}
+
+// patch: the mechanical material patch. mu changes the Coulomb ratio;
+// mass_kg rescales mass, inertia AND the ground-rung constants by the same
+// ratio (k_total = m·g/s* and c_total = 2ζ√(k_total·m) are linear in m), so
+// rest sink and damping ratio are preserved -- material changed, contact
+// law did not. All values validated before any field mutates.
+std::string B2Scene::patch(const std::string &json) {
+    try {
+        if (!active_) return "scene not admitted";
+        JParser jp{json.c_str(), {}, 0};
+        JVal *root = jp.parse();
+        if (root->t != JVal::OBJ) throw std::runtime_error("patch document must be a json object");
+        req_keys(*root, {"id"}, {"mu", "mass_kg"}, "patch");
+        JVal *idj = need(*root, "id", "patch");
+        if (idj->t != JVal::STR) throw std::runtime_error("patch.id: string expected");
+        Part *p = nullptr;
+        for (auto &q : parts_) if (q.id == idj->str) { p = &q; break; }
+        if (!p) throw std::runtime_error("patch: no part with id '" + idj->str + "'");
+        JVal *muj = opt(*root, "mu"), *mij = opt(*root, "mass_kg");
+        if (!muj && !mij)
+            throw std::runtime_error("patch: nothing to patch (give mu and/or mass_kg)");
+        double mu = p->mu, mass = p->mass;
+        if (muj) {
+            mu = fnum(*muj, "patch.mu");
+            if (!(mu >= 0.0)) throw std::runtime_error("patch.mu: must be >= 0");
+        }
+        if (mij) {
+            mass = fnum(*mij, "patch.mass_kg");
+            if (!(mass > 0.0)) throw std::runtime_error("patch.mass_kg: must be positive");
+        }
+        // validated -> apply
+        p->mu = mu;
+        if (mij) {
+            double r = mass / p->mass;
+            p->mass = mass;
+            for (int i = 0; i < 9; ++i) p->inertia_com_local[i] *= r;
+            p->k_site *= r;
+            p->c_site *= r;
+        }
+        return std::string();
+    } catch (const std::exception &e) {
+        return std::string(e.what());
+    }
+}
+
+// ─── save / restore: exact round-trip of the persistent state ────────────────
+// Canonical document chimera.b2_state.v1. Every double prints %.17g (the
+// shortest form that round-trips a double exactly) and each pose carries
+// the rotation matrix verbatim beside its quaternion, so restore() rebuilds
+// R bit-for-bit and state_hash() is stable across save -> restore -> save.
+namespace {
+std::string g17(double x) {
+    char buf[64];
+    std::snprintf(buf, sizeof buf, "%.17g", x);
+    return buf;
+}
+std::string arr17(const double *a, size_t n) {
+    std::string s = "[";
+    for (size_t i = 0; i < n; ++i) { if (i) s += ","; s += g17(a[i]); }
+    return s + "]";
+}
+std::string arr17v(const std::vector<double> &a) { return arr17(a.data(), a.size()); }
+} // namespace
+
+std::string B2Scene::save_doc_() const {
+    std::string b = "{\"schema\":\"chimera.b2_state.v1\"";
+    b += ",\"gravity_m_s2\":" + g17(gravity_);
+    b += ",\"gravity_on\":" + std::string(gravity_on_ ? "true" : "false");
+    b += ",\"support_on\":" + std::string(support_on_ ? "true" : "false");
+    b += ",\"paused\":" + std::string(paused_ ? "true" : "false");
+    b += ",\"steps\":" + std::to_string(steps_);
+    b += ",\"energy0_j\":" + g17(e0_j_);
+    b += ",\"reason\":\"" + json_escape(reason_) + "\"";
+    b += ",\"parts\":[";
+    for (size_t i = 0; i < parts_.size(); ++i) {
+        const Part &p = parts_[i];
+        if (i) b += ",";
+        b += "{\"id\":\"" + json_escape(p.id) + "\"";
+        b += ",\"mass_kg\":" + g17(p.mass);
+        b += ",\"com_local_m\":" + arr17(p.com_local, 3);
+        b += ",\"inertia_com_local_kg_m2\":" + arr17(p.inertia_com_local, 9);
+        b += ",\"vertices_local_m\":" + arr17v(p.verts);
+        b += ",\"boundary_triangles\":[";
+        for (size_t t = 0; t < p.tris.size(); ++t) { if (t) b += ","; b += std::to_string(p.tris[t]); }
+        b += "]";
+        b += ",\"mu\":" + g17(p.mu);
+        b += ",\"ground\":{\"k_n_per_m\":" + g17(p.k_site) + ",\"c_n_s_per_m\":" + g17(p.c_site) + "}";
+        b += ",\"pose_c_m\":" + arr17(p.c, 3);
+        double q[4]; mat3_to_quat(p.R, q);
+        b += ",\"pose_q_wxyz\":" + arr17(q, 4);
+        b += ",\"pose_R_rowmajor\":" + arr17(p.R, 9);
+        b += ",\"velocity_m_s\":" + arr17(p.v, 3);
+        b += ",\"omega_rad_s\":" + arr17(p.omega, 3);
+        b += ",\"load_n\":" + arr17(p.load_F, 3);
+        b += ",\"load_local_m\":" + arr17(p.load_local, 3) + "}";
+    }
+    b += "],\"welds\":[";
+    for (size_t i = 0; i < welds_.size(); ++i) {
+        const Weld &wd = welds_[i];
+        if (i) b += ",";
+        b += "{\"a\":\"" + json_escape(parts_[wd.a].id) +
+             "\",\"b\":\"" + json_escape(parts_[wd.b].id) + "\"";
+        b += ",\"k_n_per_m\":" + g17(wd.k);
+        b += ",\"c_n_s_per_m\":" + g17(wd.c);
+        b += ",\"weights\":" + arr17v(wd.w);
+        b += ",\"anchors_local_a\":" + arr17v(wd.la);
+        b += ",\"anchors_local_b\":" + arr17v(wd.lb) + "}";
+    }
+    b += "]}";
+    return b;
+}
+
+std::string B2Scene::save_json() const { return save_doc_(); }
+
+std::string B2Scene::state_hash() const {
+    const std::string doc = save_doc_();
+    uint64_t h = 1469598103934665603ULL;            // FNV-1a 64 basis
+    for (unsigned char ch : doc) { h ^= ch; h *= 1099511628211ULL; }
+    char buf[32];
+    std::snprintf(buf, sizeof buf, "%016llx", (unsigned long long)h);
+    return buf;
+}
+
+// restore: validate a chimera.b2_state.v1 document end-to-end (parts
+// through the shared parse law, welds by id with the same invariants
+// set_weld enforces) and swap it in atomically. A rejected document leaves
+// the live scene untouched.
+std::string B2Scene::restore(const std::string &json) {
+    try {
+        JParser jp{json.c_str(), {}, 0};
+        JVal *root = jp.parse();
+        if (root->t != JVal::OBJ) throw std::runtime_error("state document must be a json object");
+        req_keys(*root, {"schema","gravity_m_s2","gravity_on","support_on","paused",
+                         "steps","energy0_j","reason","parts","welds"}, {}, "state");
+        JVal *schema = need(*root, "schema", "state");
+        if (schema->t != JVal::STR || schema->str != "chimera.b2_state.v1")
+            throw std::runtime_error("state: schema must be \"chimera.b2_state.v1\"");
+        double gravity = fnum(*need(*root, "gravity_m_s2", "state"), "state.gravity_m_s2");
+        if (gravity < 0.0) throw std::runtime_error("state.gravity_m_s2: must be >= 0");
+        auto boolean = [&](const char *key) {
+            JVal *v = need(*root, key, "state");
+            if (v->t != JVal::BOOL) throw std::runtime_error(std::string("state.") + key + ": boolean expected");
+            return v->bval;
+        };
+        bool g_on = boolean("gravity_on"), s_on = boolean("support_on"), paused = boolean("paused");
+        double e0 = fnum(*need(*root, "energy0_j", "state"), "state.energy0_j");
+        JVal *stepsj = need(*root, "steps", "state");
+        if (stepsj->t != JVal::NUM || stepsj->num != std::floor(stepsj->num) || stepsj->num < 0)
+            throw std::runtime_error("state.steps: non-negative integer expected");
+        std::string reason;
+        {
+            JVal *rj = need(*root, "reason", "state");
+            if (rj->t != JVal::STR) throw std::runtime_error("state.reason: string expected");
+            reason = rj->str;
+        }
+        JVal *partsj = need(*root, "parts", "state");
+        if (partsj->t != JVal::ARR || partsj->arr.size() < 1 || partsj->arr.size() > 6)
+            throw std::runtime_error("state.parts: 1 to 6 parts expected, got " +
+                                     std::to_string(partsj->arr.size()));
+        std::vector<Part> built;
+        for (size_t i = 0; i < partsj->arr.size(); ++i)
+            parse_part_(*partsj->arr[i], "state.parts[" + std::to_string(i) + "]", built);
+
+        std::vector<Weld> welds;
+        JVal *weldsj = need(*root, "welds", "state");
+        if (weldsj->t != JVal::ARR) throw std::runtime_error("state.welds: array expected");
+        for (size_t i = 0; i < weldsj->arr.size(); ++i) {
+            std::string where = "state.welds[" + std::to_string(i) + "]";
+            const JVal &wj = *weldsj->arr[i];
+            if (wj.t != JVal::OBJ) throw std::runtime_error(where + ": object expected");
+            req_keys(wj, {"a","b","k_n_per_m","c_n_s_per_m","weights",
+                          "anchors_local_a","anchors_local_b"}, {}, where);
+            JVal *aj = need(wj, "a", where), *bj = need(wj, "b", where);
+            if (aj->t != JVal::STR || bj->t != JVal::STR)
+                throw std::runtime_error(where + ".a/.b: strings expected");
+            if (aj->str == bj->str) throw std::runtime_error(where + ": a part cannot weld to itself");
+            size_t ia = built.size(), ib = built.size();
+            for (size_t k = 0; k < built.size(); ++k) {
+                if (built[k].id == aj->str) ia = k;
+                if (built[k].id == bj->str) ib = k;
+            }
+            if (ia == built.size()) throw std::runtime_error(where + ".a: no such part '" + aj->str + "'");
+            if (ib == built.size()) throw std::runtime_error(where + ".b: no such part '" + bj->str + "'");
+            for (auto &x : welds)
+                if ((x.a == ia && x.b == ib) || (x.a == ib && x.b == ia))
+                    throw std::runtime_error(where + ": duplicate weld between '" + aj->str + "' and '" + bj->str + "'");
+            Weld wd;
+            wd.a = ia; wd.b = ib;
+            wd.k = fnum(*need(wj, "k_n_per_m", where), where + ".k_n_per_m");
+            if (!(wd.k > 0.0)) throw std::runtime_error(where + ".k_n_per_m: must be positive");
+            wd.c = fnum(*need(wj, "c_n_s_per_m", where), where + ".c_n_s_per_m");
+            if (!(wd.c >= 0.0)) throw std::runtime_error(where + ".c_n_s_per_m: must be >= 0");
+            // weights are variable-length -> read manually (num_array
+            // demands an exact length; same strictness: finite numbers only)
+            {
+                const JVal &wv = *need(wj, "weights", where);
+                if (wv.t != JVal::ARR || wv.arr.size() < 3)
+                    throw std::runtime_error(where + ".weights: >= 3 anchors expected (finite area)");
+                wd.w.clear();
+                double sum = 0.0;
+                for (size_t k = 0; k < wv.arr.size(); ++k) {
+                    double x = fnum(*wv.arr[k], where + ".weights[" + std::to_string(k) + "]");
+                    if (!(x > 0.0)) throw std::runtime_error(where + ".weights: each weight must be positive");
+                    wd.w.push_back(x); sum += x;
+                }
+                if (std::fabs(sum - 1.0) > 1e-6)
+                    throw std::runtime_error(where + ".weights: must sum to 1");
+                wd.la = num_array(*need(wj, "anchors_local_a", where), 3 * wd.w.size(),
+                                  where + ".anchors_local_a");
+                wd.lb = num_array(*need(wj, "anchors_local_b", where), 3 * wd.w.size(),
+                                  where + ".anchors_local_b");
+            }
+            welds.push_back(std::move(wd));
+        }
+
+        // validated end-to-end -> swap atomically
+        parts_ = std::move(built);
+        welds_ = std::move(welds);
+        gravity_ = gravity;
+        gravity_on_ = g_on;
+        support_on_ = s_on;
+        paused_ = paused;
+        steps_ = (long)stepsj->num;
+        e0_j_ = e0;
+        reason_ = reason;
+        active_ = true;
+        diverged_ = false;
         return std::string();
     } catch (const std::exception &e) {
         return std::string(e.what());
@@ -839,7 +1199,7 @@ bool B2Scene::substep_(double h) {
 }
 
 bool B2Scene::step(double dt) {
-    if (!active_ || diverged_) return !diverged_;
+    if (!active_ || paused_ || diverged_) return !diverged_;
     double d = dt;
     if (d > 0.05) d = 0.05;          // the engine's own frame clamp
     if (d <= 0.0) return true;
@@ -910,6 +1270,8 @@ std::string B2Scene::telemetry_json() const {
     b += ",\"gravity_m_s2\":" + fmt(gravity_);
     b += ",\"gravity_on\":"; b += gravity_on_ ? "true" : "false";
     b += ",\"support_on\":"; b += support_on_ ? "true" : "false";
+    b += ",\"paused\":"; b += paused_ ? "true" : "false";
+    b += ",\"state_hash\":\"" + state_hash() + "\"";   // B4: transaction proof
     double wtot = 0.0, rtot = 0.0, pen = 0.0;
     const double g_eff = gravity_on_ ? gravity_ : 0.0;   // the power switch is real
     for (auto &p : parts_) {
@@ -1039,10 +1401,12 @@ std::string B2Scene::inspect(const std::string &json, std::string &why) const {
 
 // Fixed palette by admission order: a frame capture names a layer by color,
 // and the pick route names it by ID, so the two can be cross-checked.
-static const double kLayerRgb[3][3] = {
+// Slot 3 (yellow) names a B4 PLACED part against the three stack layers.
+static const double kLayerRgb[4][3] = {
     {0.85, 0.25, 0.25},   // layer 0 (base)
     {0.25, 0.75, 0.30},   // layer 1 (middle)
     {0.30, 0.45, 0.90},   // layer 2 (top)
+    {0.85, 0.75, 0.20},   // layer 3 (placed part)
 };
 
 void B2Scene::render_mesh(std::vector<float> &verts9,
@@ -1051,7 +1415,7 @@ void B2Scene::render_mesh(std::vector<float> &verts9,
     if (!active_) return;
     for (size_t pi = 0; pi < parts_.size(); ++pi) {
         const Part &p = parts_[pi];
-        const double *rgb = kLayerRgb[pi % 3];
+        const double *rgb = kLayerRgb[pi % 4];
         const uint32_t base = (uint32_t)(verts9.size() / 9);
         for (size_t ti = 0; ti + 2 < p.tris.size(); ti += 3) {
             double w[3][3];

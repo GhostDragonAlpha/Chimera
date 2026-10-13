@@ -186,6 +186,16 @@ public:
     // finite-area connector controls (set / remove between a named pair)
     std::string b2_set_weld(const std::string &json);
     std::string b2_remove_weld(const std::string &json);
+    // B4 interactive assembly transactions (b2_scene.hpp): pause, place,
+    // release, mechanical patch, save/restore, state hash. Empty return =
+    // accepted; non-empty = refusal text for the route.
+    std::string b2_set_pause(bool on);
+    std::string b2_place(const std::string &json);
+    std::string b2_remove_part(const std::string &json);
+    std::string b2_patch(const std::string &json);
+    std::string b2_save_json();
+    std::string b2_restore(const std::string &json);
+    std::string b2_state_hash();
     // The render loop drives the scene on its own: B2 is independent of
     // the membrane body, so it steps whether or not a body is loaded
     // (step() only runs with verts). b2_mtx_ alone; no seal state touched.

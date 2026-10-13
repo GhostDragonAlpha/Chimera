@@ -19,6 +19,8 @@
 #include <string>
 #include <vector>
 
+namespace b2j { struct JVal; }   // strict JSON node; defined in b2_scene.cpp
+
 class B2Scene {
 public:
     // Strict admission of a chimera.b2_scene.v1 JSON document. Returns an
@@ -68,6 +70,41 @@ public:
     // under the still-applied pull).
     std::string set_weld(const std::string &json);
     std::string remove_weld(const std::string &json);
+
+    // ─── B4: interactive assembly, transactional (GAME_PLAN §13 B4) ────────
+    // Every edit below is all-or-nothing: the document is fully validated
+    // against the live scene BEFORE anything mutates, so a rejected edit
+    // leaves the scene bit-identical (state_hash proves it).
+    // set_pause freezes integration while the scene stays live and readable
+    // (the gate's "test" then "release").
+    std::string set_pause(bool on);
+    bool paused() const { return paused_; }
+    // place adds one part (same element schema as an admission parts[]
+    // entry; scene cap 6). The part spawns at its document pose, at rest.
+    std::string place(const std::string &json);
+    // remove_part releases one part by id: its persistent load dies with
+    // it (loads live on the part) and every weld touching it is dropped --
+    // no stale selections -- with the surviving weld indices remapped.
+    std::string remove_part(const std::string &json);
+    // patch is the mechanical material patch: {"id", "mu"?, "mass_kg"?}
+    // (at least one of mu/mass_kg). A mass change scales inertia AND the
+    // per-site ground constants by the same ratio: the rung law
+    // k_total = m·g/s*, c_total = 2ζ√(k_total·m) is linear in m, so the
+    // part keeps its rest sink s* and damping ratio ζ — the material
+    // changed, the contact law did not.
+    std::string patch(const std::string &json);
+    // save_json serialises the FULL persistent state (admitted identity +
+    // dynamic state + welds + switches + audit fields) as
+    // chimera.b2_state.v1. Doubles print %.17g (exact round-trip) and the
+    // pose carries the rotation matrix verbatim, so restore reproduces the
+    // scene bit-for-bit. restore validates a saved document end-to-end and
+    // swaps it in atomically (rejected documents leave the scene untouched).
+    std::string save_json() const;
+    std::string restore(const std::string &json);
+    // FNV-1a-64 over the canonical save document: two scenes with equal
+    // hashes are the same scene (used to prove rejected edits preserve
+    // state and save/reload round-trips exactly).
+    std::string state_hash() const;
 
 private:
     struct Part {
@@ -127,6 +164,14 @@ private:
     // the force/torque accumulators of a and b.
     void pp_pair_(Part &a, Part &b,
                   double *Fa, double *Ta, double *Fb, double *Tb) const;
+    // Validate one part element (admission parts[] entry / place document)
+    // and append it to `built`, rejecting duplicate ids. Throws
+    // std::runtime_error naming the offending field on any violation, so
+    // callers keep their transaction by building into a copy.
+    static void parse_part_(const b2j::JVal &pj, const std::string &where,
+                            std::vector<Part> &built);
+    // Canonical serialisation shared by save_json() and state_hash().
+    std::string save_doc_() const;
     double kinetic_j_() const;
     double potential_j_() const;
     double stored_penalty_j_() const;
@@ -137,6 +182,7 @@ private:
     bool gravity_on_ = true;                     // power-removal control
     bool support_on_ = true;                     // support-removal control
     bool active_ = false;
+    bool paused_ = false;                        // B4: freeze integration
     bool diverged_ = false;
     long steps_ = 0;
     double e0_j_ = 0.0;                          // energy right after admission
