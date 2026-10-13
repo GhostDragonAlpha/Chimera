@@ -8,8 +8,10 @@ deactivates a site one-sidedly and the part rotates to a new rest pose),
 loose contact + separation (part B yawed to face A's back plane, pushed
 into it: equal-and-opposite contact force, finite penetration, then the
 load is removed and the parts separate), slide (tangential load below and
-above mu*N), and the support/power-removal switches. Every refusal names
-itself and leaves the live scene alone.
+above mu*N), the support/power-removal switches, and the finite-area
+connector (coupon Weld port: >= 3 anchors, normal pull opens the one-sided
+contact while the weld alone carries, weld removal frees the part). Every
+refusal names itself and leaves the live scene alone.
 
 Geometry facts this battery leans on (b2_scene_gen.make_scene(), world
 axes): A bottom sites s0=(0,0,0) s1=(0.3,0,0) s2=(0,0,-0.2), A COM
@@ -74,6 +76,10 @@ def _rel(a: float, b: float) -> float:
 
 def _part(st: dict, pid: str) -> dict:
     return next(p for p in st["parts"] if p["id"] == pid)
+
+
+def weld_force(st: dict) -> float:
+    return st["welds"][0]["force_n"] if st["welds"] else 0.0
 
 
 def _settle(seconds: float) -> None:
@@ -416,6 +422,12 @@ class B2Dynamics(unittest.TestCase):
         self.assertFalse(r.get("ok", True), "load accepted with no scene")
         r = _post("/tick_b2_support", '{"on": true}')
         self.assertFalse(r.get("ok", True), "support switch accepted with no scene")
+        r = _post("/tick_b2_weld", json.dumps(
+            {"a": "x", "b": "y", "k": 1.0,
+             "anchors_world": [[0, 0, 0, 0, 0, 0]] * 3}))
+        self.assertFalse(r.get("ok", True), "weld accepted with no scene")
+        r = _post("/tick_b2_weld_remove", '{"a": "x", "b": "y"}')
+        self.assertFalse(r.get("ok", True), "weld removal accepted with no scene")
         self.admit()
         before = _get("/tick_b2_state")["admission_reason"]
         cases = [
@@ -437,6 +449,110 @@ class B2Dynamics(unittest.TestCase):
         self.assertTrue(st["active"])
         self.assertEqual(st["admission_reason"], before)
         self.assertTrue(st["support_on"] and st["gravity_on"])
+
+    # ── finite-area connector: weld carries, separates, is removable ──────
+    def test_weld_finite_area_connector(self):
+        # Coupon Weld { av, al, w, k } ported to two rigid parts: >= 3
+        # anchor pairs (a finite AREA, not a pin), weights 1/N, central
+        # spring pairs -- exact Newton-3. The gate scenario (design note
+        # s6): B loose against A's back plane, welded; a normal pull opens
+        # the one-sided contact sites while the connector ALONE carries;
+        # removing the connector leaves B free under the continued pull.
+        scene = self.scene()
+        scene["parts"][0]["mu"] = 0.8             # anchor A by ground friction
+        qb = (0.5, -0.5, -0.5, -0.5)              # same yawed pose as loose contact
+        target = (0.2, 0.045, 0.0738)             # B face ~0.5 mm from z=0
+        scene["parts"][1]["pose_q_wxyz"] = list(qb)
+        scene["parts"][1]["pose_c_m"] = list(target)
+        self.admit(scene)
+        _settle(2.5)
+        a0 = _part(_get("/tick_b2_state"), "part_wedge_a")
+        # weld across the interface: 3 anchor pairs on a sub-area of A's
+        # back rectangle (x in [0.12,0.2], y in [0.03,0.08] of the
+        # x in [0,0.3], y in [0,0.12] rectangle) and matching B-face points
+        k_w, c_w = 50000.0, 2000.0
+        aa = [(0.12, 0.03, 0.0), (0.2, 0.03, 0.0), (0.16, 0.08, 0.0)]
+        bb = [(0.12, 0.03, 0.0005), (0.2, 0.03, 0.0005), (0.16, 0.08, 0.0005)]
+        weld = {"a": "part_wedge_a", "b": "part_wedge_b", "k": k_w,
+                "c_damp": c_w,
+                "anchors_world": [[*p, *q] for p, q in zip(aa, bb)]}
+        self.assertTrue(_post("/tick_b2_weld", json.dumps(weld)).get("ok"))
+        # the 0.5 mm preload pulls B flush against A and settles (the
+        # dashpot is the scene's own penalty-damper law; zeta = 0.87)
+        ok, st = _wait(lambda s: _part(s, "part_wedge_b")["speed_m_s"] < 5e-3
+                       and weld_force(s) < 2.0, 3.0)
+        self.assertTrue(ok, f"weld preload never settled: {st}")
+        wd = st["welds"]
+        self.assertEqual(len(wd), 1)
+        self.assertEqual(wd[0]["n_anchors"], 3)
+        self.assertAlmostEqual(wd[0]["k_n_per_m"], k_w, delta=1e-6)
+        b = _part(st, "part_wedge_b")
+        self.assertAlmostEqual(b["com_m"][2], target[2] - 0.0005, delta=0.001,
+                               msg="preload should pull B exactly flush")
+        # normal pull along +z through the weld centroid (x = 0.16): the
+        # one-sided contact sites must OPEN while the connector carries
+        pull = 40.0
+        self.assertTrue(_post("/tick_b2_load", json.dumps(
+            {"part": "part_wedge_b", "force_n": [0.0, 0.0, pull],
+             "point_world": [0.16, 0.045, 0.0743]})).get("ok"))
+        ok, st = _wait(lambda s: _part(s, "part_wedge_b")["speed_m_s"] < 5e-3
+                       and abs(weld_force(s) - pull) < 0.05 * pull, 5.0)
+        self.assertTrue(ok, f"weld never carried the pull at rest: {st}")
+        b = _part(st, "part_wedge_b")
+        a = _part(st, "part_wedge_a")
+        self.assertFalse(st["diverged"])
+        # connector ALONE carries: weld force == pull, contact sites off
+        self.assertAlmostEqual(weld_force(st), pull, delta=0.05 * pull)
+        self.assertEqual(b["contacts_pp_active"], 0,
+                         "one-sided sites must deactivate under normal pull")
+        self.assertEqual(b["contact_pp_n"], 0.0)
+        # stretch = pull/k: B sits 0.8 mm off A's plane RELATIVE TO A
+        # (A itself creeps under the 40 N weld pull at the regularized
+        # friction's sticking rate -- bounded below by the drift assert)
+        self.assertAlmostEqual(b["com_m"][2] - a["com_m"][2],
+                               target[2] - a0["com_m"][2] + pull / k_w,
+                               delta=0.001)
+        # finite area resists the pull's yaw couple (a pin at the centroid
+        # would let the part swing; the anchor pattern holds it level)
+        q0 = list(qb)
+        q1 = b["pose_q_wxyz"]
+        self.assertGreater(abs(sum(x * y for x, y in zip(q0, q1))), 0.999)
+        # Newton-3: the connector pulls A toward B with the same force;
+        # A stays put under its 0.8 * 95.4 = 76 N friction capacity
+        self.assertLess(abs(a["com_m"][2] - a0["com_m"][2]), 5e-3)
+        # removal: the connector is gone, the pull is unopposed
+        self.assertTrue(_post("/tick_b2_weld_remove", json.dumps(
+            {"a": "part_wedge_a", "b": "part_wedge_b"})).get("ok"))
+        st = _get("/tick_b2_state")
+        self.assertEqual(st["welds"], [])
+        ok, st = _wait(lambda s: _part(s, "part_wedge_b")["speed_m_s"] > 0.5, 2.0)
+        self.assertTrue(ok, f"B never accelerated after weld removal: {st}")
+        self.assertTrue(_post("/tick_b2_load", json.dumps(
+            {"part": "part_wedge_b", "force_n": [0.0, 0.0, 0.0],
+             "point_world": [0.16, 0.045, 0.0743]})).get("ok"))
+        # refusals name themselves and leave the live scene alone
+        cases = [
+            (json.dumps({"a": "part_wedge_a", "b": "part_wedge_b", "k": k_w,
+                         "anchors_world": [[0, 0, 0, 0, 0, 0],
+                                           [0, 0, 0, 0, 0, 0]]}), "finite area"),
+            (json.dumps({"a": "part_wedge_a", "b": "part_wedge_a", "k": k_w,
+                         "anchors_world": [[0, 0, 0, 0, 0, 0]] * 3}), "itself"),
+            (json.dumps({"a": "nope", "b": "part_wedge_b", "k": k_w,
+                         "anchors_world": [[0, 0, 0, 0, 0, 0]] * 3}), "no such part"),
+            (json.dumps({"a": "part_wedge_a", "b": "part_wedge_b", "k": -5.0,
+                         "anchors_world": [[0, 0, 0, 0, 0, 0]] * 3}), "positive"),
+            (json.dumps({"a": "part_wedge_a", "b": "part_wedge_b", "k": k_w,
+                         "c_damp": -1.0,
+                         "anchors_world": [[0, 0, 0, 0, 0, 0]] * 3}), ">= 0"),
+        ]
+        for body, needle in cases:
+            r = _post("/tick_b2_weld", body)
+            self.assertFalse(r.get("ok", True), f"weld {body}: accepted")
+            self.assertIn(needle, r.get("error", ""), f"weld {body}: {r}")
+        r = _post("/tick_b2_weld_remove", json.dumps(
+            {"a": "part_wedge_a", "b": "part_wedge_b"}))
+        self.assertFalse(r.get("ok", True), "removing an absent weld accepted")
+        self.assertIn("no weld", r.get("error", ""))
 
     # ── numerical envelope is reported, not assumed ───────────────────────
     def test_envelope_reported(self):

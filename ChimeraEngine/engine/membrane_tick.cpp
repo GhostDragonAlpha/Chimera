@@ -3619,6 +3619,14 @@ std::string MembraneTick::b2_set_gravity(bool on) {
     std::lock_guard<std::mutex> lk(b2_mtx_);
     return b2_.set_gravity(on);
 }
+std::string MembraneTick::b2_set_weld(const std::string &json) {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    return b2_.set_weld(json);
+}
+std::string MembraneTick::b2_remove_weld(const std::string &json) {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    return b2_.remove_weld(json);
+}
 
 // F1: the stance switch (the lead wires POST /tick_stance to this,
 // next to POST /tick_gravity). Everything measurable is derived here,

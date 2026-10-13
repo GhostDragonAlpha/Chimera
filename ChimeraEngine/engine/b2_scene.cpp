@@ -3,6 +3,7 @@
 // this file adds only the resident-runtime plumbing around them.
 #include "b2_scene.hpp"
 
+#include <algorithm>
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
@@ -382,6 +383,7 @@ std::string B2Scene::admit(const std::string &json, const std::string &reason) {
         }
 
         parts_ = std::move(built);
+        welds_.clear();
         gravity_ = gravity;
         gravity_on_ = true;
         support_on_ = true;
@@ -398,6 +400,7 @@ std::string B2Scene::admit(const std::string &json, const std::string &reason) {
 
 void B2Scene::clear() {
     parts_.clear();
+    welds_.clear();
     active_ = false;
     diverged_ = false;
     steps_ = 0;
@@ -446,10 +449,113 @@ std::string B2Scene::set_gravity(bool on) {
     return std::string();
 }
 
+// ─── finite-area connector (the gate's "one finite-area connector") ─────────
+// Coupon Weld { av, al, w, k } ported to two rigid parts: anchor pairs
+// captured in local axes (the weld rides the parts), weights 1/N, and a
+// central spring pair per anchor -- exact Newton-3 in force and torque.
+// >= 3 anchors: a finite AREA, not a pin (design note: strict sub-area of
+// the interface; the caller places them there, the count enforces area).
+std::string B2Scene::set_weld(const std::string &json) {
+    try {
+        if (!active_) return "scene not admitted";
+        JParser jp{json.c_str(), {}, 0};
+        JVal *root = jp.parse();
+        if (root->t != JVal::OBJ) throw std::runtime_error("weld document must be a json object");
+        req_keys(*root, {"a","b","k","c_damp","anchors_world"}, {}, "weld");
+        JVal *aj = need(*root, "a", "weld"), *bj = need(*root, "b", "weld");
+        if (aj->t != JVal::STR || bj->t != JVal::STR)
+            throw std::runtime_error("weld.a/weld.b: strings expected");
+        if (aj->str == bj->str) throw std::runtime_error("weld: a part cannot weld to itself");
+        Part *pa = nullptr, *pb = nullptr;
+        for (auto &q : parts_) {
+            if (q.id == aj->str) pa = &q;
+            if (q.id == bj->str) pb = &q;
+        }
+        if (!pa) throw std::runtime_error("weld.a: no such part '" + aj->str + "'");
+        if (!pb) throw std::runtime_error("weld.b: no such part '" + bj->str + "'");
+        double k = fnum(*need(*root, "k", "weld"), "weld.k");
+        if (!(k > 0.0)) throw std::runtime_error("weld.k: must be positive");
+        double c = 0.0;
+        if (JVal *cj = opt(*root, "c_damp")) {
+            c = fnum(*cj, "weld.c_damp");
+            if (!(c >= 0.0)) throw std::runtime_error("weld.c_damp: must be >= 0");
+        }
+        JVal *az = need(*root, "anchors_world", "weld");
+        if (az->t != JVal::ARR || az->arr.size() < 3)
+            throw std::runtime_error("weld.anchors_world: >= 3 anchor pairs expected (finite area)");
+        Weld wd;
+        wd.a = (size_t)(pa - parts_.data());
+        wd.b = (size_t)(pb - parts_.data());
+        wd.k = k;
+        wd.c = c;
+        for (auto &e : az->arr) {
+            std::vector<double> ap = num_array(*e, 6, "weld.anchors_world[]");
+            for (int side = 0; side < 2; ++side) {
+                Part &p = side ? *pb : *pa;
+                std::vector<double> &dst = side ? wd.lb : wd.la;
+                double d[3] = {ap[3*side+0]-p.c[0], ap[3*side+1]-p.c[1], ap[3*side+2]-p.c[2]};
+                double loc[3];
+                for (int i = 0; i < 3; ++i)   // local = com_local + Rᵀ·d
+                    loc[i] = p.com_local[i] + d[0]*p.R[i] + d[1]*p.R[3+i] + d[2]*p.R[6+i];
+                dst.insert(dst.end(), loc, loc + 3);
+            }
+            wd.w.push_back(1.0 / (double)az->arr.size());
+        }
+        // one connector per part pair: a re-set replaces it (the control is
+        // the weld itself, not a pile of them)
+        welds_.erase(std::remove_if(welds_.begin(), welds_.end(),
+                                    [&](const Weld &x) {
+                                        return (x.a == wd.a && x.b == wd.b) ||
+                                               (x.a == wd.b && x.b == wd.a);
+                                    }), welds_.end());
+        welds_.push_back(std::move(wd));
+        return std::string();
+    } catch (const std::exception &e) {
+        return std::string(e.what());
+    }
+}
+std::string B2Scene::remove_weld(const std::string &json) {
+    try {
+        if (!active_) return "scene not admitted";
+        JParser jp{json.c_str(), {}, 0};
+        JVal *root = jp.parse();
+        if (root->t != JVal::OBJ) throw std::runtime_error("weld document must be a json object");
+        req_keys(*root, {"a","b"}, {}, "weld");
+        JVal *aj = need(*root, "a", "weld"), *bj = need(*root, "b", "weld");
+        if (aj->t != JVal::STR || bj->t != JVal::STR)
+            throw std::runtime_error("weld.a/weld.b: strings expected");
+        size_t ia = parts_.size(), ib = parts_.size();
+        for (size_t i = 0; i < parts_.size(); ++i) {
+            if (parts_[i].id == aj->str) ia = i;
+            if (parts_[i].id == bj->str) ib = i;
+        }
+        if (ia == parts_.size()) throw std::runtime_error("weld.a: no such part '" + aj->str + "'");
+        if (ib == parts_.size()) throw std::runtime_error("weld.b: no such part '" + bj->str + "'");
+        size_t n0 = welds_.size();
+        welds_.erase(std::remove_if(welds_.begin(), welds_.end(),
+                                    [&](const Weld &x) {
+                                        return (x.a == ia && x.b == ib) ||
+                                               (x.a == ib && x.b == ia);
+                                    }), welds_.end());
+        if (welds_.size() == n0)
+            throw std::runtime_error("no weld between '" + aj->str + "' and '" + bj->str + "'");
+        return std::string();
+    } catch (const std::exception &e) {
+        return std::string(e.what());
+    }
+}
+
 void B2Scene::world_vert_(const Part &p, size_t vi, double out[3]) {
     double pl[3] = {p.verts[3*vi] - p.com_local[0],
                     p.verts[3*vi+1] - p.com_local[1],
                     p.verts[3*vi+2] - p.com_local[2]};
+    double r[3]; mat3_v(p.R, pl, r);
+    out[0] = p.c[0] + r[0]; out[1] = p.c[1] + r[1]; out[2] = p.c[2] + r[2];
+}
+void B2Scene::world_point_(const Part &p, const double local[3], double out[3]) {
+    double pl[3] = {local[0] - p.com_local[0],
+                    local[1] - p.com_local[1],
+                    local[2] - p.com_local[2]};
     double r[3]; mat3_v(p.R, pl, r);
     out[0] = p.c[0] + r[0]; out[1] = p.c[1] + r[1]; out[2] = p.c[2] + r[2];
 }
@@ -629,6 +735,60 @@ bool B2Scene::substep_(double h) {
         for (size_t j = i + 1; j < np; ++j)
             pp_pair_(parts_[i], parts_[j], &F[3*i], &T[3*i], &F[3*j], &T[3*j]);
 
+    // finite-area connectors: central spring-damper pairs, exact Newton-3.
+    // The dashpot is along the anchor line (the same penalty-damper law as
+    // every rung in this scene); c = 0 is the coupon Weld port exactly.
+    for (auto &wd : welds_) {
+        Part &a = parts_[wd.a];
+        Part &b = parts_[wd.b];
+        double *Fa = &F[3*wd.a], *Ta = &T[3*wd.a];
+        double *Fb = &F[3*wd.b], *Tb = &T[3*wd.b];
+        double fsum[3] = {0.0, 0.0, 0.0};
+        for (size_t j = 0; j < wd.w.size(); ++j) {
+            double la[3] = {wd.la[3*j], wd.la[3*j+1], wd.la[3*j+2]};
+            double lb[3] = {wd.lb[3*j], wd.lb[3*j+1], wd.lb[3*j+2]};
+            double pa[3], pb[3];
+            world_point_(a, la, pa);
+            world_point_(b, lb, pb);
+            double f[3];
+            double dvec[3] = {pb[0]-pa[0], pb[1]-pa[1], pb[2]-pa[2]};
+            double kk = wd.k;
+            if (wd.c > 0.0) {
+                double L = std::sqrt(dvec[0]*dvec[0] + dvec[1]*dvec[1] + dvec[2]*dvec[2]);
+                if (L > 1e-12) {
+                    double n[3] = {dvec[0]/L, dvec[1]/L, dvec[2]/L};
+                    double ra0[3] = {pa[0]-a.c[0], pa[1]-a.c[1], pa[2]-a.c[2]};
+                    double rb0[3] = {pb[0]-b.c[0], pb[1]-b.c[1], pb[2]-b.c[2]};
+                    double va[3], vb[3], wa[3], wb[3];
+                    cross3(a.omega, ra0, wa);
+                    cross3(b.omega, rb0, wb);
+                    for (int k = 0; k < 3; ++k) {
+                        va[k] = a.v[k] + wa[k];
+                        vb[k] = b.v[k] + wb[k];
+                    }
+                    double vn = (vb[0]-va[0])*n[0] + (vb[1]-va[1])*n[1] + (vb[2]-va[2])*n[2];
+                    // f_on_a = w*(k*d + c*vn*n): power = -w*c*vn^2 <= 0
+                    for (int k = 0; k < 3; ++k)
+                        dvec[k] += (wd.c / wd.k) * vn * n[k];   // k*d + c*vn*n
+                }
+            }
+            for (int k = 0; k < 3; ++k)
+                f[k] = wd.w[j] * kk * dvec[k];
+            double ra[3] = {pa[0]-a.c[0], pa[1]-a.c[1], pa[2]-a.c[2]};
+            double rb[3] = {pb[0]-b.c[0], pb[1]-b.c[1], pb[2]-b.c[2]};
+            for (int k = 0; k < 3; ++k) {
+                Fa[k] += f[k]; Fb[k] -= f[k];
+                fsum[k] += f[k];
+            }
+            double t1[3];
+            cross3(ra, f, t1);
+            for (int k = 0; k < 3; ++k) Ta[k] += t1[k];
+            cross3(rb, f, t1);
+            for (int k = 0; k < 3; ++k) Tb[k] -= t1[k];
+        }
+        wd.force_n = std::sqrt(fsum[0]*fsum[0] + fsum[1]*fsum[1] + fsum[2]*fsum[2]);
+    }
+
     for (size_t pi = 0; pi < np; ++pi) {
         Part &p = parts_[pi];
         double *Fp = &F[3*pi], *Tp = &T[3*pi];
@@ -709,6 +869,18 @@ double B2Scene::stored_penalty_j_() const {
             if (y < 0.0) E += 0.5 * p.k_site * y * y;
         }
     }
+    for (auto &wd : welds_) {          // connector elastic energy
+        for (size_t j = 0; j < wd.w.size(); ++j) {
+            double la[3] = {wd.la[3*j], wd.la[3*j+1], wd.la[3*j+2]};
+            double lb[3] = {wd.lb[3*j], wd.lb[3*j+1], wd.lb[3*j+2]};
+            double pa[3], pb[3];
+            world_point_(parts_[wd.a], la, pa);
+            world_point_(parts_[wd.b], lb, pb);
+            double d2 = 0.0;
+            for (int k = 0; k < 3; ++k) { double d = pb[k]-pa[k]; d2 += d*d; }
+            E += wd.w[j] * 0.5 * wd.k * d2;
+        }
+    }
     return E;
 }
 
@@ -735,6 +907,17 @@ std::string B2Scene::telemetry_json() const {
     b += ",\"energy_j\":" + fmt(e);
     b += ",\"energy_drift_j\":" + fmt(e - e0_j_);
     b += ",\"admission_reason\":\"" + json_escape(reason_) + "\"";
+    b += ",\"welds\":[";
+    for (size_t i = 0; i < welds_.size(); ++i) {
+        if (i) b += ",";
+        b += "{\"a\":\"" + json_escape(parts_[welds_[i].a].id) +
+             "\",\"b\":\"" + json_escape(parts_[welds_[i].b].id) +
+             "\",\"n_anchors\":" + std::to_string(welds_[i].w.size()) +
+             ",\"k_n_per_m\":" + fmt(welds_[i].k) +
+             ",\"c_n_s_per_m\":" + fmt(welds_[i].c) +
+             ",\"force_n\":" + fmt(welds_[i].force_n) + "}";
+    }
+    b += "]";
     b += ",\"parts\":[";
     for (size_t i = 0; i < parts_.size(); ++i) {
         const Part &p = parts_[i];

@@ -172,6 +172,9 @@ public:
     std::string b2_set_load(const std::string &json);
     std::string b2_set_support(bool on);
     std::string b2_set_gravity(bool on);
+    // finite-area connector controls (set / remove between a named pair)
+    std::string b2_set_weld(const std::string &json);
+    std::string b2_remove_weld(const std::string &json);
     // The render loop drives the scene on its own: B2 is independent of
     // the membrane body, so it steps whether or not a body is loaded
     // (step() only runs with verts). b2_mtx_ alone; no seal state touched.

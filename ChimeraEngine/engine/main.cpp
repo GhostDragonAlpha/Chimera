@@ -151,6 +151,16 @@ static std::string route_b2(const std::string &p, const std::string &method,
         if (why.empty()) return "{\"ok\":true,\"gravity_on\":" + std::string(on ? "true" : "false") + "}";
         return b2_refused_(why);
     }
+    if (p == "/tick_b2_weld" && method == "POST") {
+        std::string why = g_tick.b2_set_weld(req_body);
+        if (why.empty()) return "{\"ok\":true}";
+        return b2_refused_(why);
+    }
+    if (p == "/tick_b2_weld_remove" && method == "POST") {
+        std::string why = g_tick.b2_remove_weld(req_body);
+        if (why.empty()) return "{\"ok\":true}";
+        return b2_refused_(why);
+    }
     return std::string();
 }
 

@@ -43,6 +43,15 @@ public:
     std::string set_load(const std::string &json);
     std::string set_support(bool on);
     std::string set_gravity(bool on);
+    // Finite-area connector (the B2 gate's "one finite-area connector",
+    // coupon Weld form): weighted anchor pairs across the A-B interface.
+    // set_weld captures the world anchor points in each part's local axes
+    // (the weld rides the parts); >= 3 anchors so the patch is an AREA,
+    // not a pin. remove_weld deletes the connector between the named pair
+    // (the separate control's second half: connector removal -> free motion
+    // under the still-applied pull).
+    std::string set_weld(const std::string &json);
+    std::string remove_weld(const std::string &json);
 
 private:
     struct Part {
@@ -76,10 +85,26 @@ private:
         double pen_pp_run_m = 0.0;               // max part-part penetration
     };
 
+    // Finite-area weld between parts a and b (coupon Weld { av, al, w, k }
+    // ported to two rigid bodies): anchor pairs (la_j, lb_j) in local axes,
+    // weights summing to 1, stiffness k. Force w_j*k*(pb-pa) applied +on a
+    // at pa and -on b at pb -- a central pair, exact Newton-3 in force AND
+    // torque (total angular momentum conserved).
+    struct Weld {
+        size_t a = 0, b = 0;                     // part indices
+        std::vector<double> la, lb;              // 3N local anchors (authored axes)
+        std::vector<double> w;                   // N weights (sum 1)
+        double k = 0.0;                          // N/m
+        double c = 0.0;                          // N.s/m along anchor line (0 = coupon port)
+        double force_n = 0.0;                    // |total force| this step (telemetry)
+    };
+
     // one substep of all parts; returns false on divergence
     bool substep_(double h);
     // world position of authored vertex vi of p
     static void world_vert_(const Part &p, size_t vi, double out[3]);
+    // world position of an arbitrary local (authored-axes) point of p
+    static void world_point_(const Part &p, const double local[3], double out[3]);
     // loose contact between two parts: vertices of each against boundary
     // triangles of the other, one-sided penalty rung (same law as ground),
     // regularised Coulomb friction; exact Newton-3 pairs accumulated into
@@ -91,6 +116,7 @@ private:
     double stored_penalty_j_() const;
 
     std::vector<Part> parts_;
+    std::vector<Weld> welds_;                    // finite-area connectors
     double gravity_ = 9.81;                      // m/s^2 (down)
     bool gravity_on_ = true;                     // power-removal control
     bool support_on_ = true;                     // support-removal control
