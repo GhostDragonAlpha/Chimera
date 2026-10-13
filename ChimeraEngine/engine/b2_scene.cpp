@@ -317,19 +317,44 @@ static constexpr double B8_BS_VGATE = 0.1;   // catch approach-velocity gate
 // B8: coplanar-face noise floor for pair-contact candidacy (see pp_pair_).
 static constexpr double B2_FACE_TOL = 1e-4;
 
+// B9 (qualification envelope, docs/evidence/construction_packet_20261012/
+// B9_envelope_scope.md): declared bands over the material-geometry-solver
+// tuple inside which the penalty contact law is QUALIFIED (measured honest),
+// with named refusals before mutation outside them. Every number below is
+// calibrated on a measured failure, not guessed:
+//  * B9_SINK_MIN_M: the rung is calibrated for a 10 mm rest sink; authoring
+//    4x stiffer ground (2.5 mm sink) under the 0.3 kg block put the catch's
+//    explicit-stability margins out of range — measured 81 m/s explosion.
+//  * B9_SLIDE_MIN_H_M: a thin SLIDING block (20 mm tall) pitches nose-down
+//    under friction torque with no pressure redistribution to answer —
+//    measured 91 m/s explosion; the squat 50 mm family (B7 wedge, B8 inner
+//    block) is the qualified one.
+//  * tipping band: a sustained lateral load F at COM height H needs a normal
+//    shift F*H/(m*g) across the base to balance the moment; on a foundation
+//    that sinks s the usable half-base is B - s. Measured: 2 N at COM on a
+//    20 mm base, 110 mm wall (shift 11 mm > 10-10 mm usable) toppled; the
+//    squat family (B8 inner block, B 50 mm) stands. B9_TIP_MARGIN_M is the declared
+//    boundary tolerance; values between the smallest qualified and largest
+//    refused geometry are UNQUALIFIED, not silently allowed.
+static constexpr double B9_SINK_MIN_M = 0.010;
+static constexpr double B9_SLIDE_MIN_H_M = 0.050;
+static constexpr double B9_TIP_MARGIN_M = 0.002;
+static constexpr double B9_BASE_BAND_M = 0.002;   // vertices within 2 mm of the bottom face count as base
+static constexpr double B9_TILT_MAX_RAD = 0.1745; // 10 deg: stand-role runtime tilt event
+
 // ─── one part element, validated and appended (admit / place / restore) ─────
 // Shared verbatim by all three so a placed or restored part is admitted by
 // exactly the same law as an admitted one. Optional dynamic fields
 // (velocity_m_s, omega_rad_s, load_n, load_local_m, pose_R_rowmajor) carry
 // the save/restore state; admission documents omit them (spawn at rest).
 void B2Scene::parse_part_(const JVal &pj, const std::string &where,
-                          std::vector<Part> &built) {
+                          std::vector<Part> &built, double gravity) {
     if (pj.t != JVal::OBJ) throw std::runtime_error(where + ": object expected");
     req_keys(pj, {"id","mass_kg","com_local_m","inertia_com_local_kg_m2",
                   "vertices_local_m","boundary_triangles","pose_c_m","pose_q_wxyz",
                   "ground"},
              {"mu","velocity_m_s","omega_rad_s","load_n","load_local_m",
-              "pose_R_rowmajor"}, where);
+              "pose_R_rowmajor","envelope"}, where);
     Part p;
     JVal *idj = need(pj, "id", where);
     if (idj->t != JVal::STR || idj->str.empty())
@@ -435,6 +460,85 @@ void B2Scene::parse_part_(const JVal &pj, const std::string &where,
         std::vector<double> a = num_array(*l, 3, where + ".load_local_m");
         for (int i = 0; i < 3; ++i) p.load_local[i] = a[i];
     }
+    // B9 qualification envelope: named refusals BEFORE mutation (the B9_*
+    // constants carry the measured calibration of every band). The rest
+    // sink is per-SITE aware: k_site is one of n ground sites sharing the
+    // weight, so sink* = m*g / (n_sites * k_site) (rung_constants law).
+    double b9_bottom = 1e30;
+    size_t b9_nbase = 0;
+    for (size_t vi = 0; vi < nv; ++vi) {
+        double P[3]; world_vert_(p, vi, P);
+        b9_bottom = std::fmin(b9_bottom, P[1]);
+    }
+    for (size_t vi = 0; vi < nv; ++vi) {
+        double P[3]; world_vert_(p, vi, P);
+        if (P[1] <= b9_bottom + B9_BASE_BAND_M) ++b9_nbase;
+    }
+    double b9_sink = p.mass * gravity /
+                     (std::max<size_t>(b9_nbase, 1) * p.k_site);
+    {
+        if (b9_sink < B9_SINK_MIN_M - 1e-12)
+            throw std::runtime_error(where + ".ground: rest sink " + fmt(b9_sink * 1000.0) +
+                " mm is below the qualified minimum " + fmt(B9_SINK_MIN_M * 1000.0) +
+                " mm (B9: stiffer ground measured solver-unstable)");
+    }
+    if (JVal *ej = opt(pj, "envelope")) {
+        if (ej->t != JVal::OBJ) throw std::runtime_error(where + ".envelope: object expected");
+        req_keys(*ej, {}, {"max_lateral_load_n","max_approach_speed_m_s","role"},
+                 where + ".envelope");
+        p.has_env = true;
+        if (JVal *x = opt(*ej, "max_lateral_load_n")) {
+            p.env_lat_n = fnum(*x, where + ".envelope.max_lateral_load_n");
+            if (!(p.env_lat_n >= 0.0))
+                throw std::runtime_error(where + ".envelope.max_lateral_load_n: must be >= 0");
+        }
+        if (JVal *x = opt(*ej, "max_approach_speed_m_s")) {
+            p.env_speed = fnum(*x, where + ".envelope.max_approach_speed_m_s");
+            if (!(p.env_speed > 0.0))
+                throw std::runtime_error(where + ".envelope.max_approach_speed_m_s: must be > 0");
+        }
+        if (JVal *x = opt(*ej, "role")) {
+            if (x->t != JVal::STR)
+                throw std::runtime_error(where + ".envelope.role: \"stand\"|\"slide\"|\"impinge\" expected");
+            if (x->str == "stand") p.env_role = 1;
+            else if (x->str == "slide") p.env_role = 2;
+            else if (x->str == "impinge") p.env_role = 3;
+            else throw std::runtime_error(where + ".envelope.role: unknown role '" + x->str + "'");
+        }
+        if (p.env_role == 2) {   // sliding band: the squat family only
+            double lo = 1e30, hi = -1e30;
+            for (size_t vi = 0; vi < nv; ++vi) {
+                double P[3]; world_vert_(p, vi, P);
+                lo = std::fmin(lo, P[1]); hi = std::fmax(hi, P[1]);
+            }
+            if (hi - lo < B9_SLIDE_MIN_H_M - 1e-12)
+                throw std::runtime_error(where + ".envelope: sliding part is " +
+                    fmt((hi - lo) * 1000.0) + " mm tall, below the qualified sliding minimum " +
+                    fmt(B9_SLIDE_MIN_H_M * 1000.0) + " mm (B9: thin sliders measured solver-unstable)");
+        }
+        if (p.env_lat_n > 0.0) {  // tipping band for a declared lateral load
+            // p.c IS the world COM (world_vert_ convention).
+            // Usable half-base against tipping about ANY horizontal axis:
+            // the smaller of the two base half-extents (tipping rolls over
+            // the edge the load points at, not the farthest corner).
+            double H = p.c[1] - b9_bottom, ex = 0.0, ez = 0.0;
+            for (size_t vi = 0; vi < nv; ++vi) {
+                double P[3]; world_vert_(p, vi, P);
+                if (P[1] <= b9_bottom + B9_BASE_BAND_M) {
+                    ex = std::fmax(ex, std::fabs(P[0] - p.c[0]));
+                    ez = std::fmax(ez, std::fabs(P[2] - p.c[2]));
+                }
+            }
+            double B = std::fmin(ex, ez);
+            double shift = p.env_lat_n * H / (p.mass * gravity);
+            if (shift > B - b9_sink - B9_TIP_MARGIN_M)
+                throw std::runtime_error(where + ".envelope: lateral load " + fmt(p.env_lat_n) +
+                    " N at COM height " + fmt(H * 1000.0) + " mm needs " + fmt(shift * 1000.0) +
+                    " mm of normal shift across a " + fmt(B * 1000.0) + " mm base half-width on a " +
+                    fmt(b9_sink * 1000.0) + " mm-sinking foundation (B9 tipping band: base half-width must exceed " +
+                    fmt((shift + b9_sink + B9_TIP_MARGIN_M) * 1000.0) + " mm)");
+        }
+    }
     built.push_back(std::move(p));
 }
 
@@ -479,7 +583,7 @@ std::string B2Scene::admit(const std::string &json, const std::string &reason) {
         std::vector<Part> built;
         for (size_t pi = 0; pi < parts->arr.size(); ++pi)
             parse_part_(*parts->arr[pi],
-                        "scene.parts[" + std::to_string(pi) + "]", built);
+                        "scene.parts[" + std::to_string(pi) + "]", built, gravity);
 
         parts_ = std::move(built);
         welds_.clear();
@@ -681,7 +785,7 @@ std::string B2Scene::place(const std::string &json) {
         JParser jp{json.c_str(), {}, 0};
         JVal *root = jp.parse();
         std::vector<Part> built = parts_;              // transaction: edit a copy
-        parse_part_(*root, "place", built);            // throws -> parts_ untouched
+        parse_part_(*root, "place", built, gravity_);  // throws -> parts_ untouched
         parts_ = std::move(built);
         // the energy baseline restarts at the new configuration (the drift
         // instrument measures evolution AFTER each structural edit)
@@ -834,7 +938,17 @@ std::string B2Scene::save_doc_() const {
         b += ",\"velocity_m_s\":" + arr17(p.v, 3);
         b += ",\"omega_rad_s\":" + arr17(p.omega, 3);
         b += ",\"load_n\":" + arr17(p.load_F, 3);
-        b += ",\"load_local_m\":" + arr17(p.load_local, 3) + "}";
+        b += ",\"load_local_m\":" + arr17(p.load_local, 3);
+        if (p.has_env) {   // B9: the envelope travels with the part; restore revalidates it
+            b += ",\"envelope\":{";
+            bool first = true;
+            if (p.env_lat_n > 0.0) { b += "\"max_lateral_load_n\":" + g17(p.env_lat_n); first = false; }
+            if (p.env_speed > 0.0) { if (!first) b += ","; b += "\"max_approach_speed_m_s\":" + g17(p.env_speed); first = false; }
+            if (p.env_role) { if (!first) b += ",";
+                b += std::string("\"role\":\"") + (p.env_role == 1 ? "stand" : p.env_role == 2 ? "slide" : "impinge") + "\""; }
+            b += "}";
+        }
+        b += "}";
     }
     b += "],\"welds\":[";
     for (size_t i = 0; i < welds_.size(); ++i) {
@@ -956,7 +1070,7 @@ std::string B2Scene::restore(const std::string &json) {
                                      std::to_string(partsj->arr.size()));
         std::vector<Part> built;
         for (size_t i = 0; i < partsj->arr.size(); ++i)
-            parse_part_(*partsj->arr[i], "state.parts[" + std::to_string(i) + "]", built);
+            parse_part_(*partsj->arr[i], "state.parts[" + std::to_string(i) + "]", built, gravity);
 
         std::vector<Weld> welds;
         JVal *weldsj = need(*root, "welds", "state");
@@ -1907,6 +2021,14 @@ void B2Scene::process_post_(double h) {
 bool B2Scene::substep_(double h) {
     const size_t np = parts_.size();
     bs_energy_ = 0.0;   // backstop spring gauge for this substep
+    // B9: visible runtime response to envelope exit — records a named event
+    // (part, limit, measured vs declared) and NEVER mutates the physics.
+    auto env_event_ = [this](Part &p, const char *limit, double measured, double declared) {
+        ++env_events_;
+        ++env_limits_[limit];
+        env_last_ = "{\"part\":\"" + json_escape(p.id) + "\",\"limit\":\"" + limit +
+                    "\",\"measured\":" + fmt(measured) + ",\"declared\":" + fmt(declared) + "}";
+    };
     std::vector<double> F(3*np, 0.0), T(3*np, 0.0);
     for (size_t pi = 0; pi < np; ++pi) {
         Part &p = parts_[pi];
@@ -1919,6 +2041,18 @@ bool B2Scene::substep_(double h) {
             for (int k = 0; k < 3; ++k) F[3*pi+k] += p.load_F[k];
             double lt[3]; cross3(rl, p.load_F, lt);
             for (int k = 0; k < 3; ++k) T[3*pi+k] += lt[k];
+        }
+        if (p.has_env) {   // B9 watchdog: speed + stand-role tilt (support-independent)
+            double sp = std::sqrt(p.v[0]*p.v[0] + p.v[1]*p.v[1] + p.v[2]*p.v[2]);
+            if (p.env_speed > 0.0 && !p.env_ev_speed && sp > p.env_speed) {
+                p.env_ev_speed = true;
+                env_event_(p, "max_approach_speed_m_s", sp, p.env_speed);
+            }
+            if (p.env_role == 1 && !p.env_ev_tilt && p.R[4] < std::cos(B9_TILT_MAX_RAD)) {
+                double ct = std::fmin(1.0, std::fmax(-1.0, p.R[4]));
+                p.env_ev_tilt = true;
+                env_event_(p, "stand_tilt_rad", std::acos(ct), B9_TILT_MAX_RAD);
+            }
         }
         if (!support_on_) { p.ground_fn.assign(p.verts.size()/3, 0.0); continue; }
         size_t nv = p.verts.size() / 3;
@@ -1971,6 +2105,10 @@ bool B2Scene::substep_(double h) {
                     }
                 }
             }
+        }
+        if (p.has_env && !p.env_ev_stop && p.pen_step_m > B8_STOP_M) {
+            p.env_ev_stop = true;   // B9: the declared stop was crossed this substep
+            env_event_(p, "backstop_stop_m", p.pen_step_m, B8_STOP_M);
         }
         if (p.pen_step_m > p.pen_run_m) p.pen_run_m = p.pen_step_m;
     }
@@ -2220,6 +2358,17 @@ std::string B2Scene::telemetry_json() const {
          ",\"restores\":" + std::to_string(restore_count_) +
          ",\"hash_reads\":" + std::to_string(hash_count_) + "}";
     b += ",\"backstop_engagements\":" + std::to_string(bs_engagements_);
+    // B9: out-of-envelope runtime events (cumulative; tests use deltas).
+    b += ",\"out_of_envelope_events\":" + std::to_string(env_events_);
+    b += ",\"out_of_envelope_last\":" + (env_last_.empty() ? std::string("null") : env_last_);
+    b += ",\"out_of_envelope_limits\":{";
+    { bool first = true;
+      for (auto &kv : env_limits_) {
+          if (!first) b += ",";
+          first = false;
+          b += "\"" + json_escape(kv.first) + "\":" + std::to_string(kv.second);
+      } }
+    b += "}";
     b += "}";
     return b;
 }

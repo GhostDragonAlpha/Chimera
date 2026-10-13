@@ -16,6 +16,7 @@
 // single-body FALL rung is untouched — these parts own their DOFs exclusively.
 
 #include <cstdint>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -184,6 +185,15 @@ private:
         // run envelope
         double pen_run_m = 0.0;                  // max penetration since admit
         double pen_pp_run_m = 0.0;               // max part-part penetration
+        // B9 material-geometry-solver qualification envelope (optional,
+        // declared at admission; echoed in the save document so restore
+        // revalidates the same tuple). Runtime event flags fire once per
+        // part per limit; they are telemetry, never serialized.
+        bool has_env = false;
+        double env_lat_n = 0.0;                  // expected sustained lateral load at COM (N)
+        double env_speed = -1.0;                 // expected max COM speed (m/s); -1 = undeclared
+        int env_role = 0;                        // 0 none, 1 stand, 2 slide, 3 impinge
+        bool env_ev_speed = false, env_ev_stop = false, env_ev_tilt = false;
     };
 
     // Finite-area weld between parts a and b (coupon Weld { av, al, w, k }
@@ -267,7 +277,7 @@ private:
     // std::runtime_error naming the offending field on any violation, so
     // callers keep their transaction by building into a copy.
     static void parse_part_(const b2j::JVal &pj, const std::string &where,
-                            std::vector<Part> &built);
+                            std::vector<Part> &built, double gravity);
     // Canonical serialisation shared by save_json() and state_hash().
     std::string save_doc_() const;
     // Moller-Trumbore against one world triangle; nearest-t bookkeeping
@@ -317,4 +327,10 @@ private:
     // current substep's backstop spring energy, booked in stored_penalty_j_.
     mutable long bs_engagements_ = 0;
     mutable double bs_energy_ = 0.0;   // pp_pair_ is const; gauge only
+    // B9 out-of-envelope runtime events (cumulative across admits, like the
+    // backstop counter; tests use deltas). env_last_ is a JSON object naming
+    // the part, the violated limit, and measured vs declared values.
+    long env_events_ = 0;
+    std::string env_last_;
+    std::map<std::string, long> env_limits_;   // per-limit event counts
 };
