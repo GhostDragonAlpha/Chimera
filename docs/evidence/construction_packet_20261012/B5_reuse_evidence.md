@@ -42,9 +42,10 @@ clamp used; loaded by a part byte-identical (mass, inertia, µ) to the
 B4 cradle block. The deck is a **suspended span**: its soffit sits 60 mm
 above the pier tops and its corners overhang by 60 mm, so every
 deck↔pier vertex pair stays outside the 50 mm part-part contact radius —
-the only load path deck→piers is the connector. `b5_bridge_frame.png`
-shows it: piers red/green, deck blue, load yellow, each hue verified at
-its projected pixel.
+the only load path deck→piers is the connector. The bridge frame (raw
+capture deleted per `docs/evidence/CAPTURE_RETENTION.md`; digest + SHA-256
+in `CAPTURE_DIGEST_b4b5.json`) showed piers red/green, deck blue, load
+yellow, each hue verified at its projected pixel.
 
 ## Measured — partition half (compiler unchanged)
 
@@ -110,7 +111,9 @@ connector is still engaged. After the collapse: scene not diverged, one
 weld left, the load on the ground plane carrying exactly its own weight
 (0.848 N), ground still carrying the whole scene.
 
-**Frame.** `b5_bridge_frame.png` (1920×1009): projected-pixel hue probes
+**Frame.** `b5_bridge_frame.png` (1920×1009; raw capture deleted per
+`docs/evidence/CAPTURE_RETENTION.md`, digest + SHA-256 in
+`CAPTURE_DIGEST_b4b5.json`): projected-pixel hue probes
 name pier_a red (1075, 377), pier_b green (810, 413), deck blue
 (960, 344), load yellow (1014, 272); telemetry at capture: welds
 5.8978 N each = (DECK_W+LOAD_W)/2, reactions 55.1636 each,

@@ -1,0 +1,22 @@
+{
+  "policy": "../CAPTURE_RETENTION.md",
+  "note": "Raw captures deleted after extraction per capture-retention policy; sha256 rows prove exactly what was deleted. The physics each frame demonstrated is recorded as calculation at the cited passages.",
+  "captures": [
+    {
+      "file": "b4_assembly_frame.png",
+      "sha256": "6895707b8262511c30e216d908726dab39d646085d32dd6454f754cff442f938",
+      "width": 1920,
+      "height": 1009,
+      "content_fraction_64x36": 0.052,
+      "physics_recorded_in": "B4_assembly_evidence.md \"Measured (live engine...)\": 4 parts, total_weight_n 513.777168 = sum m*g; accepted edit hash 5f63918d->f7d19a58; block 60x40x60 mm rho 600 = 0.0864 kg (W 0.848 N), weld 4 anchor pairs zero preload; frame showed placed block yellow (palette slot 3) vs stack red/green/blue, pick names stable ID"
+    },
+    {
+      "file": "b5_bridge_frame.png",
+      "sha256": "7637849627c68fa08abeec80f4a114d9d8200f6a4bd9af26d863499597277bda",
+      "width": 1920,
+      "height": 1009,
+      "content_fraction_64x36": 0.049,
+      "physics_recorded_in": "B5_reuse_evidence.md \"Frame\": hue probes pier_a red (1075,377), pier_b green (810,413), deck blue (960,344), load yellow (1014,272); telemetry at capture: welds 5.8978 N each = (DECK_W+LOAD_W)/2, reactions 55.1636 each, total_reaction = total_weight = 110.3272 N, energy drift -0.026 J"
+    }
+  ]
+}

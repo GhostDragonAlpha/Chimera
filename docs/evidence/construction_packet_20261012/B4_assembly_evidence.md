@@ -41,9 +41,11 @@ analytic rest sink so its rung is active from step 0. The cradle
 connection is a weld across the gap: four anchor pairs, each one world
 point captured into both parts' local frames (zero rest length, zero
 preload — a bracket bonded into the block's core), patch centred exactly
-on the block COM. `b4_assembly_frame.png` shows the assembly: the placed
-block renders **yellow** (new palette slot 3) against the stack's
-red/green/blue, and the pick route names it by stable ID.
+on the block COM. The assembly frame (raw capture deleted per
+`docs/evidence/CAPTURE_RETENTION.md`; digest + SHA-256 in
+`CAPTURE_DIGEST_b4b5.json`) showed the placed block rendering **yellow**
+(new palette slot 3) against the stack's red/green/blue, and the pick
+route naming it by stable ID.
 
 ## Measured (live engine, Release, converged readings)
 

@@ -1,0 +1,2108 @@
+{
+  "schema": "chimera.recipe_comparison.v1",
+  "scope": "B4 cradle equilibrium; no fracture or timed-transient qualification",
+  "recipe_path": "D:\\Chimera-Maintenance\\PythonChimera\\tools\\recipe_experiments\\cradle.json",
+  "recipe_sha256": "c74ac41e99a6e1ddc50786baa52af13b830f2735f5458e10babd39dbf52d92f0",
+  "source_sha256": {
+    "D:\\Chimera-Maintenance\\PythonChimera\\tools\\recipe_experiments\\runner.py": "0c2b87166a1ae0b8fc286504ea447b1c662e9ebe8b7bc32fdf33f514fb2fff61",
+    "D:\\Chimera-Maintenance\\PythonChimera\\tools\\construction_packet\\cradle_recipe.py": "5c51e5aec8751dc212bbdd6f45a6b6dd930f63b42bd7ed587926fc0ae19538e9",
+    "D:\\Chimera-Maintenance\\PythonChimera\\tools\\construction_packet\\b2_scene_gen.py": "2f612ef2eac6cdad68aa6722d9d405f556d1fa79f30cc3d4f44edd4ec96c8733",
+    "D:\\Chimera-Maintenance\\PythonChimera\\tools\\construction_packet\\packet.py": "346fe66070a6a3fbcf694cd46b2055653ddd872e7b3b04f16927a755bb0e47e9",
+    "D:\\Chimera-Maintenance\\PythonChimera\\tools\\material_volume.py": "a4eb96e6d59c51d9c673ad6df8675639cd0b25a1652b0f6f5203de737a4327ec",
+    "D:\\Chimera-Maintenance\\PythonChimera\\tools\\python_control\\client.py": "cd0c16c1e5fad041fd230d5b093e4a0eac8bc0b0f8dc17679937acb1b015688b",
+    "D:\\Chimera-Maintenance\\.rc-def4d82d\\.tmp\\body-engine\\Release\\shaders\\compute.spv": "2a22bf45212204113f5d4b8785a52ac9eb6280b6302ade133efd5d676bbe91ab",
+    "D:\\Chimera-Maintenance\\.rc-def4d82d\\.tmp\\body-engine\\Release\\shaders\\floor.frag.spv": "bcf012a1937628bdefcc78f025846db00bd3dea8c618fbd3d66e071d1c009671",
+    "D:\\Chimera-Maintenance\\.rc-def4d82d\\.tmp\\body-engine\\Release\\shaders\\floor.vert.spv": "99f48656bdd8f1df9893b5ed561b5bf4715779d4f0ff183169cb54a59c91831e",
+    "D:\\Chimera-Maintenance\\.rc-def4d82d\\.tmp\\body-engine\\Release\\shaders\\frost_decode.spv": "fd4287fafb487d662d592ee26c7718613b516e682700af460a2b74541ef8c545",
+    "D:\\Chimera-Maintenance\\.rc-def4d82d\\.tmp\\body-engine\\Release\\shaders\\gait.spv": "36c26a9df5d095e1d01d765a16e1538dffddf5d660585b0f495c4be9ed1933a7",
+    "D:\\Chimera-Maintenance\\.rc-def4d82d\\.tmp\\body-engine\\Release\\shaders\\hinge.spv": "3a3326fe7485ad6601e8bea6f8ab584564c7898f1a0edf1ec213c416c8c64b94",
+    "D:\\Chimera-Maintenance\\.rc-def4d82d\\.tmp\\body-engine\\Release\\shaders\\joints.spv": "5c5cdc9bf230570c54c3ebab7631c16846b607da71e972c6fd1dda43e037dbb4",
+    "D:\\Chimera-Maintenance\\.rc-def4d82d\\.tmp\\body-engine\\Release\\shaders\\membrane_demo.spv": "71b5f8d37acff921ea249c74ade6d4074d79ea80d39bf03d66488f1c47c3898f",
+    "D:\\Chimera-Maintenance\\.rc-def4d82d\\.tmp\\body-engine\\Release\\shaders\\render.frag.spv": "5f8d792dbd6f2b4184aa6fb9218bb6238339a64fa40a1d638b514fa34436be40",
+    "D:\\Chimera-Maintenance\\.rc-def4d82d\\.tmp\\body-engine\\Release\\shaders\\render.vert.spv": "a36b5acc73a3a01086d2dc0fa1d24c2b7c7d2c7f0985058f9531c403449ae8a9",
+    "D:\\Chimera-Maintenance\\.rc-def4d82d\\.tmp\\body-engine\\Release\\shaders\\render_tri.frag.spv": "a26c2ec8b473be0a36c4e43292706358a3fd9ce09a75bdca5a28e6aa877b5cd6",
+    "D:\\Chimera-Maintenance\\.rc-def4d82d\\.tmp\\body-engine\\Release\\shaders\\render_tri.vert.spv": "c0e931b30514f3c8cde707199ddd1ee246e93958b37bbb441f2dc11d991c7079",
+    "D:\\Chimera-Maintenance\\.rc-def4d82d\\.tmp\\body-engine\\Release\\shaders\\render_tri_edge.frag.spv": "59f7213e2ee27bec45840fa48c99bada928af0638736f7f9d6f5383c7d47957d",
+    "D:\\Chimera-Maintenance\\.rc-def4d82d\\.tmp\\body-engine\\Release\\shaders\\render_tri_frost.frag.spv": "7ea15d358ecf1fa35eafdead08032a3c8c1e2218bc7c05f5391c2a34cf52e8af",
+    "D:\\Chimera-Maintenance\\.rc-def4d82d\\.tmp\\body-engine\\Release\\shaders\\render_tri_shadow.frag.spv": "77d591d5e4714f216cf8c65b0867385c289393cb1b1eebd801cf1e61d4525a8e",
+    "D:\\Chimera-Maintenance\\.rc-def4d82d\\.tmp\\body-engine\\Release\\shaders\\render_tri_shadow.vert.spv": "f0caad5f6ca9a079b706c0a97efe0e2178135d331c4d1ac7abca8406d1ff2ba3",
+    "D:\\Chimera-Maintenance\\.rc-def4d82d\\.tmp\\body-engine\\Release\\shaders\\skin.spv": "7e3d5580c5e8442946dabac7e7d7aca16dcbf6983c7a0f6e8c4ccf765b0af8f3",
+    "D:\\Chimera-Maintenance\\.rc-def4d82d\\.tmp\\body-engine\\Release\\shaders\\sort.spv": "a582577800675712c9ec614af1504b3078b5c3cd5be03d11a17ee8516b79e177",
+    "D:\\Chimera-Maintenance\\.rc-def4d82d\\.tmp\\body-engine\\Release\\shaders\\ui.frag.spv": "eb1f89e00ba352d3662132be8d86dbdd43d032ec562bb209eb01afa62b9b0fd6",
+    "D:\\Chimera-Maintenance\\.rc-def4d82d\\.tmp\\body-engine\\Release\\shaders\\ui.vert.spv": "6163718742b52974a5b5119aacb42294d4454d86375ec9daa1f60d4b5b51b97d",
+    "D:\\Chimera-Maintenance\\.rc-def4d82d\\.tmp\\body-engine\\Release\\shaders\\volp.spv": "4d4c3c7e8139c64fb0ec000db97977e15e41ab355cce9b3c772e2f80f486d877",
+    "D:\\Chimera-Maintenance\\.rc-def4d82d\\.tmp\\body-engine\\Release\\shaders\\water_color.spv": "78165aa62ae6b8eac82f37c2c20c39b42a767627110621d384134a62ee18d017",
+    "D:\\Chimera-Maintenance\\.rc-def4d82d\\.tmp\\body-engine\\Release\\shaders\\water_depth.spv": "5cc325a665e46278e0c9c208605523ba48b41ddd398e15546d78066c8618f6b0",
+    "D:\\Chimera-Maintenance\\.rc-def4d82d\\.tmp\\body-engine\\Release\\shaders\\water_occ.spv": "a28781dc32dcf8b1c8bf315cd2fac09d6552b6088396c4ae4a2f12c51cbd75d8",
+    "D:\\Chimera-Maintenance\\.rc-def4d82d\\.tmp\\body-engine\\Release\\shaders\\water_vis.spv": "72f422800dd0a8032fe5dfc1590610eac2159dc85ad06d1346a7ca3eab79f38d"
+  },
+  "native_path": "D:\\Chimera-Maintenance\\.rc-def4d82d\\.tmp\\body-engine\\Release\\chimera_engine.exe",
+  "native_sha256": "b2fd55366f5309740f2d57fa052e3da020d04c13c7b0a026443572c7c68c5e22",
+  "spec": {
+    "schema": "chimera.recipe_experiment.v1",
+    "recipe": "b4_cradle",
+    "load_n": 0.4,
+    "variants": [
+      {
+        "id": "soft",
+        "stiffness_n_per_m": 1000
+      },
+      {
+        "id": "stiff",
+        "stiffness_n_per_m": 20000
+      }
+    ],
+    "repeats": 2,
+    "settling": {
+      "min_sim_s": 2.0,
+      "max_sim_s": 10.0,
+      "window_sim_s": 0.5,
+      "speed_max_m_s": 0.001,
+      "position_span_max_m": 2e-06,
+      "force_span_max_n": 0.002
+    },
+    "force_reference_tolerance_n": 0.02,
+    "repeat_relative_tolerance": 0.05
+  },
+  "trials": [
+    {
+      "variant": {
+        "id": "soft",
+        "stiffness_n_per_m": 1000
+      },
+      "repeat": 0,
+      "restored_hash": "805af3e4185fcf0d",
+      "final_hash": "18e5490ef353c629",
+      "force_n": 0.365492255,
+      "reference_force_n": 0.3687457041125471,
+      "force_reference_error_n": 0.003253449112547102,
+      "equivalent_extension_m": 0.000365492255,
+      "settling": {
+        "state": {
+          "ok": true,
+          "schema": "chimera.b2_scene.v1",
+          "active": true,
+          "diverged": false,
+          "steps": 17255,
+          "dt_substep_s": 0.00025,
+          "gravity_m_s2": 9.81,
+          "gravity_on": true,
+          "support_on": true,
+          "paused": true,
+          "total_weight_n": 513.777168,
+          "total_reaction_n": 513.377168,
+          "max_penetration_m": 0.0179380435,
+          "energy_j": 49.5740486,
+          "energy_drift_j": 8.1126986e-05,
+          "admission_reason": "B3 stack: three dissimilar layers (granite/steel/timber), loose variant | rung: rest sink 1 cm, zeta 0.7, per part | spawn: pre-sunk to analytic rest",
+          "welds": [
+            {
+              "a": "layer_base_granite",
+              "b": "cradle_block",
+              "n_anchors": 4,
+              "k_n_per_m": 1000,
+              "c_n_s_per_m": 10,
+              "force_n": 0.365492255
+            }
+          ],
+          "parts": [
+            {
+              "id": "layer_base_granite",
+              "mass_kg": 29.16,
+              "weight_n": 286.0596,
+              "reaction_n": 512.564092,
+              "contacts_active": 4,
+              "pen_step_m": 0.0179377661,
+              "pen_run_m": 0.0179380435,
+              "contact_pp_n": 226.869982,
+              "contacts_pp_active": 4,
+              "pen_pp_run_m": 0.00893928666,
+              "mu": 0.5,
+              "load_n": [
+                0,
+                0,
+                0
+              ],
+              "site_reactions_n": [
+                128.281752,
+                128.000291,
+                0,
+                0,
+                128.281755,
+                128.000294,
+                0,
+                0
+              ],
+              "com_m": [
+                0.149992134,
+                0.0420819121,
+                0.149999999
+              ],
+              "speed_m_s": 1.87889836e-10,
+              "pose_q_wxyz": [
+                0.999999998,
+                7.70708352e-10,
+                2.38150452e-09,
+                6.55949279e-05
+              ],
+              "ground": {
+                "k_n_per_m": 7151.49,
+                "c_n_s_per_m": 319.661305
+              }
+            },
+            {
+              "id": "layer_mid_steel",
+              "mass_kg": 22.608,
+              "weight_n": 221.78448,
+              "reaction_n": 0,
+              "contacts_active": 0,
+              "pen_step_m": 0.00893513539,
+              "pen_run_m": 0,
+              "contact_pp_n": 231.955486,
+              "contacts_pp_active": 8,
+              "pen_pp_run_m": 0.00893928666,
+              "mu": 0.4,
+              "load_n": [
+                0,
+                0,
+                0
+              ],
+              "site_reactions_n": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "com_m": [
+                0.149975047,
+                0.143147279,
+                0.149999999
+              ],
+              "speed_m_s": 1.1684901e-06,
+              "pose_q_wxyz": [
+                0.999999998,
+                8.77554626e-10,
+                2.38140866e-09,
+                6.76950322e-05
+              ],
+              "ground": {
+                "k_n_per_m": 5544.612,
+                "c_n_s_per_m": 247.836172
+              }
+            },
+            {
+              "id": "layer_top_timber",
+              "mass_kg": 0.5184,
+              "weight_n": 5.085504,
+              "reaction_n": 0,
+              "contacts_active": 0,
+              "pen_step_m": 0.000448345838,
+              "pen_run_m": 0,
+              "contact_pp_n": 5.08550395,
+              "contacts_pp_active": 4,
+              "pen_pp_run_m": 0.000448599802,
+              "mu": 0.3,
+              "load_n": [
+                0,
+                0,
+                0
+              ],
+              "site_reactions_n": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "com_m": [
+                0.149961429,
+                0.23269896,
+                0.149999999
+              ],
+              "speed_m_s": 1.84784391e-06,
+              "pose_q_wxyz": [
+                0.999999998,
+                8.9510329e-10,
+                2.38134624e-09,
+                6.78452361e-05
+              ],
+              "ground": {
+                "k_n_per_m": 127.1376,
+                "c_n_s_per_m": 5.68286764
+              }
+            },
+            {
+              "id": "cradle_block",
+              "mass_kg": 0.0864,
+              "weight_n": 0.847584,
+              "reaction_n": 0.813076255,
+              "contacts_active": 4,
+              "pen_step_m": 0.00959641836,
+              "pen_run_m": 0.01,
+              "contact_pp_n": 0,
+              "contacts_pp_active": 0,
+              "pen_pp_run_m": 0,
+              "mu": 0.3,
+              "load_n": [
+                0,
+                0.4,
+                0
+              ],
+              "site_reactions_n": [
+                0.203344264,
+                0.203215558,
+                0,
+                0,
+                0.20332257,
+                0.203193863,
+                0,
+                0
+              ],
+              "com_m": [
+                0.369996349,
+                0.0104071306,
+                0.149999989
+              ],
+              "speed_m_s": 2.05940964e-08,
+              "pose_q_wxyz": [
+                0.999999999,
+                -8.49040684e-06,
+                1.28559861e-09,
+                5.06601873e-05
+              ],
+              "ground": {
+                "k_n_per_m": 21.1896,
+                "c_n_s_per_m": 0.947144606
+              }
+            }
+          ],
+          "pools": {
+            "parts": [
+              4,
+              6
+            ],
+            "welds": [
+              1,
+              15
+            ],
+            "chambers": [
+              0,
+              6
+            ],
+            "valves": [
+              0,
+              12
+            ],
+            "heat": [
+              0,
+              12
+            ],
+            "pistons": [
+              0,
+              6
+            ]
+          },
+          "display": {
+            "lod": 0,
+            "display_tris": 48,
+            "physical_tris": 48
+          },
+          "round_trips": {
+            "saves": 1,
+            "restores": 1,
+            "hash_reads": 2
+          },
+          "backstop_engagements": 0
+        },
+        "clock": {
+          "ok": true,
+          "schema": "chimera.b2_clock.v1",
+          "thread": true,
+          "running": true,
+          "ticks": 1380,
+          "sim_s": 4.1189844,
+          "active_wall_s": 4.1189844,
+          "sim_over_wall": 1,
+          "catchup_clamps": 0,
+          "slow_ticks": 0,
+          "max_gap_ms": 3.7114,
+          "wake_budget_ms": 2,
+          "catchup_bound_s": 0.05,
+          "substep_s": 0.00025,
+          "scene_active": true,
+          "paused": true
+        },
+        "window": [
+          {
+            "t": 1.5153797,
+            "speed": 5.15810615e-08,
+            "com": [
+              0.369996363,
+              0.0104071305,
+              0.149999978
+            ],
+            "force": 0.365492262
+          },
+          {
+            "t": 1.5663795,
+            "speed": 4.69234363e-08,
+            "com": [
+              0.369996361,
+              0.0104071305,
+              0.149999979
+            ],
+            "force": 0.365492261
+          },
+          {
+            "t": 1.6398261,
+            "speed": 4.30303823e-08,
+            "com": [
+              0.369996359,
+              0.0104071305,
+              0.149999981
+            ],
+            "force": 0.36549226
+          },
+          {
+            "t": 1.7169287,
+            "speed": 3.63161134e-08,
+            "com": [
+              0.369996356,
+              0.0104071305,
+              0.149999983
+            ],
+            "force": 0.365492259
+          },
+          {
+            "t": 1.7674358,
+            "speed": 3.31307766e-08,
+            "com": [
+              0.369996354,
+              0.0104071305,
+              0.149999984
+            ],
+            "force": 0.365492258
+          },
+          {
+            "t": 1.8369676999999998,
+            "speed": 3.02822976e-08,
+            "com": [
+              0.369996353,
+              0.0104071305,
+              0.149999985
+            ],
+            "force": 0.365492257
+          },
+          {
+            "t": 1.8879677,
+            "speed": 2.690302e-08,
+            "com": [
+              0.369996352,
+              0.0104071306,
+              0.149999987
+            ],
+            "force": 0.365492257
+          },
+          {
+            "t": 1.9397869999999995,
+            "speed": 2.46104827e-08,
+            "com": [
+              0.36999635,
+              0.0104071306,
+              0.149999988
+            ],
+            "force": 0.365492256
+          },
+          {
+            "t": 1.9934457,
+            "speed": 2.25346401e-08,
+            "com": [
+              0.369996349,
+              0.0104071306,
+              0.149999988
+            ],
+            "force": 0.365492256
+          },
+          {
+            "t": 2.0439982000000003,
+            "speed": 2.05940964e-08,
+            "com": [
+              0.369996349,
+              0.0104071306,
+              0.149999989
+            ],
+            "force": 0.365492255
+          }
+        ],
+        "start_clock": {
+          "ok": true,
+          "schema": "chimera.b2_clock.v1",
+          "thread": true,
+          "running": true,
+          "ticks": 694,
+          "sim_s": 2.0749862,
+          "active_wall_s": 2.0749862,
+          "sim_over_wall": 1,
+          "catchup_clamps": 0,
+          "slow_ticks": 0,
+          "max_gap_ms": 3.7102,
+          "wake_budget_ms": 2,
+          "catchup_bound_s": 0.05,
+          "substep_s": 0.00025,
+          "scene_active": true,
+          "paused": false
+        }
+      },
+      "passed": true,
+      "capture_seq": 0
+    },
+    {
+      "variant": {
+        "id": "stiff",
+        "stiffness_n_per_m": 20000
+      },
+      "repeat": 0,
+      "restored_hash": "805af3e4185fcf0d",
+      "final_hash": "900aba595d196ae5",
+      "force_n": 0.394518624,
+      "reference_force_n": 0.3983119856696907,
+      "force_reference_error_n": 0.0037933616696907424,
+      "equivalent_extension_m": 1.9725931199999998e-05,
+      "settling": {
+        "state": {
+          "ok": true,
+          "schema": "chimera.b2_scene.v1",
+          "active": true,
+          "diverged": false,
+          "steps": 17217,
+          "dt_substep_s": 0.00025,
+          "gravity_m_s2": 9.81,
+          "gravity_on": true,
+          "support_on": true,
+          "paused": true,
+          "total_weight_n": 513.777168,
+          "total_reaction_n": 513.377168,
+          "max_penetration_m": 0.0179386076,
+          "energy_j": 49.57398,
+          "energy_drift_j": 1.25858601e-05,
+          "admission_reason": "B3 stack: three dissimilar layers (granite/steel/timber), loose variant | rung: rest sink 1 cm, zeta 0.7, per part | spawn: pre-sunk to analytic rest",
+          "welds": [
+            {
+              "a": "layer_base_granite",
+              "b": "cradle_block",
+              "n_anchors": 4,
+              "k_n_per_m": 20000,
+              "c_n_s_per_m": 10,
+              "force_n": 0.394518624
+            }
+          ],
+          "parts": [
+            {
+              "id": "layer_base_granite",
+              "mass_kg": 29.16,
+              "weight_n": 286.0596,
+              "reaction_n": 512.535065,
+              "contacts_active": 4,
+              "pen_step_m": 0.0179383136,
+              "pen_run_m": 0.0179386076,
+              "contact_pp_n": 226.869982,
+              "contacts_pp_active": 4,
+              "pen_pp_run_m": 0.00893934487,
+              "mu": 0.5,
+              "load_n": [
+                0,
+                0,
+                0
+              ],
+              "site_reactions_n": [
+                128.28567,
+                127.981862,
+                0,
+                0,
+                128.28567,
+                127.981863,
+                0,
+                0
+              ],
+              "com_m": [
+                0.149991508,
+                0.0420829267,
+                0.15
+              ],
+              "speed_m_s": 5.03690729e-13,
+              "pose_q_wxyz": [
+                0.999999997,
+                8.0654407e-11,
+                2.39767897e-10,
+                7.08028761e-05
+              ],
+              "ground": {
+                "k_n_per_m": 7151.49,
+                "c_n_s_per_m": 319.661305
+              }
+            },
+            {
+              "id": "layer_mid_steel",
+              "mass_kg": 22.608,
+              "weight_n": 221.78448,
+              "reaction_n": 0,
+              "contacts_active": 0,
+              "pen_step_m": 0.00893517539,
+              "pen_run_m": 0,
+              "contact_pp_n": 231.955486,
+              "contacts_pp_active": 8,
+              "pen_pp_run_m": 0.00893934487,
+              "mu": 0.4,
+              "load_n": [
+                0,
+                0,
+                0
+              ],
+              "site_reactions_n": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "com_m": [
+                0.149973073,
+                0.143148294,
+                0.15
+              ],
+              "speed_m_s": 1.26136137e-06,
+              "pose_q_wxyz": [
+                0.999999997,
+                9.2079091e-11,
+                2.39756936e-10,
+                7.30697199e-05
+              ],
+              "ground": {
+                "k_n_per_m": 5544.612,
+                "c_n_s_per_m": 247.836172
+              }
+            },
+            {
+              "id": "layer_top_timber",
+              "mass_kg": 0.5184,
+              "weight_n": 5.085504,
+              "reaction_n": 0,
+              "contacts_active": 0,
+              "pen_step_m": 0.000448347983,
+              "pen_run_m": 0,
+              "contact_pp_n": 5.08550395,
+              "contacts_pp_active": 4,
+              "pen_pp_run_m": 0.000448602839,
+              "mu": 0.3,
+              "load_n": [
+                0,
+                0,
+                0
+              ],
+              "site_reactions_n": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "com_m": [
+                0.149958379,
+                0.232699974,
+                0.15
+              ],
+              "speed_m_s": 1.99461182e-06,
+              "pose_q_wxyz": [
+                0.999999997,
+                9.39507441e-11,
+                2.39760214e-10,
+                7.32318494e-05
+              ],
+              "ground": {
+                "k_n_per_m": 127.1376,
+                "c_n_s_per_m": 5.68286764
+              }
+            },
+            {
+              "id": "cradle_block",
+              "mass_kg": 0.0864,
+              "weight_n": 0.847584,
+              "reaction_n": 0.842102624,
+              "contacts_active": 4,
+              "pen_step_m": 0.00993955474,
+              "pen_run_m": 0.01,
+              "contact_pp_n": 0,
+              "contacts_pp_active": 0,
+              "pen_pp_run_m": 0,
+              "mu": 0.3,
+              "load_n": [
+                0,
+                0.4,
+                0
+              ],
+              "site_reactions_n": [
+                0.210615189,
+                0.210438237,
+                0,
+                0,
+                0.210613075,
+                0.210436123,
+                0,
+                0
+              ],
+              "com_m": [
+                0.369996047,
+                0.0100646704,
+                0.15
+              ],
+              "speed_m_s": 6.91154961e-13,
+              "pose_q_wxyz": [
+                0.999999998,
+                -8.31423127e-07,
+                1.80517658e-10,
+                6.95908328e-05
+              ],
+              "ground": {
+                "k_n_per_m": 21.1896,
+                "c_n_s_per_m": 0.947144606
+              }
+            }
+          ],
+          "pools": {
+            "parts": [
+              4,
+              6
+            ],
+            "welds": [
+              1,
+              15
+            ],
+            "chambers": [
+              0,
+              6
+            ],
+            "valves": [
+              0,
+              12
+            ],
+            "heat": [
+              0,
+              12
+            ],
+            "pistons": [
+              0,
+              6
+            ]
+          },
+          "display": {
+            "lod": 0,
+            "display_tris": 48,
+            "physical_tris": 48
+          },
+          "round_trips": {
+            "saves": 2,
+            "restores": 2,
+            "hash_reads": 4
+          },
+          "backstop_engagements": 0
+        },
+        "clock": {
+          "ok": true,
+          "schema": "chimera.b2_clock.v1",
+          "thread": true,
+          "running": true,
+          "ticks": 2065,
+          "sim_s": 6.1599488,
+          "active_wall_s": 6.1599488,
+          "sim_over_wall": 1,
+          "catchup_clamps": 0,
+          "slow_ticks": 0,
+          "max_gap_ms": 3.7114,
+          "wake_budget_ms": 2,
+          "catchup_bound_s": 0.05,
+          "substep_s": 0.00025,
+          "scene_active": true,
+          "paused": true
+        },
+        "window": [
+          {
+            "t": 1.5171918999999994,
+            "speed": 4.39468078e-11,
+            "com": [
+              0.369996047,
+              0.0100646704,
+              0.15
+            ],
+            "force": 0.394518624
+          },
+          {
+            "t": 1.5932107999999996,
+            "speed": 2.11534133e-11,
+            "com": [
+              0.369996047,
+              0.0100646704,
+              0.15
+            ],
+            "force": 0.394518624
+          },
+          {
+            "t": 1.6436073999999996,
+            "speed": 1.91740433e-12,
+            "com": [
+              0.369996047,
+              0.0100646704,
+              0.15
+            ],
+            "force": 0.394518624
+          },
+          {
+            "t": 1.6975287999999997,
+            "speed": 8.98878632e-12,
+            "com": [
+              0.369996047,
+              0.0100646704,
+              0.15
+            ],
+            "force": 0.394518624
+          },
+          {
+            "t": 1.7605496999999994,
+            "speed": 5.00797433e-12,
+            "com": [
+              0.369996047,
+              0.0100646704,
+              0.15
+            ],
+            "force": 0.394518624
+          },
+          {
+            "t": 1.8231659999999996,
+            "speed": 1.25098314e-12,
+            "com": [
+              0.369996047,
+              0.0100646704,
+              0.15
+            ],
+            "force": 0.394518624
+          },
+          {
+            "t": 1.8750122999999999,
+            "speed": 1.68941002e-12,
+            "com": [
+              0.369996047,
+              0.0100646704,
+              0.15
+            ],
+            "force": 0.394518624
+          },
+          {
+            "t": 1.9255312,
+            "speed": 8.36180485e-13,
+            "com": [
+              0.369996047,
+              0.0100646704,
+              0.15
+            ],
+            "force": 0.394518624
+          },
+          {
+            "t": 1.9890020999999996,
+            "speed": 5.09568839e-13,
+            "com": [
+              0.369996047,
+              0.0100646704,
+              0.15
+            ],
+            "force": 0.394518624
+          },
+          {
+            "t": 2.040964399999999,
+            "speed": 6.91154961e-13,
+            "com": [
+              0.369996047,
+              0.0100646704,
+              0.15
+            ],
+            "force": 0.394518624
+          }
+        ],
+        "start_clock": {
+          "ok": true,
+          "schema": "chimera.b2_clock.v1",
+          "thread": true,
+          "running": true,
+          "ticks": 1380,
+          "sim_s": 4.1189844,
+          "active_wall_s": 4.1189844,
+          "sim_over_wall": 1,
+          "catchup_clamps": 0,
+          "slow_ticks": 0,
+          "max_gap_ms": 3.7114,
+          "wake_budget_ms": 2,
+          "catchup_bound_s": 0.05,
+          "substep_s": 0.00025,
+          "scene_active": true,
+          "paused": false
+        }
+      },
+      "passed": true,
+      "capture_seq": 1
+    },
+    {
+      "variant": {
+        "id": "stiff",
+        "stiffness_n_per_m": 20000
+      },
+      "repeat": 1,
+      "restored_hash": "805af3e4185fcf0d",
+      "final_hash": "5c26103f0b020336",
+      "force_n": 0.394518624,
+      "reference_force_n": 0.3983119856696907,
+      "force_reference_error_n": 0.0037933616696907424,
+      "equivalent_extension_m": 1.9725931199999998e-05,
+      "settling": {
+        "state": {
+          "ok": true,
+          "schema": "chimera.b2_scene.v1",
+          "active": true,
+          "diverged": false,
+          "steps": 17085,
+          "dt_substep_s": 0.00025,
+          "gravity_m_s2": 9.81,
+          "gravity_on": true,
+          "support_on": true,
+          "paused": true,
+          "total_weight_n": 513.777168,
+          "total_reaction_n": 513.377168,
+          "max_penetration_m": 0.0179386076,
+          "energy_j": 49.57398,
+          "energy_drift_j": 1.25872138e-05,
+          "admission_reason": "B3 stack: three dissimilar layers (granite/steel/timber), loose variant | rung: rest sink 1 cm, zeta 0.7, per part | spawn: pre-sunk to analytic rest",
+          "welds": [
+            {
+              "a": "layer_base_granite",
+              "b": "cradle_block",
+              "n_anchors": 4,
+              "k_n_per_m": 20000,
+              "c_n_s_per_m": 10,
+              "force_n": 0.394518624
+            }
+          ],
+          "parts": [
+            {
+              "id": "layer_base_granite",
+              "mass_kg": 29.16,
+              "weight_n": 286.0596,
+              "reaction_n": 512.535065,
+              "contacts_active": 4,
+              "pen_step_m": 0.0179383136,
+              "pen_run_m": 0.0179386076,
+              "contact_pp_n": 226.869982,
+              "contacts_pp_active": 4,
+              "pen_pp_run_m": 0.00893934487,
+              "mu": 0.5,
+              "load_n": [
+                0,
+                0,
+                0
+              ],
+              "site_reactions_n": [
+                128.28567,
+                127.981862,
+                0,
+                0,
+                128.28567,
+                127.981863,
+                0,
+                0
+              ],
+              "com_m": [
+                0.149991508,
+                0.0420829267,
+                0.15
+              ],
+              "speed_m_s": 5.12272914e-13,
+              "pose_q_wxyz": [
+                0.999999997,
+                8.0654405e-11,
+                2.39750955e-10,
+                7.08028761e-05
+              ],
+              "ground": {
+                "k_n_per_m": 7151.49,
+                "c_n_s_per_m": 319.661305
+              }
+            },
+            {
+              "id": "layer_mid_steel",
+              "mass_kg": 22.608,
+              "weight_n": 221.78448,
+              "reaction_n": 0,
+              "contacts_active": 0,
+              "pen_step_m": 0.00893517539,
+              "pen_run_m": 0,
+              "contact_pp_n": 231.955486,
+              "contacts_pp_active": 8,
+              "pen_pp_run_m": 0.00893934487,
+              "mu": 0.4,
+              "load_n": [
+                0,
+                0,
+                0
+              ],
+              "site_reactions_n": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "com_m": [
+                0.149973114,
+                0.143148294,
+                0.15
+              ],
+              "speed_m_s": 1.26136137e-06,
+              "pose_q_wxyz": [
+                0.999999997,
+                9.20790861e-11,
+                2.39739995e-10,
+                7.30697199e-05
+              ],
+              "ground": {
+                "k_n_per_m": 5544.612,
+                "c_n_s_per_m": 247.836172
+              }
+            },
+            {
+              "id": "layer_top_timber",
+              "mass_kg": 0.5184,
+              "weight_n": 5.085504,
+              "reaction_n": 0,
+              "contacts_active": 0,
+              "pen_step_m": 0.000448347983,
+              "pen_run_m": 0,
+              "contact_pp_n": 5.08550395,
+              "contacts_pp_active": 4,
+              "pen_pp_run_m": 0.000448602839,
+              "mu": 0.3,
+              "load_n": [
+                0,
+                0,
+                0
+              ],
+              "site_reactions_n": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "com_m": [
+                0.149958445,
+                0.232699974,
+                0.15
+              ],
+              "speed_m_s": 1.99461182e-06,
+              "pose_q_wxyz": [
+                0.999999997,
+                9.39507445e-11,
+                2.39743273e-10,
+                7.32318494e-05
+              ],
+              "ground": {
+                "k_n_per_m": 127.1376,
+                "c_n_s_per_m": 5.68286764
+              }
+            },
+            {
+              "id": "cradle_block",
+              "mass_kg": 0.0864,
+              "weight_n": 0.847584,
+              "reaction_n": 0.842102624,
+              "contacts_active": 4,
+              "pen_step_m": 0.00993955474,
+              "pen_run_m": 0.01,
+              "contact_pp_n": 0,
+              "contacts_pp_active": 0,
+              "pen_pp_run_m": 0,
+              "mu": 0.3,
+              "load_n": [
+                0,
+                0.4,
+                0
+              ],
+              "site_reactions_n": [
+                0.210615189,
+                0.210438237,
+                0,
+                0,
+                0.210613075,
+                0.210436123,
+                0,
+                0
+              ],
+              "com_m": [
+                0.369996047,
+                0.0100646704,
+                0.15
+              ],
+              "speed_m_s": 5.84906813e-13,
+              "pose_q_wxyz": [
+                0.999999998,
+                -8.31423128e-07,
+                1.8049434e-10,
+                6.95908328e-05
+              ],
+              "ground": {
+                "k_n_per_m": 21.1896,
+                "c_n_s_per_m": 0.947144606
+              }
+            }
+          ],
+          "pools": {
+            "parts": [
+              4,
+              6
+            ],
+            "welds": [
+              1,
+              15
+            ],
+            "chambers": [
+              0,
+              6
+            ],
+            "valves": [
+              0,
+              12
+            ],
+            "heat": [
+              0,
+              12
+            ],
+            "pistons": [
+              0,
+              6
+            ]
+          },
+          "display": {
+            "lod": 0,
+            "display_tris": 48,
+            "physical_tris": 48
+          },
+          "round_trips": {
+            "saves": 3,
+            "restores": 3,
+            "hash_reads": 6
+          },
+          "backstop_engagements": 0
+        },
+        "clock": {
+          "ok": true,
+          "schema": "chimera.b2_clock.v1",
+          "thread": true,
+          "running": true,
+          "ticks": 2742,
+          "sim_s": 8.1680648,
+          "active_wall_s": 8.1680648,
+          "sim_over_wall": 1,
+          "catchup_clamps": 0,
+          "slow_ticks": 0,
+          "max_gap_ms": 3.7114,
+          "wake_budget_ms": 2,
+          "catchup_bound_s": 0.05,
+          "substep_s": 0.00025,
+          "scene_active": true,
+          "paused": true
+        },
+        "window": [
+          {
+            "t": 1.4641884000000003,
+            "speed": 1.7908306e-11,
+            "com": [
+              0.369996047,
+              0.0100646704,
+              0.15
+            ],
+            "force": 0.394518624
+          },
+          {
+            "t": 1.5147479000000006,
+            "speed": 4.36071916e-11,
+            "com": [
+              0.369996047,
+              0.0100646704,
+              0.15
+            ],
+            "force": 0.394518624
+          },
+          {
+            "t": 1.568264,
+            "speed": 3.56136803e-11,
+            "com": [
+              0.369996047,
+              0.0100646704,
+              0.15
+            ],
+            "force": 0.394518624
+          },
+          {
+            "t": 1.6188782000000002,
+            "speed": 7.20886845e-12,
+            "com": [
+              0.369996047,
+              0.0100646704,
+              0.15
+            ],
+            "force": 0.394518624
+          },
+          {
+            "t": 1.6693570000000006,
+            "speed": 7.59511951e-12,
+            "com": [
+              0.369996047,
+              0.0100646704,
+              0.15
+            ],
+            "force": 0.394518624
+          },
+          {
+            "t": 1.7367727000000004,
+            "speed": 7.60626264e-12,
+            "com": [
+              0.369996047,
+              0.0100646704,
+              0.15
+            ],
+            "force": 0.394518624
+          },
+          {
+            "t": 1.7997834000000008,
+            "speed": 5.70734224e-13,
+            "com": [
+              0.369996047,
+              0.0100646704,
+              0.15
+            ],
+            "force": 0.394518624
+          },
+          {
+            "t": 1.8528013000000003,
+            "speed": 1.76691566e-12,
+            "com": [
+              0.369996047,
+              0.0100646704,
+              0.15
+            ],
+            "force": 0.394518624
+          },
+          {
+            "t": 1.9045305000000008,
+            "speed": 1.2900696e-12,
+            "com": [
+              0.369996047,
+              0.0100646704,
+              0.15
+            ],
+            "force": 0.394518624
+          },
+          {
+            "t": 1.9572634000000013,
+            "speed": 3.75857935e-13,
+            "com": [
+              0.369996047,
+              0.0100646704,
+              0.15
+            ],
+            "force": 0.394518624
+          },
+          {
+            "t": 2.0081160000000002,
+            "speed": 5.84906813e-13,
+            "com": [
+              0.369996047,
+              0.0100646704,
+              0.15
+            ],
+            "force": 0.394518624
+          }
+        ],
+        "start_clock": {
+          "ok": true,
+          "schema": "chimera.b2_clock.v1",
+          "thread": true,
+          "running": true,
+          "ticks": 2065,
+          "sim_s": 6.1599488,
+          "active_wall_s": 6.1599488,
+          "sim_over_wall": 1,
+          "catchup_clamps": 0,
+          "slow_ticks": 0,
+          "max_gap_ms": 3.7114,
+          "wake_budget_ms": 2,
+          "catchup_bound_s": 0.05,
+          "substep_s": 0.00025,
+          "scene_active": true,
+          "paused": false
+        }
+      },
+      "passed": true,
+      "capture_seq": 2
+    },
+    {
+      "variant": {
+        "id": "soft",
+        "stiffness_n_per_m": 1000
+      },
+      "repeat": 1,
+      "restored_hash": "805af3e4185fcf0d",
+      "final_hash": "d8cf8d889d65f852",
+      "force_n": 0.365492256,
+      "reference_force_n": 0.3687457041125471,
+      "force_reference_error_n": 0.003253448112547075,
+      "equivalent_extension_m": 0.00036549225600000004,
+      "settling": {
+        "state": {
+          "ok": true,
+          "schema": "chimera.b2_scene.v1",
+          "active": true,
+          "diverged": false,
+          "steps": 17121,
+          "dt_substep_s": 0.00025,
+          "gravity_m_s2": 9.81,
+          "gravity_on": true,
+          "support_on": true,
+          "paused": true,
+          "total_weight_n": 513.777168,
+          "total_reaction_n": 513.377168,
+          "max_penetration_m": 0.0179380435,
+          "energy_j": 49.5740486,
+          "energy_drift_j": 8.11281641e-05,
+          "admission_reason": "B3 stack: three dissimilar layers (granite/steel/timber), loose variant | rung: rest sink 1 cm, zeta 0.7, per part | spawn: pre-sunk to analytic rest",
+          "welds": [
+            {
+              "a": "layer_base_granite",
+              "b": "cradle_block",
+              "n_anchors": 4,
+              "k_n_per_m": 1000,
+              "c_n_s_per_m": 10,
+              "force_n": 0.365492256
+            }
+          ],
+          "parts": [
+            {
+              "id": "layer_base_granite",
+              "mass_kg": 29.16,
+              "weight_n": 286.0596,
+              "reaction_n": 512.564092,
+              "contacts_active": 4,
+              "pen_step_m": 0.0179377661,
+              "pen_run_m": 0.0179380435,
+              "contact_pp_n": 226.869982,
+              "contacts_pp_active": 4,
+              "pen_pp_run_m": 0.00893928666,
+              "mu": 0.5,
+              "load_n": [
+                0,
+                0,
+                0
+              ],
+              "site_reactions_n": [
+                128.281752,
+                128.000291,
+                0,
+                0,
+                128.281755,
+                128.000294,
+                0,
+                0
+              ],
+              "com_m": [
+                0.149992134,
+                0.0420819121,
+                0.149999999
+              ],
+              "speed_m_s": 1.9837996e-10,
+              "pose_q_wxyz": [
+                0.999999998,
+                7.64292594e-10,
+                2.36882006e-09,
+                6.55949209e-05
+              ],
+              "ground": {
+                "k_n_per_m": 7151.49,
+                "c_n_s_per_m": 319.661305
+              }
+            },
+            {
+              "id": "layer_mid_steel",
+              "mass_kg": 22.608,
+              "weight_n": 221.78448,
+              "reaction_n": 0,
+              "contacts_active": 0,
+              "pen_step_m": 0.00893513539,
+              "pen_run_m": 0,
+              "contact_pp_n": 231.955486,
+              "contacts_pp_active": 8,
+              "pen_pp_run_m": 0.00893928666,
+              "mu": 0.4,
+              "load_n": [
+                0,
+                0,
+                0
+              ],
+              "site_reactions_n": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "com_m": [
+                0.149975086,
+                0.143147279,
+                0.149999999
+              ],
+              "speed_m_s": 1.16848476e-06,
+              "pose_q_wxyz": [
+                0.999999998,
+                8.70107007e-10,
+                2.36871821e-09,
+                6.76950249e-05
+              ],
+              "ground": {
+                "k_n_per_m": 5544.612,
+                "c_n_s_per_m": 247.836172
+              }
+            },
+            {
+              "id": "layer_top_timber",
+              "mass_kg": 0.5184,
+              "weight_n": 5.085504,
+              "reaction_n": 0,
+              "contacts_active": 0,
+              "pen_step_m": 0.000448345838,
+              "pen_run_m": 0,
+              "contact_pp_n": 5.08550395,
+              "contacts_pp_active": 4,
+              "pen_pp_run_m": 0.000448599802,
+              "mu": 0.3,
+              "load_n": [
+                0,
+                0,
+                0
+              ],
+              "site_reactions_n": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "com_m": [
+                0.149961491,
+                0.23269896,
+                0.149999999
+              ],
+              "speed_m_s": 1.84784074e-06,
+              "pose_q_wxyz": [
+                0.999999998,
+                8.87488692e-10,
+                2.36865241e-09,
+                6.78452288e-05
+              ],
+              "ground": {
+                "k_n_per_m": 127.1376,
+                "c_n_s_per_m": 5.68286764
+              }
+            },
+            {
+              "id": "cradle_block",
+              "mass_kg": 0.0864,
+              "weight_n": 0.847584,
+              "reaction_n": 0.813076255,
+              "contacts_active": 4,
+              "pen_step_m": 0.00959641844,
+              "pen_run_m": 0.01,
+              "contact_pp_n": 0,
+              "contacts_pp_active": 0,
+              "pen_pp_run_m": 0,
+              "mu": 0.3,
+              "load_n": [
+                0,
+                0.4,
+                0
+              ],
+              "site_reactions_n": [
+                0.203344266,
+                0.203215481,
+                0,
+                0,
+                0.203322647,
+                0.203193862,
+                0,
+                0
+              ],
+              "com_m": [
+                0.369996349,
+                0.0104071306,
+                0.149999989
+              ],
+              "speed_m_s": 2.17495405e-08,
+              "pose_q_wxyz": [
+                0.999999999,
+                -8.4581705e-06,
+                1.26287518e-09,
+                5.06936316e-05
+              ],
+              "ground": {
+                "k_n_per_m": 21.1896,
+                "c_n_s_per_m": 0.947144606
+              }
+            }
+          ],
+          "pools": {
+            "parts": [
+              4,
+              6
+            ],
+            "welds": [
+              1,
+              15
+            ],
+            "chambers": [
+              0,
+              6
+            ],
+            "valves": [
+              0,
+              12
+            ],
+            "heat": [
+              0,
+              12
+            ],
+            "pistons": [
+              0,
+              6
+            ]
+          },
+          "display": {
+            "lod": 0,
+            "display_tris": 48,
+            "physical_tris": 48
+          },
+          "round_trips": {
+            "saves": 4,
+            "restores": 4,
+            "hash_reads": 8
+          },
+          "backstop_engagements": 0
+        },
+        "clock": {
+          "ok": true,
+          "schema": "chimera.b2_clock.v1",
+          "thread": true,
+          "running": true,
+          "ticks": 3418,
+          "sim_s": 10.1800216,
+          "active_wall_s": 10.1800216,
+          "sim_over_wall": 1,
+          "catchup_clamps": 0,
+          "slow_ticks": 0,
+          "max_gap_ms": 3.7114,
+          "wake_budget_ms": 2,
+          "catchup_bound_s": 0.05,
+          "substep_s": 0.00025,
+          "scene_active": true,
+          "paused": true
+        },
+        "window": [
+          {
+            "t": 1.4769413999999994,
+            "speed": 5.66429717e-08,
+            "com": [
+              0.369996366,
+              0.0104071305,
+              0.149999976
+            ],
+            "force": 0.365492263
+          },
+          {
+            "t": 1.529954,
+            "speed": 5.01507899e-08,
+            "com": [
+              0.369996363,
+              0.0104071305,
+              0.149999978
+            ],
+            "force": 0.365492262
+          },
+          {
+            "t": 1.5804649000000008,
+            "speed": 4.570642e-08,
+            "com": [
+              0.369996361,
+              0.0104071305,
+              0.14999998
+            ],
+            "force": 0.365492261
+          },
+          {
+            "t": 1.6440728999999994,
+            "speed": 4.17807132e-08,
+            "com": [
+              0.369996359,
+              0.0104071305,
+              0.149999981
+            ],
+            "force": 0.36549226
+          },
+          {
+            "t": 1.7071188,
+            "speed": 3.7457368e-08,
+            "com": [
+              0.369996357,
+              0.0104071305,
+              0.149999983
+            ],
+            "force": 0.365492259
+          },
+          {
+            "t": 1.7601256000000003,
+            "speed": 3.36247861e-08,
+            "com": [
+              0.369996355,
+              0.0104071305,
+              0.149999984
+            ],
+            "force": 0.365492258
+          },
+          {
+            "t": 1.8287992000000006,
+            "speed": 3.06948755e-08,
+            "com": [
+              0.369996353,
+              0.0104071305,
+              0.149999985
+            ],
+            "force": 0.365492257
+          },
+          {
+            "t": 1.8798063000000003,
+            "speed": 2.72239778e-08,
+            "com": [
+              0.369996352,
+              0.0104071306,
+              0.149999987
+            ],
+            "force": 0.365492257
+          },
+          {
+            "t": 1.9512985999999994,
+            "speed": 2.49850994e-08,
+            "com": [
+              0.369996351,
+              0.0104071306,
+              0.149999987
+            ],
+            "force": 0.365492256
+          },
+          {
+            "t": 2.0029570999999997,
+            "speed": 2.20799932e-08,
+            "com": [
+              0.369996349,
+              0.0104071306,
+              0.149999989
+            ],
+            "force": 0.365492256
+          }
+        ],
+        "start_clock": {
+          "ok": true,
+          "schema": "chimera.b2_clock.v1",
+          "thread": true,
+          "running": true,
+          "ticks": 2742,
+          "sim_s": 8.1680648,
+          "active_wall_s": 8.1680648,
+          "sim_over_wall": 1,
+          "catchup_clamps": 0,
+          "slow_ticks": 0,
+          "max_gap_ms": 3.7114,
+          "wake_budget_ms": 2,
+          "catchup_bound_s": 0.05,
+          "substep_s": 0.00025,
+          "scene_active": true,
+          "paused": false
+        }
+      },
+      "passed": true,
+      "capture_seq": 3
+    }
+  ],
+  "passed": true,
+  "shader_sha256": {
+    "shaders\\compute.spv": "2a22bf45212204113f5d4b8785a52ac9eb6280b6302ade133efd5d676bbe91ab",
+    "shaders\\floor.frag.spv": "bcf012a1937628bdefcc78f025846db00bd3dea8c618fbd3d66e071d1c009671",
+    "shaders\\floor.vert.spv": "99f48656bdd8f1df9893b5ed561b5bf4715779d4f0ff183169cb54a59c91831e",
+    "shaders\\frost_decode.spv": "fd4287fafb487d662d592ee26c7718613b516e682700af460a2b74541ef8c545",
+    "shaders\\gait.spv": "36c26a9df5d095e1d01d765a16e1538dffddf5d660585b0f495c4be9ed1933a7",
+    "shaders\\hinge.spv": "3a3326fe7485ad6601e8bea6f8ab584564c7898f1a0edf1ec213c416c8c64b94",
+    "shaders\\joints.spv": "5c5cdc9bf230570c54c3ebab7631c16846b607da71e972c6fd1dda43e037dbb4",
+    "shaders\\membrane_demo.spv": "71b5f8d37acff921ea249c74ade6d4074d79ea80d39bf03d66488f1c47c3898f",
+    "shaders\\render.frag.spv": "5f8d792dbd6f2b4184aa6fb9218bb6238339a64fa40a1d638b514fa34436be40",
+    "shaders\\render.vert.spv": "a36b5acc73a3a01086d2dc0fa1d24c2b7c7d2c7f0985058f9531c403449ae8a9",
+    "shaders\\render_tri.frag.spv": "a26c2ec8b473be0a36c4e43292706358a3fd9ce09a75bdca5a28e6aa877b5cd6",
+    "shaders\\render_tri.vert.spv": "c0e931b30514f3c8cde707199ddd1ee246e93958b37bbb441f2dc11d991c7079",
+    "shaders\\render_tri_edge.frag.spv": "59f7213e2ee27bec45840fa48c99bada928af0638736f7f9d6f5383c7d47957d",
+    "shaders\\render_tri_frost.frag.spv": "7ea15d358ecf1fa35eafdead08032a3c8c1e2218bc7c05f5391c2a34cf52e8af",
+    "shaders\\render_tri_shadow.frag.spv": "77d591d5e4714f216cf8c65b0867385c289393cb1b1eebd801cf1e61d4525a8e",
+    "shaders\\render_tri_shadow.vert.spv": "f0caad5f6ca9a079b706c0a97efe0e2178135d331c4d1ac7abca8406d1ff2ba3",
+    "shaders\\skin.spv": "7e3d5580c5e8442946dabac7e7d7aca16dcbf6983c7a0f6e8c4ccf765b0af8f3",
+    "shaders\\sort.spv": "a582577800675712c9ec614af1504b3078b5c3cd5be03d11a17ee8516b79e177",
+    "shaders\\ui.frag.spv": "eb1f89e00ba352d3662132be8d86dbdd43d032ec562bb209eb01afa62b9b0fd6",
+    "shaders\\ui.vert.spv": "6163718742b52974a5b5119aacb42294d4454d86375ec9daa1f60d4b5b51b97d",
+    "shaders\\volp.spv": "4d4c3c7e8139c64fb0ec000db97977e15e41ab355cce9b3c772e2f80f486d877",
+    "shaders\\water_color.spv": "78165aa62ae6b8eac82f37c2c20c39b42a767627110621d384134a62ee18d017",
+    "shaders\\water_depth.spv": "5cc325a665e46278e0c9c208605523ba48b41ddd398e15546d78066c8618f6b0",
+    "shaders\\water_occ.spv": "a28781dc32dcf8b1c8bf315cd2fac09d6552b6088396c4ae4a2f12c51cbd75d8",
+    "shaders\\water_vis.spv": "72f422800dd0a8032fe5dfc1590610eac2159dc85ad06d1346a7ca3eab79f38d"
+  },
+  "owned_pid": 57768,
+  "baseline_hash": "805af3e4185fcf0d",
+  "baseline_settling": {
+    "state": {
+      "ok": true,
+      "schema": "chimera.b2_scene.v1",
+      "active": true,
+      "diverged": false,
+      "steps": 8681,
+      "dt_substep_s": 0.00025,
+      "gravity_m_s2": 9.81,
+      "gravity_on": true,
+      "support_on": true,
+      "paused": true,
+      "total_weight_n": 513.777168,
+      "total_reaction_n": 513.777168,
+      "max_penetration_m": 0.0179308642,
+      "energy_j": 49.5739674,
+      "energy_drift_j": 0,
+      "admission_reason": "B3 stack: three dissimilar layers (granite/steel/timber), loose variant | rung: rest sink 1 cm, zeta 0.7, per part | spawn: pre-sunk to analytic rest",
+      "welds": [],
+      "parts": [
+        {
+          "id": "layer_base_granite",
+          "mass_kg": 29.16,
+          "weight_n": 286.0596,
+          "reaction_n": 512.929584,
+          "contacts_active": 4,
+          "pen_step_m": 0.0179308642,
+          "pen_run_m": 0.0179308642,
+          "contact_pp_n": 226.869984,
+          "contacts_pp_active": 4,
+          "pen_pp_run_m": 0.00893463143,
+          "mu": 0.5,
+          "load_n": [
+            0,
+            0,
+            0
+          ],
+          "site_reactions_n": [
+            128.232396,
+            128.232396,
+            0,
+            0,
+            128.232396,
+            128.232396,
+            0,
+            0
+          ],
+          "com_m": [
+            0.15,
+            0.0420691358,
+            0.15
+          ],
+          "speed_m_s": 1.3432328e-16,
+          "pose_q_wxyz": [
+            1,
+            -7.86343426e-18,
+            6.64091346e-37,
+            -9.28205476e-18
+          ],
+          "ground": {
+            "k_n_per_m": 7151.49,
+            "c_n_s_per_m": 319.661305
+          }
+        },
+        {
+          "id": "layer_mid_steel",
+          "mass_kg": 22.608,
+          "weight_n": 221.78448,
+          "reaction_n": 0,
+          "contacts_active": 0,
+          "pen_step_m": 0.00893463143,
+          "pen_run_m": 0,
+          "contact_pp_n": 231.955488,
+          "contacts_pp_active": 8,
+          "pen_pp_run_m": 0.00893463143,
+          "mu": 0.4,
+          "load_n": [
+            0,
+            0,
+            0
+          ],
+          "site_reactions_n": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "com_m": [
+            0.15,
+            0.143134504,
+            0.15
+          ],
+          "speed_m_s": 2.36084448e-16,
+          "pose_q_wxyz": [
+            1,
+            7.76919575e-18,
+            -3.71894251e-35,
+            -1.44206898e-17
+          ],
+          "ground": {
+            "k_n_per_m": 5544.612,
+            "c_n_s_per_m": 247.836172
+          }
+        },
+        {
+          "id": "layer_top_timber",
+          "mass_kg": 0.5184,
+          "weight_n": 5.085504,
+          "reaction_n": 0,
+          "contacts_active": 0,
+          "pen_step_m": 0.000448318804,
+          "pen_run_m": 0,
+          "contact_pp_n": 5.085504,
+          "contacts_pp_active": 4,
+          "pen_pp_run_m": 0.000448318804,
+          "mu": 0.3,
+          "load_n": [
+            0,
+            0,
+            0
+          ],
+          "site_reactions_n": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "com_m": [
+            0.15,
+            0.232686186,
+            0.15
+          ],
+          "speed_m_s": 8.78069908e-18,
+          "pose_q_wxyz": [
+            1,
+            1.34877762e-17,
+            -8.66160136e-35,
+            -1.45331319e-17
+          ],
+          "ground": {
+            "k_n_per_m": 127.1376,
+            "c_n_s_per_m": 5.68286764
+          }
+        },
+        {
+          "id": "cradle_block",
+          "mass_kg": 0.0864,
+          "weight_n": 0.847584,
+          "reaction_n": 0.847584,
+          "contacts_active": 4,
+          "pen_step_m": 0.01,
+          "pen_run_m": 0.01,
+          "contact_pp_n": 0,
+          "contacts_pp_active": 0,
+          "pen_pp_run_m": 0,
+          "mu": 0.3,
+          "load_n": [
+            0,
+            0,
+            0
+          ],
+          "site_reactions_n": [
+            0.211896,
+            0.211896,
+            0,
+            0,
+            0.211896,
+            0.211896,
+            0,
+            0
+          ],
+          "com_m": [
+            0.37,
+            0.01,
+            0.15
+          ],
+          "speed_m_s": 4.59380476e-17,
+          "pose_q_wxyz": [
+            1,
+            2.88613807e-17,
+            -1.79237601e-33,
+            1.44569701e-16
+          ],
+          "ground": {
+            "k_n_per_m": 21.1896,
+            "c_n_s_per_m": 0.947144606
+          }
+        }
+      ],
+      "pools": {
+        "parts": [
+          4,
+          6
+        ],
+        "welds": [
+          0,
+          15
+        ],
+        "chambers": [
+          0,
+          6
+        ],
+        "valves": [
+          0,
+          12
+        ],
+        "heat": [
+          0,
+          12
+        ],
+        "pistons": [
+          0,
+          6
+        ]
+      },
+      "display": {
+        "lod": 0,
+        "display_tris": 48,
+        "physical_tris": 48
+      },
+      "round_trips": {
+        "saves": 0,
+        "restores": 0,
+        "hash_reads": 0
+      },
+      "backstop_engagements": 0
+    },
+    "clock": {
+      "ok": true,
+      "schema": "chimera.b2_clock.v1",
+      "thread": true,
+      "running": true,
+      "ticks": 694,
+      "sim_s": 2.0749862,
+      "active_wall_s": 2.0749862,
+      "sim_over_wall": 1,
+      "catchup_clamps": 0,
+      "slow_ticks": 0,
+      "max_gap_ms": 3.7102,
+      "wake_budget_ms": 2,
+      "catchup_bound_s": 0.05,
+      "substep_s": 0.00025,
+      "scene_active": true,
+      "paused": true
+    },
+    "window": [
+      {
+        "t": 1.5635903,
+        "speed": 4.64199152e-17,
+        "com": [
+          0.37,
+          0.01,
+          0.15
+        ],
+        "force": 0.0
+      },
+      {
+        "t": 1.6266097,
+        "speed": 4.7544273e-17,
+        "com": [
+          0.37,
+          0.01,
+          0.15
+        ],
+        "force": 0.0
+      },
+      {
+        "t": 1.6801164,
+        "speed": 4.7544273e-17,
+        "com": [
+          0.37,
+          0.01,
+          0.15
+        ],
+        "force": 0.0
+      },
+      {
+        "t": 1.7306285,
+        "speed": 4.80261407e-17,
+        "com": [
+          0.37,
+          0.01,
+          0.15
+        ],
+        "force": 0.0
+      },
+      {
+        "t": 1.7811374999999998,
+        "speed": 4.73033392e-17,
+        "com": [
+          0.37,
+          0.01,
+          0.15
+        ],
+        "force": 0.0
+      },
+      {
+        "t": 1.8345502,
+        "speed": 4.6339604e-17,
+        "com": [
+          0.37,
+          0.01,
+          0.15
+        ],
+        "force": 0.0
+      },
+      {
+        "t": 1.885063,
+        "speed": 4.7223028e-17,
+        "com": [
+          0.37,
+          0.01,
+          0.15
+        ],
+        "force": 0.0
+      },
+      {
+        "t": 1.9486583,
+        "speed": 4.58577363e-17,
+        "com": [
+          0.37,
+          0.01,
+          0.15
+        ],
+        "force": 0.0
+      },
+      {
+        "t": 1.9995507999999997,
+        "speed": 4.69017829e-17,
+        "com": [
+          0.37,
+          0.01,
+          0.15
+        ],
+        "force": 0.0
+      },
+      {
+        "t": 2.0689924,
+        "speed": 4.59380476e-17,
+        "com": [
+          0.37,
+          0.01,
+          0.15
+        ],
+        "force": 0.0
+      }
+    ],
+    "start_clock": {
+      "ok": true,
+      "schema": "chimera.b2_clock.v1",
+      "thread": true,
+      "running": true,
+      "ticks": 1,
+      "sim_s": 0.0029992,
+      "active_wall_s": 0.0029992,
+      "sim_over_wall": 1,
+      "catchup_clamps": 0,
+      "slow_ticks": 0,
+      "max_gap_ms": 3.4777,
+      "wake_budget_ms": 2,
+      "catchup_bound_s": 0.05,
+      "substep_s": 0.00025,
+      "scene_active": true,
+      "paused": false
+    }
+  },
+  "repeat_checks": {
+    "soft": 2.736036219093807e-09,
+    "stiff": 0.0
+  },
+  "comparison": {
+    "a": "soft",
+    "b": "stiff",
+    "delta_force_n": 0.029026368999999996,
+    "delta_equivalent_extension_m": -0.0003457663238,
+    "extension_ratio_b_over_a": 0.05397085965610954
+  },
+  "direction_check": true,
+  "viewer": {
+    "ok": true,
+    "a_slot": 0,
+    "b_slot": 1,
+    "a_seq": 0,
+    "b_seq": 1
+  },
+  "log_verified": true,
+  "artifacts_sha256": {
+    "0-soft-state.json": "742a748c5fa337062bd536f31498ed2c9212177fa7ea4120f1387bbb52da3244",
+    "0-soft.png": "0c0eb7e3c247b1ddf4e1d0fd64c70859718abaafa6682e3a794434981043da14",
+    "0-stiff-state.json": "d83e0fa67af27937005ab529dc10288f4c19d88777e584f45163ec65b348d4f2",
+    "0-stiff.png": "c52f792337706f4ab982cb8a8ee533b12c459366fa3caa04b58f5c47d4cbad4b",
+    "1-soft-state.json": "f992e047761560aedc6f87da9e9300754a323ee64000d8faae4f21b2e1b48050",
+    "1-soft.png": "0c0eb7e3c247b1ddf4e1d0fd64c70859718abaafa6682e3a794434981043da14",
+    "1-stiff-state.json": "7a833ce3679f4ee2e8444d65e0f655ef0a16e27cda677267635bc38c285e7d62",
+    "1-stiff.png": "c52f792337706f4ab982cb8a8ee533b12c459366fa3caa04b58f5c47d4cbad4b",
+    "baseline.json": "bd5c8717e6ca2c8a85e3b356449a3fa4e3f73097e585ba1d4d0f8b4679d6c3c7",
+    "comparison.png": "75d92688e85a8d7118de11217f69c8ed6f15d928f80dcdcd091d17773bb50f1e"
+  },
+  "owned_process_stopped": true
+}

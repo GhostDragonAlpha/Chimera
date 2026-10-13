@@ -36,8 +36,8 @@ packet B0–B8 and states what remains outside it (§5).
 | B1 — compile irregular parts | refusals, positive volumes, mass/COM/inertia, interface orientation, no overlapping ownership, compiler checks reused | `B1_construction_packet_compile.md`, `B1_resource_inventory.json` | `test_construction_packet.py` (23) |
 | B2 — contact and attachment physical | off-center reactions/torque; slide/tip/separate/support-removal; numerical envelope measured | `B2_design_and_dof_ownership.md`, `B2_step1_statics_evidence.md`, `B2_step2_3_dynamics_evidence.md` | `test_b2_statics.py` (5) + `test_b2_dynamics.py` (8) |
 | B3 — distinct layers | shear/slip distinct; no double mass; render/pick/contact agree; delamination exposes material | `B3_layers_evidence.md` | `test_b3_layers.py` (6) |
-| B4 — interactive assembly | rejected edits preserve state; no stale selections; declared release consequence; connection explainable/improvable | `B4_assembly_evidence.md`, `b4_assembly_frame.png` | `test_b4_assembly.py` (6) |
-| B5 — reuse + broadened shape | one part/connector in multiple contexts; torus/concave/triple-junction pass; no genre-specific replacement physics | `B5_reuse_evidence.md`, `b5_bridge_frame.png` | `test_b5_bridge.py` (4) + `test_b5_shapes.py` (6) |
+| B4 — interactive assembly | rejected edits preserve state; no stale selections; declared release consequence; connection explainable/improvable | `B4_assembly_evidence.md`, `CAPTURE_DIGEST_b4b5.json` (frame digested per `docs/evidence/CAPTURE_RETENTION.md`) | `test_b4_assembly.py` (6) |
+| B5 — reuse + broadened shape | one part/connector in multiple contexts; torus/concave/triple-junction pass; no genre-specific replacement physics | `B5_reuse_evidence.md`, `CAPTURE_DIGEST_b4b5.json` | `test_b5_bridge.py` (4) + `test_b5_shapes.py` (6) |
 | B6 — working processes | inventories conserved; energy closes incl. storage/heat/flux; severing removes only its contribution | `B6_processes_evidence.md` | `test_b6_processes.py` (7) |
 | B7 — bound cost, preserve state | no routine full-state round trip; declared 4090 envelope; stable RAM/VRAM/disk plateau | `B7_bounds_evidence.md`, `B7_declared_envelope.json` | `test_b7_bounds.py` (8) |
 | B8 — acceptance gallery + §11.3 swept contact | see §2 and §3 | `B8_gallery_evidence.md` | `test_b8_gallery.py` (4) |
@@ -101,9 +101,14 @@ cannon 33 m/s; pinned statics 17.9 mm) are in `B8_gallery_evidence.md`.
 - The B7 envelope is the *declared* 4090 envelope measured on this host;
   running beside the resident LLM is a separate operating profile the plan
   names but this packet does not certify.
-- `docs/evidence/recipe_comparison_20261013/receipt.json` `native_sha256` is
-  stale by design after the B8 engine change (connector-suspended cradle;
-  physical numbers expected to reproduce on re-run).
+- The recipe-comparison receipt was re-run against the B8 candidate binary:
+  the predecessor (`recipe_comparison_20261013`) is stale **physically**,
+  not just formally — equilibrium forces shifted ≈ −0.9 % because the
+  cradle block shares its lift between ground support and connector. The
+  superseding receipt is `docs/evidence/recipe_comparison_rc1_def4d82d/`
+  (predecessor preserved byte-for-byte; see its `INDEX.md`). Construction
+  release candidate: `docs/releases/chimera-construction-v0.1.0-rc.1.md`;
+  envelope follow-on gate scoped in `B9_envelope_scope.md`.
 - Design input recorded for the next gate (not implemented): the
   **material-declared compliance envelope** — five measured failure modes in
   `B8_gallery_evidence.md` §"Design input".

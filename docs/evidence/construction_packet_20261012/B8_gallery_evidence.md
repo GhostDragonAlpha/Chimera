@@ -144,10 +144,13 @@ instead of NaN-freeze or silent explosion). Measured evidence:
 
 ## Notes
 
-- The B8 engine changes deliberately make
-  `docs/evidence/recipe_comparison_20261013/receipt.json`'s `native_sha256`
-  stale (by design — the native binary moved; the cradle is connector-suspended
-  so the receipt's physical numbers should reproduce on re-run).
+- The B8 engine changes make
+  `docs/evidence/recipe_comparison_20261013/receipt.json` stale — and the
+  re-run showed **physically**, not just formally: the cradle block rests
+  on its ground support with ground and connector sharing the lift, so the
+  contact-model change moved the equilibrium split ≈ −0.9 % (soft
+  0.368730 → 0.365492 N). The superseding receipt is
+  `docs/evidence/recipe_comparison_rc1_def4d82d/` (see its `INDEX.md`).
 - This gate commits explicit paths only (`b2_scene.{cpp,hpp}`,
   `test_b8_gallery.py`, the `test_b3_layers.py` classifier fix, this file,
   `FULL_PLAN_AUDIT.md`). Other agents' dirty files (`ui.cpp`,
