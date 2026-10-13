@@ -1,0 +1,124 @@
+{
+ "policy": "docs/evidence/CAPTURE_RETENTION.md",
+ "note": "Raw captures deleted after extraction; sha256 rows prove exactly what was deleted. The physics the captures demonstrated is the recorded calculation.",
+ "captures": [
+  {
+   "file": "0-soft.png",
+   "sha256": "0c0eb7e3c247b1ddf4e1d0fd64c70859718abaafa6682e3a794434981043da14",
+   "width": 1920,
+   "height": 1009,
+   "content_fraction_64x36": 0.055,
+   "physics": {
+    "variant": "soft",
+    "stiffness_n_per_m": 1000,
+    "weld_force_n": 0.365492255,
+    "reference_force_n": 0.3687457041125471,
+    "equivalent_extension_m": 0.000365492255,
+    "settled_com_m": [
+     0.369996349,
+     0.010407131,
+     0.149999989
+    ],
+    "settled_speed_m_s": 2.06528879e-08,
+    "save_pose_c_m": [
+     0.3699963485773608,
+     0.01040713056954068,
+     0.14999998919731883
+    ],
+    "final_state_hash": "c298b647733a6761"
+   }
+  },
+  {
+   "file": "0-stiff.png",
+   "sha256": "c52f792337706f4ab982cb8a8ee533b12c459366fa3caa04b58f5c47d4cbad4b",
+   "width": 1920,
+   "height": 1009,
+   "content_fraction_64x36": 0.055,
+   "physics": {
+    "variant": "stiff",
+    "stiffness_n_per_m": 20000,
+    "weld_force_n": 0.394518624,
+    "reference_force_n": 0.3983119856696907,
+    "equivalent_extension_m": 1.9725931199999998e-05,
+    "settled_com_m": [
+     0.369996047,
+     0.01006467,
+     0.15
+    ],
+    "settled_speed_m_s": 2.75245144e-13,
+    "save_pose_c_m": [
+     0.36999604659601143,
+     0.01006467040001875,
+     0.1499999998012191
+    ],
+    "final_state_hash": "130ca5bb3f3af3e1"
+   }
+  },
+  {
+   "file": "1-stiff.png",
+   "sha256": "c52f792337706f4ab982cb8a8ee533b12c459366fa3caa04b58f5c47d4cbad4b",
+   "width": 1920,
+   "height": 1009,
+   "content_fraction_64x36": 0.055,
+   "physics": {
+    "variant": "stiff",
+    "stiffness_n_per_m": 20000,
+    "weld_force_n": 0.394518624,
+    "reference_force_n": 0.3983119856696907,
+    "equivalent_extension_m": 1.9725931199999998e-05,
+    "settled_com_m": [
+     0.369996047,
+     0.01006467,
+     0.15
+    ],
+    "settled_speed_m_s": 3.343797e-13,
+    "save_pose_c_m": [
+     0.36999604659600244,
+     0.010064670400005152,
+     0.14999999980121925
+    ],
+    "final_state_hash": "7bbc0021d0faa32f"
+   }
+  },
+  {
+   "file": "1-soft.png",
+   "sha256": "0c0eb7e3c247b1ddf4e1d0fd64c70859718abaafa6682e3a794434981043da14",
+   "width": 1920,
+   "height": 1009,
+   "content_fraction_64x36": 0.055,
+   "physics": {
+    "variant": "soft",
+    "stiffness_n_per_m": 1000,
+    "weld_force_n": 0.365492256,
+    "reference_force_n": 0.3687457041125471,
+    "equivalent_extension_m": 0.00036549225600000004,
+    "settled_com_m": [
+     0.369996349,
+     0.010407131,
+     0.149999989
+    ],
+    "settled_speed_m_s": 2.14852793e-08,
+    "save_pose_c_m": [
+     0.36999634896464056,
+     0.01040713056745978,
+     0.14999998886433352
+    ],
+    "final_state_hash": "2ee272daf4fdbc9d"
+   }
+  },
+  {
+   "file": "comparison.png",
+   "sha256": "9ee6de91b521284bd136a352cacd39edd5f7443db4b8d6032f7539d5d728a66c",
+   "width": 1920,
+   "height": 1009,
+   "content_fraction_64x36": 0.5,
+   "physics": {
+    "demonstrates": "viewer A/B selection of the settled variants",
+    "delta_force_n": 0.029026368999999996,
+    "extension_ratio_b_over_a": 0.05397085965610954,
+    "direction_check": true,
+    "log_verified": true
+   }
+  }
+ ]
+}

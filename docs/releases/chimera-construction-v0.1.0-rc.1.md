@@ -4,22 +4,24 @@ Status: **release candidate draft**, not a release. Naming and location are
 the proposed convention (referenced from plan §13 — see "Applying the §13
 reference" below).
 
-- **Pinned source commit:** `def4d82ddf67f8116e947ae5c5f5e662988f391f`
-  ("B8: acceptance gallery closes swept contact, delayed edits,
-  retessellation"). A moving branch tip is insufficient; everything below
-  describes exactly this commit.
+- **Pinned source commit:** `27314746`
+  ("B9: material-geometry-solver qualification envelope on the resident
+  runtime"). A moving branch tip is insufficient; everything below describes
+  exactly this commit. (The draft originally pinned `def4d82d` (B8); the pin
+  advanced when B9 landed, and the receipt was rerun against the new
+  candidate binary — see §3 and `recipe_comparison_rc1_27314746/INDEX.md`.)
 - **Candidate executable:** built from a clean detached worktree at the pin —
   `cmake -S ChimeraEngine/engine -B .tmp/body-engine` then
   `cmake --build .tmp/body-engine --config Release` — SHA-256
-  `b2fd55366f5309740f2d57fa052e3da020d04c13c7b0a026443572c7c68c5e22`.
+  `6c2f97d80666fc999105a564c6bff01d0f5fa886edb855d3d1f1c4870de9906f`.
   Shader identities: `shader_sha256` in
-  `docs/evidence/recipe_comparison_rc1_def4d82d/receipt.json`.
+  `docs/evidence/recipe_comparison_rc1_27314746/receipt.json`.
 - **Launch:** `chimera_engine.exe <port> --hidden 1600 900 --no-restore`.
 
 ## 1. Scope — what this candidate does and does not qualify
 
 This candidate freezes the **construction packet** interfaces and evidence
-(B0–B8 of the plan §13 gate table and acceptance gallery). It does **not**
+(B0–B9 of the plan §13 gate table and acceptance gallery). It does **not**
 satisfy the graph's full engine-release gate: `req.engine_game_release`
 explicitly requires an objective, success/failure/recovery, operation without
 an agent, and operator/player confirmation. Those remain open (§6). The
@@ -81,9 +83,26 @@ exists.
 9. **Measured envelopes.** `B7_declared_envelope.json` (4090-class host:
    working set, frame-time window, plateau under repeated construction);
    the B2 numerical envelope report; the recipe-comparison receipt
-   (`recipe_comparison_rc1_def4d82d`, equilibrium fixture only — this
+   (`recipe_comparison_rc1_27314746`, equilibrium fixture only — this
    qualifies the equilibrium comparison, not fracture strength or transient
    behavior).
+10. **Qualification envelope (B9).** Admission, place and restore refuse
+    named bands **before mutation** (state hash invariant across refusals):
+    rest sink ≥ `B9_SINK_MIN_M = 10 mm`; sliding-role parts ≥
+    `B9_SLIDE_MIN_H_M = 50 mm` tall; declared sustained lateral load must
+    satisfy `F·H/(m·g) ≤ B − sink − 2 mm` (`B` = smaller base half-extent).
+    The optional part-document `envelope` block
+    (`max_lateral_load_n`, `max_approach_speed_m_s`,
+    `role: stand|slide|impinge`) travels with the part: echoed in the save
+    document, revalidated on restore. Post-admission exits are **visible
+    telemetry, never physics mutation**: `/tick_b2_state` reports
+    `out_of_envelope_events` (cumulative), `out_of_envelope_last`
+    (part/limit/measured/declared) and `out_of_envelope_limits`
+    (per-limit counts) for `max_approach_speed_m_s`, `backstop_stop_m` and
+    `stand_tilt_rad` (10°). Bands are calibrated on the measured B8
+    failures; geometries between the largest measured failure and the
+    smallest measured pass are **unqualified**, not silently allowed.
+    Evidence: `B9_envelope_evidence.md`, `test_b9_envelope.py`.
 
 ## 3. Format compatibility vs physical-result compatibility
 
@@ -100,24 +119,38 @@ These are different claims and this candidate keeps them separate:
   measurements are therefore **not valid** against the new binary; each
   solver change requires re-measurement, and receipts carry predecessor
   references (`recipe_comparison_rc1_def4d82d/INDEX.md`).
+- The B9 receipt rerun demonstrates the **converse**, which is the sharper
+  lesson: the B9 candidate reproduced the equilibrium numbers exactly
+  (0.365492 / 0.394519 N) and its rendered captures are **byte-identical**
+  to the predecessor's deleted originals (SHA-256 match in both
+  `CAPTURE_DIGEST.json` files) — yet the baseline state hash still differs
+  (`805af3e4…` → `fc956d5c…`). Field-by-field, only the step counter
+  (8681 → 8480, the settling loop lands on a different step under
+  wall-clock polling) and machine-epsilon residuals (1e-17…1e-33) moved.
+  The state hash is a format/serialization identity over the save document
+  — which includes the step counter — so it is not a cross-run physical
+  comparator; the measured quantities are. See
+  `recipe_comparison_rc1_27314746/INDEX.md`.
 
 ## 4. Evidence index
 
 - Gate evidence: `docs/evidence/construction_packet_20261012/`
   (`B0_baseline_and_ownership_map.md` … `B7_bounds_evidence.md`,
-  `B8_gallery_evidence.md`, `FULL_PLAN_AUDIT.md`, frames, envelope JSON).
+  `B8_gallery_evidence.md`, `B9_envelope_scope.md`,
+  `B9_envelope_evidence.md`, `FULL_PLAN_AUDIT.md`, frames, envelope JSON).
 - Batteries: `tools/construction_packet/test_b*.py` +
-  `test_construction_packet.py` — **77 passed** full regression at this
-  commit (128.18 s, sequential; disjoint engine ports).
-- Recipe comparison: `docs/evidence/recipe_comparison_rc1_def4d82d/`
-  (4 reversed-order trials, contract checks green; 29 offline
-  contract/compiler tests passed).
+  `test_construction_packet.py` — **84 passed** full regression at this
+  commit (133.20 s, sequential; disjoint engine ports).
+- Recipe comparison: `docs/evidence/recipe_comparison_rc1_27314746/`
+  (4 reversed-order trials, contract checks green, exact reproduction of
+  the `def4d82d` candidate's equilibrium; predecessor receipt preserved
+  and marked stale at `recipe_comparison_rc1_def4d82d/`).
 - Capture retention: raw image captures are digested (SHA-256 + the
   physics they demonstrated) and deleted per
   `docs/evidence/CAPTURE_RETENTION.md`; committed evidence in this chain is
   JSON-only, and the receipts' `artifacts_sha256` preserve the byte-identity
   audit of everything deleted.
-- Caveat, stated plainly: the 77-test regression was measured on the shared
+- Caveat, stated plainly: the 84-test regression was measured on the shared
   checkout's build, which differs from the candidate binary only by three
   uncommitted UI-only lines in `ui.cpp` (another agent's work, not in the
   pin). The recipe comparison was measured on the candidate binary itself.
@@ -130,6 +163,7 @@ own §13 reference line without committing that agent's work. The line to
 apply when the plan file is next clean, after the B7 gate-table row:
 
 > | B8 / gallery — acceptance gallery + §11.3 swept contact | (see gallery items 1–17) | Closed by `docs/evidence/construction_packet_20261012/B8_gallery_evidence.md`; construction release candidate `docs/releases/chimera-construction-v0.1.0-rc.1.md` |
+> | B9 — material–geometry–solver qualification envelope | named refusals before mutation; unchanged state after rejection; boundary cases; known-failure reproductions; visible runtime response to post-admission exits | Closed by `docs/evidence/construction_packet_20261012/B9_envelope_evidence.md` (battery `test_b9_envelope.py`, 7 tests; envelope contract frozen in the release candidate §2.10) |
 
 ## 6. Open blockers — visible, not hidden
 
@@ -139,22 +173,21 @@ apply when the plan file is next clean, after the B7 gate-table row:
    understands it. Operator observation can satisfy the operator-confirmation
    clause of `req.engine_game_release`; unfamiliar-player claims require
    actual unfamiliar participants. Encounter packets remain proposals.
-2. **Qualification envelope (B9).** The material–geometry–solver
-   qualification envelope is scoped but not yet declared
-   (`B9_envelope_scope.md`). Until it exists, the §2.8 approximations are
-   the only declared limits, and the measured failure modes in
-   `B8_gallery_evidence.md` (slender-wall topple, material-dependent catch
-   stability, thin sliding block) sit outside any advertised band. Known
-   failures inside an advertised envelope block the release; cases outside
-   it need explicit limits and enforcement — that is B9's job.
-3. **Transient comparisons are unqualified.** The recipe chain qualifies the
+2. **Transient comparisons are unqualified.** The recipe chain qualifies the
    equilibrium fixture only. Exact transient comparison needs its own gate:
    exact native step counts, exclusive clock ownership during trials,
    observation boundaries, state restoration, repeatability, and preserving
    every physical substep. An independent clock does not establish
    deterministic advancement or synchronized samples.
-4. **Python chain provenance.** The recipe-experiment chain
+3. **Python chain provenance.** The recipe-experiment chain
    (`tools/recipe_experiments/`, `cradle_recipe.py`, `python_control/`) is
    untracked working code, byte-verified against the predecessor run but
    not yet committed by its author; the candidate's reproducibility from the
    pin alone therefore covers the native binary, not the experiment driver.
+
+**Closed since draft:** the qualification-envelope blocker (B9) was closed
+at the pin commit itself — bands declared, refusals enforced, runtime exits
+visible (`B9_envelope_evidence.md`; contract frozen in §2.10). The measured
+B8 failure modes it existed to cover — slender-wall topple, material-
+dependent catch stability, thin sliding block — are now refused at admission
+or reported as named out-of-envelope events.

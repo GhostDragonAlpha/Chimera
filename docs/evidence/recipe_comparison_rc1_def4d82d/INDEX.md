@@ -1,11 +1,20 @@
 # Recipe-comparison evidence index — candidate `def4d82d`
 
-Date: 2026-10-12. This directory is the **current** recipe-comparison receipt
-for the construction release candidate; it supersedes
-`docs/evidence/recipe_comparison_20261013/receipt.json`, which is **stale
-relative to this candidate** — both formally (different native binary) and
-physically (the measured equilibrium numbers moved; see table). The
-predecessor's original bytes are preserved untouched at its path.
+> **STALE (2026-10-12):** superseded by
+> `docs/evidence/recipe_comparison_rc1_27314746/` — the release-candidate
+> pin advanced to the B9 commit and the receipt was rerun against the new
+> candidate binary. Solver-change reason: B9 added admission-time band
+> validation and telemetry only (no contact-solver change), and the rerun
+> **reproduced this receipt's equilibrium exactly** (0.365492 / 0.394519 N;
+> rendered captures byte-identical). Bytes preserved untouched; the table
+> below remains the record of the B8 solver shift.
+
+Date: 2026-10-12. At authoring this directory was the **current**
+recipe-comparison receipt for the construction release candidate; it
+superseded `docs/evidence/recipe_comparison_20261013/receipt.json`, which
+was **stale relative to this candidate** — both formally (different native
+binary) and physically (the measured equilibrium numbers moved; see table).
+The predecessor's original bytes are preserved untouched at its path.
 
 ## Why the predecessor is stale
 
