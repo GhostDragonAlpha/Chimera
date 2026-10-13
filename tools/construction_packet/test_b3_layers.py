@@ -319,14 +319,21 @@ class B3Layers(unittest.TestCase):
                "layer_top_timber": "blue"}
 
         def hue(p):
+            # Palette colors are strong-dominance primaries (kLayerRgb:
+            # rendered timber blue is b-r ~ 150). The scene's background
+            # gradient is a blue-gray (measured ~(54,62,86) beside the
+            # stack, b-r ~ 32): a bare "b is largest" test mislabels it
+            # timber-blue whenever the most saturated pixel in the scan
+            # radius happens to be background. Require channel dominance
+            # so "blue" means the palette, never the gradient.
             r, g, b = p
             if max(p) < 40:
                 return "background"
-            if r > g and r > b:
+            if r > g + 60 and r > b + 60:
                 return "red"
-            if g > r and g > b:
+            if g > r + 60 and g > b + 40:
                 return "green"
-            if b > r and b > g:
+            if b > r + 60 and b > g + 40:
                 return "blue"
             return "other"
 
@@ -374,7 +381,12 @@ class B3Layers(unittest.TestCase):
         pk = _post("/tick_b2_pick", json.dumps({"px": sx0 / W, "py": sy0 / H}))
         self.assertFalse(pk.get("ok", True),
                          f"vacated pixel must stop picking timber: {pk}")
-        self.assertNotEqual(hue_near(img, sx0, sy0, rad=2), "blue",
+        # per-pixel agreement: the pick ray for THIS pixel refuses timber,
+        # so THIS pixel must not render timber. (A scan radius here would
+        # wander into the timber's own silhouette edge - the part legitimately
+        # renders in the neighbouring pixels; the agreement claim is about
+        # the pixel whose ray refused, measured center pixel.)
+        self.assertNotEqual(hue(img.getpixel((int(sx0), int(sy0)))), "blue",
                             "the vacated pixel must stop rendering timber")
         st = _get("/tick_b2_state")
         newc = _part(st, "layer_top_timber")["com_m"]

@@ -260,7 +260,7 @@ private:
     // triangles of the other, one-sided penalty rung (same law as ground),
     // regularised Coulomb friction; exact Newton-3 pairs accumulated into
     // the force/torque accumulators of a and b.
-    void pp_pair_(Part &a, Part &b,
+    void pp_pair_(Part &a, Part &b, double h,
                   double *Fa, double *Ta, double *Fb, double *Tb) const;
     // Validate one part element (admission parts[] entry / place document)
     // and append it to `built`, rejecting duplicate ids. Throws
@@ -312,4 +312,9 @@ private:
     // explicit routes — never per tick. Instrumentation, not state: never
     // serialised, so the state hash is invariant across saves/reads.
     mutable long save_count_ = 0, restore_count_ = 0, hash_count_ = 0;
+    // B8 declared impact backstop (gallery item 16): engagement counter is
+    // instrumentation (never serialized, hash-invariant); bs_energy_ is the
+    // current substep's backstop spring energy, booked in stored_penalty_j_.
+    mutable long bs_engagements_ = 0;
+    mutable double bs_energy_ = 0.0;   // pp_pair_ is const; gauge only
 };

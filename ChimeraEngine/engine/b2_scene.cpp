@@ -281,6 +281,42 @@ std::vector<double> num_array(const JVal &v, size_t len, const std::string &wher
 // parts obey). Declared here so admit/restore/transactions share one number.
 static constexpr double B6_H = 1.0 / 4000.0;
 
+// B8 (acceptance gallery item 16): DECLARED IMPACT BACKSTOP. The rung
+// constants are calibrated for resting contact (a 10 mm sink under own
+// weight), so a thin part moving fast sinks through the soft penalty spring
+// and is later ejected by its stored energy - measured: a 20 mm plate
+// dropped from 1 m passed fully below the plane (COM -31 mm) before
+// returning. Plan §11.3 requires a declared swept-contact policy or a
+// qualified substep bound, measured at the smallest admitted thickness and
+// largest admitted relative motion. Policy: the ordinary one-sided rung
+// governs penetration up to B8_STOP_M; beyond it a stiff backstop rung
+// (B8_BS_K times the part/pair rung, damping ratio B8_BS_ZETA against
+// further approach) engages, ONE-WAY and VELOCITY-GATED: it resists only
+// while the contact drives deeper FASTER than B8_BS_VGATE, so it ABSORBS
+// the declared stop's energy, never returns it, and never alters a static
+// equilibrium. Both qualifiers are measured necessities: a two-way spring
+// cannoned a wedge restored 110 mm deep to 33 m/s; and an ungated catch
+// PINNED the B4 granite (whose honest rung sink under the stack load is
+// 17.9 mm, past the 15 mm stop) at the stop, chattering with solver jitter
+// and stealing the weld's load share. Static sink is the ordinary rung's
+// job; the stop is a dynamic arrestor against fast approach (tunneling),
+// not a static floor. The gate (10 cm/s) sits above every quasi-static
+// settling velocity measured here (granite sink-crossing ~3 cm/s, wedge
+// tilt ~3 mm/s, rest jitter ~0.5 mm/s) and far below any approach that
+// could tunnel (v*h per substep stays a fraction of a mm below it).
+// This is a DECLARED approximation, not an invisible thick wall: a body
+// visibly sinks to the stop depth (15 mm, 1.5x the rest sink and below
+// the 20 mm smallest admitted thickness) before the catch can act, and
+// the energy the catch absorbs is booked in stored_penalty_j_. The
+// explicit catch stays stable at the fixed substep: omega*h = sqrt(200*g/
+// REST_SINK)*h = 0.11 and c*h/m = 0.16, both << 2.
+static constexpr double B8_STOP_M = 0.015;
+static constexpr double B8_BS_K = 200.0;     // backstop stiffness multiplier
+static constexpr double B8_BS_ZETA = 0.7;    // backstop damping ratio
+static constexpr double B8_BS_VGATE = 0.1;   // catch approach-velocity gate
+// B8: coplanar-face noise floor for pair-contact candidacy (see pp_pair_).
+static constexpr double B2_FACE_TOL = 1e-4;
+
 // ─── one part element, validated and appended (admit / place / restore) ─────
 // Shared verbatim by all three so a placed or restored part is admitted by
 // exactly the same law as an admitted one. Optional dynamic fields
@@ -1503,7 +1539,7 @@ void B2Scene::world_point_(const Part &p, const double local[3], double out[3]) 
 // faces onto faces). Pair constants: mean of the two parts' rung constants
 // and friction ratios. Force pairs are exact Newton-3 (equal, opposite,
 // same line of action through the contact point).
-void B2Scene::pp_pair_(Part &a, Part &b,
+void B2Scene::pp_pair_(Part &a, Part &b, double h,
                        double *Fa, double *Ta, double *Fb, double *Tb) const {
     const double k_pp = 0.5 * (a.k_site + b.k_site);
     const double c_pp = 0.5 * (a.c_site + b.c_site);
@@ -1524,6 +1560,21 @@ void B2Scene::pp_pair_(Part &a, Part &b,
         for (size_t vi = 0; vi < nv; ++vi) {
             double P[3]; world_vert_(o, vi, P);
             bool have = false;
+            // A convex volume is the intersection of its face half-spaces, so
+            // a vertex is inside only when it is behind EVERY plane; its
+            // contact face is then the shallowest (max g) one - the face it
+            // entered through. A vertex in front of ANY plane is outside and
+            // has entered through none. Without this, a vertex laterally past
+            // a thin part sits "behind" the far face plane by more than the
+            // part's thickness and the shallowest-face rule happily picks
+            // that far face - measured: a block 0.1 mm short of a 20 mm wall
+            // was launched THROUGH it by the far face's 20 mm phantom
+            // "penetration" (n pointed outward, pushing it in). The test is
+            // on the max over ALL faces, not a per-face outside flag: a
+            // vertex grazing the entry plane inside the candidacy tolerance
+            // must still count as outside, or the far face wins again.
+            bool any = false;
+            double maxg_all = 0.0;
             double bg = 0.0, bn[3] = {0,0,0}, bq[3] = {0,0,0};
             for (size_t ti = 0; ti < nt; ++ti) {
                 double w0[3], w1[3], w2[3];
@@ -1544,7 +1595,16 @@ void B2Scene::pp_pair_(Part &a, Part &b,
                     for (int k = 0; k < 3; ++k) n[k] = -n[k];
                 double d0[3] = {P[0]-w0[0], P[1]-w0[1], P[2]-w0[2]};
                 double g = d0[0]*n[0] + d0[1]*n[1] + d0[2]*n[2];
-                if (g >= 0.0) continue;
+                if (!any || g > maxg_all) { maxg_all = g; any = true; }
+                // B8: a face is a candidate only when GENUINELY penetrated.
+                // Two boxes standing on the same ground plane have coplanar
+                // bottoms; float noise there gives g = -1e-17, and the
+                // shallowest-face rule then picks the BOTTOM face over the
+                // side face a vertex actually entered - kicking the pair
+                // vertically (measured: a block climbed a wall, the wall
+                // sank). Legitimate contacts penetrate at mm scale, orders
+                // above this 0.1 mm noise floor.
+                if (g >= -B2_FACE_TOL) continue;
                 // Contact radius: a vertex deeper than 5 cm behind a face
                 // plane is a miss, not a weld. The acceptance scenarios load
                 // faces onto faces with mm-scale penetration, while wedges
@@ -1576,6 +1636,9 @@ void B2Scene::pp_pair_(Part &a, Part &b,
                     for (int k = 0; k < 3; ++k) { bn[k] = n[k]; bq[k] = q[k]; }
                 }
             }
+            // outside the volume (in front of some plane, even within the
+            // candidacy tolerance): it entered through no face - no contact
+            if (!any || maxg_all >= -B2_FACE_TOL) continue;
             if (!have) continue;
             const double *n = bn;
             const double *q = bq;
@@ -1590,6 +1653,19 @@ void B2Scene::pp_pair_(Part &a, Part &b,
                              o.v[2]+cra[2]-s.v[2]-crb[2]};
             double gn = rel[0]*n[0] + rel[1]*n[1] + rel[2]*n[2];
             double fn = -(k_pp * g + c_pp * gn);
+            // declared backstop (see B8_STOP_M): one-way and velocity-
+            // gated - same arrestor-not-static-floor discipline as ground
+            if (g < -B8_STOP_M && gn < -B8_BS_VGATE) {
+                double kbs = B8_BS_K * k_pp;
+                double cbs = 2.0 * B8_BS_ZETA *
+                             std::sqrt(kbs * 0.5 * (a.mass + b.mass));
+                double fbs = -(kbs * (g + B8_STOP_M) +
+                               cbs * std::min(gn, 0.0));
+                if (fbs < 0.0) fbs = 0.0;
+                fn += fbs;
+                bs_energy_ += 0.5 * kbs * (g + B8_STOP_M) * (g + B8_STOP_M);
+                ++bs_engagements_;
+            }
             if (fn <= 0.0) continue;
             // normal pair: the vertex owner penetrates the surface, so
             // +fn·n goes on o at its vertex, −fn·n on s at the contact.
@@ -1601,11 +1677,22 @@ void B2Scene::pp_pair_(Part &a, Part &b,
             // friction on the surface owner acts along -rel_t; the pair
             // on o is its opposite. Regularised Coulomb: full μ·fn when
             // sliding, linearly damped inside |v_t| < 1 mm/s (sticking).
+            // B8 stability cap: an explicit sticking damper of coefficient
+            // c is explicit-Euler stable only for c*h/m_eff < 2; slender
+            // parts (large moment arm, small inertia) violated that, and
+            // the friction damper itself drove a rocking instability.
+            // Capping each contact damper at reduced-mass/(vertices*h)
+            // bounds its substep impulse below the tangential momentum it
+            // acts on, so it can never reverse that motion in one substep.
+            // The Coulomb limit μ·fn (the sliding regime) is untouched.
             if (mu_pp > 0.0) {
                 double vt[3] = {rel[0]-gn*n[0], rel[1]-gn*n[1], rel[2]-gn*n[2]};
                 double sp = std::sqrt(vt[0]*vt[0] + vt[1]*vt[1] + vt[2]*vt[2]);
                 if (sp > 1e-12) {
                     double sc = -mu_pp * fn / std::max(sp, 1e-3);
+                    double sc_cap = (a.mass * b.mass / (a.mass + b.mass))
+                                  / ((double)nv * h);
+                    if (-sc > sc_cap) sc = -sc_cap;
                     double ff[3] = {sc*vt[0], sc*vt[1], sc*vt[2]};
                     for (int k = 0; k < 3; ++k) { Fo[k] += ff[k]; Fs[k] -= ff[k]; }
                     double u1[3];
@@ -1819,6 +1906,7 @@ void B2Scene::process_post_(double h) {
 
 bool B2Scene::substep_(double h) {
     const size_t np = parts_.size();
+    bs_energy_ = 0.0;   // backstop spring gauge for this substep
     std::vector<double> F(3*np, 0.0), T(3*np, 0.0);
     for (size_t pi = 0; pi < np; ++pi) {
         Part &p = parts_[pi];
@@ -1841,6 +1929,19 @@ bool B2Scene::substep_(double h) {
             double cr[3]; cross3(p.omega, r, cr);
             double vsy = p.v[1] + cr[1];
             double fn = -(p.k_site * P[1] + p.c_site * vsy);
+            // Declared backstop (see B8_STOP_M): one-way and velocity-
+            // gated - it resists only a genuine fast approach, absorbs its
+            // energy, and leaves static equilibrium to the ordinary rung.
+            if (P[1] < -B8_STOP_M && vsy < -B8_BS_VGATE) {
+                double kbs = B8_BS_K * p.k_site;
+                double cbs = 2.0 * B8_BS_ZETA * std::sqrt(kbs * p.mass);
+                double fbs = -(kbs * (P[1] + B8_STOP_M) +
+                               cbs * std::min(vsy, 0.0));
+                if (fbs < 0.0) fbs = 0.0;
+                fn += fbs;
+                bs_energy_ += 0.5 * kbs * (P[1] + B8_STOP_M) * (P[1] + B8_STOP_M);
+                ++bs_engagements_;
+            }
             if (P[1] < 0.0 && fn > 0.0) {
                 F[3*pi+1] += fn;
                 T[3*pi] += -r[2] * fn;           // (r × (0,fn,0))_x = -r_z·fn
@@ -1856,6 +1957,13 @@ bool B2Scene::substep_(double h) {
                     double sp = std::sqrt(vt[0]*vt[0] + vt[2]*vt[2]);
                     if (sp > 1e-12) {
                         double sc = -p.mu * fn / std::max(sp, 1e-3);
+                        // B8 stability cap (same law as pp_pair_): each
+                        // site's sticking damper is bounded by an equal
+                        // share of the part mass over the substep, so its
+                        // impulse cannot reverse the vertex's tangential
+                        // motion in one substep. Sliding Coulomb untouched.
+                        double sc_cap = p.mass / ((double)nv * h);
+                        if (-sc > sc_cap) sc = -sc_cap;
                         F[3*pi] += sc*vt[0]; F[3*pi+2] += sc*vt[2];
                         double ft[3] = {sc*vt[0], 0.0, sc*vt[2]};
                         double tt[3]; cross3(r, ft, tt);
@@ -1868,7 +1976,8 @@ bool B2Scene::substep_(double h) {
     }
     for (size_t i = 0; i < np; ++i)
         for (size_t j = i + 1; j < np; ++j)
-            pp_pair_(parts_[i], parts_[j], &F[3*i], &T[3*i], &F[3*j], &T[3*j]);
+            pp_pair_(parts_[i], parts_[j], h,
+                     &F[3*i], &T[3*i], &F[3*j], &T[3*j]);
 
     // finite-area connectors: central spring-damper pairs, exact Newton-3.
     // The dashpot is along the anchor line (the same penalty-damper law as
@@ -1997,7 +2106,7 @@ double B2Scene::potential_j_() const {
     return U;
 }
 double B2Scene::stored_penalty_j_() const {
-    double E = 0.0;
+    double E = bs_energy_;   // booked backstop spring (B8 declared policy)
     for (auto &p : parts_) {
         size_t nv = p.verts.size() / 3;
         for (size_t vi = 0; vi < nv; ++vi) {
@@ -2109,7 +2218,9 @@ std::string B2Scene::telemetry_json() const {
          ",\"physical_tris\":" + std::to_string(phys_tris) + "}";
     b += ",\"round_trips\":{\"saves\":" + std::to_string(save_count_) +
          ",\"restores\":" + std::to_string(restore_count_) +
-         ",\"hash_reads\":" + std::to_string(hash_count_) + "}}";
+         ",\"hash_reads\":" + std::to_string(hash_count_) + "}";
+    b += ",\"backstop_engagements\":" + std::to_string(bs_engagements_);
+    b += "}";
     return b;
 }
 
