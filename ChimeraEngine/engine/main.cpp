@@ -221,6 +221,59 @@ static std::string route_b2(const std::string &p, const std::string &method,
     }
     if (p == "/tick_b2_hash" && method == "GET")
         return std::string("{\"ok\":true,\"state_hash\":\"") + g_tick.b2_state_hash() + "\"}";
+    // B6 working processes (GAME_PLAN §13 B6): chambers, valves, heat links,
+    // pistons, the read-only sensor, and the process-clear transaction.
+    if (p == "/tick_b2_chamber" && method == "POST") {
+        std::string why = g_tick.b2_add_chamber(req_body);
+        if (why.empty()) return "{\"ok\":true}";
+        return b2_refused_(why);
+    }
+    if (p == "/tick_b2_valve" && method == "POST") {
+        std::string why = g_tick.b2_set_valve(req_body);
+        if (why.empty()) return "{\"ok\":true}";
+        return b2_refused_(why);
+    }
+    if (p == "/tick_b2_valve_set" && method == "POST") {
+        std::string why = g_tick.b2_set_valve_open(req_body);
+        if (why.empty()) return "{\"ok\":true}";
+        return b2_refused_(why);
+    }
+    if (p == "/tick_b2_valve_remove" && method == "POST") {
+        std::string why = g_tick.b2_remove_valve(req_body);
+        if (why.empty()) return "{\"ok\":true}";
+        return b2_refused_(why);
+    }
+    if (p == "/tick_b2_valve_patch" && method == "POST") {
+        std::string why = g_tick.b2_patch_valve(req_body);
+        if (why.empty()) return "{\"ok\":true}";
+        return b2_refused_(why);
+    }
+    if (p == "/tick_b2_heat" && method == "POST") {
+        std::string why = g_tick.b2_add_heat(req_body);
+        if (why.empty()) return "{\"ok\":true}";
+        return b2_refused_(why);
+    }
+    if (p == "/tick_b2_heat_remove" && method == "POST") {
+        std::string why = g_tick.b2_remove_heat(req_body);
+        if (why.empty()) return "{\"ok\":true}";
+        return b2_refused_(why);
+    }
+    if (p == "/tick_b2_piston" && method == "POST") {
+        std::string why = g_tick.b2_add_piston(req_body);
+        if (why.empty()) return "{\"ok\":true}";
+        return b2_refused_(why);
+    }
+    if (p == "/tick_b2_piston_remove" && method == "POST") {
+        std::string why = g_tick.b2_remove_piston(req_body);
+        if (why.empty()) return "{\"ok\":true}";
+        return b2_refused_(why);
+    }
+    if (p == "/tick_b2_process_clear" && method == "POST") {
+        std::string why = g_tick.b2_process_clear();
+        if (why.empty()) return "{\"ok\":true}";
+        return b2_refused_(why);
+    }
+    if (p == "/tick_b2_process" && method == "GET") return g_tick.b2_process_telemetry_json();
     return std::string();
 }
 

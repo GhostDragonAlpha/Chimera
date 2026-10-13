@@ -106,6 +106,38 @@ public:
     // state and save/reload round-trips exactly).
     std::string state_hash() const;
 
+    // ─── B6: working processes (GAME_PLAN §13 B6) ──────────────────────────
+    // Chamber pressure/flux, valves, a finite actuator, sensors and heat
+    // transfer, each a separately qualified channel on the SAME resident
+    // scene and clock. The law is the membrane's own linear compressibility
+    // (membrane_tick.cpp: p = (v0 - v)/(kappa*v0)) generalised to inventory
+    // vs volume: P = kappa*(q - V)/V0, stored energy U = kappa*(q-V)^2/(2*V0)
+    // -- the same quadratic a spring stores, so every paired exchange closes
+    // EXACTLY against the quadratic identity dU = (P_old+P_new)/2 * dX.
+    // Chambers hold inventory q (m^3, signed); volume V = V0 plus the
+    // displacement of any coupled piston. Valves move inventory between two
+    // chambers or to/from the environment (b == "env", P_env = 0); the flux
+    // is applied to both sides in the same substep, so material inventories
+    // are conserved by construction and the ledger proves it. Pistons apply
+    // P*area along a world axis to one part (the reaction goes to the world:
+    // the chamber is built into the lair ground, like the ground rung) and
+    // are FINITE: a stroke stop zeroes the push beyond stroke, and f_max
+    // clamps it (the clamped excess is relief dissipation, tracked). Heat
+    // links move energy between chambers in exact pairs. The process
+    // telemetry is the sensor channel: read-only, state_hash-invariant.
+    // Every control validates fully before mutating (B4 transaction law).
+    std::string add_chamber(const std::string &json);      // {"id","V0_m3","kappa_Pa","q_m3"?,"T_K"?,"C_th_J_K"?}
+    std::string set_valve(const std::string &json);        // {"a","b","g_m3_Pa_s","open"?}  b: chamber id or "env"
+    std::string set_valve_open(const std::string &json);   // {"a","b","on"}
+    std::string remove_valve(const std::string &json);     // {"a","b"}
+    std::string patch_valve(const std::string &json);      // {"a","b","cost_m3"} seal an env leak, debiting inventory
+    std::string add_heat(const std::string &json);         // {"a","b","k_W_K"}
+    std::string remove_heat(const std::string &json);      // {"a","b"}
+    std::string add_piston(const std::string &json);       // {"chamber","part","axis":[3],"area_m2","stroke_m"?,"f_max_N"?}
+    std::string remove_piston(const std::string &json);    // {"chamber","part"}
+    std::string process_clear();                           // drop process state, parts untouched
+    std::string process_telemetry_json() const;            // GET /tick_b2_process (sensor: const)
+
 private:
     struct Part {
         std::string id;
@@ -152,6 +184,56 @@ private:
         double force_n = 0.0;                    // |total force| this step (telemetry)
     };
 
+    // ─── B6 process state (see the public block for the law) ───────────────
+    struct Chamber {
+        std::string id;
+        double V0 = 0.0;            // rest volume, m^3 (> 0)
+        double kappa = 0.0;         // bulk modulus, Pa (> 0)
+        double q = 0.0;             // inventory (fluid volume), m^3, signed
+        double T = 0.0;             // temperature, K
+        double C_th = 0.0;          // heat capacity, J/K (>= 0)
+        // per-step telemetry
+        double p_pa = 0.0;          // pressure this step
+        double flux_in_m3_s = 0.0;  // net volumetric flux IN this step
+    };
+    struct Valve {
+        size_t a = 0;               // chamber index
+        int b = -1;                 // chamber index, or -1 = environment
+        double g = 0.0;             // conductance, m^3/(Pa.s) (> 0)
+        bool open = true;
+        double flux_m3_s = 0.0;     // signed a->b this step (telemetry)
+        double diss_J_run = 0.0;    // chamber<->chamber: pressure energy dissipated
+        double boundary_J_run = 0.0;// chamber<->env: energy carried across the boundary
+    };
+    struct HeatLink {
+        size_t a = 0, b = 0;        // chamber indices (C_th > 0 both)
+        double k = 0.0;             // conductance, W/K (> 0)
+        double flux_W = 0.0;        // signed a->b this step
+        double moved_J_run = 0.0;   // energy moved a->b (exact pair)
+    };
+    struct Piston {
+        size_t ch = 0;              // chamber index
+        size_t part = 0;            // part index
+        double n[3] = {0, 1, 0};    // world axis (unit)
+        double area = 0.0;          // m^2 (> 0)
+        double x0 = 0.0;            // (c . n) captured at creation
+        double stroke = 0.0;        // m; 0 = unlimited
+        double f_max = 0.0;         // N; 0 = unlimited
+        double force_n = 0.0;       // applied this step, signed along n
+        double work_J_run = 0.0;    // thermodynamic work on the part: sum Pbar*dV
+        double relief_J_run = 0.0;  // clamped excess dissipated (>= 0)
+    };
+
+    // process half of one substep: forces into F/T + inventory/thermal
+    // updates before integration, work/ledger closure after.
+    void process_forces_(double h, std::vector<double> &F, std::vector<double> &T);
+    void process_post_(double h);
+    double chamber_volume_(const Chamber &c) const;   // V0 + piston displacements
+    size_t chamber_index_(const std::string &id) const;  // chambers_.size() = miss
+    int valve_index_(const std::string &a, const std::string &b) const; // -1 = miss
+    int heat_index_(const std::string &a, const std::string &b) const;  // -1 = miss
+    int piston_index_(const std::string &ch, const std::string &part) const;
+
     // one substep of all parts; returns false on divergence
     bool substep_(double h);
     // world position of authored vertex vi of p
@@ -178,6 +260,22 @@ private:
 
     std::vector<Part> parts_;
     std::vector<Weld> welds_;                    // finite-area connectors
+    std::vector<Chamber> chambers_;              // B6 pressure/flux inventories
+    std::vector<Valve> valves_;                  // B6 paired transport paths
+    std::vector<HeatLink> heat_;                 // B6 paired energy paths
+    std::vector<Piston> pistons_;                // B6 finite actuators
+    // B6 scene ledger (run totals; reset by admit/clear/process_clear)
+    double vented_m3_ = 0.0;                     // inventory lost to boundary
+                                                 // transactions (env valve, patch)
+    double diss_run_j_ = 0.0;                    // valve dissipation (ch<->ch)
+    double work_run_j_ = 0.0;                    // piston thermodynamic work
+    double boundary_run_j_ = 0.0;                // energy across the boundary
+    double inv0_m3_ = 0.0;                       // ledger baseline: sum q + vented
+    double max_resid_energy_j_ = 0.0;            // worst per-substep closure error
+    // per-substep ledger scratch, staged by process_forces_, closed by post_
+    double resid_pre_upress_ = 0.0, resid_pre_uth_ = 0.0;
+    double resid_pre_diss_ = 0.0, resid_pre_bound_ = 0.0, resid_pre_work_ = 0.0;
+    std::vector<double> resid_vpre_;             // chamber volumes at force time
     double gravity_ = 9.81;                      // m/s^2 (down)
     bool gravity_on_ = true;                     // power-removal control
     bool support_on_ = true;                     // support-removal control

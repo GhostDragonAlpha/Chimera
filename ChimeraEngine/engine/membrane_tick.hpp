@@ -196,6 +196,20 @@ public:
     std::string b2_save_json();
     std::string b2_restore(const std::string &json);
     std::string b2_state_hash();
+    // B6 working processes (b2_scene.hpp): chambers, valves, heat links,
+    // pistons, the process sensor, and the process-clear transaction. Same
+    // b2_mtx_ lane as every other B2 control; empty return = accepted.
+    std::string b2_add_chamber(const std::string &json);
+    std::string b2_set_valve(const std::string &json);
+    std::string b2_set_valve_open(const std::string &json);
+    std::string b2_remove_valve(const std::string &json);
+    std::string b2_patch_valve(const std::string &json);
+    std::string b2_add_heat(const std::string &json);
+    std::string b2_remove_heat(const std::string &json);
+    std::string b2_add_piston(const std::string &json);
+    std::string b2_remove_piston(const std::string &json);
+    std::string b2_process_clear();
+    std::string b2_process_telemetry_json();
     // The render loop drives the scene on its own: B2 is independent of
     // the membrane body, so it steps whether or not a body is loaded
     // (step() only runs with verts). b2_mtx_ alone; no seal state touched.

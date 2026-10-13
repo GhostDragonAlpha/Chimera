@@ -3671,6 +3671,51 @@ std::string MembraneTick::b2_state_hash() {
     std::lock_guard<std::mutex> lk(b2_mtx_);
     return b2_.state_hash();
 }
+// B6 working processes: same lane, same lock, same refusal convention.
+std::string MembraneTick::b2_add_chamber(const std::string &json) {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    return b2_.add_chamber(json);
+}
+std::string MembraneTick::b2_set_valve(const std::string &json) {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    return b2_.set_valve(json);
+}
+std::string MembraneTick::b2_set_valve_open(const std::string &json) {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    return b2_.set_valve_open(json);
+}
+std::string MembraneTick::b2_remove_valve(const std::string &json) {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    return b2_.remove_valve(json);
+}
+std::string MembraneTick::b2_patch_valve(const std::string &json) {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    return b2_.patch_valve(json);
+}
+std::string MembraneTick::b2_add_heat(const std::string &json) {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    return b2_.add_heat(json);
+}
+std::string MembraneTick::b2_remove_heat(const std::string &json) {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    return b2_.remove_heat(json);
+}
+std::string MembraneTick::b2_add_piston(const std::string &json) {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    return b2_.add_piston(json);
+}
+std::string MembraneTick::b2_remove_piston(const std::string &json) {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    return b2_.remove_piston(json);
+}
+std::string MembraneTick::b2_process_clear() {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    return b2_.process_clear();
+}
+std::string MembraneTick::b2_process_telemetry_json() {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    return b2_.process_telemetry_json();
+}
 
 // F1: the stance switch (the lead wires POST /tick_stance to this,
 // next to POST /tick_gravity). Everything measurable is derived here,

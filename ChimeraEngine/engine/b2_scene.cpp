@@ -275,6 +275,12 @@ std::vector<double> num_array(const JVal &v, size_t len, const std::string &wher
 
 } // namespace
 
+// B6 stability caps are stated against the engine's fixed substep: a process
+// conductance is admitted only if its explicit update cannot outrun the
+// chamber it feeds within one substep (the spirit of the rung stability the
+// parts obey). Declared here so admit/restore/transactions share one number.
+static constexpr double B6_H = 1.0 / 4000.0;
+
 // ─── one part element, validated and appended (admit / place / restore) ─────
 // Shared verbatim by all three so a placed or restored part is admitted by
 // exactly the same law as an admitted one. Optional dynamic fields
@@ -441,6 +447,11 @@ std::string B2Scene::admit(const std::string &json, const std::string &reason) {
 
         parts_ = std::move(built);
         welds_.clear();
+        // B6: a fresh scene owns no processes (the process layer follows the
+        // material: new scene, new plant). Ledger starts clean.
+        chambers_.clear(); valves_.clear(); heat_.clear(); pistons_.clear();
+        vented_m3_ = diss_run_j_ = work_run_j_ = boundary_run_j_ = inv0_m3_ = 0.0;
+        max_resid_energy_j_ = 0.0;
         gravity_ = gravity;
         gravity_on_ = true;
         support_on_ = true;
@@ -458,6 +469,9 @@ std::string B2Scene::admit(const std::string &json, const std::string &reason) {
 void B2Scene::clear() {
     parts_.clear();
     welds_.clear();
+    chambers_.clear(); valves_.clear(); heat_.clear(); pistons_.clear();
+    vented_m3_ = diss_run_j_ = work_run_j_ = boundary_run_j_ = inv0_m3_ = 0.0;
+    max_resid_energy_j_ = 0.0;
     active_ = false;
     paused_ = false;
     diverged_ = false;
@@ -666,6 +680,17 @@ std::string B2Scene::remove_part(const std::string &json) {
             keep.push_back(std::move(n));
         }
         welds_ = std::move(keep);
+        // B6: pistons driven by the released part die with it (the actuator
+        // lost its ram); survivors' part indices remap like the welds'.
+        std::vector<Piston> pkeep;
+        pkeep.reserve(pistons_.size());
+        for (auto &ps : pistons_) {
+            if (ps.part == idx) continue;
+            Piston n = ps;
+            if (n.part > idx) --n.part;
+            pkeep.push_back(n);
+        }
+        pistons_ = std::move(pkeep);
         parts_.erase(parts_.begin() + idx);
         e0_j_ = kinetic_j_() + potential_j_() + stored_penalty_j_();
         return std::string();
@@ -781,7 +806,60 @@ std::string B2Scene::save_doc_() const {
         b += ",\"anchors_local_a\":" + arr17v(wd.la);
         b += ",\"anchors_local_b\":" + arr17v(wd.lb) + "}";
     }
-    b += "]}";
+    // B6 process state: persistent identity + run totals (per-step telemetry
+    // is derived, not saved — restore + save stays bit-for-bit by omission).
+    b += "],\"chambers\":[";
+    for (size_t i = 0; i < chambers_.size(); ++i) {
+        const Chamber &c = chambers_[i];
+        if (i) b += ",";
+        b += "{\"id\":\"" + json_escape(c.id) + "\"";
+        b += ",\"V0_m3\":" + g17(c.V0);
+        b += ",\"kappa_Pa\":" + g17(c.kappa);
+        b += ",\"q_m3\":" + g17(c.q);
+        b += ",\"T_K\":" + g17(c.T);
+        b += ",\"C_th_J_K\":" + g17(c.C_th) + "}";
+    }
+    b += "],\"valves\":[";
+    for (size_t i = 0; i < valves_.size(); ++i) {
+        const Valve &v = valves_[i];
+        if (i) b += ",";
+        b += "{\"a\":\"" + json_escape(chambers_[v.a].id) +
+             "\",\"b\":\"" + (v.b < 0 ? std::string("env") : json_escape(chambers_[v.b].id)) + "\"";
+        b += ",\"g_m3_Pa_s\":" + g17(v.g);
+        b += ",\"open\":" + std::string(v.open ? "true" : "false");
+        b += ",\"diss_J_run\":" + g17(v.diss_J_run);
+        b += ",\"boundary_J_run\":" + g17(v.boundary_J_run) + "}";
+    }
+    b += "],\"heat\":[";
+    for (size_t i = 0; i < heat_.size(); ++i) {
+        const HeatLink &l = heat_[i];
+        if (i) b += ",";
+        b += "{\"a\":\"" + json_escape(chambers_[l.a].id) +
+             "\",\"b\":\"" + json_escape(chambers_[l.b].id) + "\"";
+        b += ",\"k_W_K\":" + g17(l.k);
+        b += ",\"moved_J_run\":" + g17(l.moved_J_run) + "}";
+    }
+    b += "],\"pistons\":[";
+    for (size_t i = 0; i < pistons_.size(); ++i) {
+        const Piston &ps = pistons_[i];
+        if (i) b += ",";
+        b += "{\"chamber\":\"" + json_escape(chambers_[ps.ch].id) +
+             "\",\"part\":\"" + json_escape(parts_[ps.part].id) + "\"";
+        b += ",\"axis\":" + arr17(ps.n, 3);
+        b += ",\"area_m2\":" + g17(ps.area);
+        b += ",\"x0_m\":" + g17(ps.x0);
+        b += ",\"stroke_m\":" + g17(ps.stroke);
+        b += ",\"f_max_N\":" + g17(ps.f_max);
+        b += ",\"work_J_run\":" + g17(ps.work_J_run);
+        b += ",\"relief_J_run\":" + g17(ps.relief_J_run) + "}";
+    }
+    b += "],\"ledger\":{\"vented_m3\":" + g17(vented_m3_);
+    b += ",\"diss_J\":" + g17(diss_run_j_);
+    b += ",\"work_J\":" + g17(work_run_j_);
+    b += ",\"boundary_J\":" + g17(boundary_run_j_);
+    b += ",\"inv0_m3\":" + g17(inv0_m3_);
+    b += ",\"max_resid_energy_J\":" + g17(max_resid_energy_j_) + "}";
+    b += "}";
     return b;
 }
 
@@ -806,7 +884,8 @@ std::string B2Scene::restore(const std::string &json) {
         JVal *root = jp.parse();
         if (root->t != JVal::OBJ) throw std::runtime_error("state document must be a json object");
         req_keys(*root, {"schema","gravity_m_s2","gravity_on","support_on","paused",
-                         "steps","energy0_j","reason","parts","welds"}, {}, "state");
+                         "steps","energy0_j","reason","parts","welds"},
+                 {"chambers","valves","heat","pistons","ledger"}, "state");
         JVal *schema = need(*root, "schema", "state");
         if (schema->t != JVal::STR || schema->str != "chimera.b2_state.v1")
             throw std::runtime_error("state: schema must be \"chimera.b2_state.v1\"");
@@ -888,9 +967,158 @@ std::string B2Scene::restore(const std::string &json) {
             welds.push_back(std::move(wd));
         }
 
+        // B6 process arrays: optional (a pre-B6 save restores to an empty
+        // plant), validated by exactly the law the live transactions enforce
+        // — ids resolve, conductances pass the same stability caps.
+        std::vector<Chamber> chambers;
+        auto chamber_at = [&](const std::string &id, const std::string &where) -> size_t {
+            for (size_t k = 0; k < chambers.size(); ++k)
+                if (chambers[k].id == id) return k;
+            throw std::runtime_error(where + ": no such chamber '" + id + "'");
+        };
+        if (JVal *cj = opt(*root, "chambers")) {
+            if (cj->t != JVal::ARR || cj->arr.size() > 6)
+                throw std::runtime_error("state.chambers: array of <= 6 expected");
+            for (size_t i = 0; i < cj->arr.size(); ++i) {
+                std::string where = "state.chambers[" + std::to_string(i) + "]";
+                const JVal &x = *cj->arr[i];
+                if (x.t != JVal::OBJ) throw std::runtime_error(where + ": object expected");
+                req_keys(x, {"id","V0_m3","kappa_Pa","q_m3","T_K","C_th_J_K"}, {}, where);
+                Chamber c;
+                JVal *idj = need(x, "id", where);
+                if (idj->t != JVal::STR || idj->str.empty())
+                    throw std::runtime_error(where + ".id: non-empty string expected");
+                c.id = idj->str;
+                for (auto &o : chambers)
+                    if (o.id == c.id) throw std::runtime_error(where + ".id: duplicate chamber '" + c.id + "'");
+                c.V0 = fnum(*need(x, "V0_m3", where), where + ".V0_m3");
+                if (!(c.V0 > 0.0)) throw std::runtime_error(where + ".V0_m3: must be positive");
+                c.kappa = fnum(*need(x, "kappa_Pa", where), where + ".kappa_Pa");
+                if (!(c.kappa > 0.0)) throw std::runtime_error(where + ".kappa_Pa: must be positive");
+                c.q = fnum(*need(x, "q_m3", where), where + ".q_m3");
+                c.T = fnum(*need(x, "T_K", where), where + ".T_K");
+                if (!(c.T >= 0.0)) throw std::runtime_error(where + ".T_K: must be >= 0");
+                c.C_th = fnum(*need(x, "C_th_J_K", where), where + ".C_th_J_K");
+                if (!(c.C_th >= 0.0)) throw std::runtime_error(where + ".C_th_J_K: must be >= 0");
+                chambers.push_back(std::move(c));
+            }
+        }
+        std::vector<Valve> valves;
+        if (JVal *vj = opt(*root, "valves")) {
+            if (vj->t != JVal::ARR) throw std::runtime_error("state.valves: array expected");
+            for (size_t i = 0; i < vj->arr.size(); ++i) {
+                std::string where = "state.valves[" + std::to_string(i) + "]";
+                const JVal &x = *vj->arr[i];
+                if (x.t != JVal::OBJ) throw std::runtime_error(where + ": object expected");
+                req_keys(x, {"a","b","g_m3_Pa_s","open","diss_J_run","boundary_J_run"}, {}, where);
+                JVal *aj = need(x, "a", where), *bj = need(x, "b", where);
+                if (aj->t != JVal::STR || bj->t != JVal::STR)
+                    throw std::runtime_error(where + ".a/.b: strings expected");
+                Valve v;
+                v.a = chamber_at(aj->str, where);
+                if (bj->str != "env") {
+                    v.b = (int)chamber_at(bj->str, where);
+                    if (v.b == (int)v.a) throw std::runtime_error(where + ": a valve cannot open onto itself");
+                }
+                v.g = fnum(*need(x, "g_m3_Pa_s", where), where + ".g_m3_Pa_s");
+                if (!(v.g > 0.0)) throw std::runtime_error(where + ".g_m3_Pa_s: must be positive");
+                double cap = v.g * B6_H * (chambers[v.a].kappa / chambers[v.a].V0);
+                if (v.b >= 0) cap += v.g * B6_H * (chambers[v.b].kappa / chambers[v.b].V0);
+                if (!(cap < 0.5))
+                    throw std::runtime_error(where + ": valve unstable at h=1/4000");
+                JVal *oj = need(x, "open", where);
+                if (oj->t != JVal::BOOL) throw std::runtime_error(where + ".open: boolean expected");
+                v.open = oj->bval;
+                v.diss_J_run = fnum(*need(x, "diss_J_run", where), where + ".diss_J_run");
+                v.boundary_J_run = fnum(*need(x, "boundary_J_run", where), where + ".boundary_J_run");
+                valves.push_back(v);
+            }
+        }
+        std::vector<HeatLink> heat;
+        if (JVal *hj = opt(*root, "heat")) {
+            if (hj->t != JVal::ARR) throw std::runtime_error("state.heat: array expected");
+            for (size_t i = 0; i < hj->arr.size(); ++i) {
+                std::string where = "state.heat[" + std::to_string(i) + "]";
+                const JVal &x = *hj->arr[i];
+                if (x.t != JVal::OBJ) throw std::runtime_error(where + ": object expected");
+                req_keys(x, {"a","b","k_W_K","moved_J_run"}, {}, where);
+                JVal *aj = need(x, "a", where), *bj = need(x, "b", where);
+                if (aj->t != JVal::STR || bj->t != JVal::STR)
+                    throw std::runtime_error(where + ".a/.b: strings expected");
+                HeatLink l;
+                l.a = chamber_at(aj->str, where);
+                l.b = chamber_at(bj->str, where);
+                if (l.a == l.b) throw std::runtime_error(where + ": a chamber cannot heat itself");
+                if (chambers[l.a].C_th <= 0.0 || chambers[l.b].C_th <= 0.0)
+                    throw std::runtime_error(where + ": both chambers need heat capacity");
+                l.k = fnum(*need(x, "k_W_K", where), where + ".k_W_K");
+                if (!(l.k > 0.0)) throw std::runtime_error(where + ".k_W_K: must be positive");
+                double cap = l.k * B6_H * (1.0 / chambers[l.a].C_th + 1.0 / chambers[l.b].C_th);
+                if (!(cap < 0.5))
+                    throw std::runtime_error(where + ": heat link unstable at h=1/4000");
+                l.moved_J_run = fnum(*need(x, "moved_J_run", where), where + ".moved_J_run");
+                heat.push_back(l);
+            }
+        }
+        std::vector<Piston> pistons;
+        if (JVal *pj2 = opt(*root, "pistons")) {
+            if (pj2->t != JVal::ARR) throw std::runtime_error("state.pistons: array expected");
+            for (size_t i = 0; i < pj2->arr.size(); ++i) {
+                std::string where = "state.pistons[" + std::to_string(i) + "]";
+                const JVal &x = *pj2->arr[i];
+                if (x.t != JVal::OBJ) throw std::runtime_error(where + ": object expected");
+                req_keys(x, {"chamber","part","axis","area_m2","x0_m","stroke_m","f_max_N",
+                             "work_J_run","relief_J_run"}, {}, where);
+                JVal *cj2 = need(x, "chamber", where), *pj3 = need(x, "part", where);
+                if (cj2->t != JVal::STR || pj3->t != JVal::STR)
+                    throw std::runtime_error(where + ".chamber/.part: strings expected");
+                Piston ps;
+                ps.ch = chamber_at(cj2->str, where);
+                ps.part = built.size();
+                for (size_t k = 0; k < built.size(); ++k)
+                    if (built[k].id == pj3->str) { ps.part = k; break; }
+                if (ps.part == built.size())
+                    throw std::runtime_error(where + ".part: no such part '" + pj3->str + "'");
+                std::vector<double> ax = num_array(*need(x, "axis", where), 3, where + ".axis");
+                double L = std::sqrt(ax[0]*ax[0] + ax[1]*ax[1] + ax[2]*ax[2]);
+                if (!(L > 1e-12)) throw std::runtime_error(where + ".axis: non-zero axis expected");
+                for (int k = 0; k < 3; ++k) ps.n[k] = ax[k] / L;
+                ps.area = fnum(*need(x, "area_m2", where), where + ".area_m2");
+                if (!(ps.area > 0.0)) throw std::runtime_error(where + ".area_m2: must be positive");
+                ps.x0 = fnum(*need(x, "x0_m", where), where + ".x0_m");
+                ps.stroke = fnum(*need(x, "stroke_m", where), where + ".stroke_m");
+                if (!(ps.stroke >= 0.0)) throw std::runtime_error(where + ".stroke_m: must be >= 0");
+                ps.f_max = fnum(*need(x, "f_max_N", where), where + ".f_max_N");
+                if (!(ps.f_max >= 0.0)) throw std::runtime_error(where + ".f_max_N: must be >= 0");
+                ps.work_J_run = fnum(*need(x, "work_J_run", where), where + ".work_J_run");
+                ps.relief_J_run = fnum(*need(x, "relief_J_run", where), where + ".relief_J_run");
+                pistons.push_back(ps);
+            }
+        }
+        double vented = 0.0, diss_r = 0.0, work_r = 0.0, bound_r = 0.0, inv0 = 0.0, maxres = 0.0;
+        if (JVal *lj = opt(*root, "ledger")) {
+            if (lj->t != JVal::OBJ) throw std::runtime_error("state.ledger: object expected");
+            req_keys(*lj, {"vented_m3","diss_J","work_J","boundary_J","inv0_m3","max_resid_energy_J"}, {}, "state.ledger");
+            vented = fnum(*need(*lj, "vented_m3", "state.ledger"), "state.ledger.vented_m3");
+            diss_r = fnum(*need(*lj, "diss_J", "state.ledger"), "state.ledger.diss_J");
+            work_r = fnum(*need(*lj, "work_J", "state.ledger"), "state.ledger.work_J");
+            bound_r = fnum(*need(*lj, "boundary_J", "state.ledger"), "state.ledger.boundary_J");
+            inv0 = fnum(*need(*lj, "inv0_m3", "state.ledger"), "state.ledger.inv0_m3");
+            maxres = fnum(*need(*lj, "max_resid_energy_J", "state.ledger"), "state.ledger.max_resid_energy_J");
+            if (!(maxres >= 0.0)) throw std::runtime_error("state.ledger.max_resid_energy_J: must be >= 0");
+        } else {
+            for (auto &c : chambers) inv0 += c.q;   // pre-B6-era default: fresh ledger
+        }
+
         // validated end-to-end -> swap atomically
         parts_ = std::move(built);
         welds_ = std::move(welds);
+        chambers_ = std::move(chambers);
+        valves_ = std::move(valves);
+        heat_ = std::move(heat);
+        pistons_ = std::move(pistons);
+        vented_m3_ = vented; diss_run_j_ = diss_r; work_run_j_ = work_r;
+        boundary_run_j_ = bound_r; inv0_m3_ = inv0; max_resid_energy_j_ = maxres;
         gravity_ = gravity;
         gravity_on_ = g_on;
         support_on_ = s_on;
@@ -904,6 +1132,333 @@ std::string B2Scene::restore(const std::string &json) {
     } catch (const std::exception &e) {
         return std::string(e.what());
     }
+}
+
+// ─── B6 process transactions (B4 law: validate fully, then mutate) ──────────
+std::string B2Scene::add_chamber(const std::string &json) {
+    try {
+        if (!active_) return "scene not admitted";
+        JParser jp{json.c_str(), {}, 0};
+        JVal *root = jp.parse();
+        if (root->t != JVal::OBJ) return "chamber document must be a json object";
+        req_keys(*root, {"id","V0_m3","kappa_Pa"}, {"q_m3","T_K","C_th_J_K"}, "chamber");
+        Chamber c;
+        JVal *idj = need(*root, "id", "chamber");
+        if (idj->t != JVal::STR || idj->str.empty()) return "chamber.id: non-empty string expected";
+        c.id = idj->str;
+        if (chamber_index_(c.id) != chambers_.size()) return "chamber.id: '" + c.id + "' already exists";
+        if (chambers_.size() >= 6) return "chamber: scene cap is 6 chambers";
+        c.V0 = fnum(*need(*root, "V0_m3", "chamber"), "chamber.V0_m3");
+        if (!(c.V0 > 0.0)) return "chamber.V0_m3: must be positive";
+        c.kappa = fnum(*need(*root, "kappa_Pa", "chamber"), "chamber.kappa_Pa");
+        if (!(c.kappa > 0.0)) return "chamber.kappa_Pa: must be positive";
+        if (JVal *v = opt(*root, "q_m3")) c.q = fnum(*v, "chamber.q_m3");
+        if (JVal *v = opt(*root, "T_K")) {
+            c.T = fnum(*v, "chamber.T_K");
+            if (!(c.T >= 0.0)) return "chamber.T_K: must be >= 0";
+        }
+        if (JVal *v = opt(*root, "C_th_J_K")) {
+            c.C_th = fnum(*v, "chamber.C_th_J_K");
+            if (!(c.C_th >= 0.0)) return "chamber.C_th_J_K: must be >= 0";
+        }
+        chambers_.push_back(std::move(c));
+        inv0_m3_ += chambers_.back().q;   // ledger baseline follows admitted inventory
+        return std::string();
+    } catch (const std::exception &e) { return std::string(e.what()); }
+}
+
+std::string B2Scene::set_valve(const std::string &json) {
+    try {
+        if (!active_) return "scene not admitted";
+        JParser jp{json.c_str(), {}, 0};
+        JVal *root = jp.parse();
+        if (root->t != JVal::OBJ) return "valve document must be a json object";
+        req_keys(*root, {"a","b","g_m3_Pa_s"}, {"open"}, "valve");
+        JVal *aj = need(*root, "a", "valve"), *bj = need(*root, "b", "valve");
+        if (aj->t != JVal::STR || bj->t != JVal::STR) return "valve.a/.b: strings expected";
+        size_t ia = chamber_index_(aj->str);
+        if (ia == chambers_.size()) return "valve.a: no such chamber '" + aj->str + "'";
+        int ib = -1;
+        if (bj->str != "env") {
+            size_t k = chamber_index_(bj->str);
+            if (k == chambers_.size()) return "valve.b: no such chamber '" + bj->str + "' (or \"env\")";
+            ib = (int)k;
+        }
+        if (ib >= 0 && (size_t)ib == ia) return "valve: a part cannot valve to itself";
+        double g = fnum(*need(*root, "g_m3_Pa_s", "valve"), "valve.g_m3_Pa_s");
+        if (!(g > 0.0)) return "valve.g_m3_Pa_s: must be positive";
+        // explicit-substep stability: the flux must not outrun the pressure
+        double cap = g * B6_H * (chambers_[ia].kappa / chambers_[ia].V0);
+        if (ib >= 0) cap += g * B6_H * (chambers_[ib].kappa / chambers_[ib].V0);
+        if (!(cap < 0.5))
+            return "valve.g_m3_Pa_s: unstable at h=1/4000 (g*h*(kappa_a/V0_a + kappa_b/V0_b) must be < 0.5)";
+        bool open = true;
+        if (JVal *v = opt(*root, "open")) {
+            if (v->t != JVal::BOOL) return "valve.open: boolean expected";
+            open = v->bval;
+        }
+        int ex = valve_index_(aj->str, bj->str);
+        if (ex >= 0) { valves_[ex].g = g; valves_[ex].open = open; return std::string(); }
+        Valve v; v.a = ia; v.b = ib; v.g = g; v.open = open;
+        valves_.push_back(v);
+        return std::string();
+    } catch (const std::exception &e) { return std::string(e.what()); }
+}
+
+std::string B2Scene::set_valve_open(const std::string &json) {
+    try {
+        if (!active_) return "scene not admitted";
+        JParser jp{json.c_str(), {}, 0};
+        JVal *root = jp.parse();
+        if (root->t != JVal::OBJ) return "valve document must be a json object";
+        req_keys(*root, {"a","b","on"}, {}, "valve");
+        JVal *aj = need(*root, "a", "valve"), *bj = need(*root, "b", "valve");
+        if (aj->t != JVal::STR || bj->t != JVal::STR) return "valve.a/.b: strings expected";
+        if (JVal *v = need(*root, "on", "valve"); v->t != JVal::BOOL) return "valve.on: boolean expected";
+        int ex = valve_index_(aj->str, bj->str);
+        if (ex < 0) return "valve: no valve between '" + aj->str + "' and '" + bj->str + "'";
+        valves_[ex].open = need(*root, "on", "valve")->bval;
+        return std::string();
+    } catch (const std::exception &e) { return std::string(e.what()); }
+}
+
+std::string B2Scene::remove_valve(const std::string &json) {
+    try {
+        if (!active_) return "scene not admitted";
+        JParser jp{json.c_str(), {}, 0};
+        JVal *root = jp.parse();
+        if (root->t != JVal::OBJ) return "valve document must be a json object";
+        req_keys(*root, {"a","b"}, {}, "valve");
+        JVal *aj = need(*root, "a", "valve"), *bj = need(*root, "b", "valve");
+        if (aj->t != JVal::STR || bj->t != JVal::STR) return "valve.a/.b: strings expected";
+        int ex = valve_index_(aj->str, bj->str);
+        if (ex < 0) return "valve: no valve between '" + aj->str + "' and '" + bj->str + "'";
+        valves_.erase(valves_.begin() + ex);
+        return std::string();
+    } catch (const std::exception &e) { return std::string(e.what()); }
+}
+
+// patch_valve: seal an environment leak the way a repair actually works —
+// it CONSUMES inventory (cost_m3 debited from chamber a) and removes the
+// path. It does not reset pressure or history: q keeps whatever the leak
+// left it at, minus the patch cost. Energy bookkeeping: the debit changes
+// U_press; the difference leaves with the patch material (boundary), so
+// the ledger still closes. Rejects a cost the chamber cannot pay.
+std::string B2Scene::patch_valve(const std::string &json) {
+    try {
+        if (!active_) return "scene not admitted";
+        JParser jp{json.c_str(), {}, 0};
+        JVal *root = jp.parse();
+        if (root->t != JVal::OBJ) return "patch document must be a json object";
+        req_keys(*root, {"a","b","cost_m3"}, {}, "patch");
+        JVal *aj = need(*root, "a", "patch"), *bj = need(*root, "b", "patch");
+        if (aj->t != JVal::STR || bj->t != JVal::STR) return "patch.a/.b: strings expected";
+        double cost = fnum(*need(*root, "cost_m3", "patch"), "patch.cost_m3");
+        if (!(cost > 0.0)) return "patch.cost_m3: must be positive";
+        int ex = valve_index_(aj->str, bj->str);
+        if (ex < 0) return "patch: no valve between '" + aj->str + "' and '" + bj->str + "'";
+        if (valves_[ex].b >= 0) return "patch: only environment leaks can be patched";
+        Chamber &ca = chambers_[valves_[ex].a];
+        if (cost > ca.q) return "patch.cost_m3: chamber '" + ca.id + "' holds q=" +
+                                fmt(ca.q) + " m^3, cannot pay " + fmt(cost);
+        double x0 = ca.q - chamber_volume_(ca);
+        ca.q -= cost;
+        double x1 = ca.q - chamber_volume_(ca);
+        double du = 0.5 * ca.kappa * (x1*x1 - x0*x0) / ca.V0;
+        boundary_run_j_ += -du;      // energy left with the patch material
+        vented_m3_ += cost;          // inventory left the chamber system
+        ca.p_pa = ca.kappa * x1 / ca.V0;
+        valves_.erase(valves_.begin() + ex);
+        return std::string();
+    } catch (const std::exception &e) { return std::string(e.what()); }
+}
+
+std::string B2Scene::add_heat(const std::string &json) {
+    try {
+        if (!active_) return "scene not admitted";
+        JParser jp{json.c_str(), {}, 0};
+        JVal *root = jp.parse();
+        if (root->t != JVal::OBJ) return "heat document must be a json object";
+        req_keys(*root, {"a","b","k_W_K"}, {}, "heat");
+        JVal *aj = need(*root, "a", "heat"), *bj = need(*root, "b", "heat");
+        if (aj->t != JVal::STR || bj->t != JVal::STR) return "heat.a/.b: strings expected";
+        if (aj->str == bj->str) return "heat: a chamber cannot heat itself";
+        size_t ia = chamber_index_(aj->str), ib = chamber_index_(bj->str);
+        if (ia == chambers_.size()) return "heat.a: no such chamber '" + aj->str + "'";
+        if (ib == chambers_.size()) return "heat.b: no such chamber '" + bj->str + "'";
+        if (chambers_[ia].C_th <= 0.0) return "heat: chamber '" + aj->str + "' has no heat capacity (C_th_J_K)";
+        if (chambers_[ib].C_th <= 0.0) return "heat: chamber '" + bj->str + "' has no heat capacity (C_th_J_K)";
+        double k = fnum(*need(*root, "k_W_K", "heat"), "heat.k_W_K");
+        if (!(k > 0.0)) return "heat.k_W_K: must be positive";
+        double cap = k * B6_H * (1.0 / chambers_[ia].C_th + 1.0 / chambers_[ib].C_th);
+        if (!(cap < 0.5))
+            return "heat.k_W_K: unstable at h=1/4000 (k*h*(1/C_a + 1/C_b) must be < 0.5)";
+        if (heat_index_(aj->str, bj->str) >= 0)
+            return "heat: a link between '" + aj->str + "' and '" + bj->str + "' already exists";
+        HeatLink l; l.a = ia; l.b = ib; l.k = k;
+        heat_.push_back(l);
+        return std::string();
+    } catch (const std::exception &e) { return std::string(e.what()); }
+}
+
+std::string B2Scene::remove_heat(const std::string &json) {
+    try {
+        if (!active_) return "scene not admitted";
+        JParser jp{json.c_str(), {}, 0};
+        JVal *root = jp.parse();
+        if (root->t != JVal::OBJ) return "heat document must be a json object";
+        req_keys(*root, {"a","b"}, {}, "heat");
+        JVal *aj = need(*root, "a", "heat"), *bj = need(*root, "b", "heat");
+        if (aj->t != JVal::STR || bj->t != JVal::STR) return "heat.a/.b: strings expected";
+        int ex = heat_index_(aj->str, bj->str);
+        if (ex < 0) return "heat: no link between '" + aj->str + "' and '" + bj->str + "'";
+        heat_.erase(heat_.begin() + ex);
+        return std::string();
+    } catch (const std::exception &e) { return std::string(e.what()); }
+}
+
+std::string B2Scene::add_piston(const std::string &json) {
+    try {
+        if (!active_) return "scene not admitted";
+        JParser jp{json.c_str(), {}, 0};
+        JVal *root = jp.parse();
+        if (root->t != JVal::OBJ) return "piston document must be a json object";
+        req_keys(*root, {"chamber","part","axis","area_m2"}, {"stroke_m","f_max_N"}, "piston");
+        JVal *cj = need(*root, "chamber", "piston"), *pj = need(*root, "part", "piston");
+        if (cj->t != JVal::STR || pj->t != JVal::STR) return "piston.chamber/.part: strings expected";
+        size_t ci = chamber_index_(cj->str);
+        if (ci == chambers_.size()) return "piston.chamber: no such chamber '" + cj->str + "'";
+        size_t pi = parts_.size();
+        for (size_t i = 0; i < parts_.size(); ++i)
+            if (parts_[i].id == pj->str) { pi = i; break; }
+        if (pi == parts_.size()) return "piston.part: no such part '" + pj->str + "'";
+        if (piston_index_(cj->str, pj->str) >= 0)
+            return "piston: chamber '" + cj->str + "' already drives part '" + pj->str + "'";
+        std::vector<double> ax = num_array(*need(*root, "axis", "piston"), 3, "piston.axis");
+        double L = std::sqrt(ax[0]*ax[0] + ax[1]*ax[1] + ax[2]*ax[2]);
+        if (!(L > 1e-12)) return "piston.axis: non-zero axis expected";
+        double area = fnum(*need(*root, "area_m2", "piston"), "piston.area_m2");
+        if (!(area > 0.0)) return "piston.area_m2: must be positive";
+        Piston ps; ps.ch = ci; ps.part = pi; ps.area = area;
+        for (int k = 0; k < 3; ++k) ps.n[k] = ax[k] / L;
+        if (JVal *v = opt(*root, "stroke_m")) {
+            ps.stroke = fnum(*v, "piston.stroke_m");
+            if (!(ps.stroke >= 0.0)) return "piston.stroke_m: must be >= 0";
+        }
+        if (JVal *v = opt(*root, "f_max_N")) {
+            ps.f_max = fnum(*v, "piston.f_max_N");
+            if (!(ps.f_max >= 0.0)) return "piston.f_max_N: must be >= 0";
+        }
+        ps.x0 = dot3(parts_[pi].c, ps.n);   // stroke datum: the pose at creation
+        pistons_.push_back(ps);
+        return std::string();
+    } catch (const std::exception &e) { return std::string(e.what()); }
+}
+
+std::string B2Scene::remove_piston(const std::string &json) {
+    try {
+        if (!active_) return "scene not admitted";
+        JParser jp{json.c_str(), {}, 0};
+        JVal *root = jp.parse();
+        if (root->t != JVal::OBJ) return "piston document must be a json object";
+        req_keys(*root, {"chamber","part"}, {}, "piston");
+        JVal *cj = need(*root, "chamber", "piston"), *pj = need(*root, "part", "piston");
+        if (cj->t != JVal::STR || pj->t != JVal::STR) return "piston.chamber/.part: strings expected";
+        int ex = piston_index_(cj->str, pj->str);
+        if (ex < 0) return "piston: no piston from chamber '" + cj->str + "' to part '" + pj->str + "'";
+        pistons_.erase(pistons_.begin() + ex);
+        return std::string();
+    } catch (const std::exception &e) { return std::string(e.what()); }
+}
+
+std::string B2Scene::process_clear() {
+    chambers_.clear(); valves_.clear(); heat_.clear(); pistons_.clear();
+    vented_m3_ = diss_run_j_ = work_run_j_ = boundary_run_j_ = inv0_m3_ = 0.0;
+    max_resid_energy_j_ = 0.0;
+    resid_vpre_.clear();
+    return std::string();
+}
+
+// The sensor channel: read-only, allocates nothing that feeds back — the
+// scene cannot tell whether it was read (state_hash invariant, B6 gate).
+std::string B2Scene::process_telemetry_json() const {
+    std::string b = "{\"ok\":true,\"schema\":\"chimera.b2_process.v1\",\"active\":";
+    b += active_ ? "true" : "false";
+    b += ",\"chambers\":[";
+    for (size_t i = 0; i < chambers_.size(); ++i) {
+        const Chamber &c = chambers_[i];
+        if (i) b += ",";
+        double V = chamber_volume_(c);
+        double X = c.q - V;
+        b += "{\"id\":\"" + json_escape(c.id) + "\"";
+        b += ",\"V0_m3\":" + fmt(c.V0);
+        b += ",\"kappa_Pa\":" + fmt(c.kappa);
+        b += ",\"q_m3\":" + fmt(c.q);
+        b += ",\"V_m3\":" + fmt(V);
+        b += ",\"p_Pa\":" + fmt(c.kappa * X / c.V0);
+        b += ",\"T_K\":" + fmt(c.T);
+        b += ",\"C_th_J_K\":" + fmt(c.C_th);
+        b += ",\"u_press_J\":" + fmt(0.5 * c.kappa * X * X / c.V0);
+        b += ",\"u_th_J\":" + fmt(c.C_th * c.T);
+        b += ",\"flux_in_m3_s\":" + fmt(c.flux_in_m3_s) + "}";
+    }
+    b += "],\"valves\":[";
+    for (size_t i = 0; i < valves_.size(); ++i) {
+        const Valve &v = valves_[i];
+        if (i) b += ",";
+        b += "{\"a\":\"" + json_escape(chambers_[v.a].id) +
+             "\",\"b\":\"" + (v.b < 0 ? std::string("env") : json_escape(chambers_[v.b].id)) + "\"";
+        b += ",\"g_m3_Pa_s\":" + fmt(v.g);
+        b += ",\"open\":" + std::string(v.open ? "true" : "false");
+        b += ",\"flux_m3_s\":" + fmt(v.flux_m3_s);
+        b += ",\"diss_J_run\":" + fmt(v.diss_J_run);
+        b += ",\"boundary_J_run\":" + fmt(v.boundary_J_run) + "}";
+    }
+    b += "],\"heat\":[";
+    for (size_t i = 0; i < heat_.size(); ++i) {
+        const HeatLink &l = heat_[i];
+        if (i) b += ",";
+        b += "{\"a\":\"" + json_escape(chambers_[l.a].id) +
+             "\",\"b\":\"" + json_escape(chambers_[l.b].id) + "\"";
+        b += ",\"k_W_K\":" + fmt(l.k);
+        b += ",\"flux_W\":" + fmt(l.flux_W);
+        b += ",\"moved_J_run\":" + fmt(l.moved_J_run) + "}";
+    }
+    b += "],\"pistons\":[";
+    for (size_t i = 0; i < pistons_.size(); ++i) {
+        const Piston &ps = pistons_[i];
+        if (i) b += ",";
+        b += "{\"chamber\":\"" + json_escape(chambers_[ps.ch].id) +
+             "\",\"part\":\"" + json_escape(parts_[ps.part].id) + "\"";
+        b += ",\"area_m2\":" + fmt(ps.area);
+        b += ",\"x_m\":" + fmt(dot3(parts_[ps.part].c, ps.n) - ps.x0);
+        b += ",\"stroke_m\":" + fmt(ps.stroke);
+        b += ",\"f_max_N\":" + fmt(ps.f_max);
+        b += ",\"force_N\":" + fmt(ps.force_n);
+        b += ",\"work_J_run\":" + fmt(ps.work_J_run);
+        b += ",\"relief_J_run\":" + fmt(ps.relief_J_run) + "}";
+    }
+    double upress = 0.0, uth = 0.0, inv = 0.0;
+    for (const Chamber &c : chambers_) {
+        double X = c.q - chamber_volume_(c);
+        upress += 0.5 * c.kappa * X * X / c.V0;
+        uth += c.C_th * c.T;
+        inv += c.q;
+    }
+    b += "],\"ledger\":{\"inventory_m3\":" + fmt(inv);
+    b += ",\"vented_m3\":" + fmt(vented_m3_);
+    b += ",\"u_press_total_J\":" + fmt(upress);
+    b += ",\"u_th_total_J\":" + fmt(uth);
+    b += ",\"diss_total_J\":" + fmt(diss_run_j_);
+    b += ",\"work_total_J\":" + fmt(work_run_j_);
+    b += ",\"boundary_total_J\":" + fmt(boundary_run_j_);
+    b += ",\"residual_inventory_m3\":" + fmt(inv + vented_m3_ - inv0_m3_);
+    b += ",\"residual_energy_J\":" + fmt(
+        (upress - resid_pre_upress_) + (uth - resid_pre_uth_)
+        + (work_run_j_ - resid_pre_work_) + (diss_run_j_ - resid_pre_diss_)
+        + (boundary_run_j_ - resid_pre_bound_));
+    b += ",\"max_residual_energy_J\":" + fmt(max_resid_energy_j_) + "}}";
+    return b;
 }
 
 void B2Scene::world_vert_(const Part &p, size_t vi, double out[3]) {
@@ -1059,6 +1614,192 @@ void B2Scene::pp_pair_(Part &a, Part &b,
 // semi-implicit, world inertia R·I_local·Rᵀ, Euler term -ω×(Iw·ω), rotation
 // by exp(h·[ω]x). Forces are accumulated for ALL parts before ANY part is
 // integrated, so the Newton-3 contact pairs act on one consistent state.
+// ─── B6 working processes (GAME_PLAN §13 B6) ─────────────────────────────────
+// The law (see b2_scene.hpp): P = kappa*(q - V)/V0, U_press = kappa*(q-V)^2/
+// (2*V0) — the membrane's linear compressibility (membrane_tick.cpp:752)
+// generalised to inventory vs volume. Because U is exactly quadratic in
+// X = q - V, every mutation's energy change is measured before/after that
+// single mutation, so the sequential contributions telescope to the total ΔU
+// and the ledger closes to floating point (residual = implementation-vs-law
+// proof, the tendon ledger's "|drain − (work + heat + dElastic)| ≤ 1e-6 J"
+// precedent).
+size_t B2Scene::chamber_index_(const std::string &id) const {
+    for (size_t i = 0; i < chambers_.size(); ++i)
+        if (chambers_[i].id == id) return i;
+    return chambers_.size();
+}
+int B2Scene::valve_index_(const std::string &a, const std::string &b) const {
+    for (size_t i = 0; i < valves_.size(); ++i) {
+        const Valve &v = valves_[i];
+        if (chambers_[v.a].id == a && (v.b < 0 ? std::string("env") : chambers_[v.b].id) == b)
+            return (int)i;
+    }
+    return -1;
+}
+int B2Scene::heat_index_(const std::string &a, const std::string &b) const {
+    for (size_t i = 0; i < heat_.size(); ++i) {
+        const HeatLink &l = heat_[i];
+        if ((chambers_[l.a].id == a && chambers_[l.b].id == b) ||
+            (chambers_[l.a].id == b && chambers_[l.b].id == a)) return (int)i;
+    }
+    return -1;
+}
+int B2Scene::piston_index_(const std::string &ch, const std::string &part) const {
+    for (size_t i = 0; i < pistons_.size(); ++i)
+        if (chambers_[pistons_[i].ch].id == ch && parts_[pistons_[i].part].id == part)
+            return (int)i;
+    return -1;
+}
+// Stroke datum: the ram's signed travel along n. The chamber coupling is
+// CLAMPED at the stop: beyond stroke the ram has left the cylinder (rod end
+// vented), so further travel neither changes the chamber volume nor feels
+// the chamber — no unphysical suction or vacuum-pump energy sink. The clamp
+// is continuous in s, so U(q,V(s)) is continuous and the ledger still closes.
+static double b6_clamp_disp(double s, double stroke) {
+    if (stroke <= 0.0) return s;
+    return s < -stroke ? -stroke : (s > stroke ? stroke : s);
+}
+double B2Scene::chamber_volume_(const Chamber &c) const {
+    size_t ci = (size_t)(&c - chambers_.data());
+    double V = c.V0;
+    for (const Piston &ps : pistons_)
+        if (ps.ch == ci)
+            V += ps.area * b6_clamp_disp(dot3(parts_[ps.part].c, ps.n) - ps.x0, ps.stroke);
+    return V;
+}
+
+// Process forces + inventory/thermal mutations of one substep, run AFTER the
+// weld forces and BEFORE integration (forces must come from the pre-step
+// pose, like every other force in the substep). Order within the block:
+// valves (paired inventory exchange), heat links (exact energy pairs),
+// piston forces (finite: stroke stop, then f_max clamp).
+void B2Scene::process_forces_(double h, std::vector<double> &F, std::vector<double> &T) {
+    if (chambers_.empty()) return;
+    const size_t nc = chambers_.size();
+    // stage the ledger window BEFORE any mutation of this block
+    resid_pre_diss_ = diss_run_j_; resid_pre_bound_ = boundary_run_j_;
+    resid_pre_work_ = work_run_j_;
+    std::vector<double> Vpre(nc);
+    double upress0 = 0.0, uth0 = 0.0;
+    for (size_t i = 0; i < nc; ++i) {
+        Chamber &c = chambers_[i];
+        Vpre[i] = chamber_volume_(c);
+        double X = c.q - Vpre[i];
+        c.p_pa = c.kappa * X / c.V0;
+        c.flux_in_m3_s = 0.0;
+        upress0 += 0.5 * c.kappa * X * X / c.V0;
+        uth0 += c.C_th * c.T;
+    }
+    for (auto &v : valves_) v.flux_m3_s = 0.0;
+
+    // ── valves: J = g*(Pa - Pb) m^3/s applied to BOTH sides within h.
+    // Chamber<->chamber: the pair's ΔU is negative under the admission
+    // stability cap and is booked as dissipation (>= 0). Chamber<->env:
+    // -ΔU_a is energy carried across the boundary, exact by the quadratic
+    // identity ΔU = (P_old + P_new)/2 * ΔX.
+    for (auto &v : valves_) {
+        if (!v.open) continue;
+        Chamber &ca = chambers_[v.a];
+        double pb = v.b >= 0 ? chambers_[v.b].p_pa : 0.0;
+        double J = v.g * (ca.p_pa - pb);                 // signed a -> b
+        double d = J * h;                                // inventory moved, m^3
+        double xa0 = ca.q - chamber_volume_(ca);
+        ca.q -= d;
+        double xa1 = ca.q - chamber_volume_(ca);
+        double du_a = 0.5 * ca.kappa * (xa1*xa1 - xa0*xa0) / ca.V0;
+        ca.flux_in_m3_s -= J;
+        v.flux_m3_s = J;
+        if (v.b >= 0) {
+            Chamber &cb = chambers_[v.b];
+            double vb = chamber_volume_(cb);
+            double xb0 = cb.q - vb;
+            cb.q += d;
+            double xb1 = cb.q - vb;
+            cb.flux_in_m3_s += J;
+            double du_b = 0.5 * cb.kappa * (xb1*xb1 - xb0*xb0) / cb.V0;
+            double diss = -(du_a + du_b);                // >= 0 under the cap
+            v.diss_J_run += diss; diss_run_j_ += diss;
+            cb.p_pa = cb.kappa * xb1 / cb.V0;
+        } else {
+            vented_m3_ += d;
+            double bnd = -du_a;                          // energy out with the flow
+            v.boundary_J_run += bnd; boundary_run_j_ += bnd;
+        }
+        ca.p_pa = ca.kappa * xa1 / ca.V0;
+    }
+
+    // ── heat links: dE = k*(Ta - Tb)*h moved in an exact pair (the pair's
+    // ΔU_th sums to zero; booked so the ledger covers the thermal channel).
+    for (auto &l : heat_) {
+        Chamber &ca = chambers_[l.a], &cb = chambers_[l.b];
+        double dE = l.k * (ca.T - cb.T) * h;
+        ca.T -= dE / ca.C_th;
+        cb.T += dE / cb.C_th;
+        l.flux_W = dE / h;
+        l.moved_J_run += dE;
+    }
+
+    // ── piston forces: F_raw = P*area along n applied at the part's COM
+    // (no torque; the chamber's reaction goes to the world — the chamber is
+    // built into the lair ground, like the ground rung). FINITE actuator:
+    // beyond the stroke stop the ram is disengaged (zero force, and the
+    // volume coupling is clamped, see b6_clamp_disp); within stroke the
+    // f_max clamp caps the push (the withheld work is relief, post_).
+    for (auto &ps : pistons_) {
+        double s = dot3(parts_[ps.part].c, ps.n) - ps.x0;
+        double f = (ps.stroke > 0.0 && std::fabs(s) >= ps.stroke)
+                       ? 0.0 : chambers_[ps.ch].p_pa * ps.area;
+        if (ps.f_max > 0.0 && std::fabs(f) > ps.f_max) f = ps.f_max * (f > 0.0 ? 1.0 : -1.0);
+        ps.force_n = f;
+        size_t pi = ps.part;
+        for (int k = 0; k < 3; ++k) F[3*pi+k] += f * ps.n[k];
+    }
+
+    // stage the (q, V_pre) energy for the post_ piston measurement; the run
+    // totals were staged at the top, BEFORE the valve loop mutated them
+    resid_pre_upress_ = upress0; resid_pre_uth_ = uth0;
+    resid_vpre_ = Vpre;
+    (void)T;   // piston forces act through the COM: no torque contribution
+}
+
+// After integration: measure each chamber's volume-driven ΔU sequentially per
+// piston so the contributions telescope, book thermodynamic work
+// W = -ΔU = (P_old+P_new)/2 * ΔV exactly, split off the relief (work the
+// clamp withheld from the part), and close the substep ledger.
+void B2Scene::process_post_(double h) {
+    if (chambers_.empty()) return;
+    const size_t nc = chambers_.size();
+    std::vector<double> Vcur = resid_vpre_;
+    for (auto &ps : pistons_) {
+        Chamber &c = chambers_[ps.ch];
+        double x0 = c.q - Vcur[ps.ch];
+        double dx = h * dot3(parts_[ps.part].v, ps.n);   // semi-implicit: c += h*v_new
+        double s_new = dot3(parts_[ps.part].c, ps.n) - ps.x0;
+        double s_old = s_new - dx;                        // c_new = c_old + h*v_new
+        Vcur[ps.ch] += ps.area * (b6_clamp_disp(s_new, ps.stroke)
+                                  - b6_clamp_disp(s_old, ps.stroke));
+        double x1 = c.q - Vcur[ps.ch];
+        double w = 0.5 * c.kappa * (x0*x0 - x1*x1) / c.V0;   // = Pbar * dV, exact
+        ps.work_J_run += w; work_run_j_ += w;
+        ps.relief_J_run += w - ps.force_n * dx;          // withheld by the clamp
+    }
+    double upress = 0.0, uth = 0.0;
+    for (size_t i = 0; i < nc; ++i) {
+        Chamber &c = chambers_[i];
+        double X = c.q - chamber_volume_(c);
+        c.p_pa = c.kappa * X / c.V0;
+        upress += 0.5 * c.kappa * X * X / c.V0;
+        uth += c.C_th * c.T;
+    }
+    // closure: ΔU_press + ΔU_th + W + diss + boundary = 0. Sequential
+    // telescoping makes the residual pure fp noise — the law-vs-code proof.
+    double resid = (upress - resid_pre_upress_) + (uth - resid_pre_uth_)
+                 + (work_run_j_ - resid_pre_work_)
+                 + (diss_run_j_ - resid_pre_diss_)
+                 + (boundary_run_j_ - resid_pre_bound_);
+    if (std::fabs(resid) > max_resid_energy_j_) max_resid_energy_j_ = std::fabs(resid);
+}
+
 bool B2Scene::substep_(double h) {
     const size_t np = parts_.size();
     std::vector<double> F(3*np, 0.0), T(3*np, 0.0);
@@ -1166,6 +1907,10 @@ bool B2Scene::substep_(double h) {
         wd.force_n = std::sqrt(fsum[0]*fsum[0] + fsum[1]*fsum[1] + fsum[2]*fsum[2]);
     }
 
+    // B6 working processes: valve/heat mutations of the inventories and the
+    // piston forces, from the same pre-step pose as every force above.
+    process_forces_(h, F, T);
+
     for (size_t pi = 0; pi < np; ++pi) {
         Part &p = parts_[pi];
         double *Fp = &F[3*pi], *Tp = &T[3*pi];
@@ -1195,6 +1940,7 @@ bool B2Scene::substep_(double h) {
         for (int k = 0; k < 3; ++k)
             if (!std::isfinite(p.c[k]) || !std::isfinite(p.v[k]) || !std::isfinite(p.omega[k]))
                 return false;
+    process_post_(h);   // B6: piston work measurement + ledger closure
     return true;
 }
 
