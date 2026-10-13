@@ -120,6 +120,8 @@ static bool b2_parse_on_(const std::string &b, bool &on) {
     if (b.compare(i, 5, "false") == 0) { on = false; return true; }
     return false;
 }
+// defined below with the other body parsers; route_b2's pick needs it now
+static double get_double(const std::string& body, const char* key, double def);
 static std::string route_b2(const std::string &p, const std::string &method,
                             const std::string &req_body) {
     if (p == "/tick_b2_admit" && method == "POST") {
@@ -130,6 +132,30 @@ static std::string route_b2(const std::string &p, const std::string &method,
     if (p == "/tick_b2_clear" && method == "POST") { g_tick.b2_clear(); return "{\"ok\":true}"; }
     if (p == "/tick_b2_state" && method == "GET") return g_tick.b2_telemetry_json();
     if (p == "/tick_b2_parts" && method == "GET") return g_tick.b2_parts_json();
+    if (p == "/tick_b2_inspect" && method == "POST") {
+        std::string why, rec = g_tick.b2_inspect(req_body, why);
+        if (!why.empty()) return b2_refused_(why);
+        return rec;
+    }
+    if (p == "/tick_b2_pick" && method == "POST") {
+        // B3 render/pick agreement: the engine camera ray through pixel
+        // fractions (px,py) against the SAME world meshes the renderer draws
+        // and the contact solver walks. {"ok":true,"id":...,"hit":[x,y,z]}.
+        float px = (float)get_double(req_body, "px", 0.5);
+        float py = (float)get_double(req_body, "py", 0.5);
+        float eye[3], dir[3];
+        if (!g_engine || !g_engine->camera_ray(px, py, eye, dir))
+            return b2_refused_("no camera yet");
+        std::string id;
+        float hit[3];
+        if (!g_tick.b2_pick(eye, dir, id, hit))
+            return b2_refused_("ray hits no part");
+        std::string esc;
+        for (char ch : id) { if (ch == '"' || ch == '\\') esc += '\\'; esc += ch; }
+        return std::string("{\"ok\":true,\"id\":\"") + esc + "\",\"hit\":["
+             + std::to_string(hit[0]) + "," + std::to_string(hit[1]) + ","
+             + std::to_string(hit[2]) + "]}";
+    }
     if (p == "/tick_b2_load" && method == "POST") {
         std::string why = g_tick.b2_set_load(req_body);
         if (why.empty()) return "{\"ok\":true}";
@@ -4630,6 +4656,29 @@ int main(int argc, char** argv) {
         // off (no-op until POST /tick_b2_admit), b2_mtx_ only, never seal
         // state. See MembraneTick::b2_step.
         g_tick.b2_step((double)tick_dt);
+
+        // B3 render lane: while a B2/B3 scene is live, its world meshes go
+        // to the overlay slot every frame, so what the renderer draws IS the
+        // geometry the contact solver walks and /tick_b2_pick hits. The
+        // upload waits the device (load_overlay's own discipline); the scene
+        // is a measurement rig, not a shipped view, so the stall is accepted.
+        {
+            static bool b2_overlay_live = false;
+            if (g_tick.b2_active()) {
+                std::vector<float> ov;
+                std::vector<uint32_t> oi;
+                g_tick.b2_render_mesh(ov, oi);
+                // icount is the INDEX count (vkCmdDrawIndexed's indexCount),
+                // not the triangle count: 3 indices per boundary triangle.
+                if (!ov.empty() && !oi.empty())
+                    engine.load_overlay(ov, oi, (uint32_t)(ov.size() / 9),
+                                        (uint32_t)oi.size());
+                b2_overlay_live = true;
+            } else if (b2_overlay_live) {
+                engine.load_overlay(std::vector<float>{}, std::vector<uint32_t>{}, 0, 0);
+                b2_overlay_live = false;
+            }
+        }
 
         // Frame cap (frame-stutter fix): uncapped, the engine free-ran at 300-1800 FPS
         // and fought llama-server (65%% GPU) for every slice — each inference burst

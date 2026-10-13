@@ -295,8 +295,9 @@ std::string B2Scene::admit(const std::string &json, const std::string &reason) {
         // damping term unstable (h*c/m >> 2) and is physically wrong.
         JVal *parts = need(*root, "parts", "scene");
         if (parts->t != JVal::ARR) throw std::runtime_error("scene.parts: array expected");
-        if (parts->arr.size() != 2)
-            throw std::runtime_error("scene.parts: B2 needs exactly two parts, got " +
+        // B2 qualified exactly two; B3 stacks three dissimilar layers.
+        if (parts->arr.size() < 2 || parts->arr.size() > 3)
+            throw std::runtime_error("scene.parts: B2/B3 needs 2 or 3 parts, got " +
                                      std::to_string(parts->arr.size()));
 
         std::vector<Part> built;
@@ -582,25 +583,33 @@ void B2Scene::pp_pair_(Part &a, Part &b,
         double *Fo = dir ? Fb : Fa, *To = dir ? Tb : Ta;
         double *Fs = dir ? Fa : Fb, *Ts = dir ? Ta : Tb;
         size_t nt = s.tris.size() / 3, nv = o.verts.size() / 3;
-        for (size_t ti = 0; ti < nt; ++ti) {
-            double w0[3], w1[3], w2[3];
-            world_vert_(s, s.tris[3*ti], w0);
-            world_vert_(s, s.tris[3*ti+1], w1);
-            world_vert_(s, s.tris[3*ti+2], w2);
-            double e1[3] = {w1[0]-w0[0], w1[1]-w0[1], w1[2]-w0[2]};
-            double e2[3] = {w2[0]-w0[0], w2[1]-w0[1], w2[2]-w0[2]};
-            double n[3]; cross3(e1, e2, n);
-            double nl = std::sqrt(n[0]*n[0] + n[1]*n[1] + n[2]*n[2]);
-            if (nl < 1e-12) continue;
-            for (int k = 0; k < 3; ++k) n[k] /= nl;
-            // convex part: outward normal points away from the COM
-            double dc[3] = {(w0[0]+w1[0]+w2[0])/3.0 - s.c[0],
-                            (w0[1]+w1[1]+w2[1])/3.0 - s.c[1],
-                            (w0[2]+w1[2]+w2[2])/3.0 - s.c[2]};
-            if (n[0]*dc[0] + n[1]*dc[1] + n[2]*dc[2] < 0.0)
-                for (int k = 0; k < 3; ++k) n[k] = -n[k];
-            for (size_t vi = 0; vi < nv; ++vi) {
-                double P[3]; world_vert_(o, vi, P);
+        // A convex surface is the intersection of its face half-spaces, so
+        // a vertex that has entered the volume through one face is behind
+        // EVERY face plane it lies inside of. Firing all of them would add
+        // the side faces' 30 mm "penetrations" to a 0.5 mm stack contact and
+        // eject the upper part sideways. The vertex contacts the face it
+        // entered through: the shallowest (max g) candidate face.
+        for (size_t vi = 0; vi < nv; ++vi) {
+            double P[3]; world_vert_(o, vi, P);
+            bool have = false;
+            double bg = 0.0, bn[3] = {0,0,0}, bq[3] = {0,0,0};
+            for (size_t ti = 0; ti < nt; ++ti) {
+                double w0[3], w1[3], w2[3];
+                world_vert_(s, s.tris[3*ti], w0);
+                world_vert_(s, s.tris[3*ti+1], w1);
+                world_vert_(s, s.tris[3*ti+2], w2);
+                double e1[3] = {w1[0]-w0[0], w1[1]-w0[1], w1[2]-w0[2]};
+                double e2[3] = {w2[0]-w0[0], w2[1]-w0[1], w2[2]-w0[2]};
+                double n[3]; cross3(e1, e2, n);
+                double nl = std::sqrt(n[0]*n[0] + n[1]*n[1] + n[2]*n[2]);
+                if (nl < 1e-12) continue;
+                for (int k = 0; k < 3; ++k) n[k] /= nl;
+                // convex part: outward normal points away from the COM
+                double dc[3] = {(w0[0]+w1[0]+w2[0])/3.0 - s.c[0],
+                                (w0[1]+w1[1]+w2[1])/3.0 - s.c[1],
+                                (w0[2]+w1[2]+w2[2])/3.0 - s.c[2]};
+                if (n[0]*dc[0] + n[1]*dc[1] + n[2]*dc[2] < 0.0)
+                    for (int k = 0; k < 3; ++k) n[k] = -n[k];
                 double d0[3] = {P[0]-w0[0], P[1]-w0[1], P[2]-w0[2]};
                 double g = d0[0]*n[0] + d0[1]*n[1] + d0[2]*n[2];
                 if (g >= 0.0) continue;
@@ -630,47 +639,55 @@ void B2Scene::pp_pair_(Part &a, Part &b,
                     if (cc[0]*n[0] + cc[1]*n[1] + cc[2]*n[2] <= 0.0) inside = false;
                 }
                 if (!inside) continue;
-                // relative velocity at the contact (o's vertex vs s's face)
-                double ra[3] = {P[0]-o.c[0], P[1]-o.c[1], P[2]-o.c[2]};
-                double rb[3] = {q[0]-s.c[0], q[1]-s.c[1], q[2]-s.c[2]};
-                double cra[3], crb[3];
-                cross3(o.omega, ra, cra); cross3(s.omega, rb, crb);
-                double rel[3] = {o.v[0]+cra[0]-s.v[0]-crb[0],
-                                 o.v[1]+cra[1]-s.v[1]-crb[1],
-                                 o.v[2]+cra[2]-s.v[2]-crb[2]};
-                double gn = rel[0]*n[0] + rel[1]*n[1] + rel[2]*n[2];
-                double fn = -(k_pp * g + c_pp * gn);
-                if (fn <= 0.0) continue;
-                // normal pair: the vertex owner penetrates the surface, so
-                // +fn·n goes on o at its vertex, −fn·n on s at the contact.
-                double f[3] = {fn*n[0], fn*n[1], fn*n[2]};
-                for (int k = 0; k < 3; ++k) { Fo[k] += f[k]; Fs[k] -= f[k]; }
-                double t1[3];
-                cross3(ra, f, t1);
-                for (int k = 0; k < 3; ++k) { To[k] += t1[k]; Ts[k] -= t1[k]; }
-                // friction on the surface owner acts along -rel_t; the pair
-                // on o is its opposite. Regularised Coulomb: full μ·fn when
-                // sliding, linearly damped inside |v_t| < 1 mm/s (sticking).
-                if (mu_pp > 0.0) {
-                    double vt[3] = {rel[0]-gn*n[0], rel[1]-gn*n[1], rel[2]-gn*n[2]};
-                    double sp = std::sqrt(vt[0]*vt[0] + vt[1]*vt[1] + vt[2]*vt[2]);
-                    if (sp > 1e-12) {
-                        double sc = -mu_pp * fn / std::max(sp, 1e-3);
-                        double ff[3] = {sc*vt[0], sc*vt[1], sc*vt[2]};
-                        for (int k = 0; k < 3; ++k) { Fo[k] += ff[k]; Fs[k] -= ff[k]; }
-                        double u1[3];
-                        cross3(ra, ff, u1);
-                        for (int k = 0; k < 3; ++k) { To[k] += u1[k]; Ts[k] -= u1[k]; }
-                    }
+                if (!have || g > bg) {
+                    have = true; bg = g;
+                    for (int k = 0; k < 3; ++k) { bn[k] = n[k]; bq[k] = q[k]; }
                 }
-                o.contact_pp_n += fn; ++o.contacts_pp_active;
-                s.contact_pp_n += fn; ++s.contacts_pp_active;
-                double pen = -g;
-                if (pen > o.pen_step_m) o.pen_step_m = pen;
-                if (pen > s.pen_step_m) s.pen_step_m = pen;
-                if (pen > o.pen_pp_run_m) o.pen_pp_run_m = pen;
-                if (pen > s.pen_pp_run_m) s.pen_pp_run_m = pen;
             }
+            if (!have) continue;
+            const double *n = bn;
+            const double *q = bq;
+            double g = bg;
+            // relative velocity at the contact (o's vertex vs s's face)
+            double ra[3] = {P[0]-o.c[0], P[1]-o.c[1], P[2]-o.c[2]};
+            double rb[3] = {q[0]-s.c[0], q[1]-s.c[1], q[2]-s.c[2]};
+            double cra[3], crb[3];
+            cross3(o.omega, ra, cra); cross3(s.omega, rb, crb);
+            double rel[3] = {o.v[0]+cra[0]-s.v[0]-crb[0],
+                             o.v[1]+cra[1]-s.v[1]-crb[1],
+                             o.v[2]+cra[2]-s.v[2]-crb[2]};
+            double gn = rel[0]*n[0] + rel[1]*n[1] + rel[2]*n[2];
+            double fn = -(k_pp * g + c_pp * gn);
+            if (fn <= 0.0) continue;
+            // normal pair: the vertex owner penetrates the surface, so
+            // +fn·n goes on o at its vertex, −fn·n on s at the contact.
+            double f[3] = {fn*n[0], fn*n[1], fn*n[2]};
+            for (int k = 0; k < 3; ++k) { Fo[k] += f[k]; Fs[k] -= f[k]; }
+            double t1[3];
+            cross3(ra, f, t1);
+            for (int k = 0; k < 3; ++k) { To[k] += t1[k]; Ts[k] -= t1[k]; }
+            // friction on the surface owner acts along -rel_t; the pair
+            // on o is its opposite. Regularised Coulomb: full μ·fn when
+            // sliding, linearly damped inside |v_t| < 1 mm/s (sticking).
+            if (mu_pp > 0.0) {
+                double vt[3] = {rel[0]-gn*n[0], rel[1]-gn*n[1], rel[2]-gn*n[2]};
+                double sp = std::sqrt(vt[0]*vt[0] + vt[1]*vt[1] + vt[2]*vt[2]);
+                if (sp > 1e-12) {
+                    double sc = -mu_pp * fn / std::max(sp, 1e-3);
+                    double ff[3] = {sc*vt[0], sc*vt[1], sc*vt[2]};
+                    for (int k = 0; k < 3; ++k) { Fo[k] += ff[k]; Fs[k] -= ff[k]; }
+                    double u1[3];
+                    cross3(ra, ff, u1);
+                    for (int k = 0; k < 3; ++k) { To[k] += u1[k]; Ts[k] -= u1[k]; }
+                }
+            }
+            o.contact_pp_n += fn; ++o.contacts_pp_active;
+            s.contact_pp_n += fn; ++s.contacts_pp_active;
+            double pen = -g;
+            if (pen > o.pen_step_m) o.pen_step_m = pen;
+            if (pen > s.pen_step_m) s.pen_step_m = pen;
+            if (pen > o.pen_pp_run_m) o.pen_pp_run_m = pen;
+            if (pen > s.pen_pp_run_m) s.pen_pp_run_m = pen;
         }
     }
 }
@@ -962,6 +979,7 @@ std::string B2Scene::parts_json() const {
         b += ",\"inertia_com_local_kg_m2\":[";
         for (int k = 0; k < 9; ++k) { if (k) b += ","; b += fmt(p.inertia_com_local[k]); }
         b += "]";
+        b += ",\"mu\":" + fmt(p.mu);
         b += ",\"n_vertices\":" + std::to_string(p.verts.size() / 3);
         b += ",\"n_triangles\":" + std::to_string(p.tris.size() / 3);
         b += ",\"pose_c_m\":[" + fmt(p.c[0]) + "," + fmt(p.c[1]) + "," + fmt(p.c[2]) + "]";
@@ -970,4 +988,130 @@ std::string B2Scene::parts_json() const {
     }
     b += "]}";
     return b;
+}
+
+// Stable-ID inspection (B3 gate "inspection by stable IDs"): the full
+// record of one part — admitted identity (mass, COM, inertia, material
+// mu, ground rung) plus live state (pose, speed, reactions, penetrations,
+// load). Unknown ids are refused by name; the live scene is untouched.
+std::string B2Scene::inspect(const std::string &json, std::string &why) const {
+    std::string id;
+    try {
+        if (!active_) { why = "scene not admitted"; return std::string(); }
+        JParser jp{json.c_str(), {}, 0};
+        JVal *root = jp.parse();
+        if (root->t != JVal::OBJ) { why = "inspect document must be a json object"; return std::string(); }
+        req_keys(*root, {"id"}, {}, "inspect");
+        JVal *ij = need(*root, "id", "inspect");
+        if (ij->t != JVal::STR) { why = "inspect.id: string expected"; return std::string(); }
+        id = ij->str;
+    } catch (const std::exception &e) { why = e.what(); return std::string(); }
+    for (const auto &p : parts_) {
+        if (p.id != id) continue;
+        std::string b = "{\"ok\":true,\"schema\":\"chimera.b2_scene.v1\",\"part\":{";
+        b += "\"id\":\"" + json_escape(p.id) + "\"";
+        b += ",\"mass_kg\":" + fmt(p.mass);
+        b += ",\"weight_n\":" + fmt(p.mass * (gravity_on_ ? gravity_ : 0.0));
+        b += ",\"mu\":" + fmt(p.mu);
+        b += ",\"com_local_m\":[" + fmt(p.com_local[0]) + "," + fmt(p.com_local[1]) + "," + fmt(p.com_local[2]) + "]";
+        b += ",\"inertia_com_local_kg_m2\":[";
+        for (int k = 0; k < 9; ++k) { if (k) b += ","; b += fmt(p.inertia_com_local[k]); }
+        b += "]";
+        b += ",\"ground\":{\"k_n_per_m\":" + fmt(p.k_site) + ",\"c_n_s_per_m\":" + fmt(p.c_site) + "}";
+        b += ",\"n_vertices\":" + std::to_string(p.verts.size() / 3);
+        b += ",\"n_triangles\":" + std::to_string(p.tris.size() / 3);
+        b += ",\"pose_c_m\":[" + fmt(p.c[0]) + "," + fmt(p.c[1]) + "," + fmt(p.c[2]) + "]";
+        double q[4]; mat3_to_quat(p.R, q);
+        b += ",\"pose_q_wxyz\":[" + fmt(q[0]) + "," + fmt(q[1]) + "," + fmt(q[2]) + "," + fmt(q[3]) + "]";
+        b += ",\"speed_m_s\":" + fmt(std::sqrt(p.v[0]*p.v[0] + p.v[1]*p.v[1] + p.v[2]*p.v[2]));
+        b += ",\"reaction_n\":" + fmt(p.reaction_n);
+        b += ",\"contacts_active\":" + std::to_string(p.contacts_active);
+        b += ",\"contact_pp_n\":" + fmt(p.contact_pp_n);
+        b += ",\"contacts_pp_active\":" + std::to_string(p.contacts_pp_active);
+        b += ",\"pen_run_m\":" + fmt(p.pen_run_m);
+        b += ",\"pen_pp_run_m\":" + fmt(p.pen_pp_run_m);
+        b += ",\"load_n\":[" + fmt(p.load_F[0]) + "," + fmt(p.load_F[1]) + "," + fmt(p.load_F[2]) + "]}}";
+        return b;
+    }
+    why = "inspect: no part with id '" + id + "'";
+    return std::string();
+}
+
+// Fixed palette by admission order: a frame capture names a layer by color,
+// and the pick route names it by ID, so the two can be cross-checked.
+static const double kLayerRgb[3][3] = {
+    {0.85, 0.25, 0.25},   // layer 0 (base)
+    {0.25, 0.75, 0.30},   // layer 1 (middle)
+    {0.30, 0.45, 0.90},   // layer 2 (top)
+};
+
+void B2Scene::render_mesh(std::vector<float> &verts9,
+                          std::vector<uint32_t> &tris) const {
+    verts9.clear(); tris.clear();
+    if (!active_) return;
+    for (size_t pi = 0; pi < parts_.size(); ++pi) {
+        const Part &p = parts_[pi];
+        const double *rgb = kLayerRgb[pi % 3];
+        const uint32_t base = (uint32_t)(verts9.size() / 9);
+        for (size_t ti = 0; ti + 2 < p.tris.size(); ti += 3) {
+            double w[3][3];
+            for (int k = 0; k < 3; ++k)
+                world_vert_(p, (size_t)p.tris[ti + k], w[k]);
+            double e1[3] = {w[1][0]-w[0][0], w[1][1]-w[0][1], w[1][2]-w[0][2]};
+            double e2[3] = {w[2][0]-w[0][0], w[2][1]-w[0][1], w[2][2]-w[0][2]};
+            double n[3]; cross3(e1, e2, n);
+            double nl = std::sqrt(n[0]*n[0] + n[1]*n[1] + n[2]*n[2]);
+            if (nl < 1e-12) continue;
+            // outward, exactly as the contact solver derives it
+            double dc[3] = {(w[0][0]+w[1][0]+w[2][0])/3.0 - p.c[0],
+                            (w[0][1]+w[1][1]+w[2][1])/3.0 - p.c[1],
+                            (w[0][2]+w[1][2]+w[2][2])/3.0 - p.c[2]};
+            if (n[0]*dc[0] + n[1]*dc[1] + n[2]*dc[2] < 0.0)
+                for (int k = 0; k < 3; ++k) n[k] = -n[k];
+            for (int k = 0; k < 3; ++k) n[k] /= nl;
+            for (int k = 0; k < 3; ++k) {
+                for (int a = 0; a < 3; ++a) verts9.push_back((float)w[k][a]);
+                for (int a = 0; a < 3; ++a) verts9.push_back((float)n[a]);
+                for (int a = 0; a < 3; ++a) verts9.push_back((float)rgb[a]);
+                tris.push_back(base + (uint32_t)ti + (uint32_t)k);
+            }
+        }
+    }
+}
+
+bool B2Scene::pick(const float eye[3], const float dir[3],
+                   std::string &id_out, float point_out[3]) const {
+    if (!active_) return false;
+    float best_t = 1e30f;
+    bool hit = false;
+    for (const auto &p : parts_) {
+        for (size_t ti = 0; ti + 2 < p.tris.size(); ti += 3) {
+            double w[3][3];
+            for (int k = 0; k < 3; ++k)
+                world_vert_(p, (size_t)p.tris[ti + k], w[k]);
+            float a[3] = {(float)w[0][0], (float)w[0][1], (float)w[0][2]};
+            float b[3] = {(float)w[1][0], (float)w[1][1], (float)w[1][2]};
+            float cc[3] = {(float)w[2][0], (float)w[2][1], (float)w[2][2]};
+            float e1[3] = {b[0]-a[0], b[1]-a[1], b[2]-a[2]};
+            float e2[3] = {cc[0]-a[0], cc[1]-a[1], cc[2]-a[2]};
+            float pv[3] = {dir[1]*e2[2]-dir[2]*e2[1], dir[2]*e2[0]-dir[0]*e2[2],
+                           dir[0]*e2[1]-dir[1]*e2[0]};
+            float det = e1[0]*pv[0] + e1[1]*pv[1] + e1[2]*pv[2];
+            if (det > -1e-10f && det < 1e-10f) continue;
+            float inv = 1.f / det;
+            float tv[3] = {eye[0]-a[0], eye[1]-a[1], eye[2]-a[2]};
+            float uu = (tv[0]*pv[0] + tv[1]*pv[1] + tv[2]*pv[2]) * inv;
+            if (uu < -1e-6f || uu > 1.f + 1e-6f) continue;
+            float qv[3] = {tv[1]*e1[2]-tv[2]*e1[1], tv[2]*e1[0]-tv[0]*e1[2],
+                           tv[0]*e1[1]-tv[1]*e1[0]};
+            float vv = (dir[0]*qv[0] + dir[1]*qv[1] + dir[2]*qv[2]) * inv;
+            if (vv < -1e-6f || uu + vv > 1.f + 1e-6f) continue;
+            float t = (e2[0]*qv[0] + e2[1]*qv[1] + e2[2]*qv[2]) * inv;
+            if (t <= 0.f || t >= best_t) continue;
+            best_t = t; hit = true;
+            id_out = p.id;
+            for (int k = 0; k < 3; ++k) point_out[k] = eye[k] + t * dir[k];
+        }
+    }
+    return hit;
 }

@@ -166,6 +166,17 @@ public:
     void b2_clear();
     std::string b2_telemetry_json();
     std::string b2_parts_json();
+    // B3 stable-ID inspection: body {"id":"..."}; record on hit, why on miss.
+    std::string b2_inspect(const std::string &json, std::string &why);
+    // B3 render/pick lane: the scene's world render stream (9-float verts +
+    // indices) and a ray pick against the same meshes. b2_mtx_ alone.
+    void b2_render_mesh(std::vector<float> &verts9, std::vector<uint32_t> &tris);
+    bool b2_pick(const float eye[3], const float dir[3],
+                 std::string &id_out, float point_out[3]);
+    bool b2_active() {
+        std::lock_guard<std::mutex> lk(b2_mtx_);
+        return b2_.active();
+    }
     // B2 controls (design note §6 item 4): persistent external load on one
     // part, and the support/gravity switches for the whole scene. Empty
     // return = accepted; non-empty = refusal text for the route.

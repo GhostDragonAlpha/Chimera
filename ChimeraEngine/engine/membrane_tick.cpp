@@ -3607,6 +3607,20 @@ std::string MembraneTick::b2_parts_json() {
     std::lock_guard<std::mutex> lk(b2_mtx_);
     return b2_.parts_json();
 }
+std::string MembraneTick::b2_inspect(const std::string &json, std::string &why) {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    return b2_.inspect(json, why);
+}
+void MembraneTick::b2_render_mesh(std::vector<float> &verts9,
+                                  std::vector<uint32_t> &tris) {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    b2_.render_mesh(verts9, tris);
+}
+bool MembraneTick::b2_pick(const float eye[3], const float dir[3],
+                           std::string &id_out, float point_out[3]) {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    return b2_.pick(eye, dir, id_out, point_out);
+}
 std::string MembraneTick::b2_set_load(const std::string &json) {
     std::lock_guard<std::mutex> lk(b2_mtx_);
     return b2_.set_load(json);

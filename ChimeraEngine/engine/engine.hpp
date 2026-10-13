@@ -528,6 +528,12 @@ public:
                                const std::vector<float>& verts9,
                                const std::vector<uint32_t>& tris,
                                float out_point[3]) const;
+    // The engine camera's ray through pixel fractions (u,v): the ONE camera
+    // law shared by pick() and the B2/B3 scene pick (route /tick_b2_pick),
+    // so a rendered pixel and a picked part can never disagree about where
+    // the camera is. False when no view/projection has been recorded yet.
+    bool                  camera_ray(float u, float v,
+                                     float eye[3], float dir[3]) const;
     // same, but the camera comes from the CALLER (the web kernel: the
     // browser posts its own local camera with each touch)
     bool                  pick_cam(const float cam8[8], float aspect, float u, float v,

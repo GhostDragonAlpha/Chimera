@@ -6951,16 +6951,13 @@ bool Engine::pick_cam(const float cam8[8], float aspect, float u, float v,
     return hit;
 }
 
-bool Engine::pick(float u, float v,
-                  const std::vector<float>& verts9,
-                  const std::vector<uint32_t>& tris,
-                  float out_point[3]) const {
-    if (!last_vp_valid_ || verts9.size() < 9 || tris.size() < 3) return false;
+bool Engine::camera_ray(float u, float v, float eye[3], float dir[3]) const {
+    if (!last_vp_valid_) return false;
     float c = cosf(g_cam.phi), s = sinf(g_cam.phi);
     float cx = cosf(g_cam.theta), sx = sinf(g_cam.theta);
-    float eye[3] = { g_cam.target[0] + g_cam.radius * c * sx + g_cam.pan_x,
-                     g_cam.target[1] + g_cam.radius * s + g_cam.pan_y,
-                     g_cam.target[2] - g_cam.radius * c * cx };
+    eye[0] = g_cam.target[0] + g_cam.radius * c * sx + g_cam.pan_x;
+    eye[1] = g_cam.target[1] + g_cam.radius * s + g_cam.pan_y;
+    eye[2] = g_cam.target[2] - g_cam.radius * c * cx;
     float up[3] = { -s * sx, c, s * cx };
     float fwd[3] = { g_cam.target[0] - eye[0],
                      g_cam.target[1] - eye[1],
@@ -6978,11 +6975,22 @@ bool Engine::pick(float u, float v,
     const float aspect = static_cast<float>(extent_.width) / static_cast<float>(extent_.height);
     const float th = tanf(45.0f * 3.14159265f / 180.0f * 0.5f);
     const float ndx = 2.f * u - 1.f, ndy = 1.f - 2.f * v;
-    float dir[3] = { fwd[0] + right[0] * (ndx * aspect * th) + up[0] * (ndy * th),
-                     fwd[1] + right[1] * (ndx * aspect * th) + up[1] * (ndy * th),
-                     fwd[2] + right[2] * (ndx * aspect * th) + up[2] * (ndy * th) };
+    dir[0] = fwd[0] + right[0] * (ndx * aspect * th) + up[0] * (ndy * th);
+    dir[1] = fwd[1] + right[1] * (ndx * aspect * th) + up[1] * (ndy * th);
+    dir[2] = fwd[2] + right[2] * (ndx * aspect * th) + up[2] * (ndy * th);
     float dl = sqrtf(dir[0]*dir[0] + dir[1]*dir[1] + dir[2]*dir[2]);
+    if (dl < 1e-9f) return false;
     dir[0] /= dl; dir[1] /= dl; dir[2] /= dl;
+    return true;
+}
+
+bool Engine::pick(float u, float v,
+                  const std::vector<float>& verts9,
+                  const std::vector<uint32_t>& tris,
+                  float out_point[3]) const {
+    if (verts9.size() < 9 || tris.size() < 3) return false;
+    float eye[3], dir[3];
+    if (!camera_ray(u, v, eye, dir)) return false;
 
     // Moller-Trumbore, nearest hit; verts9 = 9 floats per vertex
     const size_t nt = tris.size() / 3;
@@ -7754,7 +7762,9 @@ bool Engine::frame() {
         uint32_t prh = g_pending_resize_h.exchange(0);
         if (prw != 0 && prh != 0) resize(prw, prh);
     }
-    if (n_ == 0 && !has_mesh_ && !md_active_) {
+    // B3: the overlay slot carries the B2/B3 scene meshes; with it loaded the
+    // 3D pass must run even with no creature mesh, or the scene is invisible.
+    if (n_ == 0 && !has_mesh_ && !md_active_ && !has_overlay_) {
         // THE STUDIO: with nothing loaded the 3D paths all idle — but the board
         // is exactly what an incoming agent needs to see, so the overlay still
         // presents (clear + UI pass only).
@@ -8577,7 +8587,11 @@ bool Engine::frame() {
     }
     const bool md_draw = md_active_ && md_vbuf_ != VK_NULL_HANDLE && md_render_ibuf_ != VK_NULL_HANDLE;
     const bool tri_draw = has_mesh_ && tri_pipeline_ != VK_NULL_HANDLE && tri_idx_count_ > 0;
-    if ((tri_draw || md_draw) && tri_pipeline_ != VK_NULL_HANDLE) {
+    // B3: the overlay slot carries the B2/B3 scene meshes and must draw even
+    // with no creature mesh loaded, so the lit-triangle branch opens for it.
+    // The mesh-specific passes below stay gated on an actual mesh.
+    const bool mesh_pass = tri_draw || md_draw;
+    if ((mesh_pass || has_overlay_) && tri_pipeline_ != VK_NULL_HANDLE) {
         vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline_layout_, 0, 1, &desc_sets_[img_idx], 0, nullptr);
         VkBuffer vb = md_draw ? md_vbuf_ : tri_vbuf_; VkDeviceSize off = 0;
         VkBuffer ib = md_draw ? md_render_ibuf_ : tri_ibuf_;
@@ -8610,7 +8624,7 @@ bool Engine::frame() {
         // THE CONTACT SHADOW first (blended over the cleared background, under
         // the mesh): the flattened mesh on the floor plane, moving with the
         // pose. Depth write is off, so the mesh's own draw wins the depth test.
-        if (tri_shadow_pipeline_ != VK_NULL_HANDLE) {
+        if (mesh_pass && tri_shadow_pipeline_ != VK_NULL_HANDLE) {
             vkCmdBindPipeline(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS, tri_shadow_pipeline_);
             vkCmdBindDescriptorSets(cmd_bufs_[img_idx], VK_PIPELINE_BIND_POINT_GRAPHICS,
                                     pipeline_layout_, 0, 1, &desc_sets_[img_idx], 0, nullptr);
@@ -8618,7 +8632,7 @@ bool Engine::frame() {
             vkCmdBindIndexBuffer(cmd_bufs_[img_idx], ib, 0, VK_INDEX_TYPE_UINT32);
             vkCmdDrawIndexed(cmd_bufs_[img_idx], draw_idx_count, 1, 0, 0, 0);
         }
-        if (mesh_mode_ != 1) {
+        if (mesh_pass && mesh_mode_ != 1) {
             // SEALED PHASE 1 PASS 1 (default OFF): while 'v' is on the fill
             // draws with the skin twin (PASS1=1); otherwise the shipped
             // selection is untouched (frost twin when frost is on).
@@ -8631,7 +8645,7 @@ bool Engine::frame() {
             vkCmdBindIndexBuffer(cmd_bufs_[img_idx], ib, 0, VK_INDEX_TYPE_UINT32);
             vkCmdDrawIndexed(cmd_bufs_[img_idx], draw_idx_count, 1, 0, 0, 0);
         }
-        if (mesh_mode_ >= 1 || (md_draw && md_edge_contrast_)) {
+        if (mesh_pass && (mesh_mode_ >= 1 || (md_draw && md_edge_contrast_))) {
             // GLM-DEMO-CONTRAST-01: when the opt-in edge-contrast pipeline
             // exists it replaces the same-color wire pass; otherwise the
             // ordinary path is untouched (default remains byte-identical).

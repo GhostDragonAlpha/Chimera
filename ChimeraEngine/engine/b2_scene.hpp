@@ -15,6 +15,7 @@
 // strict `chimera.b2_scene.v1` document; a mesh swap clears it. The resident
 // single-body FALL rung is untouched — these parts own their DOFs exclusively.
 
+#include <cstdint>
 #include <string>
 #include <vector>
 
@@ -35,6 +36,21 @@ public:
     std::string telemetry_json() const;
     // Static + current part data for /tick_b2_parts (lock held by caller).
     std::string parts_json() const;
+    // Stable-ID inspection (B3 gate): body {"id":"..."}; on hit returns the
+    // full record for that part, on miss returns "" and names the refusal.
+    std::string inspect(const std::string &json, std::string &why) const;
+
+    // B3 render/pick lane. render_mesh emits the scene's CURRENT world pose
+    // as a render stream (9 floats/vertex: pos, normal, rgb; one flat-shaded
+    // triangle per boundary triangle) plus indices -- the same boundary
+    // triangles the contact solver walks. The palette is fixed by part
+    // admission order so a frame capture can name the layer by color.
+    void render_mesh(std::vector<float> &verts9, std::vector<uint32_t> &tris) const;
+    // Ray pick (Moller-Trumbore, nearest hit) against the SAME world meshes
+    // render_mesh draws and pp_pair_/ground contact uses: render, pick and
+    // contact agree by construction. Returns false when the ray hits nothing.
+    bool pick(const float eye[3], const float dir[3],
+              std::string &id_out, float point_out[3]) const;
 
     // Controls (B2 gate right column). Empty string on success, refusal
     // otherwise. set_load: persistent force at a world point on one part
