@@ -457,6 +457,7 @@ std::string B2Scene::admit(const std::string &json, const std::string &reason) {
         support_on_ = true;
         reason_ = reason.empty() ? why : reason;
         active_ = true;
+        paused_ = false;   // a fresh admission is a fresh scene: it runs
         diverged_ = false;
         steps_ = 0;
         e0_j_ = kinetic_j_() + potential_j_() + stored_penalty_j_();
@@ -580,6 +581,11 @@ std::string B2Scene::set_weld(const std::string &json) {
                                         return (x.a == wd.a && x.b == wd.b) ||
                                                (x.a == wd.b && x.b == wd.a);
                                     }), welds_.end());
+        // B7 bounded topology pool: the weld pool holds at most CAP_WELDS
+        // connectors; past the cap the transaction refuses by name.
+        if (welds_.size() >= CAP_WELDS)
+            return "weld: pool cap reached (" + std::to_string(CAP_WELDS) +
+                   " connectors); remove one first";
         welds_.push_back(std::move(wd));
         return std::string();
     } catch (const std::exception &e) {
@@ -863,9 +869,10 @@ std::string B2Scene::save_doc_() const {
     return b;
 }
 
-std::string B2Scene::save_json() const { return save_doc_(); }
+std::string B2Scene::save_json() const { ++save_count_; return save_doc_(); }
 
 std::string B2Scene::state_hash() const {
+    ++hash_count_;
     const std::string doc = save_doc_();
     uint64_t h = 1469598103934665603ULL;            // FNV-1a 64 basis
     for (unsigned char ch : doc) { h ^= ch; h *= 1099511628211ULL; }
@@ -1128,6 +1135,7 @@ std::string B2Scene::restore(const std::string &json) {
         reason_ = reason;
         active_ = true;
         diverged_ = false;
+        ++restore_count_;   // B7 accounting: explicit route only, never per tick
         return std::string();
     } catch (const std::exception &e) {
         return std::string(e.what());
@@ -1199,6 +1207,9 @@ std::string B2Scene::set_valve(const std::string &json) {
         }
         int ex = valve_index_(aj->str, bj->str);
         if (ex >= 0) { valves_[ex].g = g; valves_[ex].open = open; return std::string(); }
+        if (valves_.size() >= CAP_VALVES)            // B7 bounded topology pool
+            return "valve: pool cap reached (" + std::to_string(CAP_VALVES) +
+                   " valves); remove one first";
         Valve v; v.a = ia; v.b = ib; v.g = g; v.open = open;
         valves_.push_back(v);
         return std::string();
@@ -1295,6 +1306,9 @@ std::string B2Scene::add_heat(const std::string &json) {
             return "heat.k_W_K: unstable at h=1/4000 (k*h*(1/C_a + 1/C_b) must be < 0.5)";
         if (heat_index_(aj->str, bj->str) >= 0)
             return "heat: a link between '" + aj->str + "' and '" + bj->str + "' already exists";
+        if (heat_.size() >= CAP_HEAT)               // B7 bounded topology pool
+            return "heat: pool cap reached (" + std::to_string(CAP_HEAT) +
+                   " links); remove one first";
         HeatLink l; l.a = ia; l.b = ib; l.k = k;
         heat_.push_back(l);
         return std::string();
@@ -1350,6 +1364,9 @@ std::string B2Scene::add_piston(const std::string &json) {
             if (!(ps.f_max >= 0.0)) return "piston.f_max_N: must be >= 0";
         }
         ps.x0 = dot3(parts_[pi].c, ps.n);   // stroke datum: the pose at creation
+        if (pistons_.size() >= CAP_PISTONS) // B7 bounded topology pool
+            return "piston: pool cap reached (" + std::to_string(CAP_PISTONS) +
+                   " actuators); remove one first";
         pistons_.push_back(ps);
         return std::string();
     } catch (const std::exception &e) { return std::string(e.what()); }
@@ -2017,7 +2034,10 @@ std::string B2Scene::telemetry_json() const {
     b += ",\"gravity_on\":"; b += gravity_on_ ? "true" : "false";
     b += ",\"support_on\":"; b += support_on_ ? "true" : "false";
     b += ",\"paused\":"; b += paused_ ? "true" : "false";
-    b += ",\"state_hash\":\"" + state_hash() + "\"";   // B4: transaction proof
+    // B7: the routine telemetry no longer embeds state_hash(). Hashing the
+    // full save document on every per-tick read WAS the routine full-state
+    // CPU round trip the gate forbids; the transaction proof lives on the
+    // explicit /tick_b2_hash route (counted in round_trips.hash_reads).
     double wtot = 0.0, rtot = 0.0, pen = 0.0;
     const double g_eff = gravity_on_ ? gravity_ : 0.0;   // the power switch is real
     for (auto &p : parts_) {
@@ -2071,7 +2091,25 @@ std::string B2Scene::telemetry_json() const {
         b += ",\"pose_q_wxyz\":[" + fmt(q[0]) + "," + fmt(q[1]) + "," + fmt(q[2]) + "," + fmt(q[3]) + "]";
         b += ",\"ground\":{\"k_n_per_m\":" + fmt(p.k_site) + ",\"c_n_s_per_m\":" + fmt(p.c_site) + "}}";
     }
-    b += "]}";
+    b += "]";
+    // B7: bounded-pool usage, separately measured display vs physical LOD,
+    // and full-state round-trip accounting (routine = per tick: never).
+    size_t phys_tris = 0;
+    for (const auto &p : parts_) phys_tris += p.tris.size() / 3;
+    size_t disp_tris = lod_ == 1 ? 12 * parts_.size() : phys_tris;
+    b += ",\"pools\":{\"parts\":[" + std::to_string(parts_.size()) + "," +
+         std::to_string(CAP_PARTS) + "],\"welds\":[" + std::to_string(welds_.size()) + "," +
+         std::to_string(CAP_WELDS) + "],\"chambers\":[" + std::to_string(chambers_.size()) + "," +
+         std::to_string(CAP_CHAMBERS) + "],\"valves\":[" + std::to_string(valves_.size()) + "," +
+         std::to_string(CAP_VALVES) + "],\"heat\":[" + std::to_string(heat_.size()) + "," +
+         std::to_string(CAP_HEAT) + "],\"pistons\":[" + std::to_string(pistons_.size()) + "," +
+         std::to_string(CAP_PISTONS) + "]}";
+    b += ",\"display\":{\"lod\":" + std::to_string(lod_) +
+         ",\"display_tris\":" + std::to_string(disp_tris) +
+         ",\"physical_tris\":" + std::to_string(phys_tris) + "}";
+    b += ",\"round_trips\":{\"saves\":" + std::to_string(save_count_) +
+         ",\"restores\":" + std::to_string(restore_count_) +
+         ",\"hash_reads\":" + std::to_string(hash_count_) + "}}";
     return b;
 }
 
@@ -2155,6 +2193,71 @@ static const double kLayerRgb[4][3] = {
     {0.85, 0.75, 0.20},   // layer 3 (placed part)
 };
 
+// ─── B7 display LOD ──────────────────────────────────────────────────────────
+// LOD 0 renders/picks the physical boundary triangles (the B3 agreement:
+// render, pick and contact walk the same mesh). LOD 1 is a DISPLAY-only
+// approximation: each part becomes its world AABB. Physics, contact and the
+// state hash never see the LOD (gallery 13: a display LOD must not change
+// material strength or relabel a port); selection at LOD 1 still resolves
+// to the same part id because the box contains the part — the hit POINT is
+// a declared approximation, the identity is not.
+std::string B2Scene::set_display_lod(const std::string &json) {
+    try {
+        JParser jp{json.c_str(), {}, 0};
+        JVal *root = jp.parse();
+        if (root->t != JVal::OBJ) return "lod document must be a json object";
+        req_keys(*root, {"level"}, {}, "lod");
+        double lv = fnum(*need(*root, "level", "lod"), "lod.level");
+        if (lv != 0.0 && lv != 1.0) return "lod.level: 0 (physical) or 1 (bbox display) expected";
+        lod_ = (int)lv;
+        return std::string();
+    } catch (const std::exception &e) { return std::string(e.what()); }
+}
+
+void B2Scene::bbox_corners_(const Part &p, double out[8][3]) const {
+    double lo[3] = {1e300, 1e300, 1e300}, hi[3] = {-1e300, -1e300, -1e300};
+    size_t nv = p.verts.size() / 3;
+    for (size_t vi = 0; vi < nv; ++vi) {
+        double w[3]; world_vert_(p, vi, w);
+        for (int k = 0; k < 3; ++k) { lo[k] = std::fmin(lo[k], w[k]); hi[k] = std::fmax(hi[k], w[k]); }
+    }
+    for (int i = 0; i < 8; ++i)
+        for (int k = 0; k < 3; ++k) out[i][k] = (i & (1 << k)) ? hi[k] : lo[k];
+}
+
+// one box: 8 corners -> 12 triangles (outward faces of the AABB)
+static const int kBboxTris[12][3] = {
+    {0,2,1},{0,1,3},          // -z face? (winding irrelevant: normals re-outwarded)
+    {4,5,6},{4,6,7},          // +z
+    {0,1,5},{0,5,4},          // -y
+    {2,6,7},{2,7,3},          // +y
+    {0,4,7},{0,7,3},          // -x
+    {1,2,6},{1,6,5}           // +x
+};
+
+bool B2Scene::mt_hit_(const float eye[3], const float dir[3],
+                      const double w[3][3], float &t_out) {
+    float a[3] = {(float)w[0][0], (float)w[0][1], (float)w[0][2]};
+    float b[3] = {(float)w[1][0], (float)w[1][1], (float)w[1][2]};
+    float cc[3] = {(float)w[2][0], (float)w[2][1], (float)w[2][2]};
+    float e1[3] = {b[0]-a[0], b[1]-a[1], b[2]-a[2]};
+    float e2[3] = {cc[0]-a[0], cc[1]-a[1], cc[2]-a[2]};
+    float pv[3] = {dir[1]*e2[2]-dir[2]*e2[1], dir[2]*e2[0]-dir[0]*e2[2],
+                   dir[0]*e2[1]-dir[1]*e2[0]};
+    float det = e1[0]*pv[0] + e1[1]*pv[1] + e1[2]*pv[2];
+    if (det > -1e-10f && det < 1e-10f) return false;
+    float inv = 1.f / det;
+    float tv[3] = {eye[0]-a[0], eye[1]-a[1], eye[2]-a[2]};
+    float uu = (tv[0]*pv[0] + tv[1]*pv[1] + tv[2]*pv[2]) * inv;
+    if (uu < -1e-6f || uu > 1.f + 1e-6f) return false;
+    float qv[3] = {tv[1]*e1[2]-tv[2]*e1[1], tv[2]*e1[0]-tv[0]*e1[2],
+                   tv[0]*e1[1]-tv[1]*e1[0]};
+    float vv = (dir[0]*qv[0] + dir[1]*qv[1] + dir[2]*qv[2]) * inv;
+    if (vv < -1e-6f || uu + vv > 1.f + 1e-6f) return false;
+    t_out = (e2[0]*qv[0] + e2[1]*qv[1] + e2[2]*qv[2]) * inv;
+    return t_out > 0.f;
+}
+
 void B2Scene::render_mesh(std::vector<float> &verts9,
                           std::vector<uint32_t> &tris) const {
     verts9.clear(); tris.clear();
@@ -2162,6 +2265,34 @@ void B2Scene::render_mesh(std::vector<float> &verts9,
     for (size_t pi = 0; pi < parts_.size(); ++pi) {
         const Part &p = parts_[pi];
         const double *rgb = kLayerRgb[pi % 4];
+        if (lod_ == 1) {
+            double box[8][3];
+            bbox_corners_(p, box);
+            const uint32_t base = (uint32_t)(verts9.size() / 9);
+            for (int t = 0; t < 12; ++t) {
+                double w[3][3];
+                for (int k = 0; k < 3; ++k)
+                    for (int a = 0; a < 3; ++a) w[k][a] = box[kBboxTris[t][k]][a];
+                double e1[3] = {w[1][0]-w[0][0], w[1][1]-w[0][1], w[1][2]-w[0][2]};
+                double e2[3] = {w[2][0]-w[0][0], w[2][1]-w[0][1], w[2][2]-w[0][2]};
+                double n[3]; cross3(e1, e2, n);
+                double nl = std::sqrt(n[0]*n[0] + n[1]*n[1] + n[2]*n[2]);
+                if (nl < 1e-12) continue;
+                double dc[3] = {(w[0][0]+w[1][0]+w[2][0])/3.0 - p.c[0],
+                                (w[0][1]+w[1][1]+w[2][1])/3.0 - p.c[1],
+                                (w[0][2]+w[1][2]+w[2][2])/3.0 - p.c[2]};
+                if (n[0]*dc[0] + n[1]*dc[1] + n[2]*dc[2] < 0.0)
+                    for (int k = 0; k < 3; ++k) n[k] = -n[k];
+                for (int k = 0; k < 3; ++k) n[k] /= nl;
+                for (int k = 0; k < 3; ++k) {
+                    for (int a = 0; a < 3; ++a) verts9.push_back((float)w[k][a]);
+                    for (int a = 0; a < 3; ++a) verts9.push_back((float)n[a]);
+                    for (int a = 0; a < 3; ++a) verts9.push_back((float)rgb[a]);
+                    tris.push_back(base + (uint32_t)(3*t + k));
+                }
+            }
+            continue;
+        }
         const uint32_t base = (uint32_t)(verts9.size() / 9);
         for (size_t ti = 0; ti + 2 < p.tris.size(); ti += 3) {
             double w[3][3];
@@ -2195,32 +2326,30 @@ bool B2Scene::pick(const float eye[3], const float dir[3],
     float best_t = 1e30f;
     bool hit = false;
     for (const auto &p : parts_) {
+        if (lod_ == 1) {
+            double box[8][3];
+            bbox_corners_(p, box);
+            for (int t = 0; t < 12; ++t) {
+                double w[3][3];
+                for (int k = 0; k < 3; ++k)
+                    for (int a = 0; a < 3; ++a) w[k][a] = box[kBboxTris[t][k]][a];
+                float tt;
+                if (!mt_hit_(eye, dir, w, tt) || tt >= best_t) continue;
+                best_t = tt; hit = true;
+                id_out = p.id;
+                for (int k = 0; k < 3; ++k) point_out[k] = eye[k] + tt * dir[k];
+            }
+            continue;
+        }
         for (size_t ti = 0; ti + 2 < p.tris.size(); ti += 3) {
             double w[3][3];
             for (int k = 0; k < 3; ++k)
                 world_vert_(p, (size_t)p.tris[ti + k], w[k]);
-            float a[3] = {(float)w[0][0], (float)w[0][1], (float)w[0][2]};
-            float b[3] = {(float)w[1][0], (float)w[1][1], (float)w[1][2]};
-            float cc[3] = {(float)w[2][0], (float)w[2][1], (float)w[2][2]};
-            float e1[3] = {b[0]-a[0], b[1]-a[1], b[2]-a[2]};
-            float e2[3] = {cc[0]-a[0], cc[1]-a[1], cc[2]-a[2]};
-            float pv[3] = {dir[1]*e2[2]-dir[2]*e2[1], dir[2]*e2[0]-dir[0]*e2[2],
-                           dir[0]*e2[1]-dir[1]*e2[0]};
-            float det = e1[0]*pv[0] + e1[1]*pv[1] + e1[2]*pv[2];
-            if (det > -1e-10f && det < 1e-10f) continue;
-            float inv = 1.f / det;
-            float tv[3] = {eye[0]-a[0], eye[1]-a[1], eye[2]-a[2]};
-            float uu = (tv[0]*pv[0] + tv[1]*pv[1] + tv[2]*pv[2]) * inv;
-            if (uu < -1e-6f || uu > 1.f + 1e-6f) continue;
-            float qv[3] = {tv[1]*e1[2]-tv[2]*e1[1], tv[2]*e1[0]-tv[0]*e1[2],
-                           tv[0]*e1[1]-tv[1]*e1[0]};
-            float vv = (dir[0]*qv[0] + dir[1]*qv[1] + dir[2]*qv[2]) * inv;
-            if (vv < -1e-6f || uu + vv > 1.f + 1e-6f) continue;
-            float t = (e2[0]*qv[0] + e2[1]*qv[1] + e2[2]*qv[2]) * inv;
-            if (t <= 0.f || t >= best_t) continue;
-            best_t = t; hit = true;
+            float tt;
+            if (!mt_hit_(eye, dir, w, tt) || tt >= best_t) continue;
+            best_t = tt; hit = true;
             id_out = p.id;
-            for (int k = 0; k < 3; ++k) point_out[k] = eye[k] + t * dir[k];
+            for (int k = 0; k < 3; ++k) point_out[k] = eye[k] + tt * dir[k];
         }
     }
     return hit;

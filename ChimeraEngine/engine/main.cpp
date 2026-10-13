@@ -274,6 +274,15 @@ static std::string route_b2(const std::string &p, const std::string &method,
         return b2_refused_(why);
     }
     if (p == "/tick_b2_process" && method == "GET") return g_tick.b2_process_telemetry_json();
+    // B7 cost/state bounds (GAME_PLAN §13): the independent physical clock's
+    // counters (ticks, sim/wall ratio, bounded catch-ups, slow wakes) and the
+    // display-LOD control (render/pick mesh only; physics never sees it).
+    if (p == "/tick_b2_clock" && method == "GET") return g_tick.b2_clock_json();
+    if (p == "/tick_b2_render_lod" && method == "POST") {
+        std::string why = g_tick.b2_set_display_lod(req_body);
+        if (why.empty()) return "{\"ok\":true}";
+        return b2_refused_(why);
+    }
     return std::string();
 }
 
@@ -4249,6 +4258,14 @@ int main(int argc, char** argv) {
         fprintf(stderr, "Warning: Failed to start HTTP server on port %d\n", http_port);
     }
 
+    // B7 INDEPENDENT PHYSICAL CLOCK (GAME_PLAN §13): the B2 scene advances on
+    // its own steady_clock thread, not the render loop, so physical outcomes
+    // do not depend on the display cadence (gallery item 12). Default-off in
+    // effect: the thread steps nothing until POST /tick_b2_admit arms a
+    // scene; /tick_b2_clock reports ticks, sim/wall ratio, bounded catch-ups
+    // and slow wakes. Joined in the shutdown tail before engine.shutdown().
+    g_tick.b2_clock_start();
+
     // SESSION SNAPSHOT: boot restore is DEFAULT-ON (2026-09-03, the recurring
     // "engine without the object" defect — the operator, the eye, and every
     // agent each forgot the old opt-in flag, and a fresh boot is born empty
@@ -4738,11 +4755,11 @@ int main(int argc, char** argv) {
                 g_tick.ledger_violation_clear();
             }
         }
-        // B2 (GAME_PLAN_ACTION_RPG.md §13): the two-part scene steps on the
-        // shared resident runtime whether or not a body is loaded; default-
-        // off (no-op until POST /tick_b2_admit), b2_mtx_ only, never seal
-        // state. See MembraneTick::b2_step.
-        g_tick.b2_step((double)tick_dt);
+        // B2 (GAME_PLAN_ACTION_RPG.md §13): as of B7 the scene no longer
+        // steps here. The dedicated physical-clock thread (b2_clock_start,
+        // right after server.start) advances it from steady_clock time, so
+        // the simulation is independent of this loop's cadence; the render
+        // lane below only uploads meshes for display.
 
         // B3 render lane: while a B2/B3 scene is live, its world meshes go
         // to the overlay slot every frame, so what the renderer draws IS the
@@ -4852,6 +4869,9 @@ int main(int argc, char** argv) {
     fflush(stdout);
     server.stop();
     printf("shutdown: http_stopped\n");
+    fflush(stdout);
+    g_tick.b2_clock_stop();   // B7: join the physical clock before teardown
+    printf("shutdown: b2_clock_stopped\n");
     fflush(stdout);
     printf("Shutting down...\n");
     g_thermal.stop();

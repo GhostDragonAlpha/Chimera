@@ -12,6 +12,7 @@
 #include <mutex>
 #include <string>
 #include <string>
+#include <thread>
 #include <vector>
 
 class MembraneTick {
@@ -210,10 +211,25 @@ public:
     std::string b2_remove_piston(const std::string &json);
     std::string b2_process_clear();
     std::string b2_process_telemetry_json();
-    // The render loop drives the scene on its own: B2 is independent of
-    // the membrane body, so it steps whether or not a body is loaded
-    // (step() only runs with verts). b2_mtx_ alone; no seal state touched.
+    // B2 is independent of the membrane body, so it steps whether or not a
+    // body is loaded (step() only runs with verts). b2_mtx_ alone; no seal
+    // state touched. B7: the render loop no longer calls this; the
+    // dedicated physical-clock thread (b2_clock_start) drives step().
     void b2_step(double dt);
+    // B7 independent physical clock (plan §13 cost/state bounds): one
+    // dedicated thread advances the B2 scene from std::chrono::steady_clock,
+    // so physical outcomes are independent of the render cadence. Catch-up
+    // after a stall is bounded (dt clamped); the clamp count is reported,
+    // never silently absorbed. Idempotent start/stop; stop joins the thread.
+    void b2_clock_start();
+    void b2_clock_stop();
+    std::string b2_clock_json();
+    // B7 display LOD: {"level":0|1} selects the render/pick mesh (0 = the
+    // physical boundary triangles, 1 = per-part world AABB). Physics, the
+    // save document and the state hash never see it; pick resolves the same
+    // part ids at either level.
+    std::string b2_set_display_lod(const std::string &json);
+    ~MembraneTick();   // B7: joins the physical-clock thread if still running
 
     // F1 STANCE (the balance rung; prereg appended to
     // SEAL_PREREGISTRATION.md): the body counters its own lean by
@@ -606,6 +622,20 @@ private:
     // admission never blocks the render loop's seal try_lock.
     mutable std::mutex b2_mtx_;
     B2Scene b2_;
+    // B7 physical-clock thread (see b2_clock_start). The loop wakes every
+    // 2 ms, measures a steady_clock dt, clamps catch-up at 50 ms, and steps
+    // the scene under b2_mtx_. The counters are b2_mtx_-guarded telemetry
+    // only: they never enter the scene's save document or state hash.
+    void b2_clock_loop_();
+    std::thread b2_clock_thread_;
+    std::atomic<bool> b2_clock_stop_{false};
+    bool b2_clock_running_ = false;
+    long b2_clock_ticks_ = 0;
+    double b2_clock_sim_s_ = 0.0;            // summed clamped dt stepped
+    double b2_clock_active_wall_s_ = 0.0;    // wall time while scene stepping
+    long b2_clock_clamps_ = 0;               // catch-up bounds applied
+    long b2_clock_slow_ = 0;                 // wakes over 2x the 2 ms budget
+    double b2_clock_max_gap_ms_ = 0.0;       // worst observed wake gap
     // F1 STANCE state (see set_stance above). Default OFF; the lead owns
     // the policy flip after the bars pass (the gravity precedent).
     static constexpr uint8_t ANKLE_PIN_L = 17, ANKLE_PIN_R = 18;

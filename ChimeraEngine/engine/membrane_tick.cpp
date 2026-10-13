@@ -3583,13 +3583,90 @@ bool MembraneTick::set_gravity(bool on) {
 }
 
 // ─── B2: two independent parts on the shared resident runtime ───────────────
-// The routes (main.cpp) admit/clear/read; the render loop drives b2_step.
-// b2_mtx_ serialises all of it (b2_scene.hpp). The scene is body-
+// The routes (main.cpp) admit/clear/read; the B7 physical-clock thread drives
+// step(). b2_mtx_ serialises all of it (b2_scene.hpp). The scene is body-
 // independent: step() only runs with a membrane body loaded, so B2 gets its
-// own step call from the render loop and never nests under seal_mtx_.
+// own step call and never nests under seal_mtx_.
 void MembraneTick::b2_step(double dt) {
     std::lock_guard<std::mutex> lk(b2_mtx_);
     if (b2_.active()) b2_.step(dt);
+}
+
+// ─── B7 independent physical clock ───────────────────────────────────────────
+// Plan §13: "independent physical clock ... no routine full-state CPU round
+// trip". One dedicated thread, not the render loop: the scene advances by
+// real elapsed time (steady_clock) whatever the display cadence does, so a
+// slow or stopped frame cannot change physical outcomes. Catch-up after a
+// long stall is BOUNDED at 50 ms of simulated time per wake (the same clamp
+// step() applies internally) and every bound applied is counted and reported
+// through /tick_b2_clock — a stalled engine says so instead of silently
+// teleporting the simulation. The wake budget is 2 ms; a wake that overran
+// 2x that is counted as a slow tick (plan: "slow frames are reported").
+void MembraneTick::b2_clock_loop_() {
+    using clk = std::chrono::steady_clock;
+    clk::time_point last = clk::now();
+    while (!b2_clock_stop_.load(std::memory_order_acquire)) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(2));
+        clk::time_point now = clk::now();
+        double dt = std::chrono::duration<double>(now - last).count();
+        last = now;
+        double gap_ms = dt * 1000.0;
+        bool clamped = dt > 0.05;   // bounded catch-up, never absorbed
+        if (clamped) dt = 0.05;
+        std::lock_guard<std::mutex> lk(b2_mtx_);
+        if (gap_ms > b2_clock_max_gap_ms_) b2_clock_max_gap_ms_ = gap_ms;
+        if (gap_ms > 4.0) ++b2_clock_slow_;
+        if (clamped) ++b2_clock_clamps_;
+        if (b2_.active() && !b2_.paused()) {
+            b2_.step(dt);
+            b2_clock_sim_s_ += dt;
+            b2_clock_active_wall_s_ += gap_ms / 1000.0;
+            ++b2_clock_ticks_;
+        }
+    }
+}
+
+void MembraneTick::b2_clock_start() {
+    if (b2_clock_running_) return;
+    b2_clock_stop_.store(false, std::memory_order_release);
+    b2_clock_thread_ = std::thread(&MembraneTick::b2_clock_loop_, this);
+    b2_clock_running_ = true;
+}
+
+void MembraneTick::b2_clock_stop() {
+    if (!b2_clock_running_) return;
+    b2_clock_stop_.store(true, std::memory_order_release);
+    if (b2_clock_thread_.joinable()) b2_clock_thread_.join();
+    b2_clock_running_ = false;
+}
+
+MembraneTick::~MembraneTick() { b2_clock_stop(); }
+
+std::string MembraneTick::b2_clock_json() {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    auto f = [](double v) { char buf[32]; snprintf(buf, sizeof buf, "%.9g", v); return std::string(buf); };
+    std::string s = "{\"ok\":true,\"schema\":\"chimera.b2_clock.v1\"";
+    s += ",\"thread\":true";
+    s += ",\"running\":" + std::string(b2_clock_running_ ? "true" : "false");
+    s += ",\"ticks\":" + std::to_string(b2_clock_ticks_);
+    s += ",\"sim_s\":" + f(b2_clock_sim_s_);
+    s += ",\"active_wall_s\":" + f(b2_clock_active_wall_s_);
+    s += ",\"sim_over_wall\":" +
+         f(b2_clock_active_wall_s_ > 0.0 ? b2_clock_sim_s_ / b2_clock_active_wall_s_ : 0.0);
+    s += ",\"catchup_clamps\":" + std::to_string(b2_clock_clamps_);
+    s += ",\"slow_ticks\":" + std::to_string(b2_clock_slow_);
+    s += ",\"max_gap_ms\":" + f(b2_clock_max_gap_ms_);
+    s += ",\"wake_budget_ms\":2,\"catchup_bound_s\":0.05";
+    s += ",\"substep_s\":0.00025";
+    s += ",\"scene_active\":" + std::string(b2_.active() ? "true" : "false");
+    s += ",\"paused\":" + std::string(b2_.paused() ? "true" : "false");
+    s += "}";
+    return s;
+}
+
+std::string MembraneTick::b2_set_display_lod(const std::string &json) {
+    std::lock_guard<std::mutex> lk(b2_mtx_);
+    return b2_.set_display_lod(json);
 }
 std::string MembraneTick::b2_admit(const std::string &json, const std::string &reason) {
     std::lock_guard<std::mutex> lk(b2_mtx_);

@@ -138,6 +138,22 @@ public:
     std::string process_clear();                           // drop process state, parts untouched
     std::string process_telemetry_json() const;            // GET /tick_b2_process (sensor: const)
 
+    // ─── B7: bounded pools, display LOD, round-trip accounting ─────────────
+    // GAME_PLAN §13 B7 ("bounded topology pools ... compatible render LOD";
+    // gallery 13: "a different triangle order or display LOD does not change
+    // material strength, secretly heal a crack or relabel a port").
+    // The caps are the declared topology pools: admission/transactions
+    // refuse past the cap by name, and the usage is telemetry.
+    static constexpr size_t CAP_PARTS = 6, CAP_WELDS = 15, CAP_CHAMBERS = 6,
+                            CAP_VALVES = 12, CAP_HEAT = 12, CAP_PISTONS = 6;
+    // Display LOD: 0 = the physical boundary triangles (render, pick and
+    // contact agree by construction); 1 = per-part world bounding boxes,
+    // a DISPLAY-ONLY approximation — physics, contact and the state hash
+    // never see it, and selection still resolves to the same part ids
+    // (the box contains the part; the hit point is a declared approximation).
+    std::string set_display_lod(const std::string &json);  // {"level":0|1}
+    int display_lod() const { return lod_; }
+
 private:
     struct Part {
         std::string id;
@@ -254,6 +270,12 @@ private:
                             std::vector<Part> &built);
     // Canonical serialisation shared by save_json() and state_hash().
     std::string save_doc_() const;
+    // Moller-Trumbore against one world triangle; nearest-t bookkeeping
+    // lives in the caller so boundary and bbox (LOD 1) picks share the law.
+    static bool mt_hit_(const float eye[3], const float dir[3],
+                        const double w[3][3], float &t_out);
+    // world-space AABB corners of one part (LOD 1 display/pick geometry)
+    void bbox_corners_(const Part &p, double out[8][3]) const;
     double kinetic_j_() const;
     double potential_j_() const;
     double stored_penalty_j_() const;
@@ -285,4 +307,9 @@ private:
     long steps_ = 0;
     double e0_j_ = 0.0;                          // energy right after admission
     std::string reason_;                         // admission reason (audit)
+    int lod_ = 0;                                // B7 display LOD (never physics)
+    // B7 round-trip accounting: full-state serialisations happen ONLY on
+    // explicit routes — never per tick. Instrumentation, not state: never
+    // serialised, so the state hash is invariant across saves/reads.
+    mutable long save_count_ = 0, restore_count_ = 0, hash_count_ = 0;
 };

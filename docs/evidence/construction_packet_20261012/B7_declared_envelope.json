@@ -1,0 +1,41 @@
+{
+  "schema": "chimera.b7_envelope.v1",
+  "declared_utc_date": "2026-10-12",
+  "gate": "B7 (GAME_PLAN_ACTION_RPG.md §13): bound cost and preserve state",
+  "reference_machine": {
+    "gpu": "NVIDIA GeForce RTX 4090 (24564 MiB)",
+    "cpu": "Intel Core i9-13900K",
+    "ram_gb": 128,
+    "note": "plan §13 reference machine; the battery runs on exactly this host"
+  },
+  "resident_native_working_set": {
+    "engine_rss_growth_over_25_construction_cycles_bytes": 8388608,
+    "note": "repeated construction (admit -> weld -> chambers/valve/heat/piston -> step -> save -> re-admit) must reach a bounded plateau, not grow per cycle (gallery item 11)"
+  },
+  "vram_growth_over_25_construction_cycles_mib": 256,
+  "vram_note": "the GPU is shared with other processes; the bound tolerates their noise while still catching a per-cycle VRAM leak from the overlay re-upload lane",
+  "saved_dir_growth_bytes_over_battery": 0,
+  "telemetry_payload_bytes_max": 65536,
+  "telemetry_note": "the two routine per-tick reads (/tick_b2_state, /tick_b2_process) stay far below the bound; the full-state save document is an EXPLICIT route and its round trips are counted (round_trips) - routine = zero",
+  "physical_clock": {
+    "sim_over_wall_min": 0.95,
+    "sim_over_wall_max": 1.05,
+    "wake_budget_ms": 2,
+    "catchup_bound_s": 0.05,
+    "note": "dedicated steady_clock thread; catch-up after a stall is bounded and every bound applied is counted (catchup_clamps), never silently absorbed (plan: fixed simulation clock independent of rendering; slow frames reported)"
+  },
+  "presentation": {
+    "target_fps": 60,
+    "frame_time_avg_ms_max": 16.7,
+    "note": "engine's own 5 s frame-time window (ft ms avg) must sit inside the 60 FPS presentation target while the B2 scene is live"
+  },
+  "topology_pools": {
+    "parts": 6,
+    "welds": 15,
+    "chambers": 6,
+    "valves": 12,
+    "heat": 12,
+    "pistons": 6,
+    "note": "fixed caps, self-named refusals at the cap, usage reported every tick in state.pools; the weld cap equals C(6,2) so the pool is bounded by construction"
+  }
+}
