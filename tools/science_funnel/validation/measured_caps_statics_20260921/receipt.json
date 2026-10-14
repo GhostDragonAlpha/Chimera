@@ -1,0 +1,207 @@
+{
+ "schema": "chimera.measured_caps_statics.v1",
+ "lane": "measured-caps-statics-20260921",
+ "branch": "agent/measured-caps-statics-20260921",
+ "clone_of": "git@github.com-fleetdeploy:GhostDragonAlpha/Chimera.git @ b17cbf6c (branch agent/hind-torque-book-20260921, blobless clone, full tree)",
+ "mission": "THE MEASURED-CAPS STATIC VERDICT: re-run the wave-4 stance-hold statics (the wave-1 11-DOF planar machinery, gait_zero lineage) and re-price the stance-hold ratios AND the wave-10/25 '0.9 margin unreachable' wall at THREE cap sets: (a) the LIVE doc-derived caps (baseline - the instrument validation: must reproduce the banked statics and the banked worst-ratio class), (b) the MEASURED caps (the hind-torque-book V1_S1: knee 9.576795, MP 1.657925; ankle DOC-HELD - the re-derivation is BLOCKED on measured arms and the parallel ankle-arms lane's artifacts are NOT on canonical at fetch time; hip HELD; posture HELD keyed to the hip cap), (c) the PROVISIONAL PCSA x sigma variant (the book's V2_S1: knee 36.247782, MP 4.636664 - PROVISIONAL by the standing order; the Oku-forces variant is force-fixed and cannot take the pennation law). Outputs: worst-case ratio per set per binding node, the binding-node migration (the book predicts knee over-cap nodes 9 -> 4 of 15), and the margin verdict - does the wave-10/25 margin ratio cross 1.0 under (b)? under (c)? - with the k=0.119754 scale gate stated on EVERY verdict.",
+ "pre_registration": {
+  "written_before_first_verdict_computation": true,
+  "note": "This receipt was written BEFORE the derive script ran. Every band below is DERIVED by hand from BANKED artifacts that were READ (and sha-verified) before this file was written: the stance-hold snapshot's tau columns are cap-independent, so the (a)-set ratios and the re-price arithmetic are priors, not results. The measured block at the bottom was appended AFTER the run.",
+  "inputs_pinned": {
+   "hind_torque_book": {
+    "path": "tools/science_funnel/validation/hind_torque_book_20260921/hind_torque_book.json",
+    "sha256": "9fc5c0ba09f6ec183d5348bb21cc5dc18b5987240406ccdcdbb34e514e26f01c",
+    "provenance": "in-tree deliverable of THIS branch's base commit b17cbf6c; source of every cap in sets (b) and (c) and of the S2 gate caps (knee 1.146859, MP 0.198543); its own receipt pins the pulley deliverable, the Oku batch, and the muscle-path record"
+   },
+   "stance_hold_snapshot": {
+    "path": "tools/science_funnel/validation/measured_caps_statics_20260921/inputs/stance_hold.snapshot.json",
+    "sha256": "71e40cd8a161938a3a358792076dda0f98966a8909ae564cec7774a61126a5e5",
+    "provenance": "byte copy of the torque book's inputs/stance_hold.snapshot.json (sha EQUALS the pin in the torque book's receipt.json) = the wave-4 deliverable stance_hold.json at origin/agent/gait-wave27c-decay-seats (4198dbdc): the banked demand table this lane's instrument must reproduce"
+   },
+   "derived_numbers_snapshot": {
+    "path": "tools/science_funnel/validation/measured_caps_statics_20260921/inputs/derived_numbers.snapshot.json",
+    "sha256": "013810f87a6ca7c1e01916ef7a5454e61e8d0e88f8d6a589fbfdd1514017a173",
+    "provenance": "byte copy of the torque book's inputs/derived_numbers.snapshot.json (sha equals the torque book receipt's pin): the Oku Table-1 segments the vendored statics script reads"
+   },
+   "wave4_machinery_byte_copy": {
+    "path": "tools/science_funnel/validation/measured_caps_statics_20260921/inputs/run_env/tools/science_funnel/validation/gait_zero_20260919/derive_stance_hold.py",
+    "sha256": "3c92d188b6aaf01c8cc4319262981b51ba95566370fb59e1ba4d0dd764562f70",
+    "provenance": "BYTE COPY (unmodified) of tools/science_funnel/validation/gait_zero_20260919/derive_stance_hold.py at origin/agent/gait-wave27c-decay-seats (4198dbdc) - the wave-4 11-DOF planar quasi-static deriver. The tool lives off this lane's lineage, so it is vendored at its canonical RELATIVE depth under inputs/run_env/ (parents[4] then resolves to run_env) with the derived-numbers snapshot at the path the script expects: the banked code runs UNMODIFIED with redirected I/O, the pulley-lane vendoring pattern. A second byte copy is kept at inputs/vendored_gait_zero/derive_stance_hold.py for the sha citation."
+   },
+   "wave10_wall_deliverable": {
+    "path": "tools/science_funnel/validation/measured_caps_statics_20260921/inputs/vendored_gait_zero/trunk_vault_reachable.wave10.json",
+    "sha256": "e922153318778e4cd8c1891f59454261c6d5be0a77aebdc5f78d2758ccd2faa7",
+    "provenance": "byte copy of tools/science_funnel/validation/gait_zero_20260919/trunk_vault_reachable.json at 4198dbdc - the wave-10 collocation deliverable (21 periodic nodes, posture cap 11.2125, posture limit 10.09125 = 0.9 x cap): THE banked face of the wave-10/25 '0.9 margin unreachable' wall (its max_ratio_to_cap 1.3227763 is the number the wave-10 receipt banked as 1.322776)"
+   },
+   "posturecap_sweep_artifact": {
+    "path": "tools/science_funnel/validation/measured_caps_statics_20260921/inputs/vendored_gait_zero/min_admissible_cap.posturecap.json",
+    "sha256": "3fc79b467792edb1feafc791461688a0fc0a0ce3aeb944a42af63758e62126e5",
+    "provenance": "byte copy of tools/science_funnel/validation/posture_cap_20260919/min_admissible_cap.json at origin/agent/posture-cap-provenance - the sweep that banked 'no posture cap in [11.2125, 22.425] N.m admits combined <= 1.0' (worst 1.0010860 hip-bound at 2x; the lane's probe_beyond_window named the 0.9773185 ankle-bound frontier floor beyond the window)"
+   }
+  },
+  "margin_wall_definition": {
+   "what_the_wave_is": "the wave-10 admissible-vault verdict ('no table meeting the 0.9 cap bound was produced; max combined stance/posture ratio 1.322776 at phi=0.85' - receipt_wave10.json, base 54472e63) as carried by the posture-cap lane's falsified membrane ('no cap in [11.2125, 22.425] N.m admits combined <= 1.0 at any of the 21 collocation nodes') and cited by the wave-25-era gait campaign. 'wave-10/25' is the mission's name for this wall; the BANKED numbers live in the two artifacts pinned above.",
+   "margin_ratio_this_lane_measures": "max over the 21 banked wave-10 collocation nodes of max(hip, knee, ankle, MP, posture demand/cap ratios), re-priced at each cap set. The banked theta trajectory IS the wave-10 optimum UNDER THE OLD CAPS; re-pricing changes only the cap denominators (demands are cap-independent). A re-collocation at the new caps is a re-hearing, NOT this lane - named future work, order-of-magnitude discipline.",
+   "finding_named_before_compute": "the torque book's consumption-map prose cites the wall as 'static min combined 0.9112 at phi=0.85, knee ratio 0.785'. THAT prose pair does NOT resolve to any banked artifact this lane could find (git-grepped the wave27c tree and the posture-cap branch: no 0.9112/0.785 knee ratio in any validation deliverable; the book's own map is declared order-of-magnitude). The book's AFTER-value (0.544 = 0.785/1.4428) inherits the unresolvable BEFORE-value. This lane therefore measures the wall from the BANKED deliverable: at (a) the wall's knee term is 1.3227763 at phi=0.75 (the wave-10 receipt's own banked number), NOT 0.785. The discrepancy is recorded as a finding, never tuned to match."
+  },
+  "cap_sets": {
+   "A_live_doc": {
+    "hip": 11.2125, "knee": 6.6375, "ankle": 7.4, "mp": 0.8875, "posture": 11.2125,
+    "provenance": "LIVE graph-contract/engine pins = 1.25 x the DOC-ROUNDED Oku peaks (torque book audit; gait_contract_drives snapshot). Posture keyed to the hip cap (cap-on-each, the live contract). NOTE: the banked stance-hold table's caps COLUMN carries the exact-scale pins 11.218/6.643/7.396/0.881 - the rounding split the book banked; set (a) is the LIVE rounded pins and the banked exact-pin ratios are cross-checked alongside."
+   },
+   "B_measured_v1_s1": {
+    "hip": 11.2125, "knee": 9.576795, "ankle": 7.4, "mp": 1.657925, "posture": 11.2125,
+    "provenance": "knee/MP: the hind-torque-book V1_S1 MEASURED caps (Oku walk forces x pulley-lane MEASURED deposit arms; knee argmax q=-42.3 deg). ankle: DOC-HELD - the ankle re-derivation is BLOCKED on measured arms (the book's ankle_context) AND the parallel ankle-arms lane's artifacts are NOT on canonical at this lane's fetch time (checked: no ankle_arms_20260921 dir on b17cbf6c or any 2026-09-21 branch fetched) - the ankle stays doc-derived, NAMED on every (b) row. hip: HELD (the book re-derived nothing for it; the posture-cap lane's 10.54 N.m amendment stays banked-unconsumed). posture: HELD keyed to the hip cap."
+   },
+   "C_provisional_v2_s1": {
+    "hip": 11.2125, "knee": 36.247782, "ankle": 7.4, "mp": 4.636664, "posture": 11.2125,
+    "provenance": "the hind-torque-book V2_S1 PROVISIONAL caps: PCSA x sigma x cos(pennation) (sigma 1280914.14 Pa, the sigma caveat inherited) x the same measured deposit arms. This IS the 'pennation-corrected' set: the pennation-correction lane (37d053ac) annotates the pairing's 23 force records with the same cos(pennation) but is NOT on this branch's canonical base, so the book's V2 numbers stand PROVISIONAL and nothing newer is consumed. RF absent from the sigma record (named gap), FHL has no Oku walk force (named gap)."
+   }
+  },
+  "protocol_declared": {
+   "instrument": "the vendored wave-4 script runs UNMODIFIED in inputs/run_env/; its stance_hold.json output's stance_nodes must equal the banked snapshot's stance_nodes EXACTLY (the tau columns are cap-independent - this is the instrument validation, falsifier (a)). The lane's derive script then reads the regenerated demands (never the banked caps column) and computes the three cap-set tables.",
+   "ratio_law": "ratio(node, joint, set) = |tau(node, joint)| / cap(joint, set); over-cap := ratio > 1.0. Binding node of a joint := argmax ratio. Worst-case ratio of a set := max over joints and nodes; the binding-adjacent HOLDING class := the largest sub-unity ratio (the joint nearest its cap among holders - the margin-binder).",
+   "wall_reprice_law": "wall_ratio(set) = max over the 21 banked nodes of max(hip_r, knee_r x capA_knee/capB_knee, ankle_r, mp_r x capA_mp/capB_mp, posture_r) with capA the (a) caps - i.e. each joint's banked ratio is divided by that joint's cap headroom; hip/ankle/posture headroom is 1.0 in sets (b)/(c) by the held-cap law. crossing_1_0 := wall_ratio <= 1.0 at EVERY node. margin_0_9 := wall_ratio <= 0.9 at every node.",
+   "scale_gate_stated_on_every_verdict": "S1 gate: sets (b)/(c) stand on the DEPOSIT arm scale. At the SI-matched scale (arms x k = 0.11975394, the pulley lane's fitted per-taxon scalar, the deposit-vs-authors absolute-scale divergence OPEN at operator level) the book collapses (knee 1.146859, MP 0.198543) and EVERY (b)/(c) verdict INVERTS (prediction P9). No engine consumption is lawful until the operator resolves the k divergence - the torque book's standing gate, inherited verbatim.",
+   "determinism_protocol": "pure function of sha-verified inputs; three full in-process runs must agree byte-for-byte on the deliverable canonical JSON; the unittest re-invokes via subprocess and compares sha256",
+   "scope_law": "NO engine or source changes; the lane writes ONLY inside tools/science_funnel/validation/measured_caps_statics_20260921/; order-of-magnitude consumption verdict (book, not patch) - the wave-4/10 receipts' physics is consumed, never re-tuned; no tolerance widened anywhere."
+  },
+  "pre_registered_predictions": {
+   "note": "delta := measured - expected per the bands below; every band is derived here from the banked tau columns and the book's caps BEFORE the script exists. A miss is a FIRED falsifier recorded with its number and never absorbed.",
+   "P1_instrument_reproduction": {
+    "prediction": "the re-run stance_nodes EQUAL the banked snapshot's stance_nodes (15 rows, every field byte-equal after the banked rounding)",
+    "band": "exact equality",
+    "derivation": "the vendored script is the banked deliverable's own code; the derived-numbers input is the same sha the wave-4 lane consumed"
+   },
+   "P2_wall_identity_at_A": {
+    "prediction": "at set (a) the wall re-price is an identity: max combined ratio = 1.3227763 at phi=0.75, knee-bound (knee term 1.3227763, ankle 0.6809, hip 0.3260, posture 0.9)",
+    "band": [1.3227, 1.3229],
+    "derivation": "the banked wave-10 deliverable's own max_ratio_to_cap (1.3227763257041534) - the re-price at (a) caps is the identity transform"
+   },
+   "P3_a_stance_table": {
+    "knee_over_cap_nodes": 9,
+    "knee_over_cap_set": [0.449, 0.15, 0.2, 0.25, 0.45, 0.5, 0.55, 0.6, 0.65],
+    "knee_worst_ratio": {"expected": 2.0714, "band": [2.05, 2.09], "node": 0.65},
+    "knee_entry_ratio": {"expected": 1.0960, "band": [1.08, 1.11], "node": 0.449},
+    "knee_binding_node_phi_0_25": {"expected": 1.5875, "band": [1.57, 1.60]},
+    "mp_over_cap_nodes": 6,
+    "mp_worst_ratio": {"expected": 9.5346, "band": [9.3, 9.8], "node": 0.25},
+    "hip_over_cap_nodes": 4,
+    "posture_over_cap_nodes": 4,
+    "derivation": "banked tau columns / the live caps, computed by hand from the snapshot before this receipt was written: 13.747/6.6375 = 2.07136; 7.275/6.6375 = 1.09603; 10.537/6.6375 = 1.58751; 8.462/0.8875 = 9.53460"
+   },
+   "P4_a_margin_binder_class": {
+    "prediction": "at (a) the worst HOLDING (sub-unity) ratio - the margin-binder class the mission names '~0.92-0.95' - is the ANKLE: worst 0.9750 at phi=0.30, with the loaded-stance ankle band [0.85, 0.98] across phi 0.30-0.50",
+    "worst_holding_ratio_band": [0.9, 0.99],
+    "expected_binder": "ANKLE",
+    "derivation": "7.215/7.4 = 0.97500 (phi 0.30); 7.197/7.4 = 0.97257; 7.104/7.4 = 0.96; 6.774/7.4 = 0.91541 (entry 0.449) - the banked ankle column is the only joint class in the 0.9 band at (a)"
+   },
+   "P5_b_stance_table": {
+    "knee_over_cap_nodes": 4,
+    "knee_over_cap_set": [0.25, 0.55, 0.6, 0.65],
+    "knee_worst_ratio": {"expected": 1.4354, "band": [1.42, 1.45], "node": 0.65},
+    "knee_entry_ratio": {"expected": 0.7596, "band": [0.74, 0.77], "node": 0.449},
+    "knee_binding_node_phi_0_25": {"expected": 1.1003, "band": [1.09, 1.11]},
+    "mp_over_cap_nodes": 6,
+    "mp_worst_ratio": {"expected": 5.1049, "band": [5.0, 5.2], "node": 0.25},
+    "hip_over_cap_nodes": 4,
+    "posture_over_cap_nodes": 4,
+    "ankle_over_cap_nodes": 0,
+    "derivation": "the book's own node list gives 10.537/9.576795 = 1.10030 and the migration 9 -> 4; 13.747/9.576795 = 1.43541; 7.275/9.576795 = 0.75963; 8.462/1.657925 = 5.10493; the windlass MP nodes stay uncovered BY DESIGN (the book's mp_windlass_note) and the hip/ankle/posture columns are cap-unchanged"
+   },
+   "P6_b_migration": {
+    "prediction": "the knee binding migrates: entry (0.449) and mid-window nodes (0.15/0.2/0.45/0.5) CLEAR; the push-off tail (0.55/0.6/0.65) and the phi=0.25 load peak stay over - the book's 'over-cap nodes 9 -> 4 of 15, binding phi=0.25 ratio 1.586 -> 1.100'",
+    "worst_ratio_by_node_band": "every (b) knee ratio within [0.99, 1.01] x the book's ratio_after column value at the same phi"
+   },
+   "P7_b_wall": {
+    "knee_term_phi_0_75": {"expected": 0.9169, "band": [0.9, 0.93]},
+    "wall_max_combined": {"expected": 0.9772, "band": [0.95, 0.995]},
+    "expected_binder": "ANKLE at phi=0.5 (0.977235, unchanged - the ankle lane is BLOCKED, headroom 1.0)",
+    "crosses_1_0": true,
+    "margin_0_9_reachable": false,
+    "derivation": "knee: 1.3227763 x (6.6375/9.576795) = 1.3227763 x 0.69319 = 0.91690; the max ankle term over the 21 banked nodes is 0.977235 (phi 0.5) and the posture term saturates at 0.9 at ten nodes - the wall's binder migrates knee -> ANKLE and the 0.9 margin stays shut on the BLOCKED ankle"
+   },
+   "P8_c_stance_and_wall": {
+    "knee_over_cap_nodes": 0,
+    "knee_worst_ratio": {"expected": 0.3793, "band": [0.36, 0.4], "node": 0.65},
+    "knee_entry_ratio": {"expected": 0.2007, "band": [0.19, 0.21], "node": 0.449},
+    "mp_over_cap_nodes": 6,
+    "mp_worst_ratio": {"expected": 1.8251, "band": [1.7, 1.9], "node": 0.25},
+    "knee_term_phi_0_75": {"expected": 0.2422, "band": [0.23, 0.25]},
+    "wall_max_combined": {"expected": 0.9772, "band": [0.95, 0.995]},
+    "expected_binder": "ANKLE at phi=0.5",
+    "crosses_1_0": true,
+    "margin_0_9_reachable": false,
+    "derivation": "13.747/36.247782 = 0.37925; 7.275/36.247782 = 0.20070; 8.462/4.636664 = 1.82515; 1.3227763 x (6.6375/36.247782) = 1.3227763 x 0.18311 = 0.24224; the wall's max is cap-unchanged at the ankle"
+   },
+   "P9_the_scale_gate_S2": {
+    "prediction": "at the S2 caps (knee 1.146859, MP 0.198543) every (b)/(c) verdict INVERTS: knee over-cap nodes = 15/15, knee worst ratio 11.99 [11.5, 12.5] (13.747/1.146859 = 11.986), wall knee term at phi=0.75 = 7.6549 [7.4, 7.9] (1.3227763 x 6.6375/1.146859)",
+    "statement": "THE GATE: all S1 claims stand or fall with the deposit-vs-SI absolute scale - the k = 0.119754 divergence is the consumption gate on EVERY verdict this lane issues"
+   },
+   "P10_determinism": "three full in-process derivations byte-identical on the deliverable sha256; the unittest's subprocess rerun matches",
+   "P11_no_source_changes": "git status --porcelain names no file outside tools/science_funnel/validation/measured_caps_statics_20260921/"
+  }
+ },
+ "falsifiers_pre_registered": {
+  "instrument_validation": "P1 AND P2 fail -> the lane's instrument is wrong and every downstream number is void (recorded, not tuned)",
+  "traceability": "every cap and demand in the deliverable carries a provenance block {input, sha256, key_path}; the derive script REFUSES to run on any input sha mismatch; the (b)/(c) caps trace to the in-tree book deliverable (itself sha-pinned to its own receipt's chain)",
+  "provenance_on_the_table": "every cap in every set names its provenance class (LIVE_DOC / MEASURED_V1_S1 / PROVISIONAL_V2_S1 / DOC_HELD_BLOCKED / HELD); no cap without a class",
+  "determinism": "P10",
+  "no_source_changes": "P11 (unittest-asserted)",
+  "delta_bands": "the pre_registered_predictions block above; a band miss or a wrong crossing/migration verdict is a FIRED falsifier recorded with its number in the measured block"
+ },
+ "measured": {
+  "recorded_utc": "2026-09-21T05:10:54+00:00",
+  "note": "APPENDED AFTER THE RUN. The pre-registration block above is unedited; the derivation script and this block were written per the protocol (receipt first, script second, measured third).",
+  "deliverable": {
+   "path": "tools/science_funnel/validation/measured_caps_statics_20260921/measured_caps_statics.json",
+   "sha256": "21d3dbbe2a477d67f7d7d5572f0171cd0c2e8cfe34a6cd1770ccd81abf06908a"
+  },
+  "headline": {
+   "verdict": "THE MEASURED-CAPS STATIC VERDICT: the wave-4 stance-hold statics re-run BYTE-EXACT (the banked table's own generator, vendored and executed unmodified), then re-priced at three cap sets. Knee binding migration measured 9 -> 4 -> 0 of 15 (the book predicted 9 -> 4): set (a) over-cap phis {0.449, 0.15, 0.2, 0.25, 0.45, 0.5, 0.55, 0.6, 0.65}, set (b) {0.25, 0.55, 0.6, 0.65}, set (c) {}. THE WAVE-10/25 MARGIN RATIO CROSSES 1.0 under (b) AND under (c): the wall's max combined ratio re-prices 1.322776 (a, knee-bound at phi=0.75 - the wave-10 deliverable's own banked max, reproduced as an identity) -> 0.977235 (b) -> 0.977235 (c), and the binder MIGRATES knee -> ANKLE (0.977235 at phi=0.5, cap-unchanged because the ankle lane is BLOCKED - doc-held, named). The 0.9 margin itself stays UNREACHABLE at the banked optimum under EVERY set (the ankle and the 0.9-posture-saturation own it now). The k = 0.119754 scale gate stands on every verdict: at S2 the table inverts (knee over 14/15, worst 11.99; wall 7.656 knee-bound) - no engine consumption until the operator resolves the deposit-vs-SI absolute scale.",
+   "worst_case_ratio_per_set": {
+    "A_live_doc": 9.534648,
+    "B_measured_v1_s1": 5.10397,
+    "C_provisional_v2_s1": 1.825019
+   },
+   "worst_case_binder_per_set": {
+    "A_live_doc": "MP phi=0.25 (the windlass quasi-static class, 8.462 N.m - uncovered by design, the book's own note)",
+    "B_measured_v1_s1": "MP phi=0.25 (5.10397; the knee class worst is 1.435449 at phi=0.65)",
+    "C_provisional_v2_s1": "MP phi=0.25 (1.825019 - over even the PROVISIONAL PCSA x sigma cap)"
+   },
+   "knee_class_per_set": {
+    "A_live_doc": {"worst": 2.071111, "binding_node_phi": 0.65, "entry_0.449": 1.096045, "phi_0.25": 1.587495, "over_cap_nodes": 9},
+    "B_measured_v1_s1": {"worst": 1.435449, "binding_node_phi": 0.65, "entry_0.449": 0.759649, "phi_0.25": 1.100264, "over_cap_nodes": 4},
+    "C_provisional_v2_s1": {"worst": 0.379251, "binding_node_phi": 0.65, "entry_0.449": 0.200702, "over_cap_nodes": 0}
+   },
+   "margin_wall_per_set": {
+    "A_live_doc": {"max_combined": 1.322776, "binder": "knee phi=0.75", "knee_term_phi_0_75": 1.322776, "crosses_1_0": false, "margin_0_9": false},
+    "B_measured_v1_s1": {"max_combined": 0.977235, "binder": "ankle phi=0.5", "knee_term_phi_0_75": 0.916792, "crosses_1_0": true, "margin_0_9": false},
+    "C_provisional_v2_s1": {"max_combined": 0.977235, "binder": "ankle phi=0.5", "knee_term_phi_0_75": 0.24222, "crosses_1_0": true, "margin_0_9": false}
+   },
+   "margin_binder_class_at_a": "ANKLE - worst holding ratio 0.975 at phi=0.30 (the mission's ~0.92-0.95 class: the loaded-stance ankle band 0.85-0.975 is the only joint class in the 0.9 band at the live caps)"
+  },
+  "falsifier_verdicts": {
+   "instrument_validation_P1": "FIRED AS PRE-REGISTERED, THEN RESOLVED - RECORDED, NEVER TUNED. The pre-registered vendored pin (sha 3c92d188) is the 4198dbdc HEAD of derive_stance_hold.py, which carries the wave-8 MP-Jacobian FIX (commit a8f3f8e4: 'the MP-Jacobian bug fix reverses the strategy'); its run reproduced the banked table on 84/90 numbers and DIFFERED on exactly 6 tau_mp cells at the heel-branch nodes (phi 0.0-0.25: regen 0.005 vs banked 8.145/7.769/7.901/8.195/8.39/8.462) - the lineage's own documented correction, while the banked stance_hold.json was never regenerated after wave 4 (its last change is 724f2464). RESOLUTION: the wave-4 script AS COMMITTED at 724f2464 (the table's GENERATOR) was vendored byte-exact to inputs/run_env_wave4/ (sha256 353d07f7f18a7fa371c43eef18e40d3160d58855a24b464ef587e526bd0f81c0, added to the script's pin table) and re-run: it reproduces the banked snapshot EXACTLY, all 15 rows, every field. The instrument falsifier (a) is HELD at its letter against the generating code. The wave-8 corrected MP column is carried as a NAMED VARIANT (never silently substituted): under it the MP windlass flags VANISH (over-cap 0/15 at every set, worst ratio 0.0056) - the wave-4 receipt's 'load-shared overestimate' caveat is confirmed and sharpened to ARTIFACT; the knee/hip/ankle/posture columns are bit-identical under both versions, so no verdict below depends on the choice.",
+   "P2_wall_identity": "HELD (1.322776 in [1.3227, 1.3229], knee-bound phi=0.75)",
+   "P3_stance_a": "HELD (over-set exact 9; worst 2.071111 in [2.05, 2.09]; entry 1.096045 in [1.08, 1.11]; phi0.25 1.587495 in [1.57, 1.60]; mp worst 9.534648 in [9.3, 9.8]; hip 4 / posture 4 / mp 6)",
+   "P4_margin_binder_class_a": "HELD (ANKLE 0.975 at phi=0.30, in [0.90, 0.99])",
+   "P5_stance_b": "HELD (over-set exact {0.25, 0.55, 0.6, 0.65}; worst 1.435449 in [1.42, 1.45]; entry 0.759649 in [0.74, 0.77]; phi0.25 1.100264 in [1.09, 1.11]; mp worst 5.10397 in [5.0, 5.2]; hip 4 / posture 4 / ankle 0)",
+   "P6_migration": "HELD (every (b) knee ratio within 0.0115% = demand rounding of the book's own ratio_after column; migration exactly the book's 9 -> 4)",
+   "P7_wall_b": "HELD (knee term 0.916792 in [0.90, 0.93]; wall 0.977235 in [0.95, 0.995]; binder ankle phi=0.5; crosses_1_0 TRUE; margin_0_9 FALSE)",
+   "P8_stance_and_wall_c": "HELD (knee over 0; worst 0.379251 in [0.36, 0.40]; entry 0.200702 in [0.19, 0.21]; mp worst 1.825019 in [1.7, 1.9]; knee term 0.24222 in [0.23, 0.25]; wall 0.977235; binder ankle; crosses TRUE; margin FALSE)",
+   "P9_scale_gate_S2": "FIRED AT ITS LETTER, BANDS HELD - the pre-registered 'knee over-cap nodes = 15/15' is measured 14/15: the phi=0.05 knee demand (0.43 N.m) stays under even the collapsed S2 cap 1.146859 (ratio 0.375). The registered bands HELD (worst 11.986652 in [11.5, 12.5]; wall knee term 7.65563 in [7.4, 7.9]) and the INVERSION VERDICT itself is unaffected - at S2 the stance table is 93% over-cap with the wall knee-bound at 7.66x. The count miss is recorded with its number; the prediction is not re-written.",
+   "P10_determinism": "HELD - two full in-process derivations byte-identical; the unittest's subprocess rerun matches the deliverable sha256 21d3dbbe2a477d67f7d7d5572f0171cd0c2e8cfe34a6cd1770ccd81abf06908a",
+   "P11_no_source_changes": "HELD - git status --porcelain names nothing outside tools/science_funnel/validation/measured_caps_statics_20260921/ (unittest-asserted)"
+  },
+  "findings": [
+   "F1 - the book's wall prose does not resolve: the consumption map's 'static min combined 0.9112 at phi=0.85, knee ratio 0.785' names no banked artifact this lane could find (grepped the wave27c tree and the posture-cap branch); the BANKED wall face is max combined 1.3227763 knee-bound at phi=0.75 (the wave-10 deliverable's own max_ratio_to_cap, this lane reproduces it as an identity). The book's re-price 0.785 -> 0.544 understated the wall's knee term at (a) AND still got the direction right: measured 1.3228 -> 0.9168 (b) / 0.2422 (c).",
+   "F2 - the crossing verdict REFINES the book's claim: the measured knee book does NOT merely make 'the 0.9 margin reachable' - at the banked optimum the 0.9 margin stays UNREACHABLE under every set (the ankle 0.977235 at phi=0.5 and the 0.9-posture saturation own it). What crosses is the 1.0 wall - the wave-10 INFEASIBLE verdict's binding term clears at (b) and (c), and the binder migrates to the BLOCKED ankle. Clearing the 0.9 margin needs the ankle pulley direction (the book's named future work) or a collocation re-hearing at the new caps (out of scope here).",
+   "F3 - the wave-8 lineage correction (a8f3f8e4) that this lane surfaced: the banked stance_hold.json was never regenerated after the MP-Jacobian fix, so the walk campaign's 8 N.m MP windlass flags are artifacts by the lineage's own later finding - carried in the deliverable as the NAMED variant (MP over-cap 0/15 under the corrected column), with the primary tables kept on the banked demands the book consumed.",
+   "F4 - the push-off tail red: even the measured knee cap leaves phi 0.55/0.6/0.65 at 1.0584/1.2746/1.4354 - the late-stance statics stay uncovered at (b); only the PROVISIONAL PCSA x sigma cap clears them. The hip and posture columns gain nothing (caps held; the 10.54 N.m amendment stays banked-unconsumed).",
+   "F5 - the ankle lane status re-verified at this lane's fetch time: the parallel ankle-arms artifacts (ankle_arms_20260921) are NOT on canonical (b17cbf6c or any fetched 2026-09-21 branch), so the ankle cap stays doc-derived 7.4 in every set - NAMED, and it is now the margin wall's BINDING term under (b)/(c)."
+  ],
+  "the_scale_gate_on_every_verdict": "S1 GATE: every (b)/(c) number above stands on the DEPOSIT arm scale. At the SI-matched scale (arms x k = 0.11975394, the pulley lane's fitted per-taxon scalar, the absolute-scale divergence OPEN at operator level) the book collapses (knee 1.146859, MP 0.198543) and EVERY verdict INVERTS: knee over 14/15 (worst 11.986652), MP over 6/15 (worst 42.62), margin wall 7.65563 knee-bound at phi=0.75 - the walker cannot hold or walk. No engine consumption is lawful until the operator resolves the k divergence (the torque book's standing gate, inherited verbatim).",
+  "tests": "python -B -m unittest tools.science_funnel.validation.measured_caps_statics_20260921.test_measured_caps_statics"
+ }
+}

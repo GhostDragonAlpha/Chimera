@@ -1,0 +1,78 @@
+{
+ "steps": {
+  "mode_set": {
+   "out": "fleet_mode=fleet",
+   "rc": 0
+  },
+  "gpu_phase_refused_live": {
+   "ok": true,
+   "why": "refused: gpu_phase requires a reservation; none exists"
+  },
+  "server_launch": {
+   "ok": true,
+   "session_id": "smoke-slice-1790135499",
+   "pid": 38040,
+   "creation_time_us": 134346090997587060,
+   "job_name": "Local\\ChimeraFleetJob.smoke-slice-1790135499",
+   "error": null,
+   "admitted": "admitted (fleet mode; fleet declared 0.0 GiB)"
+  },
+  "health": {
+   "ok": true,
+   "waited_s": 3.1
+  },
+  "engine_child_contained": {
+   "members": 4,
+   "engine_members": [
+    {
+     "pid": 48844,
+     "creation_time_us": 134346091008339306,
+     "image": "E:\\ChimeraWork\\_supervisor_scratch\\smoke_engine\\chimera_engine.exe"
+    }
+   ]
+  },
+  "browser_launch": {
+   "ok": true,
+   "session_id": "smoke-capture-1790135502",
+   "pid": 34968,
+   "creation_time_us": 134346091028490692,
+   "job_name": "Local\\ChimeraFleetJob.smoke-capture-1790135502",
+   "error": null,
+   "admitted": "admitted (fleet mode; fleet declared 4.0 GiB)"
+  },
+  "capture": {
+   "ok": true,
+   "cap": {
+    "url": "http://127.0.0.1:52332/",
+    "ok": true,
+    "title": "CHIMERA \u2014 playable slice (the standing start)",
+    "screenshot": "E:\\ChimeraWork\\_supervisor_scratch\\smoke\\slice_capture.png",
+    "elapsed_s": 4.5
+   },
+   "png_bytes": 36150
+  },
+  "server_complete": {
+   "session_id": "smoke-slice-1790135499",
+   "ok": true,
+   "how": "terminated",
+   "graceful_signal": true,
+   "terminated": true
+  },
+  "zero_survivors": {
+   "members_tracked": 4,
+   "running_survivors": [],
+   "engines_before": 0,
+   "engines_after": 0,
+   "health_url": "http://127.0.0.1:52332/",
+   "url_dead": true
+  },
+  "registry_coherent": {
+   "server_status": "terminated",
+   "pid_matches": true,
+   "browser_status": "completed"
+  }
+ },
+ "started": "2026-09-23T03:51:39Z",
+ "ok": true,
+ "finished": "2026-09-23T03:52:02Z"
+}

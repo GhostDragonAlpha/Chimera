@@ -1,0 +1,38 @@
+{
+  "T1_bumped_state_hash": {
+    "deploy": "BLOCK",
+    "layer": "validator: evidence chain mismatch",
+    "rejected": true,
+    "violations": [
+      "replay evidence INVALIDATED: evidence chain mismatch at tick 6: recorded 3d0f6bfc7fa4e49c... != recomputed e9df47bc507641e7..."
+    ]
+  },
+  "T2_swapped_normalization_constant": {
+    "deploy_a": "BLOCK",
+    "deploy_b": "BLOCK",
+    "layer_a": "validator: compat_key does not match the relation",
+    "layer_b": "deploy gate: compatibility key mismatch vs the frozen-loader request",
+    "rejected": true,
+    "violations_a": [
+      "compat_key does not match the relation -- the 5-tuple and its key disagree"
+    ],
+    "violations_b": []
+  },
+  "T3_stale_build_id": {
+    "deploy_a": "BLOCK",
+    "deploy_b": "BLOCK",
+    "layer_a": "validator: compat_key does not match the relation",
+    "layer_b": "deploy gate: compatibility key mismatch vs the true request",
+    "rejected": true,
+    "violations_a": [
+      "compat_key does not match the relation -- the 5-tuple and its key disagree"
+    ],
+    "violations_b": []
+  },
+  "clean_reissue": {
+    "deploy": "ALLOW",
+    "valid": true,
+    "violations": []
+  },
+  "suite_pass": true
+}

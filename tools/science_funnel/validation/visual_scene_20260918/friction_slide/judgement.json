@@ -1,0 +1,173 @@
+{
+ "checks": [
+  {
+   "expected": "max |speed_rad_s| < 0.005 (bounded stick-slip cycle)",
+   "name": "settled_speeds",
+   "note": "",
+   "observed": "0.00151903",
+   "pass": true
+  },
+  {
+   "expected": "|balance_error_J| < 0.0001",
+   "name": "balance_residual",
+   "note": "",
+   "observed": "-0.000006157",
+   "pass": true
+  },
+  {
+   "expected": "|store_balance_error_J| < 0.0001",
+   "name": "store_ledger_closes",
+   "note": "",
+   "observed": "-0.000006157",
+   "pass": true
+  },
+  {
+   "expected": "mechanical_J == kinetic_J + gravitational_J (1e-9)",
+   "name": "mechanical_identity",
+   "note": "",
+   "observed": "0.000000000",
+   "pass": true
+  },
+  {
+   "expected": "native_coupled_arm",
+   "name": "scene_mode",
+   "note": "",
+   "observed": "native_coupled_arm",
+   "pass": true
+  },
+  {
+   "expected": "touching true",
+   "name": "touching",
+   "note": "",
+   "observed": true,
+   "pass": true
+  },
+  {
+   "expected": "|gap_m| < 1e-3",
+   "name": "gap_near_zero",
+   "note": "",
+   "observed": "-0.000005",
+   "pass": true
+  },
+  {
+   "expected": "gap >= -kTouch (1.1e-5 m): the solver holds contact inside its touch band; the hand is never visibly below the plane",
+   "name": "no_penetration",
+   "note": "",
+   "observed": "-0.000005",
+   "pass": true
+  },
+  {
+   "expected": "reaction_N > 0.005",
+   "name": "reaction_nonzero",
+   "note": "",
+   "observed": "1.41130",
+   "pass": true
+  },
+  {
+   "expected": "elbow angle > target + 1.0 deg (plane prevents full reach)",
+   "name": "elbow_stalled_short",
+   "note": "",
+   "observed": "14.4439",
+   "pass": true
+  },
+  {
+   "expected": "impact_heat_J > 1e-9 (contact landing dissipates)",
+   "name": "landing_heat",
+   "note": "",
+   "observed": "0.033561484",
+   "pass": true
+  },
+  {
+   "expected": "max slip over settle series > 1e-3 m/s",
+   "name": "slipped",
+   "note": "",
+   "observed": "0.0591612",
+   "pass": true
+  },
+  {
+   "expected": "hand x span over settle series > 1e-3 m",
+   "name": "hand_slid",
+   "note": "",
+   "observed": "0.006454 m",
+   "pass": true
+  },
+  {
+   "expected": "friction_heat_J > 1e-4",
+   "name": "friction_heat",
+   "note": "",
+   "observed": "0.00200199",
+   "pass": true
+  },
+  {
+   "expected": "friction heat grew during the slide (max - first > 1e-6 J)",
+   "name": "heat_grew_while_sliding",
+   "note": "",
+   "observed": "0.00015872 J",
+   "pass": true
+  },
+  {
+   "expected": "|friction_force_N| <= mu * reaction_N + 1e-6",
+   "name": "coulomb_bound",
+   "note": "",
+   "observed": "0.02925 vs 0.07056",
+   "pass": true
+  },
+  {
+   "expected": "python FK == engine FK within 1e-06 m",
+   "name": "fk_coherence",
+   "note": "",
+   "observed": "1.73E-18 m",
+   "pass": true
+  }
+ ],
+ "expected": "Low friction: the hand slides after landing (slip observed, hand visibly displaced), friction heat accumulates while it slides, and mu=0.05 cannot lock the press: the run ends in a BOUNDED stick-slip cycle around the pressing equilibrium (mode flickering stick/slide, slip pulses ~1e-4 m/s, hand bound within ~1e-4 m; measured 2026-09-18 at 90 s); the tangential force stays within mu x normal.",
+ "numeric_verdict": "PASS",
+ "observed": {
+  "actuator_work_J": -0.0013560144952228215,
+  "battery_J": 1.9503670084293503,
+  "contact_impact_heat_J": 0.03356148441044521,
+  "elbow_deg": 34.4438621222827,
+  "friction_heat_J": 0.002001994553474799,
+  "gap_m": -5.327657544240694e-06,
+  "hand_m": [
+   0.19523442653558667,
+   0.34299467234245573,
+   0.007835990781146291
+  ],
+  "mode": "slide",
+  "reaction_N": 1.4112986068516773,
+  "series_stats": {
+   "friction_heat_first": 0.0018757388531312937,
+   "friction_heat_last": 0.002001994553474799,
+   "friction_heat_max": 0.0020344603816112197,
+   "hand_x_max": 0.1954122271032868,
+   "hand_x_min": 0.18895837369586757,
+   "slip_max": 0.059161232993384355
+  },
+  "settled": true,
+  "shoulder_deg": 21.109312024643586
+ },
+ "rule0": {
+  "admitted_utc": "2026-09-17 (before the first run of this lane)",
+  "falsifiers": {
+   "F1": "re-render from the recorded state is byte-identical (sha256)",
+   "F2": "python FK hand point == engine body.position_m within 1e-6 m",
+   "F3": "a corrupted penetrating state FAILS the template and renders visibly wrong; a template that passes it is worthless",
+   "F4": "every settled ledger closes (balance_error_J and store_balance_error_J within 1e-4 J -- 10x the repo live-qual bar for these 45-90 s windows -- and the mechanical identity holds); a leak falsifies the energy claims"
+  },
+  "prediction": "All five scenarios pass their numeric templates AND render the expected picture (hang / reach / press-at-plane / stick / slide-with-heat); a penetrating-hand corruption fails.",
+  "statement": "The live scene's own numeric state, rendered by a pure deterministic renderer and judged against a structured expected-physics template, is a valid verification record closing the loop between the numbers and the eye."
+ },
+ "scenario": "friction_slide",
+ "verdict": "PASS",
+ "visual_judge": {
+  "findings": [
+   "Hand rests on the plane after sliding with mu 0.05, mode SLIDE, R=1.411 N",
+   " friction heat 0.0020 J accumulated during the slide",
+   " series shows the bounded stick-slip cycle (slip pulses, hand bound within ~1e-4 m) exactly as the template expects."
+  ],
+  "judge": "GLM 5.3 Flash (dyad visual pass)",
+  "recorded_utc": "2026-09-18T22:22:12.720748+00:00",
+  "verdict": "PASS"
+ }
+}

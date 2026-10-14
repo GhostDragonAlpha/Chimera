@@ -1,0 +1,14 @@
+{
+ "attempts": {
+  "honest_builds": 100,
+  "roundtrips": 25,
+  "honest_failures": [],
+  "injections": {
+   "set_edge": "StoreRefusal: store_corrupt_relation_edge: relations[10] is set, not a dict with string rid; refusing to append stress.obj.0 -derived_from-> stress.obj.1",
+   "list_edge": "StoreRefusal: store_corrupt_relation_edge: relations[10] is list, not a dict with string rid; refusing to append stress.obj.0 -derived_from-> stress.obj.1",
+   "str_edge": "StoreRefusal: store_corrupt_relation_edge: relations[10] is str, not a dict with string rid; refusing to append stress.obj.0 -derived_from-> stress.obj.1",
+   "load_shape_set": "StoreRefusal: store_corrupt_relation_edge: relations[10] is set, not a dict with string rid; refusing to append stress.obj.0 -derived_from-> stress.obj.1"
+  }
+ },
+ "conclusion": "honest-green"
+}

@@ -1,0 +1,18 @@
+{
+ "what": "isolated /mesh_import timing, pinned real-body payload + the first-boot ghost compose, each phase timed",
+ "t_engine_ready_s": 0.71,
+ "t_ghost_build_s": 7.92,
+ "ghost_bytes": 26598562,
+ "t_mesh_import_s": 237.67,
+ "import_ok": true,
+ "import_stats": {
+  "verts": 249743,
+  "tris": 499976,
+  "volume": 0.000973470353,
+  "ymin": -0.134641007,
+  "ymax": 0.134641007,
+  "winding_flipped": false
+ },
+ "t_gravity_arm_s": 0.026,
+ "triangles": 499976
+}

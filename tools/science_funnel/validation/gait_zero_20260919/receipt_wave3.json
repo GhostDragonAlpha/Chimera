@@ -1,0 +1,25 @@
+{
+ "lane": "in-session (codex/force-data-runtime-20260916), wave 3",
+ "date": "2026-09-19",
+ "agent": "GLM 5.3",
+ "deliverable": "THE SENTINEL COLLISION BUG found and fixed -- a real engine bug the walk exposed the moment it survived past tick 40 -- plus the single-support entry law and the positional correction; the walk now runs 118 ticks with zero crashes before its next honest refusal.",
+ "sentinel_collision_bug": {
+  "what": "advance()'s event discriminator used which==2 as the CONTACT-event sentinel while drive joint-stop events used which = the drive index 0..7 -- and drive 2 IS ankle_dorsiflexion_left. The first time the walk ever reached the left ankle's joint wall (tick 117, unreachable before the entry fix), the drive event set (which=2, khit=-1), the contact branch mistook it for a contact event, and probe[(size_t)-1]=0 wrote out of bounds, smearing the heap; the downstream frames.at() then read a garbage index (-104) and the uncaught std::out_of_range terminated the suite (the 'vector out of range' popup in Debug builds).",
+  "diagnosis": "line-traced gap_of under GAIT_EVENT_TRACE printed k=(size_t)-1 with the walker state INTACT (frames=10, bodies=10) -- an index bug, not corruption; ablation had already exonerated the positional correction",
+  "fix": "distinct namespaces: which = 0..7 drive events, which = -2 contact events (khit = the point), which = -1 none; the fp-level clamp branch now pins ANY drive's wall (the old which<2 only pinned drives 0/1 -- a second latent bug in the same branch); require(gait_event_namespace) guards the drive branch",
+  "falsifier": "the crash reproduced at tick 117/118 in every prior run and is gone in every run after the fix -- the walk proceeds one tick further to its next (clean) refusal"
+ },
+ "single_support_entry": {
+  "law": "the source model's 'enter at the TD state' is over-determined: TD-left means mid-stance-right (double support) and the tables' closure residual leaves the two stance contacts 2.96 mm apart; require(gap>0) forces the loaded leg 3 mm into the air and its drop delivers the ~1 J transient. The lawful entry is the SINGLE-SUPPORT instant: the phase where the composed stance thigh is VERTICAL (mid-stance by definition) and the swing foot is airborne -- derived by scan (phi=0.449, thigh tilt -0.08 deg), seated on the stance MP head (right heel 4.55 mm clear), entry speed from the no-skid law at that phase (0.849 m/s).",
+  "measured": "the walk runs past tick 110 continuously (was: dead at 40); no entry drop transient"
+ },
+ "positional_correction": {
+  "law": "when an impact state carries a penetrating point (geometric infeasibility), q is corrected along the mass-metric least-norm direction zeroing the penetrating gaps; the potential change is booked as the penetration's stored compression returned (s.impact -= du; the round trip returns what the discretization let through -- the ledger closes by construction); correction magnitude capped at 0.05 with a loud refusal",
+  "measured": "fires continuously in the sub-uJ range during stance (2000-3000 events per walk), no free-energy anomaly, F-G5/F-G7 unaffected"
+ },
+ "current_state": "F-G5 green x2 (free fall, stand fold 5.27 deg), F-G7 green (bit-identical). The WALK: 118 ticks clean (0.39 s), no crash, then gait_impact_event_budget with the body FALLEN (hip 0.298 -> 0.134 m, x +0.30 m): the stance leg does not hold the body under the capped PDs -- the fall is the next membrane, not an integrator artifact.",
+ "next_membrane": "stance-hold: with the geometry lawful and the integrator sound, WHY does the stance leg collapse under 98.4 N with the drives at their derived caps (hip 11.2, knee 6.6, ankle 7.4 N.m)? Measure the per-drive torque margins vs the gravity load through the mid-stance geometry; candidates: (a) the caps (1.25x Oku's measured peaks) are for their model's pose trajectory -- our composed pose rides different moment arms; (b) the trunk-pitch posture drive shares the hip cap with the hip drive (double duty); (c) the table targets at our entry phase demand a pose the caps cannot statically hold (the static-hold condition is derivable: gravity torque vs cap at every stance node).",
+ "regression": "graph tests 33 OK; suite deterministic (F-G7); no Debug-build popups (the operator-visible 'vector out of range' dialog was the sentinel bug's Debug-build CRT assert -- now fixed at the source)",
+ "pass": false,
+ "honest_summary": "Three laws this wave (single-support entry, positional correction, sentinel namespaces) and one REAL BUG killed: the walk went from 'crashes the suite at tick 117' to 'runs clean to 118 and falls honestly'. The remaining question is now purely control-theoretic and precisely instrumented: the stance leg cannot hold the body at the derived torque caps."
+}

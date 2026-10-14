@@ -1,0 +1,35 @@
+{
+ "source": "Smithsonian 3D (Voyager API) USNM 15259 Macaca sinica cranium + mandible; high Web3D GLB derivatives and document metadata snapshot",
+ "retrieved_utc": "2026-09-17T00:00:00+00:00",
+ "license": "CC0 1.0 per object page; document.json embeds a conflicting all-rights-reserved string (recorded, not resolved)",
+ "files": [
+  {
+   "path": "USNM15259_cranium_document.json",
+   "url": "https://3d-api.si.edu/content/document/fb42ecf6-2756-4b6f-bbb0-eb91f31964e5/document.json",
+   "resolved_url": "https://3d-api.si.edu/content/document/fb42ecf6-2756-4b6f-bbb0-eb91f31964e5/document.json",
+   "bytes": 8877,
+   "sha256": "fb94230cf895af4f60409390b8dbad3b8b3ecf3ea8aa696929980d82da729199"
+  },
+  {
+   "path": "USNM15259_mandible_document.json",
+   "url": "https://3d-api.si.edu/content/document/8105e6f9-c724-46f1-8fd5-d550f8171e49/document.json",
+   "resolved_url": "https://3d-api.si.edu/content/document/8105e6f9-c724-46f1-8fd5-d550f8171e49/document.json",
+   "bytes": 8859,
+   "sha256": "5a9905b9bce3f140542b14b378436d08383eef182a7bcb6ddda251715840b844"
+  },
+  {
+   "path": "USNM15259_cranium_-300_dec-150k-4096-high.glb",
+   "url": "https://3d-api.si.edu/content/document/fb42ecf6-2756-4b6f-bbb0-eb91f31964e5/USNM15259_cranium_-300_dec-150k-4096-high.glb",
+   "resolved_url": "https://3d-api.si.edu/content/document/fb42ecf6-2756-4b6f-bbb0-eb91f31964e5/USNM15259_cranium_-300_dec-150k-4096-high.glb",
+   "bytes": 5841904,
+   "sha256": "04b58b90e36caf68548807b7d9609574d1ad7fcacae7a2e50ca7e6b77abc33a4"
+  },
+  {
+   "path": "USNM15259_mandible_-300-150k-4096-high.glb",
+   "url": "https://3d-api.si.edu/content/document/8105e6f9-c724-46f1-8fd5-d550f8171e49/USNM15259_mandible_-300-150k-4096-high.glb",
+   "resolved_url": "https://3d-api.si.edu/content/document/8105e6f9-c724-46f1-8fd5-d550f8171e49/USNM15259_mandible_-300-150k-4096-high.glb",
+   "bytes": 2426480,
+   "sha256": "0e6d83f25c9242d3a982f53f080ff6035e984413077dd2f46b246d1724e162a4"
+  }
+ ]
+}

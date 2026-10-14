@@ -1,0 +1,93 @@
+{
+ "schema": "chimera.rule0.preregistration.v1",
+ "lane": "vanhoof_transcription_20260920",
+ "branch": "lane/vanhoof-transcription-20260920",
+ "base": "d374ab04 (lane/vanhoof-intake-20260920 tip, 'VANHOOF INTAKE byte-stability verified')",
+ "agent": "GLM 5.3 (Agent: vtrans) -- vision-transcription lane; the Read tool presents images to the agent directly, that is the instrument",
+ "written_before": "any transcription of any S2 pixel value (prep/pinning may follow immediately; no table value is read before this commit)",
+
+ "inherits": {
+  "intake": "tools/science_funnel/validation/vanhoof_intake_20260920/ (receipt.json + record.md + calibration_real.json @ d374ab04)",
+  "successor_scope_quoted_from_intake_receipt": "(a) a SCAN-CLASS route (background flattening with derived constants, gray-fill-aware grid model handling merged cells and design bars) -- not the frozen born-digital template route; (b) the real 3-field manifest (mass_g/fl_mm/pcsa_mm2) with the pcsa_closure law (rho=1060) as the only runnable row law, density and MTU laws named not-runnable; (c) S2-only target, S1 out of scope; (d) the paper's own markers (absent/damaged/not measured) as named refusal classes; (e) text height ~32 px vs the synthetic 48 px class. Hand transcription remains the memo's A5 alternative and stays the operator's door",
+  "how_this_lane_honors_it": "this lane IS the operator's-door route, done honestly: the agent's own vision is the reader (not a faked machinery confidence), double-entry on every panel, laws as the independent instrument, stop floors pre-named below"
+ },
+
+ "target": {
+  "file": "tools/science_funnel/data/vanhoof_forearm/JOA-238-321-s002.tif",
+  "bytes": 6455574,
+  "sha256": "cb9e91be3d2345182b6d2b956245b76905243d4bbf37fff79c3d96a802e5debe",
+  "identity": "S2 = THE MACAQUE TABLE (measured by the intake lane): 7 adult M. mulatta, Mm1-Mm7, two panels",
+  "manifest_3_fields": ["mass_g", "fl_mm", "pcsa_mm2"],
+  "table_size_per_intake_calibration": "54 rows x 28 cols = 1512 cells (the machinery's grid model of the page; the TRUE row/col structure is re-measured at prep from ruling lines and pinned in crops_manifest.json)",
+  "out_of_scope": "S1 JOA-238-321-s001.tif (GIBBON table) -- never opened for transcription; gibbon columns if seen inside S2 are refused interval_out_of_manifest and reported"
+ },
+
+ "rule0": {
+  "statement": "The S2 macaque table is transcribable by double-entry vision (two independent full passes, different segmentation order + different read strategy, no cross-consultation) with law-verified admission at or above the pre-registered stop floors: double-entry exact-agreement >= 80% on legible cells AND closure-law pass >= 90% on checkable rows.",
+  "prediction": [
+   "P-AGREE: exact-agreement 85-95% on cells whose legibility class is CLEAR in both passes (per-cell digit identity, format-normalized)",
+   "P-LAW: the pcsa_closure law catches most DISPUTED cells -- a single misread digit in mass/FL/PCSA breaks |PCSA - 943.3962*mass/FL|/PCSA_pred by >= ~10%, far above the 2% inherited tolerance, so disputed cells either resolve against the law or stay refused",
+   "P-UNREADABLE: 10-20% of the 1512-cell table is genuinely unreadable at this scan quality (the intake's best faithful tier reached only 4.8% CONFIDENT) -- those cells stay REFUSED, named; the honest result may be 'this scan needs better imaging', never guessed numbers",
+   "P-MARKERS: the source itself carries text markers inside value cells ('absent (cf. EDST)', 'damaged', 'not measured' -- measured by the intake's calibration row1 reads) -- these transcribe as named refusals marker_absent / marker_damaged / marker_not_measured, never numbers, in both passes",
+   "P-CLOSURE: for rows where all three fields are truly printed and transcribed TENTATIVE, the closure deviation distribution is rounding-driven and tight (median < 1%); a bimodal or fat-tailed distribution above the 2% band is reported as the finding, not tuned around"
+  ],
+  "falsifier": [
+   "F1 STOP-FLOOR: either stop floor missed (agreement < 0.80 on legible cells, or closure-law pass < 0.90 on checkable rows) -- STOP, report the measured rates; admission does not proceed",
+   "F2 NO-GUESS: any admitted cell lacking BOTH-pass exact agreement AND a law verdict -- fired; the cell is demoted to REFUSED and the receipt counts it",
+   "F3 PROVENANCE: every admitted value carries crop sha256 + panel identity + row/col identity (muscle x specimen x field) + both pass values + legibility classes + law verdict -- any admitted record missing any of these fires F3",
+   "F4 DETERMINISM: the reconciliation + law scripts are 3-run byte-identical on frozen inputs (the transcription itself is two human-class reads -- the LAWS and the scripts are the determinism); crop pinning script 3-run byte-identical (same bytes -> same shas + geometry)",
+   "F5 LANE SCOPE: any source change outside tools/science_funnel/validation/vanhoof_transcription_20260920/ (lane dir) + the out-of-repo staging dir E:/ChimeraWork/vanhoof2-staging/ (derived PNG tiles; never committed) -- fired; committed artifacts are transcriptions + receipts + scripts ONLY; no image bytes enter git from this lane"
+  ],
+  "honest_classes": [
+   "TENTATIVE: pass A == pass B exactly (format-normalized numeric equality)",
+   "DISPUTED: A != B, or legible in only one pass",
+   "MARKED-ABSENT: source text marker transcribed as named refusal (marker_absent / marker_damaged / marker_not_measured / unread_marker)",
+   "UNREADABLE: at least one pass records legibility UNREADABLE and the other does not CLEARLY contradict -- refused unreadable_cell",
+   "ADMITTED: TENTATIVE + law verdict pass (pcsa_closure for its row where checkable; ratio/register signals recorded) -- carries F3 provenance",
+   "REFUSED: everything else, with a named code from the closed taxonomy"
+  ]
+ },
+
+ "laws_predeclared_constants_inherited_not_tuned": {
+  "rho_kg_m3": 1060.0,
+  "rho_source": "adapters_muscle.py MUSCLE_DENSITY_KG_M3 and admit_vanhoof.py RHO_KG_M3 -- the funnel's existing constant, inherited verbatim",
+  "law_tolerance_rel": 0.02,
+  "tolerance_source": "adapters_muscle.py LAW_TOLERANCE / admit_vanhoof.py LAW_TOLERANCE -- inherited verbatim; NOT re-derived, NOT swept",
+  "pcsa_closure": "PCSA_mm2_pred = 1e6 * (mass_g/1000) / (1060.0 * fl_mm/1000) = 943.3962 * mass_g / fl_mm; check |PCSA_table - PCSA_pred|/PCSA_pred <= 0.02",
+  "runnable_row_laws": {
+   "pcsa_closure_dev": "checkable iff mass_g, fl_mm, pcsa_mm2 all transcribed numeric for that (muscle, specimen); joint verdict for the row-triple",
+   "mass_additivity_dev": "NOT RUNNABLE on this manifest (no belly/tendon mass columns in S2) -- named not-runnable per the intake successor scope",
+   "density_law": "NOT RUNNABLE (no volume column) -- named not-runnable",
+   "mtu_additivity": "NOT RUNNABLE (no MTU/tendon columns) -- named not-runnable"
+  },
+  "auxiliary_signals_reported_never_sole_admitters": {
+   "cross_animal_share_ratio": "per (field, specimen): value / specimen-column-total per muscle; a muscle's share of an animal's total should be broadly consistent across the 7 animals (same species); flag if share deviates > 50% relative from the cross-animal median share -- recorded as ratio_flag, never an admitter, a refusal-coefficient only when closure cannot run",
+   "decimal_register": "per numeric column: decimal-place register mode coverage >= 0.80 else the column's register law suspends and is reported (the intake's F-REGISTER, inherited at the intake's own cut)"
+   }
+ },
+
+ "stop_floors": {
+  "double_entry_exact_agreement_on_legible_cells": 0.80,
+  "closure_law_pass_on_checkable_rows": 0.90,
+  "behavior_if_missed": "STOP with measured rates; zero admission; the finding is the finding (F1)"
+ },
+
+ "admission_bookkeeping": {
+  "table_cell_count": 1512,
+  "count_identity": "1512 = admitted + refused(weighted by named code), zero silent drops, per the funnel's own discipline; every one of the 1512 grid positions is classified",
+  "refusal_taxonomy_closed": ["marker_absent", "marker_damaged", "marker_not_measured", "unread_marker", "unreadable_cell", "disputed_unresolved", "row_closure_violation", "blank_cell", "nonnumeric_cell", "interval_out_of_manifest", "merged_cell", "law_uncheckable"],
+  "merged_cells_note": "the intake measured merged cells (FDP rows, conn. FDS-FDP) -- a merged/b_shared cell is transcribed at its anchor position and refused merged_cell at the covered positions, never duplicated"
+ },
+
+ "work_plan": [
+  "1. prep: convert S2 TIFF -> RGB PNG (PIL; CMYK->RGB; fixed constants, no sweeps), detect ruling lines, tile into overlapping named panels (the intake declares two; subdivide if glyph density demands -- subdivision decided by measured glyph px height vs tile px size, not taste), pin every crop (sha256 + geometry) in crops_manifest.json; 3-run byte-identical",
+  "2. pass A: read every panel, panel-order FORWARD, read strategy ROW-WISE (muscle-major: full row left-to-right, muscle name first); per cell: value + legibility class (CLEAR/DEGRADED/UNREADABLE/MARKED-ABSENT+marker text); written COMPLETELY to transcription_passA.json + .csv before pass B starts",
+  "3. pass B: read every panel, panel-order REVERSE, read strategy COLUMN-WISE (animal-major: full specimen-column block top-to-bottom, field-major within it); produced WITHOUT consulting pass A (pass A file closed and sha-pinned first); written COMPLETELY to transcription_passB.json + .csv",
+  "4. reconcile.py: A==B -> TENTATIVE; else DISPUTED; markers -> named refusals; agreement rates measured vs the F1 floor",
+  "5. laws.py: pcsa_closure per checkable (muscle, specimen) row-triple; ratio + register signals recorded; law pass rate vs the F1 floor; admission tiers with F3 provenance per admitted cell",
+  "6. receipt per-falsifier + record.md ledger append + tests if applicable + commit 'Agent: vtrans' + push lane branch"
+ ],
+
+ "determinism_plan": "reconcile.py and laws.py read ONLY frozen JSON inputs and write canonical JSON (sort_keys, fixed floats); 3 consecutive runs must be byte-identical (sha256 compared); the prep pinning likewise. The two transcription passes are human-class reads and are NOT claimed deterministic -- F4 binds the scripts and the pins.",
+ "no_tuning_clause": "no constant in this lane is chosen to lift an agreement or pass rate; 0.80/0.90 floors, 0.02 tolerance, 1060 rho, 943.3962 factor, the 50% ratio flag and the 0.80 register cut are inherited or pre-named before any reading; if a law under-performs, the rate is REPORTED, the constant is not moved"
+}

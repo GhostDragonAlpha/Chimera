@@ -1,0 +1,325 @@
+{
+ "adjudication_summary": {
+  "admitted_set": [],
+  "homolog_route": "CLOSED BY LAW - Myatt et al. 2011 (great apes) named as still-future for every row; never consumed",
+  "per_muscle": {
+   "R_AB": {
+    "defects": [
+     "pcsa_closure_dev_0.684"
+    ],
+    "verdict": "QUARANTINE_STANDS"
+   },
+   "R_BFS": {
+    "defects": [
+     "musc_mass_blank",
+     "belly_mass_blank",
+     "tendon_mass_blank"
+    ],
+    "verdict": "QUARANTINE_STANDS"
+   },
+   "R_RF": {
+    "defects": [
+     "mass_additivity_dev_0.023"
+    ],
+    "verdict": "QUARANTINE_STANDS"
+   },
+   "R_SAR": {
+    "defects": [
+     "mass_additivity_dev_0.095"
+    ],
+    "verdict": "QUARANTINE_STANDS"
+   },
+   "R_TP": {
+    "defects": [
+     "mass_additivity_dev_0.060"
+    ],
+    "verdict": "QUARANTINE_STANDS"
+   }
+  }
+ },
+ "class_crosscheck_vs_landed_book": {
+  "R_BFL": {
+   "byte_equal_to_landed_samples": true,
+   "scan_stop": null,
+   "valid_samples": 2001
+  },
+  "R_GMax": {
+   "byte_equal_to_landed_samples": true,
+   "scan_stop": null,
+   "valid_samples": 2001
+  },
+  "R_SM": {
+   "byte_equal_to_landed_samples": true,
+   "scan_stop": null,
+   "valid_samples": 2001
+  },
+  "R_ST": {
+   "byte_equal_to_landed_samples": true,
+   "scan_stop": null,
+   "valid_samples": 2001
+  }
+ },
+ "counterfactual_bounds_NEVER_CONSUMED": {
+  "counterfactual_crosses_floor": false,
+  "counterfactual_total_N_m": 11.091447842379546,
+  "cstar_floor_N_m": 22.4,
+  "cstar_top_N_m": 33.6,
+  "landed_rearup_cap_N_m": 10.71803014,
+  "note": "even admitting EVERY quarantined row at its own conflicted sheet PCSA on its most negative rear-up arm simultaneously, the C* window floor is/is not crossed - the robustness bound of the verdict; no number here is admitted or consumed",
+  "sum_of_counterfactual_max_adds_N_m": 0.3734177023795464
+ },
+ "extended_book": {
+  "class": [
+   "R_BFL",
+   "R_GMax",
+   "R_SM",
+   "R_ST"
+  ],
+  "forces_N": {
+   "R_BFL": 271.23914145829923,
+   "R_GMax": 124.39006222755602,
+   "R_SM": 61.58807486670213,
+   "R_ST": 49.96725178663907
+  },
+  "mid_stance_x050": {
+   "grid_index": 983,
+   "per_muscle_N_m": {
+    "R_BFL": 5.263192774,
+    "R_GMax": 2.878883336,
+    "R_SM": 1.145767637,
+    "R_ST": 1.085656863
+   },
+   "q_used_deg": -1.53,
+   "q_used_rad": -0.0272,
+   "sum_N_m": 10.37350061
+  },
+  "rearup_window": {
+   "argmax_index": 1000,
+   "argmax_q_deg": 0.0,
+   "cap_N_m": 10.71803014,
+   "per_muscle_at_argmax": [
+    {
+     "arm_mm_at_argmax": -20.367995,
+     "contribution_N_m": 5.524597579,
+     "force_N": 271.23914145829923,
+     "muscle": "R_BFL",
+     "sign_gated_out": false
+    },
+    {
+     "arm_mm_at_argmax": -22.790272,
+     "contribution_N_m": 2.83488336,
+     "force_N": 124.39006222755602,
+     "muscle": "R_GMax",
+     "sign_gated_out": false
+    },
+    {
+     "arm_mm_at_argmax": -19.779636,
+     "contribution_N_m": 1.218189711,
+     "force_N": 61.58807486670213,
+     "muscle": "R_SM",
+     "sign_gated_out": false
+    },
+    {
+     "arm_mm_at_argmax": -22.822137,
+     "contribution_N_m": 1.14035949,
+     "force_N": 49.96725178663907,
+     "muscle": "R_ST",
+     "sign_gated_out": false
+    }
+   ],
+   "sign_gated_out_sample_counts": {
+    "R_BFL": 690,
+    "R_GMax": 0,
+    "R_SM": 746,
+    "R_ST": 711
+   }
+  },
+  "walk_window": {
+   "argmax_index": 1462,
+   "argmax_q_deg": 41.5801,
+   "cap_N_m": 15.287147966,
+   "per_muscle_at_argmax": [
+    {
+     "arm_mm_at_argmax": -35.524502,
+     "contribution_N_m": 9.635635456,
+     "force_N": 271.23914145829923,
+     "muscle": "R_BFL",
+     "sign_gated_out": false
+    },
+    {
+     "arm_mm_at_argmax": -11.487891,
+     "contribution_N_m": 1.42897947,
+     "force_N": 124.39006222755602,
+     "muscle": "R_GMax",
+     "sign_gated_out": false
+    },
+    {
+     "arm_mm_at_argmax": -38.323781,
+     "contribution_N_m": 2.360287895,
+     "force_N": 61.58807486670213,
+     "muscle": "R_SM",
+     "sign_gated_out": false
+    },
+    {
+     "arm_mm_at_argmax": -37.269313,
+     "contribution_N_m": 1.862245145,
+     "force_N": 49.96725178663907,
+     "muscle": "R_ST",
+     "sign_gated_out": false
+    }
+   ],
+   "sign_gated_out_sample_counts": {
+    "R_BFL": 0,
+    "R_GMax": 0,
+    "R_SM": 0,
+    "R_ST": 0
+   }
+  }
+ },
+ "extended_vs_landed": {
+  "extended_equal_landed": true,
+  "landed_mid_stance_sum_N_m": 10.37350061,
+  "landed_rearup_cap_N_m": 10.71803014,
+  "landed_walk_cap_N_m": 15.287147966,
+  "note": "admitted set empty by adjudication: the extended set IS the landed set; constants moved: NONE (F2) - forces byte-equal, windows/cap law/C* fixed"
+ },
+ "inputs": {
+  "adjudication": "adjudication.json (in-lane)",
+  "machinery": "hip_arms_20260920/derive_hip_arms.py imported UNMODIFIED (which imports pulley_rederivation_20260920 UNMODIFIED)",
+  "sha256": {
+   "derive_hip_arms": "40bdfb4c1b42e762376a807426fd39498f7d802070ea6ee87b68155569f61b18",
+   "derived_numbers": "013810f87a6ca7c1e01916ef7a5454e61e8d0e88f8d6a589fbfdd1514017a173",
+   "guimaraes_audit": "843d1e70a5a881819360e05cef961eee89108ec86e6cb82ff2dbf475a0979d88",
+   "hip_arms_book": "02a47c7dcc32f02f5cf6f77bdbd1019bb2000052dc371b39734d7eeff221b2ae",
+   "k_fill_book": "252105017e5fd87728cea0ec77058c08c7244a66e2a78aeff7841296c57eb55c",
+   "machinery": "ce93c114c4e89d2726dc4c04b15416518e16208ffadfe14595f9cb14cde5cfa1",
+   "model": "d5c65cbc0a72bd2d5c2258c6bd018fe850ae25cce6fb07c1f268b91e598c88e9"
+  }
+ },
+ "lane": "hip-quarantine-review-20260920",
+ "quarantined_named_readings": {
+  "R_AB": {
+   "arm_range_m_all_valid": [
+    -0.006272193604252296,
+    0.022122673793353864
+   ],
+   "artifact_flag_count": 0,
+   "artifact_samples": [],
+   "counterfactual_bound_NEVER_CONSUMED": {
+    "basis": "the quarantined row's own sheet PCSA x the cited sigma x the declared pennation factor - the defect numbers themselves; a bound on any future lawful resolution, consumed by no sum",
+    "counterfactual_force_N": 26.57865324668056,
+    "counterfactual_max_rearup_add_N_m": null,
+    "pcsa_m2": 8.91e-05,
+    "penn_deg": 6.1
+   },
+   "material_negative_samples_rearup_abs_gt_1e-6_m": 0,
+   "max_abs_arm_m_all_valid": 0.022122673793353864,
+   "most_negative_arm_m_rearup": null,
+   "negative_extensor_samples_in_rearup_window": 0,
+   "p2_material_extensor_channel": false,
+   "p2_note": "a material extensor channel means real NEGATIVE-arm samples (|r| > 1e-6 m) in the rear-up window; counts below the 1e-6 m floor on an exactly-zero arm (R_BFS) are float-sign noise, not anatomy",
+   "scan_stop": null,
+   "status": "QUARANTINED_NAMED_READING_no_force_consumed",
+   "valid_samples": 2001,
+   "verdict": "QUARANTINE_STANDS"
+  },
+  "R_BFS": {
+   "arm_range_m_all_valid": [
+    -3.469446951953614e-13,
+    2.7755575615628914e-13
+   ],
+   "artifact_flag_count": 0,
+   "artifact_samples": [],
+   "counterfactual_bound_NEVER_CONSUMED": {
+    "basis": "the quarantined row's own sheet PCSA x the cited sigma x the declared pennation factor - the defect numbers themselves; a bound on any future lawful resolution, consumed by no sum",
+    "counterfactual_force_N": 271.23914145829923,
+    "counterfactual_max_rearup_add_N_m": 5.6462988754980687e-11,
+    "pcsa_m2": 0.001007659,
+    "penn_deg": 26.2
+   },
+   "hip_arm_zero_check": {
+    "expected": "identically zero (thigh_r->shank_r spans no pelvis point; rigid under hip_flexion_r)",
+    "max_abs_arm_m": 3.469446951953614e-13,
+    "zero_within_1e-6_m": true
+   },
+   "material_negative_samples_rearup_abs_gt_1e-6_m": 0,
+   "max_abs_arm_m_all_valid": 3.469446951953614e-13,
+   "most_negative_arm_m_rearup": -2.0816681711721685e-13,
+   "negative_extensor_samples_in_rearup_window": 344,
+   "p2_material_extensor_channel": false,
+   "p2_note": "a material extensor channel means real NEGATIVE-arm samples (|r| > 1e-6 m) in the rear-up window; counts below the 1e-6 m floor on an exactly-zero arm (R_BFS) are float-sign noise, not anatomy",
+   "scan_stop": null,
+   "status": "QUARANTINED_NAMED_READING_no_force_consumed",
+   "valid_samples": 2001,
+   "verdict": "QUARANTINE_STANDS"
+  },
+  "R_RF": {
+   "arm_range_m_all_valid": [
+    -0.0020853142559951188,
+    0.301705440259592
+   ],
+   "artifact_flag_count": 1,
+   "artifact_samples": [
+    {
+     "arm_m": 0.301705440259592,
+     "index": 1669,
+     "q_deg": 60.2101
+    }
+   ],
+   "counterfactual_bound_NEVER_CONSUMED": {
+    "basis": "the quarantined row's own sheet PCSA x the cited sigma x the declared pennation factor - the defect numbers themselves; a bound on any future lawful resolution, consumed by no sum",
+    "counterfactual_force_N": 87.75797877793578,
+    "counterfactual_max_rearup_add_N_m": null,
+    "pcsa_m2": 0.000293644,
+    "penn_deg": 5.0
+   },
+   "material_negative_samples_rearup_abs_gt_1e-6_m": 0,
+   "max_abs_arm_m_all_valid": 0.301705440259592,
+   "most_negative_arm_m_rearup": null,
+   "negative_extensor_samples_in_rearup_window": 0,
+   "p2_material_extensor_channel": false,
+   "p2_note": "a material extensor channel means real NEGATIVE-arm samples (|r| > 1e-6 m) in the rear-up window; counts below the 1e-6 m floor on an exactly-zero arm (R_BFS) are float-sign noise, not anatomy",
+   "scan_stop": null,
+   "status": "QUARANTINED_NAMED_READING_no_force_consumed",
+   "valid_samples": 2001,
+   "verdict": "QUARANTINE_STANDS"
+  },
+  "R_SAR": {
+   "arm_range_m_all_valid": [
+    -0.030582940403200976,
+    0.04308679841830143
+   ],
+   "artifact_flag_count": 0,
+   "artifact_samples": [],
+   "counterfactual_bound_NEVER_CONSUMED": {
+    "basis": "the quarantined row's own sheet PCSA x the cited sigma x the declared pennation factor - the defect numbers themselves; a bound on any future lawful resolution, consumed by no sum",
+    "counterfactual_force_N": 12.21,
+    "counterfactual_max_rearup_add_N_m": 0.3734177023230839,
+    "pcsa_m2": 4.07e-05,
+    "penn_deg": null
+   },
+   "material_negative_samples_rearup_abs_gt_1e-6_m": 705,
+   "max_abs_arm_m_all_valid": 0.04308679841830143,
+   "most_negative_arm_m_rearup": -0.030582940403200976,
+   "negative_extensor_samples_in_rearup_window": 705,
+   "p2_material_extensor_channel": true,
+   "p2_note": "a material extensor channel means real NEGATIVE-arm samples (|r| > 1e-6 m) in the rear-up window; counts below the 1e-6 m floor on an exactly-zero arm (R_BFS) are float-sign noise, not anatomy",
+   "scan_stop": null,
+   "status": "QUARANTINED_NAMED_READING_no_force_consumed",
+   "valid_samples": 2001,
+   "verdict": "QUARANTINE_STANDS"
+  }
+ },
+ "rearup_verdict": {
+  "class": "OPERATOR-AUTHORED C* in (22.4, 33.6] N.m (numerically (2x, 3x] the live hip cap 11.2125); consumed as given, not re-derived",
+  "covered": false,
+  "covered_iff": "max capability > 33.6 N.m",
+  "gap_multiple_to_floor": 2.089936,
+  "gap_to_floor_N_m": 11.68196986,
+  "primary_definition": "max over the extended hip book at the REAR-UP window (admitted set empty -> the landed derived book)",
+  "primary_max_capability_N_m": 10.71803014,
+  "verdict": "NOT COVERED",
+  "verdict_vs_landed": "UNCHANGED"
+ },
+ "schema": "chimera.hip_quarantine_review.v1"
+}

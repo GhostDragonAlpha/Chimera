@@ -1,0 +1,52 @@
+{
+  "lane": "buffy/gait-wave11-quadruped",
+  "date": "2026-09-19",
+  "agent": "Buffy trailer",
+  "base": "7e0904ec (origin/buffy/gait-wave10-admissible-vault)",
+  "rule_0": {
+    "statement": "With forelimb struts sharing approximately s=0.45 of body weight, the hindlimb envelope fits with margin and the quadruped completes full walking cycles.",
+    "prediction": "The native run exceeds tick 426 (two full cycles), keeps the ledger under 10 J, hind knee demand under 0.85 cap, and saturates no joint on more than 10% of loaded ticks.",
+    "falsifiers": {
+      "run": "Refusal before tick 426 triggers a bisect at s=0.25, 0.45, and 0.55 and records the named joint and tick.",
+      "free_fall": "F-G5 free fall remains -9.806650 m/s2 with four legs and no powered contact response.",
+      "determinism": "F-G7 remains bit-identical.",
+      "graph": "Graph tests remain green.",
+      "fore_cap": "The fore-elbow cap is the doc-derived 3.76 N.m; demands beyond it are banked as a red finding, never raised away."
+    }
+  },
+  "design": {
+    "coordinates": "18 = prior 14 plus shoulder_flexion/elbow_flexion for each forelimb",
+    "forelimbs": "Stage-A two-coordinate load-sharing struts, mounted at the HAT cranial closure (0.2689,-0.1331), using 0.2737 kg humerus/0.125 m and 0.1323 kg forearm/0.132 m constants from the quad-share derivation",
+    "share": 0.45,
+    "fore_elbow_cap_Nm": 3.76,
+    "contacts": "four hind sole points plus four forepaw sole points with the existing migrating-CoP row treatment",
+    "settle": "fore contacts active during the existing 60-tick settle window"
+  },
+  "measurements": {
+    "native_suite": "run completed",
+    "f_g5": {
+      "free_fall_m_s2": -9.80665,
+      "stand_fold_deg": 5.00842
+    },
+    "walk": {
+      "refused_tick": 291,
+      "refusal": "gait_positional_correction_budget",
+      "worst_ledger_J": 30.202201
+    },
+    "f_g1": "RED not measured: refusal before transient window",
+    "f_g2": "RED not measured: refusal before transient window",
+    "f_g3": "RED not measured: refusal before cycle 5",
+    "f_g4": "GREEN per listed hind drives; fore rows not emitted before refusal",
+    "f_g6": "RED/INCOMPLETE: armed capture_events=0; disarmed refusal=1",
+    "f_g7": {
+      "bit_identical": true
+    },
+    "f_g8": {
+      "worst_moving_ledger_J": 30.202201,
+      "pass": false
+    },
+    "graph_tests": "PASS: 19 passed, 27 subtests passed"
+  },
+  "pass": false,
+  "honest_summary": "The quadruped build compiles and preserves honest free-fall and determinism, but the first native run refuses at tick 291 (before tick 426) on positional correction after the fore strut contacts have lifted. The refusal is banked as a dynamic contact/settle finding; ledger and walking falsifiers are red."
+}

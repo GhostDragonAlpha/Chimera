@@ -589,5 +589,34 @@
    "status": "passing"
   },
   "notes": "Only this graph-contract repair task is completed. No native/player/production Graphify qualification is implied."
+ },
+ {
+  "id": "work.intake_muscle_20260917",
+  "kind": "work",
+  "name": "Admit Guimaraes 2026 primate hindlimb architecture and Oku 2021 macaque bipedal series as batch connectors",
+  "classification": null,
+  "status": "specified",
+  "priority": "P1",
+  "build_rank": null,
+  "inventory_anchor": null,
+  "spatial": null,
+  "geometry": null,
+  "physical": null,
+  "attachments": [],
+  "dependencies": [],
+  "evidence": [],
+  "falsifier": {
+   "statement": "Two CC BY 4.0 biomechanics datasets (Guimaraes 2026 S1 xlsx via EuropePMC PMC13425262; Oku 2021 Supplementary Data 1 xlsx via PMC7940622) can be admitted through the batch connector machinery with their bytes pinned by member sha256 (the endpoint zip container is not byte-stable).",
+   "acceptance_test": "Prediction: batch_qualify --admit guimaraes_arch,oku_bipedal --apply admits every muscle record through class checks with Macaca species tags preserved (conditions.species present on every Guimaraes record) and zero silent drops (count identity fetched == admitted + quarantined). Falsifier: a corrupted row (row-law violation, duplicate identity, or non-SI unit) quarantines exactly itself and its rejection is visible in the receipt; nothing merges silently.",
+   "status": "pending"
+  },
+  "authored_priority": 1,
+  "enables": [],
+  "unknowns": [
+   "oku_block_roles_inferred_from_figure_caption_line_order",
+   "guimaraes_header_units_disagree_with_values_mm_g_recorded_not_resolved",
+   "task_brief_pmc8134959_was_an_unrelated_paper_corrected_to_pmc7940622"
+  ],
+  "notes": "AUTHORED task for the INTAKE-MUSCLE lane 2026-09-17; sources probe-verified by docs/research/20260917_dbhunt_motion.md (C1, C7) and docs/research/20260917_database_hunt.md priority queue items 1 and 3."
  }
 ]

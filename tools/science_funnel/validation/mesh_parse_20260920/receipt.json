@@ -1,0 +1,70 @@
+{
+ "schema": "chimera.mesh_parse.v1",
+ "lane": "lane/mesh-parse-20260920",
+ "base_commit": "9a341b5c",
+ "prereg_commit": "97bb5b40",
+ "date": "2026-09-20 (lane); measurements wall-clock 2026-09-22",
+ "agent_trailer": "Agent: meshparse",
+ "worktree": "E:/ChimeraWork/meshparse-agent (worktree of E:/ChimeraWork/realbody-agent/repo, setup path PRIMARY: branch-from-commit, no fallback fetch needed; ls-remote verified lane/slice-real-body-20260920 == 9a341b5c pushed)",
+ "theory": "the 237.67 s /mesh_import parse cost is attributable and removable to the slice's own 10 s launch bar by an admission-time preprocessed cache in a format the engine's import contract already accepts ('G' GLB beside 'O' OBJ), import semantics exact; the ghost's 7.92 s text build gets the same cache class",
+ "verdict": "ALL FALSIFIERS GREEN - the 237.67 s (idle-machine twin: 65.78 s) parse cost is killed: isolated import 0.476-0.500 s, full-boot t_first_verts 2.08-2.10 s vs the 10 s bar, engine-side state bit-identical to the slow route on every measured surface",
+ "predictions": {
+  "P-COST": "GREEN - parse_obj is 59.18-66.83 s of a 59.30-67.0 s import (99.8%; predicted >90%); finish() 0.12-0.14 s (predicted <5 s); loopback upload of the 18.5 MB payload 0.006-0.02 s through the engine (predicted <1 s). Instrument: pcost_instrument.log (timer-instrumented lane-dir copy of importer.cpp, logic untouched; stats reproduce the landed anchors exactly)",
+  "P-CACHE": "GREEN - the pinned derived GLB imports in 0.476-0.500 s through the same engine binary and every engine-side surface is bit-identical to the 'O' route (F1 below); instrument-level: the full-mesh-format body bytes are sha-equal c68b56fc (14,990,484 B) across routes",
+  "P-GHOST": "GREEN - cached ghost bytes load in 0.045 s vs 5.16-5.60 s fresh compose (the landed lane measured 7.92 s under its load); bytes sha-equal, 26,598,562 B - exactly the landed lane's ghost_bytes",
+  "P-BOOT": "GREEN - full-boot t_first_verts 2.08 / 2.09 / 2.10 s (3 boots) vs the 10 s bar"
+ },
+ "falsifiers": {
+  "F1-PARITY": {
+   "verdict": "GREEN",
+   "engine_pair": "same engine build (this worktree's .tmp/slice_build, built from the untouched engine tree), fresh --no-restore boot per run: A='O'+obj, B..E='G'+glb",
+   "import_response_text_equal_A_B": true,
+   "import_stats_all_boots": {"verts": 249743, "tris": 499976, "volume": 0.000973470353, "ymin": -0.134641007, "ymax": 0.134641007, "winding_flipped": false},
+   "stats_equal_landed_anchors": true,
+   "verts_sha_equal_A_B": "8c040418fe5bfaac6f56004364d033429a8495bb5b78d2dff5545427ab2e9001 x5 boots - EQUALS the landed bank's start-state sha (corroboration the prereg asked to re-measure, not assume)",
+   "topology_sha_equal_A_B": "9b56f86c... equal A vs B, identical x4 G-boots",
+   "instrument_body_bytes_sha_O_vs_G": "c68b56fc1428971e5b189538c445dbb4cc67f35e22f86632d53229ad33167f30 both routes (the full /mesh_bin-format payload: positions+normals+tangents+camera+indices)",
+   "ghost": "cache sha d07d976cbccc0d327586e99ace2a79badb7ba4918118c565d307273327ca771d == fresh compose x3; served /ghost.obj bytes unchanged; ghost_bytes 26,598,562 == the landed lane's recorded ghost_bytes",
+   "scene_pin": "scene_sha256 == body_manifest payload pin bc9033bf... in every boot, unchanged by this lane",
+   "closure_law_not_bypassed": "finish() ran on EVERY import (both routes, all boots) - the closure/cap refusals are the same code on the same bytes; the negative-zero/zero-center trap (the one structural difference between the doors) is checked at derivation and refused BY NAME (check_caches 'trap_refused')"
+  },
+  "F2-BAR": {
+   "verdict": "GREEN",
+   "isolated_import_s": {"B": 0.5, "C": 0.49, "D": 0.494, "E": 0.476},
+   "slow_route_baseline_this_run_s": 65.775,
+   "slow_route_landed_number_s": 237.67,
+   "load_note": "the landed lane's 237.67 s is the loaded-machine instance of the SAME parse its own record calls 'variable 130-240+ s across boots'; this run's idle machine: 65.78 s; the instrument's 99.8% parse attribution is load-independent",
+   "full_boot_t_first_verts_s": [2.1, 2.08, 2.09],
+   "bar_s": 10.0,
+   "landed_RED_s": 135.73,
+   "server_half_only": "the browser-console half of the slice's launch falsifier was not re-run: the page, its bytes, and every served artifact (/ghost.obj, /api/verts stream shape) are byte-unchanged by this lane; the landed lane's visual evidence carries"
+  },
+  "F3-SCOPE": {
+   "verdict": "GREEN",
+   "engine_tree_diff_vs_9a341b5c": 0,
+   "change_surface": [".gitattributes (+1 line: tools/playable_slice/*.glb -text -whitespace, the repo's own CRLF-lesson convention, same line class the landed lane added for *.obj)", "tools/playable_slice/scene_boot.py (cache loads + refusals, additive; build_real_body return contract unchanged)", "tools/playable_slice/standing_body.glb (new, 8,997,312 B, pinned)", "tools/playable_slice/ghost_standing.obj (new, 26,598,562 B, pinned)", "tools/playable_slice/boot_cache_manifest.json (new, both pins + ghost compose-input digests)", "tools/science_funnel/validation/mesh_parse_20260920/ (this lane dir: instrument, derivation, fences, receipts)"],
+   "engine_service_gap": "NONE RECORDED - the engine's import contract already names both front doors (importer.hpp: kind 'O' OBJ text, kind 'G' glTF 2.0/GLB); the cache needs no new route, format, or engine edit. The one structural asymmetry (the 'G' identity transform folds -0.0 to +0.0 before centering) is fenced at derivation, not engine-side",
+   "committed_bytes_note": "+35.6 MB committed caches beside the slice's existing 18.5 MB committed payload - the admission-time pattern the slice already established (commit the derived body, keep the boot off the compose path)"
+  },
+  "F4-DETERMINISM": {
+   "verdict": "GREEN",
+   "glb_derivation": "x3 byte-identical (adb6aff2babbf2cd2745004b2f51150d3a3f47e55b2ce3b8e63b3c0d595dbae5); in-process re-derivation == committed bytes (check_caches)",
+   "ghost_compose": "x3 byte-identical (d07d976cbccc0d327586e99ace2a79badb7ba4918118c565d307273327ca771d)",
+   "import_path": "'G' route: import response + /verts + /topology identical x4 boots; full boot x3: scene sha identical x3, start-state sha identical x3 (8c040418...)",
+   "instrument_cross_process": "'O' bodies byte-identical across separate processes"
+  },
+  "F5-CONTAINMENT": {
+   "verdict": "GREEN",
+   "touched": "lane dir + tools/playable_slice caches + 1 .gitattributes line; git status shows zero gait_*, zero first_skill_prestage_20260922_*, zero master, zero shared-tooling paths; ChimeraEngine/ untouched; CPU-only work (engine boots are the slice's own modest render loads, same as the landed lane ran)"
+  }
+ },
+ "checks_artifacts": {
+  "cost_derivation": "pcost_instrument.log (in-process x3 + cross-process, bodies sha-compared)",
+  "engine_pair": "engine_import_parity.json (+ engine_parity_run.log)",
+  "full_boot": "launch_timeline_cached.json (+ launch_server_log_boot{0,1,2}.txt)",
+  "fast_fences": "check_caches_receipt.json (12/12: pins, tamper refusals, trap refusal + no-false-positive, input-drift refusal, manifest restore)",
+  "derivation": "derive_cache_receipt.json"
+ },
+ "recorder_notes": "the parity recorder's 'settled_root_y' field captures the EARLY wait_settled poll (mid-oscillation - the landed lane's Amendment 2 phenomenon, reproduced here); the fence reads the /verts sha taken at convergence (|delta root_y| < 1e-7 over 2 s AND |vy| < 1e-5) - identical x5 and == the landed bank's 8c040418. Nothing tuned.",
+ "pass": true
+}

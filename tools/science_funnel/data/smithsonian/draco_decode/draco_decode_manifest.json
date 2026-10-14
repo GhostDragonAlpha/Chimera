@@ -1,0 +1,141 @@
+{
+    "kind":  "draco_decode_manifest.v1",
+    "label":  "Pinned decode identity for the draco-compressed Smithsonian USNM 15259 GLBs: produced by the OFFICIAL Google Draco WASM decoder (trusted reference decoder, no port) running in a browser page via three.js GLTFLoader + DRACOLoader. Decoding is pure: re-decode reproduces every hash (see receipt). The decoded buffer sha256s are the geometry machine identity; the screenshots are PERCEPTUAL EVIDENCE, never the proof.",
+    "work_item":  "work.data.visual_proof_20260917",
+    "channel":  {
+                    "decoder":  "official Google Draco WASM decoder (gstatic versioned 1.5.7), draco_wasm_wrapper.js + draco_decoder.wasm",
+                    "page":  "three.js r160 GLTFLoader + DRACOLoader, decoder_config wasm",
+                    "three_revision":  "160",
+                    "browser_user_agent":  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+                    "libs":  {
+                                 "three.module.js":  {
+                                                         "url":  "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+                                                         "sha256":  "76dea8151bc9352aef3528b4262e249b2604f62543828328db978d060d61a495",
+                                                         "bytes":  1272972
+                                                     },
+                                 "GLTFLoader.js":  {
+                                                       "url":  "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js",
+                                                       "sha256":  "d073b438e6a07e1359741dd5d6c76c953420cc0d4fd84eb1bdde94315540e6a3",
+                                                       "bytes":  108522
+                                                   },
+                                 "DRACOLoader.js":  {
+                                                        "url":  "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/DRACOLoader.js",
+                                                        "sha256":  "65c114ecb7b349cdc59c75b2c92d19cca672a138060dba0f60f64262fa40408c",
+                                                        "bytes":  13628
+                                                    },
+                                 "BufferGeometryUtils.js":  {
+                                                                "url":  "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/utils/BufferGeometryUtils.js",
+                                                                "sha256":  "9be041e96308775d00e2695cc607645b9a9b64fd7c0e759dd8f7c00a8d92becb",
+                                                                "bytes":  31906
+                                                            },
+                                 "draco_wasm_wrapper.js":  {
+                                                               "url":  "https://www.gstatic.com/draco/versioned/decoders/1.5.7/draco_wasm_wrapper.js",
+                                                               "sha256":  "e8049906ef3f8f75d3456c22a3f31bfdfe5b5b5bd09ccdec613b9e9a49d554d8",
+                                                               "bytes":  58763
+                                                           },
+                                 "draco_decoder.wasm":  {
+                                                            "url":  "https://www.gstatic.com/draco/versioned/decoders/1.5.7/draco_decoder.wasm",
+                                                            "sha256":  "2516a4e43526d71787bf2f678f951329f7f858f8f15f42d4bc9e370b31a0da3a",
+                                                            "bytes":  285948
+                                                        }
+                             },
+                    "receipt":  "tools/science_funnel/validation/draco_decode_20260918/decode_receipt.json"
+                },
+    "falsifiers":  {
+                       "redecode_in_run":  "pass1 == pass2, fresh DRACOLoader/WASM instances (identical=true for both specimens)",
+                       "redecode_cross_run":  "two separate page loads reproduce every buffer sha256 (identical=true for both specimens)",
+                       "corrupt_probe":  "one flipped byte inside the draco bufferView: REFUSED / REFUSED"
+                   },
+    "corrupt_probe":  {
+                          "source_glb":  "/glb/USNM15259_mandible_-300-150k-4096-high.glb",
+                          "flip_offset":  5440,
+                          "corrupted_sha256":  "361c443ca088134d81ab3910a779ace4d01ad83a99b327f9b1e4e4416b88e1c5",
+                          "outcome_runA":  "REFUSED",
+                          "outcome_runB":  "REFUSED",
+                          "error_runA":  "[object Object]",
+                          "error_runB":  "[object Object]"
+                      },
+    "run_summary":  {
+                        "tag":  "run1",
+                        "utc":  "2026-09-18T07:35:32.9522093Z"
+                    },
+    "notes":  [
+                  "The trusted decoder emits 133172 vertices for the cranium where the glTF accessor declares 133171 -- the same producer divergence from reference draco layouts the pure-python lane measured; the decode identity is pinned to what the trusted decoder actually produced, and both counts are recorded. Normals are present in both decoded meshes; indices decode as Uint32Array."
+              ],
+    "specimens":  {
+                      "cranium":  {
+                                      "glb":  {
+                                                  "name":  "USNM15259_cranium_-300_dec-150k-4096-high.glb",
+                                                  "sha256":  "04b58b90e36caf68548807b7d9609574d1ad7fcacae7a2e50ca7e6b77abc33a4"
+                                              },
+                                      "draco_header":  {
+                                                           "bitstream":  "2.2",
+                                                           "encoder_type":  1,
+                                                           "encoder_method":  1,
+                                                           "encoder_method_name":  "MESH_EDGEBREAKER_ENCODING",
+                                                           "traversal_type":  2,
+                                                           "traversal_name":  "MESH_EDGEBREAKER_VALENCE_ENCODING"
+                                                       },
+                                      "accessor_declared":  {
+                                                                "position_count":  133171,
+                                                                "index_count":  449997
+                                                            },
+                                      "decoded":  {
+                                                      "positions_sha256":  "3d48583302999116dee831e942cea493200cb7e7e4815132a0681ea331df9c60",
+                                                      "normals_sha256":  "c2729b58f0d8d41f7e318d1d260e45f57b7c918cc0d1a5cc54538bc8ddd8048b",
+                                                      "indices_sha256":  "03b941419a752e2d6d88ab9bde929859bbc075e711c017889ec3de279a46e476",
+                                                      "index_type":  "Uint32Array",
+                                                      "vertex_count":  133172,
+                                                      "index_count":  449997,
+                                                      "meshes":  1
+                                                  },
+                                      "buffers":  {
+                                                      "positions":  "USNM15259_cranium.positions.f32",
+                                                      "normals":  "USNM15259_cranium.normals.f32",
+                                                      "indices":  "USNM15259_cranium.indices.u32"
+                                                  },
+                                      "screenshot":  {
+                                                         "file":  "smithsonian_usnm15259_cranium.decode_screenshot.png",
+                                                         "sha256":  "4ed30fc2aa6d2a8f407630ee3a1e0412021c5fde91b5605816139d3a5e84482b",
+                                                         "label":  "PERCEPTUAL EVIDENCE: the decode hash is the proof; the picture is for the human"
+                                                     }
+                                  },
+                      "mandible":  {
+                                       "glb":  {
+                                                   "name":  "USNM15259_mandible_-300-150k-4096-high.glb",
+                                                   "sha256":  "0e6d83f25c9242d3a982f53f080ff6035e984413077dd2f46b246d1724e162a4"
+                                               },
+                                       "draco_header":  {
+                                                            "bitstream":  "2.2",
+                                                            "encoder_type":  1,
+                                                            "encoder_method":  1,
+                                                            "encoder_method_name":  "MESH_EDGEBREAKER_ENCODING",
+                                                            "traversal_type":  2,
+                                                            "traversal_name":  "MESH_EDGEBREAKER_VALENCE_ENCODING"
+                                                        },
+                                       "accessor_declared":  {
+                                                                 "position_count":  97967,
+                                                                 "index_count":  449997
+                                                             },
+                                       "decoded":  {
+                                                       "positions_sha256":  "e73d24836219fee7df0d1e754fd3950fe233c83e61127d802b0baf21df991239",
+                                                       "normals_sha256":  "76377aef59922062d4d4072278b5aca5968066b924af2399b80d6af9fe281fe7",
+                                                       "indices_sha256":  "e5be9e5203a2bf3856d494ee9db7f3328bd9bdd83507fa5d8d0975e3d63e60b6",
+                                                       "index_type":  "Uint32Array",
+                                                       "vertex_count":  97967,
+                                                       "index_count":  449997,
+                                                       "meshes":  1
+                                                   },
+                                       "buffers":  {
+                                                       "positions":  "USNM15259_mandible.positions.f32",
+                                                       "normals":  "USNM15259_mandible.normals.f32",
+                                                       "indices":  "USNM15259_mandible.indices.u32"
+                                                   },
+                                       "screenshot":  {
+                                                          "file":  "smithsonian_usnm15259_mandible.decode_screenshot.png",
+                                                          "sha256":  "8cfb84c32755df8b1e468fb28d238a85cfa64814312605f11d2ecc42760e6fc8",
+                                                          "label":  "PERCEPTUAL EVIDENCE: the decode hash is the proof; the picture is for the human"
+                                                      }
+                                   }
+                  }
+}

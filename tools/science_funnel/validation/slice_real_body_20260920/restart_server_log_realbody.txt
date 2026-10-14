@@ -1,0 +1,810 @@
+  "GET / HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /mock_registry.json HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /favicon.ico HTTP/1.1" 404 -
+  "GET /ghost.obj HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/topology HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/topology HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/topology HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/topology HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "POST /api/restart HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+Exception in thread Thread-192 (boot):
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+----------------------------------------
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 50183)
+Exception occurred during processing of request from ('127.0.0.1', 64923)
+Exception occurred during processing of request from ('127.0.0.1', 55009)
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 51023)
+Exception occurred during processing of request from ('127.0.0.1', 56183)
+Traceback (most recent call last):
+  File "C:\Python314\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+Traceback (most recent call last):
+  File "C:\Python314\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "C:\Python314\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Python314\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 329, in do_GET
+    self._json(WORLD.status())
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Traceback (most recent call last):
+  File "C:\Python314\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Python314\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 308, in _json
+    self._send(code, json.dumps(obj).encode(), "application/json")
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 305, in _send
+    self.wfile.write(body)
+    ~~~~~~~~~~~~~~~~^^^^^^
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 329, in do_GET
+    self._json(WORLD.status())
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 308, in _json
+    self._send(code, json.dumps(obj).encode(), "application/json")
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 329, in do_GET
+    self._json(WORLD.status())
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 305, in _send
+    self.wfile.write(body)
+    ~~~~~~~~~~~~~~~~^^^^^^
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 308, in _json
+    self._send(code, json.dumps(obj).encode(), "application/json")
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Python314\Lib\http\server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 329, in do_GET
+    self._json(WORLD.status())
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 308, in _json
+    self._send(code, json.dumps(obj).encode(), "application/json")
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 304, in _send
+    self.end_headers()
+    ~~~~~~~~~~~~~~~~^^
+----------------------------------------
+  File "C:\Python314\Lib\http\server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 329, in do_GET
+    self._json(WORLD.status())
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 308, in _json
+    self._send(code, json.dumps(obj).encode(), "application/json")
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\server.py", line 598, in end_headers
+    self.flush_headers()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 304, in _send
+    self.end_headers()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 602, in flush_headers
+    self.wfile.write(b"".join(self._headers_buffer))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+  File "C:\Python314\Lib\http\server.py", line 598, in end_headers
+    self.flush_headers()
+    ~~~~~~~~~~~~~~~~~~^^
+----------------------------------------
+  File "C:\Python314\Lib\http\server.py", line 602, in flush_headers
+    self.wfile.write(b"".join(self._headers_buffer))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 305, in _send
+    self.wfile.write(body)
+    ~~~~~~~~~~~~~~~~^^^^^^
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+----------------------------------------
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+----------------------------------------
+Traceback (most recent call last):
+  File "C:\Python314\Lib\threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Python314\Lib\threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 350, in boot
+    WORLD.boot()
+    ~~~~~~~~~~^^
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 82, in boot
+    rec = sb.boot_standing_start(self.url)   # imports THE REAL BODY
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\scene_boot.py", line 276, in boot_standing_start
+    res = http_post(engine_url, "/mesh_import", b"O" + obj)
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\scene_boot.py", line 247, in http_post
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 187, in urlopen
+    return opener.open(url, data, timeout)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 487, in open
+    response = self._open(req, data)
+  File "C:\Python314\Lib\urllib\request.py", line 504, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+                              '_open', req)
+  File "C:\Python314\Lib\urllib\request.py", line 464, in _call_chain
+    result = func(*args)
+  File "C:\Python314\Lib\urllib\request.py", line 1350, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 1325, in do_open
+    r = h.getresponse()
+  File "C:\Python314\Lib\http\client.py", line 1450, in getresponse
+    response.begin()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\client.py", line 336, in begin
+    version, status, reason = self._read_status()
+                              ~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\client.py", line 297, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+               ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socket.py", line 725, in readinto
+    return self._sock.recv_into(b)
+           ~~~~~~~~~~~~~~~~~~~~^^^
+TimeoutError: timed out
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "POST /api/restart HTTP/1.1" 200 -
+Exception in thread Thread-307 (boot):
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+----------------------------------------
+  "GET /api/status HTTP/1.1" 200 -
+Traceback (most recent call last):
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+Exception occurred during processing of request from ('127.0.0.1', 49989)
+  "GET /api/verts HTTP/1.1" 200 -
+  File "C:\Python314\Lib\threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 49492)
+  "GET /api/status HTTP/1.1" 200 -
+Exception occurred during processing of request from ('127.0.0.1', 55829)
+  File "C:\Python314\Lib\threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 350, in boot
+    WORLD.boot()
+    ~~~~~~~~~~^^
+----------------------------------------
+Traceback (most recent call last):
+Traceback (most recent call last):
+Exception occurred during processing of request from ('127.0.0.1', 49291)
+  File "C:\Python314\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 82, in boot
+    rec = sb.boot_standing_start(self.url)   # imports THE REAL BODY
+Exception occurred during processing of request from ('127.0.0.1', 61442)
+  File "C:\Python314\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\scene_boot.py", line 276, in boot_standing_start
+    res = http_post(engine_url, "/mesh_import", b"O" + obj)
+  File "C:\Python314\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+Traceback (most recent call last):
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\scene_boot.py", line 247, in http_post
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 187, in urlopen
+    return opener.open(url, data, timeout)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+Traceback (most recent call last):
+  File "C:\Python314\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Python314\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Python314\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Python314\Lib\urllib\request.py", line 487, in open
+    response = self._open(req, data)
+  File "C:\Python314\Lib\urllib\request.py", line 504, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+                              '_open', req)
+  File "C:\Python314\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "C:\Python314\Lib\urllib\request.py", line 464, in _call_chain
+    result = func(*args)
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 329, in do_GET
+    self._json(WORLD.status())
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 329, in do_GET
+    self._json(WORLD.status())
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "C:\Python314\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 308, in _json
+    self._send(code, json.dumps(obj).encode(), "application/json")
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 329, in do_GET
+    self._json(WORLD.status())
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 1350, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 308, in _json
+    self._send(code, json.dumps(obj).encode(), "application/json")
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\server.py", line 496, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 329, in do_GET
+    self._json(WORLD.status())
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 304, in _send
+    self.end_headers()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 484, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 304, in _send
+    self.end_headers()
+    ~~~~~~~~~~~~~~~~^^
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 308, in _json
+    self._send(code, json.dumps(obj).encode(), "application/json")
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 1325, in do_open
+    r = h.getresponse()
+  File "C:\Python314\Lib\http\client.py", line 1450, in getresponse
+    response.begin()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 598, in end_headers
+    self.flush_headers()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 305, in _send
+    self.wfile.write(body)
+    ~~~~~~~~~~~~~~~~^^^^^^
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 329, in do_GET
+    self._json(WORLD.status())
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 308, in _json
+    self._send(code, json.dumps(obj).encode(), "application/json")
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 305, in _send
+    self.wfile.write(body)
+    ~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 308, in _json
+    self._send(code, json.dumps(obj).encode(), "application/json")
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\server.py", line 598, in end_headers
+    self.flush_headers()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\server.py", line 602, in flush_headers
+    self.wfile.write(b"".join(self._headers_buffer))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\client.py", line 336, in begin
+    version, status, reason = self._read_status()
+                              ~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+  File "E:\ChimeraWork\realbody-agent\repo\tools\playable_slice\slice_server.py", line 305, in _send
+    self.wfile.write(body)
+    ~~~~~~~~~~~~~~~~^^^^^^
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+----------------------------------------
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+----------------------------------------
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+----------------------------------------
+  File "C:\Python314\Lib\http\server.py", line 602, in flush_headers
+    self.wfile.write(b"".join(self._headers_buffer))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\http\client.py", line 297, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+               ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socket.py", line 725, in readinto
+    return self._sock.recv_into(b)
+           ~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Python314\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+----------------------------------------
+ConnectionAbortedError: [WinError 10053] An established connection was aborted by the software in your host machine
+TimeoutError: timed out
+----------------------------------------
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 502 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/status HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -
+  "GET /api/verts HTTP/1.1" 200 -

@@ -1,0 +1,6 @@
+[tb1-timing] runs=1 ticks=302 ss_ticks=282 startup_s=0.001 step_s=6.922 status_s=0.107 census_s=0.012 fG5_s=2.418 push426_s=0.000 report_s=0.000
+[tb1-timing] per_tick_ms step=22.9212 status=0.3530 census=0.0404 | ticks_per_s_step_only=43.63 ticks_per_s_full_loop=42.89 | ss(t>=20) step_only=44.43 full_loop=43.66
+[tb1-timing] runs=2 ticks=604 ss_ticks=564 startup_s=0.001 step_s=13.879 status_s=0.210 census_s=0.024 fG5_s=2.418 push426_s=0.000 report_s=0.000
+[tb1-timing] per_tick_ms step=22.9782 status=0.3476 census=0.0401 | ticks_per_s_step_only=43.52 ticks_per_s_full_loop=42.80 | ss(t>=20) step_only=44.42 full_loop=43.66
+[tb1-timing] runs=3 ticks=906 ss_ticks=846 startup_s=0.002 step_s=20.731 status_s=0.312 census_s=0.036 fG5_s=2.418 push426_s=6.796 report_s=0.000
+[tb1-timing] per_tick_ms step=22.8818 status=0.3438 census=0.0396 | ticks_per_s_step_only=43.70 ticks_per_s_full_loop=42.98 | ss(t>=20) step_only=44.64 full_loop=43.89

@@ -1,0 +1,44 @@
+{
+  "schema": "chimera.engine_wiring_gate_inputs.v1",
+  "base": "522e4ae2f77b3bf0b011c932e0565d8a01f24e9b",
+  "base_ref_note": "GitHub GhostDragonAlpha/Chimera refs/heads/master, refreshed and verified via ls-remote + fetch before packaging (local refs were stale at 32105f18/b9dfdd17).",
+  "gate": {
+    "ticks": 180,
+    "worker_counts": [
+      1,
+      2,
+      4
+    ],
+    "dt": "1/60",
+    "chunk_count": 4,
+    "compilers": [
+      "gnu",
+      "msvc"
+    ]
+  },
+  "pins": {
+    "preregistration_sha256": "aaec5ddef4be3324e05064d8942578c5a82b85766c50d35e3979e00b223609c7",
+    "payload_sha256": "1c6faffaa0095a44fd2f93fcae6daf3068796554a7ab93d8875b2b9fd1b4ca78",
+    "probe_sha256": "9dab4cf7aa3087ae70be78226b5ca2df620dd861589c6df270e977b1abf35283",
+    "base_membrane_tick.hpp": {
+      "git_oid": "5a15b1097ab007e69df3d9e295fbc1cb6f13482f",
+      "sha256": "22ba994fe64cdedf6901e39ed17bdf846a6b51b2f0863af175a4d4e86daefa70"
+    },
+    "base_membrane_tick.cpp": {
+      "git_oid": "ae11ac7696d8324a9e8d15e5bea0a75e678e2763",
+      "sha256": "851b0047e4903771e04d76d27cb93d11183b2538d50bd3e71148399c3e933fab"
+    },
+    "base_joint_binding.hpp": {
+      "git_oid": "1e3524d89dc78bb8accda3ddffa49764a915483b",
+      "sha256": "7ab5504b38c26d8b9e0225630fab7ed2ffa0670b5af8c4ad9afa48a9eb21b8c2"
+    }
+  },
+  "probe_sources": [
+    "membrane_gate.cpp",
+    "run_tests.py",
+    "PREREGISTRATION.md",
+    "scene_fixture.json",
+    "engine_material_payload.json",
+    "baseline/"
+  ]
+}

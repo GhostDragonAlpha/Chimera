@@ -1,0 +1,6 @@
+amended kept: 7088  composed kept: 7194
+FIRST DIVERGENCE vs the amended walk: index 4528  amended tick: 193  composed tick: 193
+  amended: [dv] t=193 ptq=11.21250 ptgt=1.6910 pang=-45.3175 pspd=-3.4114 ev=0 phL=0.15493 phR=0.08920 com=(0.563726,-0.067653) hull=6 in=0 bx=0.442692
+  composed: [hindstep] unloadgate leg=0 tick=193 dl=193 class=unload
+all amended lines up to the divergence are tick<=192: False
+composed line is the unloadgate L@193: True

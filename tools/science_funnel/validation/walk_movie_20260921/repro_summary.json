@@ -1,0 +1,53 @@
+{
+ "schema": "chimera.walk_movie.repro.v1",
+ "lane": "agent/record-movie-20260921",
+ "wave28_head": "0557fc99",
+ "gait_unit_cpp_sha256": "37fee4eb9e4de613893384cbd63e317f009abd383303e49d48eeee4e5145d0eb",
+ "scene": {
+  "path": "C:/ChimeraWork/record-movie-scratch/scene28/scene.json",
+  "file_sha256": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342",
+  "bundle_scene_sha256": "e61ad3864472453f2b2a77a71ca0579f1b78e905b2495f581a9f87f27502333c",
+  "note": "regenerated from the wave-28 gait_scene.py, byte-identical to the wave-28 lane's .tmp/scene28_a.json"
+ },
+ "stderr": {
+  "repro_lines": 32442,
+  "byte_identical": true,
+  "note": "gait_unit_statedump stderr vs gait_unit_tracebase stderr, same scene, same vendor tree; the dump is a separate stream (reads only)"
+ },
+ "summary": {
+  "tracebase": {
+   "bw_N": 98.43913308670002,
+   "checks": 90,
+   "cycle_ticks": 213,
+   "pass": false,
+   "red_falsifiers": 26
+  },
+  "statedump": {
+   "bw_N": 98.43913308670002,
+   "checks": 91,
+   "cycle_ticks": 213,
+   "pass": false,
+   "red_falsifiers": 26
+  },
+  "only_differences": [
+   "checks 91 vs 90: the variant adds exactly one check (f7_qstream_bit_identical)",
+   "measured rows: the variant adds F-G7 qstream bit-identical=1 + the dump-written note; no other row differs"
+  ],
+  "stdout_baseline_equals_wave28_committed_run": true
+ },
+ "refusal": {
+  "tick": 298,
+  "class": "gait_contact_impact_gain",
+  "wave28_predicted": "122 -> 298 (receipt_wave28)",
+  "worst_ledger_J": 30.139317,
+  "hind_step": "fires R=[98] tds R=[107] plant_off=0.1437 fire_qerr_max=6.661e-16 (verbatim in both summaries)"
+ },
+ "qstream": {
+  "lines": 298,
+  "bytes": 224907,
+  "q_dim": 18,
+  "v_dim": 18,
+  "bit_identical_within_run": true,
+  "states_jsonl_sha256": "591ab08820e39f9710b820eacc50216051f086ec409535dfd53e5ff12009b0f8"
+ }
+}

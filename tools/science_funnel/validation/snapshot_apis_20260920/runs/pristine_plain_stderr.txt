@@ -1,0 +1,71 @@
+run F-G5
+run F-G1..G4 walk
+WALK REFUSED tick 302: gait_positional_correction_budget | y=-0.3318 x=0.9156
+[refusal] tick=302 refusal=gait_positional_correction_budget com=(0.9198,-0.1429) base=(0.9156,-0.3318,-0.1445)
+[refusal-joint] hip_flexion_left phase=0.4038 angle_deg=11.9630 target_deg=4.4242 torque=11.2125 cap=11.2125
+[refusal-joint] knee_extension_left phase=0.4038 angle_deg=-21.7088 target_deg=-52.0313 torque=-6.6375 cap=6.6375
+[refusal-joint] ankle_dorsiflexion_left phase=0.4038 angle_deg=-1.6479 target_deg=36.2011 torque=0.5368 cap=7.4000
+[refusal-joint] MP_dorsiflexion_left phase=0.4038 angle_deg=-12.7842 target_deg=8.9039 torque=0.0028 cap=0.8875
+[refusal-joint] hip_flexion_right phase=0.0516 angle_deg=8.0891 target_deg=45.2793 torque=11.2125 cap=11.2125
+[refusal-joint] knee_extension_right phase=0.0516 angle_deg=-8.0065 target_deg=-43.3368 torque=-6.6375 cap=6.6375
+[refusal-joint] ankle_dorsiflexion_right phase=0.0516 angle_deg=-11.0574 target_deg=21.4716 torque=0.5705 cap=7.4000
+[refusal-joint] MP_dorsiflexion_right phase=0.0516 angle_deg=-26.2917 target_deg=-24.6101 torque=0.0068 cap=0.8875
+[refusal-joint] shoulder_flexion_fore_left phase=0.0516 angle_deg=-25.6912 target_deg=-2.9028 torque=-1.2304 cap=4.2290
+[refusal-joint] elbow_flexion_fore_left phase=0.0516 angle_deg=10.5355 target_deg=-13.1438 torque=-0.1088 cap=3.7600
+[refusal-joint] shoulder_flexion_fore_right phase=0.0516 angle_deg=-15.9494 target_deg=21.6295 torque=0.3773 cap=4.2290
+[refusal-joint] elbow_flexion_fore_right phase=0.0516 angle_deg=2.4616 target_deg=-13.1438 torque=-0.0393 cap=3.7600
+[refusal-joint] trunk_pitch_HAT phase=0.4038 angle_deg=-168.5057 target_deg=26.4890 torque=11.2125 cap=11.2125
+[refusal-pt] left_heel gap=3.371e-08 touching=1 rxn=0.000 slip=0.459
+[refusal-pt] left_mp_head gap=3.371e-08 touching=1 rxn=0.000 slip=0.459
+[refusal-pt] right_heel gap=-6.635e-04 touching=1 rxn=0.000 slip=0.381
+[refusal-pt] right_mp_head gap=-6.635e-04 touching=1 rxn=0.000 slip=0.381
+[refusal-pt] fore_left_heel gap=1.379e-03 touching=0 rxn=0.000 slip=1.634
+[refusal-pt] fore_left_mp_head gap=1.379e-03 touching=0 rxn=0.000 slip=1.634
+[refusal-pt] fore_right_heel gap=2.358e-03 touching=0 rxn=0.000 slip=2.702
+[refusal-pt] fore_right_mp_head gap=2.358e-03 touching=0 rxn=0.000 slip=2.702
+WALK REFUSED tick 302: gait_positional_correction_budget | y=-0.3318 x=0.9156
+[refusal] tick=302 refusal=gait_positional_correction_budget com=(0.9198,-0.1429) base=(0.9156,-0.3318,-0.1445)
+[refusal-joint] hip_flexion_left phase=0.4038 angle_deg=11.9630 target_deg=4.4242 torque=11.2125 cap=11.2125
+[refusal-joint] knee_extension_left phase=0.4038 angle_deg=-21.7088 target_deg=-52.0313 torque=-6.6375 cap=6.6375
+[refusal-joint] ankle_dorsiflexion_left phase=0.4038 angle_deg=-1.6479 target_deg=36.2011 torque=0.5368 cap=7.4000
+[refusal-joint] MP_dorsiflexion_left phase=0.4038 angle_deg=-12.7842 target_deg=8.9039 torque=0.0028 cap=0.8875
+[refusal-joint] hip_flexion_right phase=0.0516 angle_deg=8.0891 target_deg=45.2793 torque=11.2125 cap=11.2125
+[refusal-joint] knee_extension_right phase=0.0516 angle_deg=-8.0065 target_deg=-43.3368 torque=-6.6375 cap=6.6375
+[refusal-joint] ankle_dorsiflexion_right phase=0.0516 angle_deg=-11.0574 target_deg=21.4716 torque=0.5705 cap=7.4000
+[refusal-joint] MP_dorsiflexion_right phase=0.0516 angle_deg=-26.2917 target_deg=-24.6101 torque=0.0068 cap=0.8875
+[refusal-joint] shoulder_flexion_fore_left phase=0.0516 angle_deg=-25.6912 target_deg=-2.9028 torque=-1.2304 cap=4.2290
+[refusal-joint] elbow_flexion_fore_left phase=0.0516 angle_deg=10.5355 target_deg=-13.1438 torque=-0.1088 cap=3.7600
+[refusal-joint] shoulder_flexion_fore_right phase=0.0516 angle_deg=-15.9494 target_deg=21.6295 torque=0.3773 cap=4.2290
+[refusal-joint] elbow_flexion_fore_right phase=0.0516 angle_deg=2.4616 target_deg=-13.1438 torque=-0.0393 cap=3.7600
+[refusal-joint] trunk_pitch_HAT phase=0.4038 angle_deg=-168.5057 target_deg=26.4890 torque=11.2125 cap=11.2125
+[refusal-pt] left_heel gap=3.371e-08 touching=1 rxn=0.000 slip=0.459
+[refusal-pt] left_mp_head gap=3.371e-08 touching=1 rxn=0.000 slip=0.459
+[refusal-pt] right_heel gap=-6.635e-04 touching=1 rxn=0.000 slip=0.381
+[refusal-pt] right_mp_head gap=-6.635e-04 touching=1 rxn=0.000 slip=0.381
+[refusal-pt] fore_left_heel gap=1.379e-03 touching=0 rxn=0.000 slip=1.634
+[refusal-pt] fore_left_mp_head gap=1.379e-03 touching=0 rxn=0.000 slip=1.634
+[refusal-pt] fore_right_heel gap=2.358e-03 touching=0 rxn=0.000 slip=2.702
+[refusal-pt] fore_right_mp_head gap=2.358e-03 touching=0 rxn=0.000 slip=2.702
+WALK REFUSED tick 302: gait_positional_correction_budget | y=-0.3318 x=0.9156
+[refusal] tick=302 refusal=gait_positional_correction_budget com=(0.9198,-0.1429) base=(0.9156,-0.3318,-0.1445)
+[refusal-joint] hip_flexion_left phase=0.4038 angle_deg=11.9630 target_deg=4.4242 torque=11.2125 cap=11.2125
+[refusal-joint] knee_extension_left phase=0.4038 angle_deg=-21.7088 target_deg=-52.0313 torque=-6.6375 cap=6.6375
+[refusal-joint] ankle_dorsiflexion_left phase=0.4038 angle_deg=-1.6479 target_deg=36.2011 torque=0.5368 cap=7.4000
+[refusal-joint] MP_dorsiflexion_left phase=0.4038 angle_deg=-12.7842 target_deg=8.9039 torque=0.0028 cap=0.8875
+[refusal-joint] hip_flexion_right phase=0.0516 angle_deg=8.0891 target_deg=45.2793 torque=11.2125 cap=11.2125
+[refusal-joint] knee_extension_right phase=0.0516 angle_deg=-8.0065 target_deg=-43.3368 torque=-6.6375 cap=6.6375
+[refusal-joint] ankle_dorsiflexion_right phase=0.0516 angle_deg=-11.0574 target_deg=21.4716 torque=0.5705 cap=7.4000
+[refusal-joint] MP_dorsiflexion_right phase=0.0516 angle_deg=-26.2917 target_deg=-24.6101 torque=0.0068 cap=0.8875
+[refusal-joint] shoulder_flexion_fore_left phase=0.0516 angle_deg=-25.6912 target_deg=-2.9028 torque=-1.2304 cap=4.2290
+[refusal-joint] elbow_flexion_fore_left phase=0.0516 angle_deg=10.5355 target_deg=-13.1438 torque=-0.1088 cap=3.7600
+[refusal-joint] shoulder_flexion_fore_right phase=0.0516 angle_deg=-15.9494 target_deg=21.6295 torque=0.3773 cap=4.2290
+[refusal-joint] elbow_flexion_fore_right phase=0.0516 angle_deg=2.4616 target_deg=-13.1438 torque=-0.0393 cap=3.7600
+[refusal-joint] trunk_pitch_HAT phase=0.4038 angle_deg=-168.5057 target_deg=26.4890 torque=11.2125 cap=11.2125
+[refusal-pt] left_heel gap=3.371e-08 touching=1 rxn=0.000 slip=0.459
+[refusal-pt] left_mp_head gap=3.371e-08 touching=1 rxn=0.000 slip=0.459
+[refusal-pt] right_heel gap=-6.635e-04 touching=1 rxn=0.000 slip=0.381
+[refusal-pt] right_mp_head gap=-6.635e-04 touching=1 rxn=0.000 slip=0.381
+[refusal-pt] fore_left_heel gap=1.379e-03 touching=0 rxn=0.000 slip=1.634
+[refusal-pt] fore_left_mp_head gap=1.379e-03 touching=0 rxn=0.000 slip=1.634
+[refusal-pt] fore_right_heel gap=2.358e-03 touching=0 rxn=0.000 slip=2.702
+[refusal-pt] fore_right_mp_head gap=2.358e-03 touching=0 rxn=0.000 slip=2.702

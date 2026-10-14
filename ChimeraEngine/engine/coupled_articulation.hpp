@@ -1,10 +1,22 @@
 #pragma once
 #include "earth_environment.hpp"
+#include "contribution_executor.hpp"
 #include <map>
 namespace chimera::multibody {
 using namespace chimera::environment;
 using Dense=std::vector<double>;
 using chimera::forces::Refusal;
+// F9 profile counters (lane/f9-budget-20260919): compiled ONLY when
+// CHIMERA_F9_PROFILE is defined (the probe target); zero cost otherwise.
+#ifdef CHIMERA_F9_PROFILE
+extern unsigned long long* f9_evaluate_count();
+extern unsigned long long* f9_inverse_spd_count();
+#define F9_EVAL_INC() (++(*f9_evaluate_count()))
+#define F9_INV_INC() (++(*f9_inverse_spd_count()))
+#else
+#define F9_EVAL_INC() ((void)0)
+#define F9_INV_INC() ((void)0)
+#endif
 struct Mat {
  std::array<double,16> x{};
  double& operator()(int i,int j){return x[4*i+j];} double operator()(int i,int j)const{return x[4*i+j];}
@@ -23,6 +35,7 @@ inline Mat inverse_rigid(const Mat& a){Mat b=Mat::identity();for(int i=0;i<3;++i
 inline Dense multiply(const Dense& a,const Dense& v){size_t n=v.size();require(a.size()==n*n,"coupled_matrix_size");Dense out(n);for(size_t i=0;i<n;++i)for(size_t j=0;j<n;++j)out[i]+=a[i*n+j]*v[j];return out;}
 inline double inner(const Dense& a,const Dense& b){require(a.size()==b.size(),"coupled_vector_size");double v=0;for(size_t i=0;i<a.size();++i)v+=a[i]*b[i];return v;}
 inline Dense inverse_spd(const Dense& a,size_t n){
+ F9_INV_INC();
  require(a.size()==n*n&&n>0,"coupled_matrix_size");Dense l(n*n),inv(n*n);
  for(size_t i=0;i<n;++i)for(size_t j=0;j<=i;++j){double t=a[i*n+j];require(std::isfinite(t)&&std::abs(t-a[j*n+i])<1e-12,"coupled_mass_not_symmetric");for(size_t k=0;k<j;++k)t-=l[i*n+k]*l[j*n+k];if(i==j){require(t>0,"coupled_singular_mass");l[i*n+j]=std::sqrt(t);}else l[i*n+j]=t/l[j*n+j];}
  for(size_t col=0;col<n;++col){Dense y(n),x(n);for(size_t i=0;i<n;++i){double t=i==col?1.:0.;for(size_t k=0;k<i;++k)t-=l[i*n+k]*y[k];y[i]=t/l[i*n+i];}for(size_t ii=n;ii-->0;){double t=y[ii];for(size_t k=ii+1;k<n;++k)t-=l[k*n+ii]*x[k];x[ii]=t/l[ii*n+ii];inv[ii*n+col]=x[ii];}}
@@ -37,6 +50,7 @@ struct Evaluation {
  Dense force(size_t body,V p,V f)const{auto j=point(body,p).second;Dense result;for(auto v:j)result.push_back(dot(v,f));return result;}
  Dense acceleration(Dense tau)const{for(size_t i=0;i<tau.size();++i)tau[i]+=gravity[i]-bias[i];return multiply(inverse_spd(mass,tau.size()),tau);}
 };
+struct EvaluationInput {Dense q,v;V gravity;};
 class Model {
  struct Axis {bool rotational;V axis;int slot;double slope,constant;};
  struct Body {std::string name;int parent=-1;double mass;V com;Mat inertia,fp,fc;std::vector<Axis> axes;};
@@ -46,7 +60,17 @@ public:
  explicit Model(const J& model,std::vector<std::string> selected={}){
   require(model.at("schema")=="chimera.anatomical_assembly.v1","coupled_anatomy_schema");auto coords=model.at("coordinates");if(selected.empty())for(auto it=coords.begin();it!=coords.end();++it)if(!it.value().at("locked").get<bool>())selected.push_back(it.key());
   std::set<std::string> seen;for(auto name:selected){require(coords.contains(name)&&seen.insert(name).second&&!coords[name]["locked"].get<bool>(),"coupled_coordinate_selection");names.push_back(name);defaults.push_back(number(coords[name]["default_rad"]));lower.push_back(number(coords[name]["range_rad"][0]));upper.push_back(number(coords[name]["range_rad"][1]));require(lower.back()<upper.back()&&defaults.back()>=lower.back()&&defaults.back()<=upper.back(),"coupled_coordinate_range");}
-  require(!names.empty()&&names.size()<=7,"coupled_coordinate_capacity");std::map<std::string,J> remaining;for(auto b:model.at("bodies")){std::string name=b.at("name");require(remaining.emplace(name,b).second,"coupled_duplicate_body");}std::map<std::string,int> ids;
+  // Capacity (packet AMENDMENT 20260918 E1, second hop 20260919 gait-impl):
+  // 16 = the gait walker's fourteen-coordinate selection. Integer VALIDATION
+  // only -- no arithmetic line moves; every selection <= 7 (the qualified
+  // two-coordinate world, the seven-coordinate lift) is bit-identical, so the
+  // frozen bit-exact control is unaffected by construction.
+  // Capacity amendment for the quadruped walker: six floating-base coordinates,
+  // eight hindlimb coordinates, and four forelimb strut coordinates = 18.
+  // The previous 16-coordinate amendment remains sufficient for the biped;
+  // this explicit 20-slot ceiling admits the whole quadruped without changing
+  // any qualified <=16-coordinate path.
+  require(!names.empty()&&names.size()<=20,"coupled_coordinate_capacity");std::map<std::string,J> remaining;for(auto b:model.at("bodies")){std::string name=b.at("name");require(remaining.emplace(name,b).second,"coupled_duplicate_body");}std::map<std::string,int> ids;
   while(!remaining.empty()){bool progress=false;for(auto it=remaining.begin();it!=remaining.end();){auto b=it->second;bool ground=it->first=="ground";if(!ground&&!ids.count(b.at("joint").at("parent").get<std::string>())){++it;continue;}
    Body out;out.name=it->first;out.mass=number(b.at("mass_kg"));out.com=b.at("mass_center_m").get<V>();require(out.mass>=0,"coupled_mass_negative");for(double v:out.com)require(std::isfinite(v),"coupled_com_nonfinite");auto ic=b.at("inertia_kg_m2");require(ic.size()==6,"coupled_inertia_shape");for(int i=0;i<3;++i)out.inertia(i,i)=number(ic[i]);out.inertia(0,1)=out.inertia(1,0)=number(ic[3]);out.inertia(0,2)=out.inertia(2,0)=number(ic[4]);out.inertia(1,2)=out.inertia(2,1)=number(ic[5]);
    // Source compiler performs full tensor physicality; preserve admitted values, including regularization mass.
@@ -57,14 +81,47 @@ public:
   }require(progress,"coupled_missing_or_cyclic_parent");}
  }
  size_t body(const std::string& name)const{for(size_t i=0;i<bodies_.size();++i)if(bodies_[i].name==name)return i;throw Refusal("coupled_body_missing");}
- Evaluation evaluate(const Dense& q,const Dense& v,V gravity)const{
+ Evaluation evaluate(const Dense& q,const Dense& v,V gravity,ContributionExecutor* executor=nullptr)const{
+  F9_EVAL_INC();
   size_t n=names.size();require(q.size()==n&&v.size()==n,"coupled_state_shape");for(double x:q)require(std::isfinite(x),"coupled_state_nonfinite");for(double x:v)require(std::isfinite(x),"coupled_state_nonfinite");Evaluation e;e.mass.assign(n*n,0);e.gravity.assign(n,0);e.bias.assign(n,0);
+  // Kinematics remains parent-ordered. No worker reads a partially built frame.
+  e.frames.reserve(bodies_.size());
   for(auto& b:bodies_){Transform f(n);if(b.parent>=0){Transform motion(n);V translation{},velocity{};std::vector<V> dj(n);
     for(auto& a:b.axes){double angle=a.constant+(a.slot<0?0:a.slope*q[a.slot]),rate=a.slot<0?0:a.slope*v[a.slot];if(a.rotational){Transform one(n);one.t=rotation(a.axis,angle);auto dr=skew(a.axis)*one.t;if(a.slot>=0)one.d[a.slot]=dr*a.slope;one.dt=dr*rate;one.ddt=skew(a.axis)*dr*(rate*rate);motion=product(motion,one);}else{translation=add(translation,mul(a.axis,angle));velocity=add(velocity,mul(a.axis,rate));if(a.slot>=0)dj[a.slot]=add(dj[a.slot],mul(a.axis,a.slope));}}
     for(int k=0;k<3;++k){motion.t(k,3)=translation[k];motion.dt(k,3)=velocity[k];for(size_t i=0;i<n;++i)motion.d[i](k,3)=dj[i][k];}f=product(product(product(e.frames[b.parent],fixed(b.fp,n)),motion),fixed(b.fc,n));
-   }e.frames.push_back(f);Mat rt;for(int i=0;i<3;++i)for(int j=0;j<3;++j)rt(i,j)=f.t(j,i);Mat iw=f.t*b.inertia*rt;V p=vector(f.t,b.com,1),acc=vector(f.ddt,b.com,1),omega=axial(f.dt*rt),alpha=axial(f.ddt*rt+f.dt*transpose(f.dt));std::vector<V> jv,jw;for(auto& d:f.d){jv.push_back(vector(d,b.com,1));jw.push_back(axial(d*rt));}V moment=add(vector(iw,alpha),cross(omega,vector(iw,omega)));
-   for(size_t i=0;i<n;++i){e.gravity[i]+=b.mass*dot(jv[i],gravity);e.bias[i]+=b.mass*dot(jv[i],acc)+dot(jw[i],moment);for(size_t j=0;j<n;++j)e.mass[n*i+j]+=b.mass*dot(jv[i],jv[j])+dot(jw[i],vector(iw,jw[j]));}e.potential-=b.mass*dot(gravity,p);
-  }return e;
+   }e.frames.push_back(f);
+  }
+  // The admitted Model has at most seven coordinates. Each body owns one
+  // bounded temporary; only this calling owner combines Evaluation fields.
+  struct BodyTerms {std::array<double,49> mass{};std::array<double,7> gravity{},bias{};double potential_term=0;};
+  const auto& frames=e.frames;
+  auto compute=[&](size_t index){const auto& b=bodies_[index];const auto& f=frames[index];BodyTerms out;
+   Mat rt;for(int i=0;i<3;++i)for(int j=0;j<3;++j)rt(i,j)=f.t(j,i);Mat iw=f.t*b.inertia*rt;V p=vector(f.t,b.com,1),acc=vector(f.ddt,b.com,1),omega=axial(f.dt*rt),alpha=axial(f.ddt*rt+f.dt*transpose(f.dt));std::vector<V> jv,jw;for(auto& d:f.d){jv.push_back(vector(d,b.com,1));jw.push_back(axial(d*rt));}V moment=add(vector(iw,alpha),cross(omega,vector(iw,omega)));
+   for(size_t i=0;i<n;++i){out.gravity[i]=b.mass*dot(jv[i],gravity);out.bias[i]=b.mass*dot(jv[i],acc)+dot(jw[i],moment);for(size_t j=0;j<n;++j)out.mass[n*i+j]=b.mass*dot(jv[i],jv[j])+dot(jw[i],vector(iw,jw[j]));}out.potential_term=b.mass*dot(gravity,p);
+   return out;
+  };
+  auto combine=[&](const BodyTerms& term){
+   // Preserve the original summation order and subtraction for potential,
+   // including signed zero. Never reduce in worker completion order.
+   for(size_t i=0;i<n;++i){e.gravity[i]+=term.gravity[i];e.bias[i]+=term.bias[i];for(size_t j=0;j<n;++j)e.mass[n*i+j]+=term.mass[n*i+j];}e.potential-=term.potential_term;
+  };
+  if(executor&&executor->workers()>1){
+   std::vector<BodyTerms> terms(bodies_.size());
+   executor->for_each(bodies_.size(),[&](size_t index){terms[index]=compute(index);});
+   for(const auto& term:terms)combine(term);
+  }else for(size_t index=0;index<bodies_.size();++index)combine(compute(index));
+  return e;
+ }
+ // Independent configurations only: this API does not advance time or resolve
+ // physical coupling. Requests read this same immutable Model; each owns a result.
+ // Batch the coarser computation to amortize scheduling overhead on small models.
+ std::vector<Evaluation> evaluate_independent(const std::vector<EvaluationInput>& inputs,ContributionExecutor& executor)const{
+  std::vector<Evaluation> results(inputs.size());
+  executor.for_each(inputs.size(),[&](size_t i){
+   const auto& input=inputs[i];
+   results[i]=evaluate(input.q,input.v,input.gravity); // never nest parallel calls
+  });
+  return results;
  }
 };
 } // namespace chimera::multibody

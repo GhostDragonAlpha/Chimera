@@ -1,0 +1,15 @@
+{
+  "schema": "chimera.grasp_contract_qualification.v1",
+  "work_id": "work.creature.coupled_arm_grasp",
+  "graph_hash": "960bf8f6f4b0756dad6b172c696ba80e0a891a640daaa2c7e96ba22e764a490d",
+  "project_spec_ok": true,
+  "graph_ok": true,
+  "historical_evidence_count": 11,
+  "historical_evidence_unchanged": true,
+  "prestudy_schema": "chimera.grasp_contract_prestudy.v1",
+  "qualified_coupled_dynamics_sha256": "4685d02131c842b98c1782b2a9dc96c216adb51363cbcef9264fbf0f4eb8d626",
+  "qualified_coupled_dynamics_unchanged_in_lane": true,
+  "errors": [],
+  "pass": true,
+  "scope": "Admission and offline derivation only; no runtime grasp implementation."
+}

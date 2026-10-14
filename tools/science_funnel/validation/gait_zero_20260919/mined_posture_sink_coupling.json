@@ -1,0 +1,113 @@
+{
+ "lever_m_per_rad": {
+  "60": 0.248195,
+  "88": 0.251952,
+  "96": 0.252643,
+  "104": 0.252647
+ },
+ "baseline": {
+  "shy_sink_mm_per_tick_leg0_60_104": -1.59811,
+  "shy_sink_mm_per_tick_leg0_88_104": -2.01069,
+  "shy_sink_mm_per_tick_leg0_91_104": -2.06638,
+  "shy_sink_mm_per_tick_leg1_60_104": -1.6182,
+  "shy_sink_mm_per_tick_leg1_88_104": -2.03638,
+  "shy_sink_mm_per_tick_leg1_91_104": -2.09269,
+  "pang_deg_60_104": [
+   -7.8523,
+   -6.3084
+  ],
+  "ptgt_deg_88_104": [
+   -0.6644,
+   9.5426
+  ],
+  "posture_term_delta_mm_60_104": 6.7483,
+  "posture_term_delta_mm_88_104": 1.0793,
+  "base_y": {
+   "0": 0.386032,
+   "10": 0.380557,
+   "20": 0.366787,
+   "30": 0.34567,
+   "40": 0.317817,
+   "50": 0.297204,
+   "60": 0.28239,
+   "70": 0.268368,
+   "80": 0.252592,
+   "90": 0.234475,
+   "100": 0.213792
+  }
+ },
+ "intervention_flatwalk": {
+  "shy_sink_mm_per_tick_leg0_60_104": -1.59811,
+  "shy_sink_mm_per_tick_leg0_88_104": -2.01069,
+  "shy_sink_mm_per_tick_leg0_91_104": -2.06638,
+  "shy_sink_mm_per_tick_leg1_60_104": -1.6182,
+  "shy_sink_mm_per_tick_leg1_88_104": -2.03638,
+  "shy_sink_mm_per_tick_leg1_91_104": -2.09269,
+  "pang_deg_60_104": [
+   -7.8523,
+   -6.3084
+  ],
+  "ptgt_deg_88_104": [
+   -0.6644,
+   0.9798
+  ],
+  "posture_term_delta_mm_60_104": 6.7483,
+  "posture_term_delta_mm_88_104": 1.0793,
+  "base_y": {
+   "0": 0.386032,
+   "10": 0.380557,
+   "20": 0.366787,
+   "30": 0.34567,
+   "40": 0.317817,
+   "50": 0.297204,
+   "60": 0.28239,
+   "70": 0.268368,
+   "80": 0.252592,
+   "90": 0.234475,
+   "100": 0.213792
+  }
+ },
+ "verdict": {
+  "whole_window_60_104": {
+   "d_shy_mm": -71.201,
+   "d_base_mm_extrapolated": -76.871,
+   "d_posture_mm": 6.748,
+   "closure_residual_mm": -1.078
+  },
+  "tracking_gain_88_104": 0.02401,
+  "command_attributable_mm_88_104": 1.0778,
+  "intervention_shoulder_bit_identical": true
+ },
+ "empirical_lever_check": {
+  "50": {
+   "measured_m": -0.297204,
+   "formula_m": -0.171753,
+   "residual_mm": -125.4506
+  },
+  "60": {
+   "measured_m": -0.168653,
+   "formula_m": -0.168589,
+   "residual_mm": -0.0639
+  },
+  "70": {
+   "measured_m": -0.166456,
+   "formula_m": -0.166328,
+   "residual_mm": -0.1281
+  },
+  "80": {
+   "measured_m": -0.164683,
+   "formula_m": -0.16447,
+   "residual_mm": -0.2129
+  },
+  "90": {
+   "measured_m": -0.162885,
+   "formula_m": -0.162564,
+   "residual_mm": -0.3208
+  },
+  "100": {
+   "measured_m": -0.162129,
+   "formula_m": -0.161665,
+   "residual_mm": -0.4642
+  }
+ }
+}

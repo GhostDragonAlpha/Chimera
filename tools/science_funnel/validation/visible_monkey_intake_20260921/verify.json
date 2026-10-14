@@ -1,0 +1,149 @@
+{
+ "schema": "chimera.visible_monkey.verify_record.v1",
+ "translator": {
+  "compartments": 7,
+  "expected_count_spec": 7,
+  "volumes": {
+   "bone_box": {
+    "volume_mm3_mesh": 14400.0,
+    "volume_mm3_analytic": 14400.0,
+    "rel": 0.0,
+    "mass_kg": 0.02736,
+    "system": "skeletal"
+   },
+   "bone_octa": {
+    "volume_mm3_mesh": 1293.534079,
+    "volume_mm3_analytic": 1293.534005,
+    "rel": 5.7e-08,
+    "mass_kg": 0.00245771474977138,
+    "system": "skeletal"
+   },
+   "bone_tetra": {
+    "volume_mm3_mesh": 203.646752,
+    "volume_mm3_analytic": 203.646753,
+    "rel": 4e-09,
+    "mass_kg": 0.0003869288289247552,
+    "system": "skeletal"
+   },
+   "joint_box": {
+    "volume_mm3_mesh": 1000.0,
+    "volume_mm3_analytic": 1000.0,
+    "rel": 0.0,
+    "mass_kg": 0.00106,
+    "system": "articular"
+   },
+   "muscle_box": {
+    "volume_mm3_mesh": 72000.0,
+    "volume_mm3_analytic": 72000.0,
+    "rel": 0.0,
+    "mass_kg": 0.07632,
+    "system": "muscular"
+   },
+   "organ_box": {
+    "volume_mm3_mesh": 27000.0,
+    "volume_mm3_analytic": 27000.0,
+    "rel": 0.0,
+    "mass_kg": 0.028349999999999997,
+    "system": "organ"
+   },
+   "skin_sphere": {
+    "volume_mm3_mesh": 64083.119678,
+    "volume_mm3_analytic": 65449.84695,
+    "rel": 0.020882055,
+    "mass_kg": 0.0710681797227131,
+    "system": "integumentary"
+   }
+  },
+  "sphere_ratio_vs_bound": 0.979118,
+  "worst_exact_volume_rel": 5.7e-08,
+  "worst_mass_identity_rel": 3.2242425886692175e-10,
+  "kernel_stated_vs_derived_max_rel": 4.4213601149211333e-07,
+  "total_mass_g": 207.0028,
+  "mass_by_system_kg": {
+   "articular": 0.00106,
+   "integumentary": 0.071068,
+   "muscular": 0.07632,
+   "organ": 0.02835,
+   "skeletal": 0.030205
+  },
+  "whole_animal": {
+   "body_mass_kg": 0.25,
+   "segmented_total_kg": 0.207003,
+   "segmented_over_body": 0.828,
+   "whole_body_band": [
+    0.6,
+    1.3
+   ],
+   "system_fractions_of_body": {
+    "articular": 0.0042,
+    "integumentary": 0.2843,
+    "muscular": 0.3053,
+    "organ": 0.1134,
+    "skeletal": 0.1208
+   },
+   "fraction_bands_enforced": true,
+   "bands_source": "mammalian skeleton fraction 8-15% of body mass; muscle 25-50%; segmented excludes blood + GI contents so the whole-body band is wide and deviations are NAMED, never tuned"
+  },
+  "stage": {
+   "life_stage": "adult",
+   "age_months": 93,
+   "age_source": "93-month record (synthetic)",
+   "scale": 1.0,
+   "allometric_scaling_applied": false,
+   "negative_example": "the H2 per-bone 3.79-8.8x stretch factors (adjudicated FANTASY) -- this import shows scale 1.0 and an identity transform"
+  },
+  "geometry": {
+   "compartments": 7,
+   "face_count_equal": true,
+   "per_triangle_float32_equal": true,
+   "worst_bbox_dev_mm": 0.0,
+   "bbox_tolerance_mm": 0.001,
+   "worst_volume_readback_rel": 0.0,
+   "vertex_sha256_all_match": true,
+   "losses": "none itemized; all compartments byte-canonical"
+  },
+  "closed_manifold": {
+   "open_edges_total": 0,
+   "euler_characteristic_range": [
+    2,
+    2
+   ],
+   "note": "chi = 2 - 2g reported per compartment in the book; genus allowed, open edges refused"
+  },
+  "euler_characteristics": {
+   "bone_box": 2,
+   "bone_octa": 2,
+   "bone_tetra": 2,
+   "joint_box": 2,
+   "muscle_box": 2,
+   "organ_box": 2,
+   "skin_sphere": 2
+  }
+ },
+ "translator_adjacency": {
+  "bonds": 1,
+  "rest_lengths": [
+   1.23
+  ]
+ },
+ "volume_route": {
+  "components_kept": 1,
+  "threshold": {
+   "law": "density_percentile",
+   "percentile": 95,
+   "value": 1.0
+  },
+  "voxel_mm": [
+   0.5,
+   0.5,
+   0.5
+  ],
+  "volume_mm3_mesh": 2658.770833,
+  "volume_mm3_analytic": 2670.353756,
+  "volume_rel_err": 0.004338,
+  "voxel_delta_pct": -0.182,
+  "faces": 11592,
+  "preview_faces": 11592,
+  "receipt_sha256_entries": 2
+ }
+}

@@ -1,0 +1,113 @@
+{
+  "schema": "chimera.rule0.integration_receipt.v1",
+  "pass": "integration_pass6_20260920",
+  "agent_trailer": "Agent: integ6",
+  "date_utc": "2026-09-22",
+  "base": {
+    "pinned": "5b2b7f89f33d35317156bfdc6bab04dad39eff35",
+    "identity": "integration pass 5 receipt commit (pass3-integ master head, verified before worktree add; subject 'INTEGRATION PASS 5 receipt: five lane tips merged behind full verification -- ALL GREEN')"
+  },
+  "dag_verified_before_any_merge": {
+    "method": "the standing rule: every ancestry claim measured by this agent (git merge-base --is-ancestor, git log base..tip, git ls-remote origin per-branch), the brief's list treated as a hint",
+    "tips": [
+      {"branch": "lane/mesh-parse-20260920", "pinned": "7d7868d3", "full": "7d7868d3b80d3ef3bf514eabbfd035dc8b741b46", "remote_tip_matches_pin": true, "already_in_master": false, "commits_past_merge_base": 3, "merge_base": "9a341b5c"},
+      {"branch": "lane/fk-reduction-20260920", "pinned": "a22e9bcd", "full": "a22e9bcdf19e9f3310871335ca0904d94073c9e8", "remote_tip_matches_pin": true, "already_in_master": false, "commits_past_merge_base": 2, "merge_base": "4a241439"},
+      {"branch": "lane/vanhoof-transcription-20260920", "pinned": "f59bd873", "full": "f59bd87377feccc65c4fb3c8141c0058e088ca3a", "remote_tip_matches_pin": true, "already_in_master": false, "commits_past_merge_base": 5, "merge_base": "d374ab04"},
+      {"branch": "lane/vanhoof-law-20260920", "pinned": "328a5b67", "full": "328a5b6728c0bf396671b20a33455a5d65114db2", "remote_tip_matches_pin": true, "already_in_master": false, "commits_past_merge_base": 10, "merge_base": "d374ab04"},
+      {"branch": "lane/frontpage-status-20260920", "pinned": "df593d6a", "full": "df593d6a2f74d9dd2be4a8650802b53d3d84fa65", "remote_tip_matches_pin": true, "already_in_master": false, "commits_past_merge_base": 3, "merge_base": "5b2b7f89"},
+      {"branch": "lane/realbody-movie-20260920", "pinned": "84249678", "full": "84249678b40bdf2ac812f57e9ca0255008afda0e", "remote_tip_matches_pin": true, "already_in_master": false, "commits_past_merge_base": 6, "merge_base": "9a341b5c"}
+    ],
+    "measured_deviations_from_brief": [
+      "BRIEF PREMISE FALSE (the pass-5 hqr lesson again): 'disjoint otherwise' is wrong -- lane/realbody-movie-20260920 CONTAINS lane/mesh-parse-20260920 (merge-base == mesh-parse tip 7d7868d3, measured with merge-base --is-ancestor). Merge order set accordingly: mesh-parse merged BEFORE realbody-movie, each as its own regular --no-ff merge, so the movie merge carried only its own 3 commits.",
+      "vanhoof-law stacks on vanhoof-transcription CONFIRMED exactly (merge-base(vtrans, vlaw) == vtrans tip f59bd873); vtrans merged first.",
+      "vanhoof-law's diff vs its merge-base includes the vtrans files (the stack); after both merges every file landed exactly once."
+    ],
+    "unlisted_tip_scan": {
+      "namespace_scanned": "refs/heads/lane/* (47 refs) and refs/heads/agent/* on origin",
+      "not_in_master_and_not_named": 16,
+      "finding": "all 16 are stale 2026-09-17..19-era lanes (compute-harness, f9-budget, free-root, friction-fixes, gait-controller, gait-impl, grasp-and-stand, library-catalog, local-refs, monkey-assembly, muscle-paths, seven-coord, visual-verify + 3 already-covered) -- honest-partials/handoffs from the pre-pass-4 era, none from the 20260920+ integration window, none with a green landed verdict; NOT merged per brief scope",
+      "declared_in_flight_checked": {
+        "agent/typeb-gpu-finish-20260922": "EXISTS on origin and MOVED during this pass (650fe01d..386e6152) -- in flight, NOT merged, untouched",
+        "lane/slice-stranger-20260920": "no lane/* ref on origin (external thread; not visible as a lane tip) -- NOT merged",
+        "lane/thin-client*": "no lane/* ref on origin -- NOT merged"
+      }
+    }
+  },
+  "merges": [
+    {"order": 1, "branch": "lane/mesh-parse-20260920", "sha": "7d7868d3b80d3ef3bf514eabbfd035dc8b741b46", "merge_commit": "5845ff7e805dc3fa5a673984beb93a8fd2d90482", "parents": "5b2b7f89f33d35317156bfdc6bab04dad39eff35 7d7868d3b80d3ef3bf514eabbfd035dc8b741b46", "conflicts": 0},
+    {"order": 2, "branch": "lane/fk-reduction-20260920", "sha": "a22e9bcdf19e9f3310871335ca0904d94073c9e8", "merge_commit": "079005cc88840a281c360edc4604ee9b913aab36", "parents": "5845ff7e805dc3fa5a673984beb93a8fd2d90482 a22e9bcdf19e9f3310871335ca0904d94073c9e8", "conflicts": 0},
+    {"order": 3, "branch": "lane/vanhoof-transcription-20260920", "sha": "f59bd87377feccc65c4fb3c8141c0058e088ca3a", "merge_commit": "81547348ac2f879dd420b4e0fbd173226ec9b88f", "parents": "079005cc88840a281c360edc4604ee9b913aab36 f59bd87377feccc65c4fb3c8141c0058e088ca3a", "conflicts": 0},
+    {"order": 4, "branch": "lane/vanhoof-law-20260920", "sha": "328a5b6728c0bf396671b20a33455a5d65114db2", "merge_commit": "c0dbd9c081df0142a35d29419bc0d71e311045dd", "parents": "81547348ac2f879dd420b4e0fbd173226ec9b88f 328a5b6728c0bf396671b20a33455a5d65114db2", "conflicts": 0},
+    {"order": 5, "branch": "lane/realbody-movie-20260920", "sha": "84249678b40bdf2ac812f57e9ca0255008afda0e", "merge_commit": "671ddffd7f467fd78aaae1912b807ac70d9727a1", "parents": "c0dbd9c081df0142a35d29419bc0d71e311045dd 84249678b40bdf2ac812f57e9ca0255008afda0e", "conflicts": 0},
+    {"order": 6, "branch": "lane/frontpage-status-20260920", "sha": "df593d6a2f74d9dd2be4a8650802b53d3d84fa65", "merge_commit": "994f439b2c5ad7a2c2563971abd4036b0644efb9", "parents": "671ddffd7f467fd78aaae1912b807ac70d9727a1 df593d6a2f74d9dd2be4a8650802b53d3d84fa65", "conflicts": 0}
+  ],
+  "verification": {
+    "tree_verified_on": "the fully merged integ/pass6-20260920 tree (head 994f439b before the doc-truth commit)",
+    "walk_byte_exactness": {
+      "scene_file_sha256": {"expected": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342", "measured": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342", "verdict": "EXACT"},
+      "stdout_trace_sha256": {"expected": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc", "measured": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc", "bytes": 22530, "verdict": "EXACT"},
+      "stdout_notrace_sha256": {"expected": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc", "measured": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc", "verdict": "EXACT (plain==trace byte-equal)"},
+      "stderr_trace_sha256": {"expected": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481", "measured": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481", "lines": 65870, "verdict": "EXACT"},
+      "headline": {"expected": "WALK refused_tick=302 worst_ledger_J=30.970714", "measured": "WALK refused_tick=302 worst_ledger_J=30.970714", "verdict": "EXACT"}
+    },
+    "training_gate": {"command": "python tools/training_gate.py", "exit": 0, "verdict_line": "PASS -- every target is Froude-consistent with the world this body stands in."},
+    "lane_suites": {
+      "policy_compat": {"expected": "42/42", "first_fresh_tree_run": "1 failed (test_engine_identity_dormancy_and_conventions: FileNotFoundError .tmp/certdry/gait-walker/scene.json) 38 passed 3 skipped -- the SAME fresh-tree failure integ5 measured and resolved the same way", "harness": "the cert-dryrun lane's DECLARED environment: gait_scene.py scene regen (sha == walk anchor f6844eeae) + the certdry lane's build_instrument.ps1 steps VERBATIM except working directory (lane script hardcodes its own finished worktree; integ builds into its own tree's .tmp/certdry) + python -m tools.policy_compat.engine_cert runs 1/2/3 (exit 0, 361/355/372 s, build_id engine-walk-instrument/29bf00f0640c75c4 == lane receipt, EXE_A sha256 ea322dd0cc6136b39ffcbc107276af8c1ccd361ddce5f25bed563e38126d4538, EXE_B a60d5dc539c796836c7d89a750e20ab63922e085972cded58dee5f168f051141) + F4 determinism", "final": "42 passed, exit 0", "F4_payload_sha256_run1_run2_run3": "279ff860d01dee81b89c04bdab536e7c8e213eeba053e22c9dbf4d4fc3b5c0f1 (x3 byte-identical)", "verdict": "GREEN"},
+      "tickcost": {"expected": 8, "measured": "8 passed", "verdict": "GREEN"},
+      "kfill": {"expected": 13, "measured": "Ran 13 tests, OK", "verdict": "GREEN"},
+      "ankle": {"expected": 12, "measured": "Ran 12 tests, OK", "verdict": "GREEN"},
+      "hip": {"expected": 12, "measured": "Ran 12 tests, OK", "verdict": "GREEN"},
+      "hqr": {"expected": 8, "measured": "Ran 8 tests, OK", "verdict": "GREEN"},
+      "typeb_export": {"expected": "44/0/0 (collected/failed/errors)", "measured": "43 passed, 1 skipped, 0 failed, 0 errors -- byte-identical to integ5's green run (integ5 suite log: '43 passed, 1 skipped')", "verdict": "GREEN"},
+      "creature_graph": {"expected": "both roots", "measured": "root1 (PYTHONPATH=tools;tools/creature_graph) Ran 19 tests OK; root2 (PYTHONPATH=.) Ran 19 tests OK", "verdict": "GREEN"},
+      "matter_kernel": {"expected": "9/9 core (+ full package)", "measured": "46 passed full package -- byte-identical to integ5's green run", "verdict": "GREEN"},
+      "fk_reduction": {"expected": "7/7 (lane receipt)", "measured": "7 passed", "verdict": "GREEN"},
+      "vanhoof_law": {"expected": "9/9 (lane receipt)", "measured": "Ran 9 tests, OK (python -B tools/science_funnel/validation/vanhoof_law_20260920/test_lane.py, run as its docstring declares)", "verdict": "GREEN"},
+      "mesh_parse_fast_fences": {"expected": "12/12 (check_caches.py, CPU-only headless, no engine)", "measured": "exit 0, 12/12 fences true, pass:true; regenerated check_caches_receipt.json byte-identical to committed (git blob 6babda4549700a1e8f4ba24f3099f8f7fd22fb9e before == after); all 12 legs ran headless", "verdict": "GREEN"},
+      "vanhoof_determinism": {"script": "blob_verify pins parsed from the committed vanhoof-intake lane script (never retyped)", "measured": "6/6 committed-blob == checkout == sha256 pin; -text attr unset (in force) on tools/science_funnel/data/**", "verdict": "GREEN"},
+      "realbody_movie": {"note": "the brief's suite list requires no realbody suite; its live-engine legs (server boot, browser capture, judge) are lane-run against the live engine per the lane's own committed records (boot_timing.json: t_first_verts 2.1 s, import_route cache, first_verts_count 249743, pass true; judgement.json; capture_record.json) -- NOT re-run headless here; the mp4 is receipt-pinned and scope-audited below", "verdict": "RECEIPT-BACKED (live-engine legs lane-run; mp4 byte-audited this pass)"},
+      "frontpage": {"note": "no test suite; the lane's 48-claim mechanical self-check is lane-run per its receipt (ALL PASS, run twice, byte-identical); its stale statements amended by this pass's doc-truth step", "verdict": "RECEIPT-BACKED + DOC-TRUTH AMENDED"}
+    }
+  },
+  "doc_truth_amendment": {
+    "commit": "ab7eef27b9c6cfbaee1db7778a2653f198d30c7a",
+    "trailer": "Agent: integ6",
+    "principle": "the frontpage lane (df593d6a) wrote its not-landed statements VERIFIED TRUE against 5b2b7f89 (its own 48-claim self-check); after the six merges exactly those statements went stale; minimal honest amendment in the SAME pass, each change citing this receipt, NOTHING else in the docs touched",
+    "diff_is": "git show ab7eef27 (exactly 2 files, +13/-9); also captured at E:/ChimeraWork/integ6-scripts/doctruth_amendment.diff",
+    "statements_amended": [
+      {"file": "README.md", "was": "The 2026-09-20 consolidation, merged onto master by two integration passes ... nine lane tips ... (pass4, pass5 receipts)", "now": "three integration passes ... fifteen lane tips ... + integration_pass6_20260920/receipt.json"},
+      {"file": "README.md", "was": "The importer-performance successor lane is named and NOT merged (`integration_pass5_20260920/receipt.json`, evaluated_and_NOT_merged).", "now": "has since merged (integration pass 6, `integration_pass6_20260920/receipt.json`): derived GLB cache, cached full boot first-renders data at 2.08-2.10 s vs the same 10 s bar (`mesh_parse_20260920/record.md`)"},
+      {"file": "docs/THE_SHIP_GOAL.md", "was": "| NOT merged -- reds of record | mesh-parse (still in flight) and fk-reduction (local-only, no origin tip) evaluated and explicitly NOT merged; nothing on this page may claim their numbers |", "now": "| Pass-5 reds of record, now merged (pass 6) | both merged onto master by integration pass 6; reds stand; boot red answered (2.08-2.10 s vs 10 s); split CONFIRMED (33.9% of FK removed, still 4.9x budget) |"},
+      {"file": "docs/THE_SHIP_GOAL.md", "was": "the GPU-production split is named and its lane is NOT landed", "now": "named and its measurement lane landed in integration pass 6 (`integration_pass6_20260920/receipt.json`; the split stands CONFIRMED)"},
+      {"file": "docs/THE_SHIP_GOAL.md", "was": "(STATUS LEDGER 2026-09-20 REAL BODY row) importer-performance successor named, NOT merged", "now": "the importer-performance successor named here has since merged -- integration pass 6, `integration_pass6_20260920/receipt.json` -- cached admission path full-boots in 2.08-2.10 s vs the same 10 s bar"}
+    ],
+    "cited_numbers_provenance": "2.08-2.10 s = mesh_parse_20260920 verdict 'full-boot t_first_verts 2.08-2.10 s vs the 10 s bar', cross-checked by realbody_movie_20260920/boot_timing.json (t_first_verts 2.1, import_route cache); 33.9% / 4.9x = fk_reduction_20260920 receipt (29297 evaluates/walk removed = 97.01/tick = 33.9% of FK; (a)-class alone leaves 4.9x the 3.33 ms budget)"
+  },
+  "scope_audit": {
+    "range": "5b2b7f89f33d35317156bfdc6bab04dad39eff35..ab7eef27b9c6cfbaee1db7778a2653f198d30c7a",
+    "changed_paths": 118,
+    "insertions": 1207974,
+    "deletions": 10,
+    "non_additive_files": {
+      "measured": [".gitattributes", "README.md", "docs/THE_SHIP_GOAL.md", "tools/playable_slice/scene_boot.py"],
+      "pre_registered": [".gitattributes", "README.md", "docs/THE_SHIP_GOAL.md", "tools/playable_slice/scene_boot.py"],
+      "verdict": "exactly the pre-registered exceptions, each inspected line-by-line",
+      "line_by_line": {
+        ".gitattributes": "+1 line: tools/playable_slice/*.glb -text -whitespace (the mesh-parse cache's binary pin rule; mirrors the existing *.obj rule)",
+        "tools/playable_slice/scene_boot.py": "the mesh-parse lane's DECLARED admission-cache change, reviewed line-by-line: new pinned-cache constants; derive_import_glb (deterministic OBJ->GLB through the engine's kind-'G' door, negative-zero/zero-center fence); _load_body_import (cache|fresh, by-name refusals on pin/derived_from drift); ghost cache with compose-input drift audit; boot_standing_start posts 'G'+payload and records import_route/import_bytes while scene_sha256 STAYS the pinned OBJ sha; timeout 900 kept; no check removed",
+        "README.md": "frontpage lane's what-runs-today updates (merged, reviewed) + this pass's 2 amendment statements",
+        "docs/THE_SHIP_GOAL.md": "frontpage lane's dated section + ledger rows (merged, reviewed) + this pass's 3 amendment statements"
+      }
+    },
+    "forbidden_prefixes_ChimeraEngine_or_Chimera": 0,
+    "gait_star_paths": 0,
+    "top_dirs": {"tools/science_funnel": 111, "tools/playable_slice": 4, ".gitattributes": 1, "README.md": 1, "docs/THE_SHIP_GOAL.md": 1},
+    "mp4": {"path": "tools/science_funnel/validation/realbody_movie_20260920/movie/real_body_slice.mp4", "bytes": 711734, "limit_bytes": 5242880, "under_archive_rule": true, "sha256": "428c05af722bd85b122207ee45df2353671103252b49ec3a808763cb4f42c207", "matches_lane_receipt_sha_prefix": "428c05af... (realbody-movie tip commit receipt)"}
+  },
+  "push": {
+    "method": "the established flow: ff-only update of pass3-integ local master to the integ branch tip (this receipt commit), then ONE push by explicit pinned-sha refspec '<head>:refs/heads/master' -- never force; auth probed read-only first; post-push ls-remote must equal the pinned head",
+    "pre_push_remote_master_expected": "5b2b7f89f33d35317156bfdc6bab04dad39eff35",
+    "pinned_push_head": "the integ/pass6-20260920 tip == this receipt commit",
+    "result": "executed immediately after this commit by push_master.ps1; its log (E:/ChimeraWork/integ6-scripts/push_git.log) and the post-push ls-remote equality check are the verdict of record"
+  }
+}

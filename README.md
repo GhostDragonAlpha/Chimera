@@ -1,5 +1,13 @@
 # Chimera
 
+> **Licensing update:** this public repository now uses [source-visible restricted
+> terms](LICENSE) as its prospective first-party offer. Existing AGPL grants and
+> third-party licenses remain intact; see the [transition record](docs/LICENSING_TRANSITION.md).
+> The final AGPL ontology/workflow contribution is [PR #112](https://github.com/GhostDragonAlpha/Chimera/pull/112)
+> on the development branch. Its [playable-monkey entry point](https://github.com/GhostDragonAlpha/Chimera/blob/c525b82c7c3ce0128565424764293a3c85811ab3/docs/MONKEY_RUN.md)
+> is available there; this licensing change does not merge engine/graph lineages or
+> claim completion of the game.
+
 A physics-teaching engine and creature game built from a versioned scientific graph.
 
 **Start here. This is the only onboarding file an operator needs to give an agent.**
@@ -24,6 +32,11 @@ runs offline from the pinned data already in the repository.
 
 The last development worktree was
 `E:\ChimeraWork\codex-graph-workflow-20260916`; verify it using the checks below.
+As of 2026-09-20 the integration of record ran in `E:\ChimeraWork\pass3-integ\repo`:
+master stands at the INTEGRATION PASS 5 receipt commit `5b2b7f89` — nine lane
+tips merged behind full verification across two passes (receipts
+`tools/science_funnel/validation/integration_pass4_20260920/receipt.json` and
+`tools/science_funnel/validation/integration_pass5_20260920/receipt.json`).
 The project home's separate dirty checkout may be older than GitHub master.
 Do not switch or reset that checkout to obtain the latest work.
 The graph handoff covers Z Code/GLM, resumable subagents, serial integration,
@@ -148,6 +161,25 @@ reviewed before controller dispatch. Do not substitute a prose assurance for it.
 Worker self-reports cannot authorize their own verification. The control plane
 enforces workflow within its interfaces; it is not an operating-system sandbox.
 
+### Batch database intake
+
+Whole databases integrate and prove in one run:
+`python -B -m tools.creature_graph.batch_qualify --reprove all --admit
+smithsonian_voyager,copernicus_glo30,bodyparts3d --apply --train exercise --out
+tools/science_funnel/validation/batch_20260917/receipt.json`.
+Each connector pins its artifacts by sha256; every record class carries an
+admitted Rule-0 contract (`data/authored/class_contracts.json`) whose mechanical
+falsifiers run over every record; existing admissions re-prove byte-identically
+under their recorded producers; the count identity closes with zero silent
+drops (conflicting records quarantine, never merge). One receipt records the
+whole batch. Admitted records stay `extracted` — batch admission is proven
+intake, never verification. Per-domain connector modules
+(`tools/science_funnel/batch/connectors_*.py`) auto-merge their connector
+declarations into the batch registry — `connectors_life.py` (PanTHERIA 1.0 +
+NCBI taxdmp Macaca subtree applied, Rhea proven-but-not-applied; receipts
+under `validation/batch_life_20260917/`) is the first — so parallel intake
+lanes never edit the shared registry.
+
 ## 4. Documentation and proof
 
 The graph separates **admission**, **implementation**, **measurement**, **freshness**,
@@ -248,8 +280,10 @@ powershell -File tools/science_funnel/run_creature.ps1 -Anatomy -EnginePort 8124
 
 Choose free private ports. Read `doc.workflow.macaque_assembly` for source pins,
 units, geometry processing, native checks and the remaining anatomical work.
-This is a jointed anatomical reference; muscle forces and whole-body tissue layers
-remain unimplemented.
+This is a jointed anatomical reference; muscle forces and whole-body tissue
+layers remain unimplemented in this runnable — the derived muscle force books
+themselves landed 2026-09-20 and are banked as receipts (see Status below),
+not wired into this scene.
 
 ### Explore the creature–Earth boundary
 
@@ -296,6 +330,114 @@ Open `http://127.0.0.1:8127/earth`. Each drive applies capped torque to a source
 coupled mass matrix. Cut either drive, change a target, add hand load, or cut global
 power. The native state determines both bones and the hand marker. A finite 2 J
 mechanical store, passive losses and source joint stops account for energy.
-Read `doc.workflow.coupled_native` for equations, checks, scope and next work.
-This reference has a fixed mount and two moving coordinates; hand/environment
-collision, whole-body balance, muscles and GPU integration remain unfinished.
+Enable **Hand contact plane** and drive the elbow target toward 20°: the hand presses
+an authored rigid surface, a measurable normal reaction appears, and the
+elbow stalls short of its target instead of passing through. The toggle resets the
+trial; with it off, the qualified free dynamics run unchanged. With contact on, the
+**friction coefficient μ** slider (0–1) applies live, without a reset: μ = 0 is the
+qualified frictionless world bit-exactly, low μ lets the hand slip while dissipating
+friction heat into the energy ledger, and high μ makes it stick (readouts show the
+tangential force, slip speed and stick/slide mode). A preregistered one-time
+catch-event balance allowance of 5e-5 J at first landing is documented in the
+receipt.
+The optional `-ContactPlaneHeightSource terrain_cayo_20260917` launcher flag opts the
+hand contact plane out of its authored height into the terrain-derived value from the
+pinned Cayo Santiago reduction (`work.environment.terrain`; receipt
+`tools/science_funnel/validation/terrain_wiring_20260918/receipt.json`); without the
+flag the qualified authored world is untouched.
+Read `doc.workflow.coupled_native`, `work.creature.coupled_arm_contact` and
+`work.creature.coupled_arm_friction` for
+equations, checks, scope and next work. This reference has a fixed mount and two
+moving coordinates; grasping, whole-body balance, muscle-driven actuation in the
+engine and GPU integration remain unfinished — the muscle force books themselves
+are now derived and banked (see Status below).
+
+### Status: 2026-09-20 — the real body, the save-any-moment proof, the muscle books
+
+The 2026-09-20 consolidation, merged onto master by three integration passes
+behind full verification: fifteen lane tips, zero conflicts, every test suite at
+its receipt count (`tools/science_funnel/validation/integration_pass4_20260920/receipt.json`,
+`tools/science_funnel/validation/integration_pass5_20260920/receipt.json`,
+`tools/science_funnel/validation/integration_pass6_20260920/receipt.json`).
+Plain words, each with its receipt:
+
+- **The playable slice now rides the real body.** The bounding-box stand-in is
+  retired (zero code sites); the tick body is the real CT-derived macaque
+  skeleton — 25 closed bones, 499,976 triangles (inside the importer's own
+  500,000-triangle cap), hip and knee pivots aligned to the pose chain within
+  0.058-0.072 mm against a 5 mm bound, and the boot is byte-clean three boots
+  running (`tools/science_funnel/validation/slice_real_body_20260920/receipt.json`).
+  The honest red, measured where it stands: the slice's own 10-second boot bar
+  is MISSED — first data at 135.73 s, and the cost is the engine's own mesh
+  import at this scale (237.67 s isolated parse, 130-240+ s across boots). The
+  importer-performance successor lane has since merged (integration pass 6,
+  `integration_pass6_20260920/receipt.json`): the admission path serves a
+  derived GLB cache and the cached full boot first-renders data at 2.08-2.10 s
+  against the same 10 s bar (`mesh_parse_20260920/record.md`).
+- **The walk can be saved mid-stride and resumed perfectly.** The walker's
+  state was captured at tick 150 of the ship-fenced 302-tick walk and restored
+  into a fresh process: state hashes and all 21,888 action bytes identical to
+  the end, same refusal tick and class — with zero engine bytes changed
+  (`tools/science_funnel/validation/snapshot_apis_20260920/receipt.json`).
+  On top of it sits the compatibility-certificate gate — the law that a policy
+  trained on build N must never silently degrade on build N+1. The gate caught
+  4/4 injected incompatibilities, resumed bit-identically, and three clean runs
+  stayed byte-identical (`tools/science_funnel/validation/upgrade_gate_20260920/receipt.json`);
+  the first production-class certificate then issued end-to-end and rejected
+  every tampered re-issue, 3/3, while allowing the clean one
+  (`tools/science_funnel/validation/cert_dryrun_20260920/receipt.json`). The
+  forward gaps are named, not hidden: no ship-tree HTTP snapshot route, no
+  first-class engine build id, no actor-in-the-engine-loop coupling
+  (cert_dryrun_20260920, forward_gaps).
+- **The muscle books are derived, not placeholder.** Every muscle force is one
+  cited specific tension (0.30 MPa, never swept) x published macaque PCSA x
+  measured pennation; the 1 N placeholders are gone
+  (`tools/science_funnel/validation/k_fill_20260920/receipt.json`). Walking
+  demand: covered at the knee (1.60x) and MTP (1.65x), UNDER at the ankle
+  (plantar 0.7434x) — fired as pre-registered, then adjudicated as the
+  demand's own mass context (a 10.038 kg simulated animal vs the game's
+  6.15 kg animal); nothing was tuned (`tools/science_funnel/validation/ankle_adjudication_20260920/receipt.json`).
+  The hip moment arms are measured on the deposit's own geometry, retiring the
+  declared 25% straight-line caveat
+  (`tools/science_funnel/validation/hip_arms_20260920/receipt.json`), and the
+  five quarantined muscle rows stand — no lawful second source exists
+  (`tools/science_funnel/validation/hip_quarantine_review_20260920/receipt.json`).
+  Rear-up as static strength is CLOSED: NOT COVERED on both definitions and
+  both arm books (26.58 N·m on the record arms, 10.72 N·m measured on the
+  deposit's arms, vs the operator's 33.6 N·m class top) — the move belongs to
+  the trained-skill layer, whose certificate schema is frozen with a declared
+  `rear_up_v1` example carrying zero behavior claims
+  (`tools/science_funnel/validation/policy_interface_freeze_20260920`).
+- **The brain's eyes are frozen and honest.** The 80-field observation
+  interface is versioned and regenerates byte-identically; its own audit fired
+  a red — 21 state-aliased pairs on the live walk — and the fix landed at the
+  sensor path: delivering com_vel separated all 21 pairs (277 -> 302 distinct
+  observations) while the walk's physics bytes stayed identical
+  (`tools/science_funnel/validation/policy_interface_freeze_20260920`,
+  `tools/science_funnel/validation/obs_populate_20260920/receipt.json`).
+- **The cost truth is measured.** The CPU walk oracle misses the 300 Hz tick
+  budget by 6.7-13.7x even after byte-neutral removal of every peripheral; the
+  cost is the integration core itself — the model's FK evaluation inside RK4,
+  87.9% of the tick. No optimization was smuggled in: every candidate that
+  would change replay bytes is recorded as a rejected change request, and the
+  GPU-production split is named with its lane not yet landed
+  (`tools/science_funnel/validation/tick_cost_attribution_20260920/receipt_tick_cost.json`;
+  `integration_pass5_20260920/receipt.json`).
+- **A real scan intake refused to guess.** The Vanhoof forearm tables
+  downloaded and sha-pinned; the calibration STOP gate then fired (median
+  glyph confidence far below its floor on the best faithful tier) and ZERO
+  records were admitted — the refusal taxonomy worked in a domain it cannot
+  read (`tools/science_funnel/validation/vanhoof_intake_20260920/receipt.json`).
+
+The ship-goal status these moves touch is kept in
+[docs/THE_SHIP_GOAL.md](docs/THE_SHIP_GOAL.md) — its dated 2026-09-20 section
+holds the lane-by-lane verdicts, and the open reds are stated there.
+
+## Development workflow and replacement-PC setup
+
+Start with [system setup and directory layout](docs/SYSTEM_SETUP.md),
+[recovery checklist](docs/DISASTER_RECOVERY.md) and the
+[workflow keyword index](docs/WORKFLOW_INDEX.md).
+The separately scoped playable-monkey campaign uses [MONKEY_RUN.md](docs/MONKEY_RUN.md)
+and its verified instruction bundle. These documents do not replace the graph
+authority for other work or claim that the campaign engine lineage is merged here.

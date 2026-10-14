@@ -1,0 +1,206 @@
+{
+ "kernel_conformance": {
+  "pass": true,
+  "measured": {
+   "parser": "tools.matter_kernel.definition.parse_body",
+   "membranes": 14,
+   "bonds": 8,
+   "stated_vs_kernel_derived_mass_max_rel": 7.200124719762125e-07
+  }
+ },
+ "geometry_preserved": {
+  "pass": true,
+  "measured": {
+   "compartments": 14,
+   "face_count_equal": true,
+   "vertex_count_equal": true,
+   "per_face_float32_equal": true,
+   "worst_bbox_dev_mm": 1.3875292950160656e-06,
+   "bbox_tolerance_mm": 0.001,
+   "vertex_sha256_all_match": true,
+   "losses": "none itemized; all 14 compartments byte-canonical"
+  }
+ },
+ "adjacency_reproduced": {
+  "pass": true,
+  "measured": {
+   "edges": 8,
+   "invented_joints": 0,
+   "dropped_joints": 0,
+   "max_rest_length_dev_mm": 0.0,
+   "components": [
+    [
+     3,
+     7,
+     19,
+     21,
+     24
+    ],
+    [
+     5,
+     8,
+     9,
+     11
+    ],
+    [
+     10
+    ],
+    [
+     12
+    ],
+    [
+     16
+    ],
+    [
+     17
+    ],
+    [
+     20
+    ]
+   ],
+   "components_note": "7 honest components: the hind chain {3,7,19,21,24} + the fore chain {5,8,9,11} + 5 transferred-label singletons (10, 12, 16, 17, 20) with NO measured adjacency; the 7 measured-but-excluded edges (unknown chain {14,23,25}; fragment pairs 2-16, 4-20, 6-10, 12-15) have an unidentified endpoint and are itemized in excluded_measured_edges; cross-component joints are successor measurement work, never invented here",
+   "excluded_measured_edges": {
+    "2-16": {
+     "gap_mm": 1.24,
+     "reason": "fragment pair: rank 2 unidentified in v3 (v3 fragments_2bone; reassociation is successor work)"
+    },
+    "4-20": {
+     "gap_mm": 0.47,
+     "reason": "fragment pair: rank 4 unidentified in v3 (v3 fragments_2bone; reassociation is successor work)"
+    },
+    "6-10": {
+     "gap_mm": 0.36,
+     "reason": "fragment pair: rank 6 unidentified in v3 (v3 fragments_2bone; reassociation is successor work)"
+    },
+    "12-15": {
+     "gap_mm": 0.57,
+     "reason": "fragment pair: rank 15 unidentified in v3 (v3 fragments_2bone; reassociation is successor work)"
+    },
+    "14-23": {
+     "gap_mm": 0.96,
+     "reason": "both endpoints unidentified in v3 (chain kind unknown)"
+    },
+    "14-25": {
+     "gap_mm": 0.92,
+     "reason": "both endpoints unidentified in v3 (chain kind unknown)"
+    },
+    "23-25": {
+     "gap_mm": 0.72,
+     "reason": "both endpoints unidentified in v3 (chain kind unknown)"
+    }
+   }
+  }
+ },
+ "mass_book": {
+  "pass": true,
+  "measured": {
+   "mode": "partial_skeleton_subset",
+   "total_mass_g": 12.0824,
+   "identified_subset_voxel_book_g": 12.0898,
+   "subset_vs_voxel_dev_frac": 0.0006120862214429119,
+   "total_volume_mesh_mm3": 6359.1664,
+   "total_volume_voxel_mm3": 6363.0541,
+   "total_volume_delta_pct": -0.061,
+   "worst_compartment_delta_pct": -0.3079,
+   "worst_compartment": "mem.bone_19",
+   "identified_ranks": [
+    3,
+    5,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    16,
+    17,
+    19,
+    20,
+    21,
+    24
+   ],
+   "unimported_ranks": [
+    1,
+    2,
+    4,
+    6,
+    13,
+    14,
+    15,
+    18,
+    22,
+    23,
+    25
+   ],
+   "imported_fraction_of_full_book_pct": 20.608,
+   "full_specimen_voxel_book_mass_g": 58.6289,
+   "full_book_literature_window_g": [
+    30.0,
+    65.0
+   ],
+   "full_book_in_window": true,
+   "full_book_fraction_of_body_band_pct": [
+    10.66,
+    14.66
+   ],
+   "full_book_lands_in_band": true,
+   "prange_predicted_g": [
+    26.08,
+    36.9
+   ],
+   "deviation_vs_regression": "named, not tuned: PARTIAL skeleton: the import covers the 14 v3-identified bones of the 25-rank segmentation; 10 nonaxial bones are unidentified and the axial composite is unlabeled, so they stay OUT (never invented) -- the imported mass is checked as a subset of the full specimen book, never as a whole skeleton; adult cortical density (1900 kg/m^3) is the cited UPPER ANCHOR: infant bone is under-mineralized (Rauch 2001), so true compartment masses sit below these numbers; the CT bone threshold (148, 95th percentile) includes partially mineralized growth cartilage in this infant, so volumes include some non-bone mineralized tissue; the cortical tissue density is applied to whole-bone volume (porous trabecular cores included), biasing masses HIGH; all biases point the same direction and are named, not tuned"
+  }
+ },
+ "honest_labels": {
+  "pass": true,
+  "measured": {
+   "import_set": [
+    3,
+    5,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    16,
+    17,
+    19,
+    20,
+    21,
+    24
+   ],
+   "label_source": "bone_identification_v3.json (v3 ONLY)",
+   "all_labels_v3_verbatim": true,
+   "sides_assigned": 0,
+   "absent_ranks": [
+    1,
+    2,
+    4,
+    6,
+    13,
+    14,
+    15,
+    18,
+    22,
+    23,
+    25
+   ],
+   "v1_dead_letters_not_resurrected": {
+    "1": "axial_composite",
+    "23": "femur_class",
+    "25": "femur_class"
+   }
+  }
+ },
+ "stage_true": {
+  "pass": true,
+  "measured": {
+   "life_stage": "infant",
+   "scale": 1.0,
+   "allometric_scaling_applied": false,
+   "transform": "identity -- writer packs source coordinates through float32 only; proven by geometry_preserved hashes",
+   "provenance": "MorphoSource media 000875599 metadata: Macaca mulatta USNM 497135, infant, 160 um CT (meshes_875599/manifest.json source field + download_receipt.json)"
+  }
+ }
+}

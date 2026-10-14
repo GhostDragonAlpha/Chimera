@@ -1,0 +1,22 @@
+{
+ "lane": "in-session (codex/force-data-runtime-20260916), wave 6",
+ "date": "2026-09-19",
+ "agent": "GLM 5.3",
+ "deliverable": "The entry load-transfer membrane implemented (the settling-contact entry law) and measured: the bounce is gone and the skate self-clears -- and the walk now fails at the STRUCTURAL wall the measurement exposes: the MP-only stance loads the ankle at 98% of its cap, pose-independently.",
+ "entry_law_wave6": {
+  "law": "the entry phase is the nearest-vertical thigh SUBJECT TO the composed stance contact not OPENING (contact_vy <= 0): the solver's plane-arming gate rejects a point opening faster than ~4 mm/s, and the bare vertical-thigh instant (phi=0.449) sits on the RISING limb of the closure residual's bob (+64 mm/s measured) -- the seated foot lifted within one tick, no force path, the bounce.",
+  "measured": "entry lands at phi=0.359 (contact settling, thigh 15 deg); tick 0 shows the first-ever nonzero seated reaction (0.24 N); by tick 20 BOTH feet carry (46 N total); by tick 60 the skate is GONE (slip 0.001-0.06 m/s, was 1.2); convergence bonus: phi~0.35 is also the most statically-holdable phase in the window (why the caps amendment was not binding).",
+  "outcome": "the walk refuses at tick 88 (was 118) -- the faster entry (no-skid speed 1.18 m/s at the new phase) delivers more energy into a collapse that now runs faster: KE GROWS 8.2->12.9 J while grav falls -9.4->-17.6 (still a fall, not a vault); total reaction plateaus ~41 N of the 98.4 N weight"
+ },
+ "the_structural_wall": {
+  "mechanism": "tick 88 chatter: the left ankle driven to its +1.7 dorsiflexion stop (which=2, 64 clamps) -- the shank topples forward over the planted foot",
+  "the_numbers": "the MP-only stance puts the FULL weight on a 74 mm lever from the ankle: demand = 98.4 x 0.074 = 7.28 N.m vs the 7.4 cap -- 98.5%, STRUCTURAL (pose-independent; the statics' ankle column was this lever all along). The flat-foot stand holds because heel+MP share (the CoP sits between); the walking closure pitches the foot nose-down through the loaded window, so the point-contact model loads only the MP head. The source ran the same thin margin (their ankle peak 5.92 = 80% of cap) DYNAMICALLY; our entry cannot establish the vault before the drift consumes it.",
+  "named_next_membrane": "THE SOLE-SEGMENT CONTACT: a plantigrade foot loads through a CoP anywhere on the sole (heel..MP line), not through one point. Model the contact as the sole segment (the constraint: the minimum sole height = 0; the CoP free to migrate as the foot rolls) -- this halves the ankle demand during flat phases, expresses the real foot roll, and matches the macaque's plantigrade loading that the closure itself found (the flat phase). Implementation: a rolling-CoP contact row in the walker's runtime (the closest-sole-point row, continuous with the existing point machinery), with its own Rule-0 membrane and the [pt] trace as the meter. Falsifier: with the sole contact, the flat-phase ankle demand <= ~4 N.m (half the lever) and the walk survives past tick 118."
+ },
+ "also_this_wave": {
+  "ledger": "balance error at refusal 2.48-3.39 (down from 3.59) -- the faster dynamics changed the mix; still open, still deprioritized behind the contact model",
+  "bionic_integration": "Bionic's 875599 delivery verified (commit 9779139a on top of 226b322f: receipt schema, 25 sha256 pins, 25 previews, clean tree); the latent path-separator bug in .tmp/decimate_meshes.py fixed (separator-independent preview path, same output location so the 604 receipt stays valid); the grasp lane report delivered (lane/grasp-and-stand-20260919 carries coupled_grasp.hpp + its free-root merge; additive to us, far behind us; integrator's call)"
+ },
+ "pass": false,
+ "honest_summary": "The entry membrane worked exactly as derived (bounce gone, skate cleared, first load transfer ever measured) -- and in doing so it exposed the wall behind it: the point-contact model structurally loads the ankle at 98% of cap in the walking stance. The walk is not one fix away; it needs the plantigrade sole contact, which is also the physically honest model of how a macaque foot works. That membrane is specified with numbers, a falsifier, and a meter."
+}

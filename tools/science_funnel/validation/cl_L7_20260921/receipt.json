@@ -1,0 +1,61 @@
+{
+ "lane": "agent/cl-L7-reuse-20260921",
+ "date": "2026-09-21",
+ "agent": "GLM 5.3 (L7 lane, constraint-ledger program)",
+ "base": "7181b8ce (agent/cl-L0-baseline-20260921; sparse partial clone at E:/ChimeraWork/l7-agent, ONE clone; master untouched; only this branch pushed)",
+ "scope": "NEW FILES ONLY: tools/constraint_ledger/reuse.py + tests_reuse.py + this receipt dir; zero edits to existing modules (verified: git status carried only untracked new paths for the whole lane, after two gate-run store rebuilds were discarded with git checkout --)",
+ "rule_0": {
+  "statement": "THE L7 THEORY: a cached verification result (e.g. 'record set S on baseline B reproduces trace T bit-exact') is reusable EXACTLY while its SEMANTIC dependency closure is unchanged, and that closure is COMPUTABLE from record content and the declared boundary (typed reads/writes, record-input producer edges, reset semantics, numeric policy, domain, horizon) -- never from names, text, or full-content digests alone (metadata is not semantics: a citation cannot change a bit). Further: complete lossless replay match (every boundary output AND state transition, floats by uint64 bits, never decimals) + physics-unchanged + measured determinism ENTITLE the same-trajectory-by-induction certificate, the narrow rerun-skip result for law-swaps that provably preserve outputs in-domain. A description survives any result; a theory can lose.",
+  "prediction": "P-CLOSURE: the producer closure of the real pilot two-law set is EXACTLY {touch_band, stand_first_hold} with the single edge stand_first_hold -> touch_band via the record-input quantities gait.touch.{leg}. P-FOUR-FIXTURES: (a) producer constant/expr change, (b) reset-rule change (event or initial), (c) numeric-policy change EACH invalidate; (d) metadata-label change does NOT (drift recorded, never silent). P-CERTIFICATE: a certificate issues over the registered substrate with mismatches==[] and the reuse decision costs orders of magnitude less than a re-run.",
+  "falsifier": "F-STALE-CERTIFICATE: any result reported REUSABLE after a semantic dependency changed (probes: fixtures a/b/c and the waiver-on-drift probe). F-UNJUSTIFIED-RERUN-SKIP: a rerun waiver granted without every certificate assumption holding (incomplete/lossy match, physics drift, determinism unproven, horizon uncovered). F-OVER-INVALIDATE (the (d) guard): a metadata-only change declared INVALIDATED."
+ },
+ "deliverables": {
+  "reuse.py": "sha256 6490f20c14f527917dd42b08767a39373c6b2eb3fd53e0100c21ba7dbb2a01cf",
+  "tests_reuse.py": "sha256 55e7bc850e3196ce7a62fb2d278ac61794240d5ef3861cc65e15fa1d9e162b60",
+  "preregistration.md": "sha256 373f8723756b7282f16c7da0474c36c41f5924d67b5b70b28eed2951116d70ee (written BEFORE the first line of lane code)"
+ },
+ "dependency_closure_classes": {
+  "records_and_producers": "per-record full content digest + SEMANTIC digest (whitelist: name, kind, params, quantities, assign, constants, initial + declared semantic-extra allowlist; provenance/falsifier/lane are METADATA), plus the TRANSITIVE producer closure over record-input reads via the one-defining-writer map (I1) with the `via` quantities recorded; a record-input with no producer in the set REFUSES (never a silent under-approximation -- an under-approximated closure is a stale certificate waiting to fire)",
+  "reset": "digest of the reset event + EVERY expanded concrete initial (the reset rule's two halves; either changing invalidates)",
+  "numeric_policy": "digest of dtype/IEEE/FP-flags/comparison convention/arith order/threads/substeps (NUMERIC_POLICY_PILOT: binary64, /fp:precise, uint64-bits-never-decimals comparison, chimpl mirrors source op order)",
+  "domain": "digest of scene sha256 + externals binding digest + tick convention",
+  "horizon": "digest of tick count + rows + stop condition",
+  "baseline": "source-tree identity digest (empty = not claimed)",
+  "validity_rule": "VALID iff every class unchanged; identity drift (content_sha changed, semantic_sha equal) is RECORDED, never fatal; cache entries are sealed (tamper = I3 refusal)"
+ },
+ "four_fixtures_verdicts": {
+  "a_input_producer": "INVALIDATED -- kTouch 1e-5 -> 2e-5 and a touch-law expr variant, each a named SEMANTIC delta on touch_band",
+  "b_reset_rule": "INVALIDATED -- reset-event change AND anchor_y initial 0.0 -> 1.0, each moving the reset digest",
+  "c_numeric_policy": "INVALIDATED -- /fp:precise -> /fp:fast moves the numeric_policy digest",
+  "d_irrelevant_metadata_label": "VALID -- provenance receipt path + falsifier text + lane relabeled: full content digest DID change (fixture asserts this), semantic digest did NOT, verdict VALID with identity_drift=[touch_band: metadata-only] recorded",
+  "extras": "horizon change (300->150 ticks) and domain change (scene digest) also INVALIDATED"
+ },
+ "replay_reuse_certificate": {
+  "structure": "INDUCTION_CLAIM (same-trajectory-by-induction, scope: in-domain only, certified horizon only) + DependencySet (the exact assumptions, sealed) + ReplayMatchLedger + physics pin (source_tree_digest, numeric_policy_sha, toolchain) + determinism pin (double_run_byte_identical, rng none, env/clock none) + digest; issue_certificate REFUSES incomplete/lossy/unproven matches; grant_rerun_waiver is the ONLY rerun-skip gate",
+  "substrate_measured": "scene f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342 (regenerated byte-exact); pilot trace eaff323882c56e533e71a4a93b7ba99937f3d567dd42d794b7a7f9a3660c0e33 (302 lines, refusal 300 gait_positional_correction_budget) == the L0-manifest's registered pilot_corpus_trace, byte-identical across two runs",
+  "ledger": {"rows": 301, "boundary_outputs_checked": 2400, "state_transitions_checked": 600, "bit_pairs_checked": 1800, "mismatches": [], "lossless": true, "row0_matches_declared_initial": true, "horizon_covered": "300 ticks, refusal-stop @300"},
+  "certificate_digest": "81394188e20a51ab0b84ec36e6c0e12b302466d63299752dc7cc863911b411e6 (deps digest eaefca9a93f32587433765891cd656a32bad7011f84f4133295e082348364cf6; physics source_tree 6e8624564ead94486e9ddfe89ea728249064492b = this lane's HEAD tree)",
+  "issue_refusals_measured": "one flipped state-transition bit -> REFUSED; lossless=false -> REFUSED; determinism unmeasured -> REFUSED",
+  "waiver_verdicts_measured": "unchanged deps -> GRANTED; producer semantic drift -> REFUSED naming F-STALE-CERTIFICATE with the delta; physics drift / horizon 600 / determinism false -> REFUSED naming F-UNJUSTIFIED-RERUN-SKIP; metadata-only drift -> GRANTED with drift RECORDED on the waiver"
+ },
+ "economics_measured": {
+  "reuse_verdict": "8.7 us/check (5000 lookups; full closure recompute 2266 us)",
+  "harness_rerun": "10.557 s / 10.144 s (the P2 instrument re-run, measured twice on this lane)",
+  "declared_full_run": "~600 s per candidate (the operator's declared full-run verification cost this lane attacks; not re-measured)",
+  "ratios": "reuse check vs harness re-run ~1.2e6x; vs declared full run ~6.9e7x; even the full closure recompute is ~4700x cheaper than the harness re-run"
+ },
+ "falsifier_results": {
+  "F-STALE-CERTIFICATE": "GREEN (did not fire): fixtures (a)/(b)/(c) and waiver-on-semantic-drift all REFUSED/INVALIDATED; the only VALID verdicts had every semantic digest equal",
+  "F-UNJUSTIFIED-RERUN-SKIP": "GREEN (did not fire): every incomplete assumption (tampered bit, lossy ledger, unmeasured determinism, physics drift, uncovered horizon) was REFUSED with the falsifier named",
+  "F-OVER-INVALIDATE": "GREEN (did not fire): fixture (d) stayed VALID with drift recorded; the waiver path obeys the same rule"
+ },
+ "gates": {
+  "constraint_ledger_l7": "tests_reuse: 15/15 OK",
+  "constraint_ledger_existing": "tests_p1 + tests_p3: 25/25 OK; tests_p2 (the bit-exact replay on the REAL substrate): 7/7 OK",
+  "matter_kernel": "test_definition 9/9 OK (PYTHONPATH=.)",
+  "training_gate": "PASS (the body derives 0.9924 m/s; every target Froude-consistent)",
+  "creature_graph": "RED-BY-UPSTREAM-DRIFT, NAMED: acceptance.py aborted at item 6 -- PIN DRIFT for bodyparts3d::bp3d lic.html + download.html (pinned 7fd311e6... != observed 8a9b1d03...); the reference cache is untracked so this fresh checkout fetched LIVE bytes that changed upstream AFTER L0's same-commit green run (19+27 zero reds); identical from both cwds and under --offline (the cache now holds the new bytes); the gate's own resolution (--refresh re-pin) is a human decision this lane does NOT take; the run's partial store rebuild was discarded (git checkout -- tools/creature_graph/data/) keeping the tree NEW-FILES-ONLY. Noted: the gate's pin enforcement IS a semantic-dependency refusal -- the same discipline this lane mechanizes, demonstrated live"
+ },
+ "pass": true,
+ "honest_summary": "L7 IS GREEN ON ALL THREE NAMED FALSIFIERS (F-STALE-CERTIFICATE, F-UNJUSTIFIED-RERUN-SKIP, F-OVER-INVALIDATE -- none fired). The semantic-dependency invalidation works exactly as predicted on the REAL pilot records: producer/reset-rule/numeric-policy/horizon/domain changes each invalidate; a metadata relabel keeps the cache VALID with the drift recorded (and its full content digest verified changed, so the fixture proves the split is real, not vacuous). The producer closure is computed transitively through record-input reads, refuses missing producers, and names the exact composition edge (stand_first_hold -> touch_band via gait.touch.left/right). The replay-reuse certificate ISSUED over the registered substrate (scene f6844eea..., trace eaff3238... byte-exact as registered): 301 rows, 2400 boundary outputs + 600 state transitions + 1800 bit-pairs, 0 mismatches, lossless, row 0 = declared initial state -- and its waiver gate granted only while every assumption holds, naming F-STALE-CERTIFICATE or F-UNJUSTIFIED-RERUN-SKIP otherwise. Economics: the reuse decision costs 8.7 us against a measured 10.5 s harness re-run and the operator's declared ~600 s full-run verification. One gate is RED BY ENVIRONMENT and named: creature_graph pin enforcement caught bp3d upstream content drift (a live-web change after L0's green run at the same commit); its --refresh is a human decision, not taken; store rebuilds were discarded; matter_kernel, training_gate, and all constraint_ledger suites are green. Deviations: none from prereg; the certificate's substrate is the pilot (master-lineage, refusal 300) trace -- the ONLY trace registerable at this base -- not the wave-37 ship walk (refusal 295), which is L0's separate evidence artifact."
+}

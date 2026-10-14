@@ -146,8 +146,10 @@ OBJECT_FIELDS = (
     "id", "kind", "name", "classification", "status", "priority",
     "build_rank", "order_hint", "inventory_anchor", "spatial", "geometry",
     "physical", "attachments", "dependencies", "evidence", "falsifier",
-    "unknowns", "notes", "provenance",
+    "unknowns", "notes", "provenance", "class_contract",
 )
+
+CLASS_CONTRACT_SCHEMA = "chimera.class_contracts.v1"
 
 
 def status_at_least(status: str, threshold: str) -> bool:
@@ -215,7 +217,56 @@ def validate_object(obj: dict) -> list:
             if f not in obj:
                 errs.append(f"{oid}: selected parameter without explicit {f} "
                             f"(write 'unknown' when unknown)")
+    # a class-contract reference names the batch membrane this record is
+    # proven by (the registry itself is validated at build time)
+    cc = obj.get("class_contract")
+    if cc is not None:
+        if not (isinstance(cc, dict) and isinstance(cc.get("class_id"), str)
+                and cc["class_id"].strip()
+                and isinstance(cc.get("version"), int) and cc["version"] >= 1):
+            errs.append(f"{oid}: class_contract must be {{class_id, version>=1}}")
     return errs
+
+
+def validate_class_contracts(payload: dict) -> dict:
+    """Validate the authored class-contract store; return {class_id: contract}.
+
+    Each contract is itself a RULE 0 membrane: statement, prediction and
+    falsifier are all required, plus a nonempty mechanical check list.
+    """
+    if not isinstance(payload, dict):
+        raise SystemExit("class contracts: store must be an object")
+    if payload.get("schema_version") != CLASS_CONTRACT_SCHEMA:
+        raise SystemExit("class contracts: unsupported schema_version")
+    contracts = payload.get("contracts")
+    if not isinstance(contracts, list) or not contracts:
+        raise SystemExit("class contracts: contracts list required")
+    registry = {}
+    for contract in contracts:
+        cid = contract.get("class_id", "<no-id>")
+        if not isinstance(cid, str) or not cid.strip():
+            raise SystemExit(f"class contracts: bad class_id {cid!r}")
+        if cid in registry:
+            raise SystemExit(f"class contracts: duplicate class_id {cid}")
+        for field in ("statement", "prediction", "falsifier"):
+            if not isinstance(contract.get(field), str) or not contract[field].strip():
+                raise SystemExit(f"class contracts: {cid} missing {field} (RULE 0)")
+        checks = contract.get("checks")
+        if not isinstance(checks, list) or not checks:
+            raise SystemExit(f"class contracts: {cid} requires a nonempty check list")
+        for check in checks:
+            if not (isinstance(check, dict) and isinstance(check.get("kind"), str)
+                    and check["kind"].strip() and isinstance(check.get("params"), dict)):
+                raise SystemExit(f"class contracts: {cid} bad check {check!r}")
+        applies = contract.get("applies_to")
+        if not (isinstance(applies, dict) and isinstance(applies.get("kinds"), list)
+                and applies["kinds"]):
+            raise SystemExit(f"class contracts: {cid} requires applies_to.kinds")
+        for kind in applies["kinds"]:
+            if kind not in KINDS:
+                raise SystemExit(f"class contracts: {cid} applies_to unknown kind {kind!r}")
+        registry[cid] = contract
+    return registry
 
 
 def content_projection(obj: dict) -> dict:

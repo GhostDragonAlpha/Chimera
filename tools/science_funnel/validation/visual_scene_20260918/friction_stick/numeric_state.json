@@ -1,0 +1,288 @@
+{
+ "captured_utc": "2026-09-18T22:16:27.987977+00:00",
+ "control_sent": {
+  "contact_enabled": true,
+  "contact_friction": 1.0,
+  "elbow_target_deg": 20.0,
+  "power": true,
+  "reset": true,
+  "shoulder_target_deg": 20.0
+ },
+ "fk_coherence": {
+  "coherent": true,
+  "delta_m": 2.7809732887839817e-17,
+  "engine_hand_m": [
+   0.17522189520852882,
+   0.34299360002767654,
+   0.007835990781146291
+  ],
+  "python_fk_hand_m": [
+   0.17522189520852885,
+   0.34299360002767654,
+   0.00783599078114629
+  ],
+  "tolerance_m": 1e-06
+ },
+ "scenario": "friction_stick",
+ "series": [
+  {
+   "elbow_deg": 48.2913808269432,
+   "friction_heat_J": 0.004790078159446129,
+   "gap_m": -6.399972323017922e-06,
+   "hand_x_m": 0.17522189520852932,
+   "hand_y_m": 0.342993600027677,
+   "mode": "stick",
+   "reaction_N": 3.3778281273055693,
+   "shoulder_deg": 9.741176490571428,
+   "sim_time_s": 0.26333333333333336,
+   "slip": 0.0,
+   "t_wall": 1789769787.149,
+   "ticks": 79
+  },
+  {
+   "elbow_deg": 48.2913808269432,
+   "friction_heat_J": 0.004790078159445871,
+   "gap_m": -6.399972323434255e-06,
+   "hand_x_m": 0.17522189520852882,
+   "hand_y_m": 0.34299360002767654,
+   "mode": "stick",
+   "reaction_N": 3.3778281273056017,
+   "shoulder_deg": 9.741176490571291,
+   "sim_time_s": 0.53,
+   "slip": 0.0,
+   "t_wall": 1789769787.415,
+   "ticks": 159
+  },
+  {
+   "elbow_deg": 48.2913808269432,
+   "friction_heat_J": 0.004790078159445871,
+   "gap_m": -6.399972323434255e-06,
+   "hand_x_m": 0.17522189520852882,
+   "hand_y_m": 0.34299360002767654,
+   "mode": "stick",
+   "reaction_N": 3.3778281273055994,
+   "shoulder_deg": 9.741176490571291,
+   "sim_time_s": 0.8,
+   "slip": 0.0,
+   "t_wall": 1789769787.683,
+   "ticks": 240
+  },
+  {
+   "elbow_deg": 48.2913808269432,
+   "friction_heat_J": 0.004790078159445871,
+   "gap_m": -6.399972323434255e-06,
+   "hand_x_m": 0.17522189520852882,
+   "hand_y_m": 0.34299360002767654,
+   "mode": "stick",
+   "reaction_N": 3.3778281273055994,
+   "shoulder_deg": 9.741176490571291,
+   "sim_time_s": 1.0533333333333335,
+   "slip": 0.0,
+   "t_wall": 1789769787.936,
+   "ticks": 316
+  },
+  {
+   "elbow_deg": 48.2913808269432,
+   "friction_heat_J": 0.004790078159445871,
+   "gap_m": -6.399972323434255e-06,
+   "hand_x_m": 0.17522189520852882,
+   "hand_y_m": 0.34299360002767654,
+   "mode": "stick",
+   "reaction_N": 3.3778281273055994,
+   "shoulder_deg": 9.741176490571291,
+   "sim_time_s": 1.0533333333333335,
+   "slip": 0.0,
+   "t_wall": 1789769787.938,
+   "ticks": 316
+  }
+ ],
+ "settled": true,
+ "state": {
+  "assumptions": [
+   "Root and five source coordinates fixed; only source shoulder flexion and elbow flexion move.",
+   "Effective segment masses/inertias retained; this is not isolated bone material.",
+   "RK4 reference at four substeps per 300 Hz tick; trajectory convergence and bounded energy error must be measured separately.",
+   "Joint limits are perfectly inelastic unilateral stops with coupled-mass reaction impulses; no arbitrary pose clipping.",
+   "Optional frictionless unilateral hand contact with an authored rigid plane at contact_plane_height_m in the local East/Up/South world frame (metres). Signed gap g = hand point Up coordinate + proxy_radius_m - contact_plane_height_m; free motion keeps g >= 0.",
+   "Optional authored Coulomb friction at the same plane: contact_friction in [0,1] (default 0 = the qualified frictionless contact, bit-exact control). Stick solves the normal and tangential accelerations jointly in the mass metric; slide caps the tangential reaction at mu times the normal reaction and re-solves the normal row with the exact cross-coupling. Heat enters the ledger as friction_heat_J. Grasping remains unimplemented; friction never pulls without normal load.",
+   "contact_enabled is false by default; toggling it requires an explicit reset, and the disabled mode must reproduce the qualified free coupled dynamics. Enabled scenes must start with a strictly positive gap at the reset pose.",
+   "Ideal capped actuator work consumes finite mechanical energy; braking produces heat. Isometric metabolic/electrical costs and biological muscles absent.",
+   "CPU reference reuses native source binding and Earth field; GPU residency and full animal unqualified."
+  ],
+  "attachment_id": "world.earth.patch.coupled_arm_hand",
+  "battery_empty_events": 0,
+  "body": {
+   "position_m": [
+    0.17522189520852882,
+    0.34299360002767654,
+    0.007835990781146291
+   ],
+   "radius_m": 0.007,
+   "velocity_m_s": [
+    -1.0015355342162305e-16,
+    2.4901887863889125e-15,
+    0.0
+   ]
+  },
+  "clock_lag_s": 0.000675901,
+  "config": {
+   "contact_enabled": true,
+   "contact_friction": 1.0,
+   "elbow_drive": true,
+   "elbow_target_deg": 20.0,
+   "elbow_torque_limit_N_m": 0.3,
+   "load_N": 0.0,
+   "power": true,
+   "shoulder_drive": true,
+   "shoulder_target_deg": 20.0,
+   "shoulder_torque_limit_N_m": 0.6
+  },
+  "contact": {
+   "closing_speed_m_s": 2.4901887863889125e-15,
+   "enabled": true,
+   "friction": true,
+   "friction_force_N": 2.64224682344471,
+   "friction_impact_impulse_N_s": 0.0,
+   "friction_mu": 1.0,
+   "gap_m": -6.399972323434255e-06,
+   "generalized_reaction_N_m": [
+    0.03962294974867664,
+    0.29370175018426803
+   ],
+   "grasp": false,
+   "impact_heat_J": 0.03017766163618502,
+   "impact_impulse_N_s": 0.0,
+   "jacobian_m_per_rad": [
+    0.17522189520852882,
+    0.15407217934514747
+   ],
+   "mode": "stick",
+   "normal_world_up": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "plane_world_up_m": 0.35,
+   "proxy_radius_m": 0.007,
+   "reaction_N": 3.3778281273055994,
+   "slip_speed_m_s": 0.0,
+   "touching": true
+  },
+  "contacts": {
+   "environment": true,
+   "joint_limits": true
+  },
+  "coupling": {
+   "bias_torque_N_m": [
+    -2.3257026939342086e-31,
+    2.843700478262057e-31
+   ],
+   "mass_matrix_kg_m2": [
+    [
+     0.008329108249837507,
+     0.003116447828885608
+    ],
+    [
+     0.003116447828885608,
+     0.0019939687829337097
+    ]
+   ]
+  },
+  "energy": {
+   "actuator_work_J": -0.017572092438903935,
+   "balance_error_J": -2.102359278232692e-05,
+   "battery_J": 1.9716564021351908,
+   "battery_initial_J": 2.0,
+   "battery_usable": true,
+   "brake_heat_J": 0.04591569030371308,
+   "contact_impact_heat_J": 0.03017766163618502,
+   "damping_heat_J": 0.02538339146352071,
+   "external_work_J": 0.0,
+   "friction_heat_J": 0.004790078159445871,
+   "gravitational_J": -0.07794424729083788,
+   "impact_heat_J": 0.03017766163618503,
+   "kinetic_J": 4.175334558551655e-31,
+   "mechanical_J": -0.07794424729083788,
+   "potential_reference": "reset pose",
+   "store_balance_error_J": -2.1023592782443146e-05
+  },
+  "environment": {
+   "air": true,
+   "altitude_m": 0.0,
+   "density_kg_m3": 1.22661378741097,
+   "friction": 0.4,
+   "gravity_m_s2": 9.798285324494524,
+   "pressure_Pa": 101400.93090454885,
+   "slope_deg": 0.0,
+   "temperature_K": 288.19,
+   "wind_m_s": 0.0
+  },
+  "epoch": 4,
+  "error": "",
+  "graph_hash": "d16d38a4e715fa8231c0ad44a5cf1a0f58b11c69c71faef6cc86771b325e8086",
+  "ground_id": "world.earth.patch.ground",
+  "joints": [
+   {
+    "angle_deg": 9.741176490571291,
+    "drive_enabled": true,
+    "gravity_torque_N_m": -0.19896974779725207,
+    "limit_reaction_N_m": 0.03962294974867664,
+    "motor_torque_N_m": 0.1593467980485755,
+    "name": "shoulder_flexion",
+    "speed_rad_s": -1.3346361053360592e-14,
+    "target_deg": 20.0,
+    "torque_limit_N_m": 0.6
+   },
+   {
+    "angle_deg": 48.2913808269432,
+    "drive_enabled": true,
+    "gravity_torque_N_m": -0.13822351756633766,
+    "limit_reaction_N_m": 0.29370175018426803,
+    "motor_torque_N_m": -0.15547823261793017,
+    "name": "elbow_flexion",
+    "speed_rad_s": 3.1340917515541946e-14,
+    "target_deg": 20.0,
+    "torque_limit_N_m": 0.3
+   }
+  ],
+  "load_N": 0.0,
+  "mode": "native_coupled_arm",
+  "ok": true,
+  "paused": false,
+  "power": true,
+  "scene_revision": 16008,
+  "scene_sha256": "89a21c17f0d1c123ef4a7fd8ae909e7506f96da418b9ec34eb2dfc8cca2d4619",
+  "scope": "Native source-derived shoulder/elbow dynamics, fixed mount, finite ideal actuator work, source joint stops, an optional frictionless-to-Coulomb hand contact plane (off and frictionless by default; the plane toggle requires reset, mu is live) and authored friction heat accounts. No grasping, free root, whole animal, muscles, tissue mechanics or GPU residency qualification.",
+  "sim_time_s": 1.0533333333333335,
+  "sources": [
+   {
+    "title": "nga_wgs84.html",
+    "url": "https://earth-info.nga.mil/?action=wgs84&dir=wgs84"
+   },
+   {
+    "title": "nasa_drag.html",
+    "url": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/shape-effects-on-drag/"
+   },
+   {
+    "title": "nasa_atmosphere_metric.html",
+    "url": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/earth-atmosphere-equation-metric/"
+   },
+   {
+    "title": "JPL gravitational parameters",
+    "url": "https://ssd.jpl.nasa.gov/astro_par.html"
+   },
+   {
+    "title": "Pinned macaque anatomy and effective segment inertia",
+    "url": "https://github.com/limblab/monkeyArmModel/tree/4fb7dddeec06a0df9525c18f37234a824cb1b5b1"
+   }
+  ],
+  "ticks": 316,
+  "world_id": "world.earth"
+ },
+ "steady_rule": {
+  "speed": 1e-06,
+  "stable_polls": 3,
+  "timeout": 45.0
+ },
+ "title": "FRICTION STICK (mu=1, pressing)"
+}

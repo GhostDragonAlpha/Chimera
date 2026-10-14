@@ -1,0 +1,98 @@
+{
+ "PB1_fall_30_full": {
+  "shift_us": 5000,
+  "shift_rmse_m": 0.002859671,
+  "peak_root_y": 3.0,
+  "per_phase": {
+   "DESCENT": {
+    "n": 151,
+    "median_mad": 0.0,
+    "p95_mad": 0.008,
+    "max_mad": 0.019
+   },
+   "LANDING": {
+    "n": 2,
+    "median_mad": 0.0,
+    "p95_mad": 0.0,
+    "max_mad": 0.0
+   },
+   "LAUNCH": {
+    "n": 9,
+    "median_mad": 0.0,
+    "p95_mad": 0.0,
+    "max_mad": 0.0
+   }
+  },
+  "worst": {
+   "pair": 76,
+   "phase": "DESCENT",
+   "mad": 0.019
+  },
+  "overall": {
+   "median_mad": 0.0,
+   "p95_mad": 0.008,
+   "max_mad": 0.019,
+   "budget": 2.0
+  }
+ },
+ "PB2_fall_30_z12": {
+  "shift_us": 3000,
+  "shift_rmse_m": 0.002989807,
+  "peak_root_y": 3.0,
+  "per_phase": {
+   "DESCENT": {
+    "n": 152,
+    "median_mad": 0.0,
+    "p95_mad": 0.012,
+    "max_mad": 0.106
+   },
+   "LANDING": {
+    "n": 2,
+    "median_mad": 0.0,
+    "p95_mad": 0.0,
+    "max_mad": 0.0
+   },
+   "LAUNCH": {
+    "n": 8,
+    "median_mad": 0.0,
+    "p95_mad": 0.0,
+    "max_mad": 0.0
+   }
+  },
+  "worst": {
+   "pair": 17,
+   "phase": "DESCENT",
+   "mad": 0.106
+  },
+  "overall": {
+   "median_mad": 0.0,
+   "p95_mad": 0.011,
+   "max_mad": 0.106,
+   "budget": 2.0
+  }
+ },
+ "PB3_carry_30_full": {
+  "shift_us": -80000,
+  "shift_rmse_m": 0.0,
+  "peak_root_y": 0.255,
+  "per_phase": {
+   "CARRY": {
+    "n": 107,
+    "median_mad": 0.0,
+    "p95_mad": 0.0,
+    "max_mad": 0.0
+   }
+  },
+  "worst": {
+   "pair": 0,
+   "phase": "CARRY",
+   "mad": 0.0
+  },
+  "overall": {
+   "median_mad": 0.0,
+   "p95_mad": 0.0,
+   "max_mad": 0.0,
+   "budget": 2.0
+  }
+ }
+}

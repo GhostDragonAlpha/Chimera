@@ -1,0 +1,183 @@
+{
+ "schema": "chimera.entry_pose.v1",
+ "provenance": {
+  "script": "tools/science_funnel/validation/gait_zero_20260919/derive_entry_pose.py",
+  "law": "standing seating pin (pad flat at +2e-6) pins (q1,q2); capture equation selects the branch; settle transfer measured on the wave-13 baseline (delta applied); entry clock = lateral-sequence lift grid",
+  "measured": {
+   "v_settle_end_m_s": 0.42044,
+   "x_off_m": 0.10194198460000001,
+   "x_off_engine_at_arm_m": 0.101938,
+   "theta_capture_deg": -10.68131,
+   "offset0_measured_m": {
+    "fore_left": -0.21567,
+    "fore_right": -0.209846
+   },
+   "offset0_old_pose_assembly_prediction_m": {
+    "left": -0.11765843883716563,
+    "right": -0.11765843883716563
+   },
+   "delta_settle_m": {
+    "left": -0.09801156116283437,
+    "right": -0.09218756116283437
+   },
+   "delta_settle_capture_lean_m": {
+    "left": -0.1018735262634245,
+    "right": -0.0960495262634245
+   }
+  }
+ },
+ "validation": {
+  "old_pose_prediction_note": "delta_settle is DEFINED on the old pose; its pose-invariance to first order is the theory the pose_installed falsifier tests"
+ },
+ "branches": [
+  {
+   "q1_rad": 0.9029386145702685,
+   "q2_rad": -0.9679637124077962,
+   "lean_rad": -0.2064327,
+   "offset_reset": {
+    "left": 0.07446159540000169,
+    "right": 0.07446159540000169
+   },
+   "offset_at_capture_lean": {
+    "left": 0.07909019403834433,
+    "right": 0.07909019403834433
+   },
+   "capture_prediction_transfer": {
+    "left": -0.018921367124490038,
+    "right": -0.013097367124490042
+   },
+   "capture_prediction_transfer_capture_delta": {
+    "left": -0.022783332225080166,
+    "right": -0.01695933222508017
+   },
+   "mean_abs_error_vs_xoff_m": 0.11795135172449005
+  },
+  {
+   "q1_rad": -0.9029386145702687,
+   "q2_rad": 0.837913516732741,
+   "lean_rad": -0.2064327,
+   "offset_reset": {
+    "left": -0.1176584411874389,
+    "right": -0.1176584411874389
+   },
+   "offset_at_capture_lean": {
+    "left": -0.11379634149662349,
+    "right": -0.11379634149662349
+   },
+   "capture_prediction_transfer": {
+    "left": -0.21180790265945787,
+    "right": -0.20598390265945787
+   },
+   "capture_prediction_transfer_capture_delta": {
+    "left": -0.21566986776004798,
+    "right": -0.209845867760048
+   },
+   "mean_abs_error_vs_xoff_m": 0.3108378872594579
+  }
+ ],
+ "chosen": {
+  "q1_rad": 0.9029386145702685,
+  "q2_rad": -0.9679637124077962,
+  "lean_rad": -0.2064327,
+  "offset_reset": {
+   "left": 0.07446159540000169,
+   "right": 0.07446159540000169
+  },
+  "offset_at_capture_lean": {
+   "left": 0.07909019403834433,
+   "right": 0.07909019403834433
+  },
+  "capture_prediction_transfer": {
+   "left": -0.018921367124490038,
+   "right": -0.013097367124490042
+  },
+  "capture_prediction_transfer_capture_delta": {
+   "left": -0.022783332225080166,
+   "right": -0.01695933222508017
+  },
+  "mean_abs_error_vs_xoff_m": 0.11795135172449005
+ },
+ "seating_scan": {
+  "reset_gaps_m": [
+   1.9999999999742446e-06,
+   1.9999999999742446e-06,
+   1.9999999999742446e-06,
+   1.9999999999742446e-06,
+   1.9999999999742446e-06,
+   1.999999999946489e-06,
+   1.9999999999742446e-06,
+   1.999999999946489e-06
+  ],
+  "com_projection_model_m": [
+   0.023189367548867686,
+   -8.640784128353116e-20
+  ],
+  "assembly_mass_kg": 10.037998000000004,
+  "weight_N": 98.43913308670002,
+  "fore_gaps_at_leaned_reset": {
+   "left": [
+    0.015975520697320333,
+    2.000000000002e-06
+   ],
+   "right": [
+    0.015975520697320333,
+    2.000000000002e-06
+   ]
+  }
+ },
+ "envelope": {
+  "x_off_m": 0.10194198460000001,
+  "amax_at_capture_height_m": 0.24823575345115503,
+  "per_leg": {
+   "fore_right": {
+    "lift_wait_ticks": 92.22899999999998,
+    "offset_at_lift_m": -0.027313884599999977,
+    "annulus_bound_m": 0.24823575345115503,
+    "margin_m": 0.2195204021844884
+   },
+   "fore_left": {
+    "lift_wait_ticks": 198.729,
+    "offset_at_lift_m": -0.17657008460000004,
+    "annulus_bound_m": 0.24823575345115503,
+    "margin_m": 0.07026420218448833
+   }
+  },
+  "sweep": {
+   "total_sweep_m": 0.28388396920000003,
+   "bound_m": 0.49647150690231007,
+   "closes": true
+  }
+ },
+ "entry_clock": {
+  "fore_right": {
+   "hind_phase": 0.5,
+   "lift_wait_s": 0.30743,
+   "lift_wait_ticks": 92.22899999999998
+  },
+  "fore_left": {
+   "hind_phase": 0.0,
+   "lift_wait_s": 0.6624300000000001,
+   "lift_wait_ticks": 198.729
+  }
+ },
+ "statics": {
+  "weight_N": 98.43913308670001,
+  "pad_reaction_N": 22.148804944507503,
+  "demands_N_m": {
+   "left": {
+    "shoulder": 2.5859618088309166,
+    "elbow": 1.042719875645518
+   },
+   "right": {
+    "shoulder": 2.5859618088309166,
+    "elbow": 1.042719875645518
+   }
+  },
+  "shoulder_cap_N_m": 4.229,
+  "elbow_cap_N_m": 3.76
+ },
+ "targets": {
+  "shoulder_rad": 0.9029386145702685,
+  "elbow_rad": -0.9679637124077962
+ }
+}

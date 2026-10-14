@@ -51,7 +51,11 @@ BUDGET = 400
 SEED = 0          # fixed: the trainer needs genome -> score to be deterministic
 
 
-def seed() -> dict:
+def seed(rng=None) -> dict:
+    # protocol alignment 2026-09-18: the trainer passes seed(rng); this
+    # domain is a deterministic live-value fixture, so the rng is accepted
+    # and intentionally unused (a fixed point, not a random draw).
+    del rng  # noqa: F841
     """A deliberately MEDIOCRE starting design - not a good one.
 
     Seeding near a known-good answer would be hand-tuning wearing a trainer's coat: the

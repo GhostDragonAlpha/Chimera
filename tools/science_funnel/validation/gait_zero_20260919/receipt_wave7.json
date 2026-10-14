@@ -1,0 +1,34 @@
+{
+ "lane": "buffy/gait-wave7-sole-contact from origin/codex/force-data-runtime-20260916",
+ "base": "9c66c99d",
+ "date": "2026-09-19",
+ "agent": "Buffy",
+ "deliverable": "Sole-segment contact runtime: heel/MP contract endpoints remain unchanged, while each foot contributes one migrating CoP row and the [pt] meter reports that CoP position under both endpoint names.",
+ "rule_0_membrane": {
+  "statement": "A plantigrade macaque foot loads through a migrating CoP along the heel-to-MP sole segment rather than two independent point contacts.",
+  "implementation": "The minimum endpoint gap selects the sole row location; when both endpoint gaps are in the flat loaded band, the deterministic interior tie is the segment midpoint. Normal and tangential Jacobians, friction, plane arming, impacts, positional correction, and contact events use the same row. Contract contact_points are unchanged.",
+  "flat_phase_derivation": "At the midpoint lever (0.031 m from the ankle), 98.4391527 N gives 3.0516137 N.m, below the approximately 4 N.m falsifier threshold; this is the geometric sole-row demand bound, not a claim that the dynamic walk passed.",
+  "meter": "[pt] now prints cop_x/cop_y for each named heel/MP endpoint; the active reaction is booked once on the heel representative so the existing GRF sum does not double-count the sole."
+ },
+ "measurements": {
+  "native": "F-G5 free_fall_m_s2=-9.806650; drop_m=0.544814; stand_fold_deg=5.117769",
+  "walk": "refused_tick=86; cycle_ticks=213; full_cycle=false; refusal=gait_impact_event_budget",
+  "ledger": "worst_moving_ledger_J=2.999892; no new ledger channel; residual is the pre-existing constrained-RK4/accounting residual.",
+  "trace": "At the refusal, named heel and MP rows reported the same migrating CoP position and only one nonzero per-foot reaction (for example left cop=(0.20724,-0.00000), rxn=21.125 N; right cop=(0.15901,0.00000), rxn=19.072 N)."
+ },
+ "falsifiers": {
+  "f1_flat_ankle_demand": "PASS geometrically: 3.0516137 N.m midpoint lever.",
+  "f2_survive_tick_118": "FAIL: refusal at tick 86, earlier than wave 6 tick 88 and target tick 118.",
+  "f3_FG5": "PASS: free fall is -9.806650 m/s2 and stand fold is measured at 5.117769 degrees.",
+  "f4_FG7": "PASS: streams bit-identical=1.",
+  "ledger_FG8": "RED as pre-existing: worst moving residual 2.999892 J; no unbooked channel added."
+ },
+ "suite": {
+  "checks": 32,
+  "red_falsifiers": 4,
+  "pass": false
+ },
+ "graph_tests": "PASS: 33 tests, OK (using POSIX PYTHONPATH with repository root and tools/creature_graph/tests).",
+ "build": "PASS: gait_unit and gait_unit_trace Release targets.",
+ "honest_summary": "The sole row and migrating CoP instrumentation are implemented and the flat geometric falsifier is green, but the native walk did not survive: it reaches the ankle-stop/event-budget wall at tick 86. F-G5 and F-G7 remain green; the walk, full-cycle envelope, and pre-existing ledger closure remain red and are not being relabeled as fixed."
+}

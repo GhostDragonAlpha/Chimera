@@ -1,0 +1,117 @@
+{
+ "kernel_conformance": {
+  "pass": true,
+  "measured": {
+   "parser": "tools.matter_kernel.definition.parse_body",
+   "membranes": 25,
+   "bonds": 21,
+   "stated_vs_kernel_derived_mass_max_rel": 2.1607093527137095e-06
+  }
+ },
+ "geometry_preserved": {
+  "pass": true,
+  "measured": {
+   "compartments": 25,
+   "face_count_equal": true,
+   "vertex_count_equal": true,
+   "per_face_float32_equal": true,
+   "worst_bbox_dev_mm": 6.269765634669966e-06,
+   "bbox_tolerance_mm": 0.001,
+   "vertex_sha256_all_match": true,
+   "losses": "none itemized; all 25 compartments byte-canonical"
+  }
+ },
+ "adjacency_reproduced": {
+  "pass": true,
+  "measured": {
+   "edges": 21,
+   "invented_joints": 0,
+   "dropped_joints": 0,
+   "max_rest_length_dev_mm": 0.0,
+   "components": [
+    [
+     1
+    ],
+    [
+     2,
+     6,
+     15,
+     20,
+     22,
+     25
+    ],
+    [
+     3,
+     7,
+     17,
+     18,
+     21,
+     23,
+     24
+    ],
+    [
+     4,
+     8,
+     10,
+     12
+    ],
+    [
+     5,
+     9,
+     11,
+     13
+    ],
+    [
+     14
+    ],
+    [
+     16
+    ],
+    [
+     19
+    ]
+   ],
+   "components_note": "8 honest components: 4 measured chains + the axial composite + 3 singletons with NO measured adjacency; cross-component joints are successor measurement work, never invented here"
+  }
+ },
+ "mass_book": {
+  "pass": true,
+  "measured": {
+   "total_mass_g": 52.3139,
+   "mass_window_g": [
+    30.0,
+    65.0
+   ],
+   "in_window": true,
+   "total_volume_mesh_mm3": 27533.6503,
+   "total_volume_voxel_mm3": 28176.47,
+   "total_volume_delta_pct": -2.281,
+   "worst_compartment_delta_pct": -3.2708,
+   "worst_compartment": "mem.bone_01",
+   "fraction_of_body_band_pct": [
+    9.51,
+    13.08
+   ],
+   "skeleton_fraction_band_pct": [
+    8.0,
+    15.0
+   ],
+   "lands_in_band": true,
+   "prange_predicted_g": [
+    26.08,
+    36.9
+   ],
+   "deviation_vs_regression": "named, not tuned: adult cortical density (1900 kg/m^3) is the cited UPPER ANCHOR: infant bone is under-mineralized (Rauch 2001), so true compartment masses sit below these numbers; the CT bone threshold (118, 95th percentile) includes partially mineralized growth cartilage in this infant, so volumes include some non-bone mineralized tissue; the cortical tissue density is applied to whole-bone volume (porous trabecular cores included), biasing masses HIGH; all three biases point the same direction and are named, not tuned"
+  }
+ },
+ "stage_true": {
+  "pass": true,
+  "measured": {
+   "life_stage": "infant",
+   "scale": 1.0,
+   "allometric_scaling_applied": false,
+   "transform": "identity -- writer packs source coordinates through float32 only; proven by geometry_preserved hashes",
+   "provenance": "MorphoSource media 000875604 metadata: Macaca mulatta USNM 497136-3, infant, 160 um CT (meshes/manifest.json source field + download_receipt.json)"
+  }
+ }
+}

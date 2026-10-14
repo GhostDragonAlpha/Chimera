@@ -1,0 +1,212 @@
+{
+ "schema": "chimera.level_entry.v1",
+ "provenance": {
+  "script": "tools/science_funnel/validation/gait_zero_20260919/derive_level_entry.py",
+  "law": "strut-bound law D(lean)=raw_heel(lean)-min_p raw_p(lean)+2e-6 (the seat sets every dangle); linear in lean through (D(0), D(+/-theta_vault)); theta_e=0 the unique minimum, on the vault table at its zero crossing; hand-off amp=clamp((t-t_capture)/T_cycle,0,1)",
+  "pose_source": "derived_entry_pose.json (wave-14 standing pin, forward branch, unchanged)",
+  "measured": {
+   "D_SURV_m": 0.059,
+   "D_LIVED_m": 0.1744,
+   "theta_vault_rad": 0.2064,
+   "delta_settle_m": {
+    "left": -0.098,
+    "right": -0.0922
+   },
+   "v_settle_prior_m_s": 0.42044
+  }
+ },
+ "strut_law": {
+  "level": {
+   "lean_rad": 0.0,
+   "base_trans_y_m": 0.34500200000000003,
+   "raw_heights_m": {
+    "left_heel": -0.2988408081778097,
+    "left_mp_head": -0.27523965405778744,
+    "right_heel": -0.2531450563757697,
+    "right_mp_head": -0.2958768228627591,
+    "fore_left_heel": -0.345,
+    "fore_left_mp_head": -0.34500000000000003,
+    "fore_right_heel": -0.345,
+    "fore_right_mp_head": -0.34500000000000003
+   },
+   "gaps_m": {
+    "left_heel": 0.04616119182219028,
+    "left_mp_head": 0.06976234594221258,
+    "right_heel": 0.09185694362423037,
+    "right_mp_head": 0.04912517713724092,
+    "fore_left_heel": 2.0000000000297558e-06,
+    "fore_left_mp_head": 2.000000000002e-06,
+    "fore_right_heel": 2.0000000000297558e-06,
+    "fore_right_mp_head": 2.000000000002e-06
+   },
+   "d_td_heel_m": 0.046161191822190306,
+   "all_paw_spread_m": 0.09185494362423036,
+   "fore_lr_gap_equality_m": 0.0
+  },
+  "leaned": {
+   "lean_rad": -0.2064,
+   "base_trans_y_m": 0.42630326277159686,
+   "raw_heights_m": {
+    "left_heel": -0.32111350316453513,
+    "left_mp_head": -0.31496124881340015,
+    "right_heel": -0.21163372475939612,
+    "right_mp_head": -0.26875350053138114,
+    "fore_left_heel": -0.40863929870973165,
+    "fore_left_mp_head": -0.42630126277159686,
+    "fore_right_heel": -0.40863929870973165,
+    "fore_right_mp_head": -0.42630126277159686
+   },
+   "gaps_m": {
+    "left_heel": 0.10518975960706174,
+    "left_mp_head": 0.11134201395819672,
+    "right_heel": 0.21466953801220076,
+    "right_mp_head": 0.15754976224021575,
+    "fore_left_heel": 0.01766396406186521,
+    "fore_left_mp_head": 1.9999999999742446e-06,
+    "fore_right_heel": 0.01766396406186521,
+    "fore_right_mp_head": 1.9999999999742446e-06
+   },
+   "d_td_heel_m": 0.10518975960706173,
+   "all_paw_spread_m": 0.21466753801220073,
+   "fore_lr_gap_equality_m": 0.0
+  },
+  "nose_up": {
+   "lean_rad": 0.2064,
+   "base_trans_y_m": 0.31044219247255306,
+   "raw_heights_m": {
+    "left_heel": -0.26388233947729045,
+    "left_mp_head": -0.22383415311235316,
+    "right_heel": -0.28391039609923585,
+    "right_mp_head": -0.31044019247255306,
+    "fore_left_heel": -0.26671547275556695,
+    "fore_left_mp_head": -0.24905350869370174,
+    "fore_right_heel": -0.26671547275556695,
+    "fore_right_mp_head": -0.24905350869370174
+   },
+   "gaps_m": {
+    "left_heel": 0.04655985299526258,
+    "left_mp_head": 0.0866080393601999,
+    "right_heel": 0.026531796373317186,
+    "right_mp_head": 1.9999999999950613e-06,
+    "fore_left_heel": 0.043726719716986134,
+    "fore_left_mp_head": 0.06138868377885133,
+    "fore_right_heel": 0.043726719716986134,
+    "fore_right_mp_head": 0.06138868377885133
+   },
+   "d_td_heel_m": 0.04655985299526261,
+   "all_paw_spread_m": 0.0866060393601999,
+   "fore_lr_gap_equality_m": 0.0
+  },
+  "slope_neg_rad_m": 0.28599112298871815,
+  "slope_pos_rad_m": 0.0019314979315518464,
+  "theta_admissible_min_rad": -0.04489233107531159,
+  "back_branch_calibration": {
+   "leaned": {
+    "d_td_heel_m": 0.06495526589772255,
+    "all_paw_spread_m": 0.17443304430286155,
+    "base_trans_y_m": 0.3860687690622577
+   },
+   "level_d_td_heel_m": 0.04615568863903158,
+   "note": "wave-13 back branch re-measured on the Assembly; its leaned TD-heel dangle is the 5.9-6.5 cm survivable marker"
+  }
+ },
+ "require_collision": {
+  "finding": "the single-support require gait_entry_swing_not_clear demands min(right heights) > min(left heights); at the level reset the L/R fore pads seat symmetrically (gap equality below) so the strict ordering is impossible at ANY seat",
+  "fore_lr_gap_equality_m": 0.0,
+  "resolution": "the require is scoped to the single-support (biped) path exactly as its own comment states; the quadruped TD-entry path enforces the strut bound instead (scene require: TD-heel dangle <= D_SURV and every paw dangle <= D_LIVED)"
+ },
+ "zero_crossing": {
+  "phi_zero_crossing": 0.1417644865698658,
+  "theta_at_crossing_rad": 1.3877787807814457e-17,
+  "theta_at_wave8_phase_0.35_rad": 0.3959534,
+  "table": [
+   -0.2064327,
+   -0.1606186,
+   -0.0864793,
+   0.0170528,
+   0.1429618,
+   0.2474858,
+   0.3236955,
+   0.3959534,
+   0.4587441,
+   0.5068897,
+   0.5364585,
+   0.5449526,
+   0.531481,
+   0.4822545,
+   0.3677718,
+   0.2243069,
+   0.0849944,
+   -0.037475,
+   -0.1314458,
+   -0.1912134,
+   -0.2166626
+  ]
+ },
+ "leg_geometry_laws": {
+  "contact_vy_m_s": -0.14599348483108684,
+  "contact_vx_m_s": -0.7636247889696474,
+  "no_skid_speed_m_s": 0.7636247889696474
+ },
+ "capture_prediction": {
+  "reset_offset_m": {
+   "left": 0.12045206304241973,
+   "right": 0.12045206304241973
+  },
+  "predicted_capture_offset_m": {
+   "left": 0.02245206304241973,
+   "right": 0.02825206304241973
+  },
+  "predicted_mean_m": 0.02535206304241973,
+  "band_half_width_m": 0.025
+ },
+ "envelope": {
+  "x_off_prior_m": 0.10194198460000001,
+  "amax_at_level_capture_m": 0.24823575345115503,
+  "per_leg": {
+   "fore_right": {
+    "grid_lift_wait_ticks": 92.22899999999998,
+    "tau_env_ticks": 194.21535759697562,
+    "lift_wait_ticks": 92.22899999999998,
+    "offset_at_lift_m": -0.10390380615758026,
+    "annulus_bound_m": 0.24823575345115503,
+    "margin_m": 0.14293048062690814
+   },
+   "fore_left": {
+    "grid_lift_wait_ticks": 198.729,
+    "tau_env_ticks": 194.21535759697562,
+    "lift_wait_ticks": 194.21535759697562,
+    "offset_at_lift_m": -0.24683428678448843,
+    "annulus_bound_m": 0.24823575345115503,
+    "margin_m": -6.570265165262157e-17
+   }
+  },
+  "note": "the LF grid lift (198.7) exceeds tau_env at the near-central capture; the committed clock clamps to tau_env -- named, measured by the stagger census"
+ },
+ "handoff": {
+  "law": "amp(t)=clamp((t-t_capture)/T_cycle,0,1); target_post=amp*theta*(phi); v2 init = amp(0)*table_slope = 0",
+  "blend_ticks": 212.99999999999997,
+  "trunk_handoff_ticks": 212.99999999999997
+ },
+ "statics": {
+  "weight_N": 98.43913308670001,
+  "pad_reaction_N": 22.148804944507503,
+  "demands_N_m": {
+   "left": {
+    "shoulder": 3.607407119942715,
+    "elbow": 1.4529689167453108
+   },
+   "right": {
+    "shoulder": 3.607407119942715,
+    "elbow": 1.4529689167453108
+   }
+  },
+  "shoulder_cap_N_m": 4.229,
+  "elbow_cap_N_m": 3.76
+ },
+ "entry_state": {
+  "entry_trunk_rad": 0.0,
+  "start_phase_left": 0.0,
+  "start_phase_right": 0.5
+ }
+}

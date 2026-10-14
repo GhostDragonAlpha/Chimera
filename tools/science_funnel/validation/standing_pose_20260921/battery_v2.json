@@ -1,0 +1,1337 @@
+{
+ "a5_refusal_demos": [
+  {
+   "bond": "bond.joint_01_02",
+   "edge": "hi",
+   "refusal": "out_of_anatomical_range",
+   "refused": true
+  },
+  {
+   "bond": "bond.joint_01_02",
+   "edge": "lo",
+   "refusal": "out_of_anatomical_range",
+   "refused": true
+  },
+  {
+   "bond": "bond.joint_02_06",
+   "edge": "hi",
+   "refusal": "out_of_anatomical_range",
+   "refused": true
+  },
+  {
+   "bond": "bond.joint_02_06",
+   "edge": "lo",
+   "refusal": "out_of_anatomical_range",
+   "refused": true
+  },
+  {
+   "bond": "bond.joint_04_10",
+   "edge": "hi",
+   "refusal": "out_of_anatomical_range",
+   "refused": true
+  },
+  {
+   "bond": "bond.joint_04_10",
+   "edge": "lo",
+   "refusal": "out_of_anatomical_range",
+   "refused": true
+  },
+  {
+   "bond": "bond.joint_06_25",
+   "edge": "hi",
+   "refusal": "out_of_anatomical_range",
+   "refused": true
+  },
+  {
+   "bond": "bond.joint_06_25",
+   "edge": "lo",
+   "refusal": "out_of_anatomical_range",
+   "refused": true
+  }
+ ],
+ "amended_definition": {
+  "T1_V_le_V_v1": false,
+  "T2_d_le_d_v1": false,
+  "V_pose": 1.943840101101,
+  "V_v1_band": 2.1e-11,
+  "argmin_membrane": "bone_16",
+  "d_pose": 0.010404074223,
+  "d_v1_band": 0.0,
+  "epsilon_readings": {
+   "primary_0.08_tol_ip": {
+    "T3_all_21_non_pad_above": false,
+    "T3_violations": {
+     "bone_01": 18.948499956062,
+     "bone_02": 26.417554646316,
+     "bone_03": 8.745692788065,
+     "bone_04": 14.58980816541,
+     "bone_05": 16.939712839908,
+     "bone_06": 26.417554646337,
+     "bone_07": 12.071098863925,
+     "bone_10": 22.431478656699,
+     "bone_11": 20.125339409559,
+     "bone_12": 17.437553234487,
+     "bone_13": 14.688384607938,
+     "bone_14": 23.49339929026,
+     "bone_16": 26.417554646347,
+     "bone_18": 26.417554646333,
+     "bone_19": 24.123364587687,
+     "bone_20": 25.161134160519,
+     "bone_21": 4.621429439235,
+     "bone_24": 8.06634249053,
+     "bone_25": 4.404870536249
+    },
+    "T4_pads_centroids_within": false,
+    "T5_skull_region_above": false,
+    "epsilon_mm": 0.08
+   },
+   "secondary_3.0_cut": {
+    "T3_all_21_non_pad_above": false,
+    "T3_violations": {
+     "bone_01": 21.868499956062,
+     "bone_02": 29.337554646316,
+     "bone_03": 11.665692788065,
+     "bone_04": 17.50980816541,
+     "bone_05": 19.859712839908,
+     "bone_06": 29.337554646337,
+     "bone_07": 14.991098863925,
+     "bone_10": 25.351478656699,
+     "bone_11": 23.045339409559,
+     "bone_12": 20.357553234487,
+     "bone_13": 17.608384607938,
+     "bone_14": 26.41339929026,
+     "bone_15": 2.856604037547,
+     "bone_16": 29.337554646347,
+     "bone_18": 29.337554646333,
+     "bone_19": 27.043364587687,
+     "bone_20": 28.081134160519,
+     "bone_21": 7.541429439235,
+     "bone_24": 10.98634249053,
+     "bone_25": 7.324870536249
+    },
+    "T4_pads_centroids_within": true,
+    "T5_skull_region_above": false,
+    "epsilon_mm": 3.0
+   }
+  },
+  "head_window_cut_mm": 157.039993286133,
+  "min_non_pad_h_min_mm": -26.337554646347,
+  "pad_report": {
+   "bone_08": {
+    "h_cen_mm": 2.129629680821,
+    "h_max_mm": 11.61694115096,
+    "h_min_mm": -9.340545326987
+   },
+   "bone_09": {
+    "h_cen_mm": -1.397440390978,
+    "h_max_mm": 9.060324233481,
+    "h_min_mm": -13.266923781307
+   },
+   "bone_22": {
+    "h_cen_mm": -0.314889598085,
+    "h_max_mm": 2.005942042869,
+    "h_min_mm": -4.191250639562
+   },
+   "bone_23": {
+    "h_cen_mm": 1.726592022966,
+    "h_max_mm": 5.196602966191,
+    "h_min_mm": -4.408927157299
+   }
+  },
+  "per_membrane": {
+   "bone_01": {
+    "h_cen_mm": 10.097137060829,
+    "h_min_mm": -18.868499956062
+   },
+   "bone_02": {
+    "h_cen_mm": -8.055335461056,
+    "h_min_mm": -26.337554646316
+   },
+   "bone_03": {
+    "h_cen_mm": 3.865579055178,
+    "h_min_mm": -8.665692788065
+   },
+   "bone_04": {
+    "h_cen_mm": 4.158270699226,
+    "h_min_mm": -14.50980816541
+   },
+   "bone_05": {
+    "h_cen_mm": 3.121569478269,
+    "h_min_mm": -16.859712839908
+   },
+   "bone_06": {
+    "h_cen_mm": -14.121516681892,
+    "h_min_mm": -26.337554646337
+   },
+   "bone_07": {
+    "h_cen_mm": -5.923770594543,
+    "h_min_mm": -11.991098863925
+   },
+   "bone_10": {
+    "h_cen_mm": -1.631103134901,
+    "h_min_mm": -22.351478656699
+   },
+   "bone_11": {
+    "h_cen_mm": -0.403776852325,
+    "h_min_mm": -20.045339409559
+   },
+   "bone_12": {
+    "h_cen_mm": 7.628997983382,
+    "h_min_mm": -17.357553234487
+   },
+   "bone_13": {
+    "h_cen_mm": 9.694719179018,
+    "h_min_mm": -14.608384607938
+   },
+   "bone_14": {
+    "h_cen_mm": -14.645309303024,
+    "h_min_mm": -23.41339929026
+   },
+   "bone_15": {
+    "h_cen_mm": 7.473856481346,
+    "h_min_mm": 0.143395962453
+   },
+   "bone_16": {
+    "h_cen_mm": -20.248061601873,
+    "h_min_mm": -26.337554646347
+   },
+   "bone_17": {
+    "h_cen_mm": 10.015898073802,
+    "h_min_mm": 5.23921754198
+   },
+   "bone_18": {
+    "h_cen_mm": -18.966940080856,
+    "h_min_mm": -26.337554646333
+   },
+   "bone_19": {
+    "h_cen_mm": -16.144377735146,
+    "h_min_mm": -24.043364587687
+   },
+   "bone_20": {
+    "h_cen_mm": -15.311711225295,
+    "h_min_mm": -25.081134160519
+   },
+   "bone_21": {
+    "h_cen_mm": -0.935340668677,
+    "h_min_mm": -4.541429439235
+   },
+   "bone_24": {
+    "h_cen_mm": -3.493543581244,
+    "h_min_mm": -7.98634249053
+   },
+   "bone_25": {
+    "h_cen_mm": -0.516010001606,
+    "h_min_mm": -4.324870536249
+   }
+  },
+  "plane_normal_ct": [
+   0.103245055057,
+   0.981388460286,
+   -0.161917104171
+  ],
+  "skull_region_h_min_mm": -18.868499956062
+ },
+ "amendment_4_sha256": "3ad74c4469d795a0d70222d5f17f204ae2f1eab02182b1168c28d3a5bc276f70",
+ "base_commit": "4ea008cb",
+ "class_band_rows_PA3": [
+  {
+   "band": 1.0,
+   "theta": -0.165320806474,
+   "var": "hipL_flexion",
+   "within_band": true
+  },
+  {
+   "band": 0.5,
+   "theta": 0.100282239264,
+   "var": "hipL_adduction",
+   "within_band": true
+  },
+  {
+   "band": 0.5,
+   "theta": -1.051724601799,
+   "var": "hipL_rotation",
+   "within_band": false
+  },
+  {
+   "band": 1.0,
+   "theta": -0.33856691173,
+   "var": "hipR_flexion",
+   "within_band": true
+  },
+  {
+   "band": 0.5,
+   "theta": -0.16403620298,
+   "var": "hipR_adduction",
+   "within_band": true
+  },
+  {
+   "band": 0.5,
+   "theta": 1.171761174526,
+   "var": "hipR_rotation",
+   "within_band": false
+  },
+  {
+   "band": 0.5,
+   "theta": -1.529703270737,
+   "var": "kneeL",
+   "within_band": false
+  },
+  {
+   "band": 0.5,
+   "theta": 0.17453293,
+   "var": "kneeR",
+   "within_band": true
+  },
+  {
+   "band": 0.2,
+   "theta": -0.008764793344,
+   "var": "driverL_06_25",
+   "within_band": true
+  },
+  {
+   "band": 0.2,
+   "theta": -0.336814054509,
+   "var": "driverR_07_24",
+   "within_band": false
+  }
+ ],
+ "determinism_rows": {
+  "maximin_reproduce": {
+   "start": "v1_pose_of_record",
+   "status": 0,
+   "success": true,
+   "t_max_reproduced": true,
+   "x_R12_reproduced": true
+  }
+ },
+ "falsifiers_fired": [],
+ "hard_checks_pass": true,
+ "immobility": {
+  "bond.joint_02_15": {
+   "abs_dev_mm": 0.0,
+   "gap_at_pose_mm": 1.006079836161,
+   "gap_at_rest_mm": 1.006079836161,
+   "ok": true,
+   "transforms_bitwise_identical": true
+  },
+  "bond.joint_03_17": {
+   "abs_dev_mm": 0.0,
+   "gap_at_pose_mm": 0.690528080657,
+   "gap_at_rest_mm": 0.690528080657,
+   "ok": true,
+   "transforms_bitwise_identical": true
+  },
+  "bond.joint_04_08": {
+   "abs_dev_mm": 0.0,
+   "gap_at_pose_mm": 0.733212244392,
+   "gap_at_rest_mm": 0.733212244392,
+   "ok": true,
+   "transforms_bitwise_identical": true
+  },
+  "bond.joint_05_09": {
+   "abs_dev_mm": 0.0,
+   "gap_at_pose_mm": 0.860892576213,
+   "gap_at_rest_mm": 0.860892576213,
+   "ok": true,
+   "transforms_bitwise_identical": true
+  },
+  "bond.joint_06_20": {
+   "abs_dev_mm": 0.0,
+   "gap_at_pose_mm": 0.479999542236,
+   "gap_at_rest_mm": 0.479999542236,
+   "ok": true,
+   "transforms_bitwise_identical": true
+  },
+  "bond.joint_07_21": {
+   "abs_dev_mm": 0.0,
+   "gap_at_pose_mm": 0.452547908376,
+   "gap_at_rest_mm": 0.452547908376,
+   "ok": true,
+   "transforms_bitwise_identical": true
+  },
+  "bond.joint_10_12": {
+   "abs_dev_mm": 0.0,
+   "gap_at_pose_mm": 0.375232902945,
+   "gap_at_rest_mm": 0.375232902945,
+   "ok": true,
+   "transforms_bitwise_identical": true
+  },
+  "bond.joint_11_13": {
+   "abs_dev_mm": 0.0,
+   "gap_at_pose_mm": 0.471213854419,
+   "gap_at_rest_mm": 0.471213854419,
+   "ok": true,
+   "transforms_bitwise_identical": true
+  }
+ },
+ "lane": "agent/standing-pose-v2-20260921",
+ "loops": {
+  "cycle_A": {
+   "abs_dev_mm": 0.531640349318,
+   "breach_below_resolution": true,
+   "breach_mm": 2.7e-11,
+   "driver_theta_rad": -0.008764793344,
+   "loop_bond": "bond.joint_20_25",
+   "seat_at_pose_mm": 3.000000000027,
+   "seat_at_rest_mm": 2.468359650708,
+   "within_cut_amendment_5": true
+  },
+  "cycle_B": {
+   "abs_dev_mm": 0.10006910104,
+   "breach_below_resolution": true,
+   "breach_mm": 1e-12,
+   "driver_theta_rad": -0.336814054509,
+   "loop_bond": "bond.joint_21_24",
+   "seat_at_pose_mm": 3.000000000001,
+   "seat_at_rest_mm": 2.899930898961,
+   "within_cut_amendment_5": true
+  }
+ },
+ "mass": {
+  "bone_02": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_03": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_06": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_07": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_10": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_11": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_12": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_13": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_15": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_17": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_18": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_20": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_21": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_22": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_23": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_24": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_25": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  }
+ },
+ "maximin": {
+  "V_at_pose": 1.943840101124,
+  "argmin_membrane": "bone_16",
+  "binding_bounds": [
+   {
+    "binding": false,
+    "bound": -2.0943951,
+    "distance_rad": 1.929074293526,
+    "nearest_bound": "lo",
+    "theta": -0.165320806474,
+    "var": "hipL_flexion"
+   },
+   {
+    "binding": false,
+    "bound": 2.0943951,
+    "distance_rad": 1.994112860736,
+    "nearest_bound": "hi",
+    "theta": 0.100282239264,
+    "var": "hipL_adduction"
+   },
+   {
+    "binding": false,
+    "bound": -2.0943951,
+    "distance_rad": 1.042670498201,
+    "nearest_bound": "lo",
+    "theta": -1.051724601799,
+    "var": "hipL_rotation"
+   },
+   {
+    "binding": false,
+    "bound": -2.0943951,
+    "distance_rad": 1.75582818827,
+    "nearest_bound": "lo",
+    "theta": -0.33856691173,
+    "var": "hipR_flexion"
+   },
+   {
+    "binding": false,
+    "bound": -2.0943951,
+    "distance_rad": 1.93035889702,
+    "nearest_bound": "lo",
+    "theta": -0.16403620298,
+    "var": "hipR_adduction"
+   },
+   {
+    "binding": false,
+    "bound": 2.0943951,
+    "distance_rad": 0.922633925474,
+    "nearest_bound": "hi",
+    "theta": 1.171761174526,
+    "var": "hipR_rotation"
+   },
+   {
+    "binding": false,
+    "bound": -2.0943951,
+    "distance_rad": 0.564691829263,
+    "nearest_bound": "lo",
+    "theta": -1.529703270737,
+    "var": "kneeL"
+   },
+   {
+    "binding": true,
+    "bound": 0.17453293,
+    "distance_rad": 0.0,
+    "nearest_bound": "hi",
+    "theta": 0.17453293,
+    "var": "kneeR"
+   },
+   {
+    "binding": false,
+    "bound": -0.34906585,
+    "distance_rad": 0.340301056656,
+    "nearest_bound": "lo",
+    "theta": -0.008764793344,
+    "var": "driverL_06_25"
+   },
+   {
+    "binding": false,
+    "bound": -0.34906585,
+    "distance_rad": 0.012251795491,
+    "nearest_bound": "lo",
+    "theta": -0.336814054509,
+    "var": "driverR_07_24"
+   }
+  ],
+  "binding_named": [
+   "kneeR@hi"
+  ],
+  "both_starts": {
+   "rest": {
+    "lawful_screen_FV2": false,
+    "seat_breach_mm_recorded": 6.3e-11,
+    "status": 9,
+    "success": false,
+    "t_max_mm": -26.337554648374
+   },
+   "v1_pose_of_record": {
+    "lawful_screen_FV2": true,
+    "seat_breach_mm_recorded": 0.0,
+    "status": 0,
+    "success": true,
+    "t_max_mm": -26.337554646317
+   }
+  },
+  "cap_breaches_recorded": {
+   "V_over_mm2": 0.0,
+   "d_over": 0.0
+  },
+  "cap_slack_V": 0.0,
+  "cap_slack_d": 0.0,
+  "d_at_pose": 0.010404074223,
+  "pose_of_record_start": "v1_pose_of_record",
+  "seat_breach_mm_recorded": 0.0,
+  "t_max_mm": -26.337554646317
+ },
+ "non_hip_seats": {
+  "bond.joint_02_06": {
+   "breach_below_resolution": false,
+   "breach_mm": 0.0,
+   "gap_at_pose_mm": 0.033406660597,
+   "gap_at_rest_mm": 2.910947696492,
+   "within_cut_amendment_5": true
+  },
+  "bond.joint_03_07": {
+   "breach_below_resolution": false,
+   "breach_mm": 0.0,
+   "gap_at_pose_mm": 2.707096642554,
+   "gap_at_rest_mm": 2.826163805492,
+   "within_cut_amendment_5": true
+  },
+  "bond.joint_04_10": {
+   "breach_below_resolution": false,
+   "breach_mm": 0.0,
+   "gap_at_pose_mm": 1.787572213639,
+   "gap_at_rest_mm": 2.004461960237,
+   "within_cut_amendment_5": true
+  },
+  "bond.joint_04_12": {
+   "breach_below_resolution": false,
+   "breach_mm": 0.0,
+   "gap_at_pose_mm": 0.752787340221,
+   "gap_at_rest_mm": 0.932953376094,
+   "within_cut_amendment_5": true
+  },
+  "bond.joint_05_11": {
+   "breach_below_resolution": false,
+   "breach_mm": 0.0,
+   "gap_at_pose_mm": 1.936313432828,
+   "gap_at_rest_mm": 2.266524931601,
+   "within_cut_amendment_5": true
+  },
+  "bond.joint_05_13": {
+   "breach_below_resolution": false,
+   "breach_mm": 0.0,
+   "gap_at_pose_mm": 0.744463117338,
+   "gap_at_rest_mm": 0.861623422322,
+   "within_cut_amendment_5": true
+  },
+  "bond.joint_06_25": {
+   "breach_below_resolution": false,
+   "breach_mm": 0.0,
+   "gap_at_pose_mm": 0.927051816833,
+   "gap_at_rest_mm": 0.659698121371,
+   "within_cut_amendment_5": true
+  },
+  "bond.joint_07_24": {
+   "breach_below_resolution": false,
+   "breach_mm": 0.0,
+   "gap_at_pose_mm": 0.522099642814,
+   "gap_at_rest_mm": 0.861625547431,
+   "within_cut_amendment_5": true
+  }
+ },
+ "outcome": "I",
+ "pad_plane": {
+  "bone_08": {
+   "centroid_ct_mm": [
+    148.727751876623,
+    26.117182407004,
+    43.497974946552
+   ],
+   "signed_dist_mm": 2.129629680821
+  },
+  "bone_09": {
+   "centroid_ct_mm": [
+    150.601813753729,
+    18.565631164472,
+    20.705771663871
+   ],
+   "signed_dist_mm": -1.397440390978
+  },
+  "bone_22": {
+   "centroid_ct_mm": [
+    111.997402199065,
+    29.825844236319,
+    62.377880628863
+   ],
+   "signed_dist_mm": -1.079939026616
+  },
+  "bone_23": {
+   "centroid_ct_mm": [
+    44.500841055304,
+    29.231303816961,
+    6.918328732918
+   ],
+   "signed_dist_mm": 0.347749736773
+  },
+  "plane_normal_ct": [
+   0.103245055057,
+   0.981388460286,
+   -0.161917104171
+  ],
+  "plane_variance_mm2": 1.943840101101
+ },
+ "pose_of_record": {
+  "file": "pose_v2.json",
+  "sha256": "459fc5b5ca16891b0bc8bf457cadb20789e4c78f09ffe5f8412e4b09db226584",
+  "source": "maximin[v1_pose_of_record]",
+  "x_R12": [
+   -0.165320806474,
+   0.100282239264,
+   -1.051724601799,
+   -0.33856691173,
+   -0.16403620298,
+   1.171761174526,
+   -1.529703270737,
+   0.17453293,
+   -0.008764793344,
+   -0.336814054509
+  ]
+ },
+ "prediction_checks": {
+  "F1_a5_refusal_fires_by_name_past_all_moved_bands": true,
+  "F1_all_coordinates_in_recorded_range": true,
+  "F2_hip_p6_both_hips_all_stations": true,
+  "F3_loop_seats_within_cut": true,
+  "F4_0dof_bonds_immobile_bitwise": true,
+  "F5_mass_exactly_invariant_all_moved": true,
+  "F6_release_predictions_match_measurement": false,
+  "F7_fresh_process_pose_v2_json_byte_identical": true,
+  "F7_pose_of_record_source_reproduces": true,
+  "F8_watched_bytes_untouched": true,
+  "PA3_class_bands_all_within": false,
+  "PA4_moved_non_hip_seats_within_cut": true,
+  "T1_pad_coplanarity_at_machine_zero": false,
+  "T2_trunk_level_at_machine_zero": false,
+  "T3_floor_clearance_primary_epsilon": false,
+  "T5_head_clearance_primary_epsilon": false,
+  "amendment_1_bank_matches_file": true,
+  "amendment_2_bank_matches_file": true,
+  "amendment_3_bank_matches_file": true,
+  "amendment_4_bank_matches_file": true,
+  "amendment_5_bank_matches_file": true,
+  "maximin_within_caps_and_seats_amendment_5": true,
+  "pose_v1_untouched": true,
+  "pose_v2_file_sha_matches_solve_bank": true,
+  "preregistration_bank_matches_file": true,
+  "strict_solve_exits_reproduce_in_battery": true
+ },
+ "prediction_inversions_recorded": [
+  "PA3: a v2 pose angle sits outside the v1 banked class band (recorded honestly; the lawfulness battery owns void, the class reading is the record)",
+  "PA6/F6: a release prediction inverted at the v2 pose -- recorded as measured, every gap stands, never dropped"
+ ],
+ "preregistration_sha256": "63e9def46d2c7a40215e8eda5c1599565203aed639d648bc97a97d6cbccc9348",
+ "range_rows": [
+  {
+   "accepted": true,
+   "bond": "bond.joint_01_02",
+   "coordinate": "adduction",
+   "range": [
+    -2.0943951,
+    2.0943951
+   ],
+   "theta": 0.100282239264
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_01_02",
+   "coordinate": "flexion",
+   "range": [
+    -2.0943951,
+    2.0943951
+   ],
+   "theta": -0.165320806474
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_01_02",
+   "coordinate": "rotation",
+   "range": [
+    -2.0943951,
+    2.0943951
+   ],
+   "theta": -1.051724601799
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_01_03",
+   "coordinate": "adduction",
+   "range": [
+    -2.0943951,
+    2.0943951
+   ],
+   "theta": -0.16403620298
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_01_03",
+   "coordinate": "flexion",
+   "range": [
+    -2.0943951,
+    2.0943951
+   ],
+   "theta": -0.33856691173
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_01_03",
+   "coordinate": "rotation",
+   "range": [
+    -2.0943951,
+    2.0943951
+   ],
+   "theta": 1.171761174526
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_02_06",
+   "coordinate": "knee_angle",
+   "range": [
+    -2.0943951,
+    0.17453293
+   ],
+   "theta": -1.529703270737
+  },
+  {
+   "bond": "bond.joint_02_15",
+   "class": "positional_contact",
+   "note": "0-DOF class or loop bond: no coordinate",
+   "theta": null
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_03_07",
+   "coordinate": "knee_angle",
+   "range": [
+    -2.0943951,
+    0.17453293
+   ],
+   "theta": 0.17453293
+  },
+  {
+   "bond": "bond.joint_03_17",
+   "class": "positional_contact",
+   "note": "0-DOF class or loop bond: no coordinate",
+   "theta": null
+  },
+  {
+   "bond": "bond.joint_04_08",
+   "class": "positional_contact",
+   "note": "0-DOF class or loop bond: no coordinate",
+   "theta": null
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_04_10",
+   "coordinate": "elbow_flexion",
+   "range": [
+    0.34906585,
+    2.44346095
+   ],
+   "theta": 0.34906585
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_04_12",
+   "coordinate": "elbow_flexion",
+   "range": [
+    0.34906585,
+    2.44346095
+   ],
+   "theta": 0.34906585
+  },
+  {
+   "bond": "bond.joint_05_09",
+   "class": "positional_contact",
+   "note": "0-DOF class or loop bond: no coordinate",
+   "theta": null
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_05_11",
+   "coordinate": "elbow_flexion",
+   "range": [
+    0.34906585,
+    2.44346095
+   ],
+   "theta": 0.34906585
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_05_13",
+   "coordinate": "elbow_flexion",
+   "range": [
+    0.34906585,
+    2.44346095
+   ],
+   "theta": 0.34906585
+  },
+  {
+   "bond": "bond.joint_06_20",
+   "class": "syndesmosis_nodof",
+   "note": "0-DOF class or loop bond: no coordinate",
+   "theta": null
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_06_25",
+   "coordinate": "subtalar_class",
+   "range": [
+    -0.34906585,
+    0.34906585
+   ],
+   "theta": -0.008764793344
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_07_18",
+   "coordinate": "at_rest",
+   "range": [
+    -0.34906585,
+    0.34906585
+   ],
+   "theta": 0.0
+  },
+  {
+   "bond": "bond.joint_07_21",
+   "class": "syndesmosis_nodof",
+   "note": "0-DOF class or loop bond: no coordinate",
+   "theta": null
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_07_24",
+   "coordinate": "subtalar_class",
+   "range": [
+    -0.34906585,
+    0.34906585
+   ],
+   "theta": -0.336814054509
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_10_12",
+   "coordinate": "at_rest",
+   "range": [
+    -1.57079633,
+    1.57079633
+   ],
+   "theta": 0.0
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_11_13",
+   "coordinate": "at_rest",
+   "range": [
+    -1.57079633,
+    1.57079633
+   ],
+   "theta": 0.0
+  },
+  {
+   "bond": "bond.joint_20_25",
+   "class": "loop_or_nodof",
+   "note": "0-DOF class or loop bond: no coordinate",
+   "theta": null
+  },
+  {
+   "bond": "bond.joint_21_24",
+   "class": "loop_or_nodof",
+   "note": "0-DOF class or loop bond: no coordinate",
+   "theta": null
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_22_25",
+   "coordinate": "at_rest",
+   "range": [
+    -0.34906585,
+    0.34906585
+   ],
+   "theta": 0.0
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_23_24",
+   "coordinate": "at_rest",
+   "range": [
+    -0.34906585,
+    0.34906585
+   ],
+   "theta": 0.0
+  }
+ ],
+ "releases": {
+  "pose.joint_01_08": {
+   "committed_gap_mm": 0.68,
+   "gap_at_pose_mm": 0.681203295708,
+   "measured": "persists",
+   "predicted": "persist",
+   "prediction_ok": true
+  },
+  "pose.joint_01_09": {
+   "committed_gap_mm": 0.56,
+   "gap_at_pose_mm": 0.564942492157,
+   "measured": "persists",
+   "predicted": "persist",
+   "prediction_ok": true
+  },
+  "pose.joint_01_11": {
+   "committed_gap_mm": 2.75,
+   "gap_at_pose_mm": 0.905087955949,
+   "measured": "persists",
+   "predicted": "release",
+   "prediction_ok": false
+  },
+  "pose.joint_01_13": {
+   "committed_gap_mm": 2.83,
+   "gap_at_pose_mm": 0.091898775239,
+   "measured": "persists",
+   "predicted": "release",
+   "prediction_ok": false
+  },
+  "pose.joint_01_15": {
+   "committed_gap_mm": 0.85,
+   "gap_at_pose_mm": 6.096220214537,
+   "measured": "released",
+   "predicted": "release",
+   "prediction_ok": true
+  },
+  "pose.joint_01_17": {
+   "committed_gap_mm": 0.64,
+   "gap_at_pose_mm": 6.091111126212,
+   "measured": "released",
+   "predicted": "release",
+   "prediction_ok": true
+  }
+ },
+ "schema": "chimera.standing_pose_battery_v2.v1",
+ "stations": {
+  "t_0": {
+   "L": {
+    "below_resolution_floor": false,
+    "displacement_exact_zero": true,
+    "displacement_mm": 0.0,
+    "provenance": [
+     "child_vertex",
+     "2426",
+     "parent_vertex",
+     "182"
+    ],
+    "seat_breach_mm": 0.0,
+    "seat_gap_mm": 1.438430430193,
+    "seat_ok": true
+   },
+   "R": {
+    "below_resolution_floor": false,
+    "displacement_exact_zero": true,
+    "displacement_mm": 0.0,
+    "provenance": [
+     "child_vertex",
+     "2062",
+     "parent_vertex",
+     "121"
+    ],
+    "seat_breach_mm": 0.0,
+    "seat_gap_mm": 1.486366553653,
+    "seat_ok": true
+   },
+   "t": 0.0
+  },
+  "t_1": {
+   "L": {
+    "below_resolution_floor": false,
+    "displacement_exact_zero": true,
+    "displacement_mm": 0.0,
+    "provenance": [
+     "child_vertex",
+     "2426",
+     "parent_vertex",
+     "164"
+    ],
+    "seat_breach_mm": 0.0,
+    "seat_gap_mm": 1.700491803778,
+    "seat_ok": true
+   },
+   "R": {
+    "below_resolution_floor": false,
+    "displacement_exact_zero": true,
+    "displacement_mm": 0.0,
+    "provenance": [
+     "child_vertex",
+     "2092",
+     "parent_vertex",
+     "121"
+    ],
+    "seat_breach_mm": 0.0,
+    "seat_gap_mm": 1.830359534366,
+    "seat_ok": true
+   },
+   "t": 0.2
+  },
+  "t_2": {
+   "L": {
+    "below_resolution_floor": false,
+    "displacement_exact_zero": true,
+    "displacement_mm": 0.0,
+    "provenance": [
+     "child_vertex",
+     "2426",
+     "parent_vertex",
+     "164"
+    ],
+    "seat_breach_mm": 0.0,
+    "seat_gap_mm": 2.019704433583,
+    "seat_ok": true
+   },
+   "R": {
+    "below_resolution_floor": false,
+    "displacement_exact_zero": true,
+    "displacement_mm": 0.0,
+    "provenance": [
+     "child_vertex",
+     "2629",
+     "parent_vertex",
+     "158"
+    ],
+    "seat_breach_mm": 0.0,
+    "seat_gap_mm": 1.4422584383,
+    "seat_ok": true
+   },
+   "t": 0.4
+  },
+  "t_3": {
+   "L": {
+    "below_resolution_floor": false,
+    "displacement_exact_zero": true,
+    "displacement_mm": 0.0,
+    "provenance": [
+     "child_vertex",
+     "2518",
+     "parent_vertex",
+     "182"
+    ],
+    "seat_breach_mm": 0.0,
+    "seat_gap_mm": 2.134633181553,
+    "seat_ok": true
+   },
+   "R": {
+    "below_resolution_floor": false,
+    "displacement_exact_zero": true,
+    "displacement_mm": 0.0,
+    "provenance": [
+     "child_vertex",
+     "2589",
+     "parent_vertex",
+     "158"
+    ],
+    "seat_breach_mm": 0.0,
+    "seat_gap_mm": 0.785925414174,
+    "seat_ok": true
+   },
+   "t": 0.6
+  },
+  "t_4": {
+   "L": {
+    "below_resolution_floor": false,
+    "displacement_exact_zero": true,
+    "displacement_mm": 0.0,
+    "provenance": [
+     "child_vertex",
+     "2684",
+     "parent_vertex",
+     "203"
+    ],
+    "seat_breach_mm": 0.0,
+    "seat_gap_mm": 1.773906185223,
+    "seat_ok": true
+   },
+   "R": {
+    "below_resolution_floor": false,
+    "displacement_exact_zero": true,
+    "displacement_mm": 0.0,
+    "provenance": [
+     "child_vertex",
+     "2676",
+     "parent_vertex",
+     "158"
+    ],
+    "seat_breach_mm": 0.0,
+    "seat_gap_mm": 0.274865741087,
+    "seat_ok": true
+   },
+   "t": 0.8
+  },
+  "t_5": {
+   "L": {
+    "below_resolution_floor": false,
+    "displacement_exact_zero": true,
+    "displacement_mm": 0.0,
+    "provenance": [
+     "child_vertex",
+     "2686",
+     "parent_vertex",
+     "203"
+    ],
+    "seat_breach_mm": 0.0,
+    "seat_gap_mm": 1.030324799819,
+    "seat_ok": true
+   },
+   "R": {
+    "below_resolution_floor": true,
+    "displacement_exact_zero": true,
+    "displacement_mm": 0.0,
+    "provenance": [
+     "child_vertex",
+     "3003",
+     "parent_vertex",
+     "181"
+    ],
+    "seat_breach_mm": 0.0,
+    "seat_gap_mm": 0.067238149161,
+    "seat_ok": true
+   },
+   "t": 1.0
+  }
+ },
+ "structural_pin": {
+  "deepest_fixed_h_min_mm": -39.911738053955,
+  "max_dev_vs_pose_normal": 0.130646271359,
+  "pinned_constants_mm": {
+   "bone_01": -20.022438131532,
+   "bone_02": -35.568728931417,
+   "bone_03": -10.136570969365,
+   "bone_04": -17.641272615471,
+   "bone_05": -14.607658340514,
+   "bone_06": -39.022608590686,
+   "bone_07": -18.58437364509,
+   "bone_10": -25.503084894451,
+   "bone_11": -18.77681754967,
+   "bone_12": -20.97184170396,
+   "bone_13": -13.017649076828,
+   "bone_14": -36.704917048526,
+   "bone_15": -7.665812137781,
+   "bone_16": -35.772654208416,
+   "bone_17": -6.33128954369,
+   "bone_18": -27.224385632823,
+   "bone_19": -39.911738053955,
+   "bone_20": -35.26963926543,
+   "bone_21": -13.570843461996,
+   "bone_24": -18.365446616463,
+   "bone_25": -21.297493790142
+  },
+  "pinned_plane_normal": [
+   0.205256476586,
+   0.933957413439,
+   -0.292563375529
+  ],
+  "smallest_fixed_deficit_mm": 14.687658340514,
+  "strict_min_T3_slack_mm": {
+   "rest": -25.05620337207,
+   "v1_pose_of_record": -25.02295782659
+  },
+  "strict_solve_exits_reproduced": true
+ },
+ "trailer": "Agent: GLM 5.3",
+ "untouched": {
+  "after": {
+   "docs\\THE_ARTICULATION_LAW.md": "97585c4e7b5781d3e776d7cdaa7b4d19ce8b33772f239178cbd60be7f6410e4c",
+   "tools\\science_funnel\\ct_skeleton_layer.py": "b98626bf944a297531c40d4ae56029bf8e73efaa93d6bda7d9eb18c5a7810e90",
+   "tools\\science_funnel\\ct_skeleton_triangle.py": "d2528d6e0b3510f7697d587e56fdf11c6ca22547559a03f1ec0ba3e53b70cf00",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\infant_skeleton.body.json": "db412e0c8debd45750b1cc06e13c50e08367ac94d434fe3be5be7f8dd5f1fbfe",
+   "tools\\science_funnel\\validation\\articulation_design_20260921\\receipt.json": "5112d9b68dee94b7b591646fd6d3787bee15a12cffe2ddff9bcfbb922e136a3f",
+   "tools\\science_funnel\\validation\\axial_adjacency_20260920\\receipt.json": "f1dd047b34b7f1015c7fa9fafb4956eb1774786cc3b86c9dbdff8287d655c8d5",
+   "tools\\science_funnel\\validation\\gait_controller_20260918\\derived_numbers.json": "013810f87a6ca7c1e01916ef7a5454e61e8d0e88f8d6a589fbfdd1514017a173",
+   "tools\\science_funnel\\validation\\hip_adoption_20260921\\receipt.json": "d000701f78449265d4ae53e847c2a09ad506b919af9c6f18c3c7f68be943614d",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\battery.json": "18f0ef0641cdcba610bb0a67109540220cfb3400bdff1eee2ae6451fb7d81c16",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\hip_pivot_proof.py": "748e20a7c07b7a8340bf2ae7b17e5a86af36fcc389a2b4563f0adf5cf3b62543",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\receipt.json": "c39c708c7fb8e167abed88c5405036b810cd64c817fa3f634859aa22bc60235a",
+   "tools\\science_funnel\\validation\\joint_class_records_20260921\\battery.json": "80c09220264aea5c9a9347930d70543ad5471a3c84b5ed472232d6de120cadb1",
+   "tools\\science_funnel\\validation\\joint_class_records_20260921\\preregistration.md": "24fd45c607130b40e5814029ffade453f0fce3a11505b7f33c223d28d1f75ab0",
+   "tools\\science_funnel\\validation\\joint_class_records_20260921\\receipt.json": "48186950a80f131eef9dc0f719368a79bfa6c52ca48d2ca903380431112977d1",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\battery.json": "6fa98112d716c9678fa69ae289ec239982db6236bb1fb9151ed5f8c280f40623",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\p6_contrast.py": "bd0466f165ee86dba72ed15d7a782195e729022de006be3cf613d97cc14db93d",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\receipt.json": "cedccfe72db8b543ff7d3286d7325e1dca352617eecb6c5a2f2e45dc3114298f",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\battery.json": "77fe7bb623c8a8617e811bf0340c920a78546692eaa927033ce6f7ab1876c6bc",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\derive_standing_pose.py": "4bc6e83697d9985ec0afcc770113af870bcfffe5c51b37552ccc5a1dccc9fa56",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\derive_standing_pose_v2.py": "e67ded4e3da71c474178ac4c312f1de00b089c1981db34ea5f0b3900eea3b123",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\pose.json": "27e6fd9e95a057af276f63859af65c6a8a4d20a35d0cedf7b495ea9c9ffa0053",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\pose.sha256": "f0e24dac107ddf4c3fcfc9e77263ea0157e42b51fbd66a85ed72c31cd73b1903",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\pose_v2.json": "459fc5b5ca16891b0bc8bf457cadb20789e4c78f09ffe5f8412e4b09db226584",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\pose_v2.sha256": "418b919b1948d5340475f14af4d9f73a61a82d334542ed1320e8f951de92ce7d",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration.md": "63e9def46d2c7a40215e8eda5c1599565203aed639d648bc97a97d6cbccc9348",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration.sha256": "9a512802a079bbbb61183f23319536c4b538d4385c9cb42a9a6372548ea825e8",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration_amendment_1.md": "f2e528f71737f8b23daaf01e872fdb61c9da6e638d15a4125e813f5f5544d157",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration_amendment_1.sha256": "6270191c10b4b818793c99e659c75d6832c3d94e5896fe2ea6ed8ad39df3c0ff",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration_amendment_2.md": "a9d4da01e24a5dfcd370931546d374433d93b47d4456f40192fc8e685453e251",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration_amendment_2.sha256": "78fca7b3f86b4723088609d5e306bcf6c9a82399c17f79b6276afe238334cfc4",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration_amendment_3.md": "c1063d3db79e7dd474d6250f5f94866a3b1c49ec7ebca9b7428c1e67419c90f0",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration_amendment_3.sha256": "92002e6c68d04519dfbd6971bdcd9a4c7b23df4d2e75debcba152b0b71ef5433",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration_amendment_4.md": "3ad74c4469d795a0d70222d5f17f204ae2f1eab02182b1168c28d3a5bc276f70",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration_amendment_4.sha256": "4b4b92d619d397dfa7d891876fb8dc0f77575f45df177fef5470ecf84d63efbf",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration_amendment_5.md": "58e24f1909a572b1875363c90ca313e40cbea05f99066eb7382aec7be5f43cd0",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration_amendment_5.sha256": "98f1bf303f38f35792498a2a2f77ccb59f0c78a10740573ad8905faaa22b4311",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\receipt.json": "0219506ed2f22ba229bea1a2015dc89b7ce2f7fd1ae3557743b615102796e5ab",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\render_record.json": "0d306229d40f3289cbd04fe52d0a1167ef3e25723484d86742d57317cfba5f49",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\render_standing.py": "2074e310879f75664af989ca08a9c9ead54d6d9d27dade86351eb7aecf2b8bff",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\renders\\corpse_still.png": "528a6d144bd2471a4471b48acfde83750fd21e5663d67dde0bcd703a04023cd8",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\renders\\standing_still.png": "f8fa0f2c76dc4393afdfe59176e922ef18af4f32efa7055a96bbd851ef31e3b4",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\standing_pose_battery.py": "d633e595d67e69a3354db091400ee0f01d8c3114f704899c33fa8fdbfeb79633",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\standing_pose_core.py": "6eab8de8e7180d2f1753b00f993bc78662199860a0423d2e3edf86f4f9c72fff",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\standing_pose_core_v2.py": "a92d344bfb2fa1e306f9c5e4afc3f9f4d21d164446f90df248d3118cda0266e0",
+   "tools\\science_funnel\\validation\\tarsal_cycle_pivots_20260921\\battery.json": "c344173cfca3ee85470a087bf7169bdc9d4f2c8bff95320521acca0099824656",
+   "tools\\science_funnel\\validation\\tarsal_cycle_pivots_20260921\\receipt.json": "9d380370aa3119d90693f3499e648272fce2f04103b40228b8ed768204d49d78",
+   "tools\\science_funnel\\validation\\tarsal_cycle_pivots_20260921\\tarsal_cycle_battery.py": "040dbc2a34e661ab0a3d1118d7b17722e9952dae3565cbd2bebc1ca4abfa9aaa"
+  },
+  "before": {
+   "docs\\THE_ARTICULATION_LAW.md": "97585c4e7b5781d3e776d7cdaa7b4d19ce8b33772f239178cbd60be7f6410e4c",
+   "tools\\science_funnel\\ct_skeleton_layer.py": "b98626bf944a297531c40d4ae56029bf8e73efaa93d6bda7d9eb18c5a7810e90",
+   "tools\\science_funnel\\ct_skeleton_triangle.py": "d2528d6e0b3510f7697d587e56fdf11c6ca22547559a03f1ec0ba3e53b70cf00",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\infant_skeleton.body.json": "db412e0c8debd45750b1cc06e13c50e08367ac94d434fe3be5be7f8dd5f1fbfe",
+   "tools\\science_funnel\\validation\\articulation_design_20260921\\receipt.json": "5112d9b68dee94b7b591646fd6d3787bee15a12cffe2ddff9bcfbb922e136a3f",
+   "tools\\science_funnel\\validation\\axial_adjacency_20260920\\receipt.json": "f1dd047b34b7f1015c7fa9fafb4956eb1774786cc3b86c9dbdff8287d655c8d5",
+   "tools\\science_funnel\\validation\\gait_controller_20260918\\derived_numbers.json": "013810f87a6ca7c1e01916ef7a5454e61e8d0e88f8d6a589fbfdd1514017a173",
+   "tools\\science_funnel\\validation\\hip_adoption_20260921\\receipt.json": "d000701f78449265d4ae53e847c2a09ad506b919af9c6f18c3c7f68be943614d",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\battery.json": "18f0ef0641cdcba610bb0a67109540220cfb3400bdff1eee2ae6451fb7d81c16",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\hip_pivot_proof.py": "748e20a7c07b7a8340bf2ae7b17e5a86af36fcc389a2b4563f0adf5cf3b62543",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\receipt.json": "c39c708c7fb8e167abed88c5405036b810cd64c817fa3f634859aa22bc60235a",
+   "tools\\science_funnel\\validation\\joint_class_records_20260921\\battery.json": "80c09220264aea5c9a9347930d70543ad5471a3c84b5ed472232d6de120cadb1",
+   "tools\\science_funnel\\validation\\joint_class_records_20260921\\preregistration.md": "24fd45c607130b40e5814029ffade453f0fce3a11505b7f33c223d28d1f75ab0",
+   "tools\\science_funnel\\validation\\joint_class_records_20260921\\receipt.json": "48186950a80f131eef9dc0f719368a79bfa6c52ca48d2ca903380431112977d1",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\battery.json": "6fa98112d716c9678fa69ae289ec239982db6236bb1fb9151ed5f8c280f40623",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\p6_contrast.py": "bd0466f165ee86dba72ed15d7a782195e729022de006be3cf613d97cc14db93d",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\receipt.json": "cedccfe72db8b543ff7d3286d7325e1dca352617eecb6c5a2f2e45dc3114298f",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\battery.json": "77fe7bb623c8a8617e811bf0340c920a78546692eaa927033ce6f7ab1876c6bc",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\derive_standing_pose.py": "4bc6e83697d9985ec0afcc770113af870bcfffe5c51b37552ccc5a1dccc9fa56",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\derive_standing_pose_v2.py": "e67ded4e3da71c474178ac4c312f1de00b089c1981db34ea5f0b3900eea3b123",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\pose.json": "27e6fd9e95a057af276f63859af65c6a8a4d20a35d0cedf7b495ea9c9ffa0053",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\pose.sha256": "f0e24dac107ddf4c3fcfc9e77263ea0157e42b51fbd66a85ed72c31cd73b1903",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\pose_v2.json": "459fc5b5ca16891b0bc8bf457cadb20789e4c78f09ffe5f8412e4b09db226584",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\pose_v2.sha256": "418b919b1948d5340475f14af4d9f73a61a82d334542ed1320e8f951de92ce7d",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration.md": "63e9def46d2c7a40215e8eda5c1599565203aed639d648bc97a97d6cbccc9348",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration.sha256": "9a512802a079bbbb61183f23319536c4b538d4385c9cb42a9a6372548ea825e8",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration_amendment_1.md": "f2e528f71737f8b23daaf01e872fdb61c9da6e638d15a4125e813f5f5544d157",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration_amendment_1.sha256": "6270191c10b4b818793c99e659c75d6832c3d94e5896fe2ea6ed8ad39df3c0ff",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration_amendment_2.md": "a9d4da01e24a5dfcd370931546d374433d93b47d4456f40192fc8e685453e251",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration_amendment_2.sha256": "78fca7b3f86b4723088609d5e306bcf6c9a82399c17f79b6276afe238334cfc4",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration_amendment_3.md": "c1063d3db79e7dd474d6250f5f94866a3b1c49ec7ebca9b7428c1e67419c90f0",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration_amendment_3.sha256": "92002e6c68d04519dfbd6971bdcd9a4c7b23df4d2e75debcba152b0b71ef5433",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration_amendment_4.md": "3ad74c4469d795a0d70222d5f17f204ae2f1eab02182b1168c28d3a5bc276f70",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration_amendment_4.sha256": "4b4b92d619d397dfa7d891876fb8dc0f77575f45df177fef5470ecf84d63efbf",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration_amendment_5.md": "58e24f1909a572b1875363c90ca313e40cbea05f99066eb7382aec7be5f43cd0",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration_amendment_5.sha256": "98f1bf303f38f35792498a2a2f77ccb59f0c78a10740573ad8905faaa22b4311",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\receipt.json": "0219506ed2f22ba229bea1a2015dc89b7ce2f7fd1ae3557743b615102796e5ab",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\render_record.json": "0d306229d40f3289cbd04fe52d0a1167ef3e25723484d86742d57317cfba5f49",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\render_standing.py": "2074e310879f75664af989ca08a9c9ead54d6d9d27dade86351eb7aecf2b8bff",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\renders\\corpse_still.png": "528a6d144bd2471a4471b48acfde83750fd21e5663d67dde0bcd703a04023cd8",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\renders\\standing_still.png": "f8fa0f2c76dc4393afdfe59176e922ef18af4f32efa7055a96bbd851ef31e3b4",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\standing_pose_battery.py": "d633e595d67e69a3354db091400ee0f01d8c3114f704899c33fa8fdbfeb79633",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\standing_pose_core.py": "6eab8de8e7180d2f1753b00f993bc78662199860a0423d2e3edf86f4f9c72fff",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\standing_pose_core_v2.py": "a92d344bfb2fa1e306f9c5e4afc3f9f4d21d164446f90df248d3118cda0266e0",
+   "tools\\science_funnel\\validation\\tarsal_cycle_pivots_20260921\\battery.json": "c344173cfca3ee85470a087bf7169bdc9d4f2c8bff95320521acca0099824656",
+   "tools\\science_funnel\\validation\\tarsal_cycle_pivots_20260921\\receipt.json": "9d380370aa3119d90693f3499e648272fce2f04103b40228b8ed768204d49d78",
+   "tools\\science_funnel\\validation\\tarsal_cycle_pivots_20260921\\tarsal_cycle_battery.py": "040dbc2a34e661ab0a3d1118d7b17722e9952dae3565cbd2bebc1ca4abfa9aaa"
+  },
+  "equal": true
+ }
+}

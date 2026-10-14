@@ -1,0 +1,529 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>push client — lane/push-channel-20260920</title>
+<style>
+ body{margin:0;background:#0b0d10;color:#cfd8dc;font:12px monospace;overflow:hidden}
+ #gl{position:absolute;inset:0;width:100%;height:100%}
+ .panel{position:absolute;background:rgba(8,10,12,.82);border:1px solid #1d2a30;
+        border-radius:6px;padding:8px 10px;line-height:1.45}
+ .panel h1{margin:0 0 4px}
+ #held{position:absolute;top:14px;left:50%;transform:translateX(-50%);
+       background:#5b1d1d;color:#ffd9d9;border:1px solid #a33;border-radius:4px;
+       padding:3px 10px;display:none;font-weight:bold;letter-spacing:.1em}
+ #link{position:absolute;top:14px;right:14px;background:rgba(8,10,12,.82);
+       border:1px solid #1d2a30;border-radius:4px;padding:3px 10px}
+ img#px{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:none}
+</style></head><body>
+<canvas id="gl"></canvas>
+<img id="px" alt="">
+<div id="held">HELD FRAME (integrity guard — no torn frame rendered)</div>
+<div id="link">connecting…</div>
+<div class="panel" id="pushpanel" style="left:10px;bottom:12px;width:360px;font-size:11px">
+ <h1 style="font-size:11px;letter-spacing:.2em;color:#7fd4c1;margin:0 0 4px">PUSH CLIENT — server-paced stream, no polling</h1>
+ <div id="pp-sync" style="color:#8fa3a8"></div>
+ <div id="pp-state" style="margin-top:3px"></div>
+ <div id="pp-transport" style="color:#8fa3a8;margin-top:3px"></div>
+ <div style="color:#8fa3a8;margin-top:3px">keys: ← → ↑ ↓ orbit · +/- zoom · 1-4 rate · T direct/interp · F fall · C carry · X stop · R restart</div>
+</div>
+<script>
+"use strict";
+/* THE PUSH CLIENT (lane/push-channel-20260920) — the CLIENT END of the push
+   channel. A SEPARATE page (index.html is the rendertruth lane's; this file
+   shares only the shader text + playout law, copied).
+
+   THE TRANSPORT: one long-lived GET /api/stream whose response never ends;
+   records [u32 len|u16 type|u16 flags|u32 seq|u64 ts|payload]. The assembler
+   below is the TORN-FRAME GUARD (prereg F2): a record is only emitted when
+   its FULL declared length is in the buffer (a partial frame can never
+   reach decode); an impossible length tears the stream down and reconnects;
+   seq skips are counted, never hidden.
+
+   THE INTEGRITY LAW (the pilot's banked zero-frame class): a snapshot that
+   fails magic / n==0 / declared-size / all-zero spot-check is REJECTED and
+   the client HOLDS the last good frame with the HELD badge visible. The
+   client never renders an all-zero or partial frame — it renders the held
+   frame, labeled.
+
+   THE SYNC LAW (F3, inherited): overlay VALUES come from the snapshot buffer
+   and are labeled with that snapshot's authoritative ts_us; performance.now
+   drives playout arithmetic and instrumentation only.
+
+   THE PLAYOUT LAW (inherited): r(t) = serverNowUs(t) - D in the ENGINE's ts
+   timeline; brackets lerp in server time; past-the-newest freezes (never
+   extrapolates). */
+const qp=(k,d)=>{const m=location.search.match(new RegExp('[?&]'+k+'=([^&]*)'));return m?decodeURIComponent(m[1]):d;};
+const P={fmt:qp('fmt','FULL36'), rate:parseFloat(qp('rate','30')),
+         mode:qp('mode','interp'), pilot:qp('pilot','0')==='1',
+         pixel:qp('pixel','0')==='1', w:parseInt(qp('w','1280')),
+         q:parseInt(qp('q','85')), pixel_rate:parseInt(qp('pixel_rate','30'))};
+const jhead_ms=parseFloat(qp('jhead','0'));
+const SNAP_HDR=52, MAGIC=0x31534854, MAXREC=64*1024*1024;
+const RT_SNAP=1, RT_PIXEL=2, RT_HEART=3;
+const interval_ms=()=>1000/P.rate;
+const D_us=()=>Math.round((1.5*interval_ms()+jhead_ms)*1000);
+
+// ── GL: the page's own program + world decor (verbatim shader text) ──────
+const cv=document.getElementById('gl');
+const gl=cv.getContext('webgl2',{antialias:false,preserveDrawingBuffer:true});
+function sh(t,src){const s=gl.createShader(t);gl.shaderSource(s,src);gl.compileShader(s);
+  if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw gl.getShaderInfoLog(s);return s;}
+function prog(vs,fs){const p=gl.createProgram();gl.attachShader(p,sh(gl.VERTEX_SHADER,vs));
+  gl.attachShader(p,sh(gl.FRAGMENT_SHADER,fs));gl.linkProgram(p);
+  if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw gl.getProgramInfoLog(p);return p;}
+const MESH_P=prog(`#version 300 es
+  in vec3 aPos; in vec3 aNrm; in vec3 aCol;
+  uniform mat4 uVP; uniform vec3 uOff; out vec3 vN; out vec3 vC; out vec3 vP;
+  void main(){vN=aNrm; vC=aCol; vP=aPos+uOff; gl_Position=uVP*vec4(aPos+uOff,1.0);}`,
+`#version 300 es
+  precision highp float; in vec3 vN; in vec3 vC; in vec3 vP; out vec4 o;
+  uniform float uAlpha;
+  void main(){
+    vec3 L=normalize(vec3(0.5,0.9,0.35));
+    float d=max(dot(normalize(vN),L),0.0)*0.75+0.25;
+    o=vec4(vC*d, uAlpha);}`);
+const LINE_P=prog(`#version 300 es
+  in vec3 aPos; uniform mat4 uVP; void main(){gl_Position=uVP*vec4(aPos,1.0);}`,
+`#version 300 es
+  precision highp float; uniform vec4 uCol; out vec4 o; void main(){o=uCol;}`);
+const U=(p,n)=>gl.getUniformLocation(p,n);
+function persp(fov,asp,n,f){const t=1/Math.tan(fov/2);
+  return [t/asp,0,0,0, 0,t,0,0, 0,0,(f+n)/(n-f),-1, 0,0,2*f*n/(n-f),0];}
+function lookFrom(yaw,pit,dist,tx,ty,tz){
+  const cx=tx+dist*Math.cos(pit)*Math.sin(yaw), cy=ty+dist*Math.sin(pit),
+        cz=tz+dist*Math.cos(pit)*Math.cos(yaw);
+  let f=[cx-tx,cy-ty,cz-tz], l=Math.hypot(...f); f=f.map(v=>v/l);
+  let up=[0,1,0], s=[f[1]*up[2]-f[2]*up[1], f[2]*up[0]-f[0]*up[2], f[0]*up[1]-f[1]*up[0]];
+  l=Math.hypot(...s)||1e-9; s=s.map(v=>v/l);
+  const u=[s[1]*f[2]-s[2]*f[1], s[2]*f[0]-s[0]*f[2], s[0]*f[1]-s[1]*f[0]];
+  return {mat:[s[0],u[0],f[0],0, s[1],u[1],f[1],0, s[2],u[2],f[2],0,
+    -(s[0]*cx+s[1]*cy+s[2]*cz), -(u[0]*cx+u[1]*cy+u[2]*cz), -(f[0]*cx+f[1]*cy+f[2]*cz), 1],
+    eye:[cx,cy,cz]};}
+function mul(a,b){const o=new Array(16);for(let c=0;c<4;c++)for(let r=0;r<4;r++)
+  o[c*4+r]=a[r]*b[c*4]+a[4+r]*b[c*4+1]+a[8+r]*b[c*4+2]+a[12+r]*b[c*4+3];return o;}
+function linesToVAO(pts){const vao=gl.createVertexArray(),vbo=gl.createBuffer();
+  gl.bindVertexArray(vao);gl.bindBuffer(gl.ARRAY_BUFFER,vbo);
+  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(pts),gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,3,gl.FLOAT,false,12,0);
+  gl.bindVertexArray(null);return {vao,n:pts.length/3};}
+let cam={yaw:0.7,pit:0.42,dist:2.2,tx:0,ty:0.25,tz:0};
+let MARKER={x:0.678,z:0.966,radius:0.15};
+let worldGrid=null,markerRing=null,markerPost=null;
+function buildWorldDecor(){
+  const g=[],R=3.0,s=0.25;
+  for(let x=-R;x<=R+1e-6;x+=s){g.push(x,0,-R,x,0,R);}
+  for(let z=-R;z<=R+1e-6;z+=s){g.push(-R,0,z,R,0,z);}
+  worldGrid=linesToVAO(g);
+  const r=[],N=64;
+  for(let i=0;i<=N;i++){const a=2*Math.PI*i/N;
+    r.push(MARKER.x+MARKER.radius*Math.sin(a),0.004,MARKER.z+MARKER.radius*Math.cos(a));}
+  markerRing=linesToVAO(r);
+  markerPost=linesToVAO([MARKER.x,0,MARKER.z, MARKER.x,0.5,MARKER.z]);
+}
+let vaoMesh=null,vboMesh=null,ibo=null,idxCount=0;
+function meshFromTopo(topoBuf,vertBuf){
+  const tris=new DataView(topoBuf).getUint32(0,true);
+  const idx=new Uint32Array(topoBuf,4,tris*3);
+  if(!vaoMesh){vaoMesh=gl.createVertexArray();vboMesh=gl.createBuffer();ibo=gl.createBuffer();}
+  gl.bindVertexArray(vaoMesh);
+  gl.bindBuffer(gl.ARRAY_BUFFER,vboMesh);
+  gl.bufferData(gl.ARRAY_BUFFER,vertBuf,gl.DYNAMIC_DRAW);
+  const st=36;
+  gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,3,gl.FLOAT,false,st,0);
+  gl.enableVertexAttribArray(1);gl.vertexAttribPointer(1,3,gl.FLOAT,false,st,12);
+  gl.enableVertexAttribArray(2);gl.vertexAttribPointer(2,3,gl.FLOAT,false,st,24);
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ibo);   // attached while vaoMesh bound
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,idx,gl.STATIC_DRAW);
+  idxCount=idx.length;
+  gl.bindVertexArray(null);
+}
+buildWorldDecor();
+
+// ── record assembler: the framing layer of the torn-frame guard ──────────
+let rcv=new Uint8Array(1<<20), rcvN=0;      // receive buffer + fill
+function rcvAppend(u8){
+  if(rcvN+u8.length>rcv.length){const big=new Uint8Array(Math.max(rcv.length*2,rcvN+u8.length));
+    big.set(rcv.subarray(0,rcvN));rcv=big;}
+  rcv.set(u8,rcvN);rcvN+=u8.length;
+}
+const dvAt=off=>new DataView(rcv.buffer,off);
+let inflight=Promise.resolve();       // records process IN ORDER even when
+                                      // a Z12 inflate goes async
+function parseRecords(emit){
+  let consumed=0;
+  while(rcvN-consumed>=20){
+    const dv=dvAt(consumed);
+    const ln=dv.getUint32(0,true), rt=dv.getUint16(4,true),
+          fl=dv.getUint16(6,true), sq=dv.getUint32(8,true), ts=Number(dv.getBigUint64(12,true));
+    if(ln>MAXREC) throw new Error('framing: impossible record length '+ln);
+    if(rcvN-consumed<20+ln) break;            // partial: wait; it can NEVER
+                                              // be emitted torn (guard F2)
+    // COPY the payload out: emitted records must own their bytes — the
+    // receive buffer compacts underneath and async inflates outlive the
+    // parse loop. A view here would be a torn-frame generator.
+    const payload=rcv.slice(consumed+20,consumed+20+ln);
+    const rec={rt,fl,sq,ts,payload};
+    inflight=inflight.then(()=>emit(rec)).catch(e=>{
+      window.__push_errs.push('record: '+e);streamErrs++;});
+    consumed+=20+ln;
+  }
+  if(consumed){rcv.copyWithin(0,consumed);rcvN-=consumed;}
+}
+
+// ── decode: THS1 snapshot payload -> {pos,nrm,col,...} (pilot's formats) ──
+let colRef=null,topoIdx=null,triCount=0;
+function f16(u){const s=(u&0x8000)?-1:1,e=(u&0x7c00)>>10,m=u&0x3ff;
+  if(e===0)return s*Math.pow(2,-14)*(m/1024);
+  if(e===0x1f)return m?NaN:s*Infinity;
+  return s*Math.pow(2,e-15)*(1+m/1024);}
+function recomputeNormals(pos,n){
+  const nrm=new Float32Array(n*3);
+  for(let t=0;t<triCount;t++){
+    const ia=topoIdx[3*t],ib=topoIdx[3*t+1],ic=topoIdx[3*t+2];
+    const ax=pos[3*ia],ay=pos[3*ia+1],az=pos[3*ia+2];
+    const bx=pos[3*ib],by=pos[3*ib+1],bz=pos[3*ib+2];
+    const cx=pos[3*ic],cy=pos[3*ic+1],cz=pos[3*ic+2];
+    const ux=bx-ax,uy=by-ay,uz=bz-az, vx=cx-ax,vy=cy-ay,vz=cz-az;
+    const nx=uy*vz-uz*vy, ny=uz*vx-ux*vz, nz=ux*vy-uy*vx;
+    nrm[3*ia]+=nx;nrm[3*ia+1]+=ny;nrm[3*ia+2]+=nz;
+    nrm[3*ib]+=nx;nrm[3*ib+1]+=ny;nrm[3*ib+2]+=nz;
+    nrm[3*ic]+=nx;nrm[3*ic+1]+=ny;nrm[3*ic+2]+=nz;
+  }
+  for(let i=0;i<n;i++){const l=Math.hypot(nrm[3*i],nrm[3*i+1],nrm[3*i+2])||1;
+    nrm[3*i]/=l;nrm[3*i+1]/=l;nrm[3*i+2]/=l;}
+  return nrm;}
+const guard={rejects:0,last_reason:'',seq_gaps:0,last_seq:-1,frames:0};
+function decodeSnapshot(payload,arrival,seq){
+  const dv=new DataView(payload.buffer,payload.byteOffset,payload.byteLength);
+  if(dv.getUint32(0,true)!==MAGIC){guard.rejects++;guard.last_reason='magic';return null;}
+  const ts=Number(dv.getBigUint64(4,true)),ticks=dv.getUint32(12,true);
+  const root_y=dv.getFloat32(16,true),root_vy=dv.getFloat32(20,true);
+  const P_l=dv.getFloat32(24,true),P_u=dv.getFloat32(28,true);
+  const dimple=dv.getFloat32(32,true),gap=Number(dv.getBigUint64(36,true));
+  const fmtc=dv.getUint32(44,true),n=dv.getUint32(48,true);
+  if(n<=0||n>1e7){guard.rejects++;guard.last_reason='n';return null;}    // torn/empty class
+  const expect={'0':36*n,'1':12*n,'2':12*n}[String(fmtc)];
+  if(fmtc!==3 && payload.length!==SNAP_HDR+expect){
+    guard.rejects++;guard.last_reason='len';return null;}
+  const pos=new Float32Array(n*3);let nrm=null,col=colRef;
+  if(fmtc===0){const f=new Float32Array(payload.buffer,payload.byteOffset+SNAP_HDR,9*n);
+    for(let i=0;i<n;i++){pos[3*i]=f[9*i];pos[3*i+1]=f[9*i+1];pos[3*i+2]=f[9*i+2];}
+    nrm=new Float32Array(n*3);
+    for(let i=0;i<n;i++){nrm[3*i]=f[9*i+3];nrm[3*i+1]=f[9*i+4];nrm[3*i+2]=f[9*i+5];}
+    if(!colRef){col=new Float32Array(n*3);
+      for(let i=0;i<n;i++){col[3*i]=f[9*i+6];col[3*i+1]=f[9*i+7];col[3*i+2]=f[9*i+8];}}}
+  else if(fmtc===1){pos.set(new Float32Array(payload.buffer,payload.byteOffset+SNAP_HDR,3*n));}
+  else if(fmtc===2){const u=new Uint16Array(payload.buffer,payload.byteOffset+SNAP_HDR,6*n);
+    for(let i=0;i<n;i++){pos[3*i]=f16(u[6*i]);pos[3*i+1]=f16(u[6*i+1]);pos[3*i+2]=f16(u[6*i+2]);}
+    nrm=new Float32Array(n*3);
+    for(let i=0;i<n;i++){nrm[3*i]=f16(u[6*i+3]);nrm[3*i+1]=f16(u[6*i+4]);nrm[3*i+2]=f16(u[6*i+5]);}}
+  else if(fmtc===3){return {inflatable:true,payload,arrival,seq,ts,ticks,root_y,root_vy,P_l,P_u,dimple,gap,n,bytes:payload.length};}
+  return finishSnap({ts,ticks,root_y,root_vy,P_l,P_u,dimple,gap,n,pos,nrm,col,arrival,seq,bytes:payload.length});
+}
+function finishSnap(s){
+  // THE ZERO-FRAME GUARD: an all-zero position payload is the pilot's torn
+  // class — reject it and hold, never render it.
+  if(s.pos && s.pos.length>=3){
+    let zero=true;
+    for(let i=0;i<s.pos.length;i+=99){if(s.pos[i]!==0||s.pos[i+1]!==0||s.pos[i+2]!==0){zero=false;break;}}
+    if(zero){guard.rejects++;guard.last_reason='zero-payload';return null;}
+  }
+  if(!s.nrm&&s.pos) s.nrm=recomputeNormals(s.pos,s.n);
+  if(!s.col) s.col=colRef;
+  guard.frames++;
+  return s;
+}
+async function inflateZ12(raw){
+  try{
+    const ds=new DecompressionStream('deflate');
+    const stream=new Blob([raw.payload.subarray(SNAP_HDR)]).stream().pipeThrough(ds);
+    const posBuf=await new Response(stream).arrayBuffer();
+    const n=raw.n;
+    if(posBuf.byteLength!==12*n){guard.rejects++;guard.last_reason='zlen';return null;}
+    const pos=new Float32Array(posBuf,0,3*n);
+    return finishSnap({ts:raw.ts,ticks:raw.ticks,root_y:raw.root_y,root_vy:raw.root_vy,
+      P_l:raw.P_l,P_u:raw.P_u,dimple:raw.dimple,gap:raw.gap,n,pos,
+      nrm:null,col:colRef,arrival:raw.arrival,seq:raw.seq,bytes:raw.bytes});
+  }catch(e){guard.rejects++;guard.last_reason='inflate';return null;}
+}
+
+// ── the stream lifecycle: connect, read, reconnect ───────────────────────
+let snaps=[];                 // newest last: decoded, valid snapshots only
+let held=null;                // the last good frame (the HOLD law)
+let heldSince=0;
+let bytesAcc=0,bps=0,achN=0,achR=0,achT0=performance.now(),bytesT0=achT0;
+let streamErrs=0,reconnections=0,underruns=0,underrun_ms=0,wasUnderrun=false,underrun_t0=0;
+let linkState='connecting';
+let pilot={raf:[],snaps:[],samples:[]},pilotFrameNo=0;
+let pullsPaused=false;        // the canned-injection path (tests)
+let curCtrl=null;
+let wireBytes=0,recCount=0,heartbeats=0,pixelCount=0;
+function b64(f32){const u8=new Uint8Array(f32.buffer,f32.byteOffset,f32.byteLength);
+  let s='';for(let i=0;i<u8.length;i+=0x8000)
+    s+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000));return btoa(s);}
+let offWin=[];
+function noteOffset(ts_us,arrival_ms){
+  offWin.push({at:arrival_ms,off:ts_us-arrival_ms*1000});
+  const cutoff=arrival_ms-5000;
+  while(offWin.length&&offWin[0].at<cutoff)offWin.shift();}
+function serverNowUs(now_ms){let best=-Infinity;
+  for(const e of offWin)if(e.off>best)best=e.off;
+  return best===-Infinity?0:best+now_ms*1000;}
+
+function acceptSnap(s){
+  if(pullsPaused)return;
+  if(s.seq>=0&&guard.last_seq>=0&&s.seq>guard.last_seq+1)
+    guard.seq_gaps+=s.seq-guard.last_seq-1;      // counted, never hidden
+  guard.last_seq=s.seq;
+  snaps.push(s);noteOffset(s.ts,s.arrival);
+  if(snaps.length>10)snaps.shift();
+  held=s;heldSince=0;                             // a good frame clears HOLD
+  bytesAcc+=s.bytes;
+  const now=performance.now();
+  if(now-bytesT0>=1000){bps=bytesAcc*1000/(now-bytesT0);bytesAcc=0;bytesT0=now;}
+  achN++;
+  if(now-achT0>=2000){achR=achN*1000/(now-achT0);achN=0;achT0=now;}
+  if(P.pilot)pilot.snaps.push({ts:s.ts,arrival:s.arrival,bytes:s.bytes,gap:s.gap,
+    fmt:P.fmt,dimple:s.dimple,root_y:s.root_y});
+}
+async function handleRecord(rec){
+  wireBytes+=20+rec.payload.length;recCount++;
+  if(rec.rt===RT_HEART){heartbeats++;return;}
+  if(rec.rt===RT_PIXEL){
+    pixelCount++;
+    if(P.pixel&&rec.payload.length>4){
+      const blob=new Blob([rec.payload]);
+      const url=URL.createObjectURL(blob);
+      const img=document.getElementById('px');
+      img.onload=()=>{if(img.__lastUrl)URL.revokeObjectURL(img.__lastUrl);img.__lastUrl=url;};
+      img.onerror=()=>{guard.rejects++;guard.last_reason='pixel-decode';URL.revokeObjectURL(url);};
+      img.src=url;
+      if(held&&rec.ts){/* pixel ts label rides the HUD */}
+    }
+    return;
+  }
+  if(rec.rt!==RT_SNAP)return;
+  const arrival=performance.now();
+  let s=decodeSnapshot(rec.payload,arrival,rec.sq);
+  if(s&&s.inflatable)s=await inflateZ12(s);
+  if(!s)return;                                   // guard rejected: HOLD stays
+  acceptSnap(s);
+}
+async function streamLoop(){
+  while(true){
+    if(pullsPaused){await new Promise(r=>setTimeout(r,200));continue;}
+    const url=P.pixel
+      ?'/api/stream?pixel=1&w='+P.w+'&q='+P.q+'&pixel_rate='+P.pixel_rate
+      :'/api/stream?fmt='+P.fmt+'&rate='+P.rate;
+    linkState='connecting';
+    try{
+      curCtrl=new AbortController();
+      const resp=await fetch(url,{signal:curCtrl.signal});
+      if(!resp.ok||!resp.body)throw new Error('stream HTTP '+resp.status);
+      linkState='live';
+      const reader=resp.body.getReader();
+      for(;;){
+        const {done,value}=await reader.read();
+        if(done)throw new Error('stream ended');
+        rcvAppend(value);
+        parseRecords(r=>{handleRecord(r);});      // sync emit; inflate is async
+      }
+    }catch(e){
+      if(String(e).includes('abort')){linkState='switching';}
+      else{
+        streamErrs++;linkState='reconnecting';
+        await new Promise(r=>setTimeout(r,500));  // EventSource-shaped retry
+        reconnections++;
+      }
+    }
+  }
+}
+
+// ── playout + render (the pilot's law, held-frame aware) ─────────────────
+const work9={n:0,f32:null,buf:null};
+function ensureWork(n){if(work9.n!==n){work9.n=n;work9.f32=new Float32Array(9*n);
+  work9.buf=work9.f32.buffer;}}
+let firstMeshDone=false;
+function uploadWork(){
+  if(!idxCount&&topoIdx){const ibuf=new ArrayBuffer(4+36*work9.n);
+    new Uint8Array(ibuf).set(new Uint8Array(work9.buf),4);
+    meshFromTopo(topoBufGlobal,ibuf);firstMeshDone=true;}
+  else if(idxCount){gl.bindVertexArray(vaoMesh);
+    gl.bindBuffer(gl.ARRAY_BUFFER,vboMesh);
+    gl.bufferData(gl.ARRAY_BUFFER,work9.buf,gl.DYNAMIC_DRAW);
+    gl.bindVertexArray(null);}
+}
+let topoBufGlobal=null;
+function composeWork(A,B,alpha){
+  ensureWork(A.n);
+  const w=work9.f32;
+  for(let i=0;i<A.n;i++){
+    w[9*i]  =A.pos[3*i]  +(B?B.pos[3*i]  -A.pos[3*i]  :0)*alpha;
+    w[9*i+1]=A.pos[3*i+1]+(B?B.pos[3*i+1]-A.pos[3*i+1]:0)*alpha;
+    w[9*i+2]=A.pos[3*i+2]+(B?B.pos[3*i+2]-A.pos[3*i+2]:0)*alpha;
+    w[9*i+3]=A.nrm[3*i];w[9*i+4]=A.nrm[3*i+1];w[9*i+5]=A.nrm[3*i+2];
+    w[9*i+6]=A.col[3*i];w[9*i+7]=A.col[3*i+1];w[9*i+8]=A.col[3*i+2];
+  }
+}
+function frame(){
+  requestAnimationFrame(frame);
+  // THE RENDER LOOP MUST NOT DIE: any playout error leaves the last good
+  // frame on the GPU (held, visible) and is counted — it never blanks the
+  // canvas and never stops the loop (the pilot's zero-frame lesson).
+  try{
+    playout();
+  }catch(e){window.__push_errs.push('frame: '+e);}
+}
+function playout(){
+  let A=null,B=null,alpha=0,r_us=0,underrun=false;
+  const now=performance.now();
+  if(snaps.length&&!P.pixel){
+    const latest=snaps[snaps.length-1];
+    if(P.mode==='direct'||snaps.length<2){A=latest;}
+    else{
+      r_us=serverNowUs(now)-D_us();
+      for(let i=snaps.length-1;i>0;i--){
+        if(snaps[i-1].ts<=r_us&&r_us<snaps[i].ts){A=snaps[i-1];B=snaps[i];break;}}
+      if(!A){A=latest;underrun=true;}
+      else if(B&&r_us>B.ts){A=B;B=null;}
+    }
+    if(underrun&&!wasUnderrun){underruns++;underrun_t0=now;}
+    if(!underrun&&wasUnderrun){underrun_ms+=now-underrun_t0;}
+    wasUnderrun=underrun;
+    alpha=B?Math.min(1,Math.max(0,(r_us-A.ts)/(B.ts-A.ts))):0;
+    composeWork(A,B,alpha);
+    uploadWork();
+  }
+  // ── draw (the page's own path: grid, ring, post, mesh) ──
+  if(gl){
+    const d=devicePixelRatio||1;
+    if(cv.width!==Math.floor(innerWidth*d)||cv.height!==Math.floor(innerHeight*d)){
+      cv.width=Math.floor(innerWidth*d);cv.height=Math.floor(innerHeight*d);}
+    gl.viewport(0,0,cv.width,cv.height);
+    gl.enable(gl.DEPTH_TEST);gl.clearColor(0.043,0.051,0.063,1);
+    gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+    const vp=mul(persp(0.9,cv.width/cv.height,0.05,60),
+                 lookFrom(cam.yaw,cam.pit,cam.dist,cam.tx,cam.ty,cam.tz).mat);
+    gl.useProgram(LINE_P);gl.uniformMatrix4fv(U(LINE_P,'uVP'),false,vp);
+    gl.uniform4f(U(LINE_P,'uCol'),0.16,0.2,0.24,1);
+    gl.bindVertexArray(worldGrid.vao);gl.drawArrays(gl.LINES,0,worldGrid.n);
+    gl.uniform4f(U(LINE_P,'uCol'),0.5,0.75,0.55,1);
+    gl.bindVertexArray(markerRing.vao);gl.drawArrays(gl.LINE_STRIP,0,markerRing.n);
+    gl.uniform4f(U(LINE_P,'uCol'),0.35,0.55,0.4,1);
+    gl.bindVertexArray(markerPost.vao);gl.drawArrays(gl.LINES,0,markerPost.n);
+    gl.bindVertexArray(null);
+    if(idxCount){gl.useProgram(MESH_P);gl.uniformMatrix4fv(U(MESH_P,'uVP'),false,vp);
+      gl.uniform1f(U(MESH_P,'uAlpha'),1);
+      gl.bindVertexArray(vaoMesh);
+      gl.drawElements(gl.TRIANGLES,idxCount,gl.UNSIGNED_INT,0);
+      gl.bindVertexArray(null);}
+  }
+  // ── HUD (F3: values from the governing snapshot A only) ──
+  if(A)panelUpdate(A,serverNowUs(now),underrun,now);
+  if(P.pilot){
+    pilot.raf.push({t:now,r:r_us,ur:underrun?1:0,A:A?A.ts:0,B:B?B.ts:0,
+      a:+alpha.toFixed(4),cam:[cam.yaw,cam.pit,cam.dist]});
+    if(pilot.raf.length>36000)pilot.raf.splice(0,6000);
+    if((pilotFrameNo++%10)===0&&work9.f32){
+      pilot.samples.push({t:now,r:r_us,a:A?A.ts:0,b:B?B.ts:0,
+        alpha:+alpha.toFixed(4),ur:underrun?1:0,n:work9.n,
+        root_y:A?A.root_y:0,root_vy:A?A.root_vy:0,dimple:A?A.dimple:0,
+        held:heldSince>0,frame:b64(work9.f32)});
+      if(pilot.samples.length>4000)pilot.samples.splice(0,1000);
+    }
+  }
+}
+let lastPanel=0;
+function panelUpdate(A,serverNow,underrun,now){
+  if(now-lastPanel<100)return;lastPanel=now;
+  const age_ms=(serverNow-A.ts)/1000;
+  document.getElementById('pp-sync').innerHTML=
+    'as of engine <b>ts_us='+A.ts+'</b> (tick '+A.ticks+') · age <b>'+age_ms.toFixed(1)+
+    ' ms</b> server time'+(underrun?' · <span style="color:#e6b455">FREEZE (waiting for snapshots)</span>':'');
+  document.getElementById('pp-state').innerHTML=
+    'root_y <b>'+A.root_y.toFixed(4)+'</b> m · root_vy <b>'+A.root_vy.toFixed(4)+
+    '</b> m/s · P <b>'+A.P_l.toFixed(2)+'</b>/<b>'+A.P_u.toFixed(2)+
+    '</b> Pa · dimple <b>'+A.dimple.toFixed(4)+'</b> m';
+  document.getElementById('pp-transport').innerHTML=
+    'PUSH '+P.mode+' · '+P.rate.toFixed(0)+' Hz nominal · <b>'+achR.toFixed(1)+
+    '</b> Hz achieved · fmt '+P.fmt+' · <b>'+(bps/1024).toFixed(1)+
+    '</b> KB/s · wire '+(wireBytes/1e6).toFixed(2)+' MB · seq gaps <b>'+guard.seq_gaps+
+    '</b> · guard rejects <b>'+guard.rejects+'</b>'+(guard.last_reason?' ('+guard.last_reason+')':'')+
+    ' · underruns '+underruns+' ('+underrun_ms.toFixed(0)+' ms) · reconnects <b>'+reconnections+
+    '</b> · errs '+streamErrs+' · hearts '+heartbeats+(P.pixel?' · px '+pixelCount:'');
+  const heldEl=document.getElementById('held');
+  if(guard.rejects>0&&held){heldEl.style.display='block';
+    heldEl.textContent='HELD FRAME @ ts_us '+held.ts+' (guard: '+guard.last_reason+') — no torn frame rendered';}
+  else heldEl.style.display='none';
+  const lk=document.getElementById('link');
+  lk.textContent=linkState;
+  lk.style.color=linkState==='live'?'#7fd4c1':'#e6b455';
+}
+
+// ── keyboard (keyboard-first, the slice's own law) ───────────────────────
+let curCtrlRef=()=>curCtrl;
+function setRate(r){P.rate=r;guard.last_seq=-1;   // new profile = new seq space
+  if(curCtrlRef())curCtrlRef().abort();}
+window.addEventListener('keydown',e=>{
+  const k=e.key;
+  if(k==='ArrowLeft')cam.yaw-=0.08;
+  else if(k==='ArrowRight')cam.yaw+=0.08;
+  else if(k==='ArrowUp')cam.pit=Math.min(1.4,cam.pit+0.06);
+  else if(k==='ArrowDown')cam.pit=Math.max(-0.15,cam.pit-0.06);
+  else if(k==='+'||k==='=')cam.dist=Math.max(0.5,cam.dist*0.9);
+  else if(k==='-'||k==='_')cam.dist=Math.min(9,cam.dist*1.1);
+  else if(k==='1')setRate(60);
+  else if(k==='2')setRate(30);
+  else if(k==='3')setRate(15);
+  else if(k==='4')setRate(10);
+  else if(k==='t'||k==='T')P.mode=(P.mode==='interp')?'direct':'interp';
+  else if(k==='f'||k==='F')fetch('/api/drop_test',{method:'POST'});
+  else if(k==='c'||k==='C')fetch('/api/send',{method:'POST'});
+  else if(k==='x'||k==='X')fetch('/api/stop',{method:'POST'});
+  else if(k==='r'||k==='R')fetch('/api/restart',{method:'POST'});
+  else return;
+});
+
+// ── instrumentation + canned injection (tests; the F3 surface) ───────────
+window.__push_errs=[];
+window.addEventListener('error',e=>window.__push_errs.push(String(e.message||e)));
+window.__push_dump=function(){
+  return JSON.stringify({params:P,jhead_ms,mode:P.mode,underruns,underrun_ms,
+    streamErrs,reconnections,achieved_hz:achR,bps,cam:[cam.yaw,cam.pit,cam.dist],
+    wire_bytes:wireBytes,records:recCount,guard:{...guard},heartbeats,
+    raf:pilot.raf,snaps:pilot.snaps,samples:pilot.samples});};
+window.__push_state=function(){
+  return {mode:P.mode,rate:P.rate,achieved:achR,held:held?{ts:held.ts,n:held.n}:null,
+    guard_rejects:guard.rejects,seq_gaps:guard.seq_gaps,reconnections,streamErrs,
+    link:linkState,snaps_ts:snaps.map(s=>s.ts),underruns,
+    errs:window.__push_errs,
+    panel:{sync:document.getElementById('pp-sync').textContent,
+           state:document.getElementById('pp-state').textContent,
+           transport:document.getElementById('pp-transport').textContent}};};
+window.__push_canned=function(list){
+  pullsPaused=true;if(curCtrlRef())curCtrlRef().abort();
+  snaps=list.map(c=>({ts:c.ts,ticks:c.ticks||0,root_y:c.root_y,root_vy:c.root_vy||0,
+    P_l:c.P_l,P_u:c.P_u,dimple:c.dimple||0,gap:c.gap||0,n:c.pos.length/3,
+    pos:Float32Array.from(c.pos),nrm:null,col:null,arrival:performance.now(),
+    seq:-1,bytes:0})).map(s=>{const r=finishSnap(s);
+      if(r&&!r.col)r.col=new Float32Array(r.n*3).fill(0.55);  // FULL36 pages
+                                                              // carry no colRef
+      return r;}).filter(Boolean);
+  held=snaps[snaps.length-1]||held;};
+
+// ── init: topology + color ref for the color-dropping formats ────────────
+(async function init(){
+  const tbuf=await(await fetch('/api/topology')).arrayBuffer();
+  topoBufGlobal=tbuf;
+  triCount=new DataView(tbuf).getUint32(0,true);
+  topoIdx=new Uint32Array(tbuf,4,triCount*3);
+  if(P.fmt!=='FULL36'&&!P.pixel){
+    const cbuf=await(await fetch('/api/snapshot?fmt=FULL36')).arrayBuffer();
+    const dv=new DataView(cbuf),n=dv.getUint32(48,true);
+    const f=new Float32Array(cbuf,SNAP_HDR,9*n);
+    colRef=new Float32Array(n*3);
+    for(let i=0;i<n;i++){colRef[3*i]=f[9*i+6];colRef[3*i+1]=f[9*i+7];colRef[3*i+2]=f[9*i+8];}
+  }
+  if(P.pixel){document.getElementById('px').style.display='block';}
+  streamLoop();
+  requestAnimationFrame(frame);
+})();
+</script></body></html>

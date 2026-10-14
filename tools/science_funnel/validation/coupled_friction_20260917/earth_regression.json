@@ -1,0 +1,137 @@
+{
+  "checks": [
+    {
+      "detail": {},
+      "name": "body_independent_field_sample",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "millimetre_global_local_roundtrip",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "right_handed_frame",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "vacuum_ballistic_position",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "vacuum_ballistic_velocity",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "JPL_earth_gravity",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "unilateral_contact",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "support_load_mg",
+      "pass": true
+    },
+    {
+      "detail": {
+        "balance_error_J": -2.2551405187698492e-17,
+        "buoyancy_work_J": 0.0,
+        "contact_dissipation_J": 0.00482565552231353,
+        "drag_dissipation_J": 0.0,
+        "friction_dissipation_J": 0.0,
+        "heat_to_air_J": 0.0,
+        "initial_mechanical_J": 0.004899142662247262,
+        "mechanical_J": 7.348713993370893e-05,
+        "thermal_energy_change_J": 0.0,
+        "wind_work_J": 0.0
+      },
+      "name": "vacuum_energy_account",
+      "pass": true
+    },
+    {
+      "detail": {
+        "worst_J": 2.5871232239849107e-15
+      },
+      "name": "27_scenario_energy_account",
+      "pass": true
+    },
+    {
+      "detail": {
+        "worst_N_s": 6.202464982382825e-17
+      },
+      "name": "27_scenario_momentum_account",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "passive_losses_nonnegative",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "above_static_threshold_holds",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "below_static_threshold_slides",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "thermal_exact_relaxation",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "thermal_account",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "thermal_no_overshoot",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "altitude_changes_fields",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "unsupported_altitude_transactional",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "one_native_snapshot_finite",
+      "pass": true
+    },
+    {
+      "detail": {
+        "display_to_analytic_volume": 0.9595605631921996
+      },
+      "name": "display_sphere_outward_with_bounded_tessellation",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "invalid_control_transactional",
+      "pass": true
+    },
+    {
+      "detail": {},
+      "name": "hand_port_follows_source_arm",
+      "pass": true
+    }
+  ],
+  "failed": 0
+}

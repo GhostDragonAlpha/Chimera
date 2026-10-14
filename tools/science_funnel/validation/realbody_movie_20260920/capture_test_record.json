@@ -1,0 +1,262 @@
+{
+ "schema": "chimera.realbody_movie_20260920.capture.v1",
+ "port": 57559,
+ "base": "http://127.0.0.1:57559",
+ "viewport": [
+  800,
+  450
+ ],
+ "frame_format": "jpeg q0.85 (the page canvas's own toDataURL bytes after the page's own draw(), same JS task; the canvas clears opaque so the browser's own JPEG encode loses nothing but weight)",
+ "phases_planned": [
+  [
+   "settle",
+   6.0
+  ],
+  [
+   "carry",
+   5.0
+  ],
+  [
+   "hold_marker",
+   1.0
+  ],
+  [
+   "fall",
+   9.0
+  ],
+  [
+   "restart",
+   5.0
+  ]
+ ],
+ "console_messages": [],
+ "page_errors": [],
+ "request_failures": [],
+ "status_timeline": [
+  {
+   "frame": 0,
+   "t": 0.0,
+   "root_y": 0.603194,
+   "root_vy": -0.223719,
+   "gravity": true,
+   "carry_active": true,
+   "carry_x": 0.01129284946790071,
+   "carry_z": 0.01650671229819357
+  },
+  {
+   "frame": 50,
+   "t": 2.605,
+   "root_y": 0.124641,
+   "root_vy": 3.39936e-05,
+   "gravity": true,
+   "carry_active": true,
+   "carry_x": 0.5872281723308366,
+   "carry_z": 0.8583490395060652
+  }
+ ],
+ "phase_events": [
+  {
+   "phase": "carrytest",
+   "t": 17242.31,
+   "first_frame": 0,
+   "last_frame": 54
+  }
+ ],
+ "posts": {
+  "send": {
+   "ok": true,
+   "mock": "mock_carry"
+  }
+ },
+ "t_world_up": 2.06,
+ "browser_channel": "bundled",
+ "page_ready": 3.51,
+ "webgl2": "ANGLE (NVIDIA, NVIDIA GeForce RTX 4090 (0x00002684) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+ "final_status": {
+  "engine_state": {
+   "ts_us": 17245338599,
+   "ts_ms": 17245338,
+   "ticks": 376,
+   "body_model": "legacy",
+   "body_actuation": "kinematic",
+   "enabled": true,
+   "reflex_cell_count": 499976,
+   "force_l": 0,
+   "force_r": 0,
+   "load_l": 0,
+   "load_r": 0,
+   "damage_sum": 0,
+   "failed": 0,
+   "capacity_sum": 7524380.0,
+   "flex_l_deg": 0,
+   "flex_r_deg": 0,
+   "sealed": false,
+   "n_cells": 0,
+   "V_lower": 0,
+   "V_upper": 0,
+   "P_lower": 0,
+   "P_upper": 0,
+   "v0_lower": 0,
+   "v0_upper": 0,
+   "V_whole": 0,
+   "conserve_pct": 0,
+   "w_sum": 0,
+   "seal_mass_kg": 0,
+   "seal_w_init": "",
+   "seal_split": 0,
+   "seal_cuts": 0,
+   "seal_loops": 0,
+   "seal_caps": 0,
+   "seal_refusal": "",
+   "dimple_m": 0,
+   "gravity_on": true,
+   "root_y": 0.124641,
+   "root_vy": -1.03168e-07,
+   "g_contact_n": 135618,
+   "stance_on": false,
+   "stance_ankle_deg": 0,
+   "stance_kp": 0,
+   "stance_lean_x": 0,
+   "stance_lean_z": 0,
+   "gait_on": false,
+   "gait_l": "STANCE",
+   "gait_r": "STANCE",
+   "gait_stride": 0,
+   "gait_depth_l": 0,
+   "gait_depth_r": 0,
+   "gait_clear_l": 0,
+   "gait_clear_r": 0,
+   "gait_lean_x": 0,
+   "gait_lean_z": 0,
+   "gait_p_max": 0,
+   "gait_hip_l_deg": 0,
+   "gait_hip_r_deg": 0,
+   "gait_knee_l_deg": 0,
+   "gait_knee_r_deg": 0,
+   "gait_feet_cell": -1,
+   "gait_strut_pin_l": -1,
+   "gait_strut_pin_r": -1,
+   "gait_clear_pin_l": -1,
+   "gait_clear_pin_r": -1,
+   "gait_enable_block": "",
+   "gait_block_l": "",
+   "gait_block_r": "",
+   "reflex_on": false,
+   "reflex_breathing": true,
+   "reflex_breath_cell": -1,
+   "reflex_breath_period_s": 0,
+   "reflex_breath_amp_frac": 0,
+   "reflex_breath_disp_m": 0,
+   "reflex_breath_phase_deg": 0,
+   "reflex_flinch": true,
+   "reflex_flinch_pin_l": -1,
+   "reflex_flinch_pin_r": -1,
+   "reflex_flinch_env_l": 0,
+   "reflex_flinch_env_r": 0,
+   "reflex_flinch_last_cell": -1,
+   "reflex_flinch_last_tick": 0,
+   "reflex_startle": true,
+   "reflex_startle_env": 0,
+   "reflex_startle_bias_deg": 0,
+   "reflex_startle_last_tick": 0,
+   "reflex_p_coupling": true,
+   "reflex_quiet_s": 1e+30,
+   "reflex_block": "",
+   "limb_done": false,
+   "limb_side": "",
+   "limb_segs": [],
+   "patches": {
+    "armed": false,
+    "n": 0,
+    "patches": []
+   },
+   "patch_events": [],
+   "gait_log": [],
+   "cells": [],
+   "seal_cells": [],
+   "has_scene": true
+  },
+  "mock_carry": {
+   "active": false,
+   "x": 0.5985210217987373,
+   "z": 0.8748557518042588,
+   "arrived": true
+  },
+  "fall_test": null,
+  "scene": {
+   "schema": "chimera.playable_slice.scene.v1",
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "start_state_sha256": null,
+   "settled": false,
+   "start_root_y": null,
+   "marker": {
+    "x": 0.6775709680740424,
+    "z": 0.9904027378916139,
+    "radius": 0.15,
+    "azimuth_rad": 0.6,
+    "dist_m": 1.2
+   },
+   "body": {
+    "schema": "chimera.playable_slice.real_body.v1",
+    "body_id": "physics_body",
+    "derived_from": "tools\\science_funnel\\data\\morphosource_ct\\meshes_body_20260922",
+    "bones": 25,
+    "vertices": 249743,
+    "triangles": 499976,
+    "sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+    "under_cap": true,
+    "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+    "import_route": "cache",
+    "import_bytes": 8997312,
+    "import_stats": {
+     "verts": 249743,
+     "tris": 499976,
+     "volume": 0.000973470353,
+     "ymin": -0.134641007,
+     "ymax": 0.134641007,
+     "winding_flipped": false
+    },
+    "gravity_armed": true
+   },
+   "ghost": {
+    "pose_json_sha256": "27e6fd9e95a057af276f63859af65c6a8a4d20a35d0cedf7b495ea9c9ffa0053",
+    "registration_pin_sha256": "013810f87a6ca7c1e01916ef7a5454e61e8d0e88f8d6a589fbfdd1514017a173",
+    "mesh_dir": "meshes_preview (full committed preview resolution)",
+    "bones": 25,
+    "vertices": 355831,
+    "triangles": 712522,
+    "declared_id": "ghost_standing_pose",
+    "units": "scene metres, +Y up, pads' mean plane at y=0",
+    "ghost_source": "cache"
+   },
+   "ghost_bytes_sha256": "d07d976cbccc0d327586e99ace2a79badb7ba4918118c565d307273327ca771d"
+  },
+  "marker": {
+   "x": 0.6775709680740424,
+   "z": 0.9904027378916139,
+   "radius": 0.15,
+   "azimuth_rad": 0.6,
+   "dist_m": 1.2
+  }
+ },
+ "frames": 55,
+ "capture_span_s": 3.026,
+ "mean_fps": 17.84,
+ "median_dt_ms": 56.5,
+ "p95_dt_ms": 89.3,
+ "max_dt_ms": 143.7,
+ "intervals_over_100ms": 1,
+ "phases_actual": [
+  {
+   "phase": "carrytest",
+   "first": 0,
+   "last": 54
+  }
+ ],
+ "frame_bytes_min": 33788,
+ "frame_bytes_median": 35757,
+ "dark_frames_lt_15kb": 0,
+ "console_error_count": 0,
+ "page_error_count": 0,
+ "request_failure_count": 0
+}

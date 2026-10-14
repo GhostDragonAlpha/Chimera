@@ -1,0 +1,44 @@
+{
+  "cases": [
+    {
+      "build_N1_final_state": "d1e54099fd51f703653ff4103bf1f9646b9e4f5da80e60805667b0cf73f3ac71",
+      "build_N_final_state": "7431dee9d7c0ef78d68e9e844f7832c85c091e6aa7c8d59c36938f599c55a675",
+      "case": "OL-1",
+      "command_stream_sha256": "8785fcc08aed34b89f154344974ab5a36074400f7ca4fb5e627fcc06a6611be4",
+      "horizon_ticks": 900,
+      "max_abs_dv_m_s": 0.0038658407484328805,
+      "mean_abs_dv_m_s": 0.0015309549378438533,
+      "seed": 20260919,
+      "within_derived_margin": true
+    },
+    {
+      "build_N1_final_state": "a359b54c7152a244dbb2b57db2e742034f0da123b0b0c4208ac0e4344d093e21",
+      "build_N_final_state": "b9a7fb99c32013e2e993c8c81a88b0abea2d5e0ce19e010e344b5d4e8cb27d72",
+      "case": "OL-2",
+      "command_stream_sha256": "cd4944d99be1270951926be53859828a6b0aef21d32d6551f68e78d504ef6c7a",
+      "horizon_ticks": 900,
+      "max_abs_dv_m_s": 0.0038599272742327884,
+      "mean_abs_dv_m_s": 0.0015275479543766365,
+      "seed": 20260920,
+      "within_derived_margin": true
+    },
+    {
+      "build_N1_final_state": "9458aa6ae58870243f8cc1d74522c6508fce76ba7d9c7e02e509ec3cdd733b35",
+      "build_N_final_state": "84a5e90e11ceace5e08face2e1cd818d38ec228bf24ee08ce136ff3bcbc145ca",
+      "case": "OL-3",
+      "command_stream_sha256": "dfb0e26d6aeb073fd4f21a3a49a51fb1a6b8f0b49a719a26cb491ac3f5517d51",
+      "horizon_ticks": 900,
+      "max_abs_dv_m_s": 0.0038532957169252757,
+      "mean_abs_dv_m_s": 0.0015253196514649736,
+      "seed": 20260921,
+      "within_derived_margin": true
+    }
+  ],
+  "check": "CHECK_2_cross_build_equivalence_registered_cases",
+  "derivation": "v_{t+1}=(1-dt*d_eff)v_t+dt*a; d_eff in [d*0.95, d] (the declared warm-start coupling), a in [0, STRIDE_GAIN*stride_amp_hi=0.99]; envelope V = a_max/d_lo = 0.99/(0.35*0.95) = 2.977443609022557 m/s (contraction fixed point); build N+1 scales every d_eff by 1.01, so Delta_{t+1} = (1-dt*d'_t)Delta_t - dt*0.01*d_t*v_t and the geometric sum over ANY horizon gives max|Delta_v| <= delta*V/(1.01*0.95) = 0.01*2.977443609022557/0.9595 = 0.03103119967715015 m/s",
+  "derived_margin_m_s": 0.03103119967715015,
+  "detail": "3/3 registered open-loop cases within the pre-derived margin 0.03103119967715015 m/s (max measured 0.0038658407484328805 m/s)",
+  "honesty_note": "AGREEMENT ON REGISTERED CASES IS EVIDENCE, NOT UNIVERSAL PROOF: finitely many pinned command streams cannot prove cross-build agreement everywhere; the certificate's qualification scope (part d) bounds what this evidence covers, and every future build re-runs these cases.",
+  "pass": true,
+  "velocity_envelope_m_s": 2.977443609022557
+}

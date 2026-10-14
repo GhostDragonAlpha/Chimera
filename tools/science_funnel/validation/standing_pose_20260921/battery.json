@@ -1,0 +1,945 @@
+{
+ "a5_refusal_demos": [
+  {
+   "bond": "bond.joint_01_02",
+   "edge": "hi",
+   "refusal": "out_of_anatomical_range",
+   "refused": true
+  },
+  {
+   "bond": "bond.joint_01_02",
+   "edge": "lo",
+   "refusal": "out_of_anatomical_range",
+   "refused": true
+  },
+  {
+   "bond": "bond.joint_02_06",
+   "edge": "hi",
+   "refusal": "out_of_anatomical_range",
+   "refused": true
+  },
+  {
+   "bond": "bond.joint_02_06",
+   "edge": "lo",
+   "refusal": "out_of_anatomical_range",
+   "refused": true
+  },
+  {
+   "bond": "bond.joint_04_10",
+   "edge": "hi",
+   "refusal": "out_of_anatomical_range",
+   "refused": true
+  },
+  {
+   "bond": "bond.joint_04_10",
+   "edge": "lo",
+   "refusal": "out_of_anatomical_range",
+   "refused": true
+  },
+  {
+   "bond": "bond.joint_06_25",
+   "edge": "hi",
+   "refusal": "out_of_anatomical_range",
+   "refused": true
+  },
+  {
+   "bond": "bond.joint_06_25",
+   "edge": "lo",
+   "refusal": "out_of_anatomical_range",
+   "refused": true
+  }
+ ],
+ "amendment_1_sha256": "f2e528f71737f8b23daaf01e872fdb61c9da6e638d15a4125e813f5f5544d157",
+ "amendment_2_sha256": "a9d4da01e24a5dfcd370931546d374433d93b47d4456f40192fc8e685453e251",
+ "base_commit": "52f101c1",
+ "class_band_rows_PA3": [
+  {
+   "band": 1.0,
+   "theta": 0.178118396022,
+   "var": "hipL_flexion",
+   "within_band": true
+  },
+  {
+   "band": 0.5,
+   "theta": -0.136981171595,
+   "var": "hipL_adduction",
+   "within_band": true
+  },
+  {
+   "band": 0.5,
+   "theta": 0.172180846468,
+   "var": "hipL_rotation",
+   "within_band": true
+  },
+  {
+   "band": 1.0,
+   "theta": 0.097980355552,
+   "var": "hipR_flexion",
+   "within_band": true
+  },
+  {
+   "band": 0.5,
+   "theta": 0.037106507698,
+   "var": "hipR_adduction",
+   "within_band": true
+  },
+  {
+   "band": 0.5,
+   "theta": 0.297787360205,
+   "var": "hipR_rotation",
+   "within_band": true
+  },
+  {
+   "band": 0.5,
+   "theta": -0.216633291473,
+   "var": "kneeL",
+   "within_band": true
+  },
+  {
+   "band": 0.5,
+   "theta": -0.145775817309,
+   "var": "kneeR",
+   "within_band": true
+  },
+  {
+   "band": 0.2,
+   "theta": 0.005198046168,
+   "var": "driverL_06_25",
+   "within_band": true
+  },
+  {
+   "band": 0.2,
+   "theta": -0.019472050549,
+   "var": "driverR_07_24",
+   "within_band": true
+  }
+ ],
+ "consistency": {
+  "V_pose_mm2": 2.1e-11,
+  "all_seat_constraints_satisfied": true,
+  "d_pose": 0.0,
+  "hip_seat_gap_mm": {
+   "L": 1.061517305403,
+   "R": 1.482891580809
+  },
+  "hip_seat_headroom_mm": {
+   "L": 1.938482694597,
+   "R": 1.517108419191
+  },
+  "loop_seat_headroom_mm": {
+   "A_20_25": 0.587157801933,
+   "B_21_24": 0.029654579418
+  },
+  "matches_pose_json": true,
+  "non_hip_seats": {
+   "bond.joint_02_06": {
+    "gap_at_pose_mm": 2.689922240453,
+    "gap_at_rest_mm": 2.910947696492,
+    "non_increasing_vs_rest": true,
+    "within_cut": true
+   },
+   "bond.joint_03_07": {
+    "gap_at_pose_mm": 2.718188840257,
+    "gap_at_rest_mm": 2.826163805492,
+    "non_increasing_vs_rest": true,
+    "within_cut": true
+   },
+   "bond.joint_04_10": {
+    "gap_at_pose_mm": 1.787572213639,
+    "gap_at_rest_mm": 2.004461960237,
+    "non_increasing_vs_rest": true,
+    "within_cut": true
+   },
+   "bond.joint_04_12": {
+    "gap_at_pose_mm": 0.752787340221,
+    "gap_at_rest_mm": 0.932953376094,
+    "non_increasing_vs_rest": true,
+    "within_cut": true
+   },
+   "bond.joint_05_11": {
+    "gap_at_pose_mm": 1.936313432828,
+    "gap_at_rest_mm": 2.266524931601,
+    "non_increasing_vs_rest": true,
+    "within_cut": true
+   },
+   "bond.joint_05_13": {
+    "gap_at_pose_mm": 0.744463117338,
+    "gap_at_rest_mm": 0.861623422322,
+    "non_increasing_vs_rest": true,
+    "within_cut": true
+   },
+   "bond.joint_06_25": {
+    "gap_at_pose_mm": 0.6124850148,
+    "gap_at_rest_mm": 0.659698121371,
+    "non_increasing_vs_rest": true,
+    "within_cut": true
+   },
+   "bond.joint_07_24": {
+    "gap_at_pose_mm": 0.98400623678,
+    "gap_at_rest_mm": 0.861625547431,
+    "non_increasing_vs_rest": false,
+    "within_cut": true
+   }
+  }
+ },
+ "falsifiers_fired": [],
+ "hard_checks_pass": true,
+ "immobility": {
+  "bond.joint_02_15": {
+   "abs_dev_mm": 0.0,
+   "gap_at_pose_mm": 1.006079836161,
+   "gap_at_rest_mm": 1.006079836161,
+   "ok": true,
+   "transforms_bitwise_identical": true
+  },
+  "bond.joint_03_17": {
+   "abs_dev_mm": 0.0,
+   "gap_at_pose_mm": 0.690528080657,
+   "gap_at_rest_mm": 0.690528080657,
+   "ok": true,
+   "transforms_bitwise_identical": true
+  },
+  "bond.joint_04_08": {
+   "abs_dev_mm": 0.0,
+   "gap_at_pose_mm": 0.733212244392,
+   "gap_at_rest_mm": 0.733212244392,
+   "ok": true,
+   "transforms_bitwise_identical": true
+  },
+  "bond.joint_05_09": {
+   "abs_dev_mm": 0.0,
+   "gap_at_pose_mm": 0.860892576213,
+   "gap_at_rest_mm": 0.860892576213,
+   "ok": true,
+   "transforms_bitwise_identical": true
+  },
+  "bond.joint_06_20": {
+   "abs_dev_mm": 0.0,
+   "gap_at_pose_mm": 0.479999542236,
+   "gap_at_rest_mm": 0.479999542236,
+   "ok": true,
+   "transforms_bitwise_identical": true
+  },
+  "bond.joint_07_21": {
+   "abs_dev_mm": 0.0,
+   "gap_at_pose_mm": 0.452547908376,
+   "gap_at_rest_mm": 0.452547908376,
+   "ok": true,
+   "transforms_bitwise_identical": true
+  },
+  "bond.joint_10_12": {
+   "abs_dev_mm": 0.0,
+   "gap_at_pose_mm": 0.375232902945,
+   "gap_at_rest_mm": 0.375232902945,
+   "ok": true,
+   "transforms_bitwise_identical": true
+  },
+  "bond.joint_11_13": {
+   "abs_dev_mm": 0.0,
+   "gap_at_pose_mm": 0.471213854419,
+   "gap_at_rest_mm": 0.471213854419,
+   "ok": true,
+   "transforms_bitwise_identical": true
+  }
+ },
+ "lane": "agent/standing-pose-20260921",
+ "loops": {
+  "cycle_A": {
+   "abs_dev_mm": 0.055517452641,
+   "driver_theta_rad": 0.005198046168,
+   "drivers_at_rest_premise": false,
+   "loop_bond": "bond.joint_20_25",
+   "seat_at_pose_mm": 2.412842198067,
+   "seat_at_rest_mm": 2.468359650708,
+   "within_cut": true
+  },
+  "cycle_B": {
+   "abs_dev_mm": 0.070414521621,
+   "driver_theta_rad": -0.019472050549,
+   "drivers_at_rest_premise": false,
+   "loop_bond": "bond.joint_21_24",
+   "seat_at_pose_mm": 2.970345420582,
+   "seat_at_rest_mm": 2.899930898961,
+   "within_cut": true
+  }
+ },
+ "mass": {
+  "bone_02": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_03": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_06": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_07": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_10": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_11": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_12": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_13": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_15": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_17": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_18": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_20": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_21": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_22": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_23": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_24": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  },
+  "bone_25": {
+   "ok": true,
+   "posed_area_rel_dev": 0.0
+  }
+ },
+ "pad_plane": {
+  "bone_08": {
+   "centroid_ct_mm": [
+    148.727751876623,
+    26.117182407004,
+    43.497974946552
+   ],
+   "signed_dist_mm": -4.589288e-06
+  },
+  "bone_09": {
+   "centroid_ct_mm": [
+    150.601813753729,
+    18.565631164472,
+    20.705771663871
+   ],
+   "signed_dist_mm": 4.482502e-06
+  },
+  "bone_22": {
+   "centroid_ct_mm": [
+    43.16611098709,
+    49.518665304413,
+    44.143118958478
+   ],
+   "signed_dist_mm": 4.677318e-06
+  },
+  "bone_23": {
+   "centroid_ct_mm": [
+    42.537722779437,
+    42.659295990455,
+    21.804977840224
+   ],
+   "signed_dist_mm": -4.570532e-06
+  },
+  "plane_normal_ct": [
+   0.205256661954,
+   0.9339572679,
+   -0.292563710089
+  ],
+  "plane_variance_mm2": 2.1e-11
+ },
+ "pose_of_record": {
+  "file": "pose.json",
+  "note": "byte-identical in two fresh solver processes (recorded in the receipt)",
+  "sha256": "27e6fd9e95a057af276f63859af65c6a8a4d20a35d0cedf7b495ea9c9ffa0053",
+  "x_R12": [
+   0.178118396022,
+   -0.136981171595,
+   0.172180846468,
+   0.097980355552,
+   0.037106507698,
+   0.297787360205,
+   -0.216633291473,
+   -0.145775817309,
+   0.005198046168,
+   -0.019472050549
+  ]
+ },
+ "prediction_checks": {
+  "F1_a5_refusal_fires_by_name_past_all_moved_bands": true,
+  "F1_all_coordinates_in_recorded_range": true,
+  "F2_hip_p6_both_hips_all_stations": true,
+  "F3_loop_seats_within_cut": true,
+  "F4_0dof_bonds_immobile_bitwise": true,
+  "F5_mass_exactly_invariant_all_moved": true,
+  "F6_release_predictions_match_measurement": false,
+  "F7_fresh_process_pose_json_byte_identical": true,
+  "F7_inprocess_resolve_reproduces_x_R12": true,
+  "F8_watched_bytes_untouched": true,
+  "PA3_class_bands_all_within": true,
+  "PA4_moved_non_hip_seats_within_cut": true,
+  "amendment_1_bank_matches_file": true,
+  "amendment_2_bank_matches_file": true,
+  "pose_file_sha_matches_solve_bank": true,
+  "preregistration_bank_matches_file": true,
+  "solver_success_recorded": true
+ },
+ "prediction_inversions_recorded": [
+  "PA6/F6: a release prediction inverted -- the moving-member curl contacts PERSIST at the derived pose (the pose is interior-small; the surfaces remain within the touching class). Recorded; every gap stands as measured; never dropped."
+ ],
+ "preregistration_sha256": "63e9def46d2c7a40215e8eda5c1599565203aed639d648bc97a97d6cbccc9348",
+ "range_rows": [
+  {
+   "accepted": true,
+   "bond": "bond.joint_01_02",
+   "coordinate": "adduction",
+   "range": [
+    -2.0943951,
+    2.0943951
+   ],
+   "theta": -0.136981171595
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_01_02",
+   "coordinate": "flexion",
+   "range": [
+    -2.0943951,
+    2.0943951
+   ],
+   "theta": 0.178118396022
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_01_02",
+   "coordinate": "rotation",
+   "range": [
+    -2.0943951,
+    2.0943951
+   ],
+   "theta": 0.172180846468
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_01_03",
+   "coordinate": "adduction",
+   "range": [
+    -2.0943951,
+    2.0943951
+   ],
+   "theta": 0.037106507698
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_01_03",
+   "coordinate": "flexion",
+   "range": [
+    -2.0943951,
+    2.0943951
+   ],
+   "theta": 0.097980355552
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_01_03",
+   "coordinate": "rotation",
+   "range": [
+    -2.0943951,
+    2.0943951
+   ],
+   "theta": 0.297787360205
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_02_06",
+   "coordinate": "knee_angle",
+   "range": [
+    -2.0943951,
+    0.17453293
+   ],
+   "theta": -0.216633291473
+  },
+  {
+   "bond": "bond.joint_02_15",
+   "class": "positional_contact",
+   "note": "0-DOF class or loop bond: no coordinate",
+   "theta": null
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_03_07",
+   "coordinate": "knee_angle",
+   "range": [
+    -2.0943951,
+    0.17453293
+   ],
+   "theta": -0.145775817309
+  },
+  {
+   "bond": "bond.joint_03_17",
+   "class": "positional_contact",
+   "note": "0-DOF class or loop bond: no coordinate",
+   "theta": null
+  },
+  {
+   "bond": "bond.joint_04_08",
+   "class": "positional_contact",
+   "note": "0-DOF class or loop bond: no coordinate",
+   "theta": null
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_04_10",
+   "coordinate": "elbow_flexion",
+   "range": [
+    0.34906585,
+    2.44346095
+   ],
+   "theta": 0.34906585
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_04_12",
+   "coordinate": "elbow_flexion",
+   "range": [
+    0.34906585,
+    2.44346095
+   ],
+   "theta": 0.34906585
+  },
+  {
+   "bond": "bond.joint_05_09",
+   "class": "positional_contact",
+   "note": "0-DOF class or loop bond: no coordinate",
+   "theta": null
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_05_11",
+   "coordinate": "elbow_flexion",
+   "range": [
+    0.34906585,
+    2.44346095
+   ],
+   "theta": 0.34906585
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_05_13",
+   "coordinate": "elbow_flexion",
+   "range": [
+    0.34906585,
+    2.44346095
+   ],
+   "theta": 0.34906585
+  },
+  {
+   "bond": "bond.joint_06_20",
+   "class": "syndesmosis_nodof",
+   "note": "0-DOF class or loop bond: no coordinate",
+   "theta": null
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_06_25",
+   "coordinate": "subtalar_class",
+   "range": [
+    -0.34906585,
+    0.34906585
+   ],
+   "theta": 0.005198046168
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_07_18",
+   "coordinate": "at_rest",
+   "range": [
+    -0.34906585,
+    0.34906585
+   ],
+   "theta": 0.0
+  },
+  {
+   "bond": "bond.joint_07_21",
+   "class": "syndesmosis_nodof",
+   "note": "0-DOF class or loop bond: no coordinate",
+   "theta": null
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_07_24",
+   "coordinate": "subtalar_class",
+   "range": [
+    -0.34906585,
+    0.34906585
+   ],
+   "theta": -0.019472050549
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_10_12",
+   "coordinate": "at_rest",
+   "range": [
+    -1.57079633,
+    1.57079633
+   ],
+   "theta": 0.0
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_11_13",
+   "coordinate": "at_rest",
+   "range": [
+    -1.57079633,
+    1.57079633
+   ],
+   "theta": 0.0
+  },
+  {
+   "bond": "bond.joint_20_25",
+   "class": "loop_or_nodof",
+   "note": "0-DOF class or loop bond: no coordinate",
+   "theta": null
+  },
+  {
+   "bond": "bond.joint_21_24",
+   "class": "loop_or_nodof",
+   "note": "0-DOF class or loop bond: no coordinate",
+   "theta": null
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_22_25",
+   "coordinate": "at_rest",
+   "range": [
+    -0.34906585,
+    0.34906585
+   ],
+   "theta": 0.0
+  },
+  {
+   "accepted": true,
+   "bond": "bond.joint_23_24",
+   "coordinate": "at_rest",
+   "range": [
+    -0.34906585,
+    0.34906585
+   ],
+   "theta": 0.0
+  }
+ ],
+ "releases": {
+  "pose.joint_01_08": {
+   "committed_gap_mm": 0.68,
+   "gap_at_pose_mm": 0.681203295708,
+   "measured": "persists",
+   "predicted": "persist",
+   "prediction_ok": true
+  },
+  "pose.joint_01_09": {
+   "committed_gap_mm": 0.56,
+   "gap_at_pose_mm": 0.564942492157,
+   "measured": "persists",
+   "predicted": "persist",
+   "prediction_ok": true
+  },
+  "pose.joint_01_11": {
+   "committed_gap_mm": 2.75,
+   "gap_at_pose_mm": 0.905087955949,
+   "measured": "persists",
+   "predicted": "release",
+   "prediction_ok": false
+  },
+  "pose.joint_01_13": {
+   "committed_gap_mm": 2.83,
+   "gap_at_pose_mm": 0.091898775239,
+   "measured": "persists",
+   "predicted": "release",
+   "prediction_ok": false
+  },
+  "pose.joint_01_15": {
+   "committed_gap_mm": 0.85,
+   "gap_at_pose_mm": 0.065655751889,
+   "measured": "persists",
+   "predicted": "release",
+   "prediction_ok": false
+  },
+  "pose.joint_01_17": {
+   "committed_gap_mm": 0.64,
+   "gap_at_pose_mm": 1.30637129575,
+   "measured": "persists",
+   "predicted": "release",
+   "prediction_ok": false
+  }
+ },
+ "schema": "chimera.standing_pose_battery.v1",
+ "stations": {
+  "t_0": {
+   "L": {
+    "below_resolution_floor": false,
+    "displacement_exact_zero": true,
+    "displacement_mm": 0.0,
+    "provenance": [
+     "child_vertex",
+     "2426",
+     "parent_vertex",
+     "182"
+    ],
+    "seat_gap_mm": 1.438430430193,
+    "seat_ok": true
+   },
+   "R": {
+    "below_resolution_floor": false,
+    "displacement_exact_zero": true,
+    "displacement_mm": 0.0,
+    "provenance": [
+     "child_vertex",
+     "2062",
+     "parent_vertex",
+     "121"
+    ],
+    "seat_gap_mm": 1.486366553653,
+    "seat_ok": true
+   },
+   "t": 0.0
+  },
+  "t_1": {
+   "L": {
+    "below_resolution_floor": false,
+    "displacement_exact_zero": true,
+    "displacement_mm": 0.0,
+    "provenance": [
+     "child_vertex",
+     "2426",
+     "parent_vertex",
+     "182"
+    ],
+    "seat_gap_mm": 1.313315897263,
+    "seat_ok": true
+   },
+   "R": {
+    "below_resolution_floor": false,
+    "displacement_exact_zero": true,
+    "displacement_mm": 0.0,
+    "provenance": [
+     "child_vertex",
+     "2062",
+     "parent_vertex",
+     "121"
+    ],
+    "seat_gap_mm": 1.564791479041,
+    "seat_ok": true
+   },
+   "t": 0.2
+  },
+  "t_2": {
+   "L": {
+    "below_resolution_floor": false,
+    "displacement_exact_zero": true,
+    "displacement_mm": 0.0,
+    "provenance": [
+     "child_vertex",
+     "2426",
+     "parent_vertex",
+     "182"
+    ],
+    "seat_gap_mm": 1.206677532707,
+    "seat_ok": true
+   },
+   "R": {
+    "below_resolution_floor": false,
+    "displacement_exact_zero": true,
+    "displacement_mm": 0.0,
+    "provenance": [
+     "child_vertex",
+     "2092",
+     "parent_vertex",
+     "121"
+    ],
+    "seat_gap_mm": 1.555275280827,
+    "seat_ok": true
+   },
+   "t": 0.4
+  },
+  "t_3": {
+   "L": {
+    "below_resolution_floor": false,
+    "displacement_exact_zero": true,
+    "displacement_mm": 0.0,
+    "provenance": [
+     "child_vertex",
+     "2426",
+     "parent_vertex",
+     "182"
+    ],
+    "seat_gap_mm": 1.126100446218,
+    "seat_ok": true
+   },
+   "R": {
+    "below_resolution_floor": false,
+    "displacement_exact_zero": true,
+    "displacement_mm": 0.0,
+    "provenance": [
+     "child_vertex",
+     "2092",
+     "parent_vertex",
+     "121"
+    ],
+    "seat_gap_mm": 1.5081334534,
+    "seat_ok": true
+   },
+   "t": 0.6
+  },
+  "t_4": {
+   "L": {
+    "below_resolution_floor": false,
+    "displacement_exact_zero": true,
+    "displacement_mm": 0.0,
+    "provenance": [
+     "child_vertex",
+     "2426",
+     "parent_vertex",
+     "182"
+    ],
+    "seat_gap_mm": 1.079668770064,
+    "seat_ok": true
+   },
+   "R": {
+    "below_resolution_floor": false,
+    "displacement_exact_zero": true,
+    "displacement_mm": 0.0,
+    "provenance": [
+     "child_vertex",
+     "2092",
+     "parent_vertex",
+     "121"
+    ],
+    "seat_gap_mm": 1.483675991612,
+    "seat_ok": true
+   },
+   "t": 0.8
+  },
+  "t_5": {
+   "L": {
+    "below_resolution_floor": false,
+    "displacement_exact_zero": true,
+    "displacement_mm": 0.0,
+    "provenance": [
+     "child_vertex",
+     "2250",
+     "parent_vertex",
+     "182"
+    ],
+    "seat_gap_mm": 1.061517305403,
+    "seat_ok": true
+   },
+   "R": {
+    "below_resolution_floor": false,
+    "displacement_exact_zero": true,
+    "displacement_mm": 0.0,
+    "provenance": [
+     "child_vertex",
+     "2092",
+     "parent_vertex",
+     "121"
+    ],
+    "seat_gap_mm": 1.482891580809,
+    "seat_ok": true
+   },
+   "t": 1.0
+  }
+ },
+ "trailer": "Agent: GLM 5.3",
+ "untouched": {
+  "after": {
+   "docs\\THE_ARTICULATION_LAW.md": "97585c4e7b5781d3e776d7cdaa7b4d19ce8b33772f239178cbd60be7f6410e4c",
+   "tools\\science_funnel\\ct_skeleton_layer.py": "b98626bf944a297531c40d4ae56029bf8e73efaa93d6bda7d9eb18c5a7810e90",
+   "tools\\science_funnel\\ct_skeleton_triangle.py": "d2528d6e0b3510f7697d587e56fdf11c6ca22547559a03f1ec0ba3e53b70cf00",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\infant_skeleton.body.json": "db412e0c8debd45750b1cc06e13c50e08367ac94d434fe3be5be7f8dd5f1fbfe",
+   "tools\\science_funnel\\validation\\articulation_design_20260921\\receipt.json": "5112d9b68dee94b7b591646fd6d3787bee15a12cffe2ddff9bcfbb922e136a3f",
+   "tools\\science_funnel\\validation\\axial_adjacency_20260920\\receipt.json": "f1dd047b34b7f1015c7fa9fafb4956eb1774786cc3b86c9dbdff8287d655c8d5",
+   "tools\\science_funnel\\validation\\gait_controller_20260918\\derived_numbers.json": "013810f87a6ca7c1e01916ef7a5454e61e8d0e88f8d6a589fbfdd1514017a173",
+   "tools\\science_funnel\\validation\\hip_adoption_20260921\\receipt.json": "d000701f78449265d4ae53e847c2a09ad506b919af9c6f18c3c7f68be943614d",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\battery.json": "18f0ef0641cdcba610bb0a67109540220cfb3400bdff1eee2ae6451fb7d81c16",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\hip_pivot_proof.py": "748e20a7c07b7a8340bf2ae7b17e5a86af36fcc389a2b4563f0adf5cf3b62543",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\receipt.json": "c39c708c7fb8e167abed88c5405036b810cd64c817fa3f634859aa22bc60235a",
+   "tools\\science_funnel\\validation\\joint_class_records_20260921\\battery.json": "80c09220264aea5c9a9347930d70543ad5471a3c84b5ed472232d6de120cadb1",
+   "tools\\science_funnel\\validation\\joint_class_records_20260921\\preregistration.md": "24fd45c607130b40e5814029ffade453f0fce3a11505b7f33c223d28d1f75ab0",
+   "tools\\science_funnel\\validation\\joint_class_records_20260921\\receipt.json": "48186950a80f131eef9dc0f719368a79bfa6c52ca48d2ca903380431112977d1",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\battery.json": "6fa98112d716c9678fa69ae289ec239982db6236bb1fb9151ed5f8c280f40623",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\p6_contrast.py": "bd0466f165ee86dba72ed15d7a782195e729022de006be3cf613d97cc14db93d",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\receipt.json": "cedccfe72db8b543ff7d3286d7325e1dca352617eecb6c5a2f2e45dc3114298f",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\derive_standing_pose.py": "4bc6e83697d9985ec0afcc770113af870bcfffe5c51b37552ccc5a1dccc9fa56",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\pose.json": "27e6fd9e95a057af276f63859af65c6a8a4d20a35d0cedf7b495ea9c9ffa0053",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\pose.sha256": "f0e24dac107ddf4c3fcfc9e77263ea0157e42b51fbd66a85ed72c31cd73b1903",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration.md": "63e9def46d2c7a40215e8eda5c1599565203aed639d648bc97a97d6cbccc9348",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration.sha256": "9a512802a079bbbb61183f23319536c4b538d4385c9cb42a9a6372548ea825e8",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration_amendment_1.md": "f2e528f71737f8b23daaf01e872fdb61c9da6e638d15a4125e813f5f5544d157",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration_amendment_1.sha256": "6270191c10b4b818793c99e659c75d6832c3d94e5896fe2ea6ed8ad39df3c0ff",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration_amendment_2.md": "a9d4da01e24a5dfcd370931546d374433d93b47d4456f40192fc8e685453e251",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration_amendment_2.sha256": "78fca7b3f86b4723088609d5e306bcf6c9a82399c17f79b6276afe238334cfc4",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\standing_pose_core.py": "6eab8de8e7180d2f1753b00f993bc78662199860a0423d2e3edf86f4f9c72fff",
+   "tools\\science_funnel\\validation\\tarsal_cycle_pivots_20260921\\battery.json": "c344173cfca3ee85470a087bf7169bdc9d4f2c8bff95320521acca0099824656",
+   "tools\\science_funnel\\validation\\tarsal_cycle_pivots_20260921\\receipt.json": "9d380370aa3119d90693f3499e648272fce2f04103b40228b8ed768204d49d78",
+   "tools\\science_funnel\\validation\\tarsal_cycle_pivots_20260921\\tarsal_cycle_battery.py": "040dbc2a34e661ab0a3d1118d7b17722e9952dae3565cbd2bebc1ca4abfa9aaa"
+  },
+  "before": {
+   "docs\\THE_ARTICULATION_LAW.md": "97585c4e7b5781d3e776d7cdaa7b4d19ce8b33772f239178cbd60be7f6410e4c",
+   "tools\\science_funnel\\ct_skeleton_layer.py": "b98626bf944a297531c40d4ae56029bf8e73efaa93d6bda7d9eb18c5a7810e90",
+   "tools\\science_funnel\\ct_skeleton_triangle.py": "d2528d6e0b3510f7697d587e56fdf11c6ca22547559a03f1ec0ba3e53b70cf00",
+   "tools\\science_funnel\\data\\morphosource_ct\\matter_skeleton\\infant_skeleton.body.json": "db412e0c8debd45750b1cc06e13c50e08367ac94d434fe3be5be7f8dd5f1fbfe",
+   "tools\\science_funnel\\validation\\articulation_design_20260921\\receipt.json": "5112d9b68dee94b7b591646fd6d3787bee15a12cffe2ddff9bcfbb922e136a3f",
+   "tools\\science_funnel\\validation\\axial_adjacency_20260920\\receipt.json": "f1dd047b34b7f1015c7fa9fafb4956eb1774786cc3b86c9dbdff8287d655c8d5",
+   "tools\\science_funnel\\validation\\gait_controller_20260918\\derived_numbers.json": "013810f87a6ca7c1e01916ef7a5454e61e8d0e88f8d6a589fbfdd1514017a173",
+   "tools\\science_funnel\\validation\\hip_adoption_20260921\\receipt.json": "d000701f78449265d4ae53e847c2a09ad506b919af9c6f18c3c7f68be943614d",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\battery.json": "18f0ef0641cdcba610bb0a67109540220cfb3400bdff1eee2ae6451fb7d81c16",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\hip_pivot_proof.py": "748e20a7c07b7a8340bf2ae7b17e5a86af36fcc389a2b4563f0adf5cf3b62543",
+   "tools\\science_funnel\\validation\\hip_pivot_proof_20260921\\receipt.json": "c39c708c7fb8e167abed88c5405036b810cd64c817fa3f634859aa22bc60235a",
+   "tools\\science_funnel\\validation\\joint_class_records_20260921\\battery.json": "80c09220264aea5c9a9347930d70543ad5471a3c84b5ed472232d6de120cadb1",
+   "tools\\science_funnel\\validation\\joint_class_records_20260921\\preregistration.md": "24fd45c607130b40e5814029ffade453f0fce3a11505b7f33c223d28d1f75ab0",
+   "tools\\science_funnel\\validation\\joint_class_records_20260921\\receipt.json": "48186950a80f131eef9dc0f719368a79bfa6c52ca48d2ca903380431112977d1",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\battery.json": "6fa98112d716c9678fa69ae289ec239982db6236bb1fb9151ed5f8c280f40623",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\p6_contrast.py": "bd0466f165ee86dba72ed15d7a782195e729022de006be3cf613d97cc14db93d",
+   "tools\\science_funnel\\validation\\p6_repreregistration_20260921\\receipt.json": "cedccfe72db8b543ff7d3286d7325e1dca352617eecb6c5a2f2e45dc3114298f",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\derive_standing_pose.py": "4bc6e83697d9985ec0afcc770113af870bcfffe5c51b37552ccc5a1dccc9fa56",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\pose.json": "27e6fd9e95a057af276f63859af65c6a8a4d20a35d0cedf7b495ea9c9ffa0053",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\pose.sha256": "f0e24dac107ddf4c3fcfc9e77263ea0157e42b51fbd66a85ed72c31cd73b1903",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration.md": "63e9def46d2c7a40215e8eda5c1599565203aed639d648bc97a97d6cbccc9348",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration.sha256": "9a512802a079bbbb61183f23319536c4b538d4385c9cb42a9a6372548ea825e8",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration_amendment_1.md": "f2e528f71737f8b23daaf01e872fdb61c9da6e638d15a4125e813f5f5544d157",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration_amendment_1.sha256": "6270191c10b4b818793c99e659c75d6832c3d94e5896fe2ea6ed8ad39df3c0ff",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration_amendment_2.md": "a9d4da01e24a5dfcd370931546d374433d93b47d4456f40192fc8e685453e251",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\preregistration_amendment_2.sha256": "78fca7b3f86b4723088609d5e306bcf6c9a82399c17f79b6276afe238334cfc4",
+   "tools\\science_funnel\\validation\\standing_pose_20260921\\standing_pose_core.py": "6eab8de8e7180d2f1753b00f993bc78662199860a0423d2e3edf86f4f9c72fff",
+   "tools\\science_funnel\\validation\\tarsal_cycle_pivots_20260921\\battery.json": "c344173cfca3ee85470a087bf7169bdc9d4f2c8bff95320521acca0099824656",
+   "tools\\science_funnel\\validation\\tarsal_cycle_pivots_20260921\\receipt.json": "9d380370aa3119d90693f3499e648272fce2f04103b40228b8ed768204d49d78",
+   "tools\\science_funnel\\validation\\tarsal_cycle_pivots_20260921\\tarsal_cycle_battery.py": "040dbc2a34e661ab0a3d1118d7b17722e9952dae3565cbd2bebc1ca4abfa9aaa"
+  },
+  "equal": true
+ }
+}

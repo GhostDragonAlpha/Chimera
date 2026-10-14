@@ -1,0 +1,189 @@
+{
+  "binary_stamp_bound": "64e81814a418c98827090bb6a074e8de5997d885cf42d7f37a0646c140a6fcff",
+  "build_id": "engine-walk-instrument/29bf00f0640c75c4",
+  "cert_hash": "5c100887db6892e97960de942af41b1596a67808c8a1b4b2016ae8d38c626503",
+  "check1": {
+    "checkpoint": {
+      "body_is_reference_tick150": true,
+      "snapshot_sha256": "0d6f65f9169dc5fdcf1ee503cd6a4e5bba87a1a687ee82f1809de36267b3863b",
+      "tick": 150
+    },
+    "dump_nan_free": {
+      "checked_fields": 16308,
+      "pass": true
+    },
+    "forced_drops": {
+      "contact_warm_start": {
+        "first_diverging_tick": 150,
+        "moved_continuation": true,
+        "n_states": 145,
+        "roundtrip_ok": true
+      },
+      "controller_history": {
+        "first_diverging_tick": 150,
+        "moved_continuation": true,
+        "n_states": 61,
+        "roundtrip_ok": true
+      },
+      "reflex_state": {
+        "first_diverging_tick": 150,
+        "moved_continuation": true,
+        "n_states": 149,
+        "roundtrip_ok": true
+      },
+      "world_state": {
+        "first_diverging_tick": 150,
+        "moved_continuation": true,
+        "n_states": 58,
+        "roundtrip_ok": true
+      }
+    },
+    "pass": true,
+    "replay_byte_identical": true,
+    "restore_bit_identity": {
+      "action_bytes_compared": 21888,
+      "action_bytes_identical": true,
+      "blind_phase_matches_snapshot_file": true,
+      "first_diverging_tick": null,
+      "pass": true,
+      "refusal_tick_and_class_identical": true,
+      "roundtrip_serialization_equal": true,
+      "state_hashes_identical": true,
+      "ticks_compared": 152
+    },
+    "ship_fence_legs": {
+      "stdout": {
+        "anchor": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+        "measured": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+        "pass": true
+      },
+      "trace_stderr": {
+        "anchor": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+        "measured": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+        "pass": true
+      }
+    },
+    "walk_face": {
+      "body_bytes": 3089,
+      "identical_to_ship_face": true,
+      "n_states": 302,
+      "refused_class": "gait_positional_correction_budget",
+      "refused_tick": 302
+    }
+  },
+  "check2": {
+    "binary_stamps_differ": true,
+    "build_A_binary_sha256": "64e81814a418c98827090bb6a074e8de5997d885cf42d7f37a0646c140a6fcff",
+    "build_B_binary_sha256": "9fb655642fd0c56d7e806777ed59b874b34e6e403c9aca7f171f18620595c0fc",
+    "pass": true,
+    "registered_cases": [
+      {
+        "case": "RC-1_ship_walk",
+        "exact_agreement": true,
+        "legs": {
+          "actions.bin": true,
+          "run.json_face": true,
+          "snap_t150.bin": true,
+          "states.bin": true,
+          "stderr": true,
+          "stdout": true
+        }
+      },
+      {
+        "case": "RC-2_pinned_command_zoh",
+        "exact_agreement": true,
+        "fg42_echo_present": true,
+        "legs": {
+          "stdout": true,
+          "trace_stderr": true
+        },
+        "schedule": "150:1.01",
+        "stdout_sha256": "8feebc202bd6f5786af343bf65c95c54ef7126a6a0d98701bcba3dbe90fedeb0",
+        "trace_stderr_sha256": "28ddcf74cfb0ff70fc6d2f03a2413ec32cd157a69c05dcece0b854341f8d76d2"
+      }
+    ]
+  },
+  "check3_actor_pass": true,
+  "check3_engine": {
+    "action_replay_probes": {
+      "engine_cli_nonexistent_absolute_path": {
+        "argv2": "Z:\\no_such\\pre_recorded_actions.bin",
+        "exit_code": 0,
+        "fg42_schedule_echo": true,
+        "probe": "B_nonexistent_absolute_actions_path",
+        "refused_before_any_step": false,
+        "stderr_head": "run F-G5\r\n[tick] 0\r\n[tick] 10\r\n[tick] 20\r\n[tick] 30\r\n[tick] 40\r\n[tick] 50\r\n[tick] 60\r\n[tick] 70\r\n[tick] 80\r\n[tick] 90\r\n[tick] 0\r\n[poscorr] tick=0 points=1 dq_ma"
+      },
+      "engine_cli_relative_actions_path": {
+        "argv2": "refA1.actions.bin",
+        "exit_code": 1,
+        "fg42_schedule_echo": false,
+        "probe": "A_relative_actions_path",
+        "refused_before_any_step": true,
+        "stderr_head": "bad command spec (want tick:vx)"
+      },
+      "runner_requalify": [
+        "ACTION_REPLAY_REFUSED: the requalification harness does not accept pre-recorded actions or an action_replay mode -- replaying build-N actions into the new build tests the old trajectory and misses the feedback-loop divergence the gate exists to detect; observations and actions are recomputed from the NEW trajectory every tick (prereg receipt.json, P7)",
+        "ACTION_REPLAY_REFUSED: the requalification harness does not accept pre-recorded actions or an action_replay mode -- replaying build-N actions into the new build tests the old trajectory and misses the feedback-loop divergence the gate exists to detect; observations and actions are recomputed from the NEW trajectory every tick (prereg receipt.json, P7)"
+      ]
+    },
+    "check": "CHECK_3_engine_closed_loop_requalification_shape",
+    "closed_loop": "the engine controller is the in-loop actor; per-tick actions (last_torque_) are recomputed from the live trajectory at every tick; the checkpoint-resume proof shows the recomputation reproduces the uninterrupted actions bit-for-bit after a fresh-process restore",
+    "detail": "engine CLI relative-path probe refused=True; nonexistent-path probe ran without opening the file (fg42 echo=True); runner refusals 2/2",
+    "pass": true,
+    "reasons": [],
+    "refusal_rationale": "no input channel accepts a pre-recorded action stream on the engine walk path: the instrument's CLI takes a scene and (plain form) a tick:vx command-schedule STRING only -- a file reference is refused as 'bad command spec' before any step, and a nonexistent path is 'consumed' as a schedule without ever being opened (probe B: the walk runs on a nonexistent file -- no action-file channel exists); the restore hook takes a STATE snapshot and the controller recomputes the actions"
+  },
+  "checkpoint_snapshot_sha256": "0d6f65f9169dc5fdcf1ee503cd6a4e5bba87a1a687ee82f1809de36267b3863b",
+  "compat_key": "091a3e5147f266706a342ab18255a21780ffd6dc03f3280a5db56ddf86bbad2a",
+  "deploy": {
+    "allow": "ALLOW",
+    "foreign": "BLOCK",
+    "missing": "BLOCK"
+  },
+  "deployment_class": "production",
+  "f4_payload_sha256": "cf036fc77bc59fe217193a94d3d045818d249d0670ec629ab244545419d989a8",
+  "registry": {
+    "completeness": true,
+    "verify": true
+  },
+  "scene_pin": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342",
+  "tamper_suite": {
+    "T1_bumped_state_hash": {
+      "deploy": "BLOCK",
+      "layer": "validator: evidence chain mismatch",
+      "rejected": true,
+      "violations": [
+        "replay evidence INVALIDATED: evidence chain mismatch at tick 6: recorded 3d0f6bfc7fa4e49c... != recomputed e9df47bc507641e7..."
+      ]
+    },
+    "T2_swapped_normalization_constant": {
+      "deploy_a": "BLOCK",
+      "deploy_b": "BLOCK",
+      "layer_a": "validator: compat_key does not match the relation",
+      "layer_b": "deploy gate: compatibility key mismatch vs the frozen-loader request",
+      "rejected": true,
+      "violations_a": [
+        "compat_key does not match the relation -- the 5-tuple and its key disagree"
+      ],
+      "violations_b": []
+    },
+    "T3_stale_build_id": {
+      "deploy_a": "BLOCK",
+      "deploy_b": "BLOCK",
+      "layer_a": "validator: compat_key does not match the relation",
+      "layer_b": "deploy gate: compatibility key mismatch vs the true request",
+      "rejected": true,
+      "violations_a": [
+        "compat_key does not match the relation -- the 5-tuple and its key disagree"
+      ],
+      "violations_b": []
+    },
+    "clean_reissue": {
+      "deploy": "ALLOW",
+      "valid": true,
+      "violations": []
+    },
+    "suite_pass": true
+  }
+}

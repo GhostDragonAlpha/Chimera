@@ -1,0 +1,2368 @@
+{
+ "base_commit": "2d585c7b",
+ "inputs": {
+  "bone_identification_v3_sha256": "1d84854fd1770ed6548221ee803c949a487d9005133548eb162a5c64d4161d33",
+  "manifest_sha256": "5bf8aed9b226a7be96c6877c6bfafd4de3e8f46808c42312045cd66739473ad8",
+  "mesh_sha256": {
+   "bone_01_4737869vox_lo.obj": "b95cd329084d4b44ce5eb2fae66cd19a8599134d782fb6a020d67b9714afe9f7",
+   "bone_02_210240vox_lo.obj": "c20aa8364c8d09623755fdbfbdc014d9548fdc3f6d89d1b998cacbaf37b49ed4",
+   "bone_03_208514vox_lo.obj": "f7d638a01c2a34a19c0bc0240b058ccbf79d94cea467314c422d89b2b0ab9a99",
+   "bone_04_180534vox_lo.obj": "00a9a32628c0e6857864326473976f4a2cf07de8f34e8c2480803752bd923cc5",
+   "bone_05_174742vox_lo.obj": "f06fefd372a57e8ba88f384f06cfa67036ffb973e44d444ad6f5b5e77a63fe2d",
+   "bone_06_154508vox_lo.obj": "b1b15ff5e631ec4bac5353e0f2461c7d8561579ab1a78018bd83f3113838f901",
+   "bone_07_150102vox_lo.obj": "5a2e24d5947dd2514205a8187599036ffa349af47fcde2d471f221511d0af157",
+   "bone_08_102171vox_lo.obj": "f053884c6f2b98107db180f95c9ed5bc5904c3144a8956be6d2a39ba79ef5924",
+   "bone_09_100874vox_lo.obj": "10a1f1b21c2b535565048bea69764a99c1c2f35bd5356f004c909ebb89e76281",
+   "bone_10_92842vox_lo.obj": "54678dbca44db5fa7a35c29fdb3baedaeea6fc7b890ad97ed619a8302a972f55",
+   "bone_11_90563vox_lo.obj": "2e1e286207faf65486984b3cf703f8d7ebaef6bc58577917b43ce2b53948f3fa",
+   "bone_12_88112vox_lo.obj": "9f90a8c2d3c23cb296c2be900af8e1d8a922f1597d6ebfa684561da45cc9c9ed",
+   "bone_13_86590vox_lo.obj": "6e7e1c988e78805d20a180447dd57b17b5eb1e2182b3bd975eb8cdbc786ec3a6",
+   "bone_14_58499vox_lo.obj": "1e51c0b691c107a945cab0deb89e19d3b0092c57afcec76cd249ffc7c4f1fae5",
+   "bone_15_54574vox_lo.obj": "f7111f3f1767eac74c510df8667c24798f5f065280ecabb9a65f0f7e7b6ad536",
+   "bone_16_54463vox_lo.obj": "52dfdd47f851a67b738f0f3dd369de833dd501381a849e2fedaac43fa08645dc",
+   "bone_17_54226vox_lo.obj": "74c14826c748245762fb45d966eb12ffb6796503c7fd8043744f4f8dae4f1a8a",
+   "bone_18_53022vox_lo.obj": "c752e9458b6d267c741da1be256737758528e7d7542c92472a3d458a9fa38a50",
+   "bone_19_44805vox_lo.obj": "526d8da177574a3d9d3b248b5b78c8096a02990e00523b383b87721189265a25",
+   "bone_20_34255vox_lo.obj": "6ab6c392b5d65670c88c37f1de7d1b6c0e79a31fa80850b6497d8c35ac771b9b",
+   "bone_21_33153vox_lo.obj": "b4a43a6499e5dd4131678a582e7b002d94fa6de43bd7dcde2e7aba4ad6d5d8e9",
+   "bone_22_31952vox_lo.obj": "15272ed8bab2e9e9c584d5a78a0983c525863368c31f10fcec5311b3351835bf",
+   "bone_23_31588vox_lo.obj": "6afe670eeae573511787ba1b6853de714462a99e0703d01daba85150b7c4b6bd",
+   "bone_24_25423vox_lo.obj": "5e93fd0604d82285ce1f15f613795cf6931257c2a2b09794954948370c660892",
+   "bone_25_25400vox_lo.obj": "e73d847f2d937e3af921821ca8569b57c31456a29d3653c5efa03c45276e7f43"
+  },
+  "preview_dir": "tools/science_funnel/data/morphosource_ct/meshes_preview"
+ },
+ "lane": "agent/axial-limb-adjacency-20260920",
+ "method": {
+  "joint_gap_mm": 3.0,
+  "joint_gap_source": "bone_identification_v3.json derived_cuts.joint_gap_mm (shared empirical gap valley, v2)",
+  "law_metric": "identify_bones_v2.py surface_gaps() verbatim: symmetric min vertex-to-nearest-vertex on trimesh.load(preview, process=False) vertices, scipy cKDTree, float64",
+  "law_resolution_mm": 0.01,
+  "pairs_measured": 300,
+  "refinement": "exact point-to-triangle both directions over k-nearest triangle centroids with k-doubling guarantee; edge-edge interior cases not covered; law number stays the bond metric"
+ },
+ "method_validation_vs_committed_21_edges": {
+  "edges_checked": 21,
+  "max_abs_dev_mm": 0.00477,
+  "pass": true,
+  "per_edge_law_gap_mm": {
+   "02_06": 2.91,
+   "02_15": 1.01,
+   "03_07": 2.83,
+   "03_17": 0.69,
+   "04_08": 0.73,
+   "04_10": 2.0,
+   "04_12": 0.93,
+   "05_09": 0.86,
+   "05_11": 2.27,
+   "05_13": 0.86,
+   "06_20": 0.48,
+   "06_25": 0.66,
+   "07_18": 1.79,
+   "07_21": 0.45,
+   "07_24": 0.86,
+   "10_12": 0.38,
+   "11_13": 0.47,
+   "20_25": 2.47,
+   "21_24": 2.9,
+   "22_25": 0.99,
+   "23_24": 1.01
+  }
+ },
+ "pre_registered_pairs": [
+  {
+   "anatomical_reading": "hip joint: femoral head apposed to the acetabular region of the composite pelvis mass (Hartman & Straus 1933, The Anatomy of the Rhesus Monkey)",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     61.291,
+     42.734,
+     41.375
+    ],
+    "b_vertex_mm": [
+     59.904,
+     42.598,
+     41.731
+    ],
+    "metric": "vertex[167]-to-vertex[2486]"
+   },
+   "committed_edge": false,
+   "components": [
+    "axial_composite",
+    "hind_chain_min02"
+   ],
+   "labels": [
+    "axial_composite",
+    "femur"
+   ],
+   "law_gap_mm": 1.44,
+   "pair_members": [
+    "mem.bone_01",
+    "mem.bone_02"
+   ],
+   "pair_ranks": [
+    1,
+    2
+   ],
+   "pre_registered": "P1 hip A: femur 2 <-> axial composite",
+   "refined_closest_points_mm": {
+    "on_01": [
+     61.142,
+     42.844,
+     41.118
+    ],
+    "on_02": [
+     59.904,
+     42.598,
+     41.731
+    ]
+   },
+   "refined_gap_mm": 1.403,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  },
+  {
+   "anatomical_reading": "hip joint: femoral head apposed to the acetabular region of the composite pelvis mass (Hartman & Straus 1933)",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     59.617,
+     41.762,
+     25.367
+    ],
+    "b_vertex_mm": [
+     58.16,
+     41.6,
+     25.12
+    ],
+    "metric": "vertex[114]-to-vertex[2022]"
+   },
+   "committed_edge": false,
+   "components": [
+    "axial_composite",
+    "hind_chain_min03"
+   ],
+   "labels": [
+    "axial_composite",
+    "femur"
+   ],
+   "law_gap_mm": 1.49,
+   "pair_members": [
+    "mem.bone_01",
+    "mem.bone_03"
+   ],
+   "pair_ranks": [
+    1,
+    3
+   ],
+   "pre_registered": "P2 hip B: femur 3 <-> axial composite",
+   "refined_closest_points_mm": {
+    "on_01": [
+     59.633,
+     43.14,
+     25.066
+    ],
+    "on_03": [
+     58.322,
+     43.093,
+     24.777
+    ]
+   },
+   "refined_gap_mm": 1.343,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  },
+  {
+   "anatomical_reading": "shoulder joint: humeral head apposed to the glenoid region of the composite scapula mass, segmentation-merged with the ribcage (Hartman & Straus 1933)",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     137.38,
+     26.028,
+     44.329
+    ],
+    "b_vertex_mm": [
+     138.4,
+     27.84,
+     48.88
+    ],
+    "metric": "vertex[3121]-to-vertex[8261]"
+   },
+   "committed_edge": false,
+   "components": [
+    "axial_composite",
+    "fore_chain_min04"
+   ],
+   "labels": [
+    "axial_composite",
+    "humerus"
+   ],
+   "law_gap_mm": 5.0,
+   "pair_members": [
+    "mem.bone_01",
+    "mem.bone_04"
+   ],
+   "pair_ranks": [
+    1,
+    4
+   ],
+   "pre_registered": "P3 shoulder A: humerus 4 <-> axial composite",
+   "refined_closest_points_mm": {
+    "on_01": [
+     136.641,
+     25.457,
+     44.798
+    ],
+    "on_04": [
+     138.08,
+     27.2,
+     49.2
+    ]
+   },
+   "refined_gap_mm": 4.949,
+   "refinement_guaranteed": true,
+   "touching_class": false
+  },
+  {
+   "anatomical_reading": "shoulder joint: humeral head apposed to the glenoid region of the composite scapula mass (Hartman & Straus 1933)",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     139.617,
+     21.153,
+     18.953
+    ],
+    "b_vertex_mm": [
+     141.6,
+     21.12,
+     14.8
+    ],
+    "metric": "vertex[3363]-to-vertex[6713]"
+   },
+   "committed_edge": false,
+   "components": [
+    "axial_composite",
+    "fore_chain_min05"
+   ],
+   "labels": [
+    "axial_composite",
+    "humerus"
+   ],
+   "law_gap_mm": 4.6,
+   "pair_members": [
+    "mem.bone_01",
+    "mem.bone_05"
+   ],
+   "pair_ranks": [
+    1,
+    5
+   ],
+   "pre_registered": "P4 shoulder B: humerus 5 <-> axial composite",
+   "refined_closest_points_mm": {
+    "on_01": [
+     139.617,
+     21.153,
+     18.953
+    ],
+    "on_05": [
+     141.6,
+     21.12,
+     14.8
+    ]
+   },
+   "refined_gap_mm": 4.603,
+   "refinement_guaranteed": true,
+   "touching_class": false
+  },
+  {
+   "anatomical_reading": "pelvic/iliac-region ossification apposition (epiphyseal-class block at composite z-top, pelvis x-band; Scheuer & Black 2000 for juvenile separate ossification centers)",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     110.467,
+     15.244,
+     44.18
+    ],
+    "b_vertex_mm": [
+     88.88,
+     10.4,
+     50.08
+    ],
+    "metric": "vertex[1685]-to-vertex[14990]"
+   },
+   "committed_edge": false,
+   "components": [
+    "axial_composite",
+    "singleton_16"
+   ],
+   "labels": [
+    "axial_composite",
+    null
+   ],
+   "law_gap_mm": 22.9,
+   "pair_members": [
+    "mem.bone_01",
+    "mem.bone_16"
+   ],
+   "pair_ranks": [
+    1,
+    16
+   ],
+   "pre_registered": "P5 singleton 16 <-> composite (epiphyseal/pelvic reading)",
+   "refined_closest_points_mm": {
+    "on_01": [
+     110.467,
+     15.244,
+     44.18
+    ],
+    "on_16": [
+     88.88,
+     10.4,
+     50.08
+    ]
+   },
+   "refined_gap_mm": 22.897,
+   "refinement_guaranteed": true,
+   "touching_class": false
+  },
+  {
+   "anatomical_reading": "unfused proximal femoral epiphysis apposed to the femur end across growth-plate cartilage (Scheuer & Black 2000)",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     78.56,
+     6.24,
+     42.96
+    ],
+    "b_vertex_mm": [
+     78.72,
+     7.04,
+     48.72
+    ],
+    "metric": "vertex[13074]-to-vertex[3168]"
+   },
+   "committed_edge": false,
+   "components": [
+    "hind_chain_min02",
+    "singleton_16"
+   ],
+   "labels": [
+    "femur",
+    null
+   ],
+   "law_gap_mm": 5.82,
+   "pair_members": [
+    "mem.bone_02",
+    "mem.bone_16"
+   ],
+   "pair_ranks": [
+    2,
+    16
+   ],
+   "pre_registered": "P5 singleton 16 <-> femur 2 (epiphyseal reading)",
+   "refined_closest_points_mm": {
+    "on_02": [
+     78.56,
+     6.24,
+     42.96
+    ],
+    "on_16": [
+     78.56,
+     7.04,
+     48.72
+    ]
+   },
+   "refined_gap_mm": 5.815,
+   "refinement_guaranteed": true,
+   "touching_class": false
+  },
+  {
+   "anatomical_reading": "caudal-vertebra cluster apposed to the sacrum/caudal base of the composite (positional reading: beyond composite pelvis-end bbox)",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     47.879,
+     51.64,
+     31.711
+    ],
+    "b_vertex_mm": [
+     29.44,
+     28.56,
+     28.16
+    ],
+    "metric": "vertex[9]-to-vertex[11539]"
+   },
+   "committed_edge": false,
+   "components": [
+    "axial_composite",
+    "singleton_14"
+   ],
+   "labels": [
+    "axial_composite",
+    null
+   ],
+   "law_gap_mm": 29.75,
+   "pair_members": [
+    "mem.bone_01",
+    "mem.bone_14"
+   ],
+   "pair_ranks": [
+    1,
+    14
+   ],
+   "pre_registered": "P6 singleton 14 <-> composite (caudal reading)",
+   "refined_closest_points_mm": {
+    "on_01": [
+     58.725,
+     46.264,
+     27.156
+    ],
+    "on_14": [
+     30.0,
+     27.68,
+     27.36
+    ]
+   },
+   "refined_gap_mm": 0.0,
+   "refinement_guaranteed": true,
+   "touching_class": false
+  },
+  {
+   "anatomical_reading": "caudal-vertebra cluster apposed to the sacrum/caudal base of the composite (positional reading: beyond composite pelvis-end bbox)",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     47.629,
+     51.683,
+     33.431
+    ],
+    "b_vertex_mm": [
+     24.48,
+     26.0,
+     46.4
+    ],
+    "metric": "vertex[2]-to-vertex[14349]"
+   },
+   "committed_edge": false,
+   "components": [
+    "axial_composite",
+    "singleton_19"
+   ],
+   "labels": [
+    "axial_composite",
+    null
+   ],
+   "law_gap_mm": 36.93,
+   "pair_members": [
+    "mem.bone_01",
+    "mem.bone_19"
+   ],
+   "pair_ranks": [
+    1,
+    19
+   ],
+   "pre_registered": "P6 singleton 19 <-> composite (caudal reading)",
+   "refined_closest_points_mm": {
+    "on_01": [
+     47.629,
+     51.683,
+     33.431
+    ],
+    "on_19": [
+     23.68,
+     28.56,
+     50.72
+    ]
+   },
+   "refined_gap_mm": 0.0,
+   "refinement_guaranteed": true,
+   "touching_class": false
+  }
+ ],
+ "schema": "chimera.axial_adjacency_table.v1",
+ "singleton_rows": {
+  "14": [
+   {
+    "law_gap_mm": 6.99,
+    "partner_component": "hind_chain_min03",
+    "partner_label": "foot_class",
+    "partner_rank": 24
+   },
+   {
+    "law_gap_mm": 7.2,
+    "partner_component": "hind_chain_min03",
+    "partner_label": "foot_class",
+    "partner_rank": 23
+   },
+   {
+    "law_gap_mm": 11.43,
+    "partner_component": "singleton_19",
+    "partner_label": null,
+    "partner_rank": 19
+   },
+   {
+    "law_gap_mm": 11.91,
+    "partner_component": "hind_chain_min02",
+    "partner_label": "foot_class",
+    "partner_rank": 25
+   },
+   {
+    "law_gap_mm": 12.58,
+    "partner_component": "hind_chain_min02",
+    "partner_label": "tibia",
+    "partner_rank": 6
+   },
+   {
+    "law_gap_mm": 15.09,
+    "partner_component": "hind_chain_min03",
+    "partner_label": "tibia",
+    "partner_rank": 7
+   },
+   {
+    "law_gap_mm": 17.19,
+    "partner_component": "hind_chain_min03",
+    "partner_label": "fibula",
+    "partner_rank": 21
+   },
+   {
+    "law_gap_mm": 17.67,
+    "partner_component": "hind_chain_min02",
+    "partner_label": "foot_class",
+    "partner_rank": 22
+   },
+   {
+    "law_gap_mm": 17.84,
+    "partner_component": "hind_chain_min02",
+    "partner_label": "fibula",
+    "partner_rank": 20
+   },
+   {
+    "law_gap_mm": 18.65,
+    "partner_component": "hind_chain_min03",
+    "partner_label": "foot_class",
+    "partner_rank": 17
+   },
+   {
+    "law_gap_mm": 20.28,
+    "partner_component": "hind_chain_min02",
+    "partner_label": "foot_class",
+    "partner_rank": 15
+   },
+   {
+    "law_gap_mm": 27.71,
+    "partner_component": "hind_chain_min03",
+    "partner_label": "femur",
+    "partner_rank": 3
+   },
+   {
+    "law_gap_mm": 28.16,
+    "partner_component": "hind_chain_min02",
+    "partner_label": "femur",
+    "partner_rank": 2
+   },
+   {
+    "law_gap_mm": 29.75,
+    "partner_component": "axial_composite",
+    "partner_label": "axial_composite",
+    "partner_rank": 1
+   },
+   {
+    "law_gap_mm": 46.16,
+    "partner_component": "singleton_16",
+    "partner_label": null,
+    "partner_rank": 16
+   },
+   {
+    "law_gap_mm": 51.85,
+    "partner_component": "hind_chain_min03",
+    "partner_label": "foot_class",
+    "partner_rank": 18
+   },
+   {
+    "law_gap_mm": 62.89,
+    "partner_component": "fore_chain_min04",
+    "partner_label": "forearm_class",
+    "partner_rank": 12
+   },
+   {
+    "law_gap_mm": 64.51,
+    "partner_component": "fore_chain_min04",
+    "partner_label": "forearm_class",
+    "partner_rank": 10
+   },
+   {
+    "law_gap_mm": 69.43,
+    "partner_component": "fore_chain_min05",
+    "partner_label": "forearm_class",
+    "partner_rank": 13
+   },
+   {
+    "law_gap_mm": 72.09,
+    "partner_component": "fore_chain_min05",
+    "partner_label": "forearm_class",
+    "partner_rank": 11
+   },
+   {
+    "law_gap_mm": 94.56,
+    "partner_component": "fore_chain_min04",
+    "partner_label": "humerus",
+    "partner_rank": 4
+   },
+   {
+    "law_gap_mm": 103.25,
+    "partner_component": "fore_chain_min05",
+    "partner_label": "humerus",
+    "partner_rank": 5
+   },
+   {
+    "law_gap_mm": 104.75,
+    "partner_component": "fore_chain_min04",
+    "partner_label": "hand_class",
+    "partner_rank": 8
+   },
+   {
+    "law_gap_mm": 107.06,
+    "partner_component": "fore_chain_min05",
+    "partner_label": "hand_class",
+    "partner_rank": 9
+   }
+  ],
+  "16": [
+   {
+    "law_gap_mm": 5.82,
+    "partner_component": "hind_chain_min02",
+    "partner_label": "femur",
+    "partner_rank": 2
+   },
+   {
+    "law_gap_mm": 7.61,
+    "partner_component": "fore_chain_min04",
+    "partner_label": "forearm_class",
+    "partner_rank": 12
+   },
+   {
+    "law_gap_mm": 7.83,
+    "partner_component": "hind_chain_min02",
+    "partner_label": "fibula",
+    "partner_rank": 20
+   },
+   {
+    "law_gap_mm": 7.84,
+    "partner_component": "fore_chain_min04",
+    "partner_label": "forearm_class",
+    "partner_rank": 10
+   },
+   {
+    "law_gap_mm": 8.83,
+    "partner_component": "hind_chain_min02",
+    "partner_label": "tibia",
+    "partner_rank": 6
+   },
+   {
+    "law_gap_mm": 15.59,
+    "partner_component": "hind_chain_min03",
+    "partner_label": "foot_class",
+    "partner_rank": 18
+   },
+   {
+    "law_gap_mm": 22.9,
+    "partner_component": "axial_composite",
+    "partner_label": "axial_composite",
+    "partner_rank": 1
+   },
+   {
+    "law_gap_mm": 28.11,
+    "partner_component": "hind_chain_min03",
+    "partner_label": "tibia",
+    "partner_rank": 7
+   },
+   {
+    "law_gap_mm": 31.16,
+    "partner_component": "hind_chain_min03",
+    "partner_label": "femur",
+    "partner_rank": 3
+   },
+   {
+    "law_gap_mm": 32.96,
+    "partner_component": "fore_chain_min05",
+    "partner_label": "forearm_class",
+    "partner_rank": 11
+   },
+   {
+    "law_gap_mm": 33.75,
+    "partner_component": "hind_chain_min03",
+    "partner_label": "fibula",
+    "partner_rank": 21
+   },
+   {
+    "law_gap_mm": 33.78,
+    "partner_component": "hind_chain_min02",
+    "partner_label": "foot_class",
+    "partner_rank": 15
+   },
+   {
+    "law_gap_mm": 34.78,
+    "partner_component": "fore_chain_min05",
+    "partner_label": "forearm_class",
+    "partner_rank": 13
+   },
+   {
+    "law_gap_mm": 39.3,
+    "partner_component": "hind_chain_min03",
+    "partner_label": "foot_class",
+    "partner_rank": 17
+   },
+   {
+    "law_gap_mm": 40.03,
+    "partner_component": "hind_chain_min02",
+    "partner_label": "foot_class",
+    "partner_rank": 25
+   },
+   {
+    "law_gap_mm": 40.96,
+    "partner_component": "hind_chain_min02",
+    "partner_label": "foot_class",
+    "partner_rank": 22
+   },
+   {
+    "law_gap_mm": 41.48,
+    "partner_component": "hind_chain_min03",
+    "partner_label": "foot_class",
+    "partner_rank": 24
+   },
+   {
+    "law_gap_mm": 45.79,
+    "partner_component": "hind_chain_min03",
+    "partner_label": "foot_class",
+    "partner_rank": 23
+   },
+   {
+    "law_gap_mm": 46.16,
+    "partner_component": "singleton_14",
+    "partner_label": null,
+    "partner_rank": 14
+   },
+   {
+    "law_gap_mm": 47.59,
+    "partner_component": "fore_chain_min04",
+    "partner_label": "humerus",
+    "partner_rank": 4
+   },
+   {
+    "law_gap_mm": 51.06,
+    "partner_component": "singleton_19",
+    "partner_label": null,
+    "partner_rank": 19
+   },
+   {
+    "law_gap_mm": 54.56,
+    "partner_component": "fore_chain_min04",
+    "partner_label": "hand_class",
+    "partner_rank": 8
+   },
+   {
+    "law_gap_mm": 61.97,
+    "partner_component": "fore_chain_min05",
+    "partner_label": "hand_class",
+    "partner_rank": 9
+   },
+   {
+    "law_gap_mm": 63.79,
+    "partner_component": "fore_chain_min05",
+    "partner_label": "humerus",
+    "partner_rank": 5
+   }
+  ],
+  "19": [
+   {
+    "law_gap_mm": 7.71,
+    "partner_component": "hind_chain_min02",
+    "partner_label": "foot_class",
+    "partner_rank": 22
+   },
+   {
+    "law_gap_mm": 7.79,
+    "partner_component": "hind_chain_min02",
+    "partner_label": "foot_class",
+    "partner_rank": 25
+   },
+   {
+    "law_gap_mm": 11.43,
+    "partner_component": "singleton_14",
+    "partner_label": null,
+    "partner_rank": 14
+   },
+   {
+    "law_gap_mm": 13.92,
+    "partner_component": "hind_chain_min02",
+    "partner_label": "tibia",
+    "partner_rank": 6
+   },
+   {
+    "law_gap_mm": 15.07,
+    "partner_component": "hind_chain_min02",
+    "partner_label": "fibula",
+    "partner_rank": 20
+   },
+   {
+    "law_gap_mm": 21.0,
+    "partner_component": "hind_chain_min03",
+    "partner_label": "foot_class",
+    "partner_rank": 24
+   },
+   {
+    "law_gap_mm": 22.32,
+    "partner_component": "hind_chain_min03",
+    "partner_label": "foot_class",
+    "partner_rank": 23
+   },
+   {
+    "law_gap_mm": 25.89,
+    "partner_component": "hind_chain_min02",
+    "partner_label": "foot_class",
+    "partner_rank": 15
+   },
+   {
+    "law_gap_mm": 28.57,
+    "partner_component": "hind_chain_min03",
+    "partner_label": "foot_class",
+    "partner_rank": 17
+   },
+   {
+    "law_gap_mm": 29.25,
+    "partner_component": "hind_chain_min03",
+    "partner_label": "tibia",
+    "partner_rank": 7
+   },
+   {
+    "law_gap_mm": 31.84,
+    "partner_component": "hind_chain_min02",
+    "partner_label": "femur",
+    "partner_rank": 2
+   },
+   {
+    "law_gap_mm": 32.84,
+    "partner_component": "hind_chain_min03",
+    "partner_label": "fibula",
+    "partner_rank": 21
+   },
+   {
+    "law_gap_mm": 36.93,
+    "partner_component": "axial_composite",
+    "partner_label": "axial_composite",
+    "partner_rank": 1
+   },
+   {
+    "law_gap_mm": 39.89,
+    "partner_component": "hind_chain_min03",
+    "partner_label": "femur",
+    "partner_rank": 3
+   },
+   {
+    "law_gap_mm": 51.06,
+    "partner_component": "singleton_16",
+    "partner_label": null,
+    "partner_rank": 16
+   },
+   {
+    "law_gap_mm": 63.57,
+    "partner_component": "hind_chain_min03",
+    "partner_label": "foot_class",
+    "partner_rank": 18
+   },
+   {
+    "law_gap_mm": 68.56,
+    "partner_component": "fore_chain_min04",
+    "partner_label": "forearm_class",
+    "partner_rank": 12
+   },
+   {
+    "law_gap_mm": 70.92,
+    "partner_component": "fore_chain_min04",
+    "partner_label": "forearm_class",
+    "partner_rank": 10
+   },
+   {
+    "law_gap_mm": 82.21,
+    "partner_component": "fore_chain_min05",
+    "partner_label": "forearm_class",
+    "partner_rank": 13
+   },
+   {
+    "law_gap_mm": 84.54,
+    "partner_component": "fore_chain_min05",
+    "partner_label": "forearm_class",
+    "partner_rank": 11
+   },
+   {
+    "law_gap_mm": 101.32,
+    "partner_component": "fore_chain_min04",
+    "partner_label": "humerus",
+    "partner_rank": 4
+   },
+   {
+    "law_gap_mm": 112.95,
+    "partner_component": "fore_chain_min04",
+    "partner_label": "hand_class",
+    "partner_rank": 8
+   },
+   {
+    "law_gap_mm": 114.67,
+    "partner_component": "fore_chain_min05",
+    "partner_label": "humerus",
+    "partner_rank": 5
+   },
+   {
+    "law_gap_mm": 118.04,
+    "partner_component": "fore_chain_min05",
+    "partner_label": "hand_class",
+    "partner_rank": 9
+   }
+  ]
+ },
+ "touching_class_pairs": [
+  {
+   "anatomical_reading": "hip joint: femoral head apposed to the acetabular region of the composite pelvis mass (Hartman & Straus 1933, The Anatomy of the Rhesus Monkey)",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     61.291,
+     42.734,
+     41.375
+    ],
+    "b_vertex_mm": [
+     59.904,
+     42.598,
+     41.731
+    ],
+    "metric": "vertex[167]-to-vertex[2486]"
+   },
+   "committed_edge": false,
+   "components": [
+    "axial_composite",
+    "hind_chain_min02"
+   ],
+   "labels": [
+    "axial_composite",
+    "femur"
+   ],
+   "law_gap_mm": 1.44,
+   "pair_members": [
+    "mem.bone_01",
+    "mem.bone_02"
+   ],
+   "pair_ranks": [
+    1,
+    2
+   ],
+   "pre_registered": "P1 hip A: femur 2 <-> axial composite",
+   "refined_closest_points_mm": {
+    "on_01": [
+     61.142,
+     42.844,
+     41.118
+    ],
+    "on_02": [
+     59.904,
+     42.598,
+     41.731
+    ]
+   },
+   "refined_gap_mm": 1.403,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  },
+  {
+   "anatomical_reading": "hip joint: femoral head apposed to the acetabular region of the composite pelvis mass (Hartman & Straus 1933)",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     59.617,
+     41.762,
+     25.367
+    ],
+    "b_vertex_mm": [
+     58.16,
+     41.6,
+     25.12
+    ],
+    "metric": "vertex[114]-to-vertex[2022]"
+   },
+   "committed_edge": false,
+   "components": [
+    "axial_composite",
+    "hind_chain_min03"
+   ],
+   "labels": [
+    "axial_composite",
+    "femur"
+   ],
+   "law_gap_mm": 1.49,
+   "pair_members": [
+    "mem.bone_01",
+    "mem.bone_03"
+   ],
+   "pair_ranks": [
+    1,
+    3
+   ],
+   "pre_registered": "P2 hip B: femur 3 <-> axial composite",
+   "refined_closest_points_mm": {
+    "on_01": [
+     59.633,
+     43.14,
+     25.066
+    ],
+    "on_03": [
+     58.322,
+     43.093,
+     24.777
+    ]
+   },
+   "refined_gap_mm": 1.343,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     137.874,
+     32.196,
+     40.084
+    ],
+    "b_vertex_mm": [
+     138.24,
+     32.72,
+     40.32
+    ],
+    "metric": "vertex[3191]-to-vertex[11]"
+   },
+   "committed_edge": false,
+   "components": [
+    "axial_composite",
+    "fore_chain_min04"
+   ],
+   "labels": [
+    "axial_composite",
+    "hand_class"
+   ],
+   "law_gap_mm": 0.68,
+   "pair_members": [
+    "mem.bone_01",
+    "mem.bone_08"
+   ],
+   "pair_ranks": [
+    1,
+    8
+   ],
+   "pre_registered": null,
+   "refined_closest_points_mm": {
+    "on_01": [
+     137.894,
+     32.19,
+     40.069
+    ],
+    "on_08": [
+     138.24,
+     32.72,
+     40.32
+    ]
+   },
+   "refined_gap_mm": 0.681,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     140.233,
+     26.102,
+     20.031
+    ],
+    "b_vertex_mm": [
+     140.56,
+     26.4,
+     19.68
+    ],
+    "metric": "vertex[3365]-to-vertex[29]"
+   },
+   "committed_edge": false,
+   "components": [
+    "axial_composite",
+    "fore_chain_min05"
+   ],
+   "labels": [
+    "axial_composite",
+    "hand_class"
+   ],
+   "law_gap_mm": 0.56,
+   "pair_members": [
+    "mem.bone_01",
+    "mem.bone_09"
+   ],
+   "pair_ranks": [
+    1,
+    9
+   ],
+   "pre_registered": null,
+   "refined_closest_points_mm": {
+    "on_01": [
+     127.734,
+     10.687,
+     21.46
+    ],
+    "on_09": [
+     143.2,
+     22.64,
+     19.36
+    ]
+   },
+   "refined_gap_mm": 0.0,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     115.96,
+     16.514,
+     19.572
+    ],
+    "b_vertex_mm": [
+     114.56,
+     16.48,
+     17.2
+    ],
+    "metric": "vertex[1943]-to-vertex[5420]"
+   },
+   "committed_edge": false,
+   "components": [
+    "axial_composite",
+    "fore_chain_min05"
+   ],
+   "labels": [
+    "axial_composite",
+    "forearm_class"
+   ],
+   "law_gap_mm": 2.75,
+   "pair_members": [
+    "mem.bone_01",
+    "mem.bone_11"
+   ],
+   "pair_ranks": [
+    1,
+    11
+   ],
+   "pre_registered": null,
+   "refined_closest_points_mm": {
+    "on_01": [
+     111.319,
+     12.211,
+     23.265
+    ],
+    "on_11": [
+     110.08,
+     11.84,
+     20.4
+    ]
+   },
+   "refined_gap_mm": 0.0,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     111.998,
+     25.776,
+     17.546
+    ],
+    "b_vertex_mm": [
+     112.16,
+     25.12,
+     14.8
+    ],
+    "metric": "vertex[1732]-to-vertex[3530]"
+   },
+   "committed_edge": false,
+   "components": [
+    "axial_composite",
+    "fore_chain_min05"
+   ],
+   "labels": [
+    "axial_composite",
+    "forearm_class"
+   ],
+   "law_gap_mm": 2.83,
+   "pair_members": [
+    "mem.bone_01",
+    "mem.bone_13"
+   ],
+   "pair_ranks": [
+    1,
+    13
+   ],
+   "pre_registered": null,
+   "refined_closest_points_mm": {
+    "on_01": [
+     87.466,
+     55.778,
+     28.531
+    ],
+    "on_13": [
+     114.72,
+     29.36,
+     13.12
+    ]
+   },
+   "refined_gap_mm": 0.0,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     59.803,
+     44.858,
+     37.174
+    ],
+    "b_vertex_mm": [
+     58.96,
+     44.8,
+     37.12
+    ],
+    "metric": "vertex[130]-to-vertex[14981]"
+   },
+   "committed_edge": false,
+   "components": [
+    "axial_composite",
+    "hind_chain_min02"
+   ],
+   "labels": [
+    "axial_composite",
+    "foot_class"
+   ],
+   "law_gap_mm": 0.85,
+   "pair_members": [
+    "mem.bone_01",
+    "mem.bone_15"
+   ],
+   "pair_ranks": [
+    1,
+    15
+   ],
+   "pre_registered": null,
+   "refined_closest_points_mm": {
+    "on_01": [
+     59.782,
+     43.848,
+     37.8
+    ],
+    "on_15": [
+     58.96,
+     43.84,
+     37.76
+    ]
+   },
+   "refined_gap_mm": 0.823,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     58.955,
+     44.403,
+     28.117
+    ],
+    "b_vertex_mm": [
+     58.32,
+     44.48,
+     28.16
+    ],
+    "metric": "vertex[97]-to-vertex[14985]"
+   },
+   "committed_edge": false,
+   "components": [
+    "axial_composite",
+    "hind_chain_min03"
+   ],
+   "labels": [
+    "axial_composite",
+    "foot_class"
+   ],
+   "law_gap_mm": 0.64,
+   "pair_members": [
+    "mem.bone_01",
+    "mem.bone_17"
+   ],
+   "pair_ranks": [
+    1,
+    17
+   ],
+   "pre_registered": null,
+   "refined_closest_points_mm": {
+    "on_01": [
+     58.904,
+     44.821,
+     27.901
+    ],
+    "on_17": [
+     58.32,
+     44.8,
+     28.0
+    ]
+   },
+   "refined_gap_mm": 0.592,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     76.56,
+     4.64,
+     39.36
+    ],
+    "b_vertex_mm": [
+     74.16,
+     3.2,
+     38.56
+    ],
+    "metric": "vertex[11614]-to-vertex[14998]"
+   },
+   "committed_edge": true,
+   "components": [
+    "hind_chain_min02",
+    "hind_chain_min02"
+   ],
+   "labels": [
+    "femur",
+    "tibia"
+   ],
+   "law_gap_mm": 2.91,
+   "pair_members": [
+    "mem.bone_02",
+    "mem.bone_06"
+   ],
+   "pair_ranks": [
+    2,
+    6
+   ],
+   "pre_registered": null,
+   "refined_closest_points_mm": {
+    "on_02": [
+     76.56,
+     4.64,
+     39.36
+    ],
+    "on_06": [
+     74.16,
+     3.2,
+     38.56
+    ]
+   },
+   "refined_gap_mm": 2.911,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     56.265,
+     44.52,
+     41.087
+    ],
+    "b_vertex_mm": [
+     55.84,
+     45.2,
+     40.48
+    ],
+    "metric": "vertex[592]-to-vertex[11606]"
+   },
+   "committed_edge": true,
+   "components": [
+    "hind_chain_min02",
+    "hind_chain_min02"
+   ],
+   "labels": [
+    "femur",
+    "foot_class"
+   ],
+   "law_gap_mm": 1.01,
+   "pair_members": [
+    "mem.bone_02",
+    "mem.bone_15"
+   ],
+   "pair_ranks": [
+    2,
+    15
+   ],
+   "pre_registered": null,
+   "refined_closest_points_mm": {
+    "on_02": [
+     56.265,
+     44.52,
+     41.087
+    ],
+    "on_15": [
+     55.84,
+     45.2,
+     40.48
+    ]
+   },
+   "refined_gap_mm": 1.006,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     89.6,
+     21.52,
+     16.16
+    ],
+    "b_vertex_mm": [
+     88.0,
+     19.28,
+     16.8
+    ],
+    "metric": "vertex[12142]-to-vertex[14001]"
+   },
+   "committed_edge": true,
+   "components": [
+    "hind_chain_min03",
+    "hind_chain_min03"
+   ],
+   "labels": [
+    "femur",
+    "tibia"
+   ],
+   "law_gap_mm": 2.83,
+   "pair_members": [
+    "mem.bone_03",
+    "mem.bone_07"
+   ],
+   "pair_ranks": [
+    3,
+    7
+   ],
+   "pre_registered": null,
+   "refined_closest_points_mm": {
+    "on_03": [
+     89.6,
+     21.52,
+     16.16
+    ],
+    "on_07": [
+     88.0,
+     19.28,
+     16.8
+    ]
+   },
+   "refined_gap_mm": 2.826,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     55.198,
+     44.509,
+     25.827
+    ],
+    "b_vertex_mm": [
+     55.04,
+     45.04,
+     26.24
+    ],
+    "metric": "vertex[465]-to-vertex[11643]"
+   },
+   "committed_edge": true,
+   "components": [
+    "hind_chain_min03",
+    "hind_chain_min03"
+   ],
+   "labels": [
+    "femur",
+    "foot_class"
+   ],
+   "law_gap_mm": 0.69,
+   "pair_members": [
+    "mem.bone_03",
+    "mem.bone_17"
+   ],
+   "pair_ranks": [
+    3,
+    17
+   ],
+   "pre_registered": null,
+   "refined_closest_points_mm": {
+    "on_03": [
+     55.381,
+     44.857,
+     25.448
+    ],
+    "on_17": [
+     55.36,
+     45.36,
+     25.92
+    ]
+   },
+   "refined_gap_mm": 0.69,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     149.6,
+     15.36,
+     50.16
+    ],
+    "b_vertex_mm": [
+     149.76,
+     15.68,
+     49.52
+    ],
+    "metric": "vertex[14461]-to-vertex[7482]"
+   },
+   "committed_edge": true,
+   "components": [
+    "fore_chain_min04",
+    "fore_chain_min04"
+   ],
+   "labels": [
+    "humerus",
+    "hand_class"
+   ],
+   "law_gap_mm": 0.73,
+   "pair_members": [
+    "mem.bone_04",
+    "mem.bone_08"
+   ],
+   "pair_ranks": [
+    4,
+    8
+   ],
+   "pre_registered": null,
+   "refined_closest_points_mm": {
+    "on_04": [
+     149.6,
+     15.36,
+     50.16
+    ],
+    "on_08": [
+     149.76,
+     15.68,
+     49.52
+    ]
+   },
+   "refined_gap_mm": 0.733,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     124.573,
+     46.683,
+     48.33
+    ],
+    "b_vertex_mm": [
+     122.8,
+     45.76,
+     48.48
+    ],
+    "metric": "vertex[27]-to-vertex[14324]"
+   },
+   "committed_edge": true,
+   "components": [
+    "fore_chain_min04",
+    "fore_chain_min04"
+   ],
+   "labels": [
+    "humerus",
+    "forearm_class"
+   ],
+   "law_gap_mm": 2.0,
+   "pair_members": [
+    "mem.bone_04",
+    "mem.bone_10"
+   ],
+   "pair_ranks": [
+    4,
+    10
+   ],
+   "pre_registered": null,
+   "refined_closest_points_mm": {
+    "on_04": [
+     128.96,
+     43.52,
+     49.52
+    ],
+    "on_10": [
+     124.24,
+     43.36,
+     49.6
+    ]
+   },
+   "refined_gap_mm": 0.0,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     124.88,
+     47.84,
+     45.76
+    ],
+    "b_vertex_mm": [
+     124.24,
+     48.32,
+     45.28
+    ],
+    "metric": "vertex[64]-to-vertex[14263]"
+   },
+   "committed_edge": true,
+   "components": [
+    "fore_chain_min04",
+    "fore_chain_min04"
+   ],
+   "labels": [
+    "humerus",
+    "forearm_class"
+   ],
+   "law_gap_mm": 0.93,
+   "pair_members": [
+    "mem.bone_04",
+    "mem.bone_12"
+   ],
+   "pair_ranks": [
+    4,
+    12
+   ],
+   "pre_registered": null,
+   "refined_closest_points_mm": {
+    "on_04": [
+     124.56,
+     47.52,
+     45.76
+    ],
+    "on_12": [
+     122.56,
+     47.52,
+     45.52
+    ]
+   },
+   "refined_gap_mm": 0.0,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     151.324,
+     5.822,
+     19.733
+    ],
+    "b_vertex_mm": [
+     151.36,
+     6.64,
+     20.0
+    ],
+    "metric": "vertex[14759]-to-vertex[7320]"
+   },
+   "committed_edge": true,
+   "components": [
+    "fore_chain_min05",
+    "fore_chain_min05"
+   ],
+   "labels": [
+    "humerus",
+    "hand_class"
+   ],
+   "law_gap_mm": 0.86,
+   "pair_members": [
+    "mem.bone_05",
+    "mem.bone_09"
+   ],
+   "pair_ranks": [
+    5,
+    9
+   ],
+   "pre_registered": null,
+   "refined_closest_points_mm": {
+    "on_05": [
+     139.92,
+     24.8,
+     11.68
+    ],
+    "on_09": [
+     142.56,
+     25.28,
+     18.64
+    ]
+   },
+   "refined_gap_mm": 0.0,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     133.404,
+     39.941,
+     7.855
+    ],
+    "b_vertex_mm": [
+     131.6,
+     38.72,
+     8.48
+    ],
+    "metric": "vertex[10]-to-vertex[14425]"
+   },
+   "committed_edge": true,
+   "components": [
+    "fore_chain_min05",
+    "fore_chain_min05"
+   ],
+   "labels": [
+    "humerus",
+    "forearm_class"
+   ],
+   "law_gap_mm": 2.27,
+   "pair_members": [
+    "mem.bone_05",
+    "mem.bone_11"
+   ],
+   "pair_ranks": [
+    5,
+    11
+   ],
+   "pre_registered": null,
+   "refined_closest_points_mm": {
+    "on_05": [
+     134.96,
+     39.04,
+     7.84
+    ],
+    "on_11": [
+     133.04,
+     36.8,
+     8.32
+    ]
+   },
+   "refined_gap_mm": 0.0,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     134.24,
+     42.32,
+     9.28
+    ],
+    "b_vertex_mm": [
+     133.76,
+     42.96,
+     9.6
+    ],
+    "metric": "vertex[161]-to-vertex[14413]"
+   },
+   "committed_edge": true,
+   "components": [
+    "fore_chain_min05",
+    "fore_chain_min05"
+   ],
+   "labels": [
+    "humerus",
+    "forearm_class"
+   ],
+   "law_gap_mm": 0.86,
+   "pair_members": [
+    "mem.bone_05",
+    "mem.bone_13"
+   ],
+   "pair_ranks": [
+    5,
+    13
+   ],
+   "pre_registered": null,
+   "refined_closest_points_mm": {
+    "on_05": [
+     134.24,
+     42.32,
+     9.28
+    ],
+    "on_13": [
+     133.76,
+     42.96,
+     9.6
+    ]
+   },
+   "refined_gap_mm": 0.862,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     40.8,
+     28.64,
+     47.76
+    ],
+    "b_vertex_mm": [
+     40.8,
+     28.64,
+     48.24
+    ],
+    "metric": "vertex[731]-to-vertex[141]"
+   },
+   "committed_edge": true,
+   "components": [
+    "hind_chain_min02",
+    "hind_chain_min02"
+   ],
+   "labels": [
+    "tibia",
+    "fibula"
+   ],
+   "law_gap_mm": 0.48,
+   "pair_members": [
+    "mem.bone_06",
+    "mem.bone_20"
+   ],
+   "pair_ranks": [
+    6,
+    20
+   ],
+   "pre_registered": null,
+   "refined_closest_points_mm": {
+    "on_06": [
+     42.24,
+     27.36,
+     42.0
+    ],
+    "on_20": [
+     44.96,
+     26.72,
+     47.28
+    ]
+   },
+   "refined_gap_mm": 0.0,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     39.2,
+     30.48,
+     44.8
+    ],
+    "b_vertex_mm": [
+     38.88,
+     30.96,
+     45.12
+    ],
+    "metric": "vertex[77]-to-vertex[6897]"
+   },
+   "committed_edge": true,
+   "components": [
+    "hind_chain_min02",
+    "hind_chain_min02"
+   ],
+   "labels": [
+    "tibia",
+    "foot_class"
+   ],
+   "law_gap_mm": 0.66,
+   "pair_members": [
+    "mem.bone_06",
+    "mem.bone_25"
+   ],
+   "pair_ranks": [
+    6,
+    25
+   ],
+   "pre_registered": null,
+   "refined_closest_points_mm": {
+    "on_06": [
+     39.2,
+     30.48,
+     44.8
+    ],
+    "on_25": [
+     38.88,
+     30.96,
+     45.12
+    ]
+   },
+   "refined_gap_mm": 0.66,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     88.64,
+     15.84,
+     21.68
+    ],
+    "b_vertex_mm": [
+     89.12,
+     15.2,
+     23.28
+    ],
+    "metric": "vertex[14453]-to-vertex[3922]"
+   },
+   "committed_edge": true,
+   "components": [
+    "hind_chain_min03",
+    "hind_chain_min03"
+   ],
+   "labels": [
+    "tibia",
+    "foot_class"
+   ],
+   "law_gap_mm": 1.79,
+   "pair_members": [
+    "mem.bone_07",
+    "mem.bone_18"
+   ],
+   "pair_ranks": [
+    7,
+    18
+   ],
+   "pre_registered": null,
+   "refined_closest_points_mm": {
+    "on_07": [
+     88.48,
+     15.36,
+     21.52
+    ],
+    "on_18": [
+     91.2,
+     15.28,
+     23.2
+    ]
+   },
+   "refined_gap_mm": 0.0,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     48.64,
+     28.32,
+     22.96
+    ],
+    "b_vertex_mm": [
+     48.32,
+     28.32,
+     22.64
+    ],
+    "metric": "vertex[589]-to-vertex[631]"
+   },
+   "committed_edge": true,
+   "components": [
+    "hind_chain_min03",
+    "hind_chain_min03"
+   ],
+   "labels": [
+    "tibia",
+    "fibula"
+   ],
+   "law_gap_mm": 0.45,
+   "pair_members": [
+    "mem.bone_07",
+    "mem.bone_21"
+   ],
+   "pair_ranks": [
+    7,
+    21
+   ],
+   "pre_registered": null,
+   "refined_closest_points_mm": {
+    "on_07": [
+     47.2,
+     27.44,
+     26.24
+    ],
+    "on_21": [
+     47.84,
+     27.68,
+     22.48
+    ]
+   },
+   "refined_gap_mm": 0.0,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     47.12,
+     28.64,
+     25.92
+    ],
+    "b_vertex_mm": [
+     46.32,
+     28.96,
+     25.92
+    ],
+    "metric": "vertex[13]-to-vertex[7126]"
+   },
+   "committed_edge": true,
+   "components": [
+    "hind_chain_min03",
+    "hind_chain_min03"
+   ],
+   "labels": [
+    "tibia",
+    "foot_class"
+   ],
+   "law_gap_mm": 0.86,
+   "pair_members": [
+    "mem.bone_07",
+    "mem.bone_24"
+   ],
+   "pair_ranks": [
+    7,
+    24
+   ],
+   "pre_registered": null,
+   "refined_closest_points_mm": {
+    "on_07": [
+     47.12,
+     28.64,
+     25.92
+    ],
+    "on_24": [
+     46.32,
+     28.96,
+     25.92
+    ]
+   },
+   "refined_gap_mm": 0.862,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     121.52,
+     45.44,
+     47.36
+    ],
+    "b_vertex_mm": [
+     121.28,
+     45.6,
+     47.12
+    ],
+    "metric": "vertex[13574]-to-vertex[11907]"
+   },
+   "committed_edge": true,
+   "components": [
+    "fore_chain_min04",
+    "fore_chain_min04"
+   ],
+   "labels": [
+    "forearm_class",
+    "forearm_class"
+   ],
+   "law_gap_mm": 0.38,
+   "pair_members": [
+    "mem.bone_10",
+    "mem.bone_12"
+   ],
+   "pair_ranks": [
+    10,
+    12
+   ],
+   "pre_registered": null,
+   "refined_closest_points_mm": {
+    "on_10": [
+     121.6,
+     45.44,
+     47.28
+    ],
+    "on_12": [
+     121.36,
+     45.6,
+     47.04
+    ]
+   },
+   "refined_gap_mm": 0.375,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     130.182,
+     38.96,
+     8.902
+    ],
+    "b_vertex_mm": [
+     129.84,
+     39.2,
+     9.12
+    ],
+    "metric": "vertex[13630]-to-vertex[11651]"
+   },
+   "committed_edge": true,
+   "components": [
+    "fore_chain_min05",
+    "fore_chain_min05"
+   ],
+   "labels": [
+    "forearm_class",
+    "forearm_class"
+   ],
+   "law_gap_mm": 0.47,
+   "pair_members": [
+    "mem.bone_11",
+    "mem.bone_13"
+   ],
+   "pair_ranks": [
+    11,
+    13
+   ],
+   "pre_registered": null,
+   "refined_closest_points_mm": {
+    "on_11": [
+     104.72,
+     10.8,
+     20.16
+    ],
+    "on_13": [
+     104.64,
+     14.56,
+     18.16
+    ]
+   },
+   "refined_gap_mm": 0.0,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     40.72,
+     29.44,
+     48.32
+    ],
+    "b_vertex_mm": [
+     38.96,
+     30.88,
+     47.36
+    ],
+    "metric": "vertex[167]-to-vertex[7017]"
+   },
+   "committed_edge": true,
+   "components": [
+    "hind_chain_min02",
+    "hind_chain_min02"
+   ],
+   "labels": [
+    "fibula",
+    "foot_class"
+   ],
+   "law_gap_mm": 2.47,
+   "pair_members": [
+    "mem.bone_20",
+    "mem.bone_25"
+   ],
+   "pair_ranks": [
+    20,
+    25
+   ],
+   "pre_registered": null,
+   "refined_closest_points_mm": {
+    "on_20": [
+     40.72,
+     29.44,
+     48.32
+    ],
+    "on_25": [
+     38.96,
+     30.88,
+     47.36
+    ]
+   },
+   "refined_gap_mm": 2.468,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     47.68,
+     28.32,
+     22.64
+    ],
+    "b_vertex_mm": [
+     45.68,
+     28.96,
+     24.64
+    ],
+    "metric": "vertex[259]-to-vertex[6641]"
+   },
+   "committed_edge": true,
+   "components": [
+    "hind_chain_min03",
+    "hind_chain_min03"
+   ],
+   "labels": [
+    "fibula",
+    "foot_class"
+   ],
+   "law_gap_mm": 2.9,
+   "pair_members": [
+    "mem.bone_21",
+    "mem.bone_24"
+   ],
+   "pair_ranks": [
+    21,
+    24
+   ],
+   "pre_registered": null,
+   "refined_closest_points_mm": {
+    "on_21": [
+     47.84,
+     27.68,
+     22.48
+    ],
+    "on_24": [
+     45.12,
+     28.8,
+     24.24
+    ]
+   },
+   "refined_gap_mm": 0.0,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     33.92,
+     34.48,
+     46.56
+    ],
+    "b_vertex_mm": [
+     34.24,
+     33.68,
+     46.08
+    ],
+    "metric": "vertex[5066]-to-vertex[2803]"
+   },
+   "committed_edge": true,
+   "components": [
+    "hind_chain_min02",
+    "hind_chain_min02"
+   ],
+   "labels": [
+    "foot_class",
+    "foot_class"
+   ],
+   "law_gap_mm": 0.99,
+   "pair_members": [
+    "mem.bone_22",
+    "mem.bone_25"
+   ],
+   "pair_ranks": [
+    22,
+    25
+   ],
+   "pre_registered": null,
+   "refined_closest_points_mm": {
+    "on_22": [
+     33.92,
+     34.48,
+     46.56
+    ],
+    "on_25": [
+     34.24,
+     33.68,
+     46.08
+    ]
+   },
+   "refined_gap_mm": 0.986,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  },
+  {
+   "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+   "closest_law_pair": {
+    "a_vertex_mm": [
+     41.6,
+     31.92,
+     27.04
+    ],
+    "b_vertex_mm": [
+     41.92,
+     30.96,
+     27.04
+    ],
+    "metric": "vertex[7956]-to-vertex[3147]"
+   },
+   "committed_edge": true,
+   "components": [
+    "hind_chain_min03",
+    "hind_chain_min03"
+   ],
+   "labels": [
+    "foot_class",
+    "foot_class"
+   ],
+   "law_gap_mm": 1.01,
+   "pair_members": [
+    "mem.bone_23",
+    "mem.bone_24"
+   ],
+   "pair_ranks": [
+    23,
+    24
+   ],
+   "pre_registered": null,
+   "refined_closest_points_mm": {
+    "on_23": [
+     41.6,
+     31.92,
+     27.04
+    ],
+    "on_24": [
+     41.92,
+     30.96,
+     27.04
+    ]
+   },
+   "refined_gap_mm": 1.012,
+   "refinement_guaranteed": true,
+   "touching_class": true
+  }
+ ],
+ "trailer": "Agent: GLM 5.3"
+}

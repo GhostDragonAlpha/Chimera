@@ -1,0 +1,67 @@
+{
+ "derived_utc_before_admission": true,
+ "mass_sum": {
+  "closure": "segment mass sum == implied whole-body mass (table precision)",
+  "segment_masses_kg_published": [
+   "8.184",
+   "0.557",
+   "0.269",
+   "0.080",
+   "0.021"
+  ],
+  "implied_whole_body_mass_kg": "9.111",
+  "cell_precision_kg": "0.001",
+  "rounding_tolerance_kg": "±0.0025",
+  "tolerance_derivation": "5 published mass cells at the table's stated 0.001 kg precision -> 5 × 0.0005 kg",
+  "whole_body_mass_published": null,
+  "verdict": "CLOSED (identity; the sum IS the implied mass, ±0.0025 kg rounding uncertainty)",
+  "open_question": "the table publishes no whole-body mass; the ~10.0 kg nominal cadaver and the PanTHERIA species mean are external comparison targets, see plausibility closure"
+ },
+ "dimensional": {
+  "closure": "per-quantity unit + plausibility envelope (adapter-enforced per record)",
+  "quantities": {
+   "com_fraction": {
+    "unit_si": "1",
+    "min": 0.0,
+    "max": 1.0,
+    "derivation": "phalanges of a 10 kg macaque far above 1e-4 kg; heaviest primate segment far below 50 kg"
+   },
+   "length": {
+    "unit_si": "m",
+    "min": 0.005,
+    "max": 5.0,
+    "derivation": "phalanx block centimetres; HAT length under a 5 m whole-primate bound"
+   },
+   "mass": {
+    "unit_si": "kg",
+    "min": 0.0001,
+    "max": 50.0,
+    "derivation": "COM strictly between the segment endpoints (footnote: fraction of segment length from the proximal end)"
+   },
+   "moment_of_inertia": {
+    "unit_si": "kg*m2",
+    "min": 1e-08,
+    "max": 1.0,
+    "derivation": "phalanges ~1e-5 kg*m2 (four orders above floor); HAT ~1e-1 kg*m2 (an order below ceiling)"
+   }
+  },
+  "verdict": "DECLARED (checked per record at admission; violation quarantines that record)"
+ },
+ "plausibility": {
+  "closure": "plausibility envelope vs admitted PanTHERIA Macaca records (comparison only, never fused)",
+  "pantheria_source": "tools/science_funnel/data/pantheria/ECOL_90_184.zip :: PanTHERIA_1-0_WR05_Aug2008.txt",
+  "pantheria_zip_sha256": "fe84274a39ba73b3c9b6950b78ba44c545852db9809d1549b0071cfdde46df9f",
+  "pantheria_record": "MSW05 Macaca fuscata 5-1_AdultBodyMass_g = 10114.76 g (literature species mean; the archive carries exactly one such record)",
+  "species_envelope_kg": [
+   "9.1032840",
+   "11.1262360"
+  ],
+  "envelope_derivation": "species mean ± 10% (declared single-specimen-vs-species-mean allowance)",
+  "table_implied_mass_kg": "9.111",
+  "deviation_from_species_mean": "-9.92%",
+  "inside_envelope": true,
+  "margin_to_lower_bound_kg": "0.0077160",
+  "verdict": "INSIDE_ENVELOPE (margin 0.0077160 kg — tight; the ~1 kg shortfall against the species mean is recorded as an open specimen-coverage question, not resolved by fusion or scaling)",
+  "no_fusion_note": "single-cadaver table values stay attributed to the Ogihara-lineage specimen; the PanTHERIA mean is context, never a scaling target"
+ }
+}

@@ -1,0 +1,10 @@
+﻿TRACE A/B (plain_trace vs fkred_reduce_trace, both GAIT_EVENT_TRACE builds, same box minutes apart)
+stdout: plain 10759f409ddd (12471 B) vs reduce 8480a977c32f (12763 B) -- DIFFERENT, and the difference is the
+harness 120 s WALL-CLOCK window guard (gait_unit.cpp), which fired at different ticks on today's loaded box
+(plain cut at tick 106 of the WALK phase; the faster reduce binary ran past it). The c6f9b6c0 wave-47 anchor is
+machine-state-bound (~30 s/process era) and is NOT reproducible at this box state -- CARRIED per the prereg
+decision rule.
+stderr: plain 3014934 B vs reduce 3535214 B; COMMON PREFIX = 1,177,780 bytes, BYTE-IDENTICAL. The first
+diverging byte is inside the guard message line "WALK exceeded the 120 s window guard at tick 106" (plain)
+vs reduce's continuation "[dv] t=106 ...". Every physics trace line over the common window ([dvfa]/[dvfk]/
+[poscorr]/[evt]/[pawcap]/[tick] markers, ticks 0..106) is byte-identical: NOT ONE PHYSICS BYTE differs.

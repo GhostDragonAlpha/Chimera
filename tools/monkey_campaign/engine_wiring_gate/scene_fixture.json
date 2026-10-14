@@ -1,0 +1,27 @@
+{
+  "schema": "chimera.engine_wiring_gate_scene.v1",
+  "note": "The capture scene is generated IN the probe source (membrane_gate.cpp, hash-pinned in INPUTS.json); this file declares the pinned constants for human review and cross-checks. The scene has no classification, no seals, no touches; gravity ON exercises the wired fall pass; stance/gait/reflex enablement attempts are recorded refusals.",
+  "generation": {
+    "grid_nx": 9,
+    "grid_nz": 7,
+    "vertices": 63,
+    "triangles": 96,
+    "x_range_m": [-0.06, 0.06],
+    "z_range_m": [-0.045, 0.045],
+    "rest_y_formula": "0.02 + 0.0005 * ((x*7 + z*3) mod 5)",
+    "rest_normal": [0.0, 1.0, 0.0],
+    "rest_color": [0.5, 0.5, 0.5]
+  },
+  "run": {
+    "dt_s": 0.016666666666666666,
+    "dt_hexfloat": "0x1.111112p-6 (float 1.f/60.f)",
+    "ticks": 180,
+    "worker_counts": [1, 2, 4],
+    "gravity": true,
+    "stance_attempted": true,
+    "gait_not_attempted": "requires stance + sealed feet cell (absent by design)",
+    "reflex_attempted": true
+  },
+  "engine_material_payload": "engine_material_payload.json (tools/material_iface first-consumer payload; bit-parity checked by the probe)",
+  "physics_claim": "NONE"
+}

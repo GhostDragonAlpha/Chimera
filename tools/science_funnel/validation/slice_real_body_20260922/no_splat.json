@@ -1,0 +1,25 @@
+{
+ "falsifier": "F-SLICE-NO-SPLAT",
+ "pass": true,
+ "grep_hits": [],
+ "patterns": [
+  "layer_splat_buffer",
+  "membrane_bin",
+  "splat.wgsl",
+  "/membrane",
+  "splat_mesh",
+  "anysplat",
+  "bake_splat"
+ ],
+ "engine_routes_referenced": [
+  "/frame",
+  "/mesh_import",
+  "/tick_gravity",
+  "/tick_state",
+  "/tick_touch",
+  "/topology",
+  "/verts"
+ ],
+ "splat_routes_referenced": [],
+ "law": "the slice render path is triangles only: /mesh_import in, /verts + /topology streamed; /membrane_bin and every splat builder unreachable"
+}

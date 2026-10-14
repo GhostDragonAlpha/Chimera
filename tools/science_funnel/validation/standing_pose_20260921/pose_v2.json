@@ -1,0 +1,700 @@
+{
+ "amended_definition_verdicts": {
+  "T1_pad_coplanarity": "V(x) <= V_v1 (2.1e-11 mm^2, the v1 committed record)",
+  "T2_trunk_level": "d(x) <= d_v1 (0.0, the v1 committed record)",
+  "T3_floor_clearance": "h_min(m; x) >= EPSILON_MM for all 21 non-pad membranes",
+  "T4_pads_only_contact": "exclusivity (= T3) + |h_cen(pad)| <= EPSILON_MM (all four)",
+  "T5_head_clearance": "skull-region h_min >= EPSILON_MM (the head window)"
+ },
+ "amendment_4_sha256": "3ad74c4469d795a0d70222d5f17f204ae2f1eab02182b1168c28d3a5bc276f70",
+ "base_commit": "4ea008cb (agent/standing-pose-20260921: the v1 lane)",
+ "clearance_at_pose_of_record": {
+  "T3_verdict_primary_epsilon": false,
+  "T5_verdict_primary_epsilon": false,
+  "min_non_pad_h_min_mm": -26.337554646347,
+  "pad_report": {
+   "bone_08": {
+    "h_cen_mm": 2.129629680821,
+    "h_max_mm": 11.61694115096,
+    "h_min_mm": -9.340545326987
+   },
+   "bone_09": {
+    "h_cen_mm": -1.397440390978,
+    "h_max_mm": 9.060324233481,
+    "h_min_mm": -13.266923781307
+   },
+   "bone_22": {
+    "h_cen_mm": -0.314889598085,
+    "h_max_mm": 2.005942042869,
+    "h_min_mm": -4.191250639562
+   },
+   "bone_23": {
+    "h_cen_mm": 1.726592022966,
+    "h_max_mm": 5.196602966191,
+    "h_min_mm": -4.408927157299
+   }
+  },
+  "per_membrane_h_min_mm": {
+   "bone_01": -18.868499956062,
+   "bone_02": -26.337554646316,
+   "bone_03": -8.665692788065,
+   "bone_04": -14.50980816541,
+   "bone_05": -16.859712839908,
+   "bone_06": -26.337554646337,
+   "bone_07": -11.991098863925,
+   "bone_10": -22.351478656699,
+   "bone_11": -20.045339409559,
+   "bone_12": -17.357553234487,
+   "bone_13": -14.608384607938,
+   "bone_14": -23.41339929026,
+   "bone_15": 0.143395962453,
+   "bone_16": -26.337554646347,
+   "bone_17": 5.23921754198,
+   "bone_18": -26.337554646333,
+   "bone_19": -24.043364587687,
+   "bone_20": -25.081134160519,
+   "bone_21": -4.541429439235,
+   "bone_24": -7.98634249053,
+   "bone_25": -4.324870536249
+  },
+  "plane_normal_ct": [
+   0.103245055057,
+   0.981388460286,
+   -0.161917104171
+  ],
+  "skull_region_h_min_mm": -18.868499956062
+ },
+ "epsilon": {
+  "primary_mm": 0.08,
+  "primary_source": "the committed P6' interpenetration tolerance REUSED: tol_ip = specimen.resolution_um/2 = 0.08 mm (the definition's resolution_um = 160; law doc section 5B resolution floor)",
+  "secondary_mm": 3.0,
+  "secondary_source": "the committed touching-class cut (the seat family's separation constant; recorded as the secondary reading)"
+ },
+ "lane": "agent/standing-pose-v2-20260921",
+ "maximin": {
+  "pose_of_record": "v1_pose_of_record",
+  "rest": {
+   "V_at_pose": 1.943840101245,
+   "argmin_membrane": "bone_18",
+   "binding_bounds": [
+    {
+     "binding": false,
+     "bound": -2.0943951,
+     "distance_rad": 1.929058254515,
+     "nearest_bound": "lo",
+     "theta": -0.165336845485,
+     "var": "hipL_flexion"
+    },
+    {
+     "binding": false,
+     "bound": 2.0943951,
+     "distance_rad": 1.994111352136,
+     "nearest_bound": "hi",
+     "theta": 0.100283747864,
+     "var": "hipL_adduction"
+    },
+    {
+     "binding": false,
+     "bound": -2.0943951,
+     "distance_rad": 1.042609935951,
+     "nearest_bound": "lo",
+     "theta": -1.051785164049,
+     "var": "hipL_rotation"
+    },
+    {
+     "binding": false,
+     "bound": -2.0943951,
+     "distance_rad": 1.756102253917,
+     "nearest_bound": "lo",
+     "theta": -0.338292846083,
+     "var": "hipR_flexion"
+    },
+    {
+     "binding": false,
+     "bound": -2.0943951,
+     "distance_rad": 1.930401104644,
+     "nearest_bound": "lo",
+     "theta": -0.163993995356,
+     "var": "hipR_adduction"
+    },
+    {
+     "binding": false,
+     "bound": 2.0943951,
+     "distance_rad": 0.922774717056,
+     "nearest_bound": "hi",
+     "theta": 1.171620382944,
+     "var": "hipR_rotation"
+    },
+    {
+     "binding": false,
+     "bound": -2.0943951,
+     "distance_rad": 0.564736244341,
+     "nearest_bound": "lo",
+     "theta": -1.529658855659,
+     "var": "kneeL"
+    },
+    {
+     "binding": true,
+     "bound": 0.17453293,
+     "distance_rad": 0.0,
+     "nearest_bound": "hi",
+     "theta": 0.17453293,
+     "var": "kneeR"
+    },
+    {
+     "binding": false,
+     "bound": -0.34906585,
+     "distance_rad": 0.34030093005,
+     "nearest_bound": "lo",
+     "theta": -0.00876491995,
+     "var": "driverL_06_25"
+    },
+    {
+     "binding": false,
+     "bound": -0.34906585,
+     "distance_rad": 0.012508272643,
+     "nearest_bound": "lo",
+     "theta": -0.336557577357,
+     "var": "driverR_07_24"
+    }
+   ],
+   "cap_breaches_recorded": {
+    "V_over_mm2": 1.22e-10,
+    "d_over": 0.0
+   },
+   "cap_slack_V": -1.22e-10,
+   "cap_slack_d": 0.0,
+   "d_at_pose": 0.010404074223,
+   "in_ranges": true,
+   "iterations": 400,
+   "lawful_screen_FV2": false,
+   "message": "Iteration limit reached",
+   "min_seat_slack_mm": -6.3e-11,
+   "per_membrane_h_min_mm": {
+    "bone_01": -18.868496933739,
+    "bone_02": -26.337554648341,
+    "bone_03": -8.666124254789,
+    "bone_04": -14.509809457193,
+    "bone_05": -16.859702733146,
+    "bone_06": -26.337554648161,
+    "bone_07": -11.991053321346,
+    "bone_10": -22.351478603512,
+    "bone_11": -20.045331083828,
+    "bone_12": -17.357554263851,
+    "bone_13": -14.608375889909,
+    "bone_14": -23.413395978459,
+    "bone_15": 0.143283340151,
+    "bone_16": -26.337554648251,
+    "bone_17": 5.239457611671,
+    "bone_18": -26.337554648374,
+    "bone_19": -24.043364668679,
+    "bone_20": -25.080963375419,
+    "bone_21": -4.541422992313,
+    "bone_24": -7.987377516531,
+    "bone_25": -4.325004796285
+   },
+   "seat_breach_mm_recorded": 6.3e-11,
+   "start_t": -30.957617896726,
+   "start_x": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "status": 9,
+   "success": false,
+   "t_max_recomputed_mm": -26.337554648374,
+   "t_solver": -26.337554648229,
+   "x_R12": [
+    -0.165336845485,
+    0.100283747864,
+    -1.051785164049,
+    -0.338292846083,
+    -0.163993995356,
+    1.171620382944,
+    -1.529658855659,
+    0.17453293,
+    -0.00876491995,
+    -0.336557577357
+   ],
+   "x_full": [
+    -0.165336845485,
+    0.100283747864,
+    -1.051785164049,
+    -0.338292846083,
+    -0.163993995356,
+    1.171620382944,
+    -1.529658855659,
+    0.17453293,
+    -0.00876491995,
+    -0.336557577357
+   ]
+  },
+  "v1_pose_of_record": {
+   "V_at_pose": 1.943840101124,
+   "argmin_membrane": "bone_16",
+   "binding_bounds": [
+    {
+     "binding": false,
+     "bound": -2.0943951,
+     "distance_rad": 1.929074293526,
+     "nearest_bound": "lo",
+     "theta": -0.165320806474,
+     "var": "hipL_flexion"
+    },
+    {
+     "binding": false,
+     "bound": 2.0943951,
+     "distance_rad": 1.994112860736,
+     "nearest_bound": "hi",
+     "theta": 0.100282239264,
+     "var": "hipL_adduction"
+    },
+    {
+     "binding": false,
+     "bound": -2.0943951,
+     "distance_rad": 1.042670498201,
+     "nearest_bound": "lo",
+     "theta": -1.051724601799,
+     "var": "hipL_rotation"
+    },
+    {
+     "binding": false,
+     "bound": -2.0943951,
+     "distance_rad": 1.75582818827,
+     "nearest_bound": "lo",
+     "theta": -0.33856691173,
+     "var": "hipR_flexion"
+    },
+    {
+     "binding": false,
+     "bound": -2.0943951,
+     "distance_rad": 1.93035889702,
+     "nearest_bound": "lo",
+     "theta": -0.16403620298,
+     "var": "hipR_adduction"
+    },
+    {
+     "binding": false,
+     "bound": 2.0943951,
+     "distance_rad": 0.922633925474,
+     "nearest_bound": "hi",
+     "theta": 1.171761174526,
+     "var": "hipR_rotation"
+    },
+    {
+     "binding": false,
+     "bound": -2.0943951,
+     "distance_rad": 0.564691829263,
+     "nearest_bound": "lo",
+     "theta": -1.529703270737,
+     "var": "kneeL"
+    },
+    {
+     "binding": true,
+     "bound": 0.17453293,
+     "distance_rad": 0.0,
+     "nearest_bound": "hi",
+     "theta": 0.17453293,
+     "var": "kneeR"
+    },
+    {
+     "binding": false,
+     "bound": -0.34906585,
+     "distance_rad": 0.340301056656,
+     "nearest_bound": "lo",
+     "theta": -0.008764793344,
+     "var": "driverL_06_25"
+    },
+    {
+     "binding": false,
+     "bound": -0.34906585,
+     "distance_rad": 0.012251795491,
+     "nearest_bound": "lo",
+     "theta": -0.336814054509,
+     "var": "driverR_07_24"
+    }
+   ],
+   "cap_breaches_recorded": {
+    "V_over_mm2": 0.0,
+    "d_over": 0.0
+   },
+   "cap_slack_V": 0.0,
+   "cap_slack_d": 0.0,
+   "d_at_pose": 0.010404074223,
+   "in_ranges": true,
+   "iterations": 153,
+   "lawful_screen_FV2": true,
+   "message": "Optimization terminated successfully",
+   "min_seat_slack_mm": -0.0,
+   "per_membrane_h_min_mm": {
+    "bone_01": -18.868499956063,
+    "bone_02": -26.337554646316,
+    "bone_03": -8.66569278804,
+    "bone_04": -14.50980816539,
+    "bone_05": -16.85971283992,
+    "bone_06": -26.337554646317,
+    "bone_07": -11.991098863907,
+    "bone_10": -22.351478656675,
+    "bone_11": -20.045339409559,
+    "bone_12": -17.35755323446,
+    "bone_13": -14.608384607939,
+    "bone_14": -23.413399290228,
+    "bone_15": 0.143395962498,
+    "bone_16": -26.337554646317,
+    "bone_17": 5.239217541991,
+    "bone_18": -26.337554646316,
+    "bone_19": -24.043364587644,
+    "bone_20": -25.0811341605,
+    "bone_21": -4.541429439218,
+    "bone_24": -7.986342490529,
+    "bone_25": -4.324870536252
+   },
+   "seat_breach_mm_recorded": 0.0,
+   "start_t": -41.688117748909,
+   "start_x": [
+    0.178118396022,
+    -0.136981171595,
+    0.172180846468,
+    0.097980355552,
+    0.037106507698,
+    0.297787360205,
+    -0.216633291473,
+    -0.145775817309,
+    0.005198046168,
+    -0.019472050549
+   ],
+   "status": 0,
+   "success": true,
+   "t_max_recomputed_mm": -26.337554646317,
+   "t_solver": -26.337554646316,
+   "x_R12": [
+    -0.165320806474,
+    0.100282239264,
+    -1.051724601799,
+    -0.33856691173,
+    -0.16403620298,
+    1.171761174526,
+    -1.529703270737,
+    0.17453293,
+    -0.008764793344,
+    -0.336814054509
+   ],
+   "x_full": [
+    -0.165320806474,
+    0.100282239264,
+    -1.051724601799,
+    -0.33856691173,
+    -0.16403620298,
+    1.171761174526,
+    -1.529703270737,
+    0.17453293,
+    -0.008764793344,
+    -0.336814054509
+   ]
+  }
+ },
+ "outcome": "I",
+ "pose_bonds": {
+  "bond.joint_01_02.adduction": {
+   "bond": "bond.joint_01_02",
+   "coordinate": "adduction",
+   "range_rad": [
+    -2.0943951,
+    2.0943951
+   ],
+   "theta": 0.100282239264
+  },
+  "bond.joint_01_02.flexion": {
+   "bond": "bond.joint_01_02",
+   "coordinate": "flexion",
+   "range_rad": [
+    -2.0943951,
+    2.0943951
+   ],
+   "theta": -0.165320806474
+  },
+  "bond.joint_01_02.rotation": {
+   "bond": "bond.joint_01_02",
+   "coordinate": "rotation",
+   "range_rad": [
+    -2.0943951,
+    2.0943951
+   ],
+   "theta": -1.051724601799
+  },
+  "bond.joint_01_03.adduction": {
+   "bond": "bond.joint_01_03",
+   "coordinate": "adduction",
+   "range_rad": [
+    -2.0943951,
+    2.0943951
+   ],
+   "theta": -0.16403620298
+  },
+  "bond.joint_01_03.flexion": {
+   "bond": "bond.joint_01_03",
+   "coordinate": "flexion",
+   "range_rad": [
+    -2.0943951,
+    2.0943951
+   ],
+   "theta": -0.33856691173
+  },
+  "bond.joint_01_03.rotation": {
+   "bond": "bond.joint_01_03",
+   "coordinate": "rotation",
+   "range_rad": [
+    -2.0943951,
+    2.0943951
+   ],
+   "theta": 1.171761174526
+  },
+  "bond.joint_02_06": {
+   "coordinate": "knee_angle",
+   "theta": -1.529703270737
+  },
+  "bond.joint_02_15": {
+   "class": "positional_contact",
+   "coordinate": null,
+   "theta": null
+  },
+  "bond.joint_03_07": {
+   "coordinate": "knee_angle",
+   "theta": 0.17453293
+  },
+  "bond.joint_03_17": {
+   "class": "positional_contact",
+   "coordinate": null,
+   "theta": null
+  },
+  "bond.joint_04_08": {
+   "class": "positional_contact",
+   "coordinate": null,
+   "theta": null
+  },
+  "bond.joint_04_10": {
+   "coordinate": "elbow_flexion",
+   "theta": 0.34906585
+  },
+  "bond.joint_04_12": {
+   "coordinate": "elbow_flexion",
+   "theta": 0.34906585
+  },
+  "bond.joint_05_09": {
+   "class": "positional_contact",
+   "coordinate": null,
+   "theta": null
+  },
+  "bond.joint_05_11": {
+   "coordinate": "elbow_flexion",
+   "theta": 0.34906585
+  },
+  "bond.joint_05_13": {
+   "coordinate": "elbow_flexion",
+   "theta": 0.34906585
+  },
+  "bond.joint_06_20": {
+   "class": "syndesmosis_nodof",
+   "coordinate": null,
+   "theta": null
+  },
+  "bond.joint_06_25": {
+   "coordinate": "subtalar_class",
+   "theta": -0.008764793344
+  },
+  "bond.joint_07_18": {
+   "coordinate": "at_rest",
+   "theta": 0.0
+  },
+  "bond.joint_07_21": {
+   "class": "syndesmosis_nodof",
+   "coordinate": null,
+   "theta": null
+  },
+  "bond.joint_07_24": {
+   "coordinate": "subtalar_class",
+   "theta": -0.336814054509
+  },
+  "bond.joint_10_12": {
+   "coordinate": "at_rest",
+   "theta": 0.0
+  },
+  "bond.joint_11_13": {
+   "coordinate": "at_rest",
+   "theta": 0.0
+  },
+  "bond.joint_20_25": {
+   "coordinate": null,
+   "note": "loop bond: no pose variable; seat measured at the pose",
+   "theta": null
+  },
+  "bond.joint_21_24": {
+   "coordinate": null,
+   "note": "loop bond: no pose variable; seat measured at the pose",
+   "theta": null
+  },
+  "bond.joint_22_25": {
+   "coordinate": "at_rest",
+   "theta": 0.0
+  },
+  "bond.joint_23_24": {
+   "coordinate": "at_rest",
+   "theta": 0.0
+  }
+ },
+ "pose_of_record_source": "maximin[v1_pose_of_record]",
+ "preregistration_sha256": "63e9def46d2c7a40215e8eda5c1599565203aed639d648bc97a97d6cbccc9348",
+ "schema": "chimera.standing_pose_v2.v1",
+ "solver": {
+  "env": "OMP_NUM_THREADS=1, OPENBLAS_NUM_THREADS=1, MKL_NUM_THREADS=1",
+  "ftol": 1e-12,
+  "library": "scipy.optimize.minimize",
+  "maxiter": 400,
+  "method": "SLSQP",
+  "starts": "amendment 4 section 3/4: BOTH starts declared pre-bank"
+ },
+ "strict_solve": {
+  "rest": {
+   "J_at_return": 71.003741633214,
+   "T1_V_le_V_v1": false,
+   "T2_d_le_d_v1": false,
+   "V_at_return": 71.002887716391,
+   "argmin_membrane": "bone_05",
+   "clearance_feasible_T1_T2": false,
+   "d_at_return": 4.570445e-06,
+   "iterations": 29,
+   "max_T3_violation_mm": 25.05620337207,
+   "message": "Positive directional derivative for linesearch",
+   "min_T3_slack_mm": -25.05620337207,
+   "min_seat_slack_mm": -9.762904869225,
+   "start": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "status": 8,
+   "success": false
+  },
+  "v1_pose_of_record": {
+   "J_at_return": 74.282381955494,
+   "T1_V_le_V_v1": false,
+   "T2_d_le_d_v1": false,
+   "V_at_return": 71.300799392413,
+   "argmin_membrane": "bone_05",
+   "clearance_feasible_T1_T2": false,
+   "d_at_return": 0.015958414621,
+   "iterations": 20,
+   "max_T3_violation_mm": 25.02295782659,
+   "message": "Positive directional derivative for linesearch",
+   "min_T3_slack_mm": -25.02295782659,
+   "min_seat_slack_mm": -17.48529986272,
+   "start": [
+    0.178118396022,
+    -0.136981171595,
+    0.172180846468,
+    0.097980355552,
+    0.037106507698,
+    0.297787360205,
+    -0.216633291473,
+    -0.145775817309,
+    0.005198046168,
+    -0.019472050549
+   ],
+   "status": 8,
+   "success": false
+  }
+ },
+ "structural_pin": {
+  "deepest_fixed_h_min_mm": -39.911738053955,
+  "fixed_forced_constants_mm": {
+   "bone_01": -20.022438131532,
+   "bone_04": -17.641272615471,
+   "bone_05": -14.607658340514,
+   "bone_10": -25.503084894451,
+   "bone_11": -18.77681754967,
+   "bone_12": -20.97184170396,
+   "bone_13": -13.017649076828,
+   "bone_14": -36.704917048526,
+   "bone_16": -35.772654208416,
+   "bone_19": -39.911738053955
+  },
+  "head_window_cut_mm": 157.039993286133,
+  "head_window_rule": "bone_01 vertices with x > max_x(hand pads 08/09) (the hands are the last pre-head objects on +x)",
+  "max_component_dev": 3.34559e-07,
+  "pinned_equals_v1_within_1e-6": true,
+  "pinned_plane_normal": [
+   0.205256476586,
+   0.933957413439,
+   -0.292563375529
+  ],
+  "smallest_fixed_deficit_mm": 14.687658340514,
+  "v1_pose_normal": [
+   0.205256661954,
+   0.9339572679,
+   -0.292563710089
+  ]
+ },
+ "trailer": "Agent: GLM 5.3",
+ "v1_pose_under_amended_definition": {
+  "all_21_below_plane": true,
+  "argmin_membrane": "bone_02",
+  "min_non_pad_h_min_mm": -41.688117748909,
+  "note": "P-AV2-1: the fired v1 falsifier, quantified (the heap, in numbers)",
+  "skull_region_h_min_mm": -15.828688837514
+ },
+ "variables": {
+  "argmin_membrane": "bone_16",
+  "names": [
+   "hipL_flexion",
+   "hipL_adduction",
+   "hipL_rotation",
+   "hipR_flexion",
+   "hipR_adduction",
+   "hipR_rotation",
+   "kneeL",
+   "kneeR",
+   "driverL_06_25",
+   "driverR_07_24"
+  ],
+  "t_max_mm": -26.337554646317,
+  "the_pose_of_record": "x_R12 (the house record rounding)",
+  "x_R12": [
+   -0.165320806474,
+   0.100282239264,
+   -1.051724601799,
+   -0.33856691173,
+   -0.16403620298,
+   1.171761174526,
+   -1.529703270737,
+   0.17453293,
+   -0.008764793344,
+   -0.336814054509
+  ],
+  "x_full": [
+   -0.165320806474,
+   0.100282239264,
+   -1.051724601799,
+   -0.33856691173,
+   -0.16403620298,
+   1.171761174526,
+   -1.529703270737,
+   0.17453293,
+   -0.008764793344,
+   -0.336814054509
+  ]
+ }
+}

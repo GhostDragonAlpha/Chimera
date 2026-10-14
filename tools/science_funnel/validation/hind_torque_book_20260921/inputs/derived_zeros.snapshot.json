@@ -1,0 +1,177 @@
+{
+ "winner": "joint",
+ "zero_map_rad": {
+  "hip": -0.044399,
+  "knee": -0.080389,
+  "ankle": -0.862213,
+  "mp": -0.768513
+ },
+ "seated_hip_height_m": 0.299947,
+ "premises": {
+  "joint": {
+   "cost": 0.41366812148505605,
+   "solution": [
+    -0.04439917486688654,
+    -0.08038925575940431,
+    -0.8622130371894529,
+    0.29994673318874765
+   ],
+   "z_m": -0.7685129248252989,
+   "stance_ride_mm": {
+    "max": 5.78,
+    "rms": 2.39
+   },
+   "checks": [
+    {
+     "name": "stance_contact_ride_max_mm",
+     "measured": 5.782108987595888,
+     "pass": true
+    },
+    {
+     "name": "knee_deg_min_max",
+     "measured": "-73.4/-31.5",
+     "pass": true
+    },
+    {
+     "name": "ankle_rad_range",
+     "measured": "-0.02..0.64",
+     "pass": true
+    },
+    {
+     "name": "mp_rad_range",
+     "measured": "-0.91..0.55",
+     "pass": true
+    },
+    {
+     "name": "td_foot_pitch_deg",
+     "measured": 15.9,
+     "pass": true
+    },
+    {
+     "name": "stance_pitch_min_max_deg",
+     "measured": "-69.3/23.5",
+     "pass": true
+    },
+    {
+     "name": "hip_height_mm",
+     "measured": 299.9,
+     "pass": true
+    },
+    {
+     "name": "flat_phase_toe_pitch_max_deg",
+     "measured": 1.2,
+     "pass": true
+    },
+    {
+     "name": "swing_toetip_dip_mm_PREDICTED",
+     "measured": -45.2,
+     "pass": true
+    }
+   ]
+  },
+  "segment": {
+   "cost": 43.75044849237132,
+   "solution": [
+    0.28205146892661614
+   ],
+   "z_m": 0.0,
+   "stance_ride_mm": {
+    "max": 47.08,
+    "rms": 30.0
+   },
+   "checks": [
+    {
+     "name": "stance_contact_ride_max_mm",
+     "measured": 47.083801989357006,
+     "pass": false
+    },
+    {
+     "name": "knee_deg_min_max",
+     "measured": "-106.1/-40.6",
+     "pass": true
+    },
+    {
+     "name": "td_foot_pitch_deg",
+     "measured": -36.8,
+     "pass": false
+    },
+    {
+     "name": "stance_pitch_min_max_deg",
+     "measured": "-41.5/-4.1",
+     "pass": true
+    }
+   ]
+  },
+  "mixed": {
+   "cost": 0.4587816892963332,
+   "solution": [
+    -0.15685837612002249,
+    -0.8223843924097518,
+    0.2943440564821684
+   ],
+   "z_m": -0.7755746118389316,
+   "stance_ride_mm": {
+    "max": 6.99,
+    "rms": 2.57
+   },
+   "checks": [
+    {
+     "name": "stance_contact_ride_max_mm",
+     "measured": 6.994487966304419,
+     "pass": true
+    },
+    {
+     "name": "knee_deg_min_max",
+     "measured": "-77.8/-35.9",
+     "pass": true
+    },
+    {
+     "name": "ankle_rad_range",
+     "measured": "0.02..0.68",
+     "pass": true
+    },
+    {
+     "name": "mp_rad_range",
+     "measured": "-0.92..0.54",
+     "pass": true
+    },
+    {
+     "name": "td_foot_pitch_deg",
+     "measured": 16.4,
+     "pass": true
+    },
+    {
+     "name": "stance_pitch_min_max_deg",
+     "measured": "-68.8/23.9",
+     "pass": true
+    },
+    {
+     "name": "hip_height_mm",
+     "measured": 294.3,
+     "pass": true
+    },
+    {
+     "name": "flat_phase_toe_pitch_max_deg",
+     "measured": 2.3,
+     "pass": true
+    },
+    {
+     "name": "swing_toetip_dip_mm_PREDICTED",
+     "measured": -42.7,
+     "pass": true
+    }
+   ]
+  }
+ },
+ "degeneracy_note": "joint (5.8 mm) and mixed (7.0 mm) both close INSIDE the table noise floor (the admitted tables' own reconstruction errors are 1.76-4.07 deg = 6-12 mm at the 0.345 m leg), so the ride cannot discriminate them; the two maps compose equivalent geometry. Joint is shipped: it is the physical frame (every column a pelvis-relative joint angle, the paper's own sign language), and its fitted hip zero (-0.044 rad = -2.5 deg) confirms the lane's original +1 hip stem was correct -- the failure was the missing ankle (-0.862 rad = -49.4 deg) and MP (-0.769 rad) zeros, which alone account for the 72.5 deg touchdown heel-dig.",
+ "closure_law": "rolling plantigrade contact rides one level over the 14 stance nodes; windlass toe-flat in the flat phase; knee never hyperextended; hip in the bent-knee band",
+ "named_risk": "at the CONSTANT stance-level hip height the mid-swing toe-tip target dips to -45 mm (nodes 15-16): the composed swing pose assumes a pelvis height set by the stance leg; the sim's free pelvis may lift in single support. The F-G suite measures this -- if swing tracking is degraded by floor conflict, a hip-oscillation derivation is owed next.",
+ "segment_lengths_m": {
+  "L1_thigh": 0.163,
+  "L2_shank": 0.182,
+  "X_MP": 0.074,
+  "X_HEEL": -0.012,
+  "L4_phalanges": 0.045
+ },
+ "deriver": "tools\\science_funnel\\validation\\gait_zero_20260919\\derive_gait_zeros.py"
+}

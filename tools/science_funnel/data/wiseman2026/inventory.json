@@ -1,0 +1,3849 @@
+{
+ "schema": "chimera.wiseman2026_inventory.v1",
+ "generated": "2026-09-20",
+ "article": "RSOS 13: rsos.260107, DOI 10.1098/rsos.260107, CC BY 4.0",
+ "deposit": "Zenodo 20041122 (Primate_models.zip) + Figshare 32017187 (SI1 docx) + Figshare 32017184 (SI2 xlsx)",
+ "models": {
+  "Macaque": {
+   "model_name": "Macaque",
+   "osim_document_version": "40600",
+   "bodies": [
+    "Pelvis",
+    "thigh_l",
+    "shank_l",
+    "foot_l",
+    "toes_l",
+    "thigh_r",
+    "shank_r",
+    "foot_r",
+    "toes_r",
+    "R_Hallux"
+   ],
+   "body_count": 10,
+   "joints": [
+    {
+     "name": "Pelvis",
+     "type": "CustomJoint",
+     "dof": 6
+    },
+    {
+     "name": "hip_l",
+     "type": "CustomJoint",
+     "dof": 3
+    },
+    {
+     "name": "knee_l",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "ankle_l",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "mtp_l",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "hip_r",
+     "type": "CustomJoint",
+     "dof": 3
+    },
+    {
+     "name": "knee_r",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "ankle_r",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "mtp_r",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "hallux_r",
+     "type": "PinJoint",
+     "dof": 1
+    }
+   ],
+   "coordinate_count": 19,
+   "wrap_surfaces": [
+    {
+     "type": null,
+     "name": "rIschium_Cylinder",
+     "on_body": "Pelvis"
+    },
+    {
+     "type": null,
+     "name": "rPelvis_ellipsoid",
+     "on_body": "Pelvis"
+    },
+    {
+     "type": null,
+     "name": "rFemoralMedialCondyle_Sphere",
+     "on_body": "thigh_r"
+    },
+    {
+     "type": null,
+     "name": "rFemoralneck",
+     "on_body": "thigh_r"
+    },
+    {
+     "type": null,
+     "name": "rFemoralCondyles_Cylinder",
+     "on_body": "thigh_r"
+    },
+    {
+     "type": null,
+     "name": "rFemoralCondyles_Cylinder2",
+     "on_body": "thigh_r"
+    },
+    {
+     "type": null,
+     "name": "rDistalTibia_ellipsoid",
+     "on_body": "shank_r"
+    },
+    {
+     "type": null,
+     "name": "rProxTibiaCylinder",
+     "on_body": "shank_r"
+    },
+    {
+     "type": null,
+     "name": "rDistalAnkle_Sphere",
+     "on_body": "foot_r"
+    },
+    {
+     "type": null,
+     "name": "rDistalAnkle_SphereforFDL",
+     "on_body": "foot_r"
+    },
+    {
+     "type": null,
+     "name": "R_Ankle_Cylinder",
+     "on_body": "foot_r"
+    },
+    {
+     "type": null,
+     "name": "rAnteriorMetarsalHead_Cylinder",
+     "on_body": "foot_r"
+    },
+    {
+     "type": null,
+     "name": "rPosteriorHalluxHead_Cylinder",
+     "on_body": "foot_r"
+    },
+    {
+     "type": null,
+     "name": "rAnteriorHalluxHead_Cylinder",
+     "on_body": "foot_r"
+    }
+   ],
+   "muscle_count": 36,
+   "muscles": [
+    {
+     "name": "R_AM",
+     "path_points": 2,
+     "path_point_bodies": [
+      "Pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_AB",
+     "path_points": 2,
+     "path_point_bodies": [
+      "Pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_AL",
+     "path_points": 2,
+     "path_point_bodies": [
+      "Pelvis",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rIschium_Cylinder"
+     ]
+    },
+    {
+     "name": "R_BFS",
+     "path_points": 2,
+     "path_point_bodies": [
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_BFL",
+     "path_points": 2,
+     "path_point_bodies": [
+      "Pelvis",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_EDL_TENDONII",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_EDL_TENDONIII",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_EDL_TENDONIV",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_EDL_TENDONV",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_EHL",
+     "path_points": 4,
+     "path_point_bodies": [
+      "R_Hallux",
+      "foot_r",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_FDL_TENDONII",
+     "path_points": 5,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_FDL_TENDONIII",
+     "path_points": 5,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_FDL_TENDONIV",
+     "path_points": 5,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_FDL_TENDONV",
+     "path_points": 5,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": [
+      "rDistalTibia_ellipsoid"
+     ]
+    },
+    {
+     "name": "R_FHL",
+     "path_points": 5,
+     "path_point_bodies": [
+      "R_Hallux",
+      "foot_r",
+      "shank_r"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_GMax",
+     "path_points": 3,
+     "path_point_bodies": [
+      "Pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_GMed",
+     "path_points": 3,
+     "path_point_bodies": [
+      "Pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_GMin",
+     "path_points": 3,
+     "path_point_bodies": [
+      "Pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_GRA",
+     "path_points": 4,
+     "path_point_bodies": [
+      "Pelvis",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_ILI",
+     "path_points": 3,
+     "path_point_bodies": [
+      "Pelvis",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralneck"
+     ]
+    },
+    {
+     "name": "R_LG",
+     "path_points": 3,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rProxTibiaCylinder"
+     ]
+    },
+    {
+     "name": "R_MG",
+     "path_points": 3,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_PB",
+     "path_points": 3,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_PIRI",
+     "path_points": 2,
+     "path_point_bodies": [
+      "Pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_PL",
+     "path_points": 3,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_RF",
+     "path_points": 4,
+     "path_point_bodies": [
+      "Pelvis",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder2",
+      "rFemoralneck"
+     ]
+    },
+    {
+     "name": "R_SAR",
+     "path_points": 5,
+     "path_point_bodies": [
+      "Pelvis",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralMedialCondyle_Sphere"
+     ]
+    },
+    {
+     "name": "R_SM",
+     "path_points": 3,
+     "path_point_bodies": [
+      "Pelvis",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_SOL",
+     "path_points": 2,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_ST",
+     "path_points": 4,
+     "path_point_bodies": [
+      "Pelvis",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_TA",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_TP",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_PECT",
+     "path_points": 3,
+     "path_point_bodies": [
+      "Pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_VI",
+     "path_points": 3,
+     "path_point_bodies": [
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder2"
+     ]
+    },
+    {
+     "name": "R_VL",
+     "path_points": 4,
+     "path_point_bodies": [
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder2"
+     ]
+    },
+    {
+     "name": "R_VMed",
+     "path_points": 4,
+     "path_point_bodies": [
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder2"
+     ]
+    }
+   ],
+   "total_path_points": 125,
+   "total_wrapped_muscles": 14,
+   "fmax_placeholder_note": "all max_isometric_force == 1 N, optimal_fiber_length == 1 m, tendon_slack_length == 1, pennation == 0 (kinematic/moment-arm models, no physiology)"
+  },
+  "Bonobo": {
+   "model_name": "bonobo",
+   "osim_document_version": "40600",
+   "bodies": [
+    "pelvis",
+    "thigh_l",
+    "shank_l",
+    "foot_l",
+    "toes_l",
+    "hallux_l",
+    "thigh_r",
+    "shank_r",
+    "foot_r",
+    "toes_r",
+    "hallux_r"
+   ],
+   "body_count": 11,
+   "joints": [
+    {
+     "name": "pelvis",
+     "type": "CustomJoint",
+     "dof": 6
+    },
+    {
+     "name": "hip_l",
+     "type": "CustomJoint",
+     "dof": 3
+    },
+    {
+     "name": "knee_l",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "ankle_l",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "mtp_l",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "hallux_l",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "hip_r",
+     "type": "CustomJoint",
+     "dof": 3
+    },
+    {
+     "name": "knee_r",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "ankle_r",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "mtp_r",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "hallux_r",
+     "type": "PinJoint",
+     "dof": 1
+    }
+   ],
+   "coordinate_count": 20,
+   "wrap_surfaces": [
+    {
+     "type": null,
+     "name": "rIschium_Cylinder",
+     "on_body": "pelvis"
+    },
+    {
+     "type": null,
+     "name": "rPelvis_ellipsoid",
+     "on_body": "pelvis"
+    },
+    {
+     "type": null,
+     "name": "rFemoralNeck_Cylinder_Y",
+     "on_body": "thigh_r"
+    },
+    {
+     "type": null,
+     "name": "rFemoralNeck",
+     "on_body": "thigh_r"
+    },
+    {
+     "type": null,
+     "name": "rFemoralMedialCondyle_Sphere",
+     "on_body": "thigh_r"
+    },
+    {
+     "type": null,
+     "name": "rFemoralCondyles_Cylinder",
+     "on_body": "thigh_r"
+    },
+    {
+     "type": null,
+     "name": "rFemoralCondyles_Cylinder2",
+     "on_body": "thigh_r"
+    },
+    {
+     "type": null,
+     "name": "rFemoralCondyles_Cylinder2_0",
+     "on_body": "thigh_r"
+    },
+    {
+     "type": null,
+     "name": "rDistalAnkle_EllipsoidForFHL",
+     "on_body": "shank_r"
+    },
+    {
+     "type": null,
+     "name": "rDistalTibia_ellipsoid",
+     "on_body": "shank_r"
+    },
+    {
+     "type": null,
+     "name": "rProxTibiaCylinder",
+     "on_body": "shank_r"
+    },
+    {
+     "type": null,
+     "name": "rDistalAnkle_Sphere",
+     "on_body": "foot_r"
+    },
+    {
+     "type": null,
+     "name": "rDistalAnkle_SphereforFDL",
+     "on_body": "foot_r"
+    },
+    {
+     "type": null,
+     "name": "R_Ankle_Cylinder",
+     "on_body": "foot_r"
+    },
+    {
+     "type": null,
+     "name": "rPosteriorMetarsalHead_Cylinder",
+     "on_body": "foot_r"
+    },
+    {
+     "type": null,
+     "name": "rAnteriorMetarsalHead_Cylinder",
+     "on_body": "foot_r"
+    },
+    {
+     "type": null,
+     "name": "rPosteriorHalluxHead_Cylinder",
+     "on_body": "foot_r"
+    },
+    {
+     "type": null,
+     "name": "rAnteriorHalluxHead_Cylinder",
+     "on_body": "foot_r"
+    }
+   ],
+   "muscle_count": 36,
+   "muscles": [
+    {
+     "name": "R_AM",
+     "path_points": 3,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_AB",
+     "path_points": 2,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_AL",
+     "path_points": 3,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_BFS",
+     "path_points": 2,
+     "path_point_bodies": [
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_BFL",
+     "path_points": 2,
+     "path_point_bodies": [
+      "pelvis",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_EDL_TENDONII",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": [
+      "rPosteriorMetarsalHead_Cylinder"
+     ]
+    },
+    {
+     "name": "R_EDL_TENDONIII",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": [
+      "rPosteriorMetarsalHead_Cylinder"
+     ]
+    },
+    {
+     "name": "R_EDL_TENDONIV",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": [
+      "rPosteriorMetarsalHead_Cylinder"
+     ]
+    },
+    {
+     "name": "R_EDL_TENDONV",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": [
+      "rPosteriorMetarsalHead_Cylinder"
+     ]
+    },
+    {
+     "name": "R_EHL",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "hallux_r",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_FDL_TENDONII",
+     "path_points": 5,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_FDL_TENDONIII",
+     "path_points": 5,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_FDL_TENDONIV",
+     "path_points": 5,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_FDL_TENDONV",
+     "path_points": 5,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_FHL",
+     "path_points": 5,
+     "path_point_bodies": [
+      "foot_r",
+      "hallux_r",
+      "shank_r"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_GMax",
+     "path_points": 3,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_GMed",
+     "path_points": 3,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_GMin",
+     "path_points": 2,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_GRA",
+     "path_points": 3,
+     "path_point_bodies": [
+      "pelvis",
+      "shank_r"
+     ],
+     "wraps": [
+      "rIschium_Cylinder"
+     ]
+    },
+    {
+     "name": "R_ILI",
+     "path_points": 4,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralNeck_Cylinder_Y"
+     ]
+    },
+    {
+     "name": "R_LG",
+     "path_points": 3,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rProxTibiaCylinder"
+     ]
+    },
+    {
+     "name": "R_MG",
+     "path_points": 3,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rProxTibiaCylinder"
+     ]
+    },
+    {
+     "name": "R_PB",
+     "path_points": 3,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_PIRI",
+     "path_points": 2,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_PL",
+     "path_points": 3,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_RF",
+     "path_points": 4,
+     "path_point_bodies": [
+      "pelvis",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder2"
+     ]
+    },
+    {
+     "name": "R_SAR",
+     "path_points": 5,
+     "path_point_bodies": [
+      "pelvis",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralMedialCondyle_Sphere"
+     ]
+    },
+    {
+     "name": "R_SM",
+     "path_points": 3,
+     "path_point_bodies": [
+      "pelvis",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralMedialCondyle_Sphere"
+     ]
+    },
+    {
+     "name": "R_SOL",
+     "path_points": 2,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_ST",
+     "path_points": 4,
+     "path_point_bodies": [
+      "pelvis",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralMedialCondyle_Sphere"
+     ]
+    },
+    {
+     "name": "R_TA",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_TP",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_PECT",
+     "path_points": 3,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_VI",
+     "path_points": 4,
+     "path_point_bodies": [
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder2"
+     ]
+    },
+    {
+     "name": "R_VL",
+     "path_points": 4,
+     "path_point_bodies": [
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder2"
+     ]
+    },
+    {
+     "name": "R_VMed",
+     "path_points": 4,
+     "path_point_bodies": [
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder2"
+     ]
+    }
+   ],
+   "total_path_points": 127,
+   "total_wrapped_muscles": 20,
+   "fmax_placeholder_note": "all max_isometric_force == 1 N, optimal_fiber_length == 1 m, tendon_slack_length == 1, pennation == 0 (kinematic/moment-arm models, no physiology)"
+  },
+  "Chimpanzee": {
+   "model_name": "ChimpanzeeMSK",
+   "osim_document_version": "40600",
+   "bodies": [
+    "Pelvis",
+    "L_Thigh",
+    "L_Shank",
+    "L_Foot",
+    "L_Toes",
+    "R_Thigh",
+    "R_Shank",
+    "R_Foot",
+    "R_Toes",
+    "R_Hallux"
+   ],
+   "body_count": 10,
+   "joints": [
+    {
+     "name": "ground_pelvis",
+     "type": "CustomJoint",
+     "dof": 6
+    },
+    {
+     "name": "L_Hip",
+     "type": "CustomJoint",
+     "dof": 3
+    },
+    {
+     "name": "L_Knee",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "L_Ankle",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "L_MTP",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "R_Hip",
+     "type": "CustomJoint",
+     "dof": 3
+    },
+    {
+     "name": "R_Knee",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "R_Ankle",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "R_MTP",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "R_Hallux",
+     "type": "PinJoint",
+     "dof": 1
+    }
+   ],
+   "coordinate_count": 19,
+   "wrap_surfaces": [
+    {
+     "type": null,
+     "name": "rIschium_Cylinder2",
+     "on_body": "Pelvis"
+    },
+    {
+     "type": null,
+     "name": "rIschium_Cylinder",
+     "on_body": "Pelvis"
+    },
+    {
+     "type": null,
+     "name": "rPubis_ellipsoid2",
+     "on_body": "Pelvis"
+    },
+    {
+     "type": null,
+     "name": "rPelvis_ellipsoid",
+     "on_body": "Pelvis"
+    },
+    {
+     "type": null,
+     "name": "rFemoralNeck_Cylinder_Y",
+     "on_body": "R_Thigh"
+    },
+    {
+     "type": null,
+     "name": "rFemoralNeck",
+     "on_body": "R_Thigh"
+    },
+    {
+     "type": null,
+     "name": "rFemoralMedialCondyle_Sphere",
+     "on_body": "R_Thigh"
+    },
+    {
+     "type": null,
+     "name": "rFemoralCondyles_Cylinder",
+     "on_body": "R_Thigh"
+    },
+    {
+     "type": null,
+     "name": "rFemoralCondyles_Cylinder2",
+     "on_body": "R_Thigh"
+    },
+    {
+     "type": null,
+     "name": "rDistalAnkle_EllipsoidForFHL",
+     "on_body": "R_Shank"
+    },
+    {
+     "type": null,
+     "name": "rDistalTibia_ellipsoid",
+     "on_body": "R_Shank"
+    },
+    {
+     "type": null,
+     "name": "rProxTibiaCylinder",
+     "on_body": "R_Shank"
+    },
+    {
+     "type": null,
+     "name": "rDistalAnkle_Sphere",
+     "on_body": "R_Foot"
+    },
+    {
+     "type": null,
+     "name": "rDistalAnkle_SphereforFDL",
+     "on_body": "R_Foot"
+    },
+    {
+     "type": null,
+     "name": "R_Ankle_Cylinder",
+     "on_body": "R_Foot"
+    },
+    {
+     "type": null,
+     "name": "rPosteriorMetarsalHead_Cylinder",
+     "on_body": "R_Foot"
+    }
+   ],
+   "muscle_count": 36,
+   "muscles": [
+    {
+     "name": "R_AM",
+     "path_points": 3,
+     "path_point_bodies": [
+      "Pelvis",
+      "R_Thigh"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_AB",
+     "path_points": 2,
+     "path_point_bodies": [
+      "Pelvis",
+      "R_Thigh"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_AL",
+     "path_points": 3,
+     "path_point_bodies": [
+      "Pelvis",
+      "R_Thigh"
+     ],
+     "wraps": [
+      "rIschium_Cylinder"
+     ]
+    },
+    {
+     "name": "R_BFS",
+     "path_points": 2,
+     "path_point_bodies": [
+      "R_Shank",
+      "R_Thigh"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder"
+     ]
+    },
+    {
+     "name": "R_BFL",
+     "path_points": 2,
+     "path_point_bodies": [
+      "Pelvis",
+      "R_Shank"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder"
+     ]
+    },
+    {
+     "name": "R_EDL_TENDONII",
+     "path_points": 4,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Shank",
+      "R_Toes"
+     ],
+     "wraps": [
+      "rPosteriorMetarsalHead_Cylinder"
+     ]
+    },
+    {
+     "name": "R_EDL_TENDONIII",
+     "path_points": 4,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Shank",
+      "R_Toes"
+     ],
+     "wraps": [
+      "rPosteriorMetarsalHead_Cylinder"
+     ]
+    },
+    {
+     "name": "R_EDL_TENDONIV",
+     "path_points": 4,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Shank",
+      "R_Toes"
+     ],
+     "wraps": [
+      "rPosteriorMetarsalHead_Cylinder"
+     ]
+    },
+    {
+     "name": "R_EDL_TENDONV",
+     "path_points": 4,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Shank",
+      "R_Toes"
+     ],
+     "wraps": [
+      "rPosteriorMetarsalHead_Cylinder"
+     ]
+    },
+    {
+     "name": "R_EHL",
+     "path_points": 4,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Hallux",
+      "R_Shank"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_FDL_TENDONII",
+     "path_points": 5,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Shank",
+      "R_Toes"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_FDL_TENDONIII",
+     "path_points": 5,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Shank",
+      "R_Toes"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_FDL_TENDONIV",
+     "path_points": 5,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Shank",
+      "R_Toes"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_FDL_TENDONV",
+     "path_points": 5,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Shank",
+      "R_Toes"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_FHL",
+     "path_points": 5,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Hallux",
+      "R_Shank"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_GMax",
+     "path_points": 3,
+     "path_point_bodies": [
+      "Pelvis",
+      "R_Thigh"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_GMed",
+     "path_points": 3,
+     "path_point_bodies": [
+      "Pelvis",
+      "R_Thigh"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_GMin",
+     "path_points": 2,
+     "path_point_bodies": [
+      "Pelvis",
+      "R_Thigh"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_GRA",
+     "path_points": 3,
+     "path_point_bodies": [
+      "Pelvis",
+      "R_Shank"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_ILI",
+     "path_points": 4,
+     "path_point_bodies": [
+      "Pelvis",
+      "R_Thigh"
+     ],
+     "wraps": [
+      "rFemoralNeck_Cylinder_Y"
+     ]
+    },
+    {
+     "name": "R_LG",
+     "path_points": 3,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Shank",
+      "R_Thigh"
+     ],
+     "wraps": [
+      "rProxTibiaCylinder"
+     ]
+    },
+    {
+     "name": "R_MG",
+     "path_points": 3,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Shank",
+      "R_Thigh"
+     ],
+     "wraps": [
+      "rProxTibiaCylinder"
+     ]
+    },
+    {
+     "name": "R_PB",
+     "path_points": 3,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Shank"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_PIRI",
+     "path_points": 2,
+     "path_point_bodies": [
+      "Pelvis",
+      "R_Thigh"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_PL",
+     "path_points": 3,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Shank"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_RF",
+     "path_points": 4,
+     "path_point_bodies": [
+      "Pelvis",
+      "R_Shank",
+      "R_Thigh"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder2"
+     ]
+    },
+    {
+     "name": "R_SAR",
+     "path_points": 4,
+     "path_point_bodies": [
+      "Pelvis",
+      "R_Shank",
+      "R_Thigh"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_SM",
+     "path_points": 3,
+     "path_point_bodies": [
+      "Pelvis",
+      "R_Shank",
+      "R_Thigh"
+     ],
+     "wraps": [
+      "rFemoralMedialCondyle_Sphere"
+     ]
+    },
+    {
+     "name": "R_SOL",
+     "path_points": 2,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Shank"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_ST",
+     "path_points": 4,
+     "path_point_bodies": [
+      "Pelvis",
+      "R_Shank",
+      "R_Thigh"
+     ],
+     "wraps": [
+      "rFemoralMedialCondyle_Sphere"
+     ]
+    },
+    {
+     "name": "R_TA",
+     "path_points": 4,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Shank"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_TP",
+     "path_points": 4,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Shank"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_PECT",
+     "path_points": 3,
+     "path_point_bodies": [
+      "Pelvis",
+      "R_Thigh"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_VI",
+     "path_points": 4,
+     "path_point_bodies": [
+      "R_Shank",
+      "R_Thigh"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder2"
+     ]
+    },
+    {
+     "name": "R_VL",
+     "path_points": 4,
+     "path_point_bodies": [
+      "R_Shank",
+      "R_Thigh"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder2"
+     ]
+    },
+    {
+     "name": "R_VMed",
+     "path_points": 4,
+     "path_point_bodies": [
+      "R_Shank",
+      "R_Thigh"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder2"
+     ]
+    }
+   ],
+   "total_path_points": 126,
+   "total_wrapped_muscles": 21,
+   "fmax_placeholder_note": "all max_isometric_force == 1 N, optimal_fiber_length == 1 m, tendon_slack_length == 1, pennation == 0 (kinematic/moment-arm models, no physiology)"
+  },
+  "Gibbon": {
+   "model_name": "Gibbon",
+   "osim_document_version": "40600",
+   "bodies": [
+    "pelvis",
+    "thigh_l",
+    "shank_l",
+    "foot_l",
+    "toes_l",
+    "thigh_r",
+    "shank_r",
+    "foot_r",
+    "toes_r",
+    "hallux_r"
+   ],
+   "body_count": 10,
+   "joints": [
+    {
+     "name": "pelvis",
+     "type": "CustomJoint",
+     "dof": 6
+    },
+    {
+     "name": "hip_l",
+     "type": "CustomJoint",
+     "dof": 3
+    },
+    {
+     "name": "knee_l",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "ankle_l",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "mtp_l",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "hip_r",
+     "type": "CustomJoint",
+     "dof": 3
+    },
+    {
+     "name": "knee_r",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "ankle_r",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "mtp_r",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "hallux_r",
+     "type": "PinJoint",
+     "dof": 1
+    }
+   ],
+   "coordinate_count": 19,
+   "wrap_surfaces": [
+    {
+     "type": null,
+     "name": "rIschium_Cylinder",
+     "on_body": "pelvis"
+    },
+    {
+     "type": null,
+     "name": "rPelvis_ellipsoid",
+     "on_body": "pelvis"
+    },
+    {
+     "type": null,
+     "name": "rFemoralMedialCondyle_Sphere",
+     "on_body": "thigh_r"
+    },
+    {
+     "type": null,
+     "name": "rFemoralneck",
+     "on_body": "thigh_r"
+    },
+    {
+     "type": null,
+     "name": "rFemoralneck2",
+     "on_body": "thigh_r"
+    },
+    {
+     "type": null,
+     "name": "rFemoralCondyles_Cylinder",
+     "on_body": "thigh_r"
+    },
+    {
+     "type": null,
+     "name": "rFemoralCondyles_Cylinder2",
+     "on_body": "thigh_r"
+    },
+    {
+     "type": null,
+     "name": "rDistalTibia_ellipsoid",
+     "on_body": "shank_r"
+    },
+    {
+     "type": null,
+     "name": "rProxTibiaCylinder",
+     "on_body": "shank_r"
+    },
+    {
+     "type": null,
+     "name": "R_Ankle_Cylinder",
+     "on_body": "foot_r"
+    }
+   ],
+   "muscle_count": 36,
+   "muscles": [
+    {
+     "name": "R_AM",
+     "path_points": 2,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_AB",
+     "path_points": 2,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_AL",
+     "path_points": 2,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_BFS",
+     "path_points": 2,
+     "path_point_bodies": [
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder"
+     ]
+    },
+    {
+     "name": "R_BFL",
+     "path_points": 2,
+     "path_point_bodies": [
+      "pelvis",
+      "shank_r"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder"
+     ]
+    },
+    {
+     "name": "R_EDL_TENDONII",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_EDL_TENDONIII",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_EDL_TENDONIV",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_EDL_TENDONV",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_EHL",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "hallux_r",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_FDL_TENDONII",
+     "path_points": 5,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_FDL_TENDONIII",
+     "path_points": 5,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_FDL_TENDONIV",
+     "path_points": 5,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_FDL_TENDONV",
+     "path_points": 5,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": [
+      "rDistalTibia_ellipsoid"
+     ]
+    },
+    {
+     "name": "R_FHL",
+     "path_points": 5,
+     "path_point_bodies": [
+      "foot_r",
+      "hallux_r",
+      "shank_r"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_GMax",
+     "path_points": 3,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralneck2"
+     ]
+    },
+    {
+     "name": "R_GMed",
+     "path_points": 3,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_GMin",
+     "path_points": 3,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_GRA",
+     "path_points": 4,
+     "path_point_bodies": [
+      "pelvis",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralMedialCondyle_Sphere"
+     ]
+    },
+    {
+     "name": "R_ILI",
+     "path_points": 3,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralneck"
+     ]
+    },
+    {
+     "name": "R_LG",
+     "path_points": 3,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rProxTibiaCylinder"
+     ]
+    },
+    {
+     "name": "R_MG",
+     "path_points": 3,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rProxTibiaCylinder"
+     ]
+    },
+    {
+     "name": "R_PB",
+     "path_points": 3,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_PIRI",
+     "path_points": 2,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_PL",
+     "path_points": 3,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_RF",
+     "path_points": 4,
+     "path_point_bodies": [
+      "pelvis",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder2"
+     ]
+    },
+    {
+     "name": "R_SAR",
+     "path_points": 5,
+     "path_point_bodies": [
+      "pelvis",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralMedialCondyle_Sphere"
+     ]
+    },
+    {
+     "name": "R_SM",
+     "path_points": 3,
+     "path_point_bodies": [
+      "pelvis",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_SOL",
+     "path_points": 2,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_ST",
+     "path_points": 4,
+     "path_point_bodies": [
+      "pelvis",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_TA",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_TP",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_PECT",
+     "path_points": 3,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_VI",
+     "path_points": 3,
+     "path_point_bodies": [
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder2"
+     ]
+    },
+    {
+     "name": "R_VL",
+     "path_points": 4,
+     "path_point_bodies": [
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder2"
+     ]
+    },
+    {
+     "name": "R_VMed",
+     "path_points": 4,
+     "path_point_bodies": [
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder2"
+     ]
+    }
+   ],
+   "total_path_points": 125,
+   "total_wrapped_muscles": 18,
+   "fmax_placeholder_note": "all max_isometric_force == 1 N, optimal_fiber_length == 1 m, tendon_slack_length == 1, pennation == 0 (kinematic/moment-arm models, no physiology)"
+  },
+  "Gorilla": {
+   "model_name": "Gorilla",
+   "osim_document_version": "40600",
+   "bodies": [
+    "Pelvis",
+    "L_Thigh",
+    "L_Shank",
+    "L_Foot",
+    "L_Toes",
+    "R_Thigh",
+    "R_Shank",
+    "R_Foot",
+    "R_Toes",
+    "R_Hallux"
+   ],
+   "body_count": 10,
+   "joints": [
+    {
+     "name": "ground_pelvis",
+     "type": "CustomJoint",
+     "dof": 6
+    },
+    {
+     "name": "hip_l",
+     "type": "CustomJoint",
+     "dof": 3
+    },
+    {
+     "name": "knee_l",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "ankle_l",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "mtp_l",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "hip_r",
+     "type": "CustomJoint",
+     "dof": 3
+    },
+    {
+     "name": "knee_r",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "ankle_r",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "mtp_r",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "hallux_r",
+     "type": "PinJoint",
+     "dof": 1
+    }
+   ],
+   "coordinate_count": 19,
+   "wrap_surfaces": [
+    {
+     "type": null,
+     "name": "rIschium_Cylinder",
+     "on_body": "Pelvis"
+    },
+    {
+     "type": null,
+     "name": "rPelvis_ellipsoid",
+     "on_body": "Pelvis"
+    },
+    {
+     "type": null,
+     "name": "rFemoralNeck_Cylinder_Y",
+     "on_body": "R_Thigh"
+    },
+    {
+     "type": null,
+     "name": "rFemoralNeck",
+     "on_body": "R_Thigh"
+    },
+    {
+     "type": null,
+     "name": "rFemoralMedialCondyle_Sphere",
+     "on_body": "R_Thigh"
+    },
+    {
+     "type": null,
+     "name": "rFemoralCondyles_Cylinder",
+     "on_body": "R_Thigh"
+    },
+    {
+     "type": null,
+     "name": "rFemoralCondyles_Cylinder2",
+     "on_body": "R_Thigh"
+    },
+    {
+     "type": null,
+     "name": "rFemoralCondyles_Cylinder2_0",
+     "on_body": "R_Thigh"
+    },
+    {
+     "type": null,
+     "name": "rProxTibiaCylinder",
+     "on_body": "R_Shank"
+    },
+    {
+     "type": null,
+     "name": "R_Ankle_Cylinder",
+     "on_body": "R_Foot"
+    },
+    {
+     "type": null,
+     "name": "rPosteriorMetarsalHead_Cylinder",
+     "on_body": "R_Foot"
+    }
+   ],
+   "muscle_count": 36,
+   "muscles": [
+    {
+     "name": "R_AM",
+     "path_points": 3,
+     "path_point_bodies": [
+      "Pelvis",
+      "R_Thigh"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_AB",
+     "path_points": 2,
+     "path_point_bodies": [
+      "Pelvis",
+      "R_Thigh"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_AL",
+     "path_points": 3,
+     "path_point_bodies": [
+      "Pelvis",
+      "R_Thigh"
+     ],
+     "wraps": [
+      "rIschium_Cylinder"
+     ]
+    },
+    {
+     "name": "R_BFS",
+     "path_points": 2,
+     "path_point_bodies": [
+      "R_Shank",
+      "R_Thigh"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_BFL",
+     "path_points": 2,
+     "path_point_bodies": [
+      "Pelvis",
+      "R_Shank"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_EDL_TENDONII",
+     "path_points": 4,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Shank",
+      "R_Toes"
+     ],
+     "wraps": [
+      "rPosteriorMetarsalHead_Cylinder"
+     ]
+    },
+    {
+     "name": "R_EDL_TENDONIII",
+     "path_points": 4,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Shank",
+      "R_Toes"
+     ],
+     "wraps": [
+      "rPosteriorMetarsalHead_Cylinder"
+     ]
+    },
+    {
+     "name": "R_EDL_TENDONIV",
+     "path_points": 4,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Shank",
+      "R_Toes"
+     ],
+     "wraps": [
+      "rPosteriorMetarsalHead_Cylinder"
+     ]
+    },
+    {
+     "name": "R_EDL_TENDONV",
+     "path_points": 4,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Shank",
+      "R_Toes"
+     ],
+     "wraps": [
+      "rPosteriorMetarsalHead_Cylinder"
+     ]
+    },
+    {
+     "name": "R_EHL",
+     "path_points": 4,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Hallux",
+      "R_Shank"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_FDL_TENDONII",
+     "path_points": 5,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Shank",
+      "R_Toes"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_FDL_TENDONIII",
+     "path_points": 5,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Shank",
+      "R_Toes"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_FDL_TENDONIV",
+     "path_points": 5,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Shank",
+      "R_Toes"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_FDL_TENDONV",
+     "path_points": 5,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Shank",
+      "R_Toes"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_FHL",
+     "path_points": 5,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Hallux",
+      "R_Shank"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_GMax",
+     "path_points": 3,
+     "path_point_bodies": [
+      "Pelvis",
+      "R_Thigh"
+     ],
+     "wraps": [
+      "rFemoralNeck"
+     ]
+    },
+    {
+     "name": "R_GMed",
+     "path_points": 3,
+     "path_point_bodies": [
+      "Pelvis",
+      "R_Thigh"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_GMin",
+     "path_points": 2,
+     "path_point_bodies": [
+      "Pelvis",
+      "R_Thigh"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_GRA",
+     "path_points": 3,
+     "path_point_bodies": [
+      "Pelvis",
+      "R_Shank"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_ILI",
+     "path_points": 3,
+     "path_point_bodies": [
+      "Pelvis",
+      "R_Thigh"
+     ],
+     "wraps": [
+      "rFemoralNeck_Cylinder_Y"
+     ]
+    },
+    {
+     "name": "R_LG",
+     "path_points": 3,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Shank",
+      "R_Thigh"
+     ],
+     "wraps": [
+      "rProxTibiaCylinder"
+     ]
+    },
+    {
+     "name": "R_MG",
+     "path_points": 3,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Shank",
+      "R_Thigh"
+     ],
+     "wraps": [
+      "rProxTibiaCylinder"
+     ]
+    },
+    {
+     "name": "R_PB",
+     "path_points": 3,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Shank"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_PIRI",
+     "path_points": 2,
+     "path_point_bodies": [
+      "Pelvis",
+      "R_Thigh"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_PL",
+     "path_points": 3,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Shank"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_RF",
+     "path_points": 4,
+     "path_point_bodies": [
+      "Pelvis",
+      "R_Shank",
+      "R_Thigh"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder2"
+     ]
+    },
+    {
+     "name": "R_SAR",
+     "path_points": 5,
+     "path_point_bodies": [
+      "Pelvis",
+      "R_Shank",
+      "R_Thigh"
+     ],
+     "wraps": [
+      "rFemoralMedialCondyle_Sphere"
+     ]
+    },
+    {
+     "name": "R_SM",
+     "path_points": 3,
+     "path_point_bodies": [
+      "Pelvis",
+      "R_Shank",
+      "R_Thigh"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder2_0"
+     ]
+    },
+    {
+     "name": "R_SOL",
+     "path_points": 2,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Shank"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_ST",
+     "path_points": 4,
+     "path_point_bodies": [
+      "Pelvis",
+      "R_Shank",
+      "R_Thigh"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder2_0"
+     ]
+    },
+    {
+     "name": "R_TA",
+     "path_points": 4,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Shank"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_TP",
+     "path_points": 4,
+     "path_point_bodies": [
+      "R_Foot",
+      "R_Shank"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_PECT",
+     "path_points": 3,
+     "path_point_bodies": [
+      "Pelvis",
+      "R_Thigh"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_VI",
+     "path_points": 4,
+     "path_point_bodies": [
+      "R_Shank",
+      "R_Thigh"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder2"
+     ]
+    },
+    {
+     "name": "R_VL",
+     "path_points": 4,
+     "path_point_bodies": [
+      "R_Shank",
+      "R_Thigh"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder2"
+     ]
+    },
+    {
+     "name": "R_VMed",
+     "path_points": 4,
+     "path_point_bodies": [
+      "R_Shank",
+      "R_Thigh"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder2"
+     ]
+    }
+   ],
+   "total_path_points": 126,
+   "total_wrapped_muscles": 21,
+   "fmax_placeholder_note": "all max_isometric_force == 1 N, optimal_fiber_length == 1 m, tendon_slack_length == 1, pennation == 0 (kinematic/moment-arm models, no physiology)"
+  },
+  "Orangutan": {
+   "model_name": "Orangutan",
+   "osim_document_version": "40600",
+   "bodies": [
+    "pelvis",
+    "thigh_l",
+    "shank_l",
+    "foot_l",
+    "toes_l",
+    "hallux_l",
+    "thigh_r",
+    "shank_r",
+    "foot_r",
+    "toes_r",
+    "hallux_r"
+   ],
+   "body_count": 11,
+   "joints": [
+    {
+     "name": "pelvis",
+     "type": "CustomJoint",
+     "dof": 6
+    },
+    {
+     "name": "hip_l",
+     "type": "CustomJoint",
+     "dof": 3
+    },
+    {
+     "name": "knee_l",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "ankle_l",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "mtp_l",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "hallux_l",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "hip_r",
+     "type": "CustomJoint",
+     "dof": 3
+    },
+    {
+     "name": "knee_r",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "ankle_r",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "mtp_r",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "hallux_r",
+     "type": "PinJoint",
+     "dof": 1
+    }
+   ],
+   "coordinate_count": 20,
+   "wrap_surfaces": [
+    {
+     "type": null,
+     "name": "rIschium_Cylinder",
+     "on_body": "pelvis"
+    },
+    {
+     "type": null,
+     "name": "rPelvis_ellipsoid",
+     "on_body": "pelvis"
+    },
+    {
+     "type": null,
+     "name": "rFemoralNeck_Cylinder_Y",
+     "on_body": "thigh_r"
+    },
+    {
+     "type": null,
+     "name": "rFemoralNeck",
+     "on_body": "thigh_r"
+    },
+    {
+     "type": null,
+     "name": "rFemoralMedialCondyle_Sphere",
+     "on_body": "thigh_r"
+    },
+    {
+     "type": null,
+     "name": "rFemoralCondyles_Cylinder2",
+     "on_body": "thigh_r"
+    },
+    {
+     "type": null,
+     "name": "rFemoralCondyles_Cylinder2_0",
+     "on_body": "thigh_r"
+    },
+    {
+     "type": null,
+     "name": "rDistalAnkle_EllipsoidForFHL",
+     "on_body": "shank_r"
+    },
+    {
+     "type": null,
+     "name": "rDistalTibia_ellipsoid",
+     "on_body": "shank_r"
+    },
+    {
+     "type": null,
+     "name": "rProxTibiaCylinder",
+     "on_body": "shank_r"
+    },
+    {
+     "type": null,
+     "name": "rDistalAnkle_Sphere",
+     "on_body": "foot_r"
+    },
+    {
+     "type": null,
+     "name": "rDistalAnkle_SphereforFDL",
+     "on_body": "foot_r"
+    },
+    {
+     "type": null,
+     "name": "R_Ankle_Cylinder",
+     "on_body": "foot_r"
+    },
+    {
+     "type": null,
+     "name": "rPosteriorMetarsalHead_Cylinder",
+     "on_body": "foot_r"
+    },
+    {
+     "type": null,
+     "name": "rAnteriorMetarsalHead_Cylinder",
+     "on_body": "foot_r"
+    },
+    {
+     "type": null,
+     "name": "rPosteriorHalluxHead_Cylinder",
+     "on_body": "foot_r"
+    },
+    {
+     "type": null,
+     "name": "rAnteriorHalluxHead_Cylinder",
+     "on_body": "foot_r"
+    }
+   ],
+   "muscle_count": 36,
+   "muscles": [
+    {
+     "name": "R_AM",
+     "path_points": 2,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_AB",
+     "path_points": 2,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_AL",
+     "path_points": 2,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rIschium_Cylinder"
+     ]
+    },
+    {
+     "name": "R_BFS",
+     "path_points": 2,
+     "path_point_bodies": [
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_BFL",
+     "path_points": 2,
+     "path_point_bodies": [
+      "pelvis",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_EDL_TENDONII",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_EDL_TENDONIII",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_EDL_TENDONIV",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_EDL_TENDONV",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_EHL",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "hallux_r",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_FDL_TENDONII",
+     "path_points": 5,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_FDL_TENDONIII",
+     "path_points": 5,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_FDL_TENDONIV",
+     "path_points": 5,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_FDL_TENDONV",
+     "path_points": 5,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_FHL",
+     "path_points": 5,
+     "path_point_bodies": [
+      "foot_r",
+      "hallux_r",
+      "shank_r"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_GMax",
+     "path_points": 3,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_GMed",
+     "path_points": 3,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_GMin",
+     "path_points": 2,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_GRA",
+     "path_points": 3,
+     "path_point_bodies": [
+      "pelvis",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_ILI",
+     "path_points": 3,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralNeck_Cylinder_Y"
+     ]
+    },
+    {
+     "name": "R_LG",
+     "path_points": 3,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rProxTibiaCylinder"
+     ]
+    },
+    {
+     "name": "R_MG",
+     "path_points": 3,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rProxTibiaCylinder"
+     ]
+    },
+    {
+     "name": "R_PB",
+     "path_points": 3,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_PIRI",
+     "path_points": 2,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_PL",
+     "path_points": 3,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_RF",
+     "path_points": 4,
+     "path_point_bodies": [
+      "pelvis",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder2"
+     ]
+    },
+    {
+     "name": "R_SAR",
+     "path_points": 4,
+     "path_point_bodies": [
+      "pelvis",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_SM",
+     "path_points": 3,
+     "path_point_bodies": [
+      "pelvis",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_SOL",
+     "path_points": 3,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_ST",
+     "path_points": 3,
+     "path_point_bodies": [
+      "pelvis",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_TA",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_TP",
+     "path_points": 3,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_PECT",
+     "path_points": 3,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_VI",
+     "path_points": 3,
+     "path_point_bodies": [
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder2"
+     ]
+    },
+    {
+     "name": "R_VL",
+     "path_points": 4,
+     "path_point_bodies": [
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder2"
+     ]
+    },
+    {
+     "name": "R_VMed",
+     "path_points": 4,
+     "path_point_bodies": [
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder2"
+     ]
+    }
+   ],
+   "total_path_points": 121,
+   "total_wrapped_muscles": 14,
+   "fmax_placeholder_note": "all max_isometric_force == 1 N, optimal_fiber_length == 1 m, tendon_slack_length == 1, pennation == 0 (kinematic/moment-arm models, no physiology)"
+  },
+  "Siamang": {
+   "model_name": "Siamang",
+   "osim_document_version": "40600",
+   "bodies": [
+    "pelvis",
+    "thigh_l",
+    "shank_l",
+    "foot_l",
+    "toes_l",
+    "thigh_r",
+    "shank_r",
+    "foot_r",
+    "toes_r",
+    "hallux_r"
+   ],
+   "body_count": 10,
+   "joints": [
+    {
+     "name": "pelvis",
+     "type": "CustomJoint",
+     "dof": 6
+    },
+    {
+     "name": "hip_l",
+     "type": "CustomJoint",
+     "dof": 3
+    },
+    {
+     "name": "knee_l",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "ankle_l",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "mtp_l",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "hip_r",
+     "type": "CustomJoint",
+     "dof": 3
+    },
+    {
+     "name": "knee_r",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "ankle_r",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "mtp_r",
+     "type": "PinJoint",
+     "dof": 1
+    },
+    {
+     "name": "hallux_r",
+     "type": "PinJoint",
+     "dof": 1
+    }
+   ],
+   "coordinate_count": 19,
+   "wrap_surfaces": [
+    {
+     "type": null,
+     "name": "rIschium_Cylinder",
+     "on_body": "pelvis"
+    },
+    {
+     "type": null,
+     "name": "rPelvis_ellipsoid",
+     "on_body": "pelvis"
+    },
+    {
+     "type": null,
+     "name": "rFemoralMedialCondyle_Sphere",
+     "on_body": "thigh_r"
+    },
+    {
+     "type": null,
+     "name": "rFemoralneck",
+     "on_body": "thigh_r"
+    },
+    {
+     "type": null,
+     "name": "rFemoralneck2",
+     "on_body": "thigh_r"
+    },
+    {
+     "type": null,
+     "name": "rFemoralCondyles_Cylinder",
+     "on_body": "thigh_r"
+    },
+    {
+     "type": null,
+     "name": "rFemoralCondyles_Cylinder2",
+     "on_body": "thigh_r"
+    },
+    {
+     "type": null,
+     "name": "rDistalAnkle_EllipsoidForFHL",
+     "on_body": "shank_r"
+    },
+    {
+     "type": null,
+     "name": "rDistalTibia_ellipsoid",
+     "on_body": "shank_r"
+    },
+    {
+     "type": null,
+     "name": "rProxTibiaCylinder",
+     "on_body": "shank_r"
+    },
+    {
+     "type": null,
+     "name": "rDistalAnkle_Sphere",
+     "on_body": "foot_r"
+    },
+    {
+     "type": null,
+     "name": "rDistalAnkle_SphereforFDL",
+     "on_body": "foot_r"
+    },
+    {
+     "type": null,
+     "name": "R_Ankle_Cylinder",
+     "on_body": "foot_r"
+    },
+    {
+     "type": null,
+     "name": "rAnteriorMetarsalHead_Cylinder",
+     "on_body": "foot_r"
+    },
+    {
+     "type": null,
+     "name": "rPosteriorHalluxHead_Cylinder",
+     "on_body": "foot_r"
+    },
+    {
+     "type": null,
+     "name": "rAnteriorHalluxHead_Cylinder",
+     "on_body": "foot_r"
+    }
+   ],
+   "muscle_count": 36,
+   "muscles": [
+    {
+     "name": "R_AM",
+     "path_points": 2,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_AB",
+     "path_points": 2,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_AL",
+     "path_points": 2,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_BFS",
+     "path_points": 2,
+     "path_point_bodies": [
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_BFL",
+     "path_points": 2,
+     "path_point_bodies": [
+      "pelvis",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_EDL_TENDONII",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_EDL_TENDONIII",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_EDL_TENDONIV",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_EDL_TENDONV",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_EHL",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "hallux_r",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_FDL_TENDONII",
+     "path_points": 5,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_FDL_TENDONIII",
+     "path_points": 5,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_FDL_TENDONIV",
+     "path_points": 5,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_FDL_TENDONV",
+     "path_points": 5,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "toes_r"
+     ],
+     "wraps": [
+      "rDistalTibia_ellipsoid"
+     ]
+    },
+    {
+     "name": "R_FHL",
+     "path_points": 5,
+     "path_point_bodies": [
+      "foot_r",
+      "hallux_r",
+      "shank_r"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_GMax",
+     "path_points": 3,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_GMed",
+     "path_points": 3,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_GMin",
+     "path_points": 3,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_GRA",
+     "path_points": 4,
+     "path_point_bodies": [
+      "pelvis",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralMedialCondyle_Sphere"
+     ]
+    },
+    {
+     "name": "R_ILI",
+     "path_points": 3,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralneck"
+     ]
+    },
+    {
+     "name": "R_LG",
+     "path_points": 3,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rProxTibiaCylinder"
+     ]
+    },
+    {
+     "name": "R_MG",
+     "path_points": 3,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rProxTibiaCylinder"
+     ]
+    },
+    {
+     "name": "R_PB",
+     "path_points": 3,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_PIRI",
+     "path_points": 2,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_PL",
+     "path_points": 3,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_RF",
+     "path_points": 4,
+     "path_point_bodies": [
+      "pelvis",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder2"
+     ]
+    },
+    {
+     "name": "R_SAR",
+     "path_points": 5,
+     "path_point_bodies": [
+      "pelvis",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralMedialCondyle_Sphere"
+     ]
+    },
+    {
+     "name": "R_SM",
+     "path_points": 3,
+     "path_point_bodies": [
+      "pelvis",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_SOL",
+     "path_points": 2,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_ST",
+     "path_points": 4,
+     "path_point_bodies": [
+      "pelvis",
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_TA",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_TP",
+     "path_points": 4,
+     "path_point_bodies": [
+      "foot_r",
+      "shank_r"
+     ],
+     "wraps": [
+      "R_Ankle_Cylinder"
+     ]
+    },
+    {
+     "name": "R_PECT",
+     "path_points": 3,
+     "path_point_bodies": [
+      "pelvis",
+      "thigh_r"
+     ],
+     "wraps": []
+    },
+    {
+     "name": "R_VI",
+     "path_points": 3,
+     "path_point_bodies": [
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder2"
+     ]
+    },
+    {
+     "name": "R_VL",
+     "path_points": 4,
+     "path_point_bodies": [
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder2"
+     ]
+    },
+    {
+     "name": "R_VMed",
+     "path_points": 4,
+     "path_point_bodies": [
+      "shank_r",
+      "thigh_r"
+     ],
+     "wraps": [
+      "rFemoralCondyles_Cylinder2"
+     ]
+    }
+   ],
+   "total_path_points": 125,
+   "total_wrapped_muscles": 15,
+   "fmax_placeholder_note": "all max_isometric_force == 1 N, optimal_fiber_length == 1 m, tendon_slack_length == 1, pennation == 0 (kinematic/moment-arm models, no physiology)"
+  }
+ },
+ "si1_homology": {
+  "taxa": [
+   "Macaque",
+   "Siamang",
+   "Gibbon",
+   "Orangutan",
+   "Gorilla",
+   "Chimpanzee",
+   "Bonobo",
+   "Human"
+  ],
+  "content": "per-muscle origin/insertion homology notes across 8 taxa; flexor hallucis brevis / flexor digitorum brevis / extensor digitorum brevis EXCLUDED from models; deep hip musculature omitted; M. gluteus superficialis modelled as gluteus maximus homolog"
+ },
+ "si2_moment_arms": {
+  "rows": 672,
+  "taxa": 8,
+  "muscles_per_taxon": 36,
+  "joints": [
+   "HipFE",
+   "HipABAD",
+   "HipLAR",
+   "KneeFE",
+   "AnkleFE",
+   "MTPFE"
+  ],
+  "columns": [
+   "Joint",
+   "Taxon",
+   "Muscle",
+   "Minimum moment arm",
+   "Maximum moment arm",
+   "Moment arm range",
+   "Joint range - min",
+   "Joint range - max"
+  ],
+  "units_note": "units not stated in-sheet; joint ranges are clearly degrees (e.g. 90 to -41.6); moment-arm magnitude max 5.38 with model femur 0.172 m infers millimetres \u2014 INFERRED, not stated; article PDF is bot-blocked"
+ },
+ "macaque_detail": {
+  "segments": {
+   "Pelvis": {
+    "mass_kg": 0.37876,
+    "meshes": [
+     "Pelvis.obj",
+     "BodyMass.obj"
+    ]
+   },
+   "thigh_l": {
+    "mass_kg": 0.10233,
+    "meshes": [
+     "lFemurbone.obj",
+     "lThigh.obj"
+    ]
+   },
+   "shank_l": {
+    "mass_kg": 0.067935,
+    "meshes": [
+     "lShankbone.obj",
+     "lShank.obj"
+    ]
+   },
+   "foot_l": {
+    "mass_kg": 0.028383,
+    "meshes": [
+     "lFootbone2.obj",
+     "lFootbone.obj",
+     "lFoot.obj"
+    ]
+   },
+   "toes_l": {
+    "mass_kg": 0.0094512,
+    "meshes": [
+     "lDigitsbone.obj",
+     "lDigits.obj"
+    ]
+   },
+   "thigh_r": {
+    "mass_kg": 0.10233,
+    "meshes": [
+     "rThighbone.obj",
+     "rThigh.obj"
+    ]
+   },
+   "shank_r": {
+    "mass_kg": 0.067935,
+    "meshes": [
+     "rShankbone.obj",
+     "rShank.obj"
+    ]
+   },
+   "foot_r": {
+    "mass_kg": 0.0026046,
+    "meshes": [
+     "rFootbones2.obj",
+     "rFootbones.obj",
+     "rFootmass.obj",
+     "rFootbones3.obj"
+    ]
+   },
+   "toes_r": {
+    "mass_kg": 0.0094512,
+    "meshes": [
+     "rDigitsbone.obj",
+     "rDigitsmass.obj"
+    ]
+   },
+   "R_Hallux": {
+    "mass_kg": 0.0026039,
+    "meshes": [
+     "halluxr_bone.obj",
+     "rFootmass.obj"
+    ]
+   }
+  },
+  "segment_mass_sum_kg": 0.7718,
+  "mesh_scale_probe": {
+   "lFemurbone.obj": "0.035 x 0.172 x 0.038 m",
+   "lShankbone.obj": "0.030 x 0.156 x 0.027 m",
+   "note": "units metres, adult macaque scale"
+  },
+  "wrap_object_names": [
+   "rIschium_Cylinder",
+   "rPelvis_ellipsoid",
+   "rFemoralMedialCondyle_Sphere",
+   "rFemoralneck",
+   "rFemoralCondyles_Cylinder",
+   "rFemoralCondyles_Cylinder2",
+   "rDistalTibia_ellipsoid",
+   "rProxTibiaCylinder",
+   "rDistalAnkle_Sphere",
+   "rDistalAnkle_SphereforFDL",
+   "R_Ankle_Cylinder",
+   "rAnteriorMetarsalHead_Cylinder",
+   "rPosteriorHalluxHead_Cylinder",
+   "rAnteriorHalluxHead_Cylinder"
+  ]
+ },
+ "compatibility": {
+  "muscle_name_set": "36 names (R_ prefix), IDENTICAL across all 7 taxa and identical to SI2 muscle set",
+  "knee_extensor_pulleys": "R_RF (2 wraps), R_VL, R_VI, R_VMed (1 wrap each) route over femoral condyle cylinders/spheres \u2014 supplies the patella-pulley geometry whose ABSENCE falsified knee-extension moment arms in the straight-line proxy lane (muscle_paths_20260918)",
+  "mtp_pulleys": "R_FDL_TENDONII..V, R_FHL carry ankle/metatarsal wrap objects \u2014 same for the falsified MTP-flexion direction",
+  "kernel_adapter_gap": "tools/science_funnel/macaque_anatomy.py parse_source() is OpenSim 3.x-shaped: requires Schutte1993Muscle_Deprecated muscles, PathPoint <body> element, Coordinate motion_type, VisibleObject/GeometrySet/DisplayGeometry, WeldJoint/CustomJoint only. Wiseman files are OpenSim 4.6: socket_parent_frame, PhysicalOffsetFrame, attached_geometry/Mesh, Millard2012EquilibriumMuscle, PinJoint. A 4.x adapter (or a 4.6->3.x converter through OpenSim itself) is REQUIRED before intake.",
+  "force_numbers": "NOT in this deposit \u2014 pair the admitted Guimaraes architecture batch (PCSA/mass) with these paths to make force-runtime records; kernel flags force_runtime_ready:false either way until qualified."
+ }
+}

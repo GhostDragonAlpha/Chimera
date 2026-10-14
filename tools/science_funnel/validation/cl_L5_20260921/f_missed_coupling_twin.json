@@ -1,0 +1,58 @@
+{
+ "changed": [
+  "body.vy",
+  "body.y",
+  "leg.force.a",
+  "leg.force.c",
+  "sensor.load_share"
+ ],
+ "covered": true,
+ "l5_cone": [
+  "body.vy",
+  "body.y",
+  "contact.clamp",
+  "leg.force.a",
+  "leg.force.b",
+  "leg.force.c",
+  "phys.net_force",
+  "sensor.load_share"
+ ],
+ "lane": "agent/cl-L5-transitive-20260921",
+ "perturbed": "force_law_a.kSpringA (one ulp up)",
+ "v1_cone": [
+  "leg.force.a"
+ ],
+ "v1_misses": [
+  "body.vy",
+  "body.y",
+  "leg.force.c",
+  "sensor.load_share"
+ ],
+ "witness": {
+  "body.vy": {
+   "base": 0.552336,
+   "first_tick": 3,
+   "pert": 0.5523360000000002
+  },
+  "body.y": {
+   "base": 0.2049936,
+   "first_tick": 3,
+   "pert": 0.20499360000000003
+  },
+  "leg.force.a": {
+   "base": 1.3920000000000001,
+   "first_tick": 2,
+   "pert": 1.3920000000000003
+  },
+  "leg.force.c": {
+   "base": 0.212223504,
+   "first_tick": 5,
+   "pert": 0.21222350399999995
+  },
+  "sensor.load_share": {
+   "base": 0.2049936,
+   "first_tick": 3,
+   "pert": 0.20499360000000003
+  }
+ }
+}

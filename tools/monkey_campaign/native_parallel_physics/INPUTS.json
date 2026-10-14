@@ -1,0 +1,14 @@
+{
+  "base": "b9dfdd1704ab82380b6b62951bd5691266861313",
+  "graph_blob_path": "tools/creature_graph/data/creature_graph.json",
+  "graph_blob_sha256": "39faccb1247838d5a361f3ded14086006fe1ec1145627b6cc2a3010736e229ef",
+  "selected_graph_objects_sha256": {
+    "model.dynamics.coupled_arm": "fd8f16e68570b86e255d989e53172b42f18d13f76d3318ccf5f99844b4f4e2ce",
+    "model.anatomy.macaque_arm": "3c70cee4463c28f3cab27a40b82fe69c5792e1da7ade9e31cb49d34a305ee8ba"
+  },
+  "reference_path": "tools/science_funnel/validation/coupled_arm_20260917/reference_cases.json",
+  "reference_sha256": "4c622ecf7589d9b4f53c6735ac6b4bdd05c33517e271ff8f48a0801cdfbace99",
+  "scene_fixture_sha256": "c4a2894565786d04c5fb4f3fcce423786c580d9272f0bbd0a79e2498ab917b89",
+  "scope": "Minimal pinned graph extraction for native software regression; not a compiled game scene or renewed source qualification.",
+  "source_identity": "limblab/monkeyArmModel revision 4fb7dddeec06a0df9525c18f37234a824cb1b5b1; inherited effective segment model, not whole animal"
+}

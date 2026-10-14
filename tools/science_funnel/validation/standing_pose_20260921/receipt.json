@@ -1,0 +1,103 @@
+{
+  "schema": "chimera.rule0_receipt.v1",
+  "lane": "agent/standing-pose-20260921",
+  "base_commit": "52f101c1 (agent/joint-class-records-20260921: the 23 committed bonds all carry joint_class records; theta=0 is the committed corpse; sparse clone E:/ChimeraWork/pose-agent, branch agent/standing-pose-20260921; docs/ + tools/ + Chimera/ + research_references/human/opensim + story/theHuman retained)",
+  "scope": "THE STANDING POSE DERIVATION: the first non-zero pose the class records lawfully admit. The pose target is DERIVED, not chosen: a small constrained optimization over the recorded DOFs (SLSQP, bounds = the recorded ranges, constraints = the two hip seats under the committed 3.0 mm touching-class cut) whose objective is the operational definition of standing \u2014 the four distalmost limb-end pads near one plane (population variance along the pads' least principal axis) plus the trunk near level w.r.t. that plane (sin^2 of the trunk-to-plane pitch), commensurated at the rest state. The lawfulness battery (ranges / P6' v2 on the hips through the transition path / tarsal loop closure / 0-DOF immobility / mass invariance / contact-release predictions derived from the DOF paths / determinism / theta=0 identity) owns void; the proven triangle render path (/mesh_bin) shows the operator the before/after. Read-only on the kernel, the engine, the tris bins, the committed definition, and every prior lane's artifacts; the lane's writes are its own directory plus the two byte-identical provenance modules and the walker pin the render path consumes.",
+  "rule_0": {
+    "statement": "THE CLASS RECORDS ADMIT A LAWFUL NON-ZERO POSE, AND THE OPERATIONAL DEFINITION OF STANDING (PADS NEAR ONE PLANE, TRUNK NEAR LEVEL W.R.T. THAT PLANE) DERIVES IT AS A SMALL CONSTRAINED SOLVE FROM THE CORPSE AS THE START. Someone can disagree: the objective may not be THE standing (a curled fetus can satisfy pads-coplanar + trunk-level \u2014 the design-time readings say the scan is nearly flat-packed: V_rest = 1.94384 mm^2, d_rest = 0.010404), and the solved angles may be so small the pose looks like the corpse. Both disagreements are answered with numbers: the solved coordinates, the achieved objective, and the rendered before/after stills are recorded whichever way they land.",
+    "prediction": "MEASURED: P-A1 GREEN; P-A2 GREEN; P-A3 GREEN (all class bands held); P-A4 GREEN; P-A5 GREEN at the pose of record (its drivers-at-rest premise recorded not-held: the constrained drivers solved near-rest, 0.0052/-0.0195 rad); P-A6 GREEN on immobility, the RELEASE half inverted and is RECORDED as measured (persist at the interior-small pose); P-A7 GREEN (bitwise); P-A8 measured with the inversion recorded; P-A9 GREEN; P-A10 GREEN. Full verdicts in the measurements block and battery.json (sha 77fe7bb6...).",
+    "falsifiers": {
+      "F1_ranges": "any coordinate outside its recorded range, a past-band probe accepted, or an in-range probe refused => VOID (A5-class, refuses by name out_of_anatomical_range). MEASURED: GREEN \u2014 all 23 bonds in range; A5 refusal fires by name past every moved band",
+      "F2_hip_p6": "a hip P6' clause fails at any station => the pivot/axis derivation or composition is wrong => the pose is NOT MINTED. MEASURED: GREEN \u2014 displacement 0.0 exactly and seats 1.06..1.56 mm at all six stations, both hips",
+      "F3_loops": "a loop seat off rest by > 1e-9 mm or over the cut => VOID. MEASURED: GREEN at the pose of record (A 2.4128, B 2.9703 <= 3.0); FIRED on the pre-amendment-2 solve (B 3.1499) whose pose was NOT MINTED \u2014 the amendment-2 constraint is the class records own consequence executed",
+      "F4_0dof": "a 0-DOF-class bond's gap not bitwise rest => VOID. MEASURED: GREEN \u2014 bitwise-identical member transforms, gap deviations exactly 0.0 on all eight at-rest bonds",
+      "F5_mass": "posed area drift > 1e-12 relative => resampling => VOID. MEASURED: GREEN \u2014 worst posed-area relative deviation exactly 0.0 across all 17 moved membranes",
+      "F6_releases": "a release prediction inverts => the DOF-path derivation was wrong => recorded as measured. MEASURED: FIRED (recorded prediction inversion) \u2014 the four moving-member curl contacts PERSIST at the interior-small pose (0.066..1.306 mm, under the cut); the two fixed-member contacts persist bitwise as predicted; every gap recorded",
+      "F7_determinism": "double-run byte drift in pose.json or battery.json => VOID. MEASURED: GREEN \u2014 pose.json and battery.json byte-identical across fresh-process double runs",
+      "F8_identity": "any watched byte changed => VOID. MEASURED: GREEN \u2014 every watched byte equal before/after",
+      "F9_solver": "SLSQP exits constraint-violating or non-converged => the pose is NOT MINTED; the failure is the record. MEASURED: GREEN \u2014 SLSQP converged (9 iterations), all four seat constraints satisfied with headroom",
+      "F10_render": "a render coverage class out of band, a < 1000-px before/after difference, a revisit mismatch, or a render/verify consistency break => the render claim fails, recorded. MEASURED: FIRED on the first capture (recorded with its stills), GREEN after amendment 3 \u2014 all six render predictions pass at the final capture"
+    }
+  },
+  "rule_1_derivation_plan": "No number is chosen. The variables are the recorded DOFs; the bounds are the recorded ranges parsed from the committed definition at run time; the hip pivots are the registered fits re-derived by the committed inlier rule and asserted against the committed hip battery; the hip axes are the committed bilateral unit plus femoral long axes orthogonalized from the bonds' recorded closest points; the knee/elbow pivots and axes are constructions on the bonds' own recorded closest-point pairs; the tarsal driver pivots/axes are the tarsal battery's registered constants re-derived and asserted; the two forced elbow coordinates are the range floor \u2014 the nearest lawful value to rest, forced because the monkeyArm record is the one class range excluding zero; the objective's scalarization constant kappa = V_rest/d_rest is computed from committed bytes at run time; the solver settings (SLSQP, ftol 1e-12, maxiter 400, single-thread env) are fixed and stated. ONE objective was derived; no variant was swept.",
+  "inputs": [
+    "tools/science_funnel/data/morphosource_ct/matter_skeleton/infant_skeleton.body.json (the committed definition with the 23 joint_class records; read-only, watched)",
+    "tools/science_funnel/data/morphosource_ct/matter_skeleton/tris/bone_{01..25}.bin (the committed geometry, read via the hip lane's loaders, watched)",
+    "tools/science_funnel/validation/hip_pivot_proof_20260921/hip_pivot_proof.py (the registered primitives, imported VERBATIM: load_blob, unique_verts, inlier_rule, sphere_fit, rodrigues, law_gap, pose_request, OutOfAnatomicalRange) and its committed battery.json (the registered fits and flexion signs this lane asserts against)",
+    "tools/science_funnel/validation/tarsal_cycle_pivots_20260921/ (the registered tarsal driver fits, shared axis, banked constants, and the loop-seat law this lane asserts against)",
+    "tools/science_funnel/validation/p6_repreregistration_20260921/ (the P6' v2 predicate this lane applies class-adapted: seat in [0, cut], displacement <= the fit's own RMS, displacement == 0.0 for own-center rotation)",
+    "docs/THE_ARTICULATION_LAW.md (the articulation law, sections 3/4/5/5A/5B; byte-unchanged by this lane, watched)",
+    "research_references/human/opensim/{gait2392_thelen2003muscle,Rajagopal2016}.osim and tools/science_funnel/data/macaque_arm/monkeyArm_current.osim (the cited range records; parsed only through the committed batteries' pins \u2014 this lane reads ranges from the definition's own joint_class records)",
+    "RENDER PATH (provenance: committed on agent/triangle-monkey-grid-20260920 @ 1b08b29d, copied BYTE-IDENTICAL into this lineage): tools/science_funnel/ct_skeleton_triangle.py (sha256 d2528d6e0b3510f7697d587e56fdf11c6ca22547559a03f1ec0ba3e53b70cf00) and tools/science_funnel/ct_skeleton_layer.py (sha256 b98626bf944a297531c40d4ae56029bf8e73efaa93d6bda7d9eb18c5a7810e90; staged git blob 7e30bf5154027f7ee4009303d4a96a3a051ceb31 == the source branch blob, byte-identity proven at the git level); tools/science_funnel/data/morphosource_ct/meshes_preview/*.obj (blob-identical across the branches: git blob 258ac088... bone_01, cd884f56... bone_22, checked); tools/science_funnel/validation/gait_controller_20260918/derived_numbers.json (copied byte-identical, sha256 013810f87a6ca7c1e01916ef7a5454e61e8d0e88f8d6a589fbfdd1514017a173 \u2014 the pin ct_skeleton_layer itself hard-banks); the engine binary the walk-movie lane proved on /mesh_bin (sha256 16ca3c1854289470ffed05dd4ac3789cf4a0a6163fb69d2e239e4383fc3c34dd), launched on THIS lane's own bind-tested free port (8127 and sibling ports never touched; port argument ONLY \u2014 the measured argc trap); the seat height constant the compose needs (model.dynamics.coupled_arm_free physical.contract.base_scaffold.defaults_rad_m[4] = -0.08977588222411312 m, read from the coupled-arm lineage's committed graph file, sha256 fa99f02e9e0ef83988cf09e20985bdff053ee6839e9a756d33c08443c5023186 \u2014 this lineage's own graph lacks the object, so the constant is banked here with its source pin instead of importing a foreign graph)"
+  ],
+  "outputs_planned": [
+    "tools/science_funnel/validation/standing_pose_20260921/preregistration.md (sha256 63e9def46d2c7a40215e8eda5c1599565203aed639d648bc97a97d6cbccc9348, BANKED before the solve)",
+    "tools/science_funnel/validation/standing_pose_20260921/preregistration.sha256 (the bank file)",
+    "tools/science_funnel/validation/standing_pose_20260921/standing_pose_core.py (the shared derivation: FK composition, objective, axis derivations, pads)",
+    "tools/science_funnel/validation/standing_pose_20260921/derive_standing_pose.py (the constrained solve; pose.json; fresh-process re-run for F7)",
+    "tools/science_funnel/validation/standing_pose_20260921/pose.json (THE POSE OF RECORD: R12-rounded coordinates per bond)",
+    "tools/science_funnel/validation/standing_pose_20260921/standing_pose_battery.py (the lawfulness battery F1-F8)",
+    "tools/science_funnel/validation/standing_pose_20260921/battery.json (byte-identical twice)",
+    "tools/science_funnel/validation/standing_pose_20260921/render_standing.py (the triangle-path stills + pixel truth)",
+    "tools/science_funnel/validation/standing_pose_20260921/renders/corpse_still.png and renders/standing_still.png (the before/after the operator sees)",
+    "tools/science_funnel/validation/standing_pose_20260921/render_record.json (the render's rule-0 measurements)",
+    "tools/science_funnel/validation/standing_pose_20260921/receipt.json (this file; pre-registered block fixed above, measurements appended below after the runs)"
+  ],
+  "preregistration_discipline": {
+    "exploration_declared": "BEFORE banking, in the design phase, ONE pass of committed-data determinations was made (read-only): the committed definition/batteries/receipts/law doc were read; the three osim records' range citations were confirmed through the committed batteries' pins; and two rest-state geometry readings were computed from committed bytes to FIX the objective's numeric form and bank the pose-class prediction honestly \u2014 pad scatter V_rest = 1.94384 mm^2 and trunk-level deficit d_rest = 0.010404. No solve existed at banking time; the solve first ran AFTER the bank.",
+    "banked": "preregistration.md (63e9def4...) hashed into preregistration.sha256 BEFORE derive_standing_pose.py ever ran",
+    "law_doc_note": "docs/THE_ARTICULATION_LAW.md stays BYTE-UNCHANGED: the committed p6_contrast hard-banks its stage-5B hash, so an append here would fire a committed falsifier; this lane's derivations (the first pose through the knees/elbows: the axis record the class records left OPEN) live in this lane's banked preregistration and receipt, exactly as the class-records lane's prose lived in its own documents."
+  },
+  "measurements": {
+    "completed_utc": "2026-09-21",
+    "the_pose_of_record": {
+      "file": "pose.json",
+      "sha256": "27e6fd9e95a057af276f63859af65c6a8a4d20a35d0cedf7b495ea9c9ffa0053",
+      "determinism": "BYTE-IDENTICAL in two fresh solver processes (F7 GREEN); the battery re-solves in-process and reproduces x_R12 exactly",
+      "solver": "SLSQP, ftol 1e-12, maxiter 400, x0 = zeros(10), converged in 9 iterations, 'Optimization terminated successfully'",
+      "solved_coordinates_R12": {
+        "hipL_flexion": 0.178118396022,
+        "hipL_adduction": -0.136981171595,
+        "hipL_rotation": 0.172180846468,
+        "hipR_flexion": 0.097980355552,
+        "hipR_adduction": 0.037106507698,
+        "hipR_rotation": 0.297787360205,
+        "kneeL": -0.216633291473,
+        "kneeR": -0.145775817309,
+        "driverL_06_25": 0.005198046168,
+        "driverR_07_24": -0.019472050549
+      },
+      "forced_coordinates": "elbow apposition bonds 04_10/04_12 and 05_11/05_13 at the range floor 0.34906585 rad (the only class range excluding theta=0; derived nearest-lawful-value-to-rest); radioulnar 10_12/11_13, 07_18, 22_25, 23_24 at rest 0.0; 0-DOF classes and loop bonds carry no coordinate",
+      "objective": "V (pad-coplanarity deficit) 1.943840101124 -> 2.1e-11 mm^2; d (trunk-level deficit) 0.010404074223 -> 0.0; J = V + kappa*d with kappa = V_rest/d_rest = 186.834509190512: 3.887680202248 -> 2.8e-11 \u2014 the solve drove the operational standing objective to machine zero: the four pads EXACTLY coplanar, the trunk EXACTLY level w.r.t. their plane",
+      "pose_class_PA3": "all solved angles inside the banked class bands (|flex| <= 1.0, |add|,|rot|,|knee| <= 0.5, |driver| <= 0.2): the pose is the predicted IN-RANGE, INTERIOR, SMALL perturbation of rest"
+    },
+    "the_lawfulness_battery": {
+      "file": "battery.json",
+      "sha256": "77fe7bb623c8a8617e811bf0340c920a78546692eaa927033ce6f7ab1876c6bc (byte-identical twice)",
+      "hard_checks_pass": true,
+      "falsifiers_fired": [],
+      "F1_ranges": "GREEN \u2014 all 23 bonds' pose states in their recorded ranges; the A5 refusal fires BY NAME (out_of_anatomical_range) one nextafter past each moved band (hip/knee/elbow/driver demos)",
+      "F2_hip_p6": "GREEN \u2014 P6' v2 on BOTH hips at all six stations t in {0,1/5,2/5,3/5,4/5,1}: head-center displacement 0.0 EXACTLY at every station (the pivot-anchored composition; the registered fit center is a bitwise fixed point), seats 1.0615..1.5648 mm, every reading inside [0, 3.0]",
+      "F3_loops": "GREEN \u2014 cycle A seat 2.412842198067 mm (rest 2.468359650708), cycle B seat 2.970345420582 mm (rest 2.899930898961): both under the committed 3.0 mm cut at the pose; cycle B rides its recorded THIN MARGIN exactly as the class record anticipated (headroom 0.029654579 mm), and the amendment-2 constraint held it there",
+      "F4_0dof": "GREEN \u2014 all six 0-DOF-class bonds (06_20, 07_21, 02_15, 03_17, 04_08, 05_09) and both at-rest radioulnar bonds (10_12, 11_13): both members carry BITWISE identical transforms and every relative gap deviates 0.0 from rest \u2014 the class records BIND the pose",
+      "F5_mass": "GREEN \u2014 every one of the 17 moved membranes' posed triangle areas equal rest with relative deviation exactly 0.0 (rigid transform, nothing resampled; the mass derivation is bitwise the rest derivation)",
+      "F6_releases": "RECORDED PREDICTION INVERSION \u2014 the two fixed-member contacts persist as predicted bitwise (pose.joint_01_08 at 0.681203295708 mm, pose.joint_01_09 at 0.564942492157 mm); the four moving-member contacts PERSIST where release was predicted (01_11 at 0.905087955949, 01_13 at 0.091898775239, 01_15 at 0.065655751889, 01_17 at 1.30637129575 mm \u2014 all under the 3.0 mm cut). The banked release prediction was derived for a LARGE pose; the class records + the objective derive an INTERIOR-SMALL pose in which the curl contacts remain within the touching class. Measured, recorded, never dropped and never tuned; the release claim belongs to larger poses than the records lawfully admit here",
+      "F7_determinism": "GREEN \u2014 pose.json and battery.json each byte-identical across fresh-process double runs",
+      "F8_identity": "GREEN \u2014 theta = 0 untouched: the definition, all 25 tris bins, the law doc, every prior lane's battery/receipt/preregistration, the copied provenance modules, the walker pin, and the pose files: watched before == after"
+    },
+    "the_solve_history_recorded": "The FIRST completed solve (pre-amendment-2 constraint set, pose sha 8a0518cf..., re-derived df3ec2b5... after the pivot-anchored-transform correctness fix) returned driver angles away from rest and the battery MEASURED cycle B's loop seat at 3.149954356916 mm \u2014 PAST the committed cut: F3 fired and that pose was NOT MINTED; the battery table stands in the record. Amendment 2 (banked before the re-solve) executed the class record's own pre-registered consequence \u2014 the committed cut becomes a solver constraint, the derived band narrowing \u2014 and the constrained re-solve produced the pose of record above. A banked-citation error (non-hip bonds carry no stored closest_points_mm) was corrected by amendment 1 BEFORE any number existed, switching the pivots to the tarsal receipt's realized-rest-closest-pair construction. Three banked files, zero silent edits.",
+    "the_render": {
+      "record": "render_record.json; the before/after the operator sees: renders/corpse_still.png (theta = 0, the committed bytes, mounted upright through the ONE committed registration) beside renders/standing_still.png (the pose of record through the same FK the battery verified, plus the derived standing placement: pads' plane normal -> scene up, pads' mean plane -> y = 0)",
+      "all_predictions_green": "P-R1 coverage classes GREEN (corpse 1.858%, standing 3.297% bone-tint pixels \u2014 inside [1%, 40%]); P-R2 the stills differ in 402266 pixels (>= 1000); P-R3 both revisits byte-identical; P-R4 the rendered standing layer's pad spread equals the battery's verified spread EXACTLY (abs dev 0.0 m; both 2.99e-08 m scene, 9.27e-06 mm CT)",
+      "mechanism_finding_recorded": "the /mesh_bin header camera is IGNORED by this engine build (two uploads at different header radii produced byte-identical frames \u2014 measured); the banked camera rule is delivered through the engine's /camera route, which is honored and bit-deterministic on return (measured: /camera away and back reproduces the frame byte-exactly)",
+      "first_capture_recorded": "renders/first_capture/ \u2014 the first capture's F10 falsifier firing (corner-background mask refuted by the measured scene, height-only camera cropping the long standing body, one revisit mismatch) stands recorded with its stills; amendment 3's derived repairs (bone-tint mask from the measured frame classes, larger-extent camera fit, battery-spread comparison, 3-consecutive-capture quiesce) were banked BEFORE the re-capture"
+    },
+    "gates": {
+      "test_definition": "python -B -m tools.matter_kernel.test_definition: 9/9 OK (run at final lane state)",
+      "test_glue": "python -B -m tools.matter_kernel.test_glue: 8/8 OK (run at final lane state)",
+      "training_gate": "python -B tools/training_gate.py: PASS \u2014 every target Froude-consistent (comfortable speed 0.9924 m/s derived by the body, matching the joint-class lane's recorded value)"
+    },
+    "verify_in_fresh_clone": "NOT RUN this lane \u2014 the battery's F8 watch pins the byte-identity of every input; a fresh-clone re-run is named successor verification (the joint-class lane's pattern)"
+  },
+  "trailer": "Agent: GLM 5.3"
+}

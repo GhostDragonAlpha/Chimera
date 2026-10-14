@@ -22,7 +22,10 @@ class PerfBudgetError(RuntimeError):
 
 # ── DERIVED BUDGETS from measured hardware (RTX 4090, 24 GB VRAM) ────────────────────────────────
 
-# MAX_PER_TILE is the cap in gpu_pipeline.py (16384 as of 2026-07-29)
+# MAX_PER_TILE in gpu_pipeline.py was the per-tile eviction cap (raised 4096 -> 16384 on
+# 2026-07-29); the lossless chunked tile stage of 2026-09-29 removed the eviction, and the
+# number survives there only as a density REPORTING threshold. This constant is kept for
+# `check_tile_budget`, which no live caller reaches.
 MAX_GRAINS_PER_TILE = 16384
 # MEASURED 2026-08-04 AND THE DERIVATION WAS WRONG BY 3.6x -- see docs/MEASURED_RENDER_BUDGETS.md.
 # This said "derived from 7.8 fps at 1920x1080", which implies 128.2 ms for 250,000 grains. The

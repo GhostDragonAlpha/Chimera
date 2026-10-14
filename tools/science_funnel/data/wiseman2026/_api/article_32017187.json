@@ -1,0 +1,128 @@
+{
+  "files": [
+    {
+      "id": 63739721,
+      "name": "rsos260107_si_001.docx",
+      "size": 43062,
+      "is_link_only": false,
+      "download_url": "https://ndownloader.figshare.com/files/63739721",
+      "supplied_md5": "ece66def1ec58bd30330e917656a2c16",
+      "computed_md5": "ece66def1ec58bd30330e917656a2c16",
+      "mimetype": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    }
+  ],
+  "folder_structure": {},
+  "authors": [
+    {
+      "id": 23730389,
+      "full_name": "Ashleigh Wiseman",
+      "first_name": "Ashleigh",
+      "last_name": "Wiseman",
+      "is_active": false,
+      "url_name": "_",
+      "orcid_id": ""
+    },
+    {
+      "id": 23730392,
+      "full_name": "Julia van Beesel",
+      "first_name": "Julia",
+      "last_name": "van Beesel",
+      "is_active": false,
+      "url_name": "_",
+      "orcid_id": ""
+    },
+    {
+      "id": 5322542,
+      "full_name": "Evie Vereecke",
+      "first_name": "Evie",
+      "last_name": "Vereecke",
+      "is_active": false,
+      "url_name": "_",
+      "orcid_id": ""
+    }
+  ],
+  "custom_fields": [],
+  "figshare_url": "https://rs.figshare.com/articles/journal_contribution/Supplementary_Information_1_from_Comparative_analysis_of_primate_hind_limb_muscle_moment_arms_using_subject-specific_3D_musculoskeletal_models/32017187",
+  "download_disabled": false,
+  "description": "Information of muscle homology.",
+  "funding": null,
+  "funding_list": [],
+  "version": 1,
+  "status": "public",
+  "size": 43062,
+  "created_date": "2026-04-15T03:57:44Z",
+  "modified_date": "2026-04-15T03:57:44Z",
+  "is_public": true,
+  "is_confidential": false,
+  "is_metadata_record": false,
+  "confidential_reason": "",
+  "metadata_reason": "",
+  "license": {
+    "value": 1,
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "tags": [
+    "palaeontology",
+    "evolution",
+    "biomechanics"
+  ],
+  "keywords": [
+    "palaeontology",
+    "evolution",
+    "biomechanics"
+  ],
+  "categories": [
+    {
+      "id": 32570,
+      "title": "Palaeontology (incl. palynology)",
+      "parent_id": 32552,
+      "path": "/32468/32552/32570",
+      "source_id": "370506",
+      "taxonomy_id": 102
+    }
+  ],
+  "references": [
+    "https://doi.org/10.1098/rsos.260107"
+  ],
+  "has_linked_file": false,
+  "citation": "Wiseman, Ashleigh; van Beesel, Julia; Vereecke, Evie (2026). Supplementary Information 1 from Comparative analysis of primate hind limb muscle moment arms using subject-specific 3D musculoskeletal models. The Royal Society. Journal contribution. https://doi.org/10.6084/m9.figshare.32017187.v1",
+  "related_materials": [
+    {
+      "id": 275499728,
+      "identifier": "10.1098/rsos.260107",
+      "title": "Comparative analysis of primate hind limb muscle moment arms using subject-specific 3D musculoskeletal models",
+      "relation": "IsSupplementTo",
+      "identifier_type": "DOI",
+      "is_linkout": true,
+      "link": "https://doi.org/10.1098/rsos.260107"
+    }
+  ],
+  "is_embargoed": false,
+  "embargo_date": null,
+  "embargo_type": null,
+  "embargo_title": "",
+  "embargo_reason": "",
+  "embargo_options": [],
+  "id": 32017187,
+  "title": "Supplementary Information 1 from Comparative analysis of primate hind limb muscle moment arms using subject-specific 3D musculoskeletal models",
+  "doi": "10.6084/m9.figshare.32017187.v1",
+  "handle": "",
+  "url": "https://api.figshare.com/v2/articles/32017187",
+  "published_date": "2026-04-15T03:57:44Z",
+  "thumb": "https://ndownloader.figshare.com/files/63739721/preview/63739721/thumb.png",
+  "defined_type": 6,
+  "defined_type_name": "journal contribution",
+  "group_id": 4416,
+  "url_private_api": "https://api.figshare.com/v2/account/articles/32017187",
+  "url_public_api": "https://api.figshare.com/v2/articles/32017187",
+  "url_private_html": "https://figshare.com/account/articles/32017187",
+  "url_public_html": "https://rs.figshare.com/articles/journal_contribution/Supplementary_Information_1_from_Comparative_analysis_of_primate_hind_limb_muscle_moment_arms_using_subject-specific_3D_musculoskeletal_models/32017187",
+  "timeline": {
+    "posted": "2026-04-15T03:57:44",
+    "publisherAcceptance": "2026-03-13T00:00:00",
+    "firstOnline": "2026-04-15"
+  },
+  "resource_title": "Comparative analysis of primate hind limb muscle moment arms using subject-specific 3D musculoskeletal models",
+  "resource_doi": "10.1098/rsos.260107"
+}

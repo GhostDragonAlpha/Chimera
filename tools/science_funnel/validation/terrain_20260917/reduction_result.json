@@ -1,0 +1,66 @@
+{
+ "cayo_santiago_patch": {
+  "centre": {
+   "lat": 18.1565,
+   "lon": -65.735
+  },
+  "H_orthometric_m": 0.0,
+  "N_geoid_geodetic_m": -42.82679794555668,
+  "N_geoid_local_m": -42.82679794555666,
+  "geoid_method_gap_m": 1.4210854715202004e-14,
+  "h_ellipsoidal_m": -42.82679794555668,
+  "holdout": {
+   "nodes": 9,
+   "worst_laplacian_quarter_m": 0.0,
+   "rms_m": 0.0,
+   "height_error_bar_m": 0.0,
+   "law": "exact identity axial_mean-node=(d2x+d2y)/4 asserted; height bar (|f_xx|+|f_yy|)/8 reported"
+  },
+  "plane": {
+   "slope_east": 0.0,
+   "slope_north": 0.0,
+   "theta_deg": 0.0,
+   "one_minus_cos": 0.0,
+   "residual_m": 0.0
+  },
+  "window": {
+   "rows": 3037,
+   "cols": 954,
+   "size": 25
+  }
+ },
+ "el_yunque_gate_refusal": {
+  "code": "terrain_patch_too_tilted",
+  "detail": "0.42095492723273586"
+ },
+ "luquillo_coastal_control": {
+  "centre": {
+   "lat": 18.425,
+   "lon": -65.95
+  },
+  "H_orthometric_m": 1.142284631733326,
+  "N_geoid_geodetic_m": -44.529496154785015,
+  "N_geoid_local_m": -44.529496154785065,
+  "geoid_method_gap_m": 4.973799150320701e-14,
+  "h_ellipsoidal_m": -43.38721152305169,
+  "holdout": {
+   "nodes": 9,
+   "worst_laplacian_quarter_m": 0.3536031097173691,
+   "rms_m": 0.23928763598444885,
+   "height_error_bar_m": 0.15998560190200806,
+   "law": "exact identity axial_mean-node=(d2x+d2y)/4 asserted; height bar (|f_xx|+|f_yy|)/8 reported"
+  },
+  "plane": {
+   "slope_east": -0.0254509647847777,
+   "slope_north": -0.01583215334172547,
+   "theta_deg": 1.716839104044603,
+   "one_minus_cos": 0.0004489018935702749,
+   "residual_m": 0.00045453671117018634
+  },
+  "window": {
+   "rows": 2070,
+   "cols": 180,
+   "size": 25
+  }
+ }
+}

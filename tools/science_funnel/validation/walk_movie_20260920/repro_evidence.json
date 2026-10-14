@@ -1,0 +1,41 @@
+{
+ "schema": "chimera.walk_movie.repro.v1",
+ "wave26_head": "6efb3ef0",
+ "stderr": {
+  "repro_lines": 23535,
+  "wave26_lines": 23535,
+  "byte_identical": true,
+  "repro_trace_sha256": "afbbe810a7070ae2d7cea7f837dfba0e2d3857ca5bca2f668218ed4afdaa5f0c",
+  "copied_into_validation": "repro_trace.err (byte-identical to the wave-26 fixed26_trace.err)"
+ },
+ "summary": {
+  "repro": {
+   "bw_N": 98.43913308670002,
+   "checks": 78,
+   "cycle_ticks": 213,
+   "pass": false,
+   "red_falsifiers": 16
+  },
+  "wave26": {
+   "bw_N": 98.43913308670002,
+   "checks": 77,
+   "cycle_ticks": 213,
+   "pass": false,
+   "red_falsifiers": 16
+  },
+  "only_differences": [
+   "checks 78 vs 77: the variant adds exactly one check (f7_qstream_bit_identical)",
+   "measured rows: the variant adds F-G7 qstream bit-identical=1 + the dump-written note; no other row differs"
+  ]
+ },
+ "qstream": {
+  "lines": 105,
+  "bytes": 80336,
+  "bit_identical_within_run": true
+ },
+ "refusal": {
+  "tick": 105,
+  "class": "gait_impact_event_budget",
+  "wave26_predicted": "97 -> 105 (receipt_wave26)"
+ }
+}

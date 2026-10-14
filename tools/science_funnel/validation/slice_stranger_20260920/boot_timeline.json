@@ -1,0 +1,192 @@
+{
+ "port": 60297,
+ "t_server_up": 2.08,
+ "t_world_up": 2.08,
+ "t_first_verts": 2.13,
+ "first_verts_count": 249743,
+ "motion_trace_samples": [
+  {
+   "t_after_world": 0.0,
+   "root_y": 0.897796,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "import_route": "cache",
+   "ghost_source": "cache"
+  },
+  {
+   "t_after_world": 0.42,
+   "root_y": 0.826577,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "import_route": "cache",
+   "ghost_source": "cache"
+  },
+  {
+   "t_after_world": 0.83,
+   "root_y": 0.736444,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "import_route": "cache",
+   "ghost_source": "cache"
+  },
+  {
+   "t_after_world": 1.23,
+   "root_y": 0.648277,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "import_route": "cache",
+   "ghost_source": "cache"
+  },
+  {
+   "t_after_world": 1.66,
+   "root_y": 0.554554,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "import_route": "cache",
+   "ghost_source": "cache"
+  },
+  {
+   "t_after_world": 2.09,
+   "root_y": 0.459485,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "import_route": "cache",
+   "ghost_source": "cache"
+  },
+  {
+   "t_after_world": 2.5,
+   "root_y": 0.367996,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "import_route": "cache",
+   "ghost_source": "cache"
+  },
+  {
+   "t_after_world": 2.9,
+   "root_y": 0.277457,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "import_route": "cache",
+   "ghost_source": "cache"
+  },
+  {
+   "t_after_world": 3.31,
+   "root_y": 0.186428,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "import_route": "cache",
+   "ghost_source": "cache"
+  },
+  {
+   "t_after_world": 3.72,
+   "root_y": 0.124759,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "import_route": "cache",
+   "ghost_source": "cache"
+  },
+  {
+   "t_after_world": 4.12,
+   "root_y": 0.124641,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "import_route": "cache",
+   "ghost_source": "cache"
+  },
+  {
+   "t_after_world": 4.53,
+   "root_y": 0.124641,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "import_route": "cache",
+   "ghost_source": "cache"
+  },
+  {
+   "t_after_world": 4.96,
+   "root_y": 0.124641,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "import_route": "cache",
+   "ghost_source": "cache"
+  },
+  {
+   "t_after_world": 5.36,
+   "root_y": 0.124641,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "import_route": "cache",
+   "ghost_source": "cache"
+  },
+  {
+   "t_after_world": 5.77,
+   "root_y": 0.124641,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "import_route": "cache",
+   "ghost_source": "cache"
+  },
+  {
+   "t_after_world": 6.17,
+   "root_y": 0.124641,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "import_route": "cache",
+   "ghost_source": "cache"
+  },
+  {
+   "t_after_world": 6.58,
+   "root_y": 0.124641,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "import_route": "cache",
+   "ghost_source": "cache"
+  },
+  {
+   "t_after_world": 6.98,
+   "root_y": 0.124641,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "import_route": "cache",
+   "ghost_source": "cache"
+  },
+  {
+   "t_after_world": 7.38,
+   "root_y": 0.124641,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "import_route": "cache",
+   "ghost_source": "cache"
+  },
+  {
+   "t_after_world": 7.79,
+   "root_y": 0.124641,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "import_route": "cache",
+   "ghost_source": "cache"
+  },
+  {
+   "t_after_world": 8.19,
+   "root_y": 0.124641,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "import_route": "cache",
+   "ghost_source": "cache"
+  },
+  {
+   "t_after_world": 8.6,
+   "root_y": 0.124641,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "import_route": "cache",
+   "ghost_source": "cache"
+  },
+  {
+   "t_after_world": 9.0,
+   "root_y": 0.124641,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "import_route": "cache",
+   "ghost_source": "cache"
+  },
+  {
+   "t_after_world": 9.41,
+   "root_y": 0.124641,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "import_route": "cache",
+   "ghost_source": "cache"
+  },
+  {
+   "t_after_world": 9.82,
+   "root_y": 0.124641,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "import_route": "cache",
+   "ghost_source": "cache"
+  }
+ ],
+ "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+ "pass_server_side": true,
+ "bar_s": 10.0,
+ "inherited_measured_s": [
+  2.08,
+  2.09,
+  2.1
+ ]
+}

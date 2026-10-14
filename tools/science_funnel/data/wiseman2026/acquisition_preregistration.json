@@ -1,0 +1,51 @@
+{
+  "schema": "chimera.data_acquisition_preregistration.v1",
+  "written_utc": "2026-09-20T00:00:00Z",
+  "written_before_first_download": true,
+  "agent": "wiseman-osim acquisition lane (branch agent/wiseman-osim-20260920)",
+  "prior": "docs/research/20260920_adult_and_muscle_data_options.md @ fc45106c (the research memo = the prior; its claims are quoted below as predictions)",
+  "rule0_lite": {
+    "statement": "The Wiseman et al. 2026 RSOS supplements (Figshare 32017187 / 32017184) and the article's deposited OpenSim hindlimb models are CC BY 4.0 and API/HTTP-acquirable from this environment without human registration, and the models carry per-muscle path geometry (path points, and possibly PCSA/Fmax) for seven NHP species including a macaque.",
+    "prediction": "Per-source predictions below; each falsifier is a concrete observation that would mark the source FAILED or DIVERGENT in download_receipt.json.",
+    "falsifier_policy": "Any falsified prediction is recorded honestly in download_receipt.json.divergences and in the lane report. No re-scoping of a source after the fact to make a prediction pass."
+  },
+  "sources": [
+    {
+      "id": "figshare_si1",
+      "locator": "DOI 10.6084/m9.figshare.32017187 (article id 32017187)",
+      "route": "GET https://api.figshare.com/v2/articles/32017187 (public API, no auth), then download each file's indicated download URL",
+      "expectation_from_memo": "1 file named rsos260107_si_001.docx, figshare download id 63739721, license CC BY 4.0; content = muscle homology table across the studied species (maps ~1:1 onto the 36 admitted Guimaraes muscles).",
+      "falsifier": "API returns a different file count/name/license than the memo recorded, OR the docx contains no muscle-name homology mapping (e.g., prose only, or species set without muscle correspondence).",
+      "on_failure": "Record actual API payload + sha256 of whatever arrived; if license is not CC BY 4.0 the file is quarantined (not admitted) and the operator is told."
+    },
+    {
+      "id": "figshare_si2",
+      "locator": "DOI 10.6084/m9.figshare.32017184 (article id 32017184)",
+      "route": "GET https://api.figshare.com/v2/articles/32017184 (public API, no auth), then download each file's indicated download URL",
+      "expectation_from_memo": "1 file named rsos260107_si_002.xlsx, figshare download id 63739718, license CC BY 4.0; content = peak moment arms + joint excursions (per muscle, per species, per DOF).",
+      "falsifier": "API returns a different file count/name/license than the memo recorded, OR the xlsx holds neither moment-arm nor excursion tables.",
+      "on_failure": "Same policy as figshare_si1."
+    },
+    {
+      "id": "article_das",
+      "locator": "https://doi.org/10.1098/rsos.260107 (RSOS page; memo says bot-blocked from this environment)",
+      "route": "Try, in order, each step only if the previous fails or yields no model link: (a) direct fetch of the RSOS landing page HTML; (b) PMC open-access mirror (RSOS is OA, PMC deposit expected); (c) Crossref metadata for the license/DAS fields; (d) Figshare search API for author deposits (search 'Wiseman Vereecke OpenSim'); (e) Cambridge Apollo (repo.cam.ac.uk) API search. Follow every automatable data link found in the data-availability statement.",
+      "expectation_from_memo": "A data-availability statement pointing at a deposited set of OpenSim 4.5 hindlimb .osim models across seven NHP species (one cercopithecoid = macaque), built on a human hindlimb base; the memo could not read the page, so the EXACT repository is unknown (Apollo was the candidate). The models, if open, are the muscle-geometry payload.",
+      "falsifier": "(a) No data-availability statement reachable by any automatable route -> source stays OPEN with exact hand-download instructions for the operator. (b) Statement found but the model deposit requires registration/login (SimTK-style) -> STOP there, write hand-download instructions, do not attempt to bypass. (c) Statement found, deposit open, but it contains no .osim files (e.g., only the two SIs, or only moment-arm CSVs) -> the memo's 'model files exist publicly' premise is FALSIFIED and recorded as such.",
+      "on_failure": "Operator hand-download instructions with exact URLs, one line per click."
+    },
+    {
+      "id": "models_payload",
+      "locator": "whatever the article_das route resolves to",
+      "route": "Plain HTTP download of each .osim (+ Geometry meshes if shipped) from the resolved open repository; sha256 receipt per file per the house pattern (macaque_arm/download_receipt.json shape).",
+      "expectation_from_memo": "OpenSim 4.5 .osim XML: hindlimb bodies (pelvis..phalanges), per-muscle path points (GeometryPath), possibly wrap objects, Fmax and/or PCSA per muscle, seven species variants incl. one macaque; meshes likely shipped alongside.",
+      "falsifier": "Files are a different format (Simulink/CDF/FEB), or .osim files without any muscle path points, or species set with no cercopithecoid -> record divergence; inventory reports what actually arrived."
+    }
+  ],
+  "house_pattern_targets": {
+    "data_dir": "tools/science_funnel/data/wiseman2026/",
+    "receipt": "download_receipt.json (source, locator/revision, license, files[{path,url,sha256,bytes}], retrieved_utc, divergences, scope)",
+    "license_text": "full CC BY 4.0 legal code saved as LICENSE_CC_BY_4.0.txt if the canonical text is fetchable; else the Figshare license record verbatim",
+    "large_files": "gitignored per house pattern; sha256 manifest committed so any file is re-fetchable and verifiable"
+  }
+}

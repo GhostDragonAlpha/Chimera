@@ -1,0 +1,50 @@
+THE ALIASING-AUDIT MINE -- F1 STATE-ALIASING (preregistered before the build)
+trace: .tmp/ifreeze/audit/audit_stderr.txt
+======================================================================================================================================================
+trace sha256: c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481
+refusal: (302, 'gait_positional_correction_budget') | run lines: 25111 | hind fires: 36
+ticks parsed: 302
+normalization: the frozen observation_interface_v2.json (sha e8c2d698dee03374...)
+------------------------------------------------------------------------------------------------------------------------------------------------------
+THE MASK CENSUS (how often each field was AVAILABLE over 302 ticks):
+  never-available fields (54): ['foot_contact_fl', 'foot_contact_fr', 'foot_contact_ml', 'foot_contact_mr', 'foot_contact_hl', 'foot_contact_hr', 'foot_force_fl', 'foot_force_fr', 'foot_force_ml', 'foot_force_mr', 'foot_force_hl', 'foot_force_hr', 'com_vel_x_heading', 'com_vel_y_heading', 'com_vel_z', 'yaw_rate', 'yaw_rate_prev', 'prev_req_l_phase_off', 'prev_req_l_stride_amp', 'prev_req_l_lift_amp', 'prev_req_l_stiff', 'prev_req_r_phase_off', 'prev_req_r_stride_amp', 'prev_req_r_lift_amp', 'prev_req_r_stiff', 'prev_app_l_phase_off', 'prev_app_l_stride_amp', 'prev_app_l_lift_amp', 'prev_app_l_stiff', 'prev_app_r_phase_off', 'prev_app_r_stride_amp', 'prev_app_r_lift_amp', 'prev_app_r_stiff', 'lim_sat_l_phase_off', 'lim_sat_l_stride_amp', 'lim_sat_l_lift_amp', 'lim_sat_l_stiff', 'lim_sat_r_phase_off', 'lim_sat_r_stride_amp', 'lim_sat_r_lift_amp', 'lim_sat_r_stiff', 'freq_scale', 'pad_g_heel_hl', 'pad_g_heel_hr', 'pad_g_mp_hl', 'pad_g_mp_hr', 'pad_dg_heel_hl', 'pad_dg_heel_hr', 'pad_dg_mp_hl', 'pad_dg_mp_hr', 'pad_split_hl', 'pad_split_hr', 'pad_split_rate_hl', 'pad_split_rate_hr']
+  always-available fields: 18
+------------------------------------------------------------------------------------------------------------------------------------------------------
+THE SEARCH: 277 distinct observations over 302 ticks; 13 bit-identical groups covering 38 ticks
+F1 STATE-ALIASING SEARCH (the frozen clauses a/b/c only): 21 aliased pairs (bit-identical obs, differing labels)
+  PAIR (8,38): pad 3 deformation rate -0.000790 vs -0.003335 m/tick (> kSinkRateMax); body advance 0.6909 vs 0.7668 m/s (>= graded bar); context: events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()
+  PAIR (8,39): pad 3 deformation rate -0.000790 vs -0.003411 m/tick (> kSinkRateMax); body advance 0.6909 vs 0.7740 m/s (>= graded bar); context: events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()
+  PAIR (9,38): pad 3 deformation rate -0.000930 vs -0.003335 m/tick (> kSinkRateMax); body advance 0.6867 vs 0.7668 m/s (>= graded bar); context: events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()
+  PAIR (9,39): pad 3 deformation rate -0.000930 vs -0.003411 m/tick (> kSinkRateMax); body advance 0.6867 vs 0.7740 m/s (>= graded bar); context: events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()
+  PAIR (11,38): body advance 0.6798 vs 0.7668 m/s (>= graded bar)
+  PAIR (11,39): body advance 0.6798 vs 0.7740 m/s (>= graded bar)
+  PAIR (14,38): body advance 0.6741 vs 0.7668 m/s (>= graded bar)
+  PAIR (14,39): body advance 0.6741 vs 0.7740 m/s (>= graded bar)
+  PAIR (23,38): body advance 0.6909 vs 0.7668 m/s (>= graded bar)
+  PAIR (23,39): body advance 0.6909 vs 0.7740 m/s (>= graded bar)
+  PAIR (24,38): body advance 0.6963 vs 0.7668 m/s (>= graded bar)
+  PAIR (24,39): body advance 0.6963 vs 0.7740 m/s (>= graded bar)
+  PAIR (27,38): body advance 0.6969 vs 0.7668 m/s (>= graded bar)
+  PAIR (27,39): body advance 0.6969 vs 0.7740 m/s (>= graded bar)
+  PAIR (29,38): body advance 0.7026 vs 0.7668 m/s (>= graded bar)
+  PAIR (29,39): body advance 0.7026 vs 0.7740 m/s (>= graded bar)
+  PAIR (12,25): touch pattern (False, True, False, False) vs (True, False, False, False)
+  PAIR (18,33): body advance 0.6756 vs 0.7302 m/s (>= graded bar)
+  PAIR (19,34): body advance 0.6777 vs 0.7377 m/s (>= graded bar)
+  PAIR (20,35): body advance 0.6810 vs 0.7446 m/s (>= graded bar)
+  PAIR (40,54): body advance 0.7539 vs 0.6231 m/s (>= graded bar)
+context-only pairs (event-set differences OUTSIDE the frozen clauses; carried, not fired): 13
+  CTX  (8,11): events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()
+  CTX  (8,14): events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()
+  CTX  (8,23): events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()
+  CTX  (8,24): events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()
+  CTX  (8,27): events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()
+  CTX  (8,29): events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()
+  CTX  (9,11): events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()
+  CTX  (9,14): events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()
+  ... 5 further context pairs (aliased_pairs.json)
+------------------------------------------------------------------------------------------------------------------------------------------------------
+the fired pairs' differing labels live in channels the trace record does not
+determine (body velocity, command echo, limiter, pad endpoint identity, class
+flags): NECESSARY aliases of this record set, per the prereg's declared scope.
+VERDICT (F1, the pre-committed action): FIRED -- 21 aliased pairs REPORTED (witnesses above); the 80-field table is NOT amended; the freeze stands and the finding is carried to the planner lane as the measured reason certified transitions must guard mode boundaries.

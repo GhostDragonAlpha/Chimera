@@ -1,0 +1,106 @@
+muscle,muscle_group,field,n,mean,min,max,law_pass_rows,law_rows
+ADM,Hypothenar,mass_g,7,0.6429,0.4,0.9,2,7
+ADM,Hypothenar,fl_mm,7,13.9571,10.4,15.9,2,7
+ADM,Hypothenar,pcsa_mm2,7,42.4143,26,66.6,2,7
+ADP,Thenar,mass_g,7,1.0286,0.7,1.6,4,7
+ADP,Thenar,fl_mm,7,16.0000,11.9,22,4,7
+ADP,Thenar,pcsa_mm2,7,57.4143,36.1,82.8,4,7
+APB,Thenar,mass_g,7,0.8714,0.4,1.4,1,7
+APB,Thenar,fl_mm,7,14.0000,10.2,23.7,1,7
+APB,Thenar,pcsa_mm2,7,62.0143,28.9,120.4,1,7
+APL,Ext. Thumb,mass_g,7,3.9000,1.9,5.6,7,7
+APL,Ext. Thumb,fl_mm,7,24.0714,19.2,30.9,7,7
+APL,Ext. Thumb,pcsa_mm2,7,146.4429,75.1,177.7,7,7
+Anc,Extensor,mass_g,7,0.3571,0.1,0.6,2,7
+Anc,Extensor,fl_mm,7,16.0714,5.7,33.5,2,7
+Anc,Extensor,pcsa_mm2,7,22.4857,6.2,42.3,2,7
+B,Upper arm,mass_g,4,17.6000,11.7,21.3,3,4
+B,Upper arm,fl_mm,4,61.8250,31.4,103,3,4
+B,Upper arm,pcsa_mm2,4,285.0000,188.1,350.2,3,4
+BR,Rotator,mass_g,7,18.4714,8.3,28.9,7,7
+BR,Rotator,fl_mm,7,145.3000,123.9,177.2,7,7
+BR,Rotator,pcsa_mm2,7,112.1286,58.8,169.6,7,7
+Bb,Upper arm,mass_g,4,40.8500,34.1,45.8,3,4
+Bb,Upper arm,fl_mm,4,85.4000,67.5,118.3,3,4
+Bb,Upper arm,pcsa_mm2,4,452.8500,326.5,524,3,4
+C5,Intermediate,mass_g,6,0.1500,0.1,0.2,1,6
+C5,Intermediate,fl_mm,6,14.1000,5.8,30.7,1,6
+C5,Intermediate,pcsa_mm2,6,14.1500,4.1,31.3,1,6
+CB,Upper arm,mass_g,4,2.4750,1.5,3.2,3,4
+CB,Upper arm,fl_mm,4,20.1750,12,38.9,3,4
+CB,Upper arm,pcsa_mm2,4,134.1750,47.2,238.7,3,4
+DET,Upper arm,mass_g,4,9.0500,8.1,10.1,3,4
+DET,Upper arm,fl_mm,4,80.8000,73.7,92.1,3,4
+DET,Upper arm,pcsa_mm2,4,108.1250,96.9,121,3,4
+ECRB,Extensor,mass_g,7,7.4571,4.1,10.3,7,7
+ECRB,Extensor,fl_mm,7,38.5143,29.2,44.1,7,7
+ECRB,Extensor,pcsa_mm2,7,175.9857,92.7,219.7,7,7
+ECRL,Extensor,mass_g,7,6.2143,2.3,9.4,7,7
+ECRL,Extensor,fl_mm,7,76.2000,69.8,91,7,7
+ECRL,Extensor,pcsa_mm2,7,73.7857,27.6,98.5,7,7
+ECU,Extensor,mass_g,7,4.9714,2.8,7.3,6,7
+ECU,Extensor,fl_mm,7,33.8714,23.5,75.2,6,7
+ECU,Extensor,pcsa_mm2,7,142.9429,88.3,201.1,6,7
+ED,Extensor,mass_g,7,4.7857,2.2,6.4,7,7
+ED,Extensor,fl_mm,7,42.5571,24.8,71.8,7,7
+ED,Extensor,pcsa_mm2,7,106.8000,54.4,147.9,7,7
+EDQQ,Extensor,mass_g,7,1.2857,0.6,1.7,4,7
+EDQQ,Extensor,fl_mm,7,29.9429,15.3,50,4,7
+EDQQ,Extensor,pcsa_mm2,7,42.4000,21.6,66.4,4,7
+EDST,Extensor,mass_g,7,0.9143,0.7,1.3,2,7
+EDST,Extensor,fl_mm,7,24.4143,17.7,28.1,2,7
+EDST,Extensor,pcsa_mm2,7,34.0571,22.9,44.1,2,7
+EPL,Ext. Thumb,mass_g,7,0.8857,0.5,1.2,3,7
+EPL,Ext. Thumb,fl_mm,7,28.8857,22.2,39.8,3,7
+EPL,Ext. Thumb,pcsa_mm2,7,27.7857,18.2,40.6,3,7
+FCR,Flexor,mass_g,7,7.8286,4.5,10.8,7,7
+FCR,Flexor,fl_mm,7,33.1714,25.4,45.5,7,7
+FCR,Flexor,pcsa_mm2,7,213.3857,146.1,304.1,7,7
+FCU,Flexor,mass_g,7,13.8143,7.2,19,7,7
+FCU,Flexor,fl_mm,7,26.6000,19.4,36.5,7,7
+FCU,Flexor,pcsa_mm2,7,478.7571,218.1,580.7,7,7
+FDM,Hypothenar,mass_g,6,0.4667,0.3,0.6,3,6
+FDM,Hypothenar,fl_mm,6,14.7833,9.7,18.1,3,6
+FDM,Hypothenar,pcsa_mm2,6,32.1500,16.7,59.1,3,6
+FDP,Flexor,mass_g,7,30.4286,16.3,42.9,7,7
+FDP,Flexor,fl_mm,7,44.2286,38.1,54.2,7,7
+FDP,Flexor,pcsa_mm2,7,616.6143,371.3,837.2,7,7
+FDS,Flexor,mass_g,7,11.1286,6.8,14,7,7
+FDS,Flexor,fl_mm,7,33.4571,25.5,48.3,7,7
+FDS,Flexor,pcsa_mm2,7,306.7429,207.9,445.5,7,7
+FPB,Thenar,mass_g,4,0.5750,0.4,0.9,2,4
+FPB,Thenar,fl_mm,4,16.1250,13.3,17.3,2,4
+FPB,Thenar,pcsa_mm2,4,32.9500,25.8,48.8,2,4
+IOD,Intermediate,mass_g,7,2.1714,1.4,3,5,7
+IOD,Intermediate,fl_mm,7,11.9857,7.8,28.7,5,7
+IOD,Intermediate,pcsa_mm2,7,188.6571,96.4,297.4,5,7
+IOP,Intermediate,mass_g,7,0.7429,0.6,0.9,3,7
+IOP,Intermediate,fl_mm,7,12.0286,7.5,25.7,3,7
+IOP,Intermediate,pcsa_mm2,7,62.7571,24.7,90.7,3,7
+LUMB,Intermediate,mass_g,7,0.6429,0.5,0.9,2,7
+LUMB,Intermediate,fl_mm,7,34.5286,24,43.3,2,7
+LUMB,Intermediate,pcsa_mm2,7,17.1571,10.5,25.8,2,7
+ODM,Hypothenar,mass_g,6,0.3000,0.2,0.4,0,6
+ODM,Hypothenar,fl_mm,6,13.0333,7,26.4,0,6
+ODM,Hypothenar,pcsa_mm2,6,24.6333,12.7,31.4,0,6
+OPP,Thenar,mass_g,5,0.4000,0.2,0.6,1,5
+OPP,Thenar,fl_mm,5,8.7400,6,15,1,5
+OPP,Thenar,pcsa_mm2,5,44.8800,24.9,84.7,1,5
+PL,Flexor,mass_g,7,3.1000,1.7,4.5,7,7
+PL,Flexor,fl_mm,7,19.7857,16.7,23.8,7,7
+PL,Flexor,pcsa_mm2,7,141.3857,79.8,172.1,7,7
+PQ,Rotator,mass_g,7,1.6429,1.1,2.6,4,7
+PQ,Rotator,fl_mm,7,21.3143,6.6,45.9,4,7
+PQ,Rotator,pcsa_mm2,7,95.4286,30.2,190.1,4,7
+PT,Rotator,mass_g,7,6.0571,3.4,8.5,7,7
+PT,Rotator,fl_mm,7,25.0429,19.3,31.7,7,7
+PT,Rotator,pcsa_mm2,7,221.3571,138.1,321.4,7,7
+SUP,Rotator,mass_g,7,3.3714,2.4,4.8,7,7
+SUP,Rotator,fl_mm,7,16.8714,9,37.2,7,7
+SUP,Rotator,pcsa_mm2,7,228.5429,78.1,484.7,7,7
+Tb,Upper arm,mass_g,4,112.7500,83.8,134.4,4,4
+Tb,Upper arm,fl_mm,4,50.3000,38.2,59.1,4,4
+Tb,Upper arm,pcsa_mm2,4,2050.7250,1755.9,2451.1,4,4
+conn. FDS-FDP,Flexor,mass_g,3,2.2333,1.5,3,1,3
+conn. FDS-FDP,Flexor,fl_mm,3,41.3333,38,44.6,1,3
+conn. FDS-FDP,Flexor,pcsa_mm2,3,49.4333,36.2,60.7,1,3

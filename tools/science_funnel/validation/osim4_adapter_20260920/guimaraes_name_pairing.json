@@ -1,0 +1,15 @@
+{
+ "schema": "chimera.guimaraes_name_pairing.v1",
+ "written_utc": "2026-09-20T21:45:00Z",
+ "purpose": "Name-level pairing of Wiseman 2026 muscle records onto the admitted Guimaraes 2026 architecture names. NUMBERS ARE NOT HERE: the admitted Guimaraes batch (data/guimaraes_arch/, intake commit 46ed85a3) is not an ancestor of this lane's head aede5de9, so no force number travels in this table. A later lane that lands the batch supplies the numbers through adapters_muscle/store admission; until then force_runtime_ready stays false.",
+ "authorities": {
+  "guimaraes_names_36": "docs/research/20260920_adult_and_muscle_data_options.md @ fc45106c (in-lineage), measured by that lane directly from the admitted workbook's Macaca mulatta sheet",
+  "wiseman_names": "tools/science_funnel/data/wiseman2026/models/*.osim @ aede5de9 (muscle name set IDENTICAL across all 7 taxa per inventory.json compatibility.muscle_name_set)",
+  "split_slips": "Wiseman splits EDL and FDL into digit tendon slips; the SI1 homology table (rsos260107_si_001.docx @ aede5de9) is the anatomical authority that these are the same muscles"
+ },
+ "normalization": "strip leading 'R_' (all deposited muscles are right-limb), uppercase, apply aliases",
+ "aliases": {"VMED": "VM"},
+ "split_marker": "_TENDON",
+ "guimaraes_names_36": ["AB", "AL", "AM", "BFL", "BFS", "EDL", "EHL", "FDL", "FHL", "GMax", "GMed", "GMin", "GRA", "GemInf", "GemSup", "ILI", "LG", "MG", "ObtExt", "ObtInt", "PB", "PECT", "PIRI", "PL", "PLANT", "POP", "RF", "SAR", "SM", "SOL", "ST", "TA", "TP", "VI", "VL", "VM"],
+ "guimaraes_source_revision": "4fb7ddee is the macaque_arm pin; the Guimaraes workbook pin lives in data/guimaraes_arch/download_receipt.json on refs carrying 46ed85a3 (S1 member sha256 08ead4a9... per the memo)"
+}

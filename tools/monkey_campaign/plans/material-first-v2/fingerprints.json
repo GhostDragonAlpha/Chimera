@@ -1,0 +1,12 @@
+{
+  "algorithm": "sha256-chimera-json-v1",
+  "parent_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+  "proposed_scope_sha256": "b972c38caa121c00c28666af1fa92460f25fb7e4c35017cf8f1e1ec7de7a7a18",
+  "authentication": "Change detection only; not a secret or proof of authorship. Does not replace the live trust anchor.",
+  "raw_files": {
+    "crosswalk.json": "77c451f23c608fdde0d28a0ddf737c79fe4c9dc0b6e39b36b1b7fcd7ba4b2b15",
+    "inspected_graph_contracts.json": "95f6c0112ebba939c156ecf034287c25175f1ab8e02e04677051dba7c07a94c7",
+    "monkey_completion_map.json": "21a3cf2c83671fdd55803d46748071032ed89a78f6dfaa6aa6e641f487535301",
+    "validation.json": "9b694929b66b59ab70ea6ff90271b3441e58fd5e5e979dd9c7538a8ee9cfb111"
+  }
+}

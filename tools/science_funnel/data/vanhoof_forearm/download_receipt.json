@@ -1,0 +1,69 @@
+{
+ "retrieved_utc": "2026-09-22T06:00:00Z",
+ "lane": "vanhoof_intake_20260920",
+ "files": [
+  {
+   "path": "JOA-238-321-s001.tif",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/instance/7812139/bin/JOA-238-321-s001.tif",
+   "resolved_url": "same, via Chrome (agent-browser) navigation after solving PMC's cloudpmc-viewer-pow challenge; Invoke-WebRequest alone receives a 'Preparing to download' interstitial",
+   "bytes": 10821004,
+   "sha256": "3b799371f646fff77eb2f5806249ea8361820c9817aa57225e5b0128d7f1a041",
+   "role": "Vanhoof Part II Table S1 -- THE named extraction target (prestage RUNBOOK step 1)"
+  },
+  {
+   "path": "JOA-238-321-s002.tif",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/instance/7812139/bin/JOA-238-321-s002.tif",
+   "resolved_url": "same, via Chrome (agent-browser) navigation after solving PMC's cloudpmc-viewer-pow challenge",
+   "bytes": 6455574,
+   "sha256": "cb9e91be3d2345182b6d2b956245b76905243d4bbf37fff79c3d96a802e5debe",
+   "role": "Vanhoof Part II Table S2 -- THE named extraction target (prestage RUNBOOK step 1)"
+  },
+  {
+   "path": "PMC7812139_fulltext.xml",
+   "url": "https://eutils.ncbi.nlm.nih.gov/eutils/efetch.fcgi?db=pmc&id=7812139&retmode=xml",
+   "resolved_url": "same",
+   "bytes": 12892,
+   "sha256": "47cc6b836d0a9b44d8a1ab35dba1c91114291f63721c2db44175de001c1ce8f8",
+   "role": "article front matter ONLY (publisher withholds full text XML); carries the permissions block used for the license pin",
+   "limitations": "body text absent -- publisher block statement embedded in the XML"
+  },
+  {
+   "path": "PMC7495296_fulltext.xml",
+   "url": "https://eutils.ncbi.nlm.nih.gov/eutils/efetch.fcgi?db=pmc&id=7495296&retmode=xml",
+   "resolved_url": "same",
+   "bytes": 12236,
+   "sha256": "7e2b1247c97a805759dd50a16d8ebab3eac4e63ffff3903fb64ee7260be8bcbd",
+   "role": "article front matter ONLY (publisher withholds full text XML); Part I identification + license pin",
+   "limitations": "body text absent -- publisher block statement embedded in the XML"
+  },
+  {
+   "path": "pmc_cli_interstitial_evidence.html",
+   "url": "https://pmc.ncbi.nlm.nih.gov/articles/instance/7812139/bin/JOA-238-321-s001.tif (response body received by Invoke-WebRequest)",
+   "resolved_url": "same",
+   "bytes": 1810,
+   "sha256": "e1f44ab8a484fce2c97643d736f661407e883c57dc0476fef26d3cc949e3ed3c",
+   "role": "evidence of the PMC CLI wall: the 'Preparing to download' PoW interstitial (challenge/difficulty/cookie visible)"
+  },
+  {
+   "path": "download_attempts_evidence.json",
+   "url": "local consolidation of this lane's download attempt logs",
+   "resolved_url": "local",
+   "bytes": 9027,
+   "sha256": "c890b4d20b7ff52256629b7a489d3cd5c93c242fc8e32cf202050251a6c4c3ee",
+   "role": "per-route attempt evidence for everything tried before the successful browser route"
+  }
+ ],
+ "source": "Vanhoof MJ, van Leeuwen T, Galletta L, Vereecke E (2021) The forearm and hand musculature of semi-terrestrial rhesus macaques (Macaca mulatta) and arboreal gibbons (fam. Hylobatidae). Part II. Quantitative analysis. J Anat 238(2):321-337, doi:10.1111/joa.13314, PMC7812139. Part I: Vanhoof MJ, van Leeuwen T, Vereecke E (2020) J Anat 237(4):774-790, doi:10.1111/joa.13222, PMC7495296. Tables S1/S2 exist ONLY as TIFF images (PMC listing: 10.3 MB + 6.2 MB -- matches the staged bytes).",
+ "license": "RECORDED TENSION (runbook step 1: 'recorded, never waived silently'): PMC and the article XML carry ONLY '(c) 2020 Anatomical Society' -- NO explicit reuse license (no CC mark) is published on the PMC page, in the article XML permissions block, or on the DOI landing pages reachable from here. Free-to-read via PMC; reuse terms unresolved. This is the memo's A4 middle tier ('free-access-with-license-to-pin (PMC-hosted, (c) held)') -- the extraction keeps the AUTHORS' DATA with per-cell provenance and the tension rides on the batch, exactly like the infant-bones treatment. The operator owns the license resolution door.",
+ "article_pdfs_not_obtained": {
+  "what": "PMC7812139/PMC7495296 article PDFs and Part I supplementary Table S1 (JOA-237-774-s004.pdf)",
+  "why_named_anyway": "the lane brief's generic shape asks for article PDFs; the PRESTAGE's own download list (RUNBOOK step 1) does not -- the prestage names the two TIFFs and the Part I page. No prestage-named artifact is missing.",
+  "routes_tried_and_failed": "see download_attempts_evidence.json (PMC PoW interstitial on CLI; browser renders PDF inline with no download event; agent-browser download command breaks its local CDP stream (os error 10060) on this host reproducibly; europepmc render held by Cloudflare; EBI supplementaryFiles endpoint refuses these two articles specifically while serving the control article; NCBI oa.fcgi + oa_file_list 404)",
+  "impact": "none on the named extraction scope: the data is in the TIFFs; Part I's homology context is read from the PMC HTML page (accessible) and the staged front-matter XML"
+ },
+ "verification": {
+  "size_match_to_pmc_listing": "S1 10,821,004 bytes vs '10.3 MB' listing; S2 6,455,574 bytes vs '6.2 MB' listing -- consistent",
+  "tiff_magic_verified": "II* byte order confirmed by magic check before move",
+  "route_reproducibility_note": "PMC's PoW cookie is per-challenge; re-running the browser navigation reproduces the download; the CLI-only route does not"
+ }
+}

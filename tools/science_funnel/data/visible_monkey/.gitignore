@@ -1,0 +1,8 @@
+# The Visible Monkey data root: receipts and specs land in git, bulk data never does.
+# (Same pattern as tools/science_funnel/data/morphosource_ct/.gitignore.)
+*
+!.gitignore
+!dir_spec.template.json
+!volume_spec.template.json
+!collection_record.template.json
+!labels.template.csv

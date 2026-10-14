@@ -28,6 +28,9 @@ tools/science_funnel/data/coolprop/** -text
 tools/science_funnel/data/pubchem/** -text
 # Preserve pinned scientific downloads, including source line endings.
 tools/science_funnel/data/force_sources/** -text -whitespace
+# Wiseman 2026 RSOS acquisition (pin-repair 20260921, class instance 3):
+# sha256_manifest.json pins the downloaded bytes; keep checkout == blob.
+tools/science_funnel/data/wiseman2026/** -text -whitespace
 
 # Anatomical source captures retain their upstream bytes for checksum replay.
 tools/science_funnel/data/bodyparts3d/** -text -whitespace
@@ -35,3 +38,29 @@ tools/science_funnel/data/bodyparts3d/** -text -whitespace
 tools/science_funnel/data/macaque_arm/** -text -whitespace
 
 tools/science_funnel/data/earth/** -text -whitespace
+
+# Downloaded scientific artifacts are SHA-pinned upstream bytes (all data dirs).
+tools/science_funnel/data/** -text
+
+# MorphoSource CT captures (bones + receipts) retain upstream bytes for checksum replay.
+tools/science_funnel/data/morphosource_ct/** -text -whitespace
+
+# Visible Monkey intake contracts: byte-stable specs (the CRLF lesson).
+tools/science_funnel/data/visible_monkey/** -text -whitespace
+
+# The playable slice's sha-pinned import payload (standing_body.obj, pinned in
+# meshes_body_20260922/body_manifest.json and verified by scene_boot on every
+# boot): checkout bytes == committed bytes, or the pin is a lie (the CRLF
+# lesson; lane slice-real-body-20260920).
+tools/playable_slice/*.obj -text -whitespace
+tools/playable_slice/*.glb -text -whitespace
+
+# Preserve the historical AGPL license bytes.
+LICENSES/AGPL-3.0-historical.txt -text
+
+# Preserve the catalog-pinned ontology raw bytes on Windows checkouts.
+/tools/membrane_ontology/ontology.json -text
+/tools/monkey_campaign/plans/material-first-v2/*.json -text
+/tools/monkey_campaign/monkey_completion_map.json -text
+/tools/monkey_campaign/EXECUTION_SERGEANT.md -text
+/tools/monkey_campaign/EXECUTION_SERGEANT.sha256 -text

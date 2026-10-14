@@ -1,0 +1,76 @@
+{
+ "lane": "agent/cl-L5-transitive-20260921",
+ "date": "2026-09-21",
+ "agent": "GLM 5.3 (L5 lane, constraint-ledger program, TRANSITIVE INTERFERENCE)",
+ "base": "7181b8ce (agent/cl-L0-baseline-20260921, the frozen L0 interface; sparse partial clone at E:/ChimeraWork/l5-agent over git@github.com-fleetdeploy:GhostDragonAlpha/Chimera.git; master untouched; only this branch pushed)",
+ "rule_0_chain": {
+  "preregistration_commit": "66ca24f4 (preregistration.json committed BEFORE any L5 code existed; falsifiers named there)",
+  "preregistration_sha256_policy": "the file is append-only from here; the code commits below consumed it as committed",
+  "code_commits": "see git log agent/cl-L5-transitive-20260921 (propagation core + fixtures/twin, then the 13/13 GREEN suite + evidence)"
+ },
+ "deliverable": {
+  "new_files_only": true,
+  "files": [
+   "tools/constraint_ledger/interference2.py",
+   "tools/constraint_ledger/l5_fixtures.py",
+   "tools/constraint_ledger/l5_real_trace.py",
+   "tools/constraint_ledger/tests_l5.py"
+  ],
+  "existing_modules_edited": "NONE (schema.py / expr.py / interference.py / store.py / compile.py / pilot_laws.py / tests_p1-3 / trace_harness.cpp all read-only; concurrent lanes share this tree class)"
+ },
+ "propagation_graph": {
+  "node_classes": {
+   "law": "a concrete (expanded) record with expression effects",
+   "quantity.force-output": "declared into force accumulation",
+   "quantity.body-state": "declared integrated from the accumulated net force",
+   "quantity.contact-guard": "declared evaluated from body state",
+   "quantity.sensor": "declared sensed from the GUARDED state (canonical route body->guard->sensor)",
+   "quantity.carrier": "a physics stage anchor (phys.net_force — the SHARED CARRIER)",
+   "quantity.controller-carrier": "law-written and read by another record",
+   "quantity.controller-sink": "law-written, consumed by nothing (terminal)",
+   "quantity.external-opaque": "external-input not claimed by any declared physics stage: unknown code writable -> conservatively reaches everything"
+  },
+  "edge_classes": {
+   "write": "law -> quantity (assignment target)",
+   "read-delayed": "quantity -> law (bare chimpl read, tick-start value)",
+   "read-sametick": "quantity -> law (now: read, same-tick ordered)",
+   "physics-flow": "quantity -> quantity, stage-tagged (force-accumulation | body-state | contact-guard | sensor), licensed by the DECLARED physics summary"
+  },
+  "closed_loop": "law --write--> force output --accumulate--> phys.net_force (one shared sum) --integrate--> body state --guard--> contact guard --sense--> sensor --read--> later law --write--> ... (modeled explicitly; reach carries WITNESS PATHS so every flag shows its route)",
+  "conservative_rule": "a law READING an external-opaque quantity is steered by unknown code: its reach is the FULL universe at seed time, path-tagged 'opaque' and reported as a separate interaction class (opaque-conservative); collapse_stats splits opaque-driven vs structural collapse"
+ },
+ "verdicts": {
+  "fixture1_shared_carrier": {
+   "records": "force_law_a (writes leg.force.a from body.y), force_law_b (writes leg.force.b from contact.clamp), load_share_law (reads ONLY sensor.load_share, writes leg.force.c), audit_logger (terminal sink from control.step)",
+   "first_order_frozen_interference_interaction": "independent for (A,C) AND (B,C) — the quantity-set overlap sees nothing",
+   "l5": "(A,C) and (B,C) NOT independent; carrier sensor.load_share classed physics-carried with the evidenced stage path force-accumulation -> body-state -> contact-guard -> sensor; direct_write_quantities = EMPTY on both pairs (flagged THROUGH the physics edges, not a write); the loop closes (reach[A] contains B's and C's writes); audit_logger couples to nothing",
+   "same_declarations_through_frozen_interface": "interference.build_cone(records, physics_edges_of(shared_physics())) reaches sensor.load_share from force_law_a; with physics_edges=[] it does not"
+  },
+  "fixture2_read_readonly": {
+   "records": "alarm_watch and audit_watch share ONE delayed read (contact.clamp); writes alarm.a / audit.count are terminal sinks",
+   "first_order": "independent", "l5": "independent",
+   "direct_write_conflict": "NONE (no write-write class anywhere); cones exactly {alarm.a} and {audit.count}; collapse 0.0"
+  }
+ },
+ "falsifiers": {
+  "F-MISSED-COUPLING": {
+   "definition": "fires iff a replayable counterfactual changes an observable outside the predicted L5 influence cone",
+   "synthetic_twin_leg": "GREEN. One-ulp perturbation of force_law_a.kSpringA changed {leg.force.a, body.y, body.vy, leg.force.c, sensor.load_share}: the FROZEN first-order cone of A ({leg.force.a}) MISSES 4 of 5 (the measured pilot gap, expected-red for v1); the L5 cone covers all 5 (cone_covers true). alarm_watch.kAlarmOne one-ulp: changed == {alarm.a} == its L5 cone EXACTLY (usefulness witness). Evidence: f_missed_coupling_twin.json",
+   "real_trace_leg": "GREEN and DISCHARGED. Pinned substrate (trace_harness.cpp verbatim, scene regenerated by the registered recipe into .tmp/l5/): base 301 rows, refusal 300 == this tree's registered expectation (tests_p2 EXPECTED_REFUSAL), byte-identical double run. Ladder (pre-stated: 1,2,4 ulps then 1e-12,1e-9 on recipe.defaults.start_phase_left, the LEFT hind clock's declared init): the FIRST rung (1 ulp) changed the trace — exactly ONE observable column (leg0.phase, the perturbed declared quantity itself) across all 301 rows. Row 0 (the reset row) moved ONLY leg0.phase (sharp row-0 assertion clean); the RIGHT leg is bit-identical for the whole horizon (no input divergence, no decision change — full leg isolation witnessed); perturbed run byte-deterministic. f_missed_coupling_fires=False. Evidence: f_missed_coupling_real_trace.json",
+   "fired": false
+  },
+  "F-VACUOUS-CONE": {
+   "definition": "fires iff EVERY distinct fixture collapses to the full graph; a full graph is CONSERVATIVE (sound), not useful — soundness and usefulness reported on SEPARATE axes",
+   "result": "GREEN. shared_carrier collapse 0.0 (the closed loop still excludes the terminal audit sink; 8 of 9 quantities reached), read_readonly 0.0. Collapse IS detectable when it happens: the pilot's own records under the conservative DEFAULT (no physics summaries) collapse 1.0 with all four laws opaque-attributed (structural 0.0) — that is the measured reason declared physics summaries are necessary. Orthogonality measured: the degenerate (empty-summaries) world is SOUND on what it knows (opaque-full) AND hides body.vy entirely (not even a node) while the frozen v1 cone is narrow but MISSES the coupling — usefulness and soundness fail independently",
+   "fired": false
+  }
+ },
+ "gates_on_the_lane": {
+  "creature_graph_both_roots": "Ran 69 tests ... OK from repo-root cwd AND from tools/ cwd (PYTHONPATH=repo root; without it test_project_spec cannot import 'tools' — environment note, not a code defect)",
+  "matter_kernel": "Ran 9 tests ... OK (PYTHONPATH=. python tools/matter_kernel/test_definition.py)",
+  "training_gate": "PASS -- every target is Froude-consistent with the world this body stands in (g=9.8066 m/s2; the body derives 0.9924 m/s)",
+  "suite": "python -m unittest tools.constraint_ledger.tests_l5: Ran 13 tests ... OK"
+ },
+ "honest_scoping": "The two fixtures are DECLARED SYNTHETIC (schema-valid chimpl records, provenance says so): they exercise the CALCULATOR. The real-trace leg is the non-synthetic counterfactual on the pinned substrate — read-only; its scene/binary live in the lane's .tmp/l5/ (regenerable, not committed; the perturbed scene is a lane-local counterfactual artifact, not a registered scene). The real-trace cone is adjudicated at the granularity the frozen interface constrains: quantities the interface declares opaque (the scheduler, the plant) cannot produce a soundness firing BY CONSTRUCTION — the spec's own conservative rule — so the sharp real-trace teeth are the row-0 reset-row assertion, the right-leg isolation, and instrument determinism, all measured clean.",
+ "trailer_agent": "GLM 5.3"
+}

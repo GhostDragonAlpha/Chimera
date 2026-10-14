@@ -1,0 +1,7 @@
+THIS WORLD   g = 9.8066 m/s2  (1.000 of Earth)   leg = 1.0144 m
+             Froude scale for speed  sqrt(g/g_E) = 1.0000
+             stride scale            sqrt(g_E/g) = 1.0000
+             the body derives its own comfortable speed: 0.9924 m/s
+
+
+PASS -- every target is Froude-consistent with the world this body stands in.

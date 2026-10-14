@@ -1,0 +1,16 @@
+{
+  "actions_bytes": 28800,
+  "actions_sha256": "e25406e86cbf5347683ee3824d385bc1d07bfd500e83eb6b9133a1e82d4bfbd9",
+  "loader": "typeb_export.policy_manifest.load_manifest (frozen) + infer_numpy.NumpyPolicy (the frozen recipe)",
+  "n_decisions": 60,
+  "n_ticks": 900,
+  "passes": 3,
+  "runtime": {
+    "machine": "AMD64",
+    "numpy": "2.2.6",
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.3"
+  },
+  "sequence_source": "trace_slice_wave38.json",
+  "sequence_source_sha256": "69babe846e2447333b527c7fd8c190499e5ac1d55733dbd043edd0422245daa2"
+}

@@ -1,0 +1,1762 @@
+{
+ "discipline": "all 654 TENTATIVE cells summarized (admitted and refused alike); no smoothing, no imputation, no outlier removal; merged/marker structure stays in the counts",
+ "lane": "vanhoof_law_20260920",
+ "muscles": {
+  "ADM": {
+   "fields": {
+    "fl_mm": {
+     "max": 15.9,
+     "mean": 13.9571,
+     "min": 10.4,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "mass_g": {
+     "max": 0.9,
+     "mean": 0.6429,
+     "min": 0.4,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 66.6,
+     "mean": 42.4143,
+     "min": 26.0,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    }
+   },
+   "law_pass_rows": 2,
+   "law_rows": 7,
+   "muscle_group": "Hypothenar"
+  },
+  "ADP": {
+   "fields": {
+    "fl_mm": {
+     "max": 22.0,
+     "mean": 16.0,
+     "min": 11.9,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "mass_g": {
+     "max": 1.6,
+     "mean": 1.0286,
+     "min": 0.7,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 82.8,
+     "mean": 57.4143,
+     "min": 36.1,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    }
+   },
+   "law_pass_rows": 4,
+   "law_rows": 7,
+   "muscle_group": "Thenar"
+  },
+  "APB": {
+   "fields": {
+    "fl_mm": {
+     "max": 23.7,
+     "mean": 14.0,
+     "min": 10.2,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "mass_g": {
+     "max": 1.4,
+     "mean": 0.8714,
+     "min": 0.4,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 120.4,
+     "mean": 62.0143,
+     "min": 28.9,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    }
+   },
+   "law_pass_rows": 1,
+   "law_rows": 7,
+   "muscle_group": "Thenar"
+  },
+  "APL": {
+   "fields": {
+    "fl_mm": {
+     "max": 30.9,
+     "mean": 24.0714,
+     "min": 19.2,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "mass_g": {
+     "max": 5.6,
+     "mean": 3.9,
+     "min": 1.9,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 177.7,
+     "mean": 146.4429,
+     "min": 75.1,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    }
+   },
+   "law_pass_rows": 7,
+   "law_rows": 7,
+   "muscle_group": "Ext. Thumb"
+  },
+  "Anc": {
+   "fields": {
+    "fl_mm": {
+     "max": 33.5,
+     "mean": 16.0714,
+     "min": 5.7,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "mass_g": {
+     "max": 0.6,
+     "mean": 0.3571,
+     "min": 0.1,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 42.3,
+     "mean": 22.4857,
+     "min": 6.2,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    }
+   },
+   "law_pass_rows": 2,
+   "law_rows": 7,
+   "muscle_group": "Extensor"
+  },
+  "B": {
+   "fields": {
+    "fl_mm": {
+     "max": 103.0,
+     "mean": 61.825,
+     "min": 31.4,
+     "n": 4,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4"
+     ]
+    },
+    "mass_g": {
+     "max": 21.3,
+     "mean": 17.6,
+     "min": 11.7,
+     "n": 4,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 350.2,
+     "mean": 285.0,
+     "min": 188.1,
+     "n": 4,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4"
+     ]
+    }
+   },
+   "law_pass_rows": 3,
+   "law_rows": 4,
+   "muscle_group": "Upper arm"
+  },
+  "BR": {
+   "fields": {
+    "fl_mm": {
+     "max": 177.2,
+     "mean": 145.3,
+     "min": 123.9,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "mass_g": {
+     "max": 28.9,
+     "mean": 18.4714,
+     "min": 8.3,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 169.6,
+     "mean": 112.1286,
+     "min": 58.8,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    }
+   },
+   "law_pass_rows": 7,
+   "law_rows": 7,
+   "muscle_group": "Rotator"
+  },
+  "Bb": {
+   "fields": {
+    "fl_mm": {
+     "max": 118.3,
+     "mean": 85.4,
+     "min": 67.5,
+     "n": 4,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4"
+     ]
+    },
+    "mass_g": {
+     "max": 45.8,
+     "mean": 40.85,
+     "min": 34.1,
+     "n": 4,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 524.0,
+     "mean": 452.85,
+     "min": 326.5,
+     "n": 4,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4"
+     ]
+    }
+   },
+   "law_pass_rows": 3,
+   "law_rows": 4,
+   "muscle_group": "Upper arm"
+  },
+  "C5": {
+   "fields": {
+    "fl_mm": {
+     "max": 30.7,
+     "mean": 14.1,
+     "min": 5.8,
+     "n": 6,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "mass_g": {
+     "max": 0.2,
+     "mean": 0.15,
+     "min": 0.1,
+     "n": 6,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 31.3,
+     "mean": 14.15,
+     "min": 4.1,
+     "n": 6,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm6",
+      "Mm7"
+     ]
+    }
+   },
+   "law_pass_rows": 1,
+   "law_rows": 6,
+   "muscle_group": "Intermediate"
+  },
+  "CB": {
+   "fields": {
+    "fl_mm": {
+     "max": 38.9,
+     "mean": 20.175,
+     "min": 12.0,
+     "n": 4,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4"
+     ]
+    },
+    "mass_g": {
+     "max": 3.2,
+     "mean": 2.475,
+     "min": 1.5,
+     "n": 4,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 238.7,
+     "mean": 134.175,
+     "min": 47.2,
+     "n": 4,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4"
+     ]
+    }
+   },
+   "law_pass_rows": 3,
+   "law_rows": 4,
+   "muscle_group": "Upper arm"
+  },
+  "DET": {
+   "fields": {
+    "fl_mm": {
+     "max": 92.1,
+     "mean": 80.8,
+     "min": 73.7,
+     "n": 4,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4"
+     ]
+    },
+    "mass_g": {
+     "max": 10.1,
+     "mean": 9.05,
+     "min": 8.1,
+     "n": 4,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 121.0,
+     "mean": 108.125,
+     "min": 96.9,
+     "n": 4,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4"
+     ]
+    }
+   },
+   "law_pass_rows": 3,
+   "law_rows": 4,
+   "muscle_group": "Upper arm"
+  },
+  "ECRB": {
+   "fields": {
+    "fl_mm": {
+     "max": 44.1,
+     "mean": 38.5143,
+     "min": 29.2,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "mass_g": {
+     "max": 10.3,
+     "mean": 7.4571,
+     "min": 4.1,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 219.7,
+     "mean": 175.9857,
+     "min": 92.7,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    }
+   },
+   "law_pass_rows": 7,
+   "law_rows": 7,
+   "muscle_group": "Extensor"
+  },
+  "ECRL": {
+   "fields": {
+    "fl_mm": {
+     "max": 91.0,
+     "mean": 76.2,
+     "min": 69.8,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "mass_g": {
+     "max": 9.4,
+     "mean": 6.2143,
+     "min": 2.3,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 98.5,
+     "mean": 73.7857,
+     "min": 27.6,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    }
+   },
+   "law_pass_rows": 7,
+   "law_rows": 7,
+   "muscle_group": "Extensor"
+  },
+  "ECU": {
+   "fields": {
+    "fl_mm": {
+     "max": 75.2,
+     "mean": 33.8714,
+     "min": 23.5,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "mass_g": {
+     "max": 7.3,
+     "mean": 4.9714,
+     "min": 2.8,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 201.1,
+     "mean": 142.9429,
+     "min": 88.3,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    }
+   },
+   "law_pass_rows": 6,
+   "law_rows": 7,
+   "muscle_group": "Extensor"
+  },
+  "ED": {
+   "fields": {
+    "fl_mm": {
+     "max": 71.8,
+     "mean": 42.5571,
+     "min": 24.8,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "mass_g": {
+     "max": 6.4,
+     "mean": 4.7857,
+     "min": 2.2,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 147.9,
+     "mean": 106.8,
+     "min": 54.4,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    }
+   },
+   "law_pass_rows": 7,
+   "law_rows": 7,
+   "muscle_group": "Extensor"
+  },
+  "EDQQ": {
+   "fields": {
+    "fl_mm": {
+     "max": 50.0,
+     "mean": 29.9429,
+     "min": 15.3,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "mass_g": {
+     "max": 1.7,
+     "mean": 1.2857,
+     "min": 0.6,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 66.4,
+     "mean": 42.4,
+     "min": 21.6,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    }
+   },
+   "law_pass_rows": 4,
+   "law_rows": 7,
+   "muscle_group": "Extensor"
+  },
+  "EDST": {
+   "fields": {
+    "fl_mm": {
+     "max": 28.1,
+     "mean": 24.4143,
+     "min": 17.7,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "mass_g": {
+     "max": 1.3,
+     "mean": 0.9143,
+     "min": 0.7,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 44.1,
+     "mean": 34.0571,
+     "min": 22.9,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    }
+   },
+   "law_pass_rows": 2,
+   "law_rows": 7,
+   "muscle_group": "Extensor"
+  },
+  "EPL": {
+   "fields": {
+    "fl_mm": {
+     "max": 39.8,
+     "mean": 28.8857,
+     "min": 22.2,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "mass_g": {
+     "max": 1.2,
+     "mean": 0.8857,
+     "min": 0.5,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 40.6,
+     "mean": 27.7857,
+     "min": 18.2,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    }
+   },
+   "law_pass_rows": 3,
+   "law_rows": 7,
+   "muscle_group": "Ext. Thumb"
+  },
+  "FCR": {
+   "fields": {
+    "fl_mm": {
+     "max": 45.5,
+     "mean": 33.1714,
+     "min": 25.4,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "mass_g": {
+     "max": 10.8,
+     "mean": 7.8286,
+     "min": 4.5,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 304.1,
+     "mean": 213.3857,
+     "min": 146.1,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    }
+   },
+   "law_pass_rows": 7,
+   "law_rows": 7,
+   "muscle_group": "Flexor"
+  },
+  "FCU": {
+   "fields": {
+    "fl_mm": {
+     "max": 36.5,
+     "mean": 26.6,
+     "min": 19.4,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "mass_g": {
+     "max": 19.0,
+     "mean": 13.8143,
+     "min": 7.2,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 580.7,
+     "mean": 478.7571,
+     "min": 218.1,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    }
+   },
+   "law_pass_rows": 7,
+   "law_rows": 7,
+   "muscle_group": "Flexor"
+  },
+  "FDM": {
+   "fields": {
+    "fl_mm": {
+     "max": 18.1,
+     "mean": 14.7833,
+     "min": 9.7,
+     "n": 6,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "mass_g": {
+     "max": 0.6,
+     "mean": 0.4667,
+     "min": 0.3,
+     "n": 6,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 59.1,
+     "mean": 32.15,
+     "min": 16.7,
+     "n": 6,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm6",
+      "Mm7"
+     ]
+    }
+   },
+   "law_pass_rows": 3,
+   "law_rows": 6,
+   "muscle_group": "Hypothenar"
+  },
+  "FDP": {
+   "fields": {
+    "fl_mm": {
+     "max": 54.2,
+     "mean": 44.2286,
+     "min": 38.1,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "mass_g": {
+     "max": 42.9,
+     "mean": 30.4286,
+     "min": 16.3,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 837.2,
+     "mean": 616.6143,
+     "min": 371.3,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    }
+   },
+   "law_pass_rows": 7,
+   "law_rows": 7,
+   "muscle_group": "Flexor"
+  },
+  "FDS": {
+   "fields": {
+    "fl_mm": {
+     "max": 48.3,
+     "mean": 33.4571,
+     "min": 25.5,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "mass_g": {
+     "max": 14.0,
+     "mean": 11.1286,
+     "min": 6.8,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 445.5,
+     "mean": 306.7429,
+     "min": 207.9,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    }
+   },
+   "law_pass_rows": 7,
+   "law_rows": 7,
+   "muscle_group": "Flexor"
+  },
+  "FPB": {
+   "fields": {
+    "fl_mm": {
+     "max": 17.3,
+     "mean": 16.125,
+     "min": 13.3,
+     "n": 4,
+     "specimens": [
+      "Mm2",
+      "Mm3",
+      "Mm5",
+      "Mm6"
+     ]
+    },
+    "mass_g": {
+     "max": 0.9,
+     "mean": 0.575,
+     "min": 0.4,
+     "n": 4,
+     "specimens": [
+      "Mm2",
+      "Mm3",
+      "Mm5",
+      "Mm6"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 48.8,
+     "mean": 32.95,
+     "min": 25.8,
+     "n": 4,
+     "specimens": [
+      "Mm2",
+      "Mm3",
+      "Mm5",
+      "Mm6"
+     ]
+    }
+   },
+   "law_pass_rows": 2,
+   "law_rows": 4,
+   "muscle_group": "Thenar"
+  },
+  "IOD": {
+   "fields": {
+    "fl_mm": {
+     "max": 28.7,
+     "mean": 11.9857,
+     "min": 7.8,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "mass_g": {
+     "max": 3.0,
+     "mean": 2.1714,
+     "min": 1.4,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 297.4,
+     "mean": 188.6571,
+     "min": 96.4,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    }
+   },
+   "law_pass_rows": 5,
+   "law_rows": 7,
+   "muscle_group": "Intermediate"
+  },
+  "IOP": {
+   "fields": {
+    "fl_mm": {
+     "max": 25.7,
+     "mean": 12.0286,
+     "min": 7.5,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "mass_g": {
+     "max": 0.9,
+     "mean": 0.7429,
+     "min": 0.6,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 90.7,
+     "mean": 62.7571,
+     "min": 24.7,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    }
+   },
+   "law_pass_rows": 3,
+   "law_rows": 7,
+   "muscle_group": "Intermediate"
+  },
+  "LUMB": {
+   "fields": {
+    "fl_mm": {
+     "max": 43.3,
+     "mean": 34.5286,
+     "min": 24.0,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "mass_g": {
+     "max": 0.9,
+     "mean": 0.6429,
+     "min": 0.5,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 25.8,
+     "mean": 17.1571,
+     "min": 10.5,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    }
+   },
+   "law_pass_rows": 2,
+   "law_rows": 7,
+   "muscle_group": "Intermediate"
+  },
+  "ODM": {
+   "fields": {
+    "fl_mm": {
+     "max": 26.4,
+     "mean": 13.0333,
+     "min": 7.0,
+     "n": 6,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm7"
+     ]
+    },
+    "mass_g": {
+     "max": 0.4,
+     "mean": 0.3,
+     "min": 0.2,
+     "n": 6,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm7"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 31.4,
+     "mean": 24.6333,
+     "min": 12.7,
+     "n": 6,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm7"
+     ]
+    }
+   },
+   "law_pass_rows": 0,
+   "law_rows": 6,
+   "muscle_group": "Hypothenar"
+  },
+  "OPP": {
+   "fields": {
+    "fl_mm": {
+     "max": 15.0,
+     "mean": 8.74,
+     "min": 6.0,
+     "n": 5,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5"
+     ]
+    },
+    "mass_g": {
+     "max": 0.6,
+     "mean": 0.4,
+     "min": 0.2,
+     "n": 5,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 84.7,
+     "mean": 44.88,
+     "min": 24.9,
+     "n": 5,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5"
+     ]
+    }
+   },
+   "law_pass_rows": 1,
+   "law_rows": 5,
+   "muscle_group": "Thenar"
+  },
+  "PL": {
+   "fields": {
+    "fl_mm": {
+     "max": 23.8,
+     "mean": 19.7857,
+     "min": 16.7,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "mass_g": {
+     "max": 4.5,
+     "mean": 3.1,
+     "min": 1.7,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 172.1,
+     "mean": 141.3857,
+     "min": 79.8,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    }
+   },
+   "law_pass_rows": 7,
+   "law_rows": 7,
+   "muscle_group": "Flexor"
+  },
+  "PQ": {
+   "fields": {
+    "fl_mm": {
+     "max": 45.9,
+     "mean": 21.3143,
+     "min": 6.6,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "mass_g": {
+     "max": 2.6,
+     "mean": 1.6429,
+     "min": 1.1,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 190.1,
+     "mean": 95.4286,
+     "min": 30.2,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    }
+   },
+   "law_pass_rows": 4,
+   "law_rows": 7,
+   "muscle_group": "Rotator"
+  },
+  "PT": {
+   "fields": {
+    "fl_mm": {
+     "max": 31.7,
+     "mean": 25.0429,
+     "min": 19.3,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "mass_g": {
+     "max": 8.5,
+     "mean": 6.0571,
+     "min": 3.4,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 321.4,
+     "mean": 221.3571,
+     "min": 138.1,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    }
+   },
+   "law_pass_rows": 7,
+   "law_rows": 7,
+   "muscle_group": "Rotator"
+  },
+  "SUP": {
+   "fields": {
+    "fl_mm": {
+     "max": 37.2,
+     "mean": 16.8714,
+     "min": 9.0,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "mass_g": {
+     "max": 4.8,
+     "mean": 3.3714,
+     "min": 2.4,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 484.7,
+     "mean": 228.5429,
+     "min": 78.1,
+     "n": 7,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4",
+      "Mm5",
+      "Mm6",
+      "Mm7"
+     ]
+    }
+   },
+   "law_pass_rows": 7,
+   "law_rows": 7,
+   "muscle_group": "Rotator"
+  },
+  "Tb": {
+   "fields": {
+    "fl_mm": {
+     "max": 59.1,
+     "mean": 50.3,
+     "min": 38.2,
+     "n": 4,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4"
+     ]
+    },
+    "mass_g": {
+     "max": 134.4,
+     "mean": 112.75,
+     "min": 83.8,
+     "n": 4,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 2451.1,
+     "mean": 2050.725,
+     "min": 1755.9,
+     "n": 4,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm3",
+      "Mm4"
+     ]
+    }
+   },
+   "law_pass_rows": 4,
+   "law_rows": 4,
+   "muscle_group": "Upper arm"
+  },
+  "conn. FDS-FDP": {
+   "fields": {
+    "fl_mm": {
+     "max": 44.6,
+     "mean": 41.3333,
+     "min": 38.0,
+     "n": 3,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm5"
+     ]
+    },
+    "mass_g": {
+     "max": 3.0,
+     "mean": 2.2333,
+     "min": 1.5,
+     "n": 3,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm5"
+     ]
+    },
+    "pcsa_mm2": {
+     "max": 60.7,
+     "mean": 49.4333,
+     "min": 36.2,
+     "n": 3,
+     "specimens": [
+      "Mm1",
+      "Mm2",
+      "Mm5"
+     ]
+    }
+   },
+   "law_pass_rows": 1,
+   "law_rows": 3,
+   "muscle_group": "Flexor"
+  }
+ },
+ "n_cells_summarized": 654,
+ "provenance": {
+  "constants": {
+   "rho_g_cm3": 1.1,
+   "route": "stated_cited"
+  },
+  "inputs": "pinned reconciliation.json (grid sha256 efbd3aefc6711e66b6461ea5b9af6abb646a99ed5aedd0b6d30945d9ca21f4b7)",
+  "law_verdicts": "laws_registered.json; ride along as conditions, never a filter"
+ },
+ "schema": "chimera.rule0.cross_specimen_summary.v1",
+ "source": {
+  "doi": "10.1111/joa.13314",
+  "pmcid": "PMC7812139",
+  "sheet": "JOA-238-321-s002",
+  "species": "Macaca mulatta adult (Mm1-Mm7)",
+  "tiff_sha256": "cb9e91be3d2345182b6d2b956245b76905243d4bbf37fff79c3d96a802e5debe"
+ }
+}

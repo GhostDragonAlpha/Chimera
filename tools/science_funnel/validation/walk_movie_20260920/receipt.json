@@ -1,0 +1,266 @@
+{
+ "schema": "chimera.walk_movie.receipt.v1",
+ "lane": "agent/walk-movie-prestage-20260920",
+ "date": "2026-09-20",
+ "agent": "GLM 5.3",
+ "base_lineage": "E:/ChimeraWork/mcp-agent head a672b16b (the freshest visual+tooling lineage), sparse clone E:/ChimeraWork/moviestage-agent, branch agent/walk-movie-prestage-20260920",
+ "walker_state_source": "the wave-26 head 6efb3ef0 (E:/ChimeraWork/w26-agent): the current best gait run -- refusal tick 105 (gait_impact_event_budget), the capture fired at 60, the 426 bar (the F-G window mouth, two full cycles) not yet reached. The walk does NOT pass 426 today; this lane PRE-STAGES the movie so the hour it does, the rendered+judged movie ships the same day.",
+ "rule0": {
+  "statement": "A rendered movie of the gait walker's OWN measured state trace -- the walker's 18-DOF assembly (pelvis trunk, two hind legs thigh/shank/foot/toe, two fore legs upperarm/forearm) rebuilt as indexed TRIANGLE meshes per tick from the runtime's dumped state vector q, orbiting camera, ffmpeg MP4 -- is a falsifiable visual proof of the walk's CURRENT state; the dyad's judgment of it, scored by a vocabulary banked BEFORE any judgment, either reads the walk that lives (a four-legged figure taking steps then collapsing, ticks 60..104) or the visual proof has no power.",
+  "prediction": "(i) PIXELS: the walker's solid segment meshes fill their projected convex hull far better than the banked skeleton's 0.397 (they are boxes, not 25 loose bones): coverage 0.75-0.95 on every rendered frame; the orbit clip scan is clean (no frame collapse, no new boundary touch). (ii) THE DYAD (qwen3.8 eye, one frame per call): the judgment reads a SMALL four-legged animal-like figure (quadruped/body_plan terms) with limbs that step or swing (gait terms), low to the ground, made of blocky/boxy segments; the collapse near the end of the trace is predicted to be read as falling/slumping/sinking but is honestly uncertain (if the eye misses the collapse, that is a finding about the movie's legibility, not an auto-fail). (iii) THE FK: the render-side forward kinematics reproduces the engine's own geometry readback (the fore-paw shoulder world seats from status()) to <= 1e-6 m. (iv) THE REPRO: this lane's state-dump binary reproduces the wave-26 run -- refusal at tick 105, the named ticks 61/70, 66, 72/81 exact -- with the full-q dump bit-identical across its two internal runs.",
+  "falsifiers": {
+   "F1_triangle_conformance": "THE RENDER PATH IS TRIANGLES ONLY: walk_movie.py's only engine upload is the indexed mesh to /mesh_bin (the ct_skeleton_triangle.post_layer_mesh wire contract: [u32 N][u32 idxCount][f32 r,theta,phi,slotmode][f32*N*9 pos3+normal3+color3][u32 idxCount]); the splat route (/membrane_bin) is unreachable from the instrument (source-conformance checked, recorded). Any splat upload = FAIL.",
+   "F2_pixel_truth": "pixel_truth (deterministic, no vision model) on the output frames: per-frame hull coverage of the warm-dominant object mask >= 0.60, and clip_scan over the orbit clean (no collapse event, no new boundary touch). Below 0.60 or any clip event = FAIL, recorded with the number.",
+   "F3_vocab_banked_before_scoring": "vocab_bank.json (gait terms, body-plan terms, size/proportion terms -- the P2 lesson: the judgment vocabulary INCLUDING size/proportion is banked BEFORE any judgment runs) is hash-committed in this receipt before the judgment file exists; the scorer is vocab_align over the banked set ONLY (deterministic string machinery, no model). A judgment file older than the bank commit, or a scorer reading unbanked terms = FAIL.",
+   "F4_dyad_verbatim": "every per-frame dyad report is recorded verbatim in judgement.json (dark frames as null), the aggregated report is the verbatim join; the vocab_align scores are computed FROM the recorded text. Any paraphrase in the receipt = FAIL.",
+   "F5_determinism_where_applicable": "(a) the state repro: the dumped full-q stream is bit-identical across the gait binary's two internal runs (f7_qstream_bit_identical) and the wave-26 stderr trace is reproduced (refusal tick 105, named ticks exact). (b) the render: frame PNG sha256s recorded per render run. Cross-render-run byte-identity is NOT claimed (the banked renderer-inherent sort drift, skeleton_movie_20260919 F2: sub-perceptual, <= 2/255, < 0.1% of frame); within-run frame hashes are the record.",
+   "F6_own_port": "the engine runs on this lane's own bind-tested free port; 8127 (the operator's live scene) is never touched (refused by code in workflow_commands.free_port); only processes this lane started are ever stopped.",
+   "F7_fk_verification": "the render-side FK (numpy, from the scene model JSON + the dumped q) is verified against the engine's own world-geometry readback: the fore_paw shoulder_m seats at every dumped tick >= 60 match <= 1e-6 m. Beyond 1e-6 m = the rendered geometry is NOT the simulated geometry = FAIL."
+  }
+ },
+ "the_426_prestage": {
+  "what_is_banked_today": "the whole post-426 chain, proven end-to-end on the trace that lives today: (1) gait_unit_statedump (this lane's marked variant of the wave-26 gait_unit) writes the full 18-coordinate q/v state stream every tick of the walk run; (2) walk_movie.py --from-states renders the walker as triangle meshes per tick, orbits the camera, encodes the MP4 (the proven path: /mesh_bin + settle-capture + cpp_bridge.encode_movie); (3) pixel_truth verifies the frames deterministically; (4) the dyad judges one frame per call and vocab_align scores the verbatim reports against the banked vocabulary.",
+  "what_fires_automatically_at_426": "NOTHING runs itself -- the gait lane's wave-N run at refusal >= 426 leaves the same two artifacts this lane consumed today (the compiled gait scene JSON, pinned by sha256, and the states.jsonl dump from GAIT_STATE_DUMP). The hour a walk passes 426, the movie is: gait_unit_statedump <that scene> (same env var) | python -B tools/science_funnel/walk_movie.py --from-states <states.jsonl> --scene <scene.json> --ticks 60:426. Command, scene schema, FK, render path, vocabulary, scorer and prompt are ALL already banked by today's run; only the tick window widens. No new judgment vocabulary is needed at 426: the bank already carries the gait and size/proportion terms (and the passing walk is judged by the same bank -- a walk that passes 426 should hit the same gait/body categories, which is exactly what makes the two movies comparable).",
+  "same_day_budget_measured": "the render+encode+judge chain is measured on today's run (see measurements, render_seconds and judge elapsed_s); at ~45 states the movie chain is minutes, so a 367-tick window (60..426) at a 3-tick stride still ships the same day (linear in frames)."
+ },
+ "provenance_pins": {
+  "wave26_head": "6efb3ef0 (E:/ChimeraWork/w26-agent git HEAD, 'Wave 26: THE ACTUAL-SIDE MECHANISM FOR THE LAWFUL WAIT')",
+  "wave26_receipt": "E:/ChimeraWork/w26-agent/tools/science_funnel/validation/gait_zero_20260919/receipt_wave26.json (refusal 97 -> 105 gait_impact_event_budget)",
+  "gait_scene_json": {
+   "sha256": "26a3111a34bdd9005dd927bcd40836c94484eedaf5ad8f2a3039ea49a3d47f8f",
+   "inner_scene_sha256": "481f9f56c7b20acd4cc6fd4f82e56d39d15bef61bb3083cd4fea2863ff65078c",
+   "note": "the exact compiled scene the wave-26 run measured (the receipt's 'Scene 481f9f56 byte-stable twice')"
+  },
+  "vendored_wave26_files": {
+   "gait_controller.hpp": "blob of 6efb3ef0, copied verbatim",
+   "coupled_articulation.hpp": "blob of 6efb3ef0, copied verbatim",
+   "earth_environment.hpp": "blob of 6efb3ef0, copied verbatim",
+   "force_models.hpp": "blob of 6efb3ef0, copied verbatim",
+   "json.hpp": "blob of 6efb3ef0, copied verbatim",
+   "gait_unit_statedump.cpp": "gait_unit.cpp blob 48f3e40f + the four hunks marked WALK-MOVIE PRESTAGE (diff-verified: 29 changed lines, all marked)"
+  },
+  "vocab_bank": {
+   "path": "vocab_bank.json",
+   "sha256": "7e9cb737e6a845f8b92289d7e39b1a4443dfd266973fe9585c9ac82006ccffe2"
+  },
+  "dyad_policy": "ChimeraEngine/dyad_model_policy.json (qwen3.8-27b-nvfp4-mtp, LM Studio, fixed policy); at pre-registration time the policy model was NOT loaded on the shared server (measured below); the judgment lane actually served is recorded in measurements with its model id"
+ },
+ "measurements": {
+  "taken_utc": "2026-09-21T02:57:37+00:00",
+  "engine": {
+   "mode": "self-started per render run (workflow_commands.start_engine, --no-restore)",
+   "exe_sha256_16": "16ca3c1854289470 (E:/ChimeraWork/mcp-agent/.tmp/wfmcp_build/Release/chimera_engine.exe, the workflow_mcp_20260920 lane's measured binary)",
+   "ports_used": [
+    49181,
+    56719
+   ],
+   "f6_own_port": "PASS -- bind-tested free ports; 8127 never touched; only own engines stopped"
+  },
+  "render": {
+   "frames": 45,
+   "window": "ticks 60..104 (stride 1; the walk refuses at 105 -- the movie of the attempt IS the honest visual)",
+   "seconds": 26.96,
+   "mesh_per_frame": {
+    "vertices": 234,
+    "triangles": 416,
+    "segments": [
+     "thigh_left",
+     "shank_left",
+     "foot_left",
+     "toe_left",
+     "upperarm_fore_left",
+     "forearm_fore_left",
+     "thigh_right",
+     "shank_right",
+     "foot_right",
+     "toe_right",
+     "upperarm_fore_right",
+     "forearm_fore_right",
+     "pelvis"
+    ]
+   },
+   "camera_radius_m": 0.577957,
+   "camera_target": [
+    0.0,
+    0.182332,
+    0.0
+   ],
+   "framing": "union bbox x/z centred on the orbit origin (the walk translation preserved); body raised 0.1823 m so the paws stand at y=0.005 above the grid; camera target at the raised body centre",
+   "mp4_sha256": "415209c1f884e03b445282a9a6b1566f8564c34b0c56b7098c6b11055973ff4d",
+   "mp4_bytes": 1370262,
+   "overlay_movie": "45 frames rendered (targets-vs-actuals: hind target-pose sticks + fore paw world-target markers); hashes in render_record.json; NOT the judged movie",
+   "measured_defect_repaired": "the naive bbox-centre recenter bisected the body with the engine's floor grid (measured on the first render); repaired: body raised so the paws stand at y=0.005 above the grid, camera target aimed at the raised centre; ONE translation for the whole movie (the walk translation preserved)"
+  },
+  "f1_triangle_conformance": {
+   "pass": true,
+   "rule": "no splat-endpoint string constant in the module AST; the sole uploader is post_layer_mesh (/mesh_bin)",
+   "note": "every frame uploaded verts9+tris to /mesh_bin only; camera via /camera; frames via /frame"
+  },
+  "f2_pixel_truth": {
+   "pass": false,
+   "coverage_min": 0.1216,
+   "coverage_median": 0.1933,
+   "coverage_max": 0.2765,
+   "pre_registered_bar": ">= 0.60 every frame",
+   "verdict": "FAIL -- HONESTLY RECORDED, NOT RETUNED. The prediction (coverage 0.75-0.95, extrapolated from the banked skeleton's compact bone mass) is FALSIFIED: the walker is a PLANAR STICK FIGURE (z half-extent ~0.05 m, limbs are thin prisms), so its whole-body projected convex hull is mostly empty space. Measured on the checked frame: coverage 0.1216 = 99548 object px / 818890 hull px with 0 object pixels OUTSIDE the hull -- the projection is exactly aligned; the fill really is that low for this geometry class. The clip leg PASSES (below).",
+   "clip_scan": {
+    "clip": false,
+    "events": [],
+    "pass": "clean -- no frame collapse, no new boundary touch across the 45-frame orbit"
+   },
+   "hull_alignment_check": {
+    "object_pixels_outside_hull": 0,
+    "method": "warm mask vs convex hull of the projected mesh verts under the engine camera law (measure_triangle_monkey.project_points), frame 0",
+    "note": "the low coverage is the geometry, not a mis-instrument"
+   },
+   "lesson_banked": "a whole-body-hull coverage bar has power for COMPACT geometry (the skeleton's 0.397) and none for stick figures; at 426 the walk movie should gate on clip-scan clean + 0-outside-hull alignment + warm visibility (all measured here), with coverage REPORTED not gated"
+  },
+  "f3_vocab_banked_before_scoring": {
+   "pass": true,
+   "bank_sha256_at_pre_registration": "7e9cb737e6a845f8b92289d7e39b1a4443dfd266973fe9585c9ac82006ccffe2",
+   "bank_sha256_at_scoring": "7e9cb737e6a845f8b92289d7e39b1a4443dfd266973fe9585c9ac82006ccffe2",
+   "identical": true,
+   "note": "the bank (gait + body-plan + size/proportion -- the P2 lesson) was hash-committed into this receipt's pre-registration block BEFORE the first render and before judgement.json existed"
+  },
+  "f4_dyad_verbatim": {
+   "pass": true,
+   "lane": "ollama",
+   "model": "qwen3.8",
+   "policy_lane_error": "the permanent DYAD policy model is not loaded on the shared server",
+   "n_frames": 12,
+   "n_dark_frames": 0,
+   "elapsed_s": 413.7,
+   "protocol": "one frame per call (senses.watch_one); reports joined verbatim in frame order; a dark frame is recorded as null",
+   "note": "the permanent DYAD policy model (qwen3.8-27b-nvfp4-mtp) was NOT loaded on the shared LM Studio server (measured: loaded=[]); the judgment ran on the skeleton-movie lane's documented fallback (ollama qwen3.8:latest, 27.3B Q4_K_M, one frame per call, think:false); all 12 reports recorded verbatim in judgement.json"
+  },
+  "f5_determinism_where_applicable": {
+   "pass": true,
+   "state_repro": {
+    "repro_lines": 23535,
+    "wave26_lines": 23535,
+    "byte_identical": true
+   },
+   "refusal": {
+    "tick": 105,
+    "class": "gait_impact_event_budget",
+    "wave26_predicted": "97 -> 105 (receipt_wave26)"
+   },
+   "summary_comparison": [
+    "checks 78 vs 77: the variant adds exactly one check (f7_qstream_bit_identical)",
+    "measured rows: the variant adds F-G7 qstream bit-identical=1 + the dump-written note; no other row differs"
+   ],
+   "qstream_bit_identical_within_run": true,
+   "frame_hashes": "per-frame PNG sha256 recorded in render_record.json for both movies; cross-render-run byte identity NOT claimed (the banked renderer-inherent sort drift, skeleton_movie_20260919 F2)"
+  },
+  "f7_fk_verification": {
+   "pass": true,
+   "max_err_m": 9.224374800387292e-07,
+   "bar_m": 1e-06,
+   "checks": 90,
+   "note": "render-side FK vs the engine's own [dvf] shoulder world seats, every tick 60..104, both legs; max |err| 9.224e-07 m -- the trace prints 6 decimals, so the residual IS the print rounding"
+  },
+  "prediction_ii_dyad_reading": {
+   "aggregate_required_categories_hit": true,
+   "gait": {
+    "hits": [
+     "motion",
+     "stance",
+     "stride",
+     "walk",
+     "walking"
+    ],
+    "n_hits": 5,
+    "n_stems": 14,
+    "ratio": 0.3571,
+    "required": true
+   },
+   "body_plan": {
+    "hits": [
+     "animal",
+     "ape",
+     "four leg"
+    ],
+    "n_hits": 3,
+    "n_stems": 21,
+    "ratio": 0.1429,
+    "required": true
+   },
+   "size_proportion": {
+    "hits": [
+     "compact",
+     "elongat",
+     "large",
+     "long",
+     "proportion",
+     "scal",
+     "short",
+     "size",
+     "slender",
+     "small",
+     "stubby",
+     "thick",
+     "thin"
+    ],
+    "n_hits": 13,
+    "n_stems": 22,
+    "ratio": 0.5909,
+    "required": false
+   },
+   "posture_collapse": {
+    "hits": [
+     "crouch",
+     "lower",
+     "tilt",
+     "tip"
+    ],
+    "n_hits": 4,
+    "n_stems": 15,
+    "ratio": 0.2667,
+    "required": false
+   },
+   "segment_build": {
+    "hits": [
+     "block",
+     "cylind",
+     "geometric",
+     "joint",
+     "limb",
+     "low-poly",
+     "rectangular",
+     "segment",
+     "torso"
+    ],
+    "n_hits": 9,
+    "n_stems": 16,
+    "ratio": 0.5625,
+    "required": false
+   },
+   "ground_contact": {
+    "hits": [
+     "feet",
+     "floor",
+     "ground",
+     "plant",
+     "stand",
+     "surface",
+     "touch"
+    ],
+    "n_hits": 7,
+    "n_stems": 9,
+    "ratio": 0.7778,
+    "required": false
+   },
+   "per_frame_required_hit_rate": 0.0833,
+   "verdict": "GREEN ON THE AGGREGATE, with a measured caveat: the joined verbatim reports hit the gait bank (walk/walking/stride/stance/motion -- carried by frame 8: 'bent, walking-like stance ... mid-stride'), the body-plan bank (animal/ape/'four leg' -- frames 3, 6, 10: 'stylized animal ... four visible legs'), size/proportion 13/22 stems (the P2 lesson vindicated: the eye volunteers size language unprompted), ground contact 7/9. The caveat: per-frame identity is UNSTABLE (required-hit rate 0.0833 -- some frames read 'desk lamp'/'stool'/'robotic arm': one frame per call sees one frozen pose of a planar stick figure, and the orbit's end-on angles are degenerate). The walk is read in the AGGREGATE, which is exactly what the skeleton-movie lane's join-verbatim protocol builds."
+  },
+  "same_day_budget_measured": {
+   "render_s": 26.96,
+   "judge_s": 413.7,
+   "verdict": "45 frames: render 27s + judge 414s. At 426 (window 60..426, stride 3 -> 123 frames): render ~75s + judge ~19min on the ollama lane, minutes on the policy lane -- ships the same day"
+  },
+  "pass_strict": false,
+  "pass_note": "STRICT LETTER: false -- F2's pre-registered coverage bar measured FAIL (0.12-0.28 vs 0.60) and stands unretracted; the falsifier did its job on a wrong prediction about fill statistics. THE PRESTAGE ITSELF IS PROVEN: every leg of the 426 chain (state dump -> FK-verified triangles-only render -> pixel truth -> verbatim dyad judgment -> banked-vocab scoring) ran end-to-end today on the trace that lives, with the repro byte-identical to the wave-26 head."
+ },
+ "pass": false,
+ "honest_summary": "PRE-STAGE PROVEN, ONE PREDICTION HONESTLY FALSIFIED. Banked before the run: the receipt's rule-0 block, the vocab hash (7e9cb737e6a845f8), the scene pin (26a3111a34bdd900 / inner 481f9f56). Measured: the state-dump variant reproduces the wave-26 run BYTE-IDENTICALLY (23,535 stderr lines, 0 diffs; refusal tick 105 gait_impact_event_budget; the only additions are the variant's two marked measured rows) and dumps the full 18-coordinate q every tick. The render-side FK matches the engine's own geometry readback to 9.2e-07 m (90 checks). 45 triangle-mesh frames through /mesh_bin only (conformance PASS), clip scan clean, MP4 415209c1f884e03b. The dyad (ollama qwen3.8 fallback; the policy model was not loaded) judged 12 frames one-per-call, 0 dark, verbatim; the AGGREGATE hits the banked gait + body-plan + size/proportion vocabulary (the P2 lesson banked beforehand and vindicated: 13/22 size stems hit). REDS, recorded: (1) F2's coverage bar FAILed -- 0.12-0.28 vs 0.60 -- because the walker is a planar stick figure whose convex hull is mostly empty; the prediction was wrong, the bar stands, and the 426 gate should be clip+alignment+visibility with coverage reported. (2) Per-frame identity is unstable (0.0833 required-hit rate): single frames read lamp/stool/arm; the walk is read in the join. At tick 426 nothing new is needed: same command, same scene schema, same bank, wider --ticks window."
+}

@@ -1,0 +1,387 @@
+{
+ "kind": "visual_proof_manifest.v1",
+ "label": "PROOF-OF-INTAKE renders: visual evidence that the pinned admitted library data decodes and renders. NOT physics verification, NOT qualification.",
+ "work_item": "work.data.visual_proof_20260917",
+ "falsified_assumptions": [
+  "Pure-struct GLB geometry decode is impossible: the pinned artifacts REQUIRE KHR_draco_mesh_compression.",
+  "A sequential-draco decode was assumed next; the pinned streams are draco EDGEBREAKER (method 1, VALENCE traversal type 2, bitstream 2.2).",
+  "The topology-split event section does not parse under google/draco HEAD or 1.3.6 reference layouts; the producer variant is unidentified; a pure-python decode port is FALSIFIED and never retried.",
+  "A non-draco Smithsonian USNM 15259 derivative was assumed to exist for re-pinning; the medium and low derivatives of BOTH the cranium and the mandible were probed and ALL carry the draco extension REQUIRED.",
+  "A Python Draco decoder was assumed to be installable; the PyPI names pydraco, pydraco3 and draco-loader all resolve to nothing (404).",
+  "PATH CHOSEN (operator-delegated): decode with the OFFICIAL Google Draco WASM decoder in a browser page (three.js GLTFLoader + DRACOLoader over pinned-CDN draco_wasm_wrapper, sha256s recorded). The smithsonian renders are TRUE decoded geometry when the decode identity is present and verifies; the bbox + refusal form remains the fallback. Screenshots are PERCEPTUAL EVIDENCE."
+ ],
+ "refusals": [],
+ "producer": {
+  "python": "3.11.15",
+  "zlib": "1.3.2",
+  "numpy": "2.2.6",
+  "module_sha256": "e79f303838873017c9c968c0b3df748416f1ec3380805c74303052c9e81b46e3"
+ },
+ "renders": [
+  {
+   "id": "smithsonian_usnm15259_cranium",
+   "png": "smithsonian_usnm15259_cranium.png",
+   "png_sha256": "9ae5b430652d23ca709755888789c1e6b119845b1753dd8bd326fac3d2c96d0f",
+   "inputs": [
+    {
+     "role": "geometry_glb",
+     "path": "tools/science_funnel/data/smithsonian/USNM15259_cranium_-300_dec-150k-4096-high.glb",
+     "sha256": "04b58b90e36caf68548807b7d9609574d1ad7fcacae7a2e50ca7e6b77abc33a4"
+    },
+    {
+     "role": "camera_document",
+     "path": "tools/science_funnel/data/smithsonian/USNM15259_cranium_document.json",
+     "sha256": "fb94230cf895af4f60409390b8dbad3b8b3ecf3ea8aa696929980d82da729199"
+    },
+    {
+     "role": "download_receipt",
+     "path": "tools/science_funnel/data/smithsonian/download_receipt.json",
+     "sha256": "46d1cb5e433d2bc20210cd4f3c918bfd07174b4df41bb5dd6044eebf86e06cf2"
+    },
+    {
+     "role": "decoded_positions",
+     "path": "tools/science_funnel/data/smithsonian/draco_decode/USNM15259_cranium.positions.f32",
+     "sha256": "3d48583302999116dee831e942cea493200cb7e7e4815132a0681ea331df9c60"
+    },
+    {
+     "role": "decoded_normals",
+     "path": "tools/science_funnel/data/smithsonian/draco_decode/USNM15259_cranium.normals.f32",
+     "sha256": "c2729b58f0d8d41f7e318d1d260e45f57b7c918cc0d1a5cc54538bc8ddd8048b"
+    },
+    {
+     "role": "decoded_indices",
+     "path": "tools/science_funnel/data/smithsonian/draco_decode/USNM15259_cranium.indices.u32",
+     "sha256": "03b941419a752e2d6d88ab9bde929859bbc075e711c017889ec3de279a46e476"
+    },
+    {
+     "role": "decode_manifest",
+     "path": "tools/science_funnel/data/smithsonian/draco_decode/draco_decode_manifest.json",
+     "sha256": "8a7f9c8abbf77cde2ad42097b0672e87af94ee222753c7515a0d8d12fccd6780"
+    }
+   ],
+   "params": {
+    "renderer": "decoded-geometry software z-buffer under the document.json camera (320x240); decode identity (official draco wasm, browser) hash-verified before render",
+    "specimen": "USNM 15259 CRANIUM"
+   },
+   "metrics": {
+    "geometry_decode": "OK (official google draco wasm decoder, browser channel; see decode manifest receipt)",
+    "draco": {
+     "bitstream": "2.2",
+     "encoder_type": 1,
+     "encoder_method": 1,
+     "encoder_method_name": "MESH_EDGEBREAKER_ENCODING",
+     "traversal_type": 2,
+     "traversal_name": "MESH_EDGEBREAKER_VALENCE_ENCODING"
+    },
+    "camera": {
+     "yfov_deg": 52.0,
+     "znear": 0.1,
+     "zfar": 100000.0,
+     "model_transform_source": "models entry"
+    },
+    "vertex_count": 133172,
+    "index_count": 449997,
+    "accessor_declared": {
+     "position_count": 133171,
+     "index_count": 449997
+    },
+    "decoded_buffers": {
+     "positions_sha256": "3d48583302999116dee831e942cea493200cb7e7e4815132a0681ea331df9c60",
+     "normals_sha256": "c2729b58f0d8d41f7e318d1d260e45f57b7c918cc0d1a5cc54538bc8ddd8048b",
+     "indices_sha256": "03b941419a752e2d6d88ab9bde929859bbc075e711c017889ec3de279a46e476"
+    },
+    "renderer": "software z-buffer, two-sided lambert, headlight; deterministic function of the pinned decoded buffers"
+   }
+  },
+  {
+   "id": "smithsonian_usnm15259_mandible",
+   "png": "smithsonian_usnm15259_mandible.png",
+   "png_sha256": "474143c4d47583942d3547579303a81454ec31f380ba42f3e50edad3f442fff2",
+   "inputs": [
+    {
+     "role": "geometry_glb",
+     "path": "tools/science_funnel/data/smithsonian/USNM15259_mandible_-300-150k-4096-high.glb",
+     "sha256": "0e6d83f25c9242d3a982f53f080ff6035e984413077dd2f46b246d1724e162a4"
+    },
+    {
+     "role": "camera_document",
+     "path": "tools/science_funnel/data/smithsonian/USNM15259_mandible_document.json",
+     "sha256": "5a9905b9bce3f140542b14b378436d08383eef182a7bcb6ddda251715840b844"
+    },
+    {
+     "role": "download_receipt",
+     "path": "tools/science_funnel/data/smithsonian/download_receipt.json",
+     "sha256": "46d1cb5e433d2bc20210cd4f3c918bfd07174b4df41bb5dd6044eebf86e06cf2"
+    },
+    {
+     "role": "decoded_positions",
+     "path": "tools/science_funnel/data/smithsonian/draco_decode/USNM15259_mandible.positions.f32",
+     "sha256": "e73d24836219fee7df0d1e754fd3950fe233c83e61127d802b0baf21df991239"
+    },
+    {
+     "role": "decoded_normals",
+     "path": "tools/science_funnel/data/smithsonian/draco_decode/USNM15259_mandible.normals.f32",
+     "sha256": "76377aef59922062d4d4072278b5aca5968066b924af2399b80d6af9fe281fe7"
+    },
+    {
+     "role": "decoded_indices",
+     "path": "tools/science_funnel/data/smithsonian/draco_decode/USNM15259_mandible.indices.u32",
+     "sha256": "e5be9e5203a2bf3856d494ee9db7f3328bd9bdd83507fa5d8d0975e3d63e60b6"
+    },
+    {
+     "role": "decode_manifest",
+     "path": "tools/science_funnel/data/smithsonian/draco_decode/draco_decode_manifest.json",
+     "sha256": "8a7f9c8abbf77cde2ad42097b0672e87af94ee222753c7515a0d8d12fccd6780"
+    }
+   ],
+   "params": {
+    "renderer": "decoded-geometry software z-buffer under the document.json camera (320x240); decode identity (official draco wasm, browser) hash-verified before render",
+    "specimen": "USNM 15259 MANDIBLE"
+   },
+   "metrics": {
+    "geometry_decode": "OK (official google draco wasm decoder, browser channel; see decode manifest receipt)",
+    "draco": {
+     "bitstream": "2.2",
+     "encoder_type": 1,
+     "encoder_method": 1,
+     "encoder_method_name": "MESH_EDGEBREAKER_ENCODING",
+     "traversal_type": 2,
+     "traversal_name": "MESH_EDGEBREAKER_VALENCE_ENCODING"
+    },
+    "camera": {
+     "yfov_deg": 52.0,
+     "znear": 0.1,
+     "zfar": 100000.0,
+     "model_transform_source": "models entry"
+    },
+    "vertex_count": 97967,
+    "index_count": 449997,
+    "accessor_declared": {
+     "position_count": 97967,
+     "index_count": 449997
+    },
+    "decoded_buffers": {
+     "positions_sha256": "e73d24836219fee7df0d1e754fd3950fe233c83e61127d802b0baf21df991239",
+     "normals_sha256": "76377aef59922062d4d4072278b5aca5968066b924af2399b80d6af9fe281fe7",
+     "indices_sha256": "e5be9e5203a2bf3856d494ee9db7f3328bd9bdd83507fa5d8d0975e3d63e60b6"
+    },
+    "renderer": "software z-buffer, two-sided lambert, headlight; deterministic function of the pinned decoded buffers"
+   }
+  },
+  {
+   "id": "pantheria_macaca_bmr_vs_mass",
+   "png": "pantheria_macaca_bmr_vs_mass.png",
+   "png_sha256": "b0c2642d351709328c503bbe8d4c3a8a28d4bc980ab6a509745a496b7b4a80c5",
+   "inputs": [
+    {
+     "role": "dataset",
+     "path": "tools/science_funnel/data/pantheria/ECOL_90_184.zip",
+     "sha256": "fe84274a39ba73b3c9b6950b78ba44c545852db9809d1549b0071cfdde46df9f"
+    },
+    {
+     "role": "download_receipt",
+     "path": "tools/science_funnel/data/pantheria/download_receipt.json",
+     "sha256": "cf3227506bbf977af4809957b5a09d0523b8ef88d17d9a67868396cb6edb6985"
+    }
+   ],
+   "params": {
+    "x": "5-1_AdultBodyMass_g",
+    "y": "18-1_BasalMetRate_mLO2hr",
+    "scale": "log10-log10",
+    "filter": "genus Macaca",
+    "size": [
+     320,
+     240
+    ]
+   },
+   "metrics": {
+    "rows": 5416,
+    "dual_measured": 573,
+    "macaca_dual_measured": 1,
+    "macaca_species": [
+     "Macaca mulatta"
+    ],
+    "mulatta_mass_g": 6455.19,
+    "mulatta_bmr_ml_o2_hr": 2239.0
+   }
+  },
+  {
+   "id": "terrain_luquillo_relief",
+   "png": "terrain_luquillo_relief.png",
+   "png_sha256": "7d469a6f295b3f41021726a04e14c45761d87a170624c11645579ac8e2752db7",
+   "inputs": [
+    {
+     "role": "dem",
+     "path": "tools/science_funnel/data/copernicus_glo30/Copernicus_DSM_COG_10_N18_00_W066_00_DEM.tif",
+     "sha256": "371b1449f8bbaf632cf7b1e0b078c60603390a98403c2a5e2038ad98330dbca0"
+    },
+    {
+     "role": "geoid",
+     "path": "tools/science_funnel/data/nga_egm08/us_nga_egm08_25.tif",
+     "sha256": "4191d471eefebf24091b56dbc604353cb3b8cf8cc70e448bb9ae56a272bef17a"
+    }
+   ],
+   "params": {
+    "centre": [
+     18.425,
+     -65.95
+    ],
+    "half_samples": 100,
+    "sun": "az 315 deg, el 45 deg",
+    "reduction_law": "terrain.reduce_terrain (7-step, recorded)"
+   },
+   "metrics": {
+    "window_samples": [
+     201,
+     201
+    ],
+    "centre": [
+     18.425,
+     -65.95
+    ],
+    "dem_rows_cols": [
+     2070,
+     180
+    ],
+    "H_orthometric_m": 1.142284631733326,
+    "N_geoid_m": -44.529496154785015,
+    "h_ellipsoidal_m": -43.38721152305169,
+    "geoid_method_gap_m": 4.973799150320701e-14,
+    "theta_deg": 1.716839104044603
+   }
+  },
+  {
+   "id": "janisch_stride_angle_traces",
+   "png": "janisch_stride_angle_traces.png",
+   "png_sha256": "d7bba01d2097140f7d6a6cbfd340079befeb012ee8ad712642fb4d9134bacf9b",
+   "inputs": [
+    {
+     "role": "strides",
+     "path": "tools/science_funnel/data/janisch_kinematics/wildprimate_kin.csv",
+     "sha256": "d0048076a68de3a881304884a0bf5e3fa87a37392ae567b16be8cecacf001608"
+    },
+    {
+     "role": "download_receipt",
+     "path": "tools/science_funnel/data/janisch_kinematics/download_receipt.json",
+     "sha256": "d55008bfe004834f03d26a2fff33de812686dcaa82665c15aa8d642192f17c99"
+    }
+   ],
+   "params": {
+    "joints": [
+     "hipMID",
+     "kneeMID"
+    ],
+    "trace": "per species+video, stride order"
+   },
+   "metrics": {
+    "species": [
+     "Alouatta_palliata",
+     "Cebus_capucinus",
+     "Cercopithecus_lhoesti",
+     "Chlorocebus_aethiops",
+     "Eulemur_rubriventer",
+     "Eulemur_rufifrons",
+     "Hapalemur_aureus",
+     "Lagothrix_lagotricha",
+     "Lemur_catta",
+     "Lophocebus_albigena",
+     "Papio_anubis",
+     "Piliocolobus_badius",
+     "Plecturocebus_discolor",
+     "Saimiri_sciureus"
+    ],
+    "strides_plotted": 348,
+    "video_traces": 85,
+    "xr_deg": [
+     0,
+     90
+    ],
+    "yr_deg": [
+     30,
+     170
+    ]
+   }
+  }
+ ],
+ "draco_decode": {
+  "channel": {
+   "decoder": "official Google Draco WASM decoder (gstatic versioned 1.5.7), draco_wasm_wrapper.js + draco_decoder.wasm",
+   "page": "three.js r160 GLTFLoader + DRACOLoader, decoder_config wasm",
+   "three_revision": "160",
+   "receipt": "tools/science_funnel/validation/draco_decode_20260918/decode_receipt.json"
+  },
+  "identity_law": "the decoded position/normal/index buffer sha256s are the geometry machine identity; re-decode reproduces them exactly (fresh decoder instances, separate page runs)",
+  "falsifiers": {
+   "redecode_in_run": "pass1 == pass2, fresh DRACOLoader/WASM instances (identical=true for both specimens)",
+   "redecode_cross_run": "two separate page loads reproduce every buffer sha256 (identical=true for both specimens)",
+   "corrupt_probe": "one flipped byte inside the draco bufferView: REFUSED / REFUSED"
+  },
+  "corrupt_probe": {
+   "source_glb": "/glb/USNM15259_mandible_-300-150k-4096-high.glb",
+   "flip_offset": 5440,
+   "corrupted_sha256": "361c443ca088134d81ab3910a779ace4d01ad83a99b327f9b1e4e4416b88e1c5",
+   "outcome_runA": "REFUSED",
+   "outcome_runB": "REFUSED",
+   "error_runA": "[object Object]",
+   "error_runB": "[object Object]"
+  },
+  "specimens": {
+   "cranium": {
+    "glb_sha256": "04b58b90e36caf68548807b7d9609574d1ad7fcacae7a2e50ca7e6b77abc33a4",
+    "draco_header": {
+     "bitstream": "2.2",
+     "encoder_type": 1,
+     "encoder_method": 1,
+     "encoder_method_name": "MESH_EDGEBREAKER_ENCODING",
+     "traversal_type": 2,
+     "traversal_name": "MESH_EDGEBREAKER_VALENCE_ENCODING"
+    },
+    "accessor_declared": {
+     "position_count": 133171,
+     "index_count": 449997
+    },
+    "decoded": {
+     "positions_sha256": "3d48583302999116dee831e942cea493200cb7e7e4815132a0681ea331df9c60",
+     "normals_sha256": "c2729b58f0d8d41f7e318d1d260e45f57b7c918cc0d1a5cc54538bc8ddd8048b",
+     "indices_sha256": "03b941419a752e2d6d88ab9bde929859bbc075e711c017889ec3de279a46e476",
+     "index_type": "Uint32Array",
+     "vertex_count": 133172,
+     "index_count": 449997,
+     "meshes": 1
+    },
+    "screenshot": {
+     "file": "smithsonian_usnm15259_cranium.decode_screenshot.png",
+     "sha256": "4ed30fc2aa6d2a8f407630ee3a1e0412021c5fde91b5605816139d3a5e84482b"
+    }
+   },
+   "mandible": {
+    "glb_sha256": "0e6d83f25c9242d3a982f53f080ff6035e984413077dd2f46b246d1724e162a4",
+    "draco_header": {
+     "bitstream": "2.2",
+     "encoder_type": 1,
+     "encoder_method": 1,
+     "encoder_method_name": "MESH_EDGEBREAKER_ENCODING",
+     "traversal_type": 2,
+     "traversal_name": "MESH_EDGEBREAKER_VALENCE_ENCODING"
+    },
+    "accessor_declared": {
+     "position_count": 97967,
+     "index_count": 449997
+    },
+    "decoded": {
+     "positions_sha256": "e73d24836219fee7df0d1e754fd3950fe233c83e61127d802b0baf21df991239",
+     "normals_sha256": "76377aef59922062d4d4072278b5aca5968066b924af2399b80d6af9fe281fe7",
+     "indices_sha256": "e5be9e5203a2bf3856d494ee9db7f3328bd9bdd83507fa5d8d0975e3d63e60b6",
+     "index_type": "Uint32Array",
+     "vertex_count": 97967,
+     "index_count": 449997,
+     "meshes": 1
+    },
+    "screenshot": {
+     "file": "smithsonian_usnm15259_mandible.decode_screenshot.png",
+     "sha256": "8cfb84c32755df8b1e468fb28d238a85cfa64814312605f11d2ecc42760e6fc8"
+    }
+   }
+  }
+ }
+}

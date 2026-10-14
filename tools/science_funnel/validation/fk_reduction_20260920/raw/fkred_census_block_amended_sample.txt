@@ -1,0 +1,50 @@
+﻿
+[fkred] phase=walk_run evaluates_total=86549
+[fkred] phase=walk_run site=S_MECH n=0
+[fkred] phase=walk_run site=S_CAP n=1
+[fkred] phase=walk_run site=S_FORE n=1
+[fkred] phase=walk_run site=S_LAWFE n=969
+[fkred] phase=walk_run site=S_RATE n=35520
+[fkred] phase=walk_run site=S_FSE0 n=8880
+[fkred] phase=walk_run site=S_FSP0 n=8880
+[fkred] phase=walk_run site=S_FSP1 n=8880
+[fkred] phase=walk_run site=S_IMP n=3443
+[fkred] phase=walk_run site=S_PCEC n=3443
+[fkred] phase=walk_run site=S_PCUB n=1273
+[fkred] phase=walk_run site=S_PCAR n=1384
+[fkred] phase=walk_run site=S_PCDU n=1272
+[fkred] phase=walk_run site=S_ES n=2395
+[fkred] phase=walk_run site=S_EE n=2395
+[fkred] phase=walk_run site=S_PIN1 n=0
+[fkred] phase=walk_run site=S_PIN2 n=0
+[fkred] phase=walk_run site=S_CROSS n=140
+[fkred] phase=walk_run site=S_BISECT_GAP n=6216
+[fkred] phase=walk_run site=S_REFLEX n=303
+[fkred] phase=walk_run site=S_HULL n=303
+[fkred] phase=walk_run site=S_SAT n=243
+[fkred] phase=walk_run site=S_STATUS n=304
+[fkred] phase=walk_run site=S_U0 n=304
+[fkred] phase=walk_run site=S_RESET n=0
+[fkred] phase=walk_run call=C_FS_MAIN n=2395
+[fkred] phase=walk_run call=C_FS_DRV n=126
+[fkred] phase=walk_run call=C_FS_CON n=6216
+[fkred] phase=walk_run call=C_FS_CROSS n=140
+[fkred] phase=walk_run call=C_FS_WALL n=3
+[fkred] phase=walk_run call=C_IMP_ENT n=3300
+[fkred] phase=walk_run call=C_IMP_PIN n=0
+[fkred] phase=walk_run call=C_IMP_CROSS n=140
+[fkred] phase=walk_run call=C_IMP_WALL n=3
+[fkred] phase=walk_run call=C_ADV_TRIAL n=1209
+[fkred] phase=walk_run call=C_ADV_BISECT n=0
+[fkred] phase=walk_run call=C_ADV_RETRY n=0
+[fkred] phase=walk_run call=C_CAUGHT n=3299
+[fkred] phase=walk_run call=C_CLAMP n=0
+[fkred] phase=walk_run call=C_EVT_CON n=140
+[fkred] phase=walk_run call=C_EVT_WALL n=3
+[fkred] phase=walk_run evaluates_total=86549
+[fkred] phase=walk_run site=S_MECH n=0
+[fkred] phase=walk_run site=S_CAP n=1
+[fkred] phase=walk_run site=S_FORE n=1
+[fkred] phase=walk_run site=S_LAWFE n=969
+
+

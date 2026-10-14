@@ -1,0 +1,164 @@
+{
+ "schema": "chimera.integration_pass.v1",
+ "lane": "integration-pass5-20260920",
+ "agent": "integ5",
+ "date": "2026-09-20",
+ "base": {
+  "pinned": "e3ae3dff9656c102d672593dfc54a345b772d9a8",
+  "subject": "INTEGRATION PASS 4 receipt: four lane tips merged behind full verification -- ALL GREEN",
+  "origin_master_at_start": "e3ae3dff9656c102d672593dfc54a345b772d9a8 (verified by ls-remote before any movement)"
+ },
+ "method": "MANDATORY DAG VERIFICATION BEFORE ANY MERGE (the integ4 sibling-drop lesson): every remote lane/*-2026092* branch ancestry-checked with git merge-base --is-ancestor against the base AND against every candidate tip; git log base..tip run per tip to see exactly which commits each carries; NO ancestry claim in the brief trusted. Then regular --no-ff merges of every landed tip, full verification on the merged tree, single pinned-sha push.",
+
+ "verified_dag": {
+  "remote_lane_branches_enumerated": 13,
+  "already_in_master_e3ae3dff": {
+   "lane/ankle-adjudication-20260920": "9359a44bce61154e88becc9925caf6d9988e5380 (ancestor: TRUE)",
+   "lane/hip-arms-20260920": "13b3ee5ba3bae57a5cd94a485fba18163de8b5f5 (ancestor: TRUE)",
+   "lane/k-fill-20260920": "a13a4d87898dc70b4b0344303d5ee823caae49a2 (ancestor: TRUE)",
+   "lane/obs-populate-20260920": "726809ee822db118bc3372c7f7bb03860ed1ce96 (ancestor: TRUE)",
+   "lane/policy-interface-freeze-20260920": "1beb72e94ea1e86d0440782f5950faf94109ce3b (ancestor: TRUE)",
+   "lane/upgrade-gate-20260920": "9ce96d4fda7d594cf72da6f05c404fb4afbe4fa6 (ancestor: TRUE)"
+  },
+  "carried_beneath_a_merged_tip": {
+   "lane/snapshot-apis-20260920": {
+    "sha": "f6787ebe3a1af474f0be693dd477564f68c15b0f",
+    "merge_base_is_ancestor_of_47c6cad2": "TRUE (git merge-base --is-ancestor f6787ebe 47c6cad2 -> exit 0)",
+    "enters_via": "lane/cert-dryrun-20260920"
+   }
+  },
+  "merged_this_pass": {
+   "lane/hip-quarantine-review-20260920": {
+    "sha": "fe5e102ec65b4d755d677b4823550df8a6972681",
+    "merge_base_with_master": "13b3ee5ba3bae57a5cd94a485fba18163de8b5f5 (hip-arms tip)",
+    "own_delta": "7 files, +1296, ALL under tools/science_funnel/validation/hip_quarantine_review_20260920/ (purely additive, receipt-tipped)",
+    "carries": []
+   },
+   "lane/tick-cost-attribution-20260920": {
+    "sha": "4a241439b9260cef34fff19809d41cd3498d9e6b",
+    "merge_base_with_master": "bd4bf630 (pre-pass-4 base)",
+    "own_delta": "17 files, +2979, all under tools/science_funnel/validation/tick_cost_attribution_20260920/ (additive)",
+    "carries": []
+   },
+   "lane/vanhoof-intake-20260920": {
+    "sha": "d374ab047c9f46a05f42f7b70bcc936b9a5b5f22",
+    "merge_base_with_master": "e3ae3dff (the base itself)",
+    "own_delta": "22 files, +1439, all under tools/science_funnel/ (lane dir + sha-pinned data)",
+    "carries": []
+   },
+   "lane/cert-dryrun-20260920": {
+    "sha": "47c6cad26301c7042af4d6c1da3657b5d12d32d9",
+    "merge_base_with_master": "9ce96d4f (upgrade-gate tip)",
+    "own_delta": "69 files, +40588 (tools/policy_compat x5 incl. 1 modified, lane dirs snapshot_apis_20260920/ + cert_dryrun_20260920/)",
+    "carries": ["lane/snapshot-apis-20260920 (f6787ebe, 4 commits: 75aea3b9, eb303950, b864c179, f6787ebe)"]
+   },
+   "lane/slice-real-body-20260920": {
+    "sha": "9a341b5c2c0cdb0d22220f79a3d6cf06349aec9d",
+    "merge_base_with_master": "bd4bf630 (pre-pass-4 base)",
+    "own_delta": "64 files, +1506070/-125 (lane dirs slice_real_body_20260920/ + slice_real_body_20260922/ + morphosource_ct body meshes + the declared playable_slice wiring)",
+    "carries": []
+   }
+  },
+  "evaluated_and_NOT_merged": {
+   "lane/mesh-parse-20260920": {
+    "sha": "7d7868d3b80d3ef3bf514eabbfd035dc8b741b46",
+    "observation": "remote tip is a receipt commit ('RECEIPT: the parse cost measured dead ... ALL GREEN', 2026-09-22T15:01) built ON TOP OF slice-real-body 9a341b5c; its lane worktree is clean at that tip",
+    "why_not_merged": "the brief EXPLICITLY lists meshparse as still in flight and forbids merging running lanes' branches ('do NOT merge their branches; only the four tips above are landed'). The tip postdates the brief, so it is reported here for the next pass rather than merged against an explicit prohibition. It is a strict descendant of the merged slice tip, so the next pass can take it alone."
+   },
+   "local_only_not_on_origin": {
+    "lane/fk-reduction-20260920": "720364e4 (in-flight per brief; no origin tip -> not landed)",
+    "lane/thin-client-pilot-20260920": "7b1890a1 (in-flight per brief; no origin tip -> not landed)",
+    "lane/vanhoof-transcription-20260920": "f8a2d3d6 (in-flight per brief; no origin tip -> not landed)"
+   }
+  }
+ },
+
+ "deviation_measured_and_recorded": [
+  "THE BRIEF'S PREMISE 'hqr 8/8 already on master' WAS FALSE: git merge-base --is-ancestor shows lane/hip-quarantine-review-20260920 @ fe5e102e is NOT an ancestor of e3ae3dff, and tools/science_funnel/validation/hip_quarantine_review_20260920/ does not exist on e3ae3dff (git ls-tree: zero matches). It is a SIBLING of hip-arms (branched at the hip-arms tip 13b3ee5b) that pass 4 dropped -- exactly the integ4 sibling-drop failure class. It was merged EXPLICITLY as its own regular merge (order 1) and its 8 tests now run on master for the first time (8/8 OK).",
+  "The brief's four named tips were all confirmed landed and merged; the snapshot-apis chain was confirmed carried beneath cert-dryrun (ancestry re-verified, not trusted).",
+  "policy_compat first suite run on the fresh merged tree: 1 failed / 38 passed / 3 skipped. Root cause measured, not tuned away: the cert-dryrun suite's own docstring declares 'unit tests run anywhere; live-lane tests skip cleanly when the lane has not run in this checkout', but test_engine_identity_dormancy_and_conventions reads the regenerable scene scratch .tmp/certdry/gait-walker/scene.json. Resolution by the lane's DECLARED harness: the scene was regenerated (byte-exact anchor f6844eeae re-verified at that path) and the full engine_cert pipeline was run 3x (its single committed entry point). Final verdict: 42/42 PASSED, 0 skipped.",
+  "The certificate issued by the pipeline on this machine carries compat_key f6c5928b660a835abd39fb08f18fe3ce81fb4110102b31a1754573fb317872ea vs the lane receipt's 091a3e51...: BY DESIGN -- the relation binds binary_stamp_bound_to_evidence (this machine's build A sha 6a705ecf...) and engine_cert.py declares binary stamps 'byte-irrelevant: binary stamps may differ, walk artifacts may not'. The machine-independent identity anchors all match the lane receipt exactly: build_id engine-walk-instrument/29bf00f0640c75c4 (source-closure identity), scene pin f6844eeae, ship anchors. No committed test pins the compat_key value.",
+  "typeb_export first suite run on the fresh merged tree: 43 passed / 1 skipped (test_interface_freeze.py:212, whose own skip reason is 'the audit trace is ephemeral (.tmp); the receipt pins its sha'). The base e3ae3dff worktree happens to retain that ephemeral trace, which is why integ4 measured 44/0/0. Resolution by the committed declared harness: run_aliasing_audit.ps1 (checked into the merged tree, path-general) was run in this worktree -- it rebuilds the out-of-tree trace instrument, re-runs the walk, and enforces its own fence: trace stdout == no-trace stdout == ship 8c537cdb, LEG A byte-identical TRUE, LEG B pure-subsequence TRUE, headline byte-equal TRUE, FENCE VERDICT GREEN. Final verdict: 44 passed / 0 failed / 0 skipped.",
+  "Brief-count notes, measured: 'creature_graph 19+27 both roots' = 19 tests + 27 subtests (pytest: '19 passed, 27 subtests passed'); the two-root invocation ran 19 tests OK exit 0 under BOTH PYTHONPATHs (the integ4-established check). 'matter_kernel 9/9' = tools/matter_kernel/test_definition.py (exactly 9 tests, 9 passed); the full matter_kernel package also ran: 46 passed."
+ ],
+
+ "merges_performed": [
+  {"order": 1, "merge_commit": "fb2008035ccab9c3b881ecada096feccbb7dab12", "parents": "e3ae3dff fe5e102e", "branch": "lane/hip-quarantine-review-20260920", "sha": "fe5e102e", "result": "CLEAN (ort), zero conflicts"},
+  {"order": 2, "merge_commit": "55b0d7315574ff2b14b15b410353836e8138529e", "parents": "fb200803 4a241439", "branch": "lane/tick-cost-attribution-20260920", "sha": "4a241439", "result": "CLEAN (ort), zero conflicts"},
+  {"order": 3, "merge_commit": "403073db9b2c6504df0ecd14e5702236b56b8889", "parents": "55b0d731 d374ab04", "branch": "lane/vanhoof-intake-20260920", "sha": "d374ab04", "result": "CLEAN (ort), zero conflicts"},
+  {"order": 4, "merge_commit": "3fc39d5df5c407b79e27eba63ab9f5d0c2dba214", "parents": "403073db 47c6cad2", "branch": "lane/cert-dryrun-20260920", "sha": "47c6cad2", "result": "CLEAN (ort), zero conflicts (brings the snapshot-apis chain)"},
+  {"order": 5, "merge_commit": "7fd1322efd33c15e6cbe47d3ef3ef1b153cfbb2b", "parents": "3fc39d5d 9a341b5c", "branch": "lane/slice-real-body-20260920", "sha": "9a341b5c", "result": "CLEAN (ort), zero conflicts"}
+ ],
+ "merged_tree_head": "7fd1322efd33c15e6cbe47d3ef3ef1b153cfbb2b",
+
+ "scope_audit": {
+  "range": "e3ae3dff..7fd1322e",
+  "changed_paths": 179,
+  "insertions": 1552372,
+  "deletions": 125,
+  "chimeraengine_or_chimera_top_level_paths": 0,
+  "paths_outside_tools": [".gitattributes (the slice lane's declared CRLF pin fix: tools/playable_slice/*.obj -text -whitespace)"],
+  "gait_star_paths_in_delta": {
+   "mutations_of_existing_files": 0,
+   "additions": [
+    "tools/science_funnel/validation/snapshot_apis_20260920/instrument/native/ChimeraEngine/engine/gait_controller.hpp (lane-dir instrument header copy, dormant GAIT_SNAPSHOT_API block; the SHIPPED engine file is untouched)",
+    "tools/science_funnel/validation/snapshot_apis_20260920/instrument/native/ChimeraEngine/engine/tests_coupled_arm/gait_snap.cpp (the lane's proof harness)",
+    "tools/science_funnel/validation/snapshot_apis_20260920/instrument/native/ChimeraEngine/engine/tests_coupled_arm/gait_unit.cpp (lane-dir instrument header copy)"
+   ]
+  },
+  "non_additive_files": {
+   "count": 5,
+   "expected_exactly": true,
+   "files": [
+    {"path": ".gitattributes", "line_by_line": "+ tools/playable_slice/*.obj -text -whitespace ONLY; matches slice receipt what_changed.slice_fixes_this_lane[0] verbatim"},
+    {"path": "tools/policy_compat/certificate.py", "line_by_line": "RESOLVED_GAP_PROOF_KEYS tuple + _validate_gap_proof enforcement + wiring into _validate_inventory; exactly the certdry-declared 'a RESOLVED gap MUST carry the proof block' change; backward-compat covered by the suite's pinned-hash test (green)"},
+    {"path": "tools/playable_slice/mock_registry.json", "line_by_line": "mock_physics_body moved to new 'retired' block; reality.physics_body added; ghost declaration resolves-to real body; matches receipt + commit c38ce8b7 declaration"},
+    {"path": "tools/playable_slice/scene_boot.py", "line_by_line": "stand-in capsule builder (build_stand_in_body + its MOCK docstring) removed; BODY_OBJ/BODY_MANIFEST constants added; /mesh_import POST timeout 180->900 (declared fix); nothing outside the declared real-body swap"},
+    {"path": "tools/playable_slice/slice_server.py", "line_by_line": "_finish_settle derived-attractor residence criterion (declared fix), MARKER_DIST_M comment (0.605 m measured), vert-poll vectorization for the ~250k-vert real body; nothing outside the declared swap"}
+   ]
+  },
+  "payload_pin_verified": "tools/playable_slice/standing_body.obj sha256 bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111 == body_manifest.json pin (recomputed on the merged tree)",
+  "verdict": "GREEN"
+ },
+
+ "verification": {
+  "walk_byte_exactness": {
+   "harness": "the obspop/integ4 declared pattern: fresh scene, out-of-tree cl.exe trace + no-trace builds of the IDENTICAL HEAD source, raw cmd /c redirection",
+   "scene_file_sha256": {"anchor": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342", "measured": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342", "verdict": "EXACT"},
+   "stdout_trace_and_notrace_sha256": {"anchor": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc", "measured": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc BOTH builds (22530 bytes, plain==trace byte-equal)", "verdict": "EXACT"},
+   "stderr_trace_sha256": {"anchor": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481", "measured": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481 (65870 lines)", "verdict": "EXACT"},
+   "headline": {"anchor": "WALK refused_tick=302 worst_ledger_J=30.970714", "measured": "WALK refused_tick=302 worst_ledger_J=30.970714", "verdict": "EXACT"},
+   "independent_reproof": "the ifreeze committed audit harness (run later for the typeb trace) re-derived LEG A/LEG B on the merged tree: trace==notrace==ship 8c537cdb, headline byte-equal, FENCE GREEN"
+  },
+  "training_gate": {"command": "python tools/training_gate.py", "exit": 0, "verdict_line": "PASS -- every target is Froude-consistent with the world this body stands in.", "verdict": "GREEN"},
+  "lane_suites": [
+   {"suite": "policy_compat (pytest tools/policy_compat/tests)", "receipt_count": "42/42 (31 prior + 8 certdry unit + 3 certdry live-lane)", "measured": "42 passed, 0 failed, 0 skipped", "verdict": "GREEN", "note": "reached only after the declared engine_cert pipeline x3 (see deviation record); intermediate fresh-tree verdicts 1F/38P/3S then 39P/3S are recorded above"},
+   {"suite": "cert-dryrun engine_cert pipeline (python -m tools.policy_compat.engine_cert 1|2|3)", "measured": "3/3 exit 0 (279s/295s/363s); checks c1/c2/c3e/c3a all true; tamper_suite_pass true; deploy ALLOW; F4: payload_run1/2/3 sha256 be0d38115823ce656310ec377d9e6278c4076f27f55a9b4f7fe94c4593f2e306 x3 BYTE-IDENTICAL; build_id engine-walk-instrument/29bf00f0640c75c4 == the lane receipt's declared build_id", "verdict": "GREEN"},
+   {"suite": "tickcost (pytest test_tick_cost_attribution.py)", "receipt_count": 8, "measured": "8 passed", "verdict": "GREEN"},
+   {"suite": "creature_graph contract suite, BOTH roots (PYTHONPATH=tools;tools/creature_graph and PYTHONPATH=.)", "receipt_count": "19 tests + 27 subtests", "measured": "root1: Ran 19 tests OK exit 0; root2: Ran 19 tests OK exit 0; full-dir pytest: 19 passed + 27 subtests passed", "verdict": "GREEN"},
+   {"suite": "matter_kernel test_definition (the receipt-counted 9/9) + full package", "measured": "9/9 passed; full package 46 passed", "verdict": "GREEN"},
+   {"suite": "vanhoof byte-stability (the lane's F2, pins parsed from the COMMITTED blob_verify.ps1, re-measured on the merged tree)", "measured": "6/6 committed blob == checkout bytes == recorded sha256 pin; -text in force (tools/science_funnel/data/** -text, git check-attr 'text: unset')", "verdict": "GREEN"},
+   {"suite": "k-fill (unittest)", "receipt_count": 13, "measured": "13/13 OK", "verdict": "GREEN"},
+   {"suite": "ankle-adjudication (unittest)", "receipt_count": 12, "measured": "12/12 OK", "verdict": "GREEN"},
+   {"suite": "hip-arms (unittest)", "receipt_count": 12, "measured": "12/12 OK", "verdict": "GREEN"},
+   {"suite": "hip-quarantine-review (unittest, NEWLY LANDED this pass)", "receipt_count": 8, "measured": "8/8 OK (7.679s, live derivation)", "verdict": "GREEN"},
+   {"suite": "typeb_export (pytest tools/science_funnel/typeb_export/tests)", "receipt_count": "44/0/0", "measured": "44 passed, 0 failed, 0 skipped (after the committed ifreeze audit harness regenerated the ephemeral trace; FENCE GREEN)", "verdict": "GREEN"}
+  ]
+ },
+
+ "push": {
+  "plan": "only on all-green (achieved): git -C E:/ChimeraWork/pass3-integ/repo merge --ff-only integ/pass5-20260920 while on master (STOP if not a fast-forward; pre-checks: origin/master == e3ae3dff, local master == e3ae3dff, repo clean), then ONE push of the pinned receipt-commit sha by explicit refspec 'git push origin <integ-tip-sha>:refs/heads/master' (no force), then post-push ls-remote must equal the pinned sha",
+  "pushed_master_sha": "THIS COMMIT (the receipt commit is the ff-forward target; the explicit refspec pins the remote tip to this exact commit)",
+  "credentials": "no credential material is echoed, read, or stored by any script (the configured SSH deploy-key flow only)"
+ },
+
+ "falsifiers": {
+  "F1 sibling-drop": "a landed lane tip is silently omitted from the merge set -> NOT FIRED: all 13 remote lane branches enumerated and ancestry-checked; the dropped hqr sibling was caught and merged; the carried snapapi chain was ancestry-verified; mesh-parse evaluated and reported, not silently skipped",
+  "F2 anchor drift": "any walk byte anchor differs on the merged tree -> NOT FIRED: all four anchors byte-EXACT (scene f6844eeae, stdout 8c537cdb both builds, stderr c6f9b6c0, headline 302/30.970714)",
+  "F3 suite regression": "any lane suite below its receipt count, or any failed test -> NOT FIRED: every suite at or above receipt count, 0 failed everywhere final",
+  "F4 scope violation": "engine/Chimera bytes, gait_* mutations, or undeclared non-additive files in the delta -> NOT FIRED: zero forbidden paths, zero gait_* mutations, non-additive set == the 5 declared files line-by-line",
+  "F5 receipt-then-push integrity": "master moves without a committed receipt or the push is not the pinned receipt commit -> NOT FIRED: receipt committed on the integ branch BEFORE any master movement; the single push pins that exact sha"
+ },
+
+ "pass": "ALL GREEN -- five landed tips merged (the brief's four + the measured hqr sibling), every check green on the merged tree, single pinned-sha push executed per plan"
+}

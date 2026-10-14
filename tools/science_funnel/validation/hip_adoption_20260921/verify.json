@@ -1,0 +1,131 @@
+{
+ "kernel_conformance": {
+  "falsifier": "F4_kernel_and_book",
+  "pass": true,
+  "measured": {
+   "parser": "tools.matter_kernel.definition.parse_body",
+   "membranes": 25,
+   "bonds": 23,
+   "stated_vs_kernel_derived_mass_max_rel": 2.1607093527137095e-06
+  }
+ },
+ "geometry_preserved": {
+  "falsifier": "F1_geometry_preserved",
+  "pass": true,
+  "measured": {
+   "compartments": 25,
+   "face_count_equal": true,
+   "vertex_count_equal": true,
+   "per_face_float32_equal": true,
+   "worst_bbox_dev_mm": 6.269765634669966e-06,
+   "bbox_tolerance_mm": 0.001,
+   "vertex_sha256_all_match": true,
+   "sections_equal_to_base_blob": [
+    "schema",
+    "specimen",
+    "stage",
+    "units",
+    "membrane_layer",
+    "materials",
+    "membranes"
+   ]
+  }
+ },
+ "adjacency_reproduced": {
+  "falsifier": "F2_bond_class_law",
+  "pass": true,
+  "measured": {
+   "bonds": 23,
+   "committed_edges_reproduced": 21,
+   "hip_bonds_adopted": 2,
+   "max_committed_rest_length_dev_mm": 0.0,
+   "max_hip_rest_length_dev_mm": 0.0,
+   "rest_length_equals_measured_gap_all_bonds": true,
+   "pose_contacts_recorded": 6,
+   "pose_pairs_in_bonds": 0,
+   "refused_recorded": 5,
+   "invented_joints": 0,
+   "dropped_joints": 0
+  }
+ },
+ "component_consequence": {
+  "falsifier": "F3_component_consequence",
+  "pass": true,
+  "measured": {
+   "components_before": 8,
+   "components_after": 6,
+   "components": [
+    [
+     1,
+     2,
+     3,
+     6,
+     7,
+     15,
+     17,
+     18,
+     20,
+     21,
+     22,
+     23,
+     24,
+     25
+    ],
+    [
+     4,
+     8,
+     10,
+     12
+    ],
+    [
+     5,
+     9,
+     11,
+     13
+    ],
+    [
+     14
+    ],
+    [
+     16
+    ],
+    [
+     19
+    ]
+   ],
+   "note": "composite + both hind chains joined via the 2 hip bonds; fore chains separate (curl contacts carry no graph edges); singletons 14/16/19 isolated"
+  }
+ },
+ "mass_book": {
+  "falsifier": "F4_kernel_and_book",
+  "pass": true,
+  "measured": {
+   "total_mass_g": 52.3139,
+   "unchanged_vs_derivation_book": true,
+   "worst_compartment_mass_abs_dev_g": 4.7496448285500037e-07,
+   "total_volume_mesh_mm3": 27533.6503,
+   "total_volume_delta_pct": -2.281,
+   "named_deviations_count": 3
+  }
+ },
+ "stage_true": {
+  "pass": true,
+  "measured": {
+   "life_stage": "infant",
+   "scale": 1.0,
+   "pose_sections": [
+    "pose_contacts",
+    "refused_joints",
+    "adoption"
+   ],
+   "pose_law": "6 curl contacts recorded as pose metadata, 0 as bonds -- the stage/pose honesty"
+  }
+ },
+ "determinism": {
+  "falsifier": "F5_fresh_clone_bytes",
+  "pass": true,
+  "measured": {
+   "adopt_check": "committed body.json byte-identical to the deterministic adoption of base blob 3539fdb9"
+  }
+ }
+}

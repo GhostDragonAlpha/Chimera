@@ -1,0 +1,27 @@
+{
+ "falsifier": "F-PAYLOAD-PIN",
+ "pass": true,
+ "measured": {
+  "pin_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+  "worktree_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+  "recomposed_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+  "checkout_invariance": true,
+  "compose_determinism": true,
+  "counts_match": true,
+  "vertices": 249743,
+  "triangles": 499976,
+  "kMaxTris": 500000,
+  "under_cap": true
+ },
+ "compose_record": {
+  "pose_json_sha256": "27e6fd9e95a057af276f63859af65c6a8a4d20a35d0cedf7b495ea9c9ffa0053",
+  "registration_pin_sha256": "013810f87a6ca7c1e01916ef7a5454e61e8d0e88f8d6a589fbfdd1514017a173",
+  "mesh_dir": "tools/science_funnel/data/morphosource_ct/meshes_body_20260922",
+  "bones": 25,
+  "vertices": 249743,
+  "triangles": 499976,
+  "declared_id": null,
+  "units": "scene metres, +Y up, pads' mean plane at y=0"
+ },
+ "law": "the import payload is committed bytes: a pure function of the committed body bones + pose.json + the pinned registration, checkout-invariant (-text), recomposable byte-for-byte"
+}

@@ -1,0 +1,506 @@
+[
+ {
+  "t1": 8,
+  "t2": 38,
+  "control_reason": "pad 3 deformation rate -0.000790 vs -0.003335 m/tick (> kSinkRateMax); body advance 0.6909 vs 0.7668 m/s (>= graded bar); context: events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()",
+  "clauses": {
+   "body_advance": true,
+   "pad_deformation": true,
+   "touch_pattern": false
+  },
+  "delivered": {
+   "com_vel_x_t1": 0.6627,
+   "com_vel_x_t2": 0.6489,
+   "delta_m_per_s": -0.0138
+  },
+  "separated": true,
+  "differing_fields": [
+   "com_vel_x_heading"
+  ],
+  "named_deciding_fields": {
+   "body_advance": "field 21 com_vel_x_heading (delivered)",
+   "pad_deformation": "NO frozen-vocabulary field carries the per-paw min-gap rate (endpoint-signed pad channels ride 'lohi'; hind-legs-only) -- carried by the body-advance clause on this walk; v3 residual",
+   "touch_pattern": "fields 9-14 per-foot slots -- STRUCTURAL on the 4-paw body (all-or-nothing 6-slot read); this pair separates via field 21, its named fields stay undetermined"
+  }
+ },
+ {
+  "t1": 8,
+  "t2": 39,
+  "control_reason": "pad 3 deformation rate -0.000790 vs -0.003411 m/tick (> kSinkRateMax); body advance 0.6909 vs 0.7740 m/s (>= graded bar); context: events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()",
+  "clauses": {
+   "body_advance": true,
+   "pad_deformation": true,
+   "touch_pattern": false
+  },
+  "delivered": {
+   "com_vel_x_t1": 0.6627,
+   "com_vel_x_t2": 0.651,
+   "delta_m_per_s": -0.0117
+  },
+  "separated": true,
+  "differing_fields": [
+   "com_vel_x_heading"
+  ],
+  "named_deciding_fields": {
+   "body_advance": "field 21 com_vel_x_heading (delivered)",
+   "pad_deformation": "NO frozen-vocabulary field carries the per-paw min-gap rate (endpoint-signed pad channels ride 'lohi'; hind-legs-only) -- carried by the body-advance clause on this walk; v3 residual",
+   "touch_pattern": "fields 9-14 per-foot slots -- STRUCTURAL on the 4-paw body (all-or-nothing 6-slot read); this pair separates via field 21, its named fields stay undetermined"
+  }
+ },
+ {
+  "t1": 9,
+  "t2": 38,
+  "control_reason": "pad 3 deformation rate -0.000930 vs -0.003335 m/tick (> kSinkRateMax); body advance 0.6867 vs 0.7668 m/s (>= graded bar); context: events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()",
+  "clauses": {
+   "body_advance": true,
+   "pad_deformation": true,
+   "touch_pattern": false
+  },
+  "delivered": {
+   "com_vel_x_t1": 0.6609,
+   "com_vel_x_t2": 0.6489,
+   "delta_m_per_s": -0.012
+  },
+  "separated": true,
+  "differing_fields": [
+   "com_vel_x_heading"
+  ],
+  "named_deciding_fields": {
+   "body_advance": "field 21 com_vel_x_heading (delivered)",
+   "pad_deformation": "NO frozen-vocabulary field carries the per-paw min-gap rate (endpoint-signed pad channels ride 'lohi'; hind-legs-only) -- carried by the body-advance clause on this walk; v3 residual",
+   "touch_pattern": "fields 9-14 per-foot slots -- STRUCTURAL on the 4-paw body (all-or-nothing 6-slot read); this pair separates via field 21, its named fields stay undetermined"
+  }
+ },
+ {
+  "t1": 9,
+  "t2": 39,
+  "control_reason": "pad 3 deformation rate -0.000930 vs -0.003411 m/tick (> kSinkRateMax); body advance 0.6867 vs 0.7740 m/s (>= graded bar); context: events hind=() foreclk=() pawcap=('cap',) vs hind=() foreclk=() pawcap=()",
+  "clauses": {
+   "body_advance": true,
+   "pad_deformation": true,
+   "touch_pattern": false
+  },
+  "delivered": {
+   "com_vel_x_t1": 0.6609,
+   "com_vel_x_t2": 0.651,
+   "delta_m_per_s": -0.0099
+  },
+  "separated": true,
+  "differing_fields": [
+   "com_vel_x_heading"
+  ],
+  "named_deciding_fields": {
+   "body_advance": "field 21 com_vel_x_heading (delivered)",
+   "pad_deformation": "NO frozen-vocabulary field carries the per-paw min-gap rate (endpoint-signed pad channels ride 'lohi'; hind-legs-only) -- carried by the body-advance clause on this walk; v3 residual",
+   "touch_pattern": "fields 9-14 per-foot slots -- STRUCTURAL on the 4-paw body (all-or-nothing 6-slot read); this pair separates via field 21, its named fields stay undetermined"
+  }
+ },
+ {
+  "t1": 11,
+  "t2": 38,
+  "control_reason": "body advance 0.6798 vs 0.7668 m/s (>= graded bar)",
+  "clauses": {
+   "body_advance": true,
+   "pad_deformation": false,
+   "touch_pattern": false
+  },
+  "delivered": {
+   "com_vel_x_t1": 0.6567,
+   "com_vel_x_t2": 0.6489,
+   "delta_m_per_s": -0.0078
+  },
+  "separated": true,
+  "differing_fields": [
+   "com_vel_x_heading"
+  ],
+  "named_deciding_fields": {
+   "body_advance": "field 21 com_vel_x_heading (delivered)",
+   "pad_deformation": "NO frozen-vocabulary field carries the per-paw min-gap rate (endpoint-signed pad channels ride 'lohi'; hind-legs-only) -- carried by the body-advance clause on this walk; v3 residual",
+   "touch_pattern": "fields 9-14 per-foot slots -- STRUCTURAL on the 4-paw body (all-or-nothing 6-slot read); this pair separates via field 21, its named fields stay undetermined"
+  }
+ },
+ {
+  "t1": 11,
+  "t2": 39,
+  "control_reason": "body advance 0.6798 vs 0.7740 m/s (>= graded bar)",
+  "clauses": {
+   "body_advance": true,
+   "pad_deformation": false,
+   "touch_pattern": false
+  },
+  "delivered": {
+   "com_vel_x_t1": 0.6567,
+   "com_vel_x_t2": 0.651,
+   "delta_m_per_s": -0.0057
+  },
+  "separated": true,
+  "differing_fields": [
+   "com_vel_x_heading"
+  ],
+  "named_deciding_fields": {
+   "body_advance": "field 21 com_vel_x_heading (delivered)",
+   "pad_deformation": "NO frozen-vocabulary field carries the per-paw min-gap rate (endpoint-signed pad channels ride 'lohi'; hind-legs-only) -- carried by the body-advance clause on this walk; v3 residual",
+   "touch_pattern": "fields 9-14 per-foot slots -- STRUCTURAL on the 4-paw body (all-or-nothing 6-slot read); this pair separates via field 21, its named fields stay undetermined"
+  }
+ },
+ {
+  "t1": 14,
+  "t2": 38,
+  "control_reason": "body advance 0.6741 vs 0.7668 m/s (>= graded bar)",
+  "clauses": {
+   "body_advance": true,
+   "pad_deformation": false,
+   "touch_pattern": false
+  },
+  "delivered": {
+   "com_vel_x_t1": 0.6519,
+   "com_vel_x_t2": 0.6489,
+   "delta_m_per_s": -0.003
+  },
+  "separated": true,
+  "differing_fields": [
+   "com_vel_x_heading"
+  ],
+  "named_deciding_fields": {
+   "body_advance": "field 21 com_vel_x_heading (delivered)",
+   "pad_deformation": "NO frozen-vocabulary field carries the per-paw min-gap rate (endpoint-signed pad channels ride 'lohi'; hind-legs-only) -- carried by the body-advance clause on this walk; v3 residual",
+   "touch_pattern": "fields 9-14 per-foot slots -- STRUCTURAL on the 4-paw body (all-or-nothing 6-slot read); this pair separates via field 21, its named fields stay undetermined"
+  }
+ },
+ {
+  "t1": 14,
+  "t2": 39,
+  "control_reason": "body advance 0.6741 vs 0.7740 m/s (>= graded bar)",
+  "clauses": {
+   "body_advance": true,
+   "pad_deformation": false,
+   "touch_pattern": false
+  },
+  "delivered": {
+   "com_vel_x_t1": 0.6519,
+   "com_vel_x_t2": 0.651,
+   "delta_m_per_s": -0.0009
+  },
+  "separated": true,
+  "differing_fields": [
+   "com_vel_x_heading"
+  ],
+  "named_deciding_fields": {
+   "body_advance": "field 21 com_vel_x_heading (delivered)",
+   "pad_deformation": "NO frozen-vocabulary field carries the per-paw min-gap rate (endpoint-signed pad channels ride 'lohi'; hind-legs-only) -- carried by the body-advance clause on this walk; v3 residual",
+   "touch_pattern": "fields 9-14 per-foot slots -- STRUCTURAL on the 4-paw body (all-or-nothing 6-slot read); this pair separates via field 21, its named fields stay undetermined"
+  }
+ },
+ {
+  "t1": 23,
+  "t2": 38,
+  "control_reason": "body advance 0.6909 vs 0.7668 m/s (>= graded bar)",
+  "clauses": {
+   "body_advance": true,
+   "pad_deformation": false,
+   "touch_pattern": false
+  },
+  "delivered": {
+   "com_vel_x_t1": 0.6435,
+   "com_vel_x_t2": 0.6489,
+   "delta_m_per_s": 0.0054
+  },
+  "separated": true,
+  "differing_fields": [
+   "com_vel_x_heading"
+  ],
+  "named_deciding_fields": {
+   "body_advance": "field 21 com_vel_x_heading (delivered)",
+   "pad_deformation": "NO frozen-vocabulary field carries the per-paw min-gap rate (endpoint-signed pad channels ride 'lohi'; hind-legs-only) -- carried by the body-advance clause on this walk; v3 residual",
+   "touch_pattern": "fields 9-14 per-foot slots -- STRUCTURAL on the 4-paw body (all-or-nothing 6-slot read); this pair separates via field 21, its named fields stay undetermined"
+  }
+ },
+ {
+  "t1": 23,
+  "t2": 39,
+  "control_reason": "body advance 0.6909 vs 0.7740 m/s (>= graded bar)",
+  "clauses": {
+   "body_advance": true,
+   "pad_deformation": false,
+   "touch_pattern": false
+  },
+  "delivered": {
+   "com_vel_x_t1": 0.6435,
+   "com_vel_x_t2": 0.651,
+   "delta_m_per_s": 0.0075
+  },
+  "separated": true,
+  "differing_fields": [
+   "com_vel_x_heading"
+  ],
+  "named_deciding_fields": {
+   "body_advance": "field 21 com_vel_x_heading (delivered)",
+   "pad_deformation": "NO frozen-vocabulary field carries the per-paw min-gap rate (endpoint-signed pad channels ride 'lohi'; hind-legs-only) -- carried by the body-advance clause on this walk; v3 residual",
+   "touch_pattern": "fields 9-14 per-foot slots -- STRUCTURAL on the 4-paw body (all-or-nothing 6-slot read); this pair separates via field 21, its named fields stay undetermined"
+  }
+ },
+ {
+  "t1": 24,
+  "t2": 38,
+  "control_reason": "body advance 0.6963 vs 0.7668 m/s (>= graded bar)",
+  "clauses": {
+   "body_advance": true,
+   "pad_deformation": false,
+   "touch_pattern": false
+  },
+  "delivered": {
+   "com_vel_x_t1": 0.6426,
+   "com_vel_x_t2": 0.6489,
+   "delta_m_per_s": 0.0063
+  },
+  "separated": true,
+  "differing_fields": [
+   "com_vel_x_heading"
+  ],
+  "named_deciding_fields": {
+   "body_advance": "field 21 com_vel_x_heading (delivered)",
+   "pad_deformation": "NO frozen-vocabulary field carries the per-paw min-gap rate (endpoint-signed pad channels ride 'lohi'; hind-legs-only) -- carried by the body-advance clause on this walk; v3 residual",
+   "touch_pattern": "fields 9-14 per-foot slots -- STRUCTURAL on the 4-paw body (all-or-nothing 6-slot read); this pair separates via field 21, its named fields stay undetermined"
+  }
+ },
+ {
+  "t1": 24,
+  "t2": 39,
+  "control_reason": "body advance 0.6963 vs 0.7740 m/s (>= graded bar)",
+  "clauses": {
+   "body_advance": true,
+   "pad_deformation": false,
+   "touch_pattern": false
+  },
+  "delivered": {
+   "com_vel_x_t1": 0.6426,
+   "com_vel_x_t2": 0.651,
+   "delta_m_per_s": 0.0084
+  },
+  "separated": true,
+  "differing_fields": [
+   "com_vel_x_heading"
+  ],
+  "named_deciding_fields": {
+   "body_advance": "field 21 com_vel_x_heading (delivered)",
+   "pad_deformation": "NO frozen-vocabulary field carries the per-paw min-gap rate (endpoint-signed pad channels ride 'lohi'; hind-legs-only) -- carried by the body-advance clause on this walk; v3 residual",
+   "touch_pattern": "fields 9-14 per-foot slots -- STRUCTURAL on the 4-paw body (all-or-nothing 6-slot read); this pair separates via field 21, its named fields stay undetermined"
+  }
+ },
+ {
+  "t1": 27,
+  "t2": 38,
+  "control_reason": "body advance 0.6969 vs 0.7668 m/s (>= graded bar)",
+  "clauses": {
+   "body_advance": true,
+   "pad_deformation": false,
+   "touch_pattern": false
+  },
+  "delivered": {
+   "com_vel_x_t1": 0.6384,
+   "com_vel_x_t2": 0.6489,
+   "delta_m_per_s": 0.0105
+  },
+  "separated": true,
+  "differing_fields": [
+   "com_vel_x_heading"
+  ],
+  "named_deciding_fields": {
+   "body_advance": "field 21 com_vel_x_heading (delivered)",
+   "pad_deformation": "NO frozen-vocabulary field carries the per-paw min-gap rate (endpoint-signed pad channels ride 'lohi'; hind-legs-only) -- carried by the body-advance clause on this walk; v3 residual",
+   "touch_pattern": "fields 9-14 per-foot slots -- STRUCTURAL on the 4-paw body (all-or-nothing 6-slot read); this pair separates via field 21, its named fields stay undetermined"
+  }
+ },
+ {
+  "t1": 27,
+  "t2": 39,
+  "control_reason": "body advance 0.6969 vs 0.7740 m/s (>= graded bar)",
+  "clauses": {
+   "body_advance": true,
+   "pad_deformation": false,
+   "touch_pattern": false
+  },
+  "delivered": {
+   "com_vel_x_t1": 0.6384,
+   "com_vel_x_t2": 0.651,
+   "delta_m_per_s": 0.0126
+  },
+  "separated": true,
+  "differing_fields": [
+   "com_vel_x_heading"
+  ],
+  "named_deciding_fields": {
+   "body_advance": "field 21 com_vel_x_heading (delivered)",
+   "pad_deformation": "NO frozen-vocabulary field carries the per-paw min-gap rate (endpoint-signed pad channels ride 'lohi'; hind-legs-only) -- carried by the body-advance clause on this walk; v3 residual",
+   "touch_pattern": "fields 9-14 per-foot slots -- STRUCTURAL on the 4-paw body (all-or-nothing 6-slot read); this pair separates via field 21, its named fields stay undetermined"
+  }
+ },
+ {
+  "t1": 29,
+  "t2": 38,
+  "control_reason": "body advance 0.7026 vs 0.7668 m/s (>= graded bar)",
+  "clauses": {
+   "body_advance": true,
+   "pad_deformation": false,
+   "touch_pattern": false
+  },
+  "delivered": {
+   "com_vel_x_t1": 0.639,
+   "com_vel_x_t2": 0.6489,
+   "delta_m_per_s": 0.0099
+  },
+  "separated": true,
+  "differing_fields": [
+   "com_vel_x_heading"
+  ],
+  "named_deciding_fields": {
+   "body_advance": "field 21 com_vel_x_heading (delivered)",
+   "pad_deformation": "NO frozen-vocabulary field carries the per-paw min-gap rate (endpoint-signed pad channels ride 'lohi'; hind-legs-only) -- carried by the body-advance clause on this walk; v3 residual",
+   "touch_pattern": "fields 9-14 per-foot slots -- STRUCTURAL on the 4-paw body (all-or-nothing 6-slot read); this pair separates via field 21, its named fields stay undetermined"
+  }
+ },
+ {
+  "t1": 29,
+  "t2": 39,
+  "control_reason": "body advance 0.7026 vs 0.7740 m/s (>= graded bar)",
+  "clauses": {
+   "body_advance": true,
+   "pad_deformation": false,
+   "touch_pattern": false
+  },
+  "delivered": {
+   "com_vel_x_t1": 0.639,
+   "com_vel_x_t2": 0.651,
+   "delta_m_per_s": 0.012
+  },
+  "separated": true,
+  "differing_fields": [
+   "com_vel_x_heading"
+  ],
+  "named_deciding_fields": {
+   "body_advance": "field 21 com_vel_x_heading (delivered)",
+   "pad_deformation": "NO frozen-vocabulary field carries the per-paw min-gap rate (endpoint-signed pad channels ride 'lohi'; hind-legs-only) -- carried by the body-advance clause on this walk; v3 residual",
+   "touch_pattern": "fields 9-14 per-foot slots -- STRUCTURAL on the 4-paw body (all-or-nothing 6-slot read); this pair separates via field 21, its named fields stay undetermined"
+  }
+ },
+ {
+  "t1": 12,
+  "t2": 25,
+  "control_reason": "touch pattern (False, True, False, False) vs (True, False, False, False)",
+  "clauses": {
+   "body_advance": false,
+   "pad_deformation": false,
+   "touch_pattern": true
+  },
+  "delivered": {
+   "com_vel_x_t1": 0.6555,
+   "com_vel_x_t2": 0.6411,
+   "delta_m_per_s": -0.0144
+  },
+  "separated": true,
+  "differing_fields": [
+   "com_vel_x_heading"
+  ],
+  "named_deciding_fields": {
+   "body_advance": "field 21 com_vel_x_heading (delivered)",
+   "pad_deformation": "NO frozen-vocabulary field carries the per-paw min-gap rate (endpoint-signed pad channels ride 'lohi'; hind-legs-only) -- carried by the body-advance clause on this walk; v3 residual",
+   "touch_pattern": "fields 9-14 per-foot slots -- STRUCTURAL on the 4-paw body (all-or-nothing 6-slot read); this pair separates via field 21, its named fields stay undetermined"
+  }
+ },
+ {
+  "t1": 18,
+  "t2": 33,
+  "control_reason": "body advance 0.6756 vs 0.7302 m/s (>= graded bar)",
+  "clauses": {
+   "body_advance": true,
+   "pad_deformation": false,
+   "touch_pattern": false
+  },
+  "delivered": {
+   "com_vel_x_t1": 0.6471,
+   "com_vel_x_t2": 0.642,
+   "delta_m_per_s": -0.0051
+  },
+  "separated": true,
+  "differing_fields": [
+   "com_vel_x_heading"
+  ],
+  "named_deciding_fields": {
+   "body_advance": "field 21 com_vel_x_heading (delivered)",
+   "pad_deformation": "NO frozen-vocabulary field carries the per-paw min-gap rate (endpoint-signed pad channels ride 'lohi'; hind-legs-only) -- carried by the body-advance clause on this walk; v3 residual",
+   "touch_pattern": "fields 9-14 per-foot slots -- STRUCTURAL on the 4-paw body (all-or-nothing 6-slot read); this pair separates via field 21, its named fields stay undetermined"
+  }
+ },
+ {
+  "t1": 19,
+  "t2": 34,
+  "control_reason": "body advance 0.6777 vs 0.7377 m/s (>= graded bar)",
+  "clauses": {
+   "body_advance": true,
+   "pad_deformation": false,
+   "touch_pattern": false
+  },
+  "delivered": {
+   "com_vel_x_t1": 0.6465,
+   "com_vel_x_t2": 0.6432,
+   "delta_m_per_s": -0.0033
+  },
+  "separated": true,
+  "differing_fields": [
+   "com_vel_x_heading"
+  ],
+  "named_deciding_fields": {
+   "body_advance": "field 21 com_vel_x_heading (delivered)",
+   "pad_deformation": "NO frozen-vocabulary field carries the per-paw min-gap rate (endpoint-signed pad channels ride 'lohi'; hind-legs-only) -- carried by the body-advance clause on this walk; v3 residual",
+   "touch_pattern": "fields 9-14 per-foot slots -- STRUCTURAL on the 4-paw body (all-or-nothing 6-slot read); this pair separates via field 21, its named fields stay undetermined"
+  }
+ },
+ {
+  "t1": 20,
+  "t2": 35,
+  "control_reason": "body advance 0.6810 vs 0.7446 m/s (>= graded bar)",
+  "clauses": {
+   "body_advance": true,
+   "pad_deformation": false,
+   "touch_pattern": false
+  },
+  "delivered": {
+   "com_vel_x_t1": 0.645,
+   "com_vel_x_t2": 0.6447,
+   "delta_m_per_s": -0.0003
+  },
+  "separated": true,
+  "differing_fields": [
+   "com_vel_x_heading"
+  ],
+  "named_deciding_fields": {
+   "body_advance": "field 21 com_vel_x_heading (delivered)",
+   "pad_deformation": "NO frozen-vocabulary field carries the per-paw min-gap rate (endpoint-signed pad channels ride 'lohi'; hind-legs-only) -- carried by the body-advance clause on this walk; v3 residual",
+   "touch_pattern": "fields 9-14 per-foot slots -- STRUCTURAL on the 4-paw body (all-or-nothing 6-slot read); this pair separates via field 21, its named fields stay undetermined"
+  }
+ },
+ {
+  "t1": 40,
+  "t2": 54,
+  "control_reason": "body advance 0.7539 vs 0.6231 m/s (>= graded bar)",
+  "clauses": {
+   "body_advance": true,
+   "pad_deformation": false,
+   "touch_pattern": false
+  },
+  "delivered": {
+   "com_vel_x_t1": 0.6483,
+   "com_vel_x_t2": 0.5568,
+   "delta_m_per_s": -0.0915
+  },
+  "separated": true,
+  "differing_fields": [
+   "com_vel_x_heading"
+  ],
+  "named_deciding_fields": {
+   "body_advance": "field 21 com_vel_x_heading (delivered)",
+   "pad_deformation": "NO frozen-vocabulary field carries the per-paw min-gap rate (endpoint-signed pad channels ride 'lohi'; hind-legs-only) -- carried by the body-advance clause on this walk; v3 residual",
+   "touch_pattern": "fields 9-14 per-foot slots -- STRUCTURAL on the 4-paw body (all-or-nothing 6-slot read); this pair separates via field 21, its named fields stay undetermined"
+  }
+ }
+]

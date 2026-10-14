@@ -1,0 +1,33 @@
+refusal: (302, 'gait_positional_correction_budget')  fires: 18  tds: 17  dvfa ticks: 303  dvfa dup (t,leg) beyond first: 4230
+SAMPLING BASIS: first-sample pad_y == the fire's fy at every fire tick: PASS  max |diff| 4.350e-07 m (the 0.000001 print quantum)  (the substep census: 606 (t,leg) series, cmd_y within-tick drift 0, pad_y within-tick drift 604)
+[dvp] CROSS-CHECK: |status pos y mean - last-sample pad_y| over 604 (t,leg): max 4.229e-02 m;
+  in-contact (pairmin gap <= kTouch): n=437 median 1.395e-02 m -- MEASURED-DIFFERENT (the [dvp] pos is the
+  contact point, NOT the pad center; NOT a height series for airborne pads; the verdict rests on [dvfa].
+ERA TABLE: fire->compl leg class FORM eraClass CMD_peak(mm) DEL_peak(mm) cmdClass branches deathTick bxAdv(mm) advRate(mm/t) tauMax capMax demandFace
+    98-> 107 leg=1 slot none   LIFT  CMD=  8.000 DEL=  3.872 arch-class hggggggggt death=(107, 't') adv= 17.05 rate= 1.89 tau=11.213 cap=11.213 PINNED
+   142-> 160 leg=0 alt  fold   LIFT  CMD=  8.000 DEL= 20.590 arch-class hgggggggggggggggggt death=(151, 'g') adv= 43.61 rate= 2.42 tau= 9.412 cap=11.213 flows
+   160-> 174 leg=1 alt  unload LIFT  CMD=  8.000 DEL= 15.942 arch-class hgggggggggggggt death=(169, 'g') adv= 35.94 rate= 2.57 tau= 9.076 cap=11.213 flows
+   161-> 170 leg=0 alt  unload STALL CMD=  8.000 DEL= -0.000 arch-class hhhhhhhhht death=(170, 't') adv= 23.91 rate= 2.66 tau= 0.189 cap=11.213 flows
+   175-> 184 leg=0 alt  unload STALL CMD=  8.000 DEL=  0.000 arch-class hhhhhhhhht death=(184, 't') adv= 27.07 rate= 3.01 tau= 3.047 cap=11.213 flows
+   184-> 193 leg=1 alt  unload STALL CMD=  8.000 DEL=  0.080 arch-class hhhhhhhhht death=(193, 't') adv= 27.25 rate= 3.03 tau= 1.690 cap=11.213 flows
+   193-> 202 leg=0 alt  unload STALL CMD=  8.000 DEL= -0.000 arch-class hhhhhhhhht death=(202, 't') adv= 26.99 rate= 3.00 tau= 1.693 cap=11.213 flows
+   202-> 211 leg=1 alt  unload LIFT  CMD=  8.000 DEL=  3.802 arch-class hhhhgggggt death=(211, 't') adv= 25.56 rate= 2.84 tau=11.213 cap=11.213 PINNED
+   211-> 220 leg=0 alt  unload LIFT  CMD=  8.000 DEL=  2.503 arch-class hhhhgggggt death=(220, 't') adv= 25.24 rate= 2.80 tau=11.213 cap=11.213 PINNED
+   220-> 229 leg=1 alt  unload LIFT  CMD=  8.000 DEL=  3.445 arch-class hhhhhhhhht death=(229, 't') adv= 29.14 rate= 3.24 tau= 2.376 cap=11.213 flows
+   229-> 238 leg=0 alt  unload LIFT  CMD=  8.000 DEL=  4.568 arch-class hhhhhhhhht death=(238, 't') adv= 33.48 rate= 3.72 tau= 1.494 cap=11.213 flows
+   238-> 247 leg=1 alt  unload LIFT  CMD=  8.000 DEL=  3.739 arch-class hhhhhhhhht death=(247, 't') adv= 37.64 rate= 4.18 tau= 1.366 cap=11.213 flows
+   247-> 256 leg=0 alt  unload LIFT  CMD=  8.000 DEL=  5.789 arch-class hhhhhhhhht death=(256, 't') adv= 42.71 rate= 4.75 tau= 1.164 cap=11.213 flows
+   256-> 265 leg=1 alt  unload STALL CMD=  8.000 DEL=  0.242 arch-class hhhhhhhhht death=(265, 't') adv= 48.15 rate= 5.35 tau= 1.066 cap=11.213 flows
+   265-> 274 leg=0 alt  unload LIFT  CMD=  8.000 DEL=  8.203 arch-class hhhhhhhhht death=(274, 't') adv= 54.13 rate= 6.01 tau= 4.078 cap=11.213 flows
+   274-> 291 leg=1 alt  unload STALL CMD=  8.000 DEL=  0.000 arch-class hggggggggggggggggt death=(283, 'g') adv=119.67 rate= 7.04 tau=11.213 cap=11.213 PINNED
+   291-> 300 leg=0 alt  unload STALL CMD=  8.000 DEL=  0.000 arch-class hhhhhhhhht death=(300, 't') adv= 68.70 rate= 7.63 tau=11.213 cap=11.213 PINNED
+   300-> 302 leg=1 alt  unload STALL CMD=  8.000 DEL=  0.007 arch-class hhh       death=none       adv=   nan rate=  nan tau=11.213 cap=11.213 PINNED
+----------------------------------------------------------------------------------------------------------------------
+STALL ERAS: 8  (DEL_peak < 1 mm)  command-stall: 0   arch-class-command (servo-dead): 8   gap-zone: 0
+  stall CMD_peak band: 8.000 - 8.000 mm   stall DEL_peak band: -0.000 - 0.242 mm
+LIFT ERAS: 10   CMD_peak band: 8.000 - 8.000 mm   DEL_peak band: 2.503 - 20.590 mm
+----------------------------------------------------------------------------------------------------------------------
+THE SELECTION RULE (fixed in receipt_wave42.json): VERDICT B -- SERVO-UNDERDELIVERY (the command is NOT
+the lever; the premise is KILLED; NO law; the gate face names itself from the [dvq] demand reads).
+THE DEMAND FACE over the stall eras: tau pinned at cap in 3 of 8 (tauMax 11.213 vs capMax 11.213 over all)
+THE BODY ADVANCE (the wave-41 creep census, this lane's faces): stall eras 23.91-119.67 mm at 2.66-7.63 mm/tick; lift eras 17.05-54.13 mm at 1.89-6.01 mm/tick

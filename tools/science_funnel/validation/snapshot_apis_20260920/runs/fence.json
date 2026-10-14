@@ -1,0 +1,58 @@
+{
+  "anchors": {
+    "scene_sha256": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342",
+    "ship_plain_stderr_sha256": "b505bb65652c2b796c163899ec51b7e5268342e5d31f28a9603fc2ab6c2d72ab",
+    "ship_stdout_sha256": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+    "ship_trace_stderr_sha256": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481"
+  },
+  "detail": "scene f6844ee EXACT; ship stdout 8c537cdb EXACT; ship trace c6f9b6c0 EXACT; instrument copy flag-off == pristine bytes (LEG A); the EXERCISED build with recording + snapshot active still prints the ship stdout+trace bytes; the restored run's per-tick telemetry equals the ship walk segment byte-exactly",
+  "legs": {
+    "EXERCISED_ref_stdout_with_recording": {
+      "anchor": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+      "measured": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+      "pass": true
+    },
+    "EXERCISED_ref_trace_with_recording": {
+      "anchor": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+      "measured": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+      "pass": true
+    },
+    "LEG_A_copy_flagoff_stderr": {
+      "measured": "b505bb65652c2b796c163899ec51b7e5268342e5d31f28a9603fc2ab6c2d72ab",
+      "pass": true,
+      "pristine": "b505bb65652c2b796c163899ec51b7e5268342e5d31f28a9603fc2ab6c2d72ab"
+    },
+    "LEG_A_copy_flagoff_stdout": {
+      "measured": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+      "pass": true,
+      "pristine": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc"
+    },
+    "LEG_B_plain_stderr": {
+      "anchor": "b505bb65652c2b796c163899ec51b7e5268342e5d31f28a9603fc2ab6c2d72ab",
+      "measured": "b505bb65652c2b796c163899ec51b7e5268342e5d31f28a9603fc2ab6c2d72ab",
+      "pass": true
+    },
+    "LEG_B_scene_anchor": {
+      "anchor": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342",
+      "measured": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342",
+      "pass": true
+    },
+    "LEG_B_ship_stdout": {
+      "anchor": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+      "measured": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+      "pass": true
+    },
+    "LEG_B_ship_trace": {
+      "anchor": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+      "measured": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+      "pass": true
+    },
+    "RESTORED_trace_equals_ship_walk_segment": {
+      "pass": true,
+      "restored_trace_bytes": 1667220,
+      "ship_prefix_match_at_walk1": true
+    }
+  },
+  "pass": true,
+  "schema": "chimera.snapshot_apis.fence/1"
+}

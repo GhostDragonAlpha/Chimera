@@ -1,0 +1,52 @@
+{
+  "_comment": "chimera.visible_monkey.dir_spec.v1 -- THE CONTRACT the landed Visible Monkey data must satisfy. Copy to dir_spec.json, fill the real paths, run: python -B tools/science_funnel/visible_monkey_import.py build dir_spec.json. Nothing else is edited; every field here is load-bearing and refuses by name if wrong.",
+
+  "schema": "chimera.visible_monkey.dir_spec.v1",
+  "dataset_name": "visible_monkey",
+
+  "root": "E:/ChimeraWork/visible_monkey_data",
+  "_root_note": "absolute path to the landed data (operator email -> this dir, then sha256 everything per RUNBOOK step 1)",
+
+  "stl": {
+    "dir": "stl",
+    "glob": "*.stl",
+    "expected_count": 167,
+    "_note": "Kim et al. 2020: 167 whole-body structures, 3D STL surface models (Mimics 17.01). expected_count is a falsifier: any other count refuses structure_count_mismatch."
+  },
+
+  "labels": {
+    "file": "labels.csv",
+    "columns": { "id": "id", "label": "label", "system": "system", "stated_volume_mm3": "stated_volume_mm3" },
+    "_note": "CSV with a header row; id matches the STL filename stem. system is one of the materials_by_system keys. stated_volume_mm3 is OPTIONAL: when present (e.g. from the segmentation tables), mesh-integrated volume must agree within volume_tolerance_rel or the translator refuses volume_mismatch."
+  },
+
+  "collection_record": {
+    "file": "collection_record.json",
+    "_note": "see collection_record.template.json -- the STAGE GATE lives here (age evidence admission-required)"
+  },
+
+  "adjacency": {
+    "file": "touching_edges.json",
+    "required": false,
+    "_note": "MEASURED structure-to-structure contacts only (pair of ids + gap_mm). The real set ships none until adjacency is measured (successor work); absent file => zero bonds, honest components, zero invented joints."
+  },
+
+  "units": "mm",
+  "volume_tolerance_rel": 0.05,
+
+  "enforce_body_fraction_bands": true,
+  "_fraction_note": "when true (REAL data), the book's system fractions are gated: skeleton 8-15% of the collection-record body mass (mammalian band), muscle 25-50%; the whole-animal band [0.6, 1.3] x body mass is always gated when body_mass_kg is present. Synthetic fixtures set false -- they prove the identity machinery, not biology."
+
+  "materials_by_system": {
+    "skeletal": "mat.bone_cortical",
+    "articular": "mat.cartilage",
+    "muscular": "mat.skeletal_muscle",
+    "integumentary": "mat.skin",
+    "organ": "mat.soft_tissue",
+    "_note": "every STL's system must map here; densities and their citations live in the translator's MATERIALS (Rule 1), not in the spec"
+  },
+
+  "output_dir": "E:/ChimeraWork/visible_monkey_data/matter_body",
+  "validation_dir": "E:/ChimeraWork/visible_monkey_data/validation",
+  "_output_note": "output_dir receives body.json + tris/*.bin; validation_dir receives derivation.json + verify.json. Both must be OUTSIDE the repo (bulk data never lands in git); the repo receives only receipts and the runbook's appended REAL verify record."
+}

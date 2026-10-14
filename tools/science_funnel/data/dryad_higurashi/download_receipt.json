@@ -1,0 +1,49 @@
+{
+ "source": "Higurashi & Kumakura 2021 Japanese macaque gait kinematics (terrestrial + pole), Dryad doi:10.5061/dryad.fj6q573tc version 4 (metadata_changed), API v2 dataset + version file list (Dataset_macaque-gait.xlsx 23,042 B + Readme 10,572 B, sha-256 digests). File BYTES deferred: API download 401 bearer-token wall, file_stream behind Anubis bot challenge, no account registrable from this agent, browser unavailable",
+ "retrieved_utc": "2026-09-17T00:00:00+00:00",
+ "license": "CC0 1.0 (Dryad API v2 dataset record license field)",
+ "files": [
+  {
+   "path": "higurashi_files.json",
+   "url": "https://datadryad.org/api/v2/versions/132640/files",
+   "resolved_url": "https://datadryad.org/api/v2/versions/132640/files",
+   "bytes": 1581,
+   "sha256": "fb0a209b90cd9e3baba71f472ccd05bc766ab7f74bc323708f530e155a819af2"
+  },
+  {
+   "path": "higurashi_dataset.json",
+   "url": "https://datadryad.org/api/v2/datasets/doi%3A10.5061%2Fdryad.fj6q573tc",
+   "resolved_url": "https://datadryad.org/api/v2/datasets/doi%3A10.5061%2Fdryad.fj6q573tc",
+   "bytes": 3676,
+   "sha256": "533e243b83ac614fc6849883485e9e49851b0b5373ca26b3b8a245259476186d"
+  },
+  {
+   "path": "dryad_api_401_evidence.json",
+   "url": "https://datadryad.org/api/v2/files/855229/download",
+   "resolved_url": "https://datadryad.org/api/v2/files/855229/download",
+   "bytes": 56,
+   "sha256": "1ac025323ea66e58c9a8a0b960db5a839ef812e1ff8bfea2f3aff74dc3961296"
+  },
+  {
+   "path": "dryad_api_dataset401_evidence.json",
+   "url": "https://datadryad.org/api/v2/datasets/doi%3A10.5061%2Fdryad.fj6q573tc/download",
+   "resolved_url": "https://datadryad.org/api/v2/datasets/doi%3A10.5061%2Fdryad.fj6q573tc/download",
+   "bytes": 56,
+   "sha256": "1ac025323ea66e58c9a8a0b960db5a839ef812e1ff8bfea2f3aff74dc3961296"
+  },
+  {
+   "path": "dryad_anubis_challenge.html",
+   "url": "https://datadryad.org/downloads/file_stream/855229",
+   "resolved_url": "https://datadryad.org/downloads/file_stream/855229",
+   "bytes": 4306,
+   "sha256": "d979fa401f18df0a36142974ccca2b5bef704d360685811a2b41409e44bf9f83"
+  },
+  {
+   "path": "probe_evidence.json",
+   "url": "recorded from this lane probe run",
+   "resolved_url": "recorded from this lane probe run",
+   "bytes": 844,
+   "sha256": "9a1da16e2e5f677ca259d198d0778c2f9f91d85ab5fcc20a0747b17bb4e383a0"
+  }
+ ]
+}

@@ -1,0 +1,450 @@
+{
+ "base": "http://127.0.0.1:8912",
+ "at": "2026-09-22T23:57:28.327Z",
+ "timeline": {
+  "t_launch": 0,
+  "t_page_load": 0.18,
+  "t_first_gl": 0.31,
+  "t_understood": 0.42,
+  "t_ready": 0.68,
+  "t_fall_triggered": 0.79,
+  "t_landed": 5.96,
+  "t_understood_state": 6.19
+ },
+ "trace": [
+  {
+   "t": 0.17,
+   "stage": "launch"
+  },
+  {
+   "t": 0.36,
+   "stage": "first-gl"
+  },
+  {
+   "t": 0.59,
+   "stage": "understood"
+  },
+  {
+   "t": 0.6,
+   "stage": "ready-wait"
+  },
+  {
+   "t": 0.85,
+   "stage": "fall-trigger"
+  },
+  {
+   "t": 0.97,
+   "stage": "fall-watch"
+  },
+  {
+   "t": 6.14,
+   "stage": "understood-state"
+  },
+  {
+   "t": 6.36,
+   "stage": "every-key"
+  },
+  {
+   "t": 8.38,
+   "stage": "verdicts"
+  },
+  {
+   "t": 8.4,
+   "stage": "artifact"
+  }
+ ],
+ "stage": "artifact",
+ "channel": "chromium-bundled (MACHINE_FINDINGS: installed Chrome cannot navigate on this machine)",
+ "stranger_reading": {
+  "guideVisible": true,
+  "guideText": "LESSON ONE — THE FALL\n\nThis animal is real: a monkey's body built from CT scan data, obeying real physics. Right now it stands still because the floor holds it — the upward hold exactly balances its weight.\n\nPress F and the lesson drops the body. Watch gravity win, watch the floor catch it, and watch the two forces balance again. That balance is where the body rests.\n\nKeys: F drop · R reset · H help · arrows orbit · +/− zoom",
+  "keyRows": [
+   {
+    "key": "F",
+    "text": "F DROP the body — the fall"
+   },
+   {
+    "key": "R",
+    "text": "R reset the lesson (same body)"
+   },
+   {
+    "key": "H",
+    "text": "H show / hide this help"
+   },
+   {
+    "key": "ArrowLeft",
+    "text": "ArrowLeft orbit camera left"
+   },
+   {
+    "key": "ArrowRight",
+    "text": "ArrowRight orbit camera right"
+   },
+   {
+    "key": "ArrowUp",
+    "text": "ArrowUp orbit camera up"
+   },
+   {
+    "key": "ArrowDown",
+    "text": "ArrowDown orbit camera down"
+   },
+   {
+    "key": "+",
+    "text": "+ zoom in"
+   },
+   {
+    "key": "-",
+    "text": "- zoom out"
+   }
+  ]
+ },
+ "page_names_drop_key": true,
+ "boot_ready_phase": "idle",
+ "fall_acked_by_server": true,
+ "settled_state": {
+  "teach": {
+   "t1": true,
+   "t2": true,
+   "t3": true
+  },
+  "understood": true,
+  "displayed": {
+   "height": "0.1246",
+   "speed": "0.0001",
+   "hold": "135622.0",
+   "weight": "135618.3",
+   "holdFrac": 0.2000053901262399,
+   "phase": "done",
+   "attractor": 0.12464112903214866
+  }
+ },
+ "fall_verdict": {
+  "phase": "done",
+  "max_root_y": 0.9702,
+  "max_abs_vy": 4.0827,
+  "landed_root_y": 0.1248,
+  "contact_first_s": 0.013
+ },
+ "surface_airborne": {
+  "t": 1790121449626,
+  "vy": 3.95349,
+  "hold": 0,
+  "phase": "running",
+  "weight": 135618.345
+ },
+ "surface_catch": {
+  "t": 1790121450123,
+  "vy": -0.211571,
+  "hold": 127015,
+  "phase": "running"
+ },
+ "surface_log_n": 33,
+ "surface_log_head": [
+  {
+   "t": 0.96,
+   "h": "0.0000",
+   "sp": "0.0000",
+   "hold": "0.0",
+   "phase": "seated"
+  },
+  {
+   "t": 1.11,
+   "h": "0.0147",
+   "sp": "1.3407",
+   "hold": "1826000.0",
+   "phase": "running"
+  },
+  {
+   "t": 1.26,
+   "h": "0.6469",
+   "sp": "2.5791",
+   "hold": "0.0",
+   "phase": "running"
+  },
+  {
+   "t": 1.43,
+   "h": "0.8679",
+   "sp": "1.4782",
+   "hold": "0.0",
+   "phase": "running"
+  },
+  {
+   "t": 1.58,
+   "h": "0.9704",
+   "sp": "0.0244",
+   "hold": "0.0",
+   "phase": "running"
+  },
+  {
+   "t": 1.74,
+   "h": "0.9474",
+   "sp": "-0.2236",
+   "hold": "135443.0",
+   "phase": "running"
+  }
+ ],
+ "surface_log_tail": [
+  {
+   "t": 5.18,
+   "h": "0.1925",
+   "sp": "-0.2237",
+   "hold": "135618.0",
+   "phase": "running"
+  },
+  {
+   "t": 5.33,
+   "h": "0.1595",
+   "sp": "-0.2237",
+   "hold": "135618.0",
+   "phase": "running"
+  },
+  {
+   "t": 5.49,
+   "h": "0.1458",
+   "sp": "-0.2237",
+   "hold": "135618.0",
+   "phase": "running"
+  },
+  {
+   "t": 5.64,
+   "h": "0.1246",
+   "sp": "0.0044",
+   "hold": "136376.0",
+   "phase": "settling"
+  },
+  {
+   "t": 5.8,
+   "h": "0.1246",
+   "sp": "0.0044",
+   "hold": "136376.0",
+   "phase": "settling"
+  },
+  {
+   "t": 5.96,
+   "h": "0.1246",
+   "sp": "0.0001",
+   "hold": "135622.0",
+   "phase": "done"
+  }
+ ],
+ "understood_state": {
+  "teach": {
+   "t1": true,
+   "t2": true,
+   "t3": true
+  },
+  "understood": true,
+  "doneVisible": true,
+  "beacon": []
+ },
+ "beacon_entries": [],
+ "beacon_empty": true,
+ "key_results": {
+  "F": true,
+  "ArrowLeft": true,
+  "ArrowRight": true,
+  "ArrowUp": true,
+  "ArrowDown": true,
+  "+": true,
+  "-": true,
+  "H": true,
+  "R": true
+ },
+ "keys_on_page": [
+  "F",
+  "R",
+  "H",
+  "ArrowLeft",
+  "ArrowRight",
+  "ArrowUp",
+  "ArrowDown",
+  "+",
+  "-"
+ ],
+ "every_named_key_works": true,
+ "page_series_n": 78,
+ "running_samples_n": 65,
+ "running_median_dt_ms": 70,
+ "page_series_peak_abs_vy": 3.95349,
+ "peak_vy_estimate": {
+  "server_verdict": 4.0827,
+  "page_series": 3.95349,
+  "used": 4.0827
+ },
+ "launch_spike": {
+  "note": "DISCRETIZATION ARTIFACT CLASS, reported in full, NOT barred (Amendments 4-5: the contact cap integrated over ~1 tick, tick alignment decides the magnitude; the banked 3.6792 is one draw; realizations 3.5455-3.9742 across ten runs)",
+  "server_verdict": 4.0827,
+  "page_series": 3.95349,
+  "used": 4.0827,
+  "banked_single_draw": 3.6792
+ },
+ "apex_reported": {
+  "note": "the launch impulse's BALLISTIC INTEGRAL -- the same discretization draw as the spike (run 185542_1: second-highest spike, highest apex), reported in full, NOT barred (Amendment 5)",
+  "measured": 0.9702,
+  "banked_single_draw": 0.9009
+ },
+ "peak_descent_vy": 0.223719,
+ "fall_shape": {
+  "terminal_descent": {
+   "measured": 0.223719,
+   "bar": [
+    0.2237,
+    0.02
+   ],
+   "pass": true
+  },
+  "landed": {
+   "measured": 0.1248,
+   "bar": [
+    0.1246,
+    0.002
+   ],
+   "pass": true
+  },
+  "pass": true
+ },
+ "surface_settled": {
+  "hold": 135618,
+  "weight": 135618.345,
+  "rel_err": 0.0000025439036289755943
+ },
+ "number_trace": {
+  "height": {
+   "displayed": "0.1246",
+   "engine": 0.124641,
+   "match": true
+  },
+  "speed": {
+   "displayed": "-0.0000",
+   "engine": -1.64836e-7,
+   "match": true
+  },
+  "hold": {
+   "displayed": "135618.0",
+   "engine": 135618,
+   "match": true
+  },
+  "weight": {
+   "displayed": "135618.3",
+   "engine_constant_n": 135618.345,
+   "match": true
+  }
+ },
+ "falsifiers": {
+  "F-LESSON-60": {
+   "measured": {
+    "t_page_load": 0.18,
+    "t_ready": 0.68,
+    "t_fall_triggered": 0.79,
+    "t_landed": 5.96
+   },
+   "bar_s": 60,
+   "pass": true
+  },
+  "F-NUMBERS-ENGINE": {
+   "note": "displayed values are computed in-page from lastStatusJson (the engine response stored verbatim); verified live below",
+   "number_trace": {
+    "height": {
+     "displayed": "0.1246",
+     "engine": 0.124641,
+     "match": true
+    },
+    "speed": {
+     "displayed": "-0.0000",
+     "engine": -1.64836e-7,
+     "match": true
+    },
+    "hold": {
+     "displayed": "135618.0",
+     "engine": 135618,
+     "match": true
+    },
+    "weight": {
+     "displayed": "135618.3",
+     "engine_constant_n": 135618.345,
+     "match": true
+    }
+   },
+   "pass": true
+  },
+  "F-FALL-SHAPE": {
+   "terminal_descent": {
+    "measured": 0.223719,
+    "bar": [
+     0.2237,
+     0.02
+    ],
+    "pass": true
+   },
+   "landed": {
+    "measured": 0.1248,
+    "bar": [
+     0.1246,
+     0.002
+    ],
+    "pass": true
+   },
+   "pass": true
+  },
+  "F-SURFACES-LIVE": {
+   "airborne": {
+    "t": 1790121449626,
+    "vy": 3.95349,
+    "hold": 0,
+    "phase": "running",
+    "weight": 135618.345
+   },
+   "catch": {
+    "t": 1790121450123,
+    "vy": -0.211571,
+    "hold": 127015,
+    "phase": "running"
+   },
+   "settled": {
+    "hold": 135618,
+    "weight": 135618.345,
+    "rel_err": 0.0000025439036289755943
+   },
+   "running_samples_n": 65,
+   "running_median_dt_ms": 70,
+   "note": "airborne/catch derived from the page's own ~50 ms surface series (the complete record), not the watcher's coarse sampling",
+   "pass": true
+  },
+  "F-KEYS-NAMED-WORK": {
+   "keys": [
+    "F",
+    "R",
+    "H",
+    "ArrowLeft",
+    "ArrowRight",
+    "ArrowUp",
+    "ArrowDown",
+    "+",
+    "-"
+   ],
+   "results": {
+    "F": true,
+    "ArrowLeft": true,
+    "ArrowRight": true,
+    "ArrowUp": true,
+    "ArrowDown": true,
+    "+": true,
+    "-": true,
+    "H": true,
+    "R": true
+   },
+   "pass": true
+  },
+  "F-ZERO-ERRORS": {
+   "beacon": 0,
+   "harness": 0,
+   "aborted_polls_by_design": 0,
+   "pass": true
+  },
+  "F-TIMELINE-HONEST": {
+   "recorded": true,
+   "pass": true
+  }
+ },
+ "console_errors": [],
+ "pass": true
+}

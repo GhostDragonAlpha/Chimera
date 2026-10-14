@@ -128,3 +128,49 @@ like create_triangle_pipeline's fill (grid contract)" (same
 VkStencilOpState mark). Read the sentence as: the mark comes only from
 accepted fill-family draws (create_triangle_pipeline family incl. frost
 when live), never from the splat or the grid's own draws.
+
+## AMENDMENT 2026-09-20 — THE GRID IS A GUIDE, NEVER AN OCCLUDER (Defect B;
+append-only, prior text unchanged; lane agent/triangle-monkey-grid-20260920)
+
+The operator, on the triangle (mesh) view: *"the grid — you can't see through
+it; anything on the backside of the grid is culled; from underneath, the top
+side is culled. It is not working as its intended purpose of a Gaussian guide;
+it is blocking the view."*
+
+The mechanism (measured, then changed): the occluding body was never the
+stencil-tested grid TWIN — it was the FLOOR QUAD the twin draws on. Contract
+item 3's justification ("the floor quad is opaque and depth-writing") was the
+defect: from one side of the plane the opaque, depth-writing quad hid EVERY
+accepted-body fragment on the far side (they lost the depth test to the plane
+before they could mark the stencil), so "from underneath, the top side is
+culled" and nothing below the plane was ever visible.
+
+The amendment, in engine terms (ChimeraEngine/engine/engine.cpp, floor
+pipeline + frame() draw order; shaders/floor.frag):
+
+1. The plane is a GUIDE: blend ON (src-alpha), **depth-write OFF** — it never
+   enters the depth solution, so nothing behind/below it can be culled.
+   Depth-test stays ON with LESS so it still loses to geometry in front of it
+   and never paints over the subject. Cull stays NONE — visible from BOTH
+   sides.
+2. Draw order: the opaque accepted body lands FIRST; the plane composites over
+   it; the contact shadow (now depth-tested against the body, write OFF) inks
+   ON the plane after it. The old FLOOR-COEXIST depth-equality gamble is gone
+   with the plane's depth write.
+3. The ink law is preserved by premultiplication (floor.frag): the shader
+   emits `ink + (ink - stage_far)` at alpha 0.5, so over the clear background
+   the blended plane reads EXACTLY the measured ink (55 contact zone, the
+   cyclorama gradient, stage_far terminating in the background), and a body
+   behind the plane keeps 50% of its contrast — the derived see-through bar
+   (alpha derived from contrast retention; gated by the lane's pre-registered
+   falsifier: object-present >= 0.9 from BOTH sides, grid-present from both
+   sides; receipt `tools/science_funnel/validation/triangle_monkey_20260920/
+   receipt.json`).
+4. THE OCCLUSION CLAUSE (contract item 2) is unchanged and now exact in the
+   other direction: the grid twin still draws only where no accepted fill left
+   stencil 1 (it yields to the body, never to the plane — the plane still
+   marks nothing). Item 5 (idle viewport keeps the UI-pass grid) and the
+   splat-view declaration are unchanged (the splat view draws no floor quad).
+5. What this contract FORBIDS is unchanged in spirit and now enforced harder:
+   the grid (plane or lines) is never scene geometry — it enters no depth
+   solution, marks no stencil, hides nothing.

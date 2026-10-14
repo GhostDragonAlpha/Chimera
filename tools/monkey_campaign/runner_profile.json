@@ -1,0 +1,15 @@
+{
+  "schema": "chimera.runner_profile.v1",
+  "host_cpu": "Intel Core i9-13900K",
+  "physical_cores": 24,
+  "logical_processors": 32,
+  "installed_ram_bytes": 137199087616,
+  "agent_target": 12,
+  "agent_ceiling": 15,
+  "cpu_slots": 4,
+  "threads_per_job": 4,
+  "job_memory_gib": 16,
+  "free_memory_reserve_gib": 24,
+  "publication_writers": 1,
+  "agent_limits_enforced_by": "GLM dispatcher; runner does not launch or count API agents"
+}

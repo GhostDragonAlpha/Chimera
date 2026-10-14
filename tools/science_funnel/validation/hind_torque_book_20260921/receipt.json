@@ -1,0 +1,354 @@
+{
+ "schema": "chimera.hind_torque_book.v1",
+ "lane": "hind-torque-book-20260921",
+ "branch": "agent/hind-torque-book-20260921",
+ "clone_of": "git@github.com-fleetdeploy:GhostDragonAlpha/Chimera.git @ 376fc92b (branch agent/pulley-rederivation-20260920, sparse: docs/, Saved/ excluded)",
+ "mission": "THE HIND TORQUE BOOK FROM MEASURED ARMS: (1) provenance audit of the gait walk's hind drive caps; (2) re-derivation of the knee/MP (and ankle, where possible) torque caps from the pulley lane's MEASURED arm-vs-angle curves x admitted muscle forces; (3) the gait consumption map (order-of-magnitude deltas, NO engine changes in this lane); (4) Rule 0 discipline: this receipt pre-registered before the first book number was computed.",
+ "pre_registration": {
+  "written_before_first_book_computation": true,
+  "note": "This file was written BEFORE the derivation script ran. The cap provenance chains and arm/force priors quoted below were READ from the pinned receipts (that is what makes them priors); no book number had been computed at write time. The measured section at the bottom was appended AFTER the run.",
+  "inputs_pinned": {
+   "pulley_arms_derivation": {
+    "path": "tools/science_funnel/validation/pulley_rederivation_20260920/pulley_arms_derivation.json",
+    "sha256": "2a99cd2becaf4b0a8d4dda176cca23af05397906ba43dcd504c06a1b6c8f76d5",
+    "provenance": "pulley-rederivation-20260920 lane, commit 376fc92b, THIS branch's in-tree deliverable; sha equals the sha pinned in that lane's receipt.json measured.deliverable.sha256"
+   },
+   "pulley_receipt": {
+    "path": "tools/science_funnel/validation/pulley_rederivation_20260920/receipt.json",
+    "sha256": "61f767db4ba92088b4fdfdd5328ade7faa1fc95deab1239a4bdd220479a2d2cd"
+   },
+   "muscle_path_geometry_snapshot": {
+    "path": "inputs/muscle_path_geometry.snapshot.json",
+    "sha256": "ca0e890ec69e74d9589c08224d74e74defa53bbc058d371f784175cfca50cb22",
+    "provenance": "byte copy of tools/science_funnel/validation/muscle_paths_20260918/muscle_path_geometry.json at origin/agent/gait-wave27c-decay-seats (commit 4198dbdc; lane muscle-paths-20260918 commit 95794334). Vendored because that record is not in this clone's sparse lineage; sha-pinned so the copy IS the citation."
+   },
+   "derived_numbers_snapshot": {
+    "path": "inputs/derived_numbers.snapshot.json",
+    "sha256": "013810f87a6ca7c1e01916ef7a5454e61e8d0e88f8d6a589fbfdd1514017a173",
+    "provenance": "byte copy of tools/science_funnel/validation/gait_controller_20260918/derived_numbers.json at origin/agent/gait-wave27c-decay-seats (4198dbdc) - the Oku measured torques, works, and Fig3D muscle-force peaks"
+   },
+   "derived_zeros_snapshot": {
+    "path": "inputs/derived_zeros.snapshot.json",
+    "sha256": "447c1e74bcdae27e0c5d5073461785b15929298242240be808f6ac19f16c7977",
+    "provenance": "byte copy of tools/science_funnel/validation/gait_zero_20260919/derived_zeros.json at origin/agent/gait-wave27c-decay-seats (4198dbdc) - the walk's zero map and the scene-side joint ranges"
+   },
+   "stance_hold_snapshot": {
+    "path": "inputs/stance_hold.snapshot.json",
+    "sha256": "71e40cd8a161938a3a358792076dda0f98966a8909ae564cec7774a61126a5e5",
+    "provenance": "byte copy of tools/science_funnel/validation/gait_zero_20260919/stance_hold.json at origin/agent/gait-wave27c-decay-seats (4198dbdc) - the wave-4 stance-hold statics table (the demand side of every ratio this book recomputes)"
+   },
+   "gait_contract_drives_snapshot": {
+    "path": "inputs/gait_contract_drives.snapshot.json",
+    "sha256": "75863f2210a28826c9144b24d92e331185665a9abb253b3a10683f641ae564b0",
+    "provenance": "extracted from tools/creature_graph/data/creature_graph.json record model.dynamics.gait_walker at origin/agent/gait-wave27c-decay-seats (4198dbdc): the LIVE fore/hind drive records (torque caps, stores, damping) plus cap_provenance/cap_amendment_note/mp_range_amendment - the audit's subject"
+   }
+  }
+ },
+ "rule0": {
+  "statement": "The gait walk's hind torque caps (hip 11.2125, knee 6.6375, ankle 7.4, MP 0.8875 N.m) are DOC-DERIVED: 1.25 x the doc-rounded Oku measured walk torque peaks - statics numbers with no muscle book behind them. The pulley lane (376fc92b) unblocked MEASURED wrap-geometry arm-vs-angle curves for two previously-falsified directions: knee extension (quads RF/VI/VL/VMed over the femoral-condyle cylinder, arms +17.64..+25.05 mm) and MTP flexion (FDL II-V + FHL routed over the ankle cylinder/ellipsoid, arms -15.73..-0.21 mm), SI-verified in SHAPE up to the per-taxon scalar k=0.11975394 with the absolute-scale divergence recorded. A torque cap grounded in the admitted musculature is derivable NOW: cap_j = max over the measured scan of sum_m F_m |r_m(q)|, with the forces taken from the admitted Oku walk peaks (measured) and, provisionally, the batch's PCSA x sigma law.",
+  "prediction": "(1) At the deposit-geometry scale (S1), the muscle-book caps EXCEED the current doc-derived caps for both derived directions (knee and MP) under both force variants. (2) The PCSA x sigma capability variant exceeds the Oku-walk-peak variant in both directions. (3) At the SI-matched scale (S2, arms x k), the muscle-book caps COLLAPSE below 0.30x the current caps - i.e. the k divergence is not a fine-print caveat but the difference between a book that closes the walk and one that cannot power the measured stride. (4) The ankle drive admits NO measured-arm re-derivation in this lane: the admitted muscle-path record's straight-line ankle arms (the 2026-09-18-lane estimates with unresolved wraps) fall SHORT of the Oku measured walk ankle demand by >2x under both force variants - the ankle cap stays doc-derived and the ankle pulley direction is named future work. (5) The book is byte-deterministic and every number traces to a sha-pinned input.",
+  "falsifier": "(a) any pre-registered delta SIGN measured opposite (recorded as FIRED with the number, never tuned); (b) any numeric band below missed by a computed cap; (c) a number in the book whose provenance chain does not resolve to a sha-verified input file and key path; (d) two full derivations disagreeing at any byte; (e) an audit table that leaves any scene drive-record number unaccounted; (f) any file changed outside tools/science_funnel/validation/hind_torque_book_20260921/. Any hit is recorded as measured."
+ },
+ "prior_reading": {
+  "note": "READ from pinned inputs before this receipt was written - the audit's raw material, not the book.",
+  "current_hind_caps_N_m": {
+   "hip": 11.2125,
+   "knee": 6.6375,
+   "ankle": 7.4,
+   "MP": 0.8875
+  },
+  "current_hind_caps_provenance_chain": [
+   "Oku 2021 measured walk joint-moment peaks (digitigrade, before-block), exact: hip 8.9746, knee 5.3144, ankle 5.9171, MP 0.7051 N.m (inputs/derived_numbers_snapshot.json oku_before_alteration.torques.*.peak_abs_stance_Nm)",
+   "the derivation doc's ROUNDED peaks: 8.97 / 5.31 / 5.92 / 0.71 (docs/research/20260918_gait_controller_derivation.md section 4.3, on the gait-wave lineage)",
+   "cap law cap_d = 1.25 x |tau_peak,d| at the Oku scale (doc section 4.3: ONE number with ONE reason - the 25% servo-headroom factor)",
+   "1.25 x rounded peaks = 11.2125 / 6.6375 / 7.4 / 0.8875 - the LIVE graph-contract/engine pin (inputs/gait_contract_drives_snapshot.json drives)",
+   "the EXACT-peak pins 1.25 x exact = 11.218 / 6.643 / 7.396 / 0.881 are a parallel live set in the derivation lane (inputs/stance_hold_snapshot.json caps columns; derive_trunk_pitch CAP_POST) - the ROUNDING SPLIT the posture-cap lane documented for the hip, present for all four joints",
+   "wave-5 FALSIFIED amendment (knee 13.18, ankle 9.01 assembly statics): banked, measured, walk fell identically, RESTORED - recorded in the contract's cap_amendment_note (source_peaks_v1_RESTORED); NOT live"
+  ],
+  "current_hind_store_floors_J": {
+   "hip": 78.732,
+   "knee": 38.3505,
+   "ankle": 48.987,
+   "MP": 7.5195
+  },
+  "store_floor_chain": "10-stride window x 1.5 headroom x the EXACT Oku positive work per stride (hip 5.2488, knee 2.5567, ankle 3.2658, MP 0.5013 J - derived_numbers oku_before_alteration.work_per_cycle_J): the floors carry the EXACT integrals while the caps carry the ROUNDED peaks - an internal provenance inconsistency the audit must name",
+  "fore_caps": "compiler-emitted (gait_scene.py compile_gait, wave 12/16 machinery): shoulder 4.229 x (s/0.45) - 4.229 measured by the quad-share lane at the s=0.45 envelope midpoint; elbow 3.76 x min(s,0.45)/0.45 - 3.76 DOC-DERIVED absolute ceiling (wave-11 falsifier: never raised above it); store floors 15x cap (the measured floors 63.435/56.4 ARE 15x the s=0.45 caps); damping 0.109 N.m.s/rad quoted from the Oku hip damper",
+  "posture_drive_cap": "keyed to the HIP cap in the engine (cap-on-each, drives_[0].cap); the derivation lane pins 11.21825 (1.25 x 8.9746) vs the engine's 11.2125 (1.25 x 8.97) - the posture-cap-provenance lane (buffy, abe609ca) documented the split and derived a muscle-grounded amendment 10.54 N.m (ILI+GMed pair, PCSA x sigma x cos(pennation) x hip arm), NOT yet consumed by any engine wave",
+  "measured_arm_priors": {
+   "knee_extension": {
+    "R_RF": [
+     18.0855,
+     25.033
+    ],
+    "R_VI": [
+     17.6385,
+     25.0289
+    ],
+    "R_VL": [
+     17.7897,
+     25.0131
+    ],
+    "R_VMed": [
+     18.1891,
+     25.0454
+    ],
+    "unit": "mm, deposit geometry, scan 0..-42.3 deg (RF, VL) / 0..-45 deg (VI, VMed), condyle cylinder engaged 2001/2001"
+   },
+   "mtp_flexion": {
+    "R_FDL_TENDONII": [
+     -2.4904,
+     -1.4999
+    ],
+    "R_FDL_TENDONIII": [
+     -5.0906,
+     -4.0213
+    ],
+    "R_FDL_TENDONIV": [
+     -11.1642,
+     -4.7876
+    ],
+    "R_FDL_TENDONV": [
+     -15.7323,
+     -7.017
+    ],
+    "R_FHL": [
+     -1.4721,
+     -0.2088
+    ],
+    "unit": "mm, deposit geometry, scans inside [-30, +30] deg per muscle, ankle cylinder/ellipsoid engaged, sign negative under r = -dL/dq"
+   },
+   "scale_caveat": "SI 2 arm = deposit arm x k, k = 0.11975394 (fitted; spread [0.1197283, 0.11976842] across the MTP class to 4-5 significant digits; per-taxon: gorilla 0.0329, gibbon 0.10845) - SHAPE verified, ABSOLUTE scale an open operator-level divergence (deposit vs authors' computation)"
+  },
+  "force_priors": {
+   "oku_walk_peaks_N": {
+    "VAS": 276.69,
+    "RF": 105.98,
+    "FDL": 204.57,
+    "SOL": 214.99,
+    "GAS": 125.8,
+    "TA": 63.87,
+    "EDL": 24.2
+   },
+   "oku_walk_peaks_status": "MEASURED (Oku Fig3D digitigrade before-block, inputs/derived_numbers_snapshot.json oku_muscle_forces_N.before)",
+   "pcsa_sigma_law": "inputs/muscle_path_geometry.snapshot.json: per-muscle max_force_N = PCSA x sigma x cos(pennation), sigma = 1280914.14 Pa (128.09 N/cm^2) DERIVED by least squares through the origin of mass-adjusted Oku Fmax vs matched Guimaraes PCSA sums (8 groups); per-group IMPLIED tensions scatter 0.31-5.28 MPa (an order of magnitude) - THE SIGMA CAVEAT; all forces mass-adjusted toward the Oku 10.038 kg scale",
+   "pcsa_sigma_status": "PROVISIONAL by the mission's standing order: the Guimaraes pairing lane's paired-force artifacts were NOT found on the canonical at fetch time (no branch dated 2026-09-21 carries them), so the batch's PCSA x sigma law is used with the sigma caveat, PROVISIONAL-marked",
+   "named_force_gaps": [
+    "R_RF has NO Guimaraes row (absent from the record's 30 muscles): the sigma-law knee variant covers the vasti only",
+    "FHL has NO Oku walk-force measurement: the Oku-peak MTP variant covers FDL only"
+   ]
+  }
+ },
+ "protocol_declared": {
+  "cap_law": "cap_new(direction, variant) = max over the measured scan samples q of sum_m F_m(variant) x |r_m(q)|, r from the pulley deliverable's arm_samples_m (201 samples/muscle, linear index across that muscle's recorded jrange); the MAX-over-scan is the honest muscle-envelope analog of a symmetric \u00b1cap drive clamp. No tolerance is widened anywhere; no number is tuned.",
+  "force_variants": {
+   "V1_oku_walk_peaks": "MEASURED-demand variant: vasti group 276.69 N distributed across VI/VL/VM by Guimaraes PCSA share (the group force is measured, the intra-group split is not; arms differ <3% across the group so the split choice is second-order - the equal-split bracket is reported alongside); RF 105.98 N on its own measured curve; FDL 204.57 N split EQUALLY across tendons II-V (one muscle, four slips, no measured partition: tau = F x mean|r|, bracketed by all-force-on-min-arm and all-force-on-max-arm bounds); FHL EXCLUDED (no Oku measurement - named gap)",
+   "V2_pcsa_sigma": "PROVISIONAL capability variant: per-muscle max_force_N straight from the record (VI 214.58, VL 737.89, VM 496.10; FDL 548.85 quarter-split; FHL 128.07 whole); inherits the sigma caveat and the 25% moment-arm uncertainty the muscle-path lane declared",
+   "brackets": "V1 MTP additionally reports the equal-split value bracketed by (F x min|r|) and (F x max|r|) single-slip bounds; the split law is declared BEFORE the run and is not a sweep"
+  },
+  "scale_variants": {
+   "S1_deposit": "the deposit-geometry arms as delivered (mm values above) - the mission's quoted numbers, deterministic from the pinned .osim",
+   "S2_si_matched": "arms x k = 0.11975394 (the pulley lane's fitted per-taxon scalar) - the authors'-scale reading; carried because the k divergence is the standing absolute-scale caveat"
+  },
+  "coverage_law": "the walk's scene-side ranges (derived_zeros checks: knee -73.4..-31.5 deg, MP -0.91..+0.55 rad) are mapped against each muscle's recorded scan range; the knee sign senses agree (flexion negative in both the scene and the Wiseman model) so the knee overlap is [-45, -31.5] deg (RF/VL end at -42.3); the MTP sense mapping is ambiguous (flexion naming vs dorsiflexion drive) but the scene range CONTAINS [-30, +30] deg under EITHER mapping, so the full MTP scan is walk-reachable and the max-over-scan cap needs no extrapolation; per-muscle coverage boundaries are reported, never extrapolated through",
+  "ankle_treatment": "NO ankle-joint arm curve exists in the pulley deliverable (the two derived directions are knee_extension and mtp_flexion only; the FDL/FHL wrap segments are rigid during an MTP scan and their ankle contributions were provably zero there - but an ANKLE scan is exactly where they go live). The ankle section of the book is therefore CONTEXT-ONLY: the record's straight-line walking-pose ankle arms x both force variants vs the Oku measured walk ankle demand peak 5.9171 N.m; the ankle drive cap 7.4 stays doc-derived in the audit; the ankle pulley direction is named future work.",
+  "consumption_map_law": "order-of-magnitude deltas only: (i) the hind drive tier's clamp headroom (current caps vs demands from stance_hold.snapshot.json vs the new caps); (ii) the stance-hold ratios recomputed at the new caps; (iii) the posture/height support's feed-forward authority (the muscle-grounded ceiling the posture-cap lane's pattern gives when the knee wall is re-priced at the new knee cap). NO engine changes in this lane; the book is the future wave's input.",
+  "determinism_protocol": "pure function of sha-verified inputs; two in-process derivations must agree byte-for-byte on the canonical JSON, and the unittest re-invokes the script and compares sha256"
+ },
+ "pre_registered_delta_signs": {
+  "note": "delta := cap_new - cap_current, per direction x force variant x scale. Signs and bands pinned before computation; a miss is a FIRED falsifier recorded with its number.",
+  "knee_extension": {
+   "current_cap_N_m": 6.6375,
+   "V1_S1": {
+    "expected_sign": "POSITIVE",
+    "band_N_m": [
+     8.5,
+     11.0
+    ],
+    "derivation_of_band": "vasti 276.69 N x max-arm ~0.0250 m + RF 105.98 x 0.02503 = 9.5-9.6 at the flexion end of the scan; the min-arm end ~17.6-18.2 mm gives ~6.8 - the MAX-over-scan law lands near the top"
+   },
+   "V2_S1": {
+    "expected_sign": "POSITIVE",
+    "band_N_m": [
+     20.0,
+     45.0
+    ],
+    "derivation_of_band": "sigma-law vasti sum 214.58+737.89+496.10 = 1448.6 N x ~0.025 m ~ 36; RF absent (named gap)"
+   },
+   "V1_S2": {
+    "expected_sign": "NEGATIVE",
+    "band_N_m": [
+     0.8,
+     1.4
+    ],
+    "derivation_of_band": "V1_S1 x k = 9.58 x 0.11975 ~ 1.15; the collapse prediction P3"
+   },
+   "V2_S1_gt_V1_S1": true
+  },
+  "MP_dorsiflexion_mtp_flexion": {
+   "current_cap_N_m": 0.8875,
+   "V1_S1_equal_split": {
+    "expected_sign": "POSITIVE",
+    "band_N_m": [
+     1.2,
+     2.3
+    ],
+    "derivation_of_band": "FDL 204.57 x mean|r| with sum|r| at the flexion end ~0.0324-0.0345 m => tau = F x sum|r|/4 ~ 1.66-1.76; FHL excluded (named gap)"
+   },
+   "V2_S1": {
+    "expected_sign": "POSITIVE",
+    "band_N_m": [
+     4.0,
+     9.0
+    ],
+    "derivation_of_band": "FDL 548.85 x sum|r|/4 ~ 4.5-4.7 + FHL 128.07 x ~0.0147 ~ 1.9 => ~6.5"
+   },
+   "V1_S2": {
+    "expected_sign": "NEGATIVE",
+    "band_N_m": [
+     0.1,
+     0.26
+    ],
+    "derivation_of_band": "V1_S1 x k ~ 1.7 x 0.11975 ~ 0.20"
+   },
+   "V2_S1_gt_V1_S1": true
+  },
+  "ankle_context_only": {
+   "current_cap_N_m": 7.4,
+   "record_arms_V1_plantarflexion_envelope": {
+    "expected_sign_vs_demand": "NEGATIVE (envelope < demand)",
+    "band_N_m": [
+     0.8,
+     2.2
+    ],
+    "derivation_of_band": "SOL 214.99 x 0.00486 + GAS 125.8 x ~0.00456 ~ 1.6 (FDL's record arm is on the DORSIFLEXION side -0.08043 and cannot count); vs demand 5.9171"
+   },
+   "record_arms_V2_plantarflexion_envelope": {
+    "expected_sign_vs_demand": "NEGATIVE (envelope < demand)",
+    "band_N_m": [
+     2.5,
+     4.5
+    ],
+    "derivation_of_band": "SOL 157.34 x 0.00486 + MG 255.18 x 0.00449 + LG 302.89 x 0.00462 ~ 3.3"
+   },
+   "verdict_prior": "ankle re-derivation BLOCKED on measured arms; cap 7.4 stays doc-derived; the record's estimated straight-line hindlimb attachments are the block (their own unknowns block names the 25% bound and unresolved wraps)"
+  },
+  "sign_falsifier_note": "any measured sign opposite the above, or any band miss, is a FIRED falsifier: recorded in the measured block with its number and left standing - the book is not tuned to re-enter its own bands"
+ },
+ "falsifiers_pre_registered": {
+  "traceability": "every computed number in hind_torque_book.json carries a provenance block {input, sha256, key_path}; the unittest asserts each input's sha256 equals the pin in this receipt at run time; an arm sample traces to the pulley deliverable (itself sha-pinned to the pulley lane's receipt), a force to the Oku batch snapshot or the muscle-path record snapshot, a current cap to the graph-contract snapshot",
+  "audit_completeness": "the audit table must account for EVERY number in the scene's 8 hind drive records (torque_cap_N_m, store_floor_J, store_floor_per_stride_J, store_stride_window, viscous_damping_N_m_s_rad x hip/knee/ankle/MP) and the 4 fore drive records (same fields), plus the posture drive's cap keying and the compiler's fore cap law constants (4.229, 3.76, 0.45, 15x); the unittest enumerates the snapshot's drive fields and asserts each appears in the audit exactly once - no cap unaccounted",
+  "determinism": "two full in-process derivations byte-identical (sha256 of canonical JSON); the unittest additionally re-runs the script via subprocess and compares the deliverable sha256",
+  "no_source_changes": "the derivation writes ONLY inside tools/science_funnel/validation/hind_torque_book_20260921/; the unittest asserts git status --porcelain names no file outside that directory (book, not patch)",
+  "delta_signs": "the pre_registered_delta_signs block above; a measured sign/band miss is recorded, never absorbed"
+ },
+ "measured": {
+  "recorded_utc": "2026-09-21T04:07:57+00:00",
+  "note": "APPENDED AFTER THE RUN. The pre-registration block above is unedited; the derivation script and this block were written after it.",
+  "deliverable": {
+   "path": "tools/science_funnel/validation/hind_torque_book_20260921/hind_torque_book.json",
+   "sha256": "9fc5c0ba09f6ec183d5348bb21cc5dc18b5987240406ccdcdbb34e514e26f01c"
+  },
+  "audit_headline": {
+   "verdict": "EVERY LIVE HIND CAP IS DOC-DERIVED - none is muscle-measured. The scene's fore/hind drive records pin hip 11.2125 / knee 6.6375 / ankle 7.4 / MP 0.8875 N.m = 1.25 x the DOC-ROUNDED Oku measured walk torque peaks (8.97/5.31/5.92/0.71; exact 8.9746/5.3144/5.9171/0.7051) - measured Oku numbers processed through a doc rounding and a derived 25% headroom, i.e. statics-derived caps, with NO musculature behind them. The wave-5 assembly-statics amendment (knee 13.18, ankle 9.01) was banked, measured, FALSIFIED (the walk fell identically), and RESTORED - not live. The audit also banks: (a) a ROUNDING SPLIT - the derivation lane's exact-scale pins (11.218/6.643/7.396/0.881, incl. the stance-hold table's caps column and derive_trunk_pitch CAP_POST) differ from the contract/engine pins for ALL FOUR joints (the posture-cap lane documented the hip case); (b) a PROVENANCE ASYMMETRY - the store floors carry the EXACT Oku work integrals (x1.5 x10 strides) while the sibling caps carry the ROUNDED peaks; (c) the fore caps are MEASURED (shoulder 4.229 at the quad-share lane's s=0.45 midpoint) vs DOC-DERIVED (elbow 3.76 absolute ceiling); (d) the posture drive BORROWS the hip cap (cap-on-each) with the posture-cap lane's muscle-grounded 10.54 N.m amendment banked but unconsumed. 71 audit entries; every number in the 8 hind + 4 fore drive records accounted (completeness true).",
+   "live_hind_caps_class": "DOC_DERIVED_STATICS (measured Oku source peaks, doc-rounded, x1.25)",
+   "audit_entries_total": 71
+  },
+  "deltas_measured": {
+   "knee_extension": {
+    "current_cap_N_m": 6.6375,
+    "V1_S1_MEASURED": {
+     "cap_N_m": 9.576795,
+     "delta_N_m": 2.939295,
+     "ratio": 1.4428,
+     "argmax_q_deg": -42.3
+    },
+    "V2_S1_PROVISIONAL": {
+     "cap_N_m": 36.247782,
+     "delta_N_m": 29.610282,
+     "ratio": 5.4611
+    },
+    "V1_S2_si_matched": {
+     "cap_N_m": 1.146859,
+     "delta_N_m": -5.490641,
+     "ratio": 0.1728
+    },
+    "V2_S2_si_matched": {
+     "cap_N_m": 4.340815,
+     "delta_N_m": -2.296685,
+     "ratio": 0.654
+    },
+    "walk_window": {
+     "evaluated_overlap_deg": [
+      -42.3,
+      -31.5
+     ],
+     "cap_N_m": 9.576795,
+     "note": "the walk's loaded knee window sits at the measured curve's HIGH-arm end (arms 17.6->25.0 mm grow with flexion); the walk-window capability equals the scan-max"
+    }
+   },
+   "MP_dorsiflexion": {
+    "current_cap_N_m": 0.8875,
+    "V1_S1_MEASURED_equal_split": {
+     "cap_N_m": 1.657925,
+     "delta_N_m": 0.770425,
+     "ratio": 1.8681,
+     "argmax_q_deg": -30.0,
+     "partition_bracket_N_m": [
+      0.306837,
+      3.218366
+     ]
+    },
+    "V2_S1_PROVISIONAL": {
+     "cap_N_m": 4.636664,
+     "delta_N_m": 3.749164,
+     "ratio": 5.2244
+    },
+    "V1_S2_si_matched": {
+     "cap_N_m": 0.198543,
+     "delta_N_m": -0.688957,
+     "ratio": 0.2237
+    },
+    "V2_S2_si_matched": {
+     "cap_N_m": 0.555259,
+     "delta_N_m": -0.332241,
+     "ratio": 0.6256
+    }
+   },
+   "ankle_context": {
+    "current_cap_N_m": 7.4,
+    "verdict": "RE-DERIVATION BLOCKED ON MEASURED ARMS (no ankle-direction curve exists in the pulley deliverable)",
+    "record_arm_plantar_envelope_V1_N_m": 1.618881,
+    "record_arm_plantar_envelope_V2_N_m": 3.309738,
+    "oku_measured_walk_demand_peak_N_m": 5.9171,
+    "finding": "the admitted record's straight-line ankle arms (the 2026-09-18-lane estimates whose knee column the pulley lane FALSIFIED) fall 1.8-3.7x SHORT of the measured walk demand under both force variants - the ankle cap stays doc-derived and the ankle pulley direction is the named future work"
+   }
+  },
+  "falsifier_verdicts": {
+   "pre_registered_delta_signs_and_bands": {
+    "knee_V1_S1": "HELD (sign POSITIVE; cap 9.576795 in [8.5, 11.0])",
+    "knee_V2_S1": "HELD (sign POSITIVE; cap 36.247782 in [20, 45])",
+    "knee_V1_S2": "HELD (sign NEGATIVE; cap 1.146859 in [0.8, 1.4])",
+    "knee_V2_gt_V1": "HELD",
+    "mp_V1_S1": "HELD (sign POSITIVE; cap 1.657925 in [1.2, 2.3])",
+    "mp_V2_S1": "HELD (sign POSITIVE; cap 4.636664 in [4, 9])",
+    "mp_V1_S2": "HELD (sign NEGATIVE; cap 0.198543 in [0.10, 0.26])",
+    "mp_V2_gt_V1": "HELD",
+    "ankle_V1_vs_demand": "HELD (envelope 1.618881 < demand 5.9171; in [0.8, 2.2])",
+    "ankle_V2_vs_demand": "HELD (envelope 3.309738 < demand 5.9171; in [2.5, 4.5])",
+    "summary": "ALL PRE-REGISTERED SIGNS AND BANDS HELD; nothing was tuned, no tolerance widened",
+    "note_on_check_implementation": "the first check implementation mis-targeted the bands onto the DELTAS (3 spurious fires); the receipt's bands are unambiguously on the CAP values (each band's derivation_of_band computes a cap), and the corrected checker reads the pre-registration exactly as written - the bands themselves were never moved"
+   },
+   "traceability": "HELD - every input sha-verified against this receipt's pins at load (load_inputs REFUSES on mismatch); the pulley deliverable's sha equals the pulley lane's own receipt pin; every book number carries a trace block",
+   "determinism": "HELD - two full in-process derivations byte-identical AND a subprocess rerun byte-identical: deliverable sha256 9fc5c0ba09f6ec183d5348bb21cc5dc18b5987240406ccdcdbb34e514e26f01c (3 independent runs)",
+   "audit_completeness": "HELD - 71 entries; 8x5 hind + 4x5 fore required numbers all present exactly once; missing = []",
+   "no_source_changes": "HELD - git status --porcelain names nothing outside tools/science_funnel/validation/hind_torque_book_20260921/ (asserted by the unittest)"
+  },
+  "consumption_map_top_three": {
+   "1_hind_tier_law": "at the V1_S1 muscle book the stance-hold knee over-cap window collapses: over-cap nodes 9 -> 4 of 15; the binding node phi=0.25 re-prices 1.586 -> 1.100 and the entry instant 1.095 -> 0.760. The wave-4 '33-60% over through the loaded window' verdict halves to 'borderline at the two push-off nodes' - the source walk's torque peaks are reachable by the admitted musculature ON THE DEPOSIT ARM SCALE.",
+   "2_stance_hold_ratio": "the demand/cap ratio class shifts by ORDER 1.4-1.6x at the knee (the walk's loaded window now 0.92-1.10 vs 1.33-1.59 before); the MP measured dynamic peak gains 1.9x cover (1.66 vs 0.71 exact peak) though the double-support heel-branch quasi-static flags (7.8-8.4 N.m) stay uncovered by design of those nodes.",
+   "3_height_feed_forward_authority": "the posture/height wall re-prices: the wave-10/25 '0.9 margin unreachable at any posture cap' verdict was knee-bound (knee ratio 0.785); at the muscle book the knee term re-prices to ~0.544 (1.44x headroom) - the first measured-arms evidence that the 0.9 margin may be reachable WITHOUT touching the posture cap. The ankle height chain gains NOTHING here (ankle BLOCKED, delta 0) - the honest caveat."
+  },
+  "the_scale_gate": "the k = 0.119754 divergence is THE consumption gate: at S1 (deposit arms) the book closes the walk (knee 1.44x, MP 1.87x the current caps); at S2 (SI-matched arms) it collapses to 0.17x/0.22x and cannot power the measured stride. NO engine consumption is lawful until the operator resolves the deposit-vs-SI absolute scale with the authors (the pulley receipt's standing divergence).",
+  "tests": "17/17 green: python -B -m unittest tools.science_funnel.validation.hind_torque_book_20260921.test_hind_torque_book"
+ }
+}

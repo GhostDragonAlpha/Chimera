@@ -1,0 +1,428 @@
+{
+ "tables": {
+  "JOA-238-321-s001.tif": {
+   "cmyk-flat": {
+    "class_histogram": {
+     "CONFIDENT|None": 198,
+     "LOW|low_confidence_cell": 273,
+     "REFUSED|blank_cell": 237,
+     "REFUSED|glyph_merge": 5,
+     "REFUSED|grid_collision": 10,
+     "REFUSED|low_contrast": 126,
+     "REFUSED|low_glyph_confidence": 291
+    },
+    "conf_mean_p01_p50_p99": [
+     0.0,
+     0.0,
+     0.9373765897750853
+    ],
+    "conf_min_p01_p50_p99": [
+     0.0,
+     0.0,
+     0.8865419727563855
+    ],
+    "confident_fraction": 0.1737,
+    "gray_p01_p50_p99": [
+     10.0,
+     197.0,
+     255.0
+    ],
+    "gray_shape": [
+     3076,
+     5019
+    ],
+    "grid_mode": true,
+    "n_bands": 38,
+    "n_cells": 1140,
+    "n_cols": 30,
+    "n_confident": 198,
+    "n_rows": 38,
+    "row1_reads_first_12": [
+     {
+      "class": "LOW",
+      "code": "low_confidence_cell",
+      "col": 0,
+      "conf_mean": 0.808131992816925,
+      "conf_min": 0.808131992816925,
+      "text": "l"
+     },
+     {
+      "class": "LOW",
+      "code": "low_confidence_cell",
+      "col": 1,
+      "conf_mean": 0.8368271986643473,
+      "conf_min": 0.8091479539871216,
+      "text": "APB"
+     },
+     {
+      "class": "REFUSED",
+      "code": "low_contrast",
+      "col": 2,
+      "conf_mean": 0.0,
+      "conf_min": 0.0,
+      "text": ""
+     },
+     {
+      "class": "REFUSED",
+      "code": "low_glyph_confidence",
+      "col": 3,
+      "conf_mean": 0.0,
+      "conf_min": 0.0,
+      "text": ""
+     },
+     {
+      "class": "REFUSED",
+      "code": "low_glyph_confidence",
+      "col": 4,
+      "conf_mean": 0.0,
+      "conf_min": 0.0,
+      "text": ""
+     },
+     {
+      "class": "REFUSED",
+      "code": "low_glyph_confidence",
+      "col": 5,
+      "conf_mean": 0.0,
+      "conf_min": 0.0,
+      "text": ""
+     },
+     {
+      "class": "REFUSED",
+      "code": "low_glyph_confidence",
+      "col": 6,
+      "conf_mean": 0.0,
+      "conf_min": 0.0,
+      "text": ""
+     },
+     {
+      "class": "REFUSED",
+      "code": "low_contrast",
+      "col": 7,
+      "conf_mean": 0.0,
+      "conf_min": 0.0,
+      "text": ""
+     },
+     {
+      "class": "LOW",
+      "code": "low_confidence_cell",
+      "col": 8,
+      "conf_mean": 0.8821013569831848,
+      "conf_min": 0.8664559125900269,
+      "text": "dam"
+     },
+     {
+      "class": "LOW",
+      "code": "low_confidence_cell",
+      "col": 9,
+      "conf_mean": 0.8061427672704061,
+      "conf_min": 0.6854620575904846,
+      "text": "agI"
+     },
+     {
+      "class": "LOW",
+      "code": "low_confidence_cell",
+      "col": 10,
+      "conf_mean": 0.8878157734870911,
+      "conf_min": 0.8878157734870911,
+      "text": "d"
+     },
+     {
+      "class": "LOW",
+      "code": "low_confidence_cell",
+      "col": 11,
+      "conf_mean": 0.8794344812631607,
+      "conf_min": 0.7799134254455566,
+      "text": "0.7 l"
+     }
+    ],
+    "sha256": "3b799371f646fff77eb2f5806249ea8361820c9817aa57225e5b0128d7f1a041",
+    "skew_deg": 0.0,
+    "tier": "cmyk-flat"
+   },
+   "cmyk-ink": {
+    "class_histogram": {},
+    "conf_mean_p01_p50_p99": [
+     null,
+     null,
+     null
+    ],
+    "conf_min_p01_p50_p99": [
+     null,
+     null,
+     null
+    ],
+    "confident_fraction": null,
+    "gray_p01_p50_p99": [
+     10.0,
+     158.0,
+     252.0
+    ],
+    "gray_shape": [
+     3076,
+     5019
+    ],
+    "grid_mode": true,
+    "n_bands": 14,
+    "n_cells": 0,
+    "n_cols": 0,
+    "n_confident": 0,
+    "n_rows": null,
+    "row1_reads_first_12": [],
+    "sha256": "3b799371f646fff77eb2f5806249ea8361820c9817aa57225e5b0128d7f1a041",
+    "skew_deg": 0.0,
+    "tier": "cmyk-ink"
+   },
+   "raw-naive": {
+    "class_histogram": {},
+    "conf_mean_p01_p50_p99": [
+     null,
+     null,
+     null
+    ],
+    "conf_min_p01_p50_p99": [
+     null,
+     null,
+     null
+    ],
+    "confident_fraction": null,
+    "gray_p01_p50_p99": [
+     11.0,
+     213.0,
+     254.0
+    ],
+    "gray_shape": [
+     3076,
+     5019
+    ],
+    "grid_mode": true,
+    "n_bands": 14,
+    "n_cells": 0,
+    "n_cols": 0,
+    "n_confident": 0,
+    "n_rows": null,
+    "row1_reads_first_12": [],
+    "sha256": "3b799371f646fff77eb2f5806249ea8361820c9817aa57225e5b0128d7f1a041",
+    "skew_deg": 0.0,
+    "tier": "raw-naive"
+   }
+  },
+  "JOA-238-321-s002.tif": {
+   "cmyk-flat": {
+    "class_histogram": {
+     "CONFIDENT|None": 72,
+     "LOW|low_confidence_cell": 283,
+     "REFUSED|blank_cell": 404,
+     "REFUSED|glyph_merge": 8,
+     "REFUSED|grid_collision": 178,
+     "REFUSED|low_contrast": 159,
+     "REFUSED|low_glyph_confidence": 408
+    },
+    "conf_mean_p01_p50_p99": [
+     0.0,
+     0.0,
+     0.959490386247635
+    ],
+    "conf_min_p01_p50_p99": [
+     0.0,
+     0.0,
+     0.959490386247635
+    ],
+    "confident_fraction": 0.0476,
+    "gray_p01_p50_p99": [
+     10.0,
+     197.0,
+     255.0
+    ],
+    "gray_shape": [
+     3276,
+     2508
+    ],
+    "grid_mode": true,
+    "n_bands": 54,
+    "n_cells": 1512,
+    "n_cols": 28,
+    "n_confident": 72,
+    "n_rows": 54,
+    "row1_reads_first_12": [
+     {
+      "class": "REFUSED",
+      "code": "blank_cell",
+      "col": 0,
+      "conf_mean": 0.0,
+      "conf_min": 0.0,
+      "text": ""
+     },
+     {
+      "class": "LOW",
+      "code": "low_confidence_cell",
+      "col": 1,
+      "conf_mean": 0.8273695707321167,
+      "conf_min": 0.8044850826263428,
+      "text": "APB"
+     },
+     {
+      "class": "REFUSED",
+      "code": "low_glyph_confidence",
+      "col": 2,
+      "conf_mean": 0.0,
+      "conf_min": 0.0,
+      "text": ""
+     },
+     {
+      "class": "REFUSED",
+      "code": "low_glyph_confidence",
+      "col": 3,
+      "conf_mean": 0.0,
+      "conf_min": 0.0,
+      "text": ""
+     },
+     {
+      "class": "REFUSED",
+      "code": "low_glyph_confidence",
+      "col": 4,
+      "conf_mean": 0.0,
+      "conf_min": 0.0,
+      "text": ""
+     },
+     {
+      "class": "REFUSED",
+      "code": "low_glyph_confidence",
+      "col": 5,
+      "conf_mean": 0.0,
+      "conf_min": 0.0,
+      "text": ""
+     },
+     {
+      "class": "REFUSED",
+      "code": "blank_cell",
+      "col": 6,
+      "conf_mean": 0.0,
+      "conf_min": 0.0,
+      "text": ""
+     },
+     {
+      "class": "REFUSED",
+      "code": "grid_collision",
+      "col": 7,
+      "conf_mean": 0.0,
+      "conf_min": 0.0,
+      "text": ""
+     },
+     {
+      "class": "LOW",
+      "code": "low_confidence_cell",
+      "col": 8,
+      "conf_mean": 0.8161779642105103,
+      "conf_min": 0.7740823030471802,
+      "text": ".z"
+     },
+     {
+      "class": "REFUSED",
+      "code": "blank_cell",
+      "col": 9,
+      "conf_mean": 0.0,
+      "conf_min": 0.0,
+      "text": ""
+     },
+     {
+      "class": "REFUSED",
+      "code": "low_glyph_confidence",
+      "col": 10,
+      "conf_mean": 0.0,
+      "conf_min": 0.0,
+      "text": ""
+     },
+     {
+      "class": "LOW",
+      "code": "low_confidence_cell",
+      "col": 11,
+      "conf_mean": 0.807481050491333,
+      "conf_min": 0.807481050491333,
+      "text": "."
+     }
+    ],
+    "sha256": "cb9e91be3d2345182b6d2b956245b76905243d4bbf37fff79c3d96a802e5debe",
+    "skew_deg": 0.0,
+    "tier": "cmyk-flat"
+   },
+   "cmyk-ink": {
+    "class_histogram": {},
+    "conf_mean_p01_p50_p99": [
+     null,
+     null,
+     null
+    ],
+    "conf_min_p01_p50_p99": [
+     null,
+     null,
+     null
+    ],
+    "confident_fraction": null,
+    "gray_p01_p50_p99": [
+     10.0,
+     158.0,
+     252.0
+    ],
+    "gray_shape": [
+     3276,
+     2508
+    ],
+    "grid_mode": true,
+    "n_bands": 22,
+    "n_cells": 0,
+    "n_cols": 0,
+    "n_confident": 0,
+    "n_rows": null,
+    "row1_reads_first_12": [],
+    "sha256": "cb9e91be3d2345182b6d2b956245b76905243d4bbf37fff79c3d96a802e5debe",
+    "skew_deg": 0.0,
+    "tier": "cmyk-ink"
+   },
+   "raw-naive": {
+    "class_histogram": {},
+    "conf_mean_p01_p50_p99": [
+     null,
+     null,
+     null
+    ],
+    "conf_min_p01_p50_p99": [
+     null,
+     null,
+     null
+    ],
+    "confident_fraction": null,
+    "gray_p01_p50_p99": [
+     11.0,
+     213.0,
+     254.0
+    ],
+    "gray_shape": [
+     3276,
+     2508
+    ],
+    "grid_mode": true,
+    "n_bands": 22,
+    "n_cells": 0,
+    "n_cols": 0,
+    "n_confident": 0,
+    "n_rows": null,
+    "row1_reads_first_12": [],
+    "sha256": "cb9e91be3d2345182b6d2b956245b76905243d4bbf37fff79c3d96a802e5debe",
+    "skew_deg": 0.0,
+    "tier": "raw-naive"
+   }
+  }
+ },
+ "verdict": {
+  "f_cal_stop_gate": {
+   "action": "extraction + admission STOPPED in this lane; no band retuned; no new route built; successor scope named in the receipt",
+   "fired": true,
+   "gate": "prereg F-CAL: median glyph conf_min < 0.65 on the best faithful tier fires the runbook step-3 STOP (domain gap is the finding)",
+   "measured_best_tier_median_conf_min": 0.0
+  },
+  "field_manifest_measured": "the real per-specimen fields are exactly mass (g), FL (mm), PCSA (mm2) -- 3 of the 7 canonical fields; volume/MTU/tendon_ext/tendon_int do not exist in the tables (F-MANIFEST manifest-closure branch named in prereg)",
+  "refusal_discipline_held": "on cmyk-flat S2 the machinery emitted 408 low_glyph_confidence + 404 blank_cell + 178 grid_collision + 159 low_contrast + 8 glyph_merge refusals and 283 LOW cells -- zero guessed numbers admitted anywhere (the honesty discipline held even in a domain it cannot read)",
+  "route_premise_measured_false": "prestage route.declared_circularity called the real PMC TIFFs \"born-digital vector renders, cleaner than the hostile tier\"; measured: CMYK paper scans (no ICC), cream background ~gray 158, gray design fills (header cells, spacer bars), merged cells, text markers inside value cells (\"absent\", \"damaged\", \"not measured\"), ~32 px text",
+  "target_identity_measured": "S1 = GIBBON table (specimens H1-H5, Nc1, N1, Hp1, Hp2...); S2 = MACAQUE table (Mm1-Mm7, two panels Mm1-Mm4 / Mm5-Mm7). The prestage context assumed both tables carry the 7 M. mulatta -- S1 does not; the macaque data lives in S2 only. S1 was NOT extracted into records (out of target)."
+ }
+}

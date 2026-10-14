@@ -1,0 +1,578 @@
+{
+ "falsifier": "F-BODY-CLOSURE + F-BODY-CAP",
+ "pass": true,
+ "measured": {
+  "source_previews_refused_by_the_same_check": 19,
+  "source_previews_total": 25,
+  "output_bones_closed": 25,
+  "bone_count": 25,
+  "one_to_one_with_sources": true,
+  "merged_payload_triangles": 499976,
+  "kMaxTris": 500000,
+  "under_cap": true,
+  "payload_sha256_matches_manifest": true,
+  "payload_audit": {
+   "index_degenerate_faces": 0,
+   "boundary_edges": 0,
+   "nonmanifold_edges": 0,
+   "winding_violations": 0,
+   "faces": 499976,
+   "closed": true,
+   "vertices": 249743
+  },
+  "decimated_ratio_r": 0.7020263287954351
+ },
+ "bones": [
+  {
+   "source": "bone_01_4737869vox_lo.obj",
+   "output": "bone_01_4737869vox_body.obj",
+   "source_closed": false,
+   "source_refusals": {
+    "index_degenerate_faces": 2,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 163,
+    "winding_violations": 326,
+    "faces": 29998
+   },
+   "output_closed": true,
+   "output_audit": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 21066,
+    "closed": true,
+    "vertices": 10221
+   }
+  },
+  {
+   "source": "bone_02_210240vox_lo.obj",
+   "output": "bone_02_210240vox_body.obj",
+   "source_closed": false,
+   "source_refusals": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 5,
+    "winding_violations": 10,
+    "faces": 29998
+   },
+   "output_closed": true,
+   "output_audit": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 21060,
+    "closed": true,
+    "vertices": 10531
+   }
+  },
+  {
+   "source": "bone_03_208514vox_lo.obj",
+   "output": "bone_03_208514vox_body.obj",
+   "source_closed": false,
+   "source_refusals": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 1,
+    "winding_violations": 2,
+    "faces": 30000
+   },
+   "output_closed": true,
+   "output_audit": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 21062,
+    "closed": true,
+    "vertices": 10537
+   }
+  },
+  {
+   "source": "bone_04_180534vox_lo.obj",
+   "output": "bone_04_180534vox_body.obj",
+   "source_closed": false,
+   "source_refusals": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 3,
+    "winding_violations": 6,
+    "faces": 30000
+   },
+   "output_closed": true,
+   "output_audit": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 21060,
+    "closed": true,
+    "vertices": 10524
+   }
+  },
+  {
+   "source": "bone_05_174742vox_lo.obj",
+   "output": "bone_05_174742vox_body.obj",
+   "source_closed": false,
+   "source_refusals": {
+    "index_degenerate_faces": 10,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 29990
+   },
+   "output_closed": true,
+   "output_audit": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 21052,
+    "closed": true,
+    "vertices": 10518
+   }
+  },
+  {
+   "source": "bone_06_154508vox_lo.obj",
+   "output": "bone_06_154508vox_body.obj",
+   "source_closed": false,
+   "source_refusals": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 2,
+    "winding_violations": 4,
+    "faces": 29998
+   },
+   "output_closed": true,
+   "output_audit": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 21058,
+    "closed": true,
+    "vertices": 10529
+   }
+  },
+  {
+   "source": "bone_07_150102vox_lo.obj",
+   "output": "bone_07_150102vox_body.obj",
+   "source_closed": true,
+   "source_refusals": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 30000
+   },
+   "output_closed": true,
+   "output_audit": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 21060,
+    "closed": true,
+    "vertices": 10534
+   }
+  },
+  {
+   "source": "bone_08_102171vox_lo.obj",
+   "output": "bone_08_102171vox_body.obj",
+   "source_closed": true,
+   "source_refusals": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 30000
+   },
+   "output_closed": true,
+   "output_audit": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 21060,
+    "closed": true,
+    "vertices": 10546
+   }
+  },
+  {
+   "source": "bone_09_100874vox_lo.obj",
+   "output": "bone_09_100874vox_body.obj",
+   "source_closed": false,
+   "source_refusals": {
+    "index_degenerate_faces": 10,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 29988
+   },
+   "output_closed": true,
+   "output_audit": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 21052,
+    "closed": true,
+    "vertices": 10538
+   }
+  },
+  {
+   "source": "bone_10_92842vox_lo.obj",
+   "output": "bone_10_92842vox_body.obj",
+   "source_closed": false,
+   "source_refusals": {
+    "index_degenerate_faces": 14,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 29986
+   },
+   "output_closed": true,
+   "output_audit": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 21050,
+    "closed": true,
+    "vertices": 10539
+   }
+  },
+  {
+   "source": "bone_11_90563vox_lo.obj",
+   "output": "bone_11_90563vox_body.obj",
+   "source_closed": false,
+   "source_refusals": {
+    "index_degenerate_faces": 48,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 29952
+   },
+   "output_closed": true,
+   "output_audit": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 21026,
+    "closed": true,
+    "vertices": 10523
+   }
+  },
+  {
+   "source": "bone_12_88112vox_lo.obj",
+   "output": "bone_12_88112vox_body.obj",
+   "source_closed": false,
+   "source_refusals": {
+    "index_degenerate_faces": 14,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 29986
+   },
+   "output_closed": true,
+   "output_audit": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 21050,
+    "closed": true,
+    "vertices": 10529
+   }
+  },
+  {
+   "source": "bone_13_86590vox_lo.obj",
+   "output": "bone_13_86590vox_body.obj",
+   "source_closed": false,
+   "source_refusals": {
+    "index_degenerate_faces": 40,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 29960
+   },
+   "output_closed": true,
+   "output_audit": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 21032,
+    "closed": true,
+    "vertices": 10520
+   }
+  },
+  {
+   "source": "bone_14_58499vox_lo.obj",
+   "output": "bone_14_58499vox_body.obj",
+   "source_closed": false,
+   "source_refusals": {
+    "index_degenerate_faces": 66,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 29932
+   },
+   "output_closed": true,
+   "output_audit": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 21012,
+    "closed": true,
+    "vertices": 10516
+   }
+  },
+  {
+   "source": "bone_15_54574vox_lo.obj",
+   "output": "bone_15_54574vox_body.obj",
+   "source_closed": false,
+   "source_refusals": {
+    "index_degenerate_faces": 18,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 29982
+   },
+   "output_closed": true,
+   "output_audit": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 21048,
+    "closed": true,
+    "vertices": 10528
+   }
+  },
+  {
+   "source": "bone_16_54463vox_lo.obj",
+   "output": "bone_16_54463vox_body.obj",
+   "source_closed": false,
+   "source_refusals": {
+    "index_degenerate_faces": 14,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 29986
+   },
+   "output_closed": true,
+   "output_audit": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 21050,
+    "closed": true,
+    "vertices": 10531
+   }
+  },
+  {
+   "source": "bone_17_54226vox_lo.obj",
+   "output": "bone_17_54226vox_body.obj",
+   "source_closed": false,
+   "source_refusals": {
+    "index_degenerate_faces": 4,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 29996
+   },
+   "output_closed": true,
+   "output_audit": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 21056,
+    "closed": true,
+    "vertices": 10532
+   }
+  },
+  {
+   "source": "bone_18_53022vox_lo.obj",
+   "output": "bone_18_53022vox_body.obj",
+   "source_closed": false,
+   "source_refusals": {
+    "index_degenerate_faces": 40,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 29960
+   },
+   "output_closed": true,
+   "output_audit": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 21032,
+    "closed": true,
+    "vertices": 10500
+   }
+  },
+  {
+   "source": "bone_19_44805vox_lo.obj",
+   "output": "bone_19_44805vox_body.obj",
+   "source_closed": false,
+   "source_refusals": {
+    "index_degenerate_faces": 26,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 29974
+   },
+   "output_closed": true,
+   "output_audit": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 21042,
+    "closed": true,
+    "vertices": 10519
+   }
+  },
+  {
+   "source": "bone_20_34255vox_lo.obj",
+   "output": "bone_20_34255vox_body.obj",
+   "source_closed": false,
+   "source_refusals": {
+    "index_degenerate_faces": 4,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 29996
+   },
+   "output_closed": true,
+   "output_audit": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 21056,
+    "closed": true,
+    "vertices": 10532
+   }
+  },
+  {
+   "source": "bone_21_33153vox_lo.obj",
+   "output": "bone_21_33153vox_body.obj",
+   "source_closed": false,
+   "source_refusals": {
+    "index_degenerate_faces": 2,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 29998
+   },
+   "output_closed": true,
+   "output_audit": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 21058,
+    "closed": true,
+    "vertices": 10533
+   }
+  },
+  {
+   "source": "bone_22_31952vox_lo.obj",
+   "output": "bone_22_31952vox_body.obj",
+   "source_closed": true,
+   "source_refusals": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 26104
+   },
+   "output_closed": true,
+   "output_audit": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 18324,
+    "closed": true,
+    "vertices": 9158
+   }
+  },
+  {
+   "source": "bone_23_31588vox_lo.obj",
+   "output": "bone_23_31588vox_body.obj",
+   "source_closed": true,
+   "source_refusals": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 26450
+   },
+   "output_closed": true,
+   "output_audit": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 18568,
+    "closed": true,
+    "vertices": 9280
+   }
+  },
+  {
+   "source": "bone_24_25423vox_lo.obj",
+   "output": "bone_24_25423vox_body.obj",
+   "source_closed": true,
+   "source_refusals": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 14748
+   },
+   "output_closed": true,
+   "output_audit": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 10352,
+    "closed": true,
+    "vertices": 5178
+   }
+  },
+  {
+   "source": "bone_25_25400vox_lo.obj",
+   "output": "bone_25_25400vox_body.obj",
+   "source_closed": true,
+   "source_refusals": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 15228
+   },
+   "output_closed": true,
+   "output_audit": {
+    "index_degenerate_faces": 0,
+    "boundary_edges": 0,
+    "nonmanifold_edges": 0,
+    "winding_violations": 0,
+    "faces": 10690,
+    "closed": true,
+    "vertices": 5347
+   }
+  }
+ ],
+ "law": "the acceptance falsifier is the importer's own closure rule (importer.cpp finish()): degenerate / boundary / non-manifold / winding, all zero, on every output mesh; the cap is the importer's own kMaxTris"
+}

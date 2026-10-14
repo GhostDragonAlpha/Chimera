@@ -1,0 +1,33 @@
+{
+ "falsifier": "F-SLICE-RESTART",
+ "body": "the real skeleton",
+ "payload_pin_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+ "restarts": [
+  {
+   "n": 0,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "start_state_sha256": "8c040418fe5bfaac6f56004364d033429a8495bb5b78d2dff5545427ab2e9001",
+   "served_verts_sha256_unoffset": "8c040418fe5bfaac6f56004364d033429a8495bb5b78d2dff5545427ab2e9001",
+   "settled_root_y": 0.12445
+  },
+  {
+   "n": 1,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "start_state_sha256": "8c040418fe5bfaac6f56004364d033429a8495bb5b78d2dff5545427ab2e9001",
+   "served_verts_sha256_unoffset": "555d9fe052f75437f69084e727a2c467e929ec8ac621ae050eb158016e3c3f76",
+   "settled_root_y": 0.12445
+  },
+  {
+   "n": 2,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "start_state_sha256": "8c040418fe5bfaac6f56004364d033429a8495bb5b78d2dff5545427ab2e9001",
+   "served_verts_sha256_unoffset": "555d9fe052f75437f69084e727a2c467e929ec8ac621ae050eb158016e3c3f76",
+   "settled_root_y": 0.12445
+  }
+ ],
+ "same_scene_sha": true,
+ "same_start_state_sha": true,
+ "scene_sha_equals_payload_pin": true,
+ "pass": true,
+ "law": "the import bytes are committed bytes (sha == the manifest pin); the engine's tick is deterministic; the settled start rides the root law's attractor -- the start-state sha is the measured evidence"
+}

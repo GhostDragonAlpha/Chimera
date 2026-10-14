@@ -128,3 +128,13 @@ ChimeraEngine/engine_state.json
 # glm-wf-01: same class - gitignored per-checkout run artifacts (T2 membrane record) cited by tracked prose; retention decision belongs to the evidence-policy owner
 models/cad_bear/ca_run.json
 models/cad_bear/frost_binding.json
+# packet-author-20260918 (docs/packets/): the two implementation packets prescribe
+# files a successor native-solver lane creates; a planned path is not a broken pointer.
+ChimeraEngine/engine/free_root_dynamics.hpp
+ChimeraEngine/engine/coupled_multidynamics.hpp
+tools/science_funnel/coupled_free_scene.py
+tools/science_funnel/coupled_scene7.py
+tools/science_funnel/tests/qualify_coupled_free_live.py
+tools/science_funnel/tests/qualify_coupled_live7.py
+tools/science_funnel/tests/test_coupled_free.py
+tools/science_funnel/tests/test_coupled_arm7.py

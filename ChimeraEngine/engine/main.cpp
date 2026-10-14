@@ -52,6 +52,9 @@ struct MembraneRequest {
     float cam_radius = 12.0f;
     float cam_theta  = 0.0f;
     float cam_phi    = 0.3f;
+    float cam_pan_x  = 0.0f;     // CAM-PAN LAW (Defect C lane): /camera's optional
+    float cam_pan_y  = 0.0f;     // pan; default 0 keeps today's zeroed-pan behavior
+    float cam_target[3] = {0.f, 0.f, 0.f}; // /camera's optional orbit target
     float cam_full[8] = {};      // D6: r,theta,phi,target xyz,pan xy (recall)
     bool cam_full_set = false;       // true: apply all 8, ignore the r/theta/phi fields
     bool camera_only = false;         // true: only move the camera, keep the loaded membrane
@@ -824,36 +827,96 @@ int main(int argc, char** argv) {
     // operator sees it, never a downscale. (Every downscaled dyad frame in this
     // repo was sized to 384px because a 3D bear's silhouette survives it; panel
     // TEXT does not -- at 384px the instrument is unreadable to the eye.)
-    // argv[3]/argv[4] override for a box with a different panel.
+    // [width] [height] positional override for a box with a different panel
+    // (or the explicit --width/--height flags).
     cfg.width  = 2560;
     cfg.height = 1440;
     cfg.n_particles = 1200;
     cfg.G      = 1.0f;
     cfg.dt     = 0.02f;
-    if (argc > 3) {
-        int w = atoi(argv[3]), h = atoi(argv[4]);
-        if (w > 0 && h > 0) { cfg.width = (uint32_t)w; cfg.height = (uint32_t)h; }
-    }
 
-    // HTTP port: argv[1] overrides the default 8080 (e.g. NVIDIA SDK Manager squats 8080).
+    // ── ARGUMENT PARSING, BOUNDED (agent/engine-determinism-argc, 2026-09-20) ──
+    // The old parser read argv[4] under an `argc > 3` guard, so ANY launch with
+    // one token too many (e.g. `chimera_engine.exe 8097 --hidden --no-restore`,
+    // argc == 4) fed atoi a null pointer and died at startup through
+    // ucrtbase!invoke_watson with FAST_FAIL_INVALID_ARG -- no message, no exit
+    // code a script could use. This pre-pass never indexes at or past argv[argc]:
+    // a value flag's value is consumed only behind an `i + 1 < argc` check, and
+    // an unknown flag is a clean stderr usage message + exit code 1. The flags
+    // that act later in main (--no-restore near boot restore,
+    // --preserve-mesh-topology after engine init, the scene loaders) are
+    // recognized here so their spelling is validated once, in one place.
     int http_port = 8080;
-    if (argc > 1) { http_port = atoi(argv[1]); if (http_port <= 0) http_port = 8080; }
-    // R1 DOUBLE-CLICK LAUNCH: --hidden retires the developer console (the
-    // studio overlay F1 and the HTTP contract remain the surfaces). The
-    // game must not open a terminal.
     bool console_hidden = false;
-    for (int i = 1; i < argc; ++i)
-        if (std::string(argv[i]) == "--hidden") console_hidden = true;
-    // LOCO SPIKE (Phase 1 locomotion R&D, scratch experiment): the ONLY way
-    // the multi-drive tendon bank becomes reachable is this argv flag.
-    // DEFAULT OFF — without --loco-spike every /loco_* route refuses and
-    // step()'s loco hook is skipped, so the shipped game path is unchanged.
-    for (int i = 1; i < argc; ++i)
-        if (std::string(argv[i]) == "--loco-spike") {
-            g_tick.loco_allow_scratch();
-            fprintf(stderr, "LOCO SPIKE: scratch multi-drive bank enabled "
-                            "(default-off; --loco-spike was passed)\n");
+    bool have_board = false;
+    std::string board_file;
+    {
+        // value flags: the token AFTER the flag belongs to the flag (consumed in
+        // the scan below, so it can never be mistaken for a positional)
+        static const char* kValueFlags[] = {
+            "--width", "--height", "--science-surface", "--thermal-salvage", "--earth-patch",
+        };
+        static const char* kBoolFlags[] = {
+            "--hidden", "--no-restore", "--preserve-mesh-topology",
+            // LOCO SPIKE (Phase 1 locomotion R&D, scratch experiment): the ONLY way
+            // the multi-drive tendon bank becomes reachable is this argv flag.
+            // DEFAULT OFF — without --loco-spike every /loco_* route refuses and
+            // step()'s loco hook is skipped, so the shipped game path is unchanged.
+            "--loco-spike",
+        };
+        auto is_flag = [](const char* const* list, size_t n, const std::string& a) {
+            for (size_t i = 0; i < n; ++i) if (a == list[i]) return true;
+            return false;
+        };
+        std::vector<std::string> positional;
+        std::string bad;
+        for (int i = 1; i < argc; ++i) {
+            std::string a = argv[i];
+            if (!a.empty() && a[0] == '-') {
+                if (is_flag(kBoolFlags, sizeof(kBoolFlags) / sizeof(kBoolFlags[0]), a)) {
+                    if (a == "--hidden") console_hidden = true;
+                    if (a == "--loco-spike") {
+                        g_tick.loco_allow_scratch();
+                        fprintf(stderr, "LOCO SPIKE: scratch multi-drive bank enabled "
+                                        "(default-off; --loco-spike was passed)\n");
+                    }
+                    continue;
+                }
+                if (is_flag(kValueFlags, sizeof(kValueFlags) / sizeof(kValueFlags[0]), a)) {
+                    if (i + 1 >= argc) { bad = a + " requires a value"; break; }
+                    if (a == "--width")  cfg.width  = (uint32_t)atoi(argv[i + 1]);
+                    if (a == "--height") cfg.height = (uint32_t)atoi(argv[i + 1]);
+                    ++i;                                       // consume the value token
+                    continue;
+                }
+                bad = "unknown argument: " + a;
+                break;
+            }
+            positional.push_back(a);
         }
+        if (bad.empty() && positional.size() >= 3 && positional.size() != 4) {
+            // legacy positional protocol was [port] [board] [width] [height]:
+            // a dangling width (or width+board-less triple) is malformed
+            bad = "bare [width height] override needs exactly 2 numbers "
+                  "after [port] [board] (got " + std::to_string(positional.size() - 2) + ")";
+        }
+        if (!bad.empty()) {
+            fprintf(stderr,
+                    "chimera_engine: %s\n"
+                    "usage: chimera_engine.exe [port] [board.json] [width height]\n"
+                    "       [--hidden] [--no-restore] [--preserve-mesh-topology]\n"
+                    "       [--width W] [--height H]\n"
+                    "       [--science-surface FILE] [--thermal-salvage FILE] [--earth-patch FILE]\n",
+                    bad.c_str());
+            return 1;
+        }
+        if (positional.size() >= 1) { http_port = atoi(positional[0].c_str()); if (http_port <= 0) http_port = 8080; }
+        if (positional.size() >= 2) { have_board = true; board_file = positional[1]; }
+        if (positional.size() == 4) {
+            int w = atoi(positional[2].c_str()), h = atoi(positional[3].c_str());
+            if (w > 0 && h > 0) { cfg.width = (uint32_t)w; cfg.height = (uint32_t)h; }
+        }
+    }
 
     // Physics init (passes cfg so it can set physical params)
     g_physics.init(cfg.n_particles, cfg);
@@ -906,14 +969,13 @@ int main(int argc, char** argv) {
         }catch(const std::exception& e){fprintf(stderr,"earth patch: %s\n",e.what());return 2;}
     }
 
-    // THE STUDIO: optional board file path (argv[2]); default is studio_board.json
-    // in the CWD — tools/studio_board.py writes it next to the exe.
-    // 2026-09-02: flags are not paths — `chimera_engine.exe 8090 --restore`
-    // made argv[2] == "--restore" the board path, GetFileAttributesExA failed,
-    // and the window booted "no board file" forever (the eye's #1 defect:
-    // "a raw developer/console message leaking into the product UI").
-    if (argc > 2 && std::string(argv[2]).rfind("--", 0) != 0)
-        engine.ui_.set_board_file(argv[2]);
+    // THE STUDIO: optional board file path (the second positional); default is
+    // studio_board.json in the CWD — tools/studio_board.py writes it next to
+    // the exe. The positional comes from the bounded argument pre-pass above
+    // (flag tokens and value-flag values never land in it — 2026-09-02's
+    // "flags are not paths" fix, kept).
+    if (have_board)
+        engine.ui_.set_board_file(board_file);
 
     // ── HTTP server for Python shim communication ───────────────────────────────
     // F1: the handler is a NAMED function — the HTTP server and the console's
@@ -2846,11 +2908,23 @@ int main(int argc, char** argv) {
             float cam_radius = get_float(req_body, "cam_radius", 12.0f);
             float cam_theta  = get_float(req_body, "cam_theta", 0.0f);
             float cam_phi    = get_float(req_body, "cam_phi", 0.3f);
+            // CAM-PAN LAW (Defect C lane): optional pan, default 0 — today's
+            // zeroed-pan behavior is bit-identical when the fields are absent.
+            float cam_pan_x  = get_float(req_body, "pan_x", 0.0f);
+            float cam_pan_y  = get_float(req_body, "pan_y", 0.0f);
+            float cam_tx     = get_float(req_body, "target_x", 0.0f);
+            float cam_ty     = get_float(req_body, "target_y", 0.0f);
+            float cam_tz     = get_float(req_body, "target_z", 0.0f);
             {
                 std::lock_guard<std::mutex> lk(g_mem_mutex);
                 g_mem_req.cam_radius = cam_radius;
                 g_mem_req.cam_theta  = cam_theta;
                 g_mem_req.cam_phi    = cam_phi;
+                g_mem_req.cam_pan_x  = cam_pan_x;
+                g_mem_req.cam_pan_y  = cam_pan_y;
+                g_mem_req.cam_target[0] = cam_tx;
+                g_mem_req.cam_target[1] = cam_ty;
+                g_mem_req.cam_target[2] = cam_tz;
                 g_mem_req.camera_only = true;
                 g_mem_req.valid = true;
                 g_mem_pending = true;
@@ -4386,10 +4460,14 @@ int main(int argc, char** argv) {
                     engine.set_camera_full(g_mem_req.cam_full);
                     g_mem_req.cam_full_set = false;
                 } else if (g_mem_req.camera_only) {
-                    engine.set_camera(g_mem_req.cam_radius, g_mem_req.cam_theta, g_mem_req.cam_phi);
+                    engine.set_camera(g_mem_req.cam_radius, g_mem_req.cam_theta, g_mem_req.cam_phi,
+                                      g_mem_req.cam_pan_x, g_mem_req.cam_pan_y,
+                                      g_mem_req.cam_target[0], g_mem_req.cam_target[1], g_mem_req.cam_target[2]);
                 } else {
                     engine.load_membrane(g_mem_req.term, g_mem_req.pos, g_mem_req.count);
-                    engine.set_camera(g_mem_req.cam_radius, g_mem_req.cam_theta, g_mem_req.cam_phi);
+                    engine.set_camera(g_mem_req.cam_radius, g_mem_req.cam_theta, g_mem_req.cam_phi,
+                                      g_mem_req.cam_pan_x, g_mem_req.cam_pan_y,
+                                      g_mem_req.cam_target[0], g_mem_req.cam_target[1], g_mem_req.cam_target[2]);
                     g_membrane_active = true;
                 }
                 g_mem_req.camera_only = false;
@@ -4471,7 +4549,10 @@ int main(int argc, char** argv) {
                 }                // cam_radius <= 0 = "keep the current camera": animation drivers stream
                 // meshes every frame and must NOT steal the operator's orbit/zoom/pan.
                 if (!g_mesh_req.update_only && g_mesh_req.cam_radius > 0.0f)
-                    engine.set_camera(g_mesh_req.cam_radius, g_mesh_req.cam_theta, g_mesh_req.cam_phi);
+                    engine.set_camera(g_mesh_req.cam_radius, g_mesh_req.cam_theta, g_mesh_req.cam_phi,
+                                      0.f, 0.f,
+                                      engine.mesh_center()[0], engine.mesh_center()[1],
+                                      engine.mesh_center()[2]);   // ORBIT PIVOT LAW (membrane D)
                 g_mesh_req.update_only = false;
                 g_mesh_pending = false; g_mesh_applied = true; g_mesh_cv.notify_all();
             }

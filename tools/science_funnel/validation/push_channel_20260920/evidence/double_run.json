@@ -1,0 +1,20 @@
+{
+ "same_buffer_double_run": {
+  "mad": 0.0,
+  "max": 0,
+  "pct_nonzero": 0.0
+ },
+ "different_frames_run1": {
+  "mad": 0.3256,
+  "max": 16,
+  "pct_nonzero": 2.489
+ },
+ "different_frames_run2": {
+  "mad": 0.3256,
+  "max": 16,
+  "pct_nonzero": 2.489
+ },
+ "identical": true,
+ "nontrivial_difference_measured": true,
+ "note": "raster double-run on identical bytes (F5); raster.py camera transpose-fix applied first (see raster.py note)"
+}

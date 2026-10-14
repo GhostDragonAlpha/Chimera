@@ -1,0 +1,82 @@
+{
+ "schema": "chimera-record-pilot-v1/evidence-boundary/L0",
+ "scope": "the typed call boundary and ALL persistent state of the two pilot laws (wave-22 touch band; stand-first hold) at the pinned baseline 371f80d6, as consumed by a P2-style lossless replay",
+ "substrate": {
+  "file": "ChimeraEngine/engine/gait_controller.hpp",
+  "pin": "371f80d6",
+  "git_blob": "7e1d14787d492b4fbc99d57cdf27c082365268d2",
+  "contract": "READ-ONLY; the instrument (tools/constraint_ledger/trace_harness.cpp) observes only; access-specifier relaxation for observation is declared and verified by double-run byte-equality + refusal cross-check"
+ },
+ "clock": {
+  "tick": "one controller decision per tick; dt = 1/tick_hz (tick_hz from scene recipe); CYCLE_TICKS = 300; horizon WALK = 10*CYCLE_TICKS = 300 with refusal-stop (measured refusal tick 295, gait_positional_correction_budget)",
+  "phases": [
+   {"phase": "tick-start", "owner": "touch law", "order": 0},
+   {"phase": "decision", "owner": "stand-first hold", "order": 1, "reads": "the touch law's SAME-TICK tick-start write (the declared record-input dependency: arming requires touching_prev_[hl] as updated this tick)"}
+  ],
+  "row_convention": "trace row j = status AFTER step j-1; row 0 is the reset row; decisions at row j are functions of rows <= j-1 plus the same-tick ordered dependency above; the touch law's current-tick write is recovered by the replay as row j+1's touching_prev_"
+ },
+ "law_1_touch_band": {
+  "kind": "definition (hysteresis latch, 2 instances: legs L/R)",
+  "constants": {"kTouch": 1e-05, "kReleaseBand": 1e-06, "genuine_departure_bound": 1.1e-05, "kSlip": 1e-09},
+  "predicate": "pair-min(pad gaps of the leg) <= kTouch -> touching; pair-min > kTouch+kReleaseBand -> released; between the two = hold current class (the hysteresis band)",
+  "persistent_state": [
+   {"name": "touching_prev_[2]", "dtype": "bool", "initial": [false, false], "reset": "configure {reset:true} at construction; captured in trace as touch:[l,r] per row"}
+  ],
+  "inputs": [
+   {"name": "hind pad gaps (4, pair-min per leg)", "dtype": "f64", "frame": "world/contact", "captured": "decimal %.17g + uint64 IEEE bits per row (gaps/gaps_bits)"}
+  ],
+  "outputs": ["touch class per leg (consumed same-tick by law 2's arming; next-tick as touching_prev_)"]
+ },
+ "law_2_stand_first_hold": {
+  "kind": "definition (arming/release/completion state machine, 2 instances: hind legs L/R)",
+  "persistent_state": [
+   {"name": "hind_step_held_[2]", "dtype": "bool", "initial": [false, false], "reset": "reset() lines 2068-2078; captured per row"},
+   {"name": "hind_step_clear_tick_[2]", "dtype": "int", "initial": [-1, -1], "reset": "reset(); captured per row"},
+   {"name": "hind_step_plant_y_[2]", "dtype": "f64", "initial": [0.0, 0.0], "initial_bits": [0, 0], "reset": "reset(); captured decimal+bits per row"},
+   {"name": "hind_step_mode_[2]", "dtype": "int", "initial": [0, 0], "reset": "reset(); captured per row"},
+   {"name": "hind_step_t_[2]", "dtype": "f64 (ticks since fire)", "initial": [0.0, 0.0], "reset": "reset(); captured decimal (NAMED: no bits column -- upgrade)"}
+  ],
+  "transitions": {
+   "arming": "at a step fire: live_slot phi_[hl] >= TOE_OFF(0.68) AND touching_prev_[hl] (SAME-TICK touch write) -> held=true, clear_tick=-1, plant_y=(heel_y+mp_y)/2-capture (lines 2445-2450: plant_y=from[1], the pad world y at the liftoff spot)",
+   "release": "while mode==1 and held: pair-min > kTouch+kReleaseBand -> held=false, clear_tick=ticks_ (lines 2211-2216)",
+   "completion": "mode==1 && t >= tair && pair-min <= kTouch -> replant completes, held=false (line 2238 region); tair in the trace meta row"
+  },
+  "inputs": [
+   {"name": "phi_[hl]", "dtype": "f64", "captured": "decimal %.17g per row (phase; NAMED: no bits column -- upgrade)"},
+   {"name": "hind pad gaps / pair-min", "dtype": "f64", "captured": "decimal+bits"},
+   {"name": "pad world y (heel_y, mp_y)", "dtype": "f64", "captured": "decimal+bits (the anchor-capture inputs)"},
+   {"name": "fires/tds counters, fire_class(alt_), alt_due, hold_ticks", "dtype": "int/uint64", "captured": "per row"},
+   {"name": "mode, t", "dtype": "int/f64", "captured": "per row"},
+   {"name": "constants TOE_OFF, tair, T_CYCLE, DUTY_SAMPLED, tick_hz", "dtype": "f64", "captured": "in the trace META row, dumped from the substrate"}
+  ]
+ },
+ "external_inputs_of_the_fragment": "gaps, phases (phi_), fire events (the shipped scheduler's counters), mode, t, alt_due, pad world positions -- exactly the pilot preregistration's declared set; the scheduler itself is NOT a pilot record (named successor work)",
+ "adjacent_state_outside_the_two_laws": {
+  "note": "named for F-EVIDENCE-GAP completeness: these persistent members exist at the pin but are consumed by the SCHEDULER (the fire/waive/exchange decisions) or by census letters only -- no touch-band or hold decision reads them, so the two-law replay does not require them; they are the scheduler migration's state (L0 names them so the boundary is exhaustive by enumeration, not by omission)",
+  "members": [
+   "hind_step_from_[2] (line 329): the liftoff spot -- consumed by the glide TARGET kinematics (lines 1568-1572); the hold's own anchor capture is plant_y",
+   "hind_step_to_[2], hind_step_ap_[2], hind_step_mp_[2], hind_step_branch_[2]: glide target/pose latch -- scheduler",
+   "hind_step_last_fire_[2]/hind_step_last_td_[2] (lines 341/342): consumed by the concentration gate (line 555) -- a fire-decision input, i.e. part of the external 'fire events' input class",
+   "hind_step_stall_[2] (line 440): per-swing census clock (reset at fire, ++ alongside hold_ticks at line 2217, consumed by a census print at line 2324) -- no decision reads it; hold_ticks (captured) increments in the same branch",
+   "ticks_, capture_events_, tables_, posture tables: substrate-level state pinned by the source tree digest and the meta row"
+  ]
+ },
+ "reset_events": [
+  "configure {reset:true} once before tick 0 (both binaries: gait_unit walk_run and trace_harness)",
+  "reset() (lines 2068-2078) zeroes every law-2 member and the touch latch; the trace's row 0 records the post-reset state and matches the declared initials exactly (measured: touch [0,0], held 0, clear_tick -1, plant_y bits 0, mode 0, t 0, phi {0,0.5})"
+ ],
+ "losslessness": {
+  "captured_with_bits": ["gaps[4]", "plant_y", "heel_y", "mp_y"],
+  "captured_decimal_only_17g": ["t", "phase(phi_)"],
+  "measurement_on_the_ship_trace": "2960 bit-pairs reconstructed from bits and re-encoded %.17g == recorded decimal, 0 mismatches; 1184 decimal-only round-trips clean; trace byte-identical across two runs",
+  "verdict": "the trace is a LOSSLESS representation of the required inputs and state: every float needed at the bit level carries its bits; the decimal-only fields are round-trip-exact by the %.17g property"
+ },
+ "named_gaps_and_instrument_upgrades": [
+  {"item": "kTouch / kReleaseBand values are not dumped in the meta row", "status": "NAMED, not silent", "why_not_a_fired_gap": "they are record constants with provenance (schema constants + boundary fixtures at nextafter neighbors), and any substrate/record disagreement is exactly what the bit-exact replay diverges on (it did not, 3000/3000 in P2)", "upgrade": "add them to the meta row (the instrument already relaxes access for observation; trivial, lossless)"},
+  {"item": "t and phase carry %.17g decimals without *_bits columns", "status": "NAMED, not silent", "why_not_a_fired_gap": "%.17g is a round-trip-exact representation for binary64 -- no information is lost; verified empirically on the ship trace", "upgrade": "add t_bits/phase_bits columns so the replay can assert decimal<->bits agreement per row for ALL floats instead of by representation argument"}
+ ],
+ "empirical_closure": {
+  "pilot_P2": "compiled records, seeded ONLY at row 0, never reset from the reference: 300 rows x (2400 decision checks + 600 anchor IEEE bit checks) == shipped C++, 0 divergences, plus nextafter boundary fixtures",
+  "l0_ship_trace": "refusal 295 gait_positional_correction_budget == the registered ship death face; row 0 == declared initial state; 2960/2960 bit-pairs lossless; runs byte-identical"
+ }
+}

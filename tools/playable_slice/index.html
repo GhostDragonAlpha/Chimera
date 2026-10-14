@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>
+/* THIN-CLIENT PILOT gate (lane/thin-client-pilot-20260920): URL params decide
+   the camera path BEFORE the legacy block runs, so the legacy 10 Hz
+   /api/verts poll never competes with the thin client for the engine's
+   measured ~60 req/s HTTP budget (measured: thin_client_pilot_20260920).
+   Integration pass 7: the gate DEFAULTS OFF -- the plain URL is the stranger
+   page the slice-stranger/render-truth receipts verified (the keys card and
+   the boot bar speak of THAT page); the thin client is the explicit pilot
+   path (?thin=1&rate=..&fmt=..&pilot=1 -- the exact form every thincli
+   instrument already passes, so no measured run changes). */
+(function(){
+  var q = location.search;
+  function qp(k, d){ var m = q.match(new RegExp('[?&]'+k+'=([^&]*)')); return m ? m[1] : d; }
+  window.__THIN_ENABLED__ = qp('thin', '0') === '1';
+  window.__THIN_PARAMS__ = {
+    rate: parseFloat(qp('rate', '30')),
+    fmt: qp('fmt', 'FULL36').toUpperCase(),
+    D_ms: qp('D_ms', '') === '' ? null : parseFloat(qp('D_ms')),
+    pilot: qp('pilot', '0') === '1',
+    mode: qp('mode', 'interp')        // interp | direct
+  };
+})();
+</script>
+<title>CHIMERA — playable slice (the standing start)</title>
+<style>
+  :root{--bg:#0b0d10;--panel:#12151acc;--line:#1d232b;--text:#c9d3db;--muted:#7b8792;
+        --accent:#7fd4c1;--warn:#dfb26a;--bad:#e07f7f;--good:#7ddba3}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--text);overflow:hidden;
+        font:13px/1.5 "Segoe UI",system-ui,sans-serif}
+  #gl{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab;touch-action:none}
+  #gl.dragging{cursor:grabbing}
+  .panel{position:absolute;background:var(--panel);border:1px solid var(--line);border-radius:10px;
+        padding:10px 12px;backdrop-filter:blur(4px);font-size:12px}
+  /* the left column: the stranger guide first, the honesty ledger under it */
+  #leftcol{position:absolute;left:10px;top:10px;bottom:12px;width:305px;display:flex;
+        flex-direction:column;gap:8px;pointer-events:none}
+  #guide,#honesty{pointer-events:auto}
+  #guide{position:relative;background:var(--panel);border:1px solid #2b4a43;border-radius:10px;
+        padding:10px 12px;font-size:12px}
+  #guide h1{font-size:13px;letter-spacing:.14em;color:var(--accent);margin:0 0 6px}
+  #guide h2{font-size:10px;letter-spacing:.18em;color:var(--muted);margin:9px 0 2px}
+  #guide .row{margin:2px 0;color:var(--text)}
+  #guide .obj{margin-top:8px;padding:6px 8px;border:1px solid #2b4a43;border-radius:8px;
+        color:var(--accent)}
+  #guide .x{position:absolute;right:8px;top:6px;color:var(--muted);cursor:pointer;border:none;
+        background:none;font-size:12px}
+  #guidepill{position:relative;display:none;background:var(--panel);border:1px solid var(--line);
+        border-radius:8px;padding:6px 10px;color:var(--muted);cursor:pointer;width:max-content}
+  #honesty{position:relative;overflow-y:auto;min-height:0}
+  #honesty h1{font-size:12px;letter-spacing:.22em;color:var(--accent);margin:0 0 6px}
+  #honesty h2{font-size:10px;letter-spacing:.18em;color:var(--muted);margin:9px 0 3px}
+  #honesty .row{margin:2px 0;color:var(--muted)}
+  #honesty .row b{color:var(--text);font-weight:600}
+  .tag{display:inline-block;padding:0 5px;border-radius:4px;font-size:10px;margin-right:4px}
+  .tag.real{background:#173229;color:var(--good)} .tag.mock{background:#3a2a17;color:var(--warn)}
+  .tag.decl{background:#241a33;color:#c9a7ff}
+  #banner{position:absolute;top:44px;left:50%;transform:translateX(-50%);display:none;
+        background:#3a2a17ee;border:1px solid #6b4c26;color:var(--warn);border-radius:8px;
+        padding:7px 16px;font-size:13px}
+  #bootstatus{position:absolute;top:10px;left:50%;transform:translateX(-50%);display:none;
+        background:#12151acc;border:1px solid var(--line);color:var(--muted);border-radius:8px;
+        padding:6px 16px;font-size:12px}
+  #bootstatus.restarting{color:var(--warn);border-color:#6b4c26}
+  #beacon{position:absolute;right:10px;top:10px;width:290px;font-size:11px;
+        color:var(--good)}
+  #beacon.bad{color:var(--bad)}
+  #verdict{position:absolute;right:10px;top:36px;width:290px}
+  #verdict .big{font-size:14px;margin:4px 0}
+  #keys{position:absolute;right:10px;bottom:12px;width:238px;font-size:12px}
+  #keys h2{font-size:10px;letter-spacing:.18em;color:var(--muted);margin:0 0 4px}
+  #keys .row{margin:1px 0;color:var(--muted)}
+  #keys .row b{color:var(--accent);font-weight:600}
+  #keys .row span{color:var(--text)}
+  #settle{position:absolute;bottom:64px;left:50%;transform:translateX(-50%);display:none;
+        color:var(--muted);font-size:12px;background:#12151acc;border:1px solid var(--line);
+        border-radius:8px;padding:5px 12px}
+  #controls{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:8px}
+  button{background:transparent;color:var(--accent);border:1px solid #2b4a43;border-radius:8px;
+        padding:8px 14px;cursor:pointer;font-size:12px}
+  button:hover{background:#7fd4c114} button.warn{color:var(--warn);border-color:#5a4326}
+  button.mut{color:var(--muted);border-color:var(--line)}
+  #status{color:var(--muted);margin-top:6px;white-space:pre-line}
+  a{color:var(--muted)}
+</style>
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<div id="leftcol">
+  <div id="guide" data-t="guide">
+    <button class="x" id="guide-x" title="close (H reopens)">[ x ]</button>
+    <h1>WELCOME — HERE IN ONE BREATH</h1>
+    <div class="row"><b>What am I looking at?</b> A small creature: a real
+      CT-scanned macaque skeleton — 25 bones, about half a million triangles —
+      standing in a physics world. The faint copy is its saved pose.</div>
+    <div class="row"><b>What does it do?</b> It obeys real gravity: it falls,
+      settles, and reacts when pressed. The numbers on the right are the
+      engine's own. One thing is a labeled mock: sliding to the marker
+      (walking is not real yet — the page says so while it happens).</div>
+    <div class="row"><b>What do I press?</b> Any key below does one thing —
+      start with <b>1</b>: send the creature to the ring marker.
+      Or click the creature to press on it (300 N).</div>
+    <div class="obj">Objective: send the creature to the ring marker — press <b>1</b>.</div>
+  </div>
+  <div id="guidepill" data-t="guidepill" title="show the welcome (H)">Help — press H</div>
+  <div id="honesty" class="panel" style="position:relative">
+    <h1>CHIMERA — PLAYABLE SLICE</h1>
+    <div class="row">the standing start · honesty law enforced</div>
+    <h2>REALITY — the engine does it</h2><div id="reality-list"></div>
+    <h2>FANTASY — mocked, named, pending</h2><div id="fantasy-list"></div>
+    <h2>DECLARED — real geometry, explicit overlay</h2><div id="declared-list"></div>
+    <div class="row" id="phys-target" style="margin-top:8px"></div>
+  </div>
+</div>
+
+<div id="bootstatus" data-t="bootstatus"></div>
+<div id="banner"></div>
+<div id="settle" data-t="settle">the creature settles under real gravity — watch it move</div>
+<div id="beacon" data-t="beacon">no page errors</div>
+
+<div id="verdict" class="panel">
+  <div class="big" id="objective" data-t="objective">—</div>
+  <div id="fall-verdict" class="row" data-t="fall">the fall test has not run</div>
+  <div id="msg" data-t="msg"></div>
+  <div id="status" data-t="status"></div>
+</div>
+
+<div id="keys" class="panel" data-t="keys">
+  <h2>KEYS — EVERYTHING HAS A KEY</h2>
+  <div id="keys-list"></div>
+</div>
+
+<div id="controls">
+  <button id="btn-send">SEND TO MARKER <span style="color:var(--warn)">(mock carry)</span></button>
+  <button id="btn-stop" class="mut">STOP</button>
+  <button id="btn-fall" class="warn">THE FALL TEST <span style="color:var(--good)">(real)</span></button>
+  <button id="btn-restart" class="mut">RESTART</button>
+  <button id="btn-save" class="mut">SAVE</button>
+</div>
+
+<script>
+"use strict";
+// ── THE ERROR BEACON (the repo's own pattern, on the page itself) ─────────
+// Every error the page can produce — thrown, rejected, or console.error —
+// lands here. The stranger sees an honest pill; the walkthrough counts it.
+const BEACON = [];
+window.__CHIMERA_BEACON = BEACON;
+function beacon(kind, msg){
+  BEACON.push({kind: kind, msg: String(msg).slice(0, 300), at: Date.now()});
+  paintBeacon();
+}
+function paintBeacon(){
+  const el = document.getElementById('beacon');
+  if(!el) return;
+  if(BEACON.length === 0){ el.textContent = 'no page errors'; el.classList.remove('bad'); }
+  else{ el.textContent = BEACON.length + ' page errors (hover for the first)';
+        el.title = BEACON.slice(0, 5).map(b => b.kind + ': ' + b.msg).join('\n');
+        el.classList.add('bad'); }
+}
+window.addEventListener('error', e => beacon('error', e.message || e));
+window.addEventListener('unhandledrejection', e => beacon('unhandledrejection', (e.reason && e.reason.message) || e.reason));
+const __origConsoleError = console.error;
+console.error = function(){ beacon('console.error', Array.prototype.map.call(arguments, String).join(' '));
+  __origConsoleError.apply(console, arguments); };
+
+// ── the honesty contract comes from the registry (the same file the audit reads)
+let REGISTRY = null;
+fetch('/mock_registry.json').then(r=>r.json()).then(r=>{
+  REGISTRY = r;
+  const el = (id)=>document.getElementById(id);
+  el('reality-list').innerHTML = r.reality.map(x=>
+    `<div class="row"><span class="tag real">REAL</span><b>${x.id}</b> — ${x.what}</div>`).join('');
+  el('fantasy-list').innerHTML = r.fantasy.map(x=>
+    `<div class="row"><span class="tag mock">MOCK</span><b>${x.id}</b> — ${x.what}<br>
+     <span style="color:var(--faint,#5a6570)">pending: ${x.pending_real} · physics target ${x.physics_target}</span></div>`).join('');
+  el('declared-list').innerHTML = r.declared.map(x=>
+    `<div class="row"><span class="tag decl">GHOST</span><b>${x.id}</b> — ${x.what}</div>`).join('');
+  el('phys-target').innerHTML = `physics target: walk <b>${r.physics_target.ticks}</b> ticks — current <b>${r.physics_target.current}</b> (wave-38 refusal)`;
+}).catch(e=>beacon('registry load failed', e));
+
+// ── tiny mat4 ─────────────────────────────────────────────────────────────
+function persp(fov,asp,n,f){const t=1/Math.tan(fov/2);
+  return [t/asp,0,0,0, 0,t,0,0, 0,0,(f+n)/(n-f),-1, 0,0,2*f*n/(n-f),0];}
+function lookFrom(yaw,pit,dist,tx,ty,tz){
+  const cx=tx+dist*Math.cos(pit)*Math.sin(yaw), cy=ty+dist*Math.sin(pit),
+        cz=tz+dist*Math.cos(pit)*Math.cos(yaw);
+  let f=[cx-tx,cy-ty,cz-tz], l=Math.hypot(...f); f=f.map(v=>v/l);
+  let up=[0,1,0], s=[f[1]*up[2]-f[2]*up[1], f[2]*up[0]-f[0]*up[2], f[0]*up[1]-f[1]*up[0]];
+  l=Math.hypot(...s)||1e-9; s=s.map(v=>v/l);
+  const u=[s[1]*f[2]-s[2]*f[1], s[2]*f[0]-s[0]*f[2], s[0]*f[1]-s[1]*f[0]];
+  return {mat:[s[0],u[0],f[0],0, s[1],u[1],f[1],0, s[2],u[2],f[2],0,
+    -(s[0]*cx+s[1]*cy+s[2]*cz), -(u[0]*cx+u[1]*cy+u[2]*cz), -(f[0]*cx+f[1]*cy+f[2]*cz), 1],
+    eye:[cx,cy,cz]};
+}
+function mul(a,b){const o=new Array(16);for(let c=0;c<4;c++)for(let r=0;r<4;r++)
+  o[c*4+r]=a[r]*b[c*4]+a[4+r]*b[c*4+1]+a[8+r]*b[c*4+2]+a[12+r]*b[c*4+3];return o;}
+
+// ── gl ────────────────────────────────────────────────────────────────────
+const cv=document.getElementById('gl');
+const gl=cv.getContext('webgl2',{antialias:true});
+if(!gl){document.body.insertAdjacentHTML('beforeend',
+  '<div style="position:absolute;inset:0;display:grid;place-items:center">this slice needs WebGL2</div>');}
+function sh(t,src){const s=gl.createShader(t);gl.shaderSource(s,src);gl.compileShader(s);
+  if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw gl.getShaderInfoLog(s);return s;}
+function prog(vs,fs){const p=gl.createProgram();gl.attachShader(p,sh(gl.VERTEX_SHADER,vs));
+  gl.attachShader(p,sh(gl.FRAGMENT_SHADER,fs));gl.linkProgram(p);
+  if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw gl.getProgramInfoLog(p);return p;}
+
+// one program with a model offset: the mesh passes uOff=0, the ghost rides
+// the body's live root through uOff (rebuilt-as-const killed the boot once)
+let MESH_P = prog(`#version 300 es
+  in vec3 aPos; in vec3 aNrm; in vec3 aCol;
+  uniform mat4 uVP; uniform vec3 uOff; out vec3 vN; out vec3 vC; out vec3 vP;
+  void main(){vN=aNrm; vC=aCol; vP=aPos+uOff; gl_Position=uVP*vec4(aPos+uOff,1.0);}`,
+`#version 300 es
+  precision highp float; in vec3 vN; in vec3 vC; in vec3 vP; out vec4 o;
+  uniform float uAlpha;
+  void main(){
+    vec3 L=normalize(vec3(0.5,0.9,0.35));
+    float d=max(dot(normalize(vN),L),0.0)*0.75+0.25;
+    o=vec4(vC*d, uAlpha);}`);
+const LINE_P = prog(`#version 300 es
+  in vec3 aPos; uniform mat4 uVP; void main(){gl_Position=uVP*vec4(aPos,1.0);}`,
+`#version 300 es
+  precision highp float; uniform vec4 uCol; out vec4 o; void main(){o=uCol;}`);
+
+const U = (p,n)=>gl.getUniformLocation(p,n);
+let vaoMesh=null, vboMesh=null, idxCount=0, ibo=null;
+let ghost = null;         // {vao,n}
+let nGhost=0;
+
+function ensureMeshVAO(){
+  // the mesh VAO: created once, positions uploaded per /api/verts frame,
+  // the index buffer uploaded ONCE (from the committed GLB at load; the
+  // /api/topology route is the named fallback)
+  gl.bindVertexArray(null);
+  if(!vaoMesh){vaoMesh=gl.createVertexArray();vboMesh=gl.createBuffer();ibo=gl.createBuffer();}
+  gl.bindVertexArray(vaoMesh);
+  gl.bindBuffer(gl.ARRAY_BUFFER,vboMesh);
+  const st=36;
+  gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,3,gl.FLOAT,false,st,0);
+  gl.enableVertexAttribArray(1);gl.vertexAttribPointer(1,3,gl.FLOAT,false,st,12);
+  gl.enableVertexAttribArray(2);gl.vertexAttribPointer(2,3,gl.FLOAT,false,st,24);
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ibo);
+  gl.bindVertexArray(null);
+}
+
+function meshFromTopo(topoBuf, vertBuf){
+  // /topology header = TRIANGLE count; payload = 3 u32 indices per triangle
+  const tris=new DataView(topoBuf).getUint32(0,true);
+  const idx=new Uint32Array(topoBuf,4,tris*3);
+  ensureMeshVAO();
+  gl.bindVertexArray(vaoMesh);
+  gl.bindBuffer(gl.ARRAY_BUFFER,vboMesh);
+  gl.bufferData(gl.ARRAY_BUFFER,vertBuf,gl.DYNAMIC_DRAW);
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ibo);
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,idx,gl.STATIC_DRAW);
+  idxCount=idx.length;
+  gl.bindVertexArray(null);
+}
+
+// ── the payload's own index buffer (the committed GLB) ────────────────────
+// The pinned payload standing_body.glb is ALREADY position+index (f32 VEC3
+// + u32 indices in payload order -- lane mesh-parse-20260920 proved bit
+// parity with the engine's own /topology route). The page uploads that
+// index buffer ONCE at load: shaded triangles from the first frame, no
+// topology round trip, and never a per-frame index serialization. The live
+// /api/verts stream stays the ONLY vertex source (the physics truth). A
+// GLB/live count mismatch refuses the GLB buffer BY NAME and falls back to
+// /api/topology.
+let glbPosCount=0;
+window.__CHIMERA_MESH_SOURCE='pending';
+function glbIndexBuffer(buf){
+  const dv=new DataView(buf);
+  if(dv.getUint32(0,true)!==0x46546C67)throw 'not a GLB container';
+  const glbLen=dv.getUint32(8,true);
+  let off=12, json=null, bin=null;
+  while(off+8<=glbLen){
+    const len=dv.getUint32(off,true), typ=dv.getUint32(off+4,true);
+    if(typ===0x4E4F534A)json=JSON.parse(new TextDecoder().decode(new Uint8Array(buf,off+8,len)));
+    else if(typ===0x004E4942)bin=new Uint8Array(buf,off+8,len);
+    off+=8+len;
+  }
+  if(!json||!bin)throw 'GLB missing a chunk';
+  const prim=json.meshes && json.meshes[0] && json.meshes[0].primitives[0];
+  if(!prim||prim.indices===undefined)throw 'GLB has no triangle primitive';
+  const ia=json.accessors[prim.indices];
+  if(ia.componentType!==5125)throw 'GLB indices are not u32 (5125)';
+  const iv=json.bufferViews[ia.bufferView];
+  const idx=new Uint32Array(ia.count);
+  idx.set(new Uint32Array(bin.buffer,bin.byteOffset+(iv.byteOffset||0),ia.count));
+  const pa=json.accessors[prim.attributes.POSITION];
+  return {idx:idx, posCount:pa.count};
+}
+async function loadGLBIndices(){
+  try{
+    const buf=await (await fetch('/standing_body.glb')).arrayBuffer();
+    const g=glbIndexBuffer(buf);
+    ensureMeshVAO();
+    gl.bindVertexArray(vaoMesh);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ibo);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,g.idx,gl.STATIC_DRAW);
+    gl.bindVertexArray(null);
+    idxCount=g.idx.length;
+    glbPosCount=g.posCount;
+    window.__CHIMERA_MESH_SOURCE='glb';
+  }catch(e){
+    beacon('glb index buffer unavailable -- /api/topology fallback', e);
+    window.__CHIMERA_MESH_SOURCE='topology-fallback';
+  }
+}
+
+function linesToVAO(pts){const vao=gl.createVertexArray(),vbo=gl.createBuffer();
+  gl.bindVertexArray(vao);gl.bindBuffer(gl.ARRAY_BUFFER,vbo);
+  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(pts),gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,3,gl.FLOAT,false,12,0);
+  gl.bindVertexArray(null);return {vao,n:pts.length/3};}
+
+let cam={yaw:0.7,pit:0.42,dist:2.2,tx:0,ty:0.25,tz:0};
+window.__CHIMERA_VIEW=cam;   // read-only handle for the walkthrough instrument
+let MARKER={x:0.678,z:0.966,radius:0.15};
+let worldGrid=null, markerRing=null, markerPost=null;
+
+function buildWorldDecor(){
+  const g=[],R=3.0,s=0.25;
+  for(let x=-R;x<=R+1e-6;x+=s){g.push(x,0,-R,x,0,R);}
+  for(let z=-R;z<=R+1e-6;z+=s){g.push(-R,0,z,R,0,z);}
+  worldGrid=linesToVAO(g);
+  const r=[],N=64;
+  for(let i=0;i<=N;i++){const a=2*Math.PI*i/N;r.push(MARKER.x+MARKER.radius*Math.sin(a),0.004,MARKER.z+MARKER.radius*Math.cos(a));}
+  markerRing=linesToVAO(r);
+  markerPost=linesToVAO([MARKER.x,0,MARKER.z, MARKER.x,0.5,MARKER.z]);
+}
+
+// the ghost: the committed standing pose, parsed client-side from /ghost.obj
+async function loadGhost(){
+  const txt=await (await fetch('/ghost.obj')).text();
+  const vs=[],tr=[];
+  for(const line of txt.split('\n')){
+    if(line.startsWith('v ')){const p=line.trim().split(/\s+/);vs.push(+p[1],+p[2],+p[3]);}
+    else if(line.startsWith('f ')){const p=line.trim().split(/\s+/).slice(1).map(x=>parseInt(x)-1);
+      for(let i=1;i<p.length-1;i++)tr.push(p[0],p[i],p[i+1]);}
+  }
+  const vao=gl.createVertexArray(),vb=gl.createBuffer(),ib=gl.createBuffer();
+  gl.bindVertexArray(vao);
+  gl.bindBuffer(gl.ARRAY_BUFFER,vb);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(vs),gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,3,gl.FLOAT,false,12,0);
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ib);
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint32Array(tr),gl.STATIC_DRAW);
+  gl.bindVertexArray(null);
+  ghost={vao,vb,ib,n:tr.length};
+  nGhost=vs.length/3;
+  ghostBase=new Float32Array(vs);
+  // center the ghost on the body's authored center (the importer centers the body)
+  let mnx=1e9,mny=1e9,mnz=1e9,mxx=-1e9,mxy=-1e9,mxz=-1e9;
+  for(let i=0;i<vs.length;i+=3){mnx=Math.min(mnx,vs[i]);mxx=Math.max(mxx,vs[i]);
+    mny=Math.min(mny,vs[i+1]);mxy=Math.max(mxy,vs[i+1]);mnz=Math.min(mnz,vs[i+2]);mxz=Math.max(mxz,vs[i+2]);}
+  ghostCenter=[(mnx+mxx)/2,(mny+mxy)/2,(mnz+mxz)/2];
+  for(let i=0;i<vs.length;i+=3){ghostBase[i]-=ghostCenter[0];ghostBase[i+1]-=ghostCenter[1];ghostBase[i+2]-=ghostCenter[2];}
+}
+let ghostBase=null, ghostCenter=[0,0,0];
+
+// ── the stream ────────────────────────────────────────────────────────────
+let liveVerts=null;      // the Float32Array the renderer + the picker share
+// Serialized, bounded polling: a slow machine must see the poll SKIP a beat,
+// never stack thousands of unbounded fetches (measured failure: unbounded
+// polling under load ends in ERR_INSUFFICIENT_RESOURCES and a dead page).
+let vertsBusy=false, statusBusy=false;
+async function pollVerts(){
+  if(vertsBusy)return; vertsBusy=true;
+  try{
+    const b=await (await fetch('/api/verts',{signal:AbortSignal.timeout(8000)})).arrayBuffer();
+    // the restart gap answers {"restarting":true} (JSON) -- never parse that
+    // as vertex floats; keep the last good frame on screen
+    if(b.byteLength && new Uint8Array(b)[0]===0x7b)return;
+    // the payload is [u32 count][n * 36 B vertex data]: the count header is
+    // NOT geometry. It used to be uploaded as vertex zero -- every
+    // attribute read shifted by one float, 1/9 of the "vertices" carried
+    // the count (249743.0) as an X coordinate, colors read normal-z (the
+    // green cast) -- the true mechanism behind the blind judge's
+    // "amorphous, chaotic tangle of lines" (finding F-VERTS-HEADER, lane
+    // render-truth-20260920; the GLB index buffer's parity check caught it
+    // BY NAME). Skip the header; the parity check refuses any residual
+    // mismatch.
+    const f32=new Float32Array(b,4);
+    liveVerts=f32;
+    if(!window.__CHIMERA_BOOT_TS){window.__CHIMERA_BOOT_TS=Date.now();
+      document.getElementById('bootstatus').style.display='none';}
+    if(!idxCount){
+      const t=await (await fetch('/api/topology',{signal:AbortSignal.timeout(8000)})).arrayBuffer();
+      meshFromTopo(t,f32);
+    }else{
+      // the GLB index buffer is already uploaded (or the fallback filled
+      // it): only the live positions arrive per frame -- the physics truth
+      if(!vaoMesh)ensureMeshVAO();
+      gl.bindVertexArray(vaoMesh);
+      gl.bindBuffer(gl.ARRAY_BUFFER,vboMesh);
+      gl.bufferData(gl.ARRAY_BUFFER,f32,gl.DYNAMIC_DRAW);
+      gl.bindVertexArray(null);
+      if(window.__CHIMERA_MESH_SOURCE==='glb'&&glbPosCount&&
+         liveVerts.length&&liveVerts.length/9!==glbPosCount){
+        // refuse BY NAME: an index buffer that disagrees with the live
+        // stream would render a lie about the body. An EMPTY payload
+        // (0 verts -- the engine's answer while the world boots or
+        // restarts) is not a mismatch: skip it and keep the last frame.
+        beacon('glb index count != live verts', glbPosCount+' vs '+(liveVerts.length/9));
+        idxCount=0;
+        window.__CHIMERA_MESH_SOURCE='topology-fallback';
+      }
+    }
+  }catch(e){/* a timeout or the restart gap: keep the last good frame */}
+  finally{vertsBusy=false;}
+}
+
+// ── render ────────────────────────────────────────────────────────────────
+function resize(){const d=devicePixelRatio||1;
+  if(cv.width!==innerWidth*d||cv.height!==innerHeight*d){cv.width=innerWidth*d;cv.height=innerHeight*d;}
+  gl.viewport(0,0,cv.width,cv.height);}
+function draw(){
+  if(!gl)return; resize();
+  gl.enable(gl.DEPTH_TEST);gl.clearColor(0.043,0.051,0.063,1);
+  gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+  const vp=mul(persp(0.9,cv.width/cv.height,0.05,60),
+               lookFrom(cam.yaw,cam.pit,cam.dist,cam.tx,cam.ty,cam.tz).mat);
+  // the guide grid: drawn FIRST, depth-written, behind the body always
+  if(worldGrid){gl.useProgram(LINE_P);gl.uniformMatrix4fv(U(LINE_P,'uVP'),false,vp);
+    gl.uniform4f(U(LINE_P,'uCol'),0.16,0.2,0.24,1);
+    gl.bindVertexArray(worldGrid.vao);gl.drawArrays(gl.LINES,0,worldGrid.n);}
+  if(markerRing){gl.uniform4f(U(LINE_P,'uCol'),0.5,0.75,0.55,1);
+    gl.bindVertexArray(markerRing.vao);gl.drawArrays(gl.LINE_STRIP,0,markerRing.n);
+    gl.uniform4f(U(LINE_P,'uCol'),0.35,0.55,0.4,1);
+    gl.bindVertexArray(markerPost.vao);gl.drawArrays(gl.LINES,0,markerPost.n);}
+  if(vaoMesh&&idxCount){gl.useProgram(MESH_P);gl.uniformMatrix4fv(U(MESH_P,'uVP'),false,vp);
+    gl.uniform1f(U(MESH_P,'uAlpha'),1);
+    // one connected surface: backface culling ON for the body only (the
+    // thin bones used to draw front AND back faces plus their interiors,
+    // which collapsed the surface into the "tangle of lines" the blind
+    // judge named -- lane render-truth-20260920). The ghost stays
+    // double-sided (declared overlay).
+    gl.enable(gl.CULL_FACE);gl.cullFace(gl.BACK);
+    gl.bindVertexArray(vaoMesh);gl.drawElements(gl.TRIANGLES,idxCount,gl.UNSIGNED_INT,0);
+    gl.disable(gl.CULL_FACE);}
+  if(ghost&&ghostBase){
+    // the ghost rides the body's live root (REAL) — offset by the live mean
+    let ox=0,oy=0,oz=0,cnt=0;
+    if(liveVerts){for(let i=0;i<liveVerts.length;i+=36){ox+=liveVerts[i];oy+=liveVerts[i+1];oz+=liveVerts[i+2];cnt++;}}
+    if(cnt){ox/=cnt;oy/=cnt;oz/=cnt;
+      gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
+      gl.depthMask(false);
+      gl.useProgram(MESH_P);gl.uniformMatrix4fv(U(MESH_P,'uVP'),false,vp);
+      gl.uniform1f(U(MESH_P,'uAlpha'),0.16);
+      gl.uniform3f(U(MESH_P,'uOff'),ox,oy,oz);   // the ghost rides the live root
+      gl.bindVertexArray(ghost.vao);
+      gl.drawElements(gl.TRIANGLES,ghost.n,gl.UNSIGNED_INT,0);
+      gl.uniform3f(U(MESH_P,'uOff'),0,0,0);      // the mesh path stays unshifted
+      gl.depthMask(true);gl.disable(gl.BLEND);gl.bindVertexArray(null);}
+  }
+  requestAnimationFrame(draw);
+}
+
+// ── camera control (orbit/zoom — the slice's own view) ────────────────────
+let drag=false,lx=0,ly=0;
+cv.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;ly=e.clientY;
+  cv.classList.add('dragging');cv.setPointerCapture(e.pointerId);});
+cv.addEventListener('pointermove',e=>{if(!drag)return;
+  cam.yaw+=(e.clientX-lx)*0.008; cam.pit=Math.min(1.4,Math.max(-0.15,cam.pit+(e.clientY-ly)*0.006));
+  lx=e.clientX;ly=e.clientY;});
+cv.addEventListener('pointerup',e=>{if(drag){drag=false;cv.classList.remove('dragging');
+  if(!moved(e))pressAt(e);} });
+let downXY=null;
+cv.addEventListener('pointerdown',e=>{downXY=[e.clientX,e.clientY];});
+function moved(e){return downXY&&Math.hypot(e.clientX-downXY[0],e.clientY-downXY[1])>4;}
+cv.addEventListener('wheel',e=>{e.preventDefault();
+  cam.dist=Math.min(9,Math.max(0.5,cam.dist*(1+Math.sign(e.deltaY)*0.09)));},{passive:false});
+
+// ── the press (REALITY): the page raycasts its own verts (the H16 lesson:
+//    one path, the page's own camera convention), snaps to a vertex, posts
+//    the engine's ready-world-point form. Force stated, never defaulted.
+//    e == null means the KEYBOARD press: the same physics, the front-most
+//    vertex of the body as seen by the player's own camera (the key path
+//    replaces the pointer, not the physics).
+async function pressAt(e){
+  if(!liveVerts||!liveVerts.length)return;
+  const r=cv.getBoundingClientRect();
+  const asp=cv.width/cv.height;
+  const V=lookFrom(cam.yaw,cam.pit,cam.dist,cam.tx,cam.ty,cam.tz);
+  const P=persp(0.9,asp,0.05,60), VP=mul(P,V.mat);
+  let best=-1,bd=1e18;
+  if(e!=null){
+    const px=e.clientX-r.left, py=e.clientY-r.top;
+    bd=28*28;                                   // the click's snap radius
+  }
+  const nV=liveVerts.length/9;
+  for(let i=0;i<nV;i++){
+    const x=liveVerts[i*9],y=liveVerts[i*9+1],z=liveVerts[i*9+2];
+    let cx=VP[0]*x+VP[4]*y+VP[8]*z+VP[12], cy=VP[1]*x+VP[5]*y+VP[9]*z+VP[13],
+        cw=VP[3]*x+VP[7]*y+VP[11]*z+VP[15];
+    if(cw<=0)continue;
+    let d;
+    if(e!=null){
+      const sx=(cx/cw*0.5+0.5)*r.width, sy=(-cy/cw*0.5+0.5)*r.height;
+      d=(sx-e.clientX+r.left)**2+(sy-e.clientY+r.top)**2;
+    }else{
+      d=-cw;                                    // keyboard: the front-most vertex
+    }
+    if(d<bd){bd=d;best=i;}
+  }
+  if(best<0)return;
+  const hit=[liveVerts[best*9],liveVerts[best*9+1],liveVerts[best*9+2]];
+  try{
+    const res=await (await fetch('/api/press',{method:'POST',signal:AbortSignal.timeout(8000),
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({hit,force_n:300.0})})).json();
+    document.getElementById('msg').textContent =
+      'press (real, 300 N): '+JSON.stringify(res);
+  }catch(err){
+    document.getElementById('msg').textContent =
+      'the world did not answer — try again in a moment';
+  }
+}
+
+// ── THE KEYS (one list, named on the page and wired in code — the same
+//    list the walkthrough reads and exercises) ─────────────────────────────
+const KEYLIST=[
+  {name:'1', disp:'1',     label:'send the creature to the marker (labeled mock)', fn:()=>doSend()},
+  {name:'2', disp:'2',     label:'stop the slide',                                 fn:()=>doStop()},
+  {name:'3', disp:'3',     label:'THE FALL TEST (real — watch it fall and rise)',  fn:()=>doFall()},
+  {name:'R', disp:'R',     label:'restart the world back to the standing start',   fn:()=>doRestart()},
+  {name:'S', disp:'S',     label:'save the session record',                        fn:()=>doSave()},
+  {name:' ', disp:'SPACE', label:'press the creature (300 N, front-most point)',   fn:()=>pressFromKey()},
+  {name:'ArrowLeft',  disp:'←', label:'orbit the camera left',  fn:()=>{cam.yaw-=0.12;}},
+  {name:'ArrowRight', disp:'→', label:'orbit the camera right', fn:()=>{cam.yaw+=0.12;}},
+  {name:'ArrowUp',    disp:'↑', label:'orbit the camera up',    fn:()=>{cam.pit=Math.min(1.4,cam.pit+0.08);}},
+  {name:'ArrowDown',  disp:'↓', label:'orbit the camera down',  fn:()=>{cam.pit=Math.max(-0.15,cam.pit-0.08);}},
+  {name:'+', disp:'+', label:'zoom in',  fn:()=>{cam.dist=Math.max(0.5,cam.dist*0.9);}},
+  {name:'-', disp:'-', label:'zoom out', fn:()=>{cam.dist=Math.min(9,cam.dist*1.1);}},
+  {name:'H', disp:'H', label:'show or hide this help', fn:()=>toggleGuide()},
+];
+window.__CHIMERA_KEYS = KEYLIST.map(k=>({key:k.name,label:k.label}));
+document.getElementById('keys-list').innerHTML = KEYLIST.map(k=>
+  `<div class="row" data-t="keyrow" data-key="${k.name}"><b>[${k.disp}]</b> <span>${k.label}</span></div>`).join('');
+
+function pressFromKey(){
+  if(!liveVerts||!liveVerts.length){
+    document.getElementById('msg').textContent='the world is still arriving…';
+    return;
+  }
+  pressAt(null);
+}
+function doSend(){
+  fetch('/api/send',{method:'POST'})
+    .then(()=>{document.getElementById('msg').textContent=
+      'the creature slides toward the marker — a labeled MOCK (real walking is pending)';})
+    .catch(e=>{document.getElementById('msg').textContent='the world is restarting — try again in a moment';});
+}
+function doStop(){
+  fetch('/api/stop',{method:'POST'})
+    .then(()=>{document.getElementById('msg').textContent='stopped.';})
+    .catch(e=>{document.getElementById('msg').textContent='the world is restarting — try again in a moment';});
+}
+function doFall(){
+  fetch('/api/drop_test',{method:'POST'})
+    .then(()=>{document.getElementById('msg').textContent=
+      'the fall test runs — the engine drops the creature and hands back its own numbers';})
+    .catch(e=>{document.getElementById('msg').textContent='the world is restarting — try again in a moment';});
+}
+function doSave(){
+  fetch('/api/save',{method:'POST'}).then(r=>r.json())
+    .then(r=>{document.getElementById('msg').textContent='saved: '+(r.saved||JSON.stringify(r));})
+    .catch(e=>{document.getElementById('msg').textContent='the world is restarting — try again in a moment';});
+}
+let RESTARTING=false;
+function doRestart(){
+  if(RESTARTING)return;
+  RESTARTING=true;
+  const pill=document.getElementById('bootstatus');
+  pill.textContent='RESTARTING — the world comes right back';
+  pill.className='restarting'; pill.style.display='block';
+  document.getElementById('fall-verdict').textContent='restarting to the standing start…';
+  document.getElementById('settle').style.display='none';
+  fetch('/api/restart',{method:'POST'})
+    .catch(e=>beacon('restart post failed', e));
+}
+function toggleGuide(){
+  const g=document.getElementById('guide'), p=document.getElementById('guidepill');
+  const hidden=g.style.display==='none';
+  g.style.display=hidden?'block':'none';
+  p.style.display=hidden?'none':'block';
+}
+document.getElementById('guide-x').onclick=toggleGuide;
+document.getElementById('guidepill').onclick=toggleGuide;
+function markActed(){
+  const g=document.getElementById('guide');
+  if(g.style.display!=='none')toggleGuide();   // the guide steps aside after the first action
+}
+window.addEventListener('keydown',e=>{
+  if(window.__THIN_ENABLED__)return;   // thin mode: the thin HUD names and owns the keys
+  const k=KEYLIST.find(k=>k.name===e.key || (k.name===' '&&e.code==='Space'));
+  if(!k)return;
+  if(e.repeat && k.name!=='ArrowLeft' && k.name!=='ArrowRight' &&
+     k.name!=='ArrowUp' && k.name!=='ArrowDown')return;
+  e.preventDefault();
+  k.fn();
+  if(k.name!=='H')markActed();
+});
+
+// ── HUD / controls ────────────────────────────────────────────────────────
+const banner=document.getElementById('banner');
+async function pollStatus(){
+  if(statusBusy)return; statusBusy=true;
+  try{
+    const s=await (await fetch('/api/status',{signal:AbortSignal.timeout(5000)})).json();
+    const c=s.mock_carry||{};
+    banner.style.display=c.active?'block':'none';
+    if(c.active)banner.textContent='MOCK[mock_carry] — the slide is a MOCK · locomotion pending · physics target 426';
+    const st=s.engine_state||{};
+    // the restart pill closes when the engine answers again (and only then)
+    if(RESTARTING && st.root_y!==undefined){
+      RESTARTING=false;
+      document.getElementById('bootstatus').style.display='none';
+    }
+    const scene=s.scene||{};
+    const settleEl=document.getElementById('settle');
+    if(scene.settled){settleEl.style.display='none';}
+    else if(!RESTARTING){settleEl.style.display='block';}
+    const dist=s.marker?Math.hypot((c.x||0)-s.marker.x,(c.z||0)-s.marker.z):null;
+    document.getElementById('objective').textContent =
+      dist==null?'booting the world…':
+      (c.arrived?'OBJECTIVE: the creature is at the marker (seated)':
+       `objective: carry to the marker · ${(dist||0).toFixed(2)} m to go (mock carry)`);
+    if(!window.__THIN_ENABLED__){        // F3: with the thin client on, the
+      // state line is owned by the snapshot stream; with it off, the
+      // stranger's own rule holds: the engine's numbers, or the honest
+      // restarting text (lane slice-stranger-20260920 + thin-client pilot
+      // union, integration pass 7)
+      if(st.root_y!==undefined){
+        document.getElementById('status').textContent =
+          `REAL engine numbers — root_y ${(st.root_y??0).toFixed(4)} m · root_vy ${(st.root_vy??0).toFixed(4)} m/s`+
+          (st.gravity_on!==undefined?` · gravity ${st.gravity_on?'ON':'off'}`:'');
+      }else{
+        document.getElementById('status').textContent = 'the world is restarting…';
+      }
+    }
+    const ft=s.fall_test;
+    document.getElementById('fall-verdict').textContent = !ft?'the fall test has not run':
+      ft.phase==='done'?`THE FALL (real): peak +${ft.max_root_y} m · max |vy| ${ft.max_abs_vy} m/s · landed root_y ${ft.landed_root_y} — engine law`:
+      ft.phase==='running'?'THE FALL (real): running — the engine is integrating…':'fall test: '+JSON.stringify(ft);
+  }catch(e){document.getElementById('objective').textContent='the world is unreachable';}
+  finally{statusBusy=false;}
+}
+setInterval(pollStatus,250);
+if(!window.__THIN_ENABLED__)setInterval(pollVerts,100);   // legacy path only when the thin client is off
+
+document.getElementById('btn-send').onclick=doSend;
+document.getElementById('btn-stop').onclick=doStop;
+document.getElementById('btn-fall').onclick=doFall;
+document.getElementById('btn-restart').onclick=doRestart;
+document.getElementById('btn-save').onclick=doSave;
+
+// ── boot ──────────────────────────────────────────────────────────────────
+(async function boot(){
+  const pill=document.getElementById('bootstatus');
+  pill.textContent='starting the world…'; pill.className=''; pill.style.display='block';
+  loadGLBIndices();   // the payload's own index buffer, once, in parallel
+  try{
+    const s=await (await fetch('/api/status')).json();
+    if(s.marker)MARKER=s.marker;
+  }catch(e){}
+  buildWorldDecor();
+  // (thin-client pilot's guarded pre-draw ghost+verts calls are superseded
+  // here by the stranger's hardened boot tail below: the same guarded
+  // loadGhost and a 40-try bounded poll loop — integration pass 7 union)
+  draw();
+  try{
+    await loadGhost();
+  }catch(e){beacon('ghost load failed (the world may be restarting)', e);}
+  let tries=0;
+  while(tries<40 && !(liveVerts&&liveVerts.length)){
+    await pollVerts();
+    if(liveVerts&&liveVerts.length)break;
+    await new Promise(r=>setTimeout(r,500));
+    tries++;
+  }
+  if(!(liveVerts&&liveVerts.length))beacon('boot gave up', 'no verts after 20 s');
+})();
+</script>
+
+<script>
+"use strict";
+/* ══ THE THIN CLIENT — lane/thin-client-pilot-20260920 ════════════════════
+   Astra round-5 Decision 2 camera clause: TIMESTAMPED SNAPSHOTS from the
+   engine contract (via the slice server's /api/snapshot composition) ->
+   INTERPOLATION on the client -> local rendering. No local simulation; the
+   render clock is decoupled from the snapshot clock by design.
+
+   THE SYNC LAW (F3 in tools/science_funnel/validation/
+   thin_client_pilot_20260920/record.md): every overlay VALUE (root_y,
+   root_vy, cell pressures, dimple) is read from the snapshot buffer and is
+   labeled with that snapshot's AUTHORITATIVE engine ts_us. Client clocks
+   (performance.now) drive playout arithmetic and measurement
+   instrumentation ONLY — never a displayed scene value.
+
+   THE PLAYOUT LAW: the render point is
+     r(t) = ts_latest + (t - arrival_latest) - D
+   in the ENGINE's OWN timestamp timeline, with pre-named playout delay
+   D = 1.5 * snapshot interval (+ declared jitter headroom). r is bracketed
+   by the two newest received snapshots; positions lerp in server time;
+   normals+colors come from the newer bracket (snapB). When r runs past the
+   newest ts (stall/tail), the client FREEZES on the older bracket — it
+   never extrapolates a scene it has not seen. Underruns are counted and
+   timed (they are the tail-trace evidence, not an error to hide). */
+(function(){
+const P = window.__THIN_PARAMS__;
+if(!window.__THIN_ENABLED__) return;
+
+const SNAP_HDR = 52, MAGIC = 0x31534854;
+const interval_ms = () => 1000 / P.rate;
+const D_us = () => Math.round((P.D_ms != null ? P.D_ms : 1.5 * interval_ms() + jhead_ms) * 1000);
+let jhead_ms = parseFloat((location.search.match(/[?&]jhead=([^&]*)/)||[])[1] || '0');
+let mode = P.mode;                      // 'interp' | 'direct'
+let snaps = [];                         // newest last, each: {ts,ticks,root_y,root_vy,P_l,P_u,dimple,gap,n,pos,nrm,col,arrival,bytes}
+let pullTimer = 0, nextPull = 0, needKey = (P.fmt === 'DELTA');
+let chain = null, chainSeq = -1;        // the DELTA client's chain state
+let colRef = null;                      // per-vertex colors sampled once (FULL36)
+let topoIdx = null, triCount = 0;
+let underruns = 0, underrun_ms = 0, wasUnderrun = false, underrun_t0 = 0, pullErrs = 0;
+let bytesAcc = 0, bytesWinT0 = performance.now(), bps = 0, achN = 0, achT0 = performance.now(), achR = 0;
+// min-delay-path offset: server_us ~= offset + client_ms*1000. Each snapshot
+// contributes (ts - arrival); the MAX over the window is the least-transit
+// path, so a late burst cannot drag the render point (standard NTP-shaped
+// estimate; the residual error is that least transit, bounded by D).
+let offWin = [];   // {at, off_us}
+function noteOffset(ts_us, arrival_ms){
+  offWin.push({at: arrival_ms, off: ts_us - arrival_ms * 1000});
+  const cutoff = arrival_ms - 5000;
+  while(offWin.length && offWin[0].at < cutoff) offWin.shift();
+}
+function serverNowUs(now_ms){
+  let best = -Infinity;
+  for(const e of offWin) if(e.off > best) best = e.off;
+  if(best === -Infinity) return 0;
+  return best + now_ms * 1000;
+}
+const pilot = {raf: [], snaps: [], samples: [], on: P.pilot};
+let pilotFrameNo = 0;
+function b64(f32){ // base64 of a Float32Array (the sampled-frame transport)
+  const u8 = new Uint8Array(f32.buffer, f32.byteOffset, f32.byteLength);
+  let s = '';
+  for(let i = 0; i < u8.length; i += 0x8000)
+    s += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000));
+  return btoa(s);
+}
+
+// ── f16 (IEEE 754 half) — manual decode, no browser-version dependence ────
+function f16(u){
+  const s = (u & 0x8000) ? -1 : 1, e = (u & 0x7c00) >> 10, m = u & 0x3ff;
+  if(e === 0) return s * Math.pow(2, -14) * (m / 1024);
+  if(e === 0x1f) return m ? NaN : s * Infinity;
+  return s * Math.pow(2, e - 15) * (1 + m / 1024);
+}
+
+// ── per-vertex normals from the one-time topology (for POS12/Z12/POS16) ───
+function recomputeNormals(pos, n){
+  const nrm = new Float32Array(n * 3);
+  for(let t = 0; t < triCount; t++){
+    const ia = topoIdx[3*t], ib = topoIdx[3*t+1], ic = topoIdx[3*t+2];
+    const ax=pos[3*ia],ay=pos[3*ia+1],az=pos[3*ia+2];
+    const bx=pos[3*ib],by=pos[3*ib+1],bz=pos[3*ib+2];
+    const cx=pos[3*ic],cy=pos[3*ic+1],cz=pos[3*ic+2];
+    const ux=bx-ax,uy=by-ay,uz=bz-az, vx=cx-ax,vy=cy-ay,vz=cz-az;
+    const nx=uy*vz-uz*vy, ny=uz*vx-ux*vz, nz=ux*vy-uy*vx;
+    nrm[3*ia]+=nx;nrm[3*ia+1]+=ny;nrm[3*ia+2]+=nz;
+    nrm[3*ib]+=nx;nrm[3*ib+1]+=ny;nrm[3*ib+2]+=nz;
+    nrm[3*ic]+=nx;nrm[3*ic+1]+=ny;nrm[3*ic+2]+=nz;
+  }
+  for(let i = 0; i < n; i++){
+    const l = Math.hypot(nrm[3*i], nrm[3*i+1], nrm[3*i+2]) || 1;
+    nrm[3*i]/=l; nrm[3*i+1]/=l; nrm[3*i+2]/=l;
+  }
+  return nrm;
+}
+
+// ── snapshot decode: header + per-fmt payload -> packed arrays ───────────
+function decodeSnapshot(buf, arrival){
+  const dv = new DataView(buf);
+  if(dv.getUint32(0, true) !== MAGIC) return null;
+  const ts = Number(dv.getBigUint64(4, true)), ticks = dv.getUint32(12, true);
+  const root_y = dv.getFloat32(16, true), root_vy = dv.getFloat32(20, true);
+  const P_l = dv.getFloat32(24, true), P_u = dv.getFloat32(28, true);
+  const dimple = dv.getFloat32(32, true), gap = Number(dv.getBigUint64(36, true));
+  const fmtc = dv.getUint32(44, true), n = dv.getUint32(48, true);
+  const p = new Uint8Array(buf, SNAP_HDR);
+  let pos = new Float32Array(n * 3), nrm = null, col = colRef;
+  if(fmtc === 0){                       // FULL36: pos|nrm|col interleaved f32
+    const f = new Float32Array(buf, SNAP_HDR, 9 * n);
+    for(let i = 0; i < n; i++){
+      pos[3*i]=f[9*i]; pos[3*i+1]=f[9*i+1]; pos[3*i+2]=f[9*i+2];
+    }
+    nrm = new Float32Array(n * 3);
+    for(let i = 0; i < n; i++){ nrm[3*i]=f[9*i+3]; nrm[3*i+1]=f[9*i+4]; nrm[3*i+2]=f[9*i+5]; }
+    if(!colRef){ col = new Float32Array(n * 3);
+      for(let i = 0; i < n; i++){ col[3*i]=f[9*i+6]; col[3*i+1]=f[9*i+7]; col[3*i+2]=f[9*i+8]; } }
+  } else if(fmtc === 1){                // POS12
+    pos = new Float32Array(buf, SNAP_HDR, 3 * n).slice();
+  } else if(fmtc === 2){                // POS16: f16 pos|nrm
+    const u = new Uint16Array(buf, SNAP_HDR, 6 * n);
+    for(let i = 0; i < n; i++){
+      pos[3*i]=f16(u[6*i]); pos[3*i+1]=f16(u[6*i+1]); pos[3*i+2]=f16(u[6*i+2]);
+    }
+    nrm = new Float32Array(n * 3);
+    for(let i = 0; i < n; i++){
+      nrm[3*i]=f16(u[6*i+3]); nrm[3*i+1]=f16(u[6*i+4]); nrm[3*i+2]=f16(u[6*i+5]);
+    }
+  } else if(fmtc === 3){                // Z12 -> POS12 after inflate (async)
+    return {inflatable: true, buf, arrival, ts, ticks, root_y, root_vy,
+            P_l, P_u, dimple, gap, n, bytes: buf.byteLength};
+  } else if(fmtc === 4){                // DELTA: C3 chain frame
+    if(p[0] !== 0xD1) return null;
+    const flags = p[1];
+    const fseq = dv.getUint32(SNAP_HDR + 8, true);
+    const runs = dv.getUint32(SNAP_HDR + 12, true);
+    if(!chain){ chain = new Uint8Array(36 * n); chainSeq = fseq - 1; }
+    if(fseq !== chainSeq + 1){ needKey = true; return null; }   // broken chain: resync
+    if(flags === 0){ chain.set(p.subarray(16, 16 + 36 * n), 0); }
+    else {
+      let w = 16;
+      for(let r = 0; r < runs; r++){
+        const s0 = dv.getUint32(SNAP_HDR + w, true), c = dv.getUint32(SNAP_HDR + w + 4, true);
+        chain.set(p.subarray(w + 8, w + 8 + 36 * c), 36 * s0);
+        w += 8 + 36 * c;
+      }
+    }
+    chainSeq = fseq;
+    const f = new Float32Array(chain.buffer, 0, 9 * n);
+    for(let i = 0; i < n; i++){ pos[3*i]=f[9*i]; pos[3*i+1]=f[9*i+1]; pos[3*i+2]=f[9*i+2]; }
+    nrm = new Float32Array(n * 3);
+    for(let i = 0; i < n; i++){ nrm[3*i]=f[9*i+3]; nrm[3*i+1]=f[9*i+4]; nrm[3*i+2]=f[9*i+5]; }
+  }
+  if(!nrm) nrm = recomputeNormals(pos, n);
+  if(!col) col = colRef;
+  return {ts, ticks, root_y, root_vy, P_l, P_u, dimple, gap, n, pos, nrm, col, arrival, bytes: buf.byteLength};
+}
+
+async function inflateZ12(raw){
+  const ds = new DecompressionStream('deflate');
+  const stream = new Blob([new Uint8Array(raw.buf, SNAP_HDR)]).stream().pipeThrough(ds);
+  const posBuf = await new Response(stream).arrayBuffer();
+  const n = raw.n;
+  const pos = new Float32Array(posBuf);
+  return {ts: raw.ts, ticks: raw.ticks, root_y: raw.root_y, root_vy: raw.root_vy,
+          P_l: raw.P_l, P_u: raw.P_u, dimple: raw.dimple, gap: raw.gap, n,
+          pos: new Float32Array(pos.buffer, 0, 3 * n),
+          nrm: recomputeNormals(new Float32Array(posBuf), n), col: colRef,
+          arrival: raw.arrival, bytes: raw.bytes};
+}
+
+// ── the snapshot scheduler (self-correcting, drift-free) ─────────────────
+let pullsPaused = false;
+async function pullSnapshot(){
+  if(pullsPaused) return;
+  try{
+    const url = P.fmt === 'DELTA'
+      ? '/api/snapshot?fmt=DELTA' + (needKey ? '&key=1' : '') : '/api/snapshot?fmt=' + P.fmt;
+    // a hung transport must never kill the stream: abort well past the
+    // playout horizon, count it, and let the next pull proceed
+    const ctrl = new AbortController();
+    const abort_t = setTimeout(() => ctrl.abort(), 5 * interval_ms() + 2000);
+    let resp, buf;
+    try{
+      resp = await fetch(url, {signal: ctrl.signal});
+      buf = await resp.arrayBuffer();
+    } finally { clearTimeout(abort_t); }
+    const arrival = performance.now();
+    if(P.fmt === 'DELTA') needKey = false;
+    let s = decodeSnapshot(buf, arrival);
+    if(s && s.inflatable) s = await inflateZ12(s);
+    if(!s) return;
+    if(pullsPaused) return;      // an in-flight pull must not poison a
+                                 // paused buffer (the F3 injection path)
+    if(!colRef && s.col && P.fmt !== 'FULL36') colRef = s.col;
+    snaps.push(s);
+    noteOffset(s.ts, arrival);
+    if(snaps.length > 10) snaps.shift();
+    bytesAcc += s.bytes;
+    const now = performance.now();
+    if(now - bytesWinT0 >= 1000){ bps = bytesAcc * 1000 / (now - bytesWinT0); bytesAcc = 0; bytesWinT0 = now; }
+    achN++;
+    if(now - achT0 >= 2000){ achR = achN * 1000 / (now - achT0); achN = 0; achT0 = now; }
+    if(pilot.on) pilot.snaps.push({ts: s.ts, arrival, bytes: s.bytes, gap: s.gap,
+                                   fmt: P.fmt, dimple: s.dimple, root_y: s.root_y});
+  }catch(e){ pullErrs++; }
+}
+function schedulePull(){
+  if(!pullsPaused){
+    const now = performance.now(), iv = interval_ms();
+    if(nextPull < now - iv) nextPull = now;         // no burst after a stall
+    const wait = Math.max(0, nextPull - now);
+    nextPull = Math.max(nextPull + iv, now + 1);
+    pullTimer = setTimeout(async () => { await pullSnapshot(); schedulePull(); }, wait);
+  }
+}
+function setRate(r){
+  P.rate = r;
+  clearTimeout(pullTimer);
+  nextPull = performance.now();
+  schedulePull();
+}
+
+// ── the playout frame: interpolate + upload + authoritative overlays ──────
+const work9 = {n: 0, buf: null, f32: null};
+function ensureWork(n){
+  if(work9.n !== n){
+    work9.n = n; work9.f32 = new Float32Array(9 * n); work9.buf = work9.f32.buffer;
+  }
+}
+function uploadWork(n){
+  ensureWork(n);
+  if(!idxCount){
+    // one-time: topology + first VAO (the same program the legacy path uses).
+    // The vertex bytes go up RAW -- the lane render-truth-20260920 fix moved
+    // the [u32 count] header-strip INTO the callers (meshFromTopo uploads
+    // vertBuf verbatim); this lane's old synthetic 4-byte header prepend
+    // would have re-created the header-as-vertex-zero shift in this fallback
+    // path. Convention of the merged page wins: no header (integration
+    // pass 7 semantic-union resolution).
+    meshFromTopo(topoBufGlobal, work9.buf);
+  } else {
+    gl.bindVertexArray(vaoMesh);
+    gl.bindBuffer(gl.ARRAY_BUFFER, vboMesh);
+    gl.bufferData(gl.ARRAY_BUFFER, work9.buf, gl.DYNAMIC_DRAW);
+    gl.bindVertexArray(null);
+  }
+  liveVerts = work9.f32;        // the ghost + picker ride the interpolated frame
+}
+let topoBufGlobal = null;
+
+function thinFrame(){
+  if(!snaps.length || mode === 'legacy') return;
+  const now = performance.now();
+  let r_us = 0, A = null, B = null, underrun = false;
+  const latest = snaps[snaps.length - 1];
+  if(mode === 'direct' || snaps.length < 2){
+    A = latest;
+  } else {
+    r_us = serverNowUs(now) - D_us();
+    for(let i = snaps.length - 1; i > 0; i--){
+      if(snaps[i - 1].ts <= r_us && r_us < snaps[i].ts){ A = snaps[i - 1]; B = snaps[i]; break; }
+    }
+    if(!A){ A = latest; underrun = true; }   // r past newest: freeze, never extrapolate
+    else if(B && r_us > B.ts){ A = B; B = null; }
+  }
+  if(underrun && !wasUnderrun){ underruns++; underrun_t0 = now; }
+  if(!underrun && wasUnderrun){ underrun_ms += now - underrun_t0; }
+  wasUnderrun = underrun;
+
+  const n = A.n;
+  ensureWork(n);
+  const w = work9.f32, alpha = B ? Math.min(1, Math.max(0, (r_us - A.ts) / (B.ts - A.ts))) : 0;
+  for(let i = 0; i < n; i++){
+    w[9*i]   = A.pos[3*i]   + (B ? B.pos[3*i]   - A.pos[3*i]   : 0) * alpha;
+    w[9*i+1] = A.pos[3*i+1] + (B ? B.pos[3*i+1] - A.pos[3*i+1] : 0) * alpha;
+    w[9*i+2] = A.pos[3*i+2] + (B ? B.pos[3*i+2] - A.pos[3*i+2] : 0) * alpha;
+    w[9*i+3] = A.nrm[3*i]; w[9*i+4] = A.nrm[3*i+1]; w[9*i+5] = A.nrm[3*i+2];
+    w[9*i+6] = A.col[3*i]; w[9*i+7] = A.col[3*i+1]; w[9*i+8] = A.col[3*i+2];
+  }
+  uploadWork(n);
+
+  // THE OVERLAYS (F3): values from the governing snapshot A, labeled with its
+  // authoritative ts. No client-clock value is displayed here.
+  thinPanelUpdate(A, serverNowUs(now), underrun);
+
+  if(pilot.on){
+    pilot.raf.push({t: now, r: r_us, ur: underrun ? 1 : 0, A: A.ts, B: B ? B.ts : 0,
+                    a: +alpha.toFixed(4), cam: [cam.yaw, cam.pit, cam.dist]});
+    if(pilot.raf.length > 36000) pilot.raf.splice(0, 6000);
+    // sampled RENDERED frames (the offline pixel metric renders THESE through
+    // the page's own shader text against the twin truth at the same r):
+    if((pilotFrameNo++ % 10) === 0){
+      pilot.samples.push({t: now, r: r_us, a: A.ts, b: B ? B.ts : 0,
+        alpha: +alpha.toFixed(4), ur: underrun ? 1 : 0, n,
+        root_y: A.root_y, root_vy: A.root_vy, dimple: A.dimple,
+        frame: b64(work9.f32)});
+      if(pilot.samples.length > 4000) pilot.samples.splice(0, 1000);
+    }
+  }
+}
+
+// ── the thin HUD panel ────────────────────────────────────────────────────
+const panel = document.createElement('div');
+panel.className = 'panel';
+panel.id = 'thinpanel';
+panel.style.cssText = 'left:10px;bottom:12px;width:330px;font-size:11px';
+panel.innerHTML =
+  '<h1 style="font-size:11px;letter-spacing:.2em;color:var(--accent);margin:0 0 4px">THIN CLIENT — timestamps + interpolation</h1>' +
+  '<div id="tp-sync" style="color:var(--muted)"></div>' +
+  '<div id="tp-state" style="margin-top:3px"></div>' +
+  '<div id="tp-transport" style="color:var(--muted);margin-top:3px"></div>' +
+  '<div style="color:var(--muted);margin-top:3px">keys: ← → ↑ ↓ orbit · +/- zoom · SPACE press (reticle) · 1-4 rate · T direct · I interp · F fall · C carry · X stop · R restart · S save</div>';
+document.body.appendChild(panel);
+const reticle = document.createElement('div');
+reticle.style.cssText = 'position:absolute;left:50%;top:50%;width:18px;height:18px;transform:translate(-50%,-50%);pointer-events:none;opacity:.55';
+reticle.innerHTML = '<svg width="18" height="18"><line x1="9" y1="2" x2="9" y2="16" stroke="#7fd4c1" stroke-width="1"/><line x1="2" y1="9" x2="16" y2="9" stroke="#7fd4c1" stroke-width="1"/></svg>';
+document.body.appendChild(reticle);
+
+let lastPanelDraw = 0;
+function thinPanelUpdate(A, serverNow, underrun){
+  const now = performance.now();
+  if(now - lastPanelDraw < 100) return;         // panel at 10 Hz, values still from A
+  lastPanelDraw = now;
+  const age_ms = (serverNow - A.ts) / 1000;
+  document.getElementById('tp-sync').innerHTML =
+    `as of engine <b>ts_us=${A.ts}</b> (tick ${A.ticks}) · age <b>${age_ms.toFixed(1)} ms</b> server time` +
+    (underrun ? ' · <span style="color:var(--warn)">FREEZE (waiting for snapshots)</span>' : '');
+  document.getElementById('tp-state').innerHTML =
+    `root_y <b>${A.root_y.toFixed(4)}</b> m · root_vy <b>${A.root_vy.toFixed(4)}</b> m/s · ` +
+    `P <b>${A.P_l.toFixed(2)}</b>/<b>${A.P_u.toFixed(2)}</b> Pa · dimple <b>${A.dimple.toFixed(4)}</b> m`;
+  document.getElementById('tp-transport').innerHTML =
+    `${mode} · ${P.rate.toFixed(0)} Hz nominal · <b>${achR.toFixed(1)}</b> Hz achieved · fmt ${P.fmt} · ` +
+    `<b>${(bps/1024).toFixed(1)}</b> KB/s · D=${(D_us()/1000).toFixed(0)} ms · underruns <b>${underruns}</b> (${underrun_ms.toFixed(0)} ms)` +
+    ` · gap ${A.gap.toFixed(0)} us` + (pullErrs ? ` · <span style="color:var(--bad)">pull errors ${pullErrs}</span>` : '');
+  // mirror the authoritative values into the slice's own state line (F3)
+  const st = document.getElementById('status');
+  if(st) st.textContent =
+    `SNAPSHOT numbers (authoritative) — root_y ${A.root_y.toFixed(4)} m · root_vy ${A.root_vy.toFixed(4)} m/s · as of ts_us ${A.ts}`;
+}
+
+// ── keyboard-first interaction ────────────────────────────────────────────
+async function pressAtCenter(){
+  if(!liveVerts || !liveVerts.length) return;
+  const r = cv.getBoundingClientRect();
+  const asp = cv.width / cv.height;
+  const V = lookFrom(cam.yaw, cam.pit, cam.dist, cam.tx, cam.ty, cam.tz);
+  const PR = persp(0.9, asp, 0.05, 60), VP = mul(PR, V.mat);
+  let best = -1, bd = 56 * 56;                  // the reticle's own radius band
+  const cx = r.width / 2, cy = r.height / 2, nV = liveVerts.length / 9;
+  for(let i = 0; i < nV; i++){
+    const x = liveVerts[i*9], y = liveVerts[i*9+1], z = liveVerts[i*9+2];
+    let a = VP[0]*x + VP[4]*y + VP[8]*z + VP[12], b = VP[1]*x + VP[5]*y + VP[9]*z + VP[13],
+        cw = VP[3]*x + VP[7]*y + VP[11]*z + VP[15];
+    if(cw <= 0) continue;
+    const sx = (a/cw*0.5 + 0.5) * r.width, sy = (-b/cw*0.5 + 0.5) * r.height;
+    const d = (sx-cx)**2 + (sy-cy)**2;
+    if(d < bd){ bd = d; best = i; }
+  }
+  if(best < 0) return;
+  const hit = [liveVerts[best*9], liveVerts[best*9+1], liveVerts[best*9+2]];
+  return fetch('/api/press', {method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({hit, force_n: 300.0})});
+}
+window.addEventListener('keydown', (e) => {
+  const k = e.key;
+  if(k === 'ArrowLeft') cam.yaw -= 0.08;
+  else if(k === 'ArrowRight') cam.yaw += 0.08;
+  else if(k === 'ArrowUp') cam.pit = Math.min(1.4, cam.pit + 0.06);
+  else if(k === 'ArrowDown') cam.pit = Math.max(-0.15, cam.pit - 0.06);
+  else if(k === '+' || k === '=') cam.dist = Math.max(0.5, cam.dist * 0.9);
+  else if(k === '-' || k === '_') cam.dist = Math.min(9, cam.dist * 1.1);
+  else if(k === ' '){ e.preventDefault(); pressAtCenter(); }
+  else if(k === '1') setRate(60);
+  else if(k === '2') setRate(30);
+  else if(k === '3') setRate(15);
+  else if(k === '4') setRate(10);
+  else if(k === 't' || k === 'T') mode = (mode === 'interp') ? 'direct' : 'interp';
+  else if(k === 'i' || k === 'I') mode = 'interp';
+  else if(k === 'f' || k === 'F') fetch('/api/drop_test', {method: 'POST'});
+  else if(k === 'c' || k === 'C') fetch('/api/send', {method: 'POST'});
+  else if(k === 'x' || k === 'X') fetch('/api/stop', {method: 'POST'});
+  else if(k === 'r' || k === 'R') fetch('/api/restart', {method: 'POST'});
+  else if(k === 's' || k === 'S') fetch('/api/save', {method: 'POST'});
+  else return;
+});
+
+// ── pilot instrumentation hooks (Playwright reads these) ──────────────────
+window.__pilot_dump = function(){
+  return JSON.stringify({params: P, jhead_ms, mode, underruns, underrun_ms,
+    pullErrs, achieved_hz: achR, bps, cam: [cam.yaw, cam.pit, cam.dist],
+    raf: pilot.raf, snaps: pilot.snaps, samples: pilot.samples});
+};
+window.__pilot_samples_only = function(){
+  return JSON.stringify({samples: pilot.samples, underruns, underrun_ms,
+    achieved_hz: achR, mode});
+};
+window.__thin_canned = function(list){
+  pullsPaused = true; clearTimeout(pullTimer);
+  snaps = list.map(c => ({ts: c.ts, ticks: c.ticks || 0, root_y: c.root_y,
+    root_vy: c.root_vy || 0, P_l: c.P_l, P_u: c.P_u, dimple: c.dimple || 0,
+    gap: c.gap || 0, n: c.pos.length / 3, pos: Float32Array.from(c.pos),
+    nrm: null, col: null, arrival: performance.now(), bytes: 0})
+  ).map(s => { if(!s.nrm) s.nrm = recomputeNormals(s.pos, s.n);
+    if(!s.col){ s.col = new Float32Array(s.n * 3).fill(0.55); } return s; });
+};
+window.__thin_pressCenter = function(){ return pressAtCenter(); };
+window.__thin_state = function(){
+  return {mode, rate: P.rate, achieved: achR, snaps_ts: snaps.map(s => s.ts),
+          underruns, panel: {
+            sync: document.getElementById('tp-sync').textContent,
+            state: document.getElementById('tp-state').textContent,
+            transport: document.getElementById('tp-transport').textContent,
+            status: document.getElementById('status').textContent}};
+};
+
+// ── wrap the render loop: thin frame first, then the unchanged renderer ───
+const _sliceDraw = draw;
+draw = function(){
+  try{ thinFrame(); }catch(e){ if(window.__thin_errs) window.__thin_errs.push(String(e)); }
+  _sliceDraw();
+};
+window.__thin_errs = [];
+
+// ── init: topology (+ a color reference when the fmt drops colors) ────────
+(async function thinInit(){
+  const tbuf = await (await fetch('/api/topology')).arrayBuffer();
+  topoBufGlobal = tbuf;
+  triCount = new DataView(tbuf).getUint32(0, true);
+  topoIdx = new Uint32Array(tbuf, 4, triCount * 3);
+  if(P.fmt !== 'FULL36' && P.fmt !== 'DELTA'){
+    const cbuf = await (await fetch('/api/snapshot?fmt=FULL36')).arrayBuffer();
+    const dv = new DataView(cbuf), n = dv.getUint32(48, true);
+    const f = new Float32Array(cbuf, SNAP_HDR, 9 * n);
+    colRef = new Float32Array(n * 3);
+    for(let i = 0; i < n; i++){ colRef[3*i]=f[9*i+6]; colRef[3*i+1]=f[9*i+7]; colRef[3*i+2]=f[9*i+8]; }
+  }
+  schedulePull();
+})();
+})();
+</script>
+</body>
+</html>

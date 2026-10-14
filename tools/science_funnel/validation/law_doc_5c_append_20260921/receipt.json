@@ -1,0 +1,138 @@
+{
+ "base_branch": "agent/standing-pose-20260921",
+ "base_commit": "4ea008cb794556e3dde434d2582b7be3b0c7a418",
+ "batteries": {
+  "hip_pivot_proof": {
+   "committed_sha256": "18f0ef0641cdcba610bb0a67109540220cfb3400bdff1eee2ae6451fb7d81c16",
+   "determinism_byte_identical_twice": true,
+   "diff_vs_committed": {
+    "classification": "ALL differing leaves are sha256 echoes of watched/banked files: the law doc (97585c4e -> 580fdee4), the re-banked stage bank file, the definition (95ddd280 -> db412e0c, present since 52f101c1's restored state), and the re-banked parent battery files",
+    "echo_leaf_paths": [
+     "/inputs/definition_sha256",
+     "/untouched/before/...infant_skeleton.body.json",
+     "/untouched/after/...infant_skeleton.body.json"
+    ],
+    "echo_leaves_changed": 3,
+    "leaf_count_old_new": null,
+    "leaves_added_or_removed": 0,
+    "verdict_leaves_changed": 0
+   },
+   "exit_code_run1": 0,
+   "exit_code_run2": 0,
+   "falsifiers_fired": "n/a (field absent; A1-A6 battery)",
+   "hard_checks_pass": true,
+   "regenerated_sha256": "695d9f97d651c448530846cf8d353f3c4913cbc8e95f9f07333f0937f74dfdb4",
+   "regenerated_sha256_matches_run1": true,
+   "untouched_within_run_equal": true,
+   "verdicts_identical_to_committed": "A1-A6: pass (hard_checks_pass True; seats hip02 rest/hi/lo 1.438430430193/0.098475213606/0.861959512899 mm, hip03 1.486366553653/0.160824534903/0.887240079415 mm; control displacements 5.745805839276/3.945980865254 mm at extremes)"
+  },
+  "p6_contrast": {
+   "committed_sha256": "6fa98112d716c9678fa69ae289ec239982db6236bb1fb9151ed5f8c280f40623",
+   "determinism_byte_identical_twice": true,
+   "diff_vs_committed": {
+    "classification": "ALL differing leaves are sha256 echoes of watched/banked files: the law doc (97585c4e -> 580fdee4), the re-banked stage bank file, the definition (95ddd280 -> db412e0c, present since 52f101c1's restored state), and the re-banked parent battery files",
+    "echo_leaf_paths": [
+     "/banks/law_doc_sha256_this_stage",
+     "/inputs/definition_sha256",
+     "/untouched/before/...THE_ARTICULATION_LAW.md",
+     "/untouched/after/...THE_ARTICULATION_LAW.md",
+     "/untouched/before/...law_amendment_b.sha256",
+     "/untouched/after/...law_amendment_b.sha256",
+     "/untouched/before/...infant_skeleton.body.json",
+     "/untouched/after/...infant_skeleton.body.json"
+    ],
+    "echo_leaves_changed": 8,
+    "leaf_count_old_new": null,
+    "leaves_added_or_removed": 0,
+    "verdict_leaves_changed": 0
+   },
+   "exit_code_run1": 0,
+   "exit_code_run2": 0,
+   "falsifiers_fired": "n/a (field absent; A1-A6 battery)",
+   "hard_checks_pass": true,
+   "regenerated_sha256": "b178587b7a1c1ee2fbd2c071d9c710afb22dac335e911d7c4f8ffc9f7ad88a88",
+   "regenerated_sha256_matches_run1": true,
+   "untouched_within_run_equal": true,
+   "verdicts_identical_to_committed": "P6' v2: real PASS / null FAIL both hips (real disp 0.0 exactly; null max disp 5.745805839276 mm x36.96 hip02, 3.945980865254 mm x26.76 hip03); arms_discriminate True"
+  },
+  "tarsal_cycle_battery": {
+   "committed_sha256": "c344173cfca3ee85470a087bf7169bdc9d4f2c8bff95320521acca0099824656",
+   "determinism_byte_identical_twice": true,
+   "diff_vs_committed": {
+    "classification": "ALL differing leaves are sha256 echoes of watched/banked files: the law doc (97585c4e -> 580fdee4), the re-banked stage bank file, the definition (95ddd280 -> db412e0c, present since 52f101c1's restored state), and the re-banked parent battery files",
+    "echo_leaf_paths": [
+     "/inputs/definition_sha256",
+     "/untouched/before/...THE_ARTICULATION_LAW.md",
+     "/untouched/after/...THE_ARTICULATION_LAW.md",
+     "/untouched/before/...infant_skeleton.body.json",
+     "/untouched/after/...infant_skeleton.body.json",
+     "/untouched/before/...hip_pivot_proof_20260921/battery.json",
+     "/untouched/after/...hip_pivot_proof_20260921/battery.json",
+     "/untouched/before/...p6_repreregistration_20260921/battery.json",
+     "/untouched/after/...p6_repreregistration_20260921/battery.json"
+    ],
+    "echo_leaves_changed": 9,
+    "leaf_count_old_new": null,
+    "leaves_added_or_removed": 0,
+    "verdict_leaves_changed": 0
+   },
+   "exit_code_run1": 0,
+   "exit_code_run2": 0,
+   "falsifiers_fired": [],
+   "hard_checks_pass": true,
+   "regenerated_sha256": "e33abb379dd833032cb8542163f5d4bdadda47244e90285880a2585bbd720a86",
+   "regenerated_sha256_matches_run1": true,
+   "untouched_within_run_equal": true,
+   "verdicts_identical_to_committed": "all six bonds discriminate (real seats 0.009482581177..2.960563288748 mm, null 3.62x..15.20x bands); cycle demo: loop closes on BOTH cycles at every pose, max loop seat 2.642331743574 (A) / 2.959470853325 mm (B) vs 3.0 cut"
+  }
+ },
+ "falsifiers": {
+  "F1_verdict_leaves_beyond_echoes": "GREEN - 0 verdict leaves changed in all three batteries (leaf_diff.py)",
+  "F2_pre_existing_law_bytes": "GREEN - single contiguous insertion; prefix/tail byte-identical; every 5/5A/5B line untouched",
+  "F3_within_run_watch_drift": "GREEN - untouched.equal TRUE in all three runs",
+  "F4_gates": "GREEN - 9/9 + 8/8 both roots, training_gate PASS",
+  "F5_determinism": "GREEN - all three battery.json byte-identical twice (hip 695d9f97..., p6 b178587b..., tarsal e33abb37...)",
+  "falsifiers_fired": []
+ },
+ "gates": {
+  "test_definition": {
+   "root_1_repo_root": "python -B -m unittest tools.matter_kernel.test_definition -> Ran 9 tests, OK",
+   "root_2_tools_matter_kernel": "python -B -m unittest test_definition (repo root on PYTHONPATH) -> Ran 9 tests, OK"
+  },
+  "test_glue": {
+   "root_1_repo_root": "python -B -m unittest tools.matter_kernel.test_glue -> Ran 8 tests, OK",
+   "root_2_tools_matter_kernel": "python -B -m unittest test_glue (repo root on PYTHONPATH) -> Ran 8 tests, OK"
+  },
+  "training_gate": "PASS -- every target is Froude-consistent with the world this body stands in. (comfortable speed 0.9924 m/s derived by the body)"
+ },
+ "lane": "agent/law-5c-append-20260921",
+ "law_doc": {
+  "append_only_verified": true,
+  "insertion": "ONE contiguous block (5786 bytes) inserted at offset 31971, immediately before the committed '## 6.' heading; prefix and tail byte-identical (insert_5c.py verified); git diff = 72 insertions, 0 deletions",
+  "post_sha256": "580fdee486af4562d10b65ae356c215a8790751582ec1c84aed0d18ecee50328",
+  "post_sha256_matches_prediction": true,
+  "pre_sha256": "97585c4e7b5781d3e776d7cdaa7b4d19ce8b33772f239178cbd60be7f6410e4c"
+ },
+ "named_successor_work_of": "52f101c1 (the class records): 'a law-doc section 5C append is successor work that must re-bank the stage hashes in its own lane'",
+ "preregistration": {
+  "bank_matches_file": true,
+  "banked_before": "the law-doc append and every battery re-run",
+  "sha256": "787673aaf20c371b0ddc77a7b3b2d98e530f9792c72aa9b795939629d8771f48"
+ },
+ "run_order_and_parent_pin": "p6 ran FIRST (its committed parent pin PRIOB_BATTERY_SHA 18f0ef06... observes the hip battery's committed bytes), then hip, then tarsal; each battery ran twice (byte-identical). RECORDED CONSEQUENCE, in the open: after this lane's re-bank, p6's parent pin refers to the hip battery bytes AT THE BASE; a future p6 re-run against HEAD must manage that pin in its own lane, as this lane managed the stage-hash re-bank in its own",
+ "schema": "chimera.rule0_receipt.v1",
+ "stage_hash_rebank": {
+  "file": "p6_repreregistration_20260921/law_amendment_b.sha256",
+  "new_content_sha": "580fdee486af4562d10b65ae356c215a8790751582ec1c84aed0d18ecee50328",
+  "new_content_sha_matches_law_doc": true,
+  "old_content_sha": "97585c4e7b5781d3e776d7cdaa7b4d19ce8b33772f239178cbd60be7f6410e4c (stage-5B value)",
+  "stage5A_bank_untouched": "e18d46ca29b8cfa0ba2cd81791d73dade52f2ba3c1733aa6d912004f2f533447 (historical, hard-pinned by the committed script)",
+  "superseded_stage5B_value_lives_at": "git history at 4ea008cb"
+ },
+ "title": "THE LAW-DOC 5C APPEND: the five-class joint taxonomy promoted into docs/THE_ARTICULATION_LAW.md - THE PROSE LANDED GREEN, VERDICTS IDENTICAL, ECHO-ONLY DIFFS",
+ "trailer": "Agent: GLM 5.3",
+ "watched_bytes_untouched": {
+  "definition_sha256": "db412e0c8debd45750b1cc06e13c50e08367ac94d434fe3be5be7f8dd5f1fbfe",
+  "note": "the kernel, the engine, the tris bins, every prior receipt/preregistration/script, the three osim records: ZERO bytes changed (git status = law doc, three battery.json files, one stage bank, this lane's directory)"
+ }
+}

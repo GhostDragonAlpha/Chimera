@@ -1,0 +1,23 @@
+{
+ "schema": "chimera.data_store_pilot_xcheck.v1",
+ "written_utc": "2026-09-21T11:05:00+00:00",
+ "tool": "tools/agent_fleet/validation/receipt_repin_20260921/pin_crosscheck.py (unmodified)",
+ "runs": [
+  {
+   "args": "--own master --target master",
+   "purpose": "baseline reproduction (design results_addendum recorded 638 pins / 2763 files / 64 hold / 4 repinned / 0 collision / 0 stale)",
+   "files_scanned": 2763, "pins_scanned": 638,
+   "summary": {"collisions": 0, "repinned_at_target": 4, "superseded_in_place": 4, "stale_on_own": 0, "hold": 64, "records": 212, "unmoved_by_target": 0, "code_pins_unresolved": 79, "unresolvable": 275},
+   "baseline_match": "EXACT on every number the design recorded (638/2763/64/4/0/0)"
+  },
+  {
+   "args": "--own HEAD (pilot tip 210027fb) --target master",
+   "purpose": "the pilot falsifier: zero NEW collision/stale versus baseline",
+   "files_scanned": 2774, "pins_scanned": 913,
+   "summary": {"collisions": 0, "repinned_at_target": 4, "superseded_in_place": 4, "stale_on_own": 0, "hold": 64, "records": 212, "unmoved_by_target": 0, "code_pins_unresolved": 81, "unresolvable": 548},
+   "falsifier": "PASS: 0 collisions, 0 stale_on_own"
+  }
+ ],
+ "honest_note_on_the_delta": "the pilot adds +275 scanned pins, +273 unresolvable, +2 code_pins_unresolved, and ZERO collisions/stales. The new unresolvable pins are precisely this lane's committed artifacts (chimera_data_index.json entries and pilot receipts) pinning bytes that live OUTSIDE git by design: the gitignored raw corpus and store-addressed blobs. pin_crosscheck resolves pins against git refs, so store-backed pins are expected to read unresolvable-in-git until a later phase teaches it the store index. They cannot collide or go stale against a target ref because they name no git blob - which is the mechanism working, recorded honestly rather than massaged into a green-looking number.",
+ "full_reports": "deterministic pure functions of the two refs; rerun with the recorded --out commands to regenerate (E:/ChimeraWork/_store_pilot_xcheck_master_master.json, _store_pilot_xcheck_pilot_master.json)"
+}

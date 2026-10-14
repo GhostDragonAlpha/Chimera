@@ -1,0 +1,71 @@
+{
+  "source": "Wiseman AL, Bollmann van Beesel J, Vereecke E (2026) \u2014 Comparative analysis of primate hind limb muscle moment arms using subject-specific three-dimensional musculoskeletal models, R Soc Open Sci 13: rsos.260107",
+  "retrieved_utc": "2026-09-21T01:52:39.317481+00:00",
+  "license": "CC BY 4.0",
+  "license_texts": {
+    "canonical_legalcode": "LICENSE_CC_BY_4.0.txt (https://creativecommons.org/licenses/by/4.0/legalcode.txt)",
+    "figshare_license": {
+      "value": 1,
+      "name": "CC BY 4.0",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    "zenodo_license": {
+      "id": "cc-by-4.0"
+    }
+  },
+  "articles": [
+    {
+      "locator": "DOI 10.6084/m9.figshare.32017187.v1",
+      "api": "_api/article_32017187.json",
+      "files": [
+        {
+          "path": "rsos260107_si_001.docx",
+          "url": "https://ndownloader.figshare.com/files/63739721",
+          "sha256": "11ca4a19d4028dfb0c5260541a057f63e348d69609e795c3ebd17d3654c3b367",
+          "bytes": 43062
+        }
+      ]
+    },
+    {
+      "locator": "DOI 10.6084/m9.figshare.32017184.v1",
+      "api": "_api/article_32017184.json",
+      "files": [
+        {
+          "path": "rsos260107_si_002.xlsx",
+          "url": "https://ndownloader.figshare.com/files/63739718",
+          "sha256": "957af7fa9b9d8b29a4c327eaf53bc25c95f369bac83d5de9c341f728ffcba48d",
+          "bytes": 59229
+        }
+      ]
+    },
+    {
+      "locator": "Zenodo record 20041122 (concept DOI 10.5281/zenodo.18312812); record DOI field mirrors 10.1098/rsos.260107",
+      "api": "_api/zenodo_20041122.json",
+      "files": [
+        {
+          "path": "Primate_models.zip",
+          "url": "https://zenodo.org/api/records/20041122/files/Primate_models.zip/content",
+          "sha256": "6cb8e29ad6d7664beb19ed8f5f6aadeef0153f49dd0aea052135c846768f6181",
+          "bytes": 20510615,
+          "zenodo_md5_pinned": "330b8e8a6af66ea22f4023ca60829cad",
+          "md5_verified": true
+        }
+      ]
+    }
+  ],
+  "routes": {
+    "rsos_landing_page": "HTTP 403 Forbidden to this environment (bot-block confirmed)",
+    "europepmc": "0 hits (not yet ingested)",
+    "pubmed_central": "0 hits by DOI (not yet deposited)",
+    "cambridge_apollo": "repo.cam.ac.uk DNS does not resolve from this environment",
+    "resolution": "Zenodo deposit located by web search + Zenodo REST API; plain HTTPS download, no registration"
+  },
+  "divergences_from_preregistration": [
+    "article_das: model deposit found on Zenodo (record 20041122), not Cambridge Apollo \u2014 the memo Apollo guess was wrong in detail, right in substance (open deposit, no registration).",
+    "models_payload: OpenSim document Version 40600 (OpenSim 4.6 format); memo said models were OpenSim 4.5.",
+    "models_payload: ALL muscle force parameters are placeholders (max_isometric_force=1 N, optimal_fiber_length=1 m, tendon_slack_length=1, pennation_angle_at_optimal=0) \u2014 these are PATH-GEOMETRY/moment-arm models, NOT force models. No PCSA anywhere. Muscle architecture numbers must come from the admitted Guimaraes batch, as the memo already planned.",
+    "models_payload: human base model is NOT in the archive \u2014 7 nonhuman taxa only (macaque present as Macaque/Macaque_model.osim).",
+    "SI 1 + SI 2 API predictions HELD exactly: file names, figshare download ids (63739721/63739718), CC BY 4.0, and contents (homology tables; 672-row moment-arm table = 8 taxa x 36 muscles x 6 joint DOF minus missing combos)."
+  ],
+  "scope": "License-clean (CC BY 4.0) NHP hindlimb muscle PATH geometry + bone/mass surface meshes + published moment-arm tables. Kinematic models only: no physiological Fmax/PCSA in the deposit; meshes are dissection-derived surface geometry, not CT scans of one specimen. Left-limb bodies exist but muscles are right-limb only (R_ prefix)."
+}

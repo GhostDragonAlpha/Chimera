@@ -1,0 +1,6 @@
+{
+  "schema": "chimera.model_evidence.v1",
+  "rubric_version": 1,
+  "records": [],
+  "policy": "Append terminal attributed cases and explicit superseding corrections; retain original evidence. No retrospective model attribution from names or unsupported self-report."
+}

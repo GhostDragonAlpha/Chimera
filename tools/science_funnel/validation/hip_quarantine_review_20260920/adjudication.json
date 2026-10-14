@@ -1,0 +1,78 @@
+{
+ "schema": "chimera.hip_quarantine_adjudication.v1",
+ "lane": "hip-quarantine-review-20260920",
+ "written_utc": "2026-09-20",
+ "law": {
+  "admission_law_source": "tools/science_funnel/validation/guimaraes_pairing_20260921/audit_table.json",
+  "admission_law_sha256": "843d1e70a5a881819360e05cef961eee89108ec86e6cb82ff2dbf475a0979d88",
+  "admission_law_summary": "rows failing the dataset's own closure identities (mass_additivity tol 0.02, pcsa_closure tol 0.02, blanks) quarantine whole, visibly; guimaraes M. mulatta is n=1 (specimen 127, KU Leuven)",
+  "substitution_law_source": "tools/science_funnel/validation/k_fill_20260920/record.md D2 + k_fill receipt citation_integrity",
+  "substitution_law_sha256": "234fba2ab8c967b419cbb82d1cc146bc2d765423780d703333e81644640710ed",
+  "substitution_law_summary": "substitutions lawful ONLY for ABSENT rows; quarantined rows stay NAMED GAPS; a homolog number would be a silent fill; any filled quarantined row is a violation",
+  "homolog_route": "CLOSED BY LAW - Myatt et al. 2011 (great apes) named as still-future for every row; never consumed",
+  "second_source_criteria": "published peer-reviewed; Macaca-genus muscle architecture BY DISSECTION; per-muscle PCSA published or derivable under the closure laws; n>1 specimens; candidate rows pass mass_additivity 0.02 / pcsa_closure 0.02 / no blanks; explicit substitution record"
+ },
+ "search_conclusion": "no published macaque (Macaca sp.) architecture study with per-muscle PCSA by dissection and n>1 exists for RF, SAR, AB, BFS, or TP; the quarantined Guimaraes rows are the only published macaque PCSA for these muscles",
+ "sources_examined": [
+  {"name": "Guimaraes et al. 2026 AJPA 190(4):e70329 PMC13425262", "pin": "fulltext XML sha a1ded31fa6d615b4b1dabc91bec824c2b05b90ad37fbbcf709480027b3eb9d40 (in-repo); S1 xlsx member sha 08ead4a901a53f97e136c709a7804b9d04b4b903107e873c01f3b9b5b9eb8678", "finding": "DECISIVE NEGATIVE: Table 1 details all 30 specimens of the study incl. every prior study it compiles; exactly ONE Macaca mulatta (n=1, specimen 127, KU Leuven, M, adult); all other rows are apes (Vereecke 2005, Payne 2006b, Myatt 2011, Oishi 2009) and humans (Charles 2019)"},
+  {"name": "Oku et al. 2021 Commun Biol PMC7940622", "pin": "fulltext XML pinned in-repo (oku_bipedal artifacts)", "finding": "simulation output of a planar nine-link model (its own intake record); muscle parameter table cites 'Values from Ogihara et al.' - not a dissection PCSA source; never qualifies"},
+  {"name": "Ogihara et al. 2009 AJPA 139(3):323-338", "pin": "PMID 19115360; DOI 10.1002/ajpa.20986 (Europe PMC core record)", "finding": "THE NEAREST MISS: per-muscle mass + fascicle length by dissection of 'a cadaver' (abstract, singular; one adult male) of M. fuscata - n=1, same single-specimen defect class as the quarantined rows; FAILS the n>1 law; non-OA; NOT admitted; recorded"},
+  {"name": "Myatt et al. 2011 J Anat", "pin": "cited in pinned Guimaraes Table 1 (gorilla/bonobo/chimpanzee/orangutan rows, 'PCSA and fiber lengths only')", "finding": "great-ape homolog - the homolog route is CLOSED by the books' substitution law; named as still-future for RF/SAR/AB/BFS; never consumed"},
+  {"name": "Payne et al. 2006b", "pin": "cited in pinned Guimaraes Table 1 (gorilla rows only)", "finding": "apes + humans; no macaque"},
+  {"name": "Vereecke et al. 2005", "pin": "cited in pinned Guimaraes Table 1 (gibbon rows)", "finding": "gibbons; no macaque"},
+  {"name": "Oishi et al. 2009", "pin": "cited in pinned Guimaraes Table 1 (gorilla row)", "finding": "gorilla; no macaque"},
+  {"name": "Charles et al. 2019", "pin": "cited in pinned Guimaraes Table 1 (10 human DTI rows)", "finding": "human; no macaque"},
+  {"name": "Marchi, Leischner, Pastor & Hartstone-Rose 2018 Anat Rec", "pin": "cited-by search (PubMed/Wiley listing)", "finding": "primate leg architecture survey; no macaque in its surfaced sample; named-absent"},
+  {"name": "Wright et al. 2022 (NSF PAR)", "pin": "NSF Public Access Repository listing", "finding": "small-bodied generalist mammals (opossum et al.); not macaque; named-absent"},
+  {"name": "Anton 1999 Int J Primatol 20:441-462", "pin": "Springer listing", "finding": "macaque MASSETER internal architecture; jaw, not hindlimb; out of scope"},
+  {"name": "Muscle dimensions in the Japanese macaque hand (2012)", "pin": "Semantic Scholar listing", "finding": "hand/forelimb; out of scope"},
+  {"name": "Walker & Schrodt 1974 Anat Rec 178(1):63-81", "pin": "PubMed listing", "finding": "I-segment/thin-filament ultrastructure of rhesus fibers; sarcomere-level; no per-muscle PCSA; not lawful"},
+  {"name": "Acosta et al. 1987", "pin": "PubMed listing", "finding": "cynomolgus hindlimb fiber-TYPE composition (3 males); histochemistry; no PCSA"},
+  {"name": "Maxwell 1979", "pin": "University of Michigan media listing", "finding": "rhesus fiber histochemistry; no per-muscle PCSA"},
+  {"name": "Colman et al. 2005", "pin": "PubMed listing", "finding": "rhesus age-related muscle mass (90 animals); no per-muscle architecture"},
+  {"name": "Casteleyn et al. 2023 Vet Sci 10(3):172 PMC10051720", "pin": "cited in pinned Guimaraes reference list", "finding": "rhesus topographical anatomy, pelvic limb; descriptive; no muscle architecture/PCSA"},
+  {"name": "Van Beesel et al. 2025", "pin": "cited in pinned Guimaraes fulltext as the KU Leuven project context of specimen 127", "finding": "same specimen environment (n=1); not surfaced as an independent architecture dataset; not lawful"},
+  {"name": "Hazotte et al. 2026 J Exp Biol 10.1242/jeb.252010", "pin": "Europe PMC core record", "finding": "kinematics/kinetics of quadrupedal walking; no architecture"},
+  {"name": "Saito et al. 2021 Front Syst Neurosci 10.3389/fnsys.2021.774596", "pin": "Europe PMC core record", "finding": "hand precision-grip model; forelimb; out of scope"}
+ ],
+ "muscles": {
+  "R_RF": {
+   "wiseman_name": "R_RF", "guimaraes": "RF", "sheet_row": 11,
+   "defects": ["mass_additivity_dev_0.023"], "defect_restatement": "belly 28.06 g + tendon 3.25 g = 31.31 g vs whole 32.06 g; dev 0.0234 vs enforced tolerance 0.02",
+   "verdict": "QUARANTINE_STANDS", "admitted_force_N": null,
+   "why_no_second_source": "search conclusion: the quarantined row is the only published macaque RF PCSA in existence; Ogihara 2009 is n=1 (fails n>1); homolog route closed by law (Myatt 2011 still-future)",
+   "deposit_role": "hip FLEXOR (Pelvis->thigh->shank, rFemoralneck + rFemoralCondyles_Cylinder2 wraps); extension-sum contribution sign-gated"
+  },
+  "R_SAR": {
+   "wiseman_name": "R_SAR", "guimaraes": "SAR", "sheet_row": 21,
+   "defects": ["mass_additivity_dev_0.095"], "defect_restatement": "belly 9.39 g + tendon 0.90 g = 10.29 g vs whole 9.40 g - the parts EXCEED the whole by 9.5%; row also carries NO pennation (published only for the 19 homologous muscles of the 217-observation subset)",
+   "verdict": "QUARANTINE_STANDS", "admitted_force_N": null,
+   "why_no_second_source": "search conclusion; homolog route closed by law",
+   "deposit_role": "hip FLEXOR (Pelvis->shank via rFemoralMedialCondyle_Sphere wrap); extension-sum contribution sign-gated"
+  },
+  "R_AB": {
+   "wiseman_name": "R_AB", "guimaraes": "AB", "sheet_row": 8,
+   "defects": ["pcsa_closure_dev_0.684"], "defect_restatement": "published PCSA 8.91e-05 m2 vs closure law PCSA = 0.0049/(1060*0.0308) = 1.5010e-04 m2 - the published PCSA sits 40.6% below its own mass/FL closure (dev 0.684 in the funnel's relative form); mass additivity on this row passes (dev 0.014) - the defect is exactly the number a force would be derived from",
+   "verdict": "QUARANTINE_STANDS", "admitted_force_N": null,
+   "why_no_second_source": "search conclusion; homolog route closed by law",
+   "deposit_role": "hip ADDUCTOR (Pelvis->thigh, wrap-free)"
+  },
+  "R_BFS": {
+   "wiseman_name": "R_BFS", "guimaraes": "BFS", "sheet_row": 23,
+   "defects": ["musc_mass_blank", "belly_mass_blank", "tendon_mass_blank"],
+   "defect_restatement": "the closure identities are UNCHECKABLE on this row; additionally its FL (0.0712), PCSA (1.007659e-3) and pennation (26.2 deg) are byte-identical to the R_BFL row 22 cells (D22/E22/L22) - consistent with a sheet-copying artifact, not independent measurements",
+   "verdict": "QUARANTINE_STANDS", "admitted_force_N": null,
+   "why_no_second_source": "no published macaque BFS PCSA exists outside this quarantined row; homolog route closed by law",
+   "deposit_role": "NOT a hip crosser (thigh_r -> shank_r, no pelvis point); hip arm identically zero; cannot enter the hip book regardless of any force"
+  },
+  "R_TP": {
+   "wiseman_name": "R_TP", "guimaraes": "TP", "sheet_row": 9,
+   "defects": ["mass_additivity_dev_0.060"], "defect_restatement": "belly 14.11 g + tendon 1.00 g = 15.11 g vs whole 14.25 g (dev 0.0604)",
+   "verdict": "QUARANTINE_STANDS", "admitted_force_N": null,
+   "why_no_second_source": "search conclusion; homolog route closed by law",
+   "deposit_role": "not a hip muscle (shank_r -> foot_r, R_Ankle_Cylinder wrap); the plantar book's named TP gap is unchanged; context only"
+  }
+ },
+ "admitted_set": [],
+ "extended_book_consequence": "admitted set EMPTY: the landed hip book is consumed UNCHANGED; the four quarantined hip-relevant muscles are scanned as NAMED READINGS (no force consumed by any sum); counterfactual bounds computed as never-consumed robustness records; the rear-up C* verdict carries UNCHANGED NOT COVERED"
+}

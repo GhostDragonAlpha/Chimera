@@ -12,11 +12,11 @@
 # Usage:   .\pi-lmstudio.ps1 [any pi args]      e.g.  .\pi-lmstudio.ps1 -c
 #          .\pi-lmstudio.ps1 -List              show what LM Studio is serving, then exit
 #          .\pi-lmstudio.ps1 -Model <id>        force a specific model as the default
-# Remote LM Studio box: set LMS_URL first, e.g.  $env:LMS_URL = "http://192.168.3.169:1234"
+# Remote LM Studio box: set LMS_URL first. The local initialized server is the default.
 
 $ErrorActionPreference = 'Stop'
 
-$LmsUrl = if ($env:LMS_URL) { $env:LMS_URL } else { "http://192.168.3.169:1234" }
+$LmsUrl = if ($env:LMS_URL) { $env:LMS_URL.TrimEnd('/') } else { "http://localhost:1234" }
 
 # Models that are not chat endpoints, regardless of how LM Studio types them: it reports
 # TTS and image-edit models as "llm", so `type` alone is not a sufficient filter. Match on

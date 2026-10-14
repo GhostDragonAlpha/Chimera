@@ -1,0 +1,526 @@
+{
+ "schema_version": "chimera.class_contracts.v1",
+ "contracts": [
+  {
+   "class_id": "batch.entity.external",
+   "version": 1,
+   "statement": "A record admitted by a batch connector is a pinned byte-exact external assertion: its identity is content-derived, its bytes are sha256-pinned inside an intake bundle, and it names the source bundle it came from.",
+   "prediction": "Every record of this class passes the mechanical checks declared here, and a batch over N artifacts closes the count identity fetched == admitted + quarantined + conflicts with zero silent drops.",
+   "falsifier": "Mutating exactly one field of one record (or one byte of one pinned artifact) must quarantine exactly that record, close the count identity, and refuse admission of the corrupt class; a second full run must create zero objects and reproduce the graph hash byte-identically.",
+   "applies_to": {
+    "kinds": [
+     "reference_entity",
+     "geometry_asset",
+     "model_definition"
+    ]
+   },
+   "checks": [
+    {
+     "kind": "id_syntax",
+     "params": {
+      "pattern": "^data\\.(assertion|source|relation)\\.[0-9a-f]{64}$"
+     }
+    },
+    {
+     "kind": "provenance_present",
+     "params": {}
+    },
+    {
+     "kind": "sha256_chain",
+     "params": {}
+    },
+    {
+     "kind": "fk_exists",
+     "params": {
+      "field": "provenance.source_id"
+     }
+    }
+   ],
+   "admitted_utc": "2026-09-17T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.property.measurement",
+   "version": 1,
+   "statement": "A measurement record admitted by a batch connector carries a finite SI value with named units, conditions of applicability, and the same pinned-byte provenance as the entity class.",
+   "prediction": "Every measurement passes the entity-class checks plus finiteness and unit-vocabulary checks; no NaN or unitless number ever enters the graph through a batch.",
+   "falsifier": "One non-finite value or one unit outside the declared vocabulary must quarantine exactly that record and refuse the class batch.",
+   "applies_to": {
+    "kinds": [
+     "property_assertion"
+    ]
+   },
+   "checks": [
+    {
+     "kind": "id_syntax",
+     "params": {
+      "pattern": "^data\\.assertion\\.[0-9a-f]{64}$"
+     }
+    },
+    {
+     "kind": "provenance_present",
+     "params": {}
+    },
+    {
+     "kind": "sha256_chain",
+     "params": {}
+    },
+    {
+     "kind": "fk_exists",
+     "params": {
+      "field": "provenance.source_id"
+     }
+    },
+    {
+     "kind": "field_range",
+     "params": {
+      "path": "payload.value_si",
+      "min": -1e+30,
+      "max": 1e+30
+     }
+    },
+    {
+     "kind": "units_in",
+     "params": {
+      "path": "payload.unit_si",
+      "si_tokens": true
+     }
+    }
+   ],
+   "admitted_utc": "2026-09-17T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.geometry.smithsonian_voyager",
+   "version": 1,
+   "statement": "A Smithsonian 3D geometry candidate is a CC0-licensed, millimetre-metric specimen derivative: units mm, a positive bounded bounding box, and the exact GLB bytes pinned by sha256 inside the intake bundle.",
+   "prediction": "Both USNM 15259 derivatives (cranium, mandible) admit with units mm, bounded boxes in the 1-500 mm range, and their pinned GLB sha256 recorded; any derivative without a pinned blob is quarantined.",
+   "falsifier": "A derivative with units other than mm, a non-positive or >500 mm box extent, or a missing/mismatched GLB pin must quarantine exactly that record.",
+   "applies_to": {
+    "kinds": [
+     "geometry_asset"
+    ]
+   },
+   "checks": [
+    {
+     "kind": "id_syntax",
+     "params": {
+      "pattern": "^data\\.assertion\\.[0-9a-f]{64}$"
+     }
+    },
+    {
+     "kind": "provenance_present",
+     "params": {}
+    },
+    {
+     "kind": "sha256_chain",
+     "params": {}
+    },
+    {
+     "kind": "fk_exists",
+     "params": {
+      "field": "provenance.source_id"
+     }
+    },
+    {
+     "kind": "units_in",
+     "params": {
+      "path": "payload.units",
+      "vocabulary": [
+       "mm"
+      ]
+     }
+    },
+    {
+     "kind": "field_range",
+     "params": {
+      "path": "payload.bbox_extent_mm",
+      "min": 1.0,
+      "max": 500.0
+     }
+    }
+   ],
+   "admitted_utc": "2026-09-17T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.property.copernicus_tile",
+   "version": 1,
+   "statement": "A Copernicus GLO-30 tile property names the pinned tile artifacts (DEM, EOXML, WBM, EULA) it was read from and a value inside the dataset's own declared envelope (1.0 arcsec postings, 0.1 m vertical quantization, metres/degrees units).",
+   "prediction": "Every tile property admitted by the connector passes with units inside {m, degree, arcsec} and values inside the source-declared envelope; the h=H+N EGM2008 datum law is carried as provenance text, not silently applied.",
+   "falsifier": "A property whose value falls outside the declared envelope, or whose artifact pin does not match the pinned tile bytes, must quarantine exactly that record.",
+   "applies_to": {
+    "kinds": [
+     "property_assertion"
+    ]
+   },
+   "checks": [
+    {
+     "kind": "id_syntax",
+     "params": {
+      "pattern": "^data\\.assertion\\.[0-9a-f]{64}$"
+     }
+    },
+    {
+     "kind": "provenance_present",
+     "params": {}
+    },
+    {
+     "kind": "sha256_chain",
+     "params": {}
+    },
+    {
+     "kind": "fk_exists",
+     "params": {
+      "field": "provenance.source_id"
+     }
+    },
+    {
+     "kind": "units_in",
+     "params": {
+      "path": "payload.unit_si",
+      "vocabulary": [
+       "m",
+       "degree",
+       "arcsec"
+      ]
+     }
+    },
+    {
+     "kind": "field_range",
+     "params": {
+      "path": "payload.value_si",
+      "min": -100.0,
+      "max": 9000.0
+     }
+    }
+   ],
+   "admitted_utc": "2026-09-17T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.property.series",
+   "version": 1,
+   "statement": "A series record admitted by a batch connector is a sampled scalar signal over a strictly increasing dimensionless or SI-identified axis: named units for both the value and the axis, at least the standard pinned-byte provenance, and no non-finite samples.",
+   "prediction": "Every series admitted by a connector passes the entity-class provenance checks plus unit-vocabulary checks on both value and axis units; no unitless-by-omission or NaN-bearing series ever enters the graph through a batch.",
+   "falsifier": "One unit outside the SI token vocabulary on the value or the axis must quarantine exactly that series record and refuse the class batch; a non-increasing or empty sample axis must refuse at intake.",
+   "applies_to": {
+    "kinds": [
+     "property_assertion"
+    ]
+   },
+   "checks": [
+    {
+     "kind": "id_syntax",
+     "params": {
+      "pattern": "^data\\.assertion\\.[0-9a-f]{64}$"
+     }
+    },
+    {
+     "kind": "provenance_present",
+     "params": {}
+    },
+    {
+     "kind": "sha256_chain",
+     "params": {}
+    },
+    {
+     "kind": "fk_exists",
+     "params": {
+      "field": "provenance.source_id"
+     }
+    },
+    {
+     "kind": "units_in",
+     "params": {
+      "path": "payload.unit_si",
+      "si_tokens": true
+     }
+    },
+    {
+     "kind": "units_in",
+     "params": {
+      "path": "payload.x_unit_si",
+      "si_tokens": true
+     }
+    }
+   ],
+   "admitted_utc": "2026-09-17T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.observation.janisch_stride",
+   "version": 1,
+   "statement": "A wild-primate stride observation admitted by the gait lane carries a species tag inside the 14-species source vocabulary, substrate tags (branch diameter in metres and orientation in degrees) as finite measured numbers inside declared envelopes, and every measured joint angle, mean, yield and excursion inside its declared angular envelope.",
+   "prediction": "All 386 real stride rows of the pinned CSV admit with species + substrate tags and pass these checks; the single all-NA row quarantines; 387 fetched == 386 admitted + 1 quarantined closes with zero silent drops.",
+   "falsifier": "One corrupted stride row (species outside the vocabulary, one angle outside its envelope, or a substrate value outside its envelope) must quarantine exactly that record while every neighbouring stride stays admitted.",
+   "applies_to": {"kinds": ["reference_entity"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "field_in", "params": {"field": "payload.species", "vocabulary": ["Alouatta_palliata", "Cebus_capucinus", "Cercopithecus_lhoesti", "Chlorocebus_aethiops", "Eulemur_rubriventer", "Eulemur_rufifrons", "Hapalemur_aureus", "Lagothrix_lagotricha", "Lemur_catta", "Lophocebus_albigena", "Papio_anubis", "Piliocolobus_badius", "Plecturocebus_discolor", "Saimiri_sciureus"]}},
+    {"kind": "field_in", "params": {"field": "payload.sex", "vocabulary": ["m", "f", "unknown"]}},
+    {"kind": "field_in", "params": {"field": "payload.age", "vocabulary": ["adult", "mom", "juvenile", "unknown"]}},
+    {"kind": "field_range", "params": {"path": "payload.substrate.diameter_m", "min": 0.0, "max": 2.0}},
+    {"kind": "field_range", "params": {"path": "payload.substrate.orientation_deg", "min": -90.0, "max": 90.0}},
+    {"kind": "field_range", "params": {"path": "payload.body_mass_kg", "min": 0.1, "max": 100.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.joint_angles_deg", "min": 0.0, "max": 360.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.mean_angles_deg", "min": 0.0, "max": 360.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.yields_deg", "min": -180.0, "max": 180.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.excursions_deg", "min": 0.0, "max": 360.0}}
+   ],
+   "admitted_utc": "2026-09-17T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.deferred.dryad_file",
+   "version": 1,
+   "statement": "A deferred Dryad file record is an identity claim, never a content claim: it pins what the Dryad API v2 declares about one file (path, byte size, sha-256 digest, file id, license) and states on its face that the bytes were not downloaded and exactly why.",
+   "prediction": "Every record admitted by a Dryad metadata connector passes with status inside {deferred, excluded_by_policy}, license inside the CC0 vocabulary, a positive byte size inside the dataset's own 2.2 GB envelope, and the deferral cause present; the 2.1 GB Gait_Videos.zip admits as excluded_by_policy, never as data.",
+   "falsifier": "A record whose status claims the bytes are present, whose license is not CC0, or whose size falls outside the declared envelope must quarantine exactly that record.",
+   "applies_to": {"kinds": ["reference_entity"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "field_in", "params": {"field": "payload.status", "vocabulary": ["deferred", "excluded_by_policy"]}},
+    {"kind": "field_in", "params": {"field": "payload.license", "vocabulary": ["https://spdx.org/licenses/CC0-1.0.html"]}},
+    {"kind": "field_range", "params": {"path": "payload.size_bytes", "min": 1, "max": 2200000000.0}},
+    {"kind": "field_in", "params": {"field": "payload.digest_type", "vocabulary": ["sha-256"]}}
+   ],
+   "admitted_utc": "2026-09-17T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.observation.goldenberg_taxon",
+   "version": 1,
+   "statement": "A Goldenberg et al. taxon row is one pinned CSV row carrying a binomial, a taxonomic class inside the source's own seven-class vocabulary, an explicit per-cell status for every reflectance summary variable (measured or NA), and NA cells recorded as absent, never as zero.",
+   "prediction": "All 441 rows admit as observation entities with taxon_class inside {Aranea, Aves, Crocodylia, Insecta, Mammalia, Squamata, Testudines} (Mammalia 94 rows are the fur-optics anchor), n_samples inside [1, 441], and 1,781 measured reflectance cells emitted as batch.property.goldenberg_reflectance records; zero rows quarantine.",
+   "falsifier": "One corrupted cell (a non-numeric reflectance value, a taxon class outside the vocabulary, or an n outside [1, 441]) quarantines exactly that row's records while every neighbouring row admits; the count identity 441 rows == admitted + quarantined closes with zero silent drops.",
+   "applies_to": {"kinds": ["reference_entity"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "field_in", "params": {"field": "payload.taxon_class", "vocabulary": ["Aranea", "Aves", "Crocodylia", "Insecta", "Mammalia", "Squamata", "Testudines"]}},
+    {"kind": "field_range", "params": {"path": "payload.n_samples", "min": 1.0, "max": 441.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.reflectance_percent", "min": -5.0, "max": 120.0}}
+   ],
+   "admitted_utc": "2026-09-18T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.property.goldenberg_reflectance",
+   "version": 1,
+   "statement": "A Goldenberg reflectance measurement carries one percent-scaled summary reflectance (B2 total/UV/VIS/NIR, plumage or egg) converted to a fraction by the declared law fraction = percent / 100 with the source percent retained; measured noise outside [0, 1] (min -3.39 %, max 116.5 % in the pinned bytes) is retained as measured, never clamped.",
+   "prediction": "All 1,781 measured cells convert with unit_si '1' and land inside [-0.05, 1.2]; the 660 NA cells emit nothing (the row's status records them); the Mammalia plumage cells are the fur-reflectance anchor of the appearance lane.",
+   "falsifier": "A converted fraction outside [-0.05, 1.2] (e.g. a raw percent of 1e6) or a unitless-by-omission record quarantines exactly that cell's record; if the /100 law is ever dropped, raw percents (4.5..116.5) land outside [-0.05, 1.2] and must be flagged by field_range for exactly those records.",
+   "applies_to": {"kinds": ["property_assertion"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "field_range", "params": {"path": "payload.value_si", "min": -0.05, "max": 1.2}},
+    {"kind": "units_in", "params": {"path": "payload.unit_si", "vocabulary": ["1"]}}
+   ],
+   "admitted_utc": "2026-09-18T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.entity.phylacine_species",
+   "version": 1,
+   "statement": "A PHYLACINE 1.2.1 species row is one mammal taxon of the pinned derived trait table with its binomial agreeing with genus+species tags, a positive measured body mass (Mass.g is 100% populated; 1.6 g..1.9e8 g in the pinned bytes), and categorical traits (IUCN status, island endemicity, habitat flags, diet percentages) each inside the vocabularies the pinned bytes declare.",
+   "prediction": "All 5,831 rows admit as species entities with masses inside [1e-6, 2e5] kg after the exact g->kg conversion, IUCN status inside {DD, LC, NT, VU, EN, CR, EW, EX, EP}, diet percentages inside [0, 100], habitat flags inside [0, 1], zero duplicate binomials and zero quarantined rows; the 22 Macaca rows carry the macaque-relevant masses.",
+   "falsifier": "A row whose binomial disagrees with its genus+species tags, whose mass is missing, non-positive, or outside [1e-6, 2e5] kg, or whose categorical trait falls outside its declared vocabulary quarantines exactly that row; the count identity 5,831 rows == admitted + quarantined closes with zero silent drops.",
+   "applies_to": {"kinds": ["reference_entity"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "field_range", "params": {"path": "payload.mass_kg", "min": 1e-06, "max": 200000.0}},
+    {"kind": "units_in", "params": {"path": "payload.iucn_status", "vocabulary": ["DD", "LC", "NT", "VU", "EN", "CR", "EW", "EX", "EP"]}},
+    {"kind": "field_in", "params": {"field": "payload.island_endemicity", "vocabulary": ["Occurs only on isolated islands", "Occurs on large land bridge islands", "Occurs on small land bridge islands", "Occurs on mainland", "Exclusively marine"]}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.diet_percent", "min": 0.0, "max": 100.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.habitat_flags", "min": 0.0, "max": 1.0}}
+   ],
+   "admitted_utc": "2026-09-18T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.series.splib07_spectrum",
+   "version": 1,
+   "statement": "A USGS SPLib v7 spectrum record is one Chapter-V/Chapter-S ASCII spectrum of the pinned splib07a zip whose wavelength axis is paired by the recorded family+channel-count rule to the zip's own Wavelengths file, is strictly increasing over the MEASURED samples in metres, carries only measured channels (the -1.23e34 nodata sentinel channels are excluded and counted as wavelength runs, never interpolated), and whose reflectance values sit inside the data-derived [0, 2.5] envelope.",
+   "prediction": "All 495 Chapter-V+Chapter-S spectra pair (ASDFR*/ASDNG*->2151 ch ASD, AVIRIS*->224 ch, BECK*->480 ch, NIC4*->4595 ch); 494 admit as series records and 1 AVIRIS spectrum quarantines (its detector-overlap grid decrease falls on MEASURED channels); in the other 38 AVIRIS spectra the overlap channels are nodata, so the admitted sample axes are monotonic and each carries the recorded grid-overlap unknown; plus one deferred identity record for the 5.1 GB full bundle; 151 spectra carry paired per-channel error bars as uncertainties.",
+   "falsifier": "One corrupted y value (or one corrupted error bar) breaks its spectrum's content-derived identity and quarantines exactly that spectrum; a spectrum whose channel count matches no Wavelengths file refuses pairing (spectrum_grid_unpaired); an out-of-envelope channel poisons exactly its spectrum; a monotonic violation on measured channels quarantines exactly that spectrum; the count identity 495 spectra == 494 admitted + 1 quarantined closes with zero silent drops.",
+   "applies_to": {"kinds": ["property_assertion"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "units_in", "params": {"path": "payload.unit_si", "vocabulary": ["1"]}},
+    {"kind": "units_in", "params": {"path": "payload.x_unit_si", "vocabulary": ["m"]}},
+    {"kind": "field_in", "params": {"field": "payload.instrument_family", "vocabulary": ["ASD", "AVIRIS", "BECK", "NIC4"]}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.samples", "min": 0.0, "max": 2.5}},
+    {"kind": "field_range", "params": {"path": "payload.nodata_channel_count", "min": 0.0, "max": 4600.0}}
+   ],
+   "admitted_utc": "2026-09-18T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.deferred.usgs_splib07_full",
+   "version": 1,
+   "statement": "A deferred USGS SPLib v7 identity record is an identity claim, never a content claim: it pins what the ScienceBase item declares about the full 5,479,324,354-byte usgs_splib07.zip bundle and states on its face that the bytes were not downloaded and exactly why (far above the 256 MB bundle and 100 MB per-file ceilings; its SPECPR/GIF/photo content is not the admitted ASCII channel).",
+   "prediction": "The one deferred record admits with status 'deferred', license CC0 1.0, and size inside [1, 6e9]; it never counts as data and the count identity of the usgs connector still closes.",
+   "falsifier": "A record whose status claims the bytes are present, whose license is not CC0 1.0, or whose size falls outside [1, 6e9] must quarantine exactly that record.",
+   "applies_to": {"kinds": ["reference_entity"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "field_in", "params": {"field": "payload.status", "vocabulary": ["deferred", "excluded_by_policy"]}},
+    {"kind": "field_in", "params": {"field": "payload.license", "vocabulary": ["CC0 1.0"]}},
+    {"kind": "field_range", "params": {"path": "payload.size_bytes", "min": 1.0, "max": 6000000000.0}}
+   ],
+   "admitted_utc": "2026-09-18T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.entity.pantheria_species",
+   "version": 1,
+   "statement": "A PanTHERIA 1.0 species row keeps its full MSW05 identity tags (order, family, genus, species, binomial); a trait cell holding the -999 sentinel in ANY numeric rendering (-999, -999.0, -999.00) or an empty cell is nodata, recorded as an explicit trait status plus an explicit unknown on the species record, never as a numeric value.",
+   "prediction": "All 5,416 species rows admit as entity records whose binomial agrees with their genus+species tags; the 20 sentinel-BMR Macaca rows carry explicit nodata unknowns while the one measured Macaca (Macaca mulatta) also resolves against the NCBI taxdmp Macaca subtree companion.",
+   "falsifier": "A record whose binomial disagrees with its genus+species tags, whose trait_status value falls outside {measured, sentinel_-999, empty}, or in which a sentinel number appears where a status belongs must quarantine exactly that record; the -999 sentinel never reaches a measurement record of this source.",
+   "applies_to": {"kinds": ["reference_entity"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "units_in", "params": {"path": "payload.trait_status.adult_body_mass_g", "vocabulary": ["measured", "sentinel_-999", "empty"]}},
+    {"kind": "units_in", "params": {"path": "payload.trait_status.basal_met_rate_mLO2hr", "vocabulary": ["measured", "sentinel_-999", "empty"]}},
+    {"kind": "units_in", "params": {"path": "payload.trait_status.bmr_measurement_mass_g", "vocabulary": ["measured", "sentinel_-999", "empty"]}}
+   ],
+   "admitted_utc": "2026-09-17T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.property.pantheria_trait",
+   "version": 1,
+   "statement": "A PanTHERIA trait measurement carries a positive finite SI value -- adult body mass in kg (g x 1e-3, exact) or basal metabolic rate in W converted as mLO2hr x 20.1 J/mL O2 / 3600 s with the calorific equivalent DECLARED as an assumption on every record, never as a PanTHERIA measurement -- plus full species tags and pinned-byte provenance.",
+   "prediction": "3,542 adult-mass and 573 BMR records pass with values inside [1e-6, 1e6] (measured extremes: 1.96 g to 1.54e8 g mass, 6.12 to 113,712 mLO2/hr BMR = 0.034 to 635 W); the sole measured Macaca BMR (Macaca mulatta) converts to ~12.50 W and carries the calorific assumption.",
+   "falsifier": "A -999 sentinel reaching a measurement record refuses the class: the adapter guard must quarantine the row before drafting, and if that guard is ever removed the converted sentinel (-5.58 W or -0.999 kg) is negative, outside [1e-6, 1e6], and must be flagged by field_range for exactly that record.",
+   "applies_to": {"kinds": ["property_assertion"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "field_range", "params": {"path": "payload.value_si", "min": 1e-06, "max": 1000000.0}},
+    {"kind": "units_in", "params": {"path": "payload.unit_si", "vocabulary": ["W", "kg"], "si_tokens": true}}
+   ],
+   "admitted_utc": "2026-09-17T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.entity.ncbi_taxon",
+   "version": 1,
+   "statement": "An NCBI taxdmp Macaca-subtree taxon record names its integer tax_id, its parent tax_id, a rank inside the subtree vocabulary, and exactly one scientific name, with every other name-class record (synonyms, authorities, common names) retained verbatim.",
+   "prediction": "All 43 subtree taxa (root genus Macaca, tax_id 9539) admit with ranks inside {genus, species, subspecies, no rank} -- the no-rank entries being unclassified sections and isolate placeholders -- and every PanTHERIA Macaca binomial resolves against these names.",
+   "falsifier": "A taxon whose rank falls outside the vocabulary, whose scientific name is missing or non-unique, or whose projected names disagree with the pinned subtree bytes must quarantine exactly that taxon's record.",
+   "applies_to": {"kinds": ["reference_entity"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "field_range", "params": {"path": "payload.tax_id", "min": 1.0, "max": 1000000000.0}},
+    {"kind": "units_in", "params": {"path": "payload.rank", "vocabulary": ["genus", "species", "subspecies", "no rank"]}}
+   ],
+   "admitted_utc": "2026-09-17T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.entity.rhea_chebi_species",
+   "version": 1,
+   "statement": "A Rhea rhea-chebi-smiles.tsv row maps exactly one CHEBI identifier to one SMILES string under CC BY 4.0 with the license evidence pinned inside the same bundle; a CHEBI id with competing SMILES rows has all of its rows quarantined by the duplicate-identity law, never a greedy pick.",
+   "prediction": "The 14,318 headerless two-column rows reduce to 14,249 unique-CHEBI records with the remaining rows quarantined as duplicate identities; every admitted record declares its identity scheme as chebi and the count identity still closes.",
+   "falsifier": "A row whose CHEBI id is not CHEBI:<digits>, whose SMILES is empty, or whose id competes with a different SMILES must quarantine exactly those rows with zero silent drops.",
+   "applies_to": {"kinds": ["reference_entity"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "units_in", "params": {"path": "payload.id_scheme", "vocabulary": ["chebi"]}}
+   ],
+   "admitted_utc": "2026-09-17T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.observation.soil_specimen",
+   "version": 1,
+   "statement": "A soil-specimen observation is one laboratory specimen row carrying only its measured quantities, grouped under the source-conventional unit of each family (%, mm, g/cm3, m/s, kPa, degree; the source bytes declare no unit column, so the family keys carry the unit and the assumption is declared on every record); an absent test is absent, never zero, and every measured value sits inside a declared physical envelope.",
+   "prediction": "All 1,066 Soranzo specimen rows admit; every measured cell of every row sits inside its family envelope (fractions 0-100 %, grain sizes 0-150 mm, CU/CC 0-5000, densities 0.5-3.5 g/cm3, Atterberg 0-150 %, indices -2..10, permeability 1e-13..1e-1 m/s, shear 0-200 kPa / 0-90 degrees, Austrian coords inside their degree boxes); no row without a single measured value admits.",
+   "falsifier": "One cell outside its family envelope (e.g. a gradation fraction of 150 %) quarantines exactly that specimen row; a row with no measured values quarantines; the count identity fetched == admitted + quarantined closes with zero silent drops.",
+   "applies_to": {"kinds": ["reference_entity"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.gradation_percent", "min": 0.0, "max": 100.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.grain_sizes_mm", "min": 0.0, "max": 150.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.grading_indices", "min": 0.0, "max": 5000.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.proctor_g_per_cm3", "min": 0.5, "max": 3.5}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.proctor_percent", "min": 0.0, "max": 100.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.atterberg_percent", "min": 0.0, "max": 150.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.state_percent", "min": 0.0, "max": 100.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.indices", "min": -2.0, "max": 10.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.permeability_m_per_s", "min": 1e-13, "max": 0.1}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.shear_kPa", "min": 0.0, "max": 200.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.shear_deg", "min": 0.0, "max": 90.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.coord_lat_deg", "min": 40.0, "max": 55.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.coord_lon_deg", "min": 5.0, "max": 25.0}}
+   ],
+   "admitted_utc": "2026-09-17T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.observation.gsod_day",
+   "version": 1,
+   "statement": "A GSOD station-day carries the asserted daily summary values grouped per source-declared unit family (degF, mb, knots, miles, inches; anchored to the pinned readme), the station identity, and explicit nodata entries for the documented missing codes; a missing code never becomes a value, an unrecognized all-9s rendering never becomes one either, and asserted bytes are carried even where the source field truncates (STP).",
+   "prediction": "All 359 unique station-days of the pinned 2024 file admit; the 519 documented missing cells become nodata entries (SNDP 359, GUST 106, STP 31, VISIB 9, WDSP 5, MXSPD 5, PRCP 3, SLP 1); STP truncation rides as asserted with an unknown on every affected record.",
+   "falsifier": "One value outside a family envelope quarantines exactly that station-day; an all-9s cell outside the column's accepted code set quarantines (gsod_unrecognized_sentinel_code); a wrong station id or unparseable date quarantines; the count identity fetched == admitted + quarantined closes with zero silent drops.",
+   "applies_to": {"kinds": ["reference_entity"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "field_in", "params": {"field": "payload.station_id", "vocabulary": ["78535011630"]}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.air_temp_f", "min": -80.0, "max": 150.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.pressure_mb", "min": 0.0, "max": 1100.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.wind_knots", "min": 0.0, "max": 250.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.visibility_miles", "min": 0.0, "max": 100.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.precip_inches", "min": 0.0, "max": 30.0}},
+    {"kind": "numeric_tree_range", "params": {"path": "payload.obs_counts", "min": 0.0, "max": 31.0}},
+    {"kind": "field_range", "params": {"path": "payload.latitude_deg", "min": -90.0, "max": 90.0}},
+    {"kind": "field_range", "params": {"path": "payload.longitude_deg", "min": -180.0, "max": 180.0}},
+    {"kind": "field_range", "params": {"path": "payload.elevation_m", "min": -500.0, "max": 9000.0}}
+   ],
+   "admitted_utc": "2026-09-17T00:00:00+00:00"
+  },
+  {
+   "class_id": "batch.property.worldcover_class",
+   "version": 1,
+   "statement": "A land-cover class property is the categorical class at a stated point, read from an integer-band GeoTIFF (uint8/int16; a float band refuses) whose class legend the tile itself declares: the class code and its label must both sit inside that legend, the tile id must match both the bucket tile-index resolution and the tile's embedded product_tile, and the band format must be declared, never assumed.",
+   "prediction": "The patch-centre class admits with its code and label inside the tile's embedded eleven-class legend; the tile metadata measurements (grid columns, rows, pixel scale, file bytes) admit under batch.property.measurement; the count identity closes at 5 records for the connector.",
+   "falsifier": "A class code outside the legend refuses at the reader (terrain_class_outside_legend); a float band refuses (terrain_int_reader_refuses_float_band); a product_tile or CRS mismatch refuses; a label outside the declared legend vocabulary quarantines exactly that record.",
+   "applies_to": {"kinds": ["property_assertion"]},
+   "checks": [
+    {"kind": "id_syntax", "params": {"pattern": "^data\\.assertion\\.[0-9a-f]{64}$"}},
+    {"kind": "provenance_present", "params": {}},
+    {"kind": "sha256_chain", "params": {}},
+    {"kind": "fk_exists", "params": {"field": "provenance.source_id"}},
+    {"kind": "units_in", "params": {"path": "payload.unit_si", "vocabulary": ["dimensionless"]}},
+    {"kind": "field_in", "params": {"field": "payload.class_label", "vocabulary": ["Tree cover", "Shrubland", "Grassland", "Cropland", "Built-up", "Bare/sparse vegetation", "Snow and ice", "Permanent water bodies", "Herbaceous wetland", "Mangroves", "Moss and lichen"]}},
+    {"kind": "field_in", "params": {"field": "payload.sample_format", "vocabulary": ["uint8", "int8", "uint16", "int16"]}},
+    {"kind": "field_range", "params": {"path": "payload.class_code", "min": 10.0, "max": 100.0}},
+    {"kind": "field_range", "params": {"path": "payload.centre_lat", "min": -90.0, "max": 90.0}},
+    {"kind": "field_range", "params": {"path": "payload.centre_lon", "min": -180.0, "max": 180.0}}
+   ],
+   "admitted_utc": "2026-09-17T00:00:00+00:00"
+  }
+ ]
+}

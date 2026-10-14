@@ -1,0 +1,60 @@
+{
+ "when": "2026-09-23T03:45:50Z",
+ "summary": {
+  "cycles_total": 100,
+  "cycles_clean": 100,
+  "cycles_by_kind": {
+   "normal": {
+    "n": 40,
+    "clean": 40
+   },
+   "cancel": {
+    "n": 30,
+    "clean": 30
+   },
+   "kill": {
+    "n": 30,
+    "clean": 30
+   }
+  },
+  "final_sweep": {
+   "identities_rechecked": 361,
+   "survivors": 0,
+   "problems": []
+  },
+  "sentinels_touch_log_clean": true,
+  "sentinels_final": {
+   "S1_cmd_dummy": true,
+   "S2_py_slice_server": true
+  },
+  "pid_reuse": {
+   "organic_reuse_observed": false,
+   "deterministic": true,
+   "innocent_alive_after": true,
+   "churn_spawns": 390,
+   "fold_matched_innocent_as_running": false,
+   "complete_how": "no active session record (nothing to complete)",
+   "fold_status": "orphaned_completed",
+   "ok": true
+  },
+  "ambiguous": {
+   "reported": true,
+   "still_alive": true,
+   "ambiguous_count": 7,
+   "ok": true
+  },
+  "memlimit": {
+   "child_exit": 3,
+   "verdict": "MEMORYERROR",
+   "free_ram_dip_gib": 0.02,
+   "ok": true
+  },
+  "assign_failure": {
+   "assign_was_called": true,
+   "launch_ok": false,
+   "error": "launch failed before resume (no survivor): AssignProcessToJobObject (simulated r",
+   "ok": true
+  },
+  "failures": []
+ }
+}

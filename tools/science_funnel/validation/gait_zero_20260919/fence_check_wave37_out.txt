@@ -1,0 +1,18 @@
+base kept lines: 6981  composed kept lines: 7194
+divergence #1 at index 3755: base tick=None composed tick=None
+  base: [hindgate] tick=161 leg=0 live=0 tL=-1 sL=-4.0 tR=0 sR=0.0 hL=0 hR=0 gated=1 floor=0 dl=107 v=0.769
+  w37 : [hindstep] waivefire leg=0 tick=161 dl=107
+divergence #2 at index 3756: base tick=161 composed tick=None
+  base: [dv] t=161 ptq=11.21250 ptgt=-11.5795 pang=-27.3216 pspd=-2.1452 ev=0 phL=0.00469 phR=0.25822 com=(0.453194,-0.045812) hull=2 in=0 bx=0.360268
+  w37 : [hindgate] tick=161 leg=0 live=0 tL=-1 sL=-4.0 tR=0 sR=0.0 hL=0 hR=0 gated=0 floor=0 dl=107 v=0.769
+divergence #3 at index 3757: base tick=161 composed tick=None
+  base: [dvp] t=161 k=0 gap=4.6620e-08 rxn=20.99128 frc=-12.25144 slip=2.42700 pos=0.353542490,0.000000047
+  w37 : [hindstep] fire leg=0 tick=161 phi=0.00469 class=alt from=(0.307825,0.019198) to=(0.549255,0.019198) xoff=0.186533 v=0.769319 qerr=4.441e-16 ap=0.0040 br=-1 dl=107
+FIRST DIVERGENCE TICK: None (predicted exactly 161: False )
+  the inserted line is the waivefire: True
+SECOND DIVERGENCE TICK: 161 (predicted exactly 193: False )
+named tick 98 byte-exact: True
+named tick 107 byte-exact: True
+named tick 142 byte-exact: True
+named tick 160 byte-exact: True
+NAMED TICKS ALL EXACT: True

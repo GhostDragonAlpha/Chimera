@@ -24,7 +24,23 @@ def audit_run(history: list[dict], generations: int, stuck_threshold: float = 0.
         Dict with stuck metrics, variance, and recommended fixes
     """
     if len(history) < 5:
-        return {"stuck": [], "message": "Not enough history for audit"}
+        # ONE SHAPE AT EVERY HISTORY LENGTH (work.data.trainer_spine_repair_20260917):
+        # this used to return {"stuck": [], "message": ...} while train_loop reads
+        # stuck_metrics/stuck_rate/recommendation unconditionally — a KeyError for
+        # every short run. The honest short-history values claim NOTHING: zero stuck
+        # metrics is not "all metrics moving" — no audit happened at all.
+        return {
+            "generations": generations,
+            "total_metrics": len(history[0]) if history else 0,
+            "stuck_metrics": 0,
+            "stuck_rate": 0.0,
+            "recommendation": (
+                f"Not enough history for audit (need >= 5 generations, have "
+                f"{len(history)}): no stuck-metric claim is made."
+            ),
+            "stuck": [],
+            "message": "Not enough history for audit",
+        }
 
     metrics = list(history[0].keys())
     stuck = []

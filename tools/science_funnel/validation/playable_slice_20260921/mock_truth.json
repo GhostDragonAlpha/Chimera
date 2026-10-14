@@ -1,0 +1,38 @@
+{
+ "falsifier": "F-SLICE-MOCK-TRUTH",
+ "pass": true,
+ "registry_fantasy_ids": [
+  "mock_carry",
+  "mock_physics_body"
+ ],
+ "registry_declared_ids": [
+  "ghost_standing_pose"
+ ],
+ "code_mock_sites": {
+  "mock_physics_body": [
+   "scene_boot.py:13",
+   "scene_boot.py:25",
+   "scene_boot.py:141",
+   "mock_registry.json:31"
+  ],
+  "mock_carry": [
+   "scene_boot.py:24",
+   "slice_server.py:9",
+   "slice_server.py:138",
+   "slice_server.py:163",
+   "index.html:325",
+   "mock_registry.json:23"
+  ]
+ },
+ "code_declared_sites": {
+  "ghost_standing_pose": [
+   "scene_boot.py:25",
+   "scene_boot.py:236",
+   "mock_registry.json:41"
+  ]
+ },
+ "mocks_in_code_not_registry": [],
+ "registry_mocks_without_code_site": [],
+ "declared_in_code_not_registry": [],
+ "registry_declared_without_code_site": []
+}

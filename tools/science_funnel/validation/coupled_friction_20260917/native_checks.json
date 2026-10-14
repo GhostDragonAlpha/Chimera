@@ -1,0 +1,1065 @@
+{
+  "contact": {
+    "impact_heat_J": 0.06656390658451124,
+    "peak_reaction_N": 2.5894018617259906,
+    "worst_gap_m": 4.147475858029548e-07
+  },
+  "dynamics_checks": 158146,
+  "exhaustion": {
+    "battery_empty_events": 1,
+    "body": {
+      "position_m": [
+        0.03372286224646467,
+        0.2583718838241508,
+        0.007835990781146291
+      ],
+      "radius_m": 0.007,
+      "velocity_m_s": [
+        -0.3369629150003895,
+        -0.03869981564680946,
+        0.0
+      ]
+    },
+    "config": {
+      "contact_enabled": false,
+      "contact_friction": 0.0,
+      "elbow_drive": true,
+      "elbow_target_deg": 110.0,
+      "elbow_torque_limit_N_m": 0.3,
+      "load_N": 0.0,
+      "power": true,
+      "shoulder_drive": true,
+      "shoulder_target_deg": 20.0,
+      "shoulder_torque_limit_N_m": 0.6
+    },
+    "contact": {
+      "closing_speed_m_s": -0.03869981564680946,
+      "enabled": false,
+      "friction": false,
+      "friction_force_N": 0.0,
+      "friction_impact_impulse_N_s": 0.0,
+      "friction_mu": 0.0,
+      "gap_m": -0.08462811617584914,
+      "generalized_reaction_N_m": [
+        0.0,
+        0.0
+      ],
+      "grasp": false,
+      "impact_heat_J": 0.0,
+      "impact_impulse_N_s": 0.0,
+      "jacobian_m_per_rad": [
+        0.03372286224646467,
+        0.048625551909119005
+      ],
+      "mode": "off",
+      "normal_world_up": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "plane_world_up_m": 0.35,
+      "proxy_radius_m": 0.007,
+      "reaction_N": 0.0,
+      "slip_speed_m_s": 0.3369629150003895,
+      "touching": false
+    },
+    "contacts": {
+      "environment": false,
+      "joint_limits": true
+    },
+    "coupling": {
+      "bias_torque_N_m": [
+        4.619862653530524e-19,
+        0.0011506914350647357
+      ],
+      "mass_matrix_kg_m2": [
+        [
+          0.009574248044680819,
+          0.003739017726307265
+        ],
+        [
+          0.003739017726307265,
+          0.0019939687829337105
+        ]
+      ]
+    },
+    "energy": {
+      "actuator_work_J": 4.500369652951371e-06,
+      "balance_error_J": 2.4273867638147095e-11,
+      "battery_J": 2.0684544571950014e-18,
+      "battery_initial_J": 1e-05,
+      "battery_usable": false,
+      "brake_heat_J": 5.499630347046561e-06,
+      "contact_impact_heat_J": 0.0,
+      "damping_heat_J": 0.09988169969534753,
+      "external_work_J": 0.0,
+      "friction_heat_J": 0.0,
+      "gravitational_J": -0.15918298042702866,
+      "impact_heat_J": 0.05300138324330277,
+      "kinetic_J": 0.006304397882305163,
+      "mechanical_J": -0.1528785825447235,
+      "potential_reference": "reset pose",
+      "store_balance_error_J": 2.4273851962955373e-11
+    },
+    "joints": [
+      {
+        "angle_deg": -6.847176272991745,
+        "drive_enabled": true,
+        "gravity_torque_N_m": -0.008901004805786539,
+        "limit_reaction_N_m": 0.0,
+        "motor_torque_N_m": 0.0,
+        "name": "shoulder_flexion",
+        "speed_rad_s": -1.1475839554771647,
+        "target_deg": 20.0,
+        "torque_limit_N_m": 0.6
+      },
+      {
+        "angle_deg": 19.99999997714667,
+        "drive_enabled": true,
+        "gravity_torque_N_m": -0.05175569677012734,
+        "limit_reaction_N_m": 0.05438683885451458,
+        "motor_torque_N_m": 0.0,
+        "name": "elbow_flexion",
+        "speed_rad_s": 1.3322676295501883e-16,
+        "target_deg": 110.0,
+        "torque_limit_N_m": 0.3
+      }
+    ],
+    "load_N": 0.0,
+    "power": true,
+    "sim_time_s": 2.0,
+    "ticks": 600
+  },
+  "free_refinement_ratio": 15.962558823963903,
+  "friction": {
+    "heat_high_mu_J": 0.004797061246234663,
+    "heat_low_mu_J": 0.002006969915714055,
+    "stick_ticks_low_mu": 209
+  },
+  "pass": true,
+  "peak_energy_residual_J": 4.2412640066658014e-10,
+  "reference_cases": 7,
+  "scalar_comparisons": 714,
+  "trials": [
+    {
+      "final": {
+        "battery_empty_events": 0,
+        "body": {
+          "position_m": [
+            0.028153179102786547,
+            0.2577856214365477,
+            0.007835990781146291
+          ],
+          "radius_m": 0.007,
+          "velocity_m_s": [
+            -0.0014637426051366308,
+            -0.0001400645608280617,
+            0.0
+          ]
+        },
+        "config": {
+          "contact_enabled": false,
+          "contact_friction": 0.0,
+          "elbow_drive": true,
+          "elbow_target_deg": 110.0,
+          "elbow_torque_limit_N_m": 0.3,
+          "load_N": 0.0,
+          "power": false,
+          "shoulder_drive": true,
+          "shoulder_target_deg": 20.0,
+          "shoulder_torque_limit_N_m": 0.6
+        },
+        "contact": {
+          "closing_speed_m_s": -0.0001400645608280617,
+          "enabled": false,
+          "friction": false,
+          "friction_force_N": 0.0,
+          "friction_impact_impulse_N_s": 0.0,
+          "friction_mu": 0.0,
+          "gap_m": -0.08521437856345226,
+          "generalized_reaction_N_m": [
+            0.0,
+            0.0
+          ],
+          "grasp": false,
+          "impact_heat_J": 0.0,
+          "impact_impulse_N_s": 0.0,
+          "jacobian_m_per_rad": [
+            0.028153179102786547,
+            0.0454047849716228
+          ],
+          "mode": "off",
+          "normal_world_up": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "plane_world_up_m": 0.35,
+          "proxy_radius_m": 0.007,
+          "reaction_N": 0.0,
+          "slip_speed_m_s": 0.0014637426051366308,
+          "touching": false
+        },
+        "contacts": {
+          "environment": false,
+          "joint_limits": true
+        },
+        "coupling": {
+          "bias_torque_N_m": [
+            -9.879760772283433e-23,
+            2.162676626314534e-08
+          ],
+          "mass_matrix_kg_m2": [
+            [
+              0.009574248044680819,
+              0.0037390177263072633
+            ],
+            [
+              0.0037390177263072633,
+              0.0019939687829337097
+            ]
+          ]
+        },
+        "energy": {
+          "actuator_work_J": 0.0,
+          "balance_error_J": 2.4167896850446624e-11,
+          "battery_J": 2.0,
+          "battery_initial_J": 2.0,
+          "battery_usable": true,
+          "brake_heat_J": 0.0,
+          "contact_impact_heat_J": 0.0,
+          "damping_heat_J": 0.10575292743430484,
+          "external_work_J": 0.0,
+          "friction_heat_J": 0.0,
+          "gravitational_J": -0.1590715043269772,
+          "impact_heat_J": 0.053318458428307826,
+          "kinetic_J": 1.1848853243859594e-07,
+          "mechanical_J": -0.15907138583844477,
+          "potential_reference": "reset pose",
+          "store_balance_error_J": 2.4167778889250258e-11
+        },
+        "joints": [
+          {
+            "angle_deg": -7.932874538912437,
+            "drive_enabled": true,
+            "gravity_torque_N_m": 0.0005935375903387621,
+            "limit_reaction_N_m": 0.0,
+            "motor_torque_N_m": 0.0,
+            "name": "shoulder_flexion",
+            "speed_rad_s": -0.0049750886149194365,
+            "target_deg": 20.0,
+            "torque_limit_N_m": 0.6
+          },
+          {
+            "angle_deg": 19.99999997714667,
+            "drive_enabled": true,
+            "gravity_torque_N_m": -0.04895653888708835,
+            "limit_reaction_N_m": 0.04921032522548497,
+            "motor_torque_N_m": 0.0,
+            "name": "elbow_flexion",
+            "speed_rad_s": -1.1842378929335002e-17,
+            "target_deg": 110.0,
+            "torque_limit_N_m": 0.3
+          }
+        ],
+        "load_N": 0.0,
+        "power": false,
+        "sim_time_s": 10.0,
+        "ticks": 3000
+      },
+      "input": {
+        "power": false
+      },
+      "peak_residual_J": 2.4168222978460108e-11
+    },
+    {
+      "final": {
+        "battery_empty_events": 0,
+        "body": {
+          "position_m": [
+            0.1920331131074768,
+            0.43557464574974547,
+            0.007835990781146291
+          ],
+          "radius_m": 0.007,
+          "velocity_m_s": [
+            -5.435832015196549e-16,
+            -6.18860370094788e-15,
+            0.0
+          ]
+        },
+        "config": {
+          "contact_enabled": false,
+          "contact_friction": 0.0,
+          "elbow_drive": true,
+          "elbow_target_deg": 110.0,
+          "elbow_torque_limit_N_m": 0.3,
+          "load_N": 0.0,
+          "power": true,
+          "shoulder_drive": true,
+          "shoulder_target_deg": 20.0,
+          "shoulder_torque_limit_N_m": 0.6
+        },
+        "contact": {
+          "closing_speed_m_s": -6.18860370094788e-15,
+          "enabled": false,
+          "friction": false,
+          "friction_force_N": 0.0,
+          "friction_impact_impulse_N_s": 0.0,
+          "friction_mu": 0.0,
+          "gap_m": 0.09257464574974551,
+          "generalized_reaction_N_m": [
+            0.0,
+            0.0
+          ],
+          "grasp": false,
+          "impact_heat_J": 0.0,
+          "impact_impulse_N_s": 0.0,
+          "jacobian_m_per_rad": [
+            0.1920331131074768,
+            0.176193356156907
+          ],
+          "mode": "off",
+          "normal_world_up": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "plane_world_up_m": 0.35,
+          "proxy_radius_m": 0.007,
+          "reaction_N": 0.0,
+          "slip_speed_m_s": 0.0,
+          "touching": false
+        },
+        "contacts": {
+          "environment": false,
+          "joint_limits": true
+        },
+        "coupling": {
+          "bias_torque_N_m": [
+            -2.2456479841923476e-30,
+            8.223489597742287e-32
+          ],
+          "mass_matrix_kg_m2": [
+            [
+              0.006157431001397398,
+              0.0020306092046655545
+            ],
+            [
+              0.0020306092046655545,
+              0.0019939687829337097
+            ]
+          ]
+        },
+        "energy": {
+          "actuator_work_J": 0.0030209814256460105,
+          "balance_error_J": 1.4348938703889758e-13,
+          "battery_J": 1.97594408825918,
+          "battery_initial_J": 2.0,
+          "battery_usable": true,
+          "brake_heat_J": 0.02103493031517118,
+          "contact_impact_heat_J": 0.0,
+          "damping_heat_J": 0.0011700130976022918,
+          "external_work_J": 0.0,
+          "friction_heat_J": 0.0,
+          "gravitational_J": 0.001850968328187208,
+          "impact_heat_J": 0.0,
+          "kinetic_J": 1.2838419187032363e-30,
+          "mechanical_J": 0.001850968328187208,
+          "potential_reference": "reset pose",
+          "store_balance_error_J": 1.4077627952246985e-13
+        },
+        "joints": [
+          {
+            "angle_deg": 7.279982164114867,
+            "drive_enabled": true,
+            "gravity_torque_N_m": -0.19757568803149525,
+            "limit_reaction_N_m": 0.0,
+            "motor_torque_N_m": 0.19757568803149517,
+            "name": "shoulder_flexion",
+            "speed_rad_s": -6.4919286883057595e-15,
+            "target_deg": 20.0,
+            "torque_limit_N_m": 0.6
+          },
+          {
+            "angle_deg": 82.32684190058404,
+            "drive_enabled": true,
+            "gravity_torque_N_m": -0.15208072517111682,
+            "limit_reaction_N_m": 0.0,
+            "motor_torque_N_m": 0.1520807251711167,
+            "name": "elbow_flexion",
+            "speed_rad_s": -2.804838123668976e-14,
+            "target_deg": 110.0,
+            "torque_limit_N_m": 0.3
+          }
+        ],
+        "load_N": 0.0,
+        "power": true,
+        "sim_time_s": 10.0,
+        "ticks": 3000
+      },
+      "input": {},
+      "peak_residual_J": 1.461053500406706e-13
+    },
+    {
+      "final": {
+        "battery_empty_events": 0,
+        "body": {
+          "position_m": [
+            0.1091082963445366,
+            0.35952596563110506,
+            0.007835990781146291
+          ],
+          "radius_m": 0.007,
+          "velocity_m_s": [
+            -7.903286635928431e-06,
+            -7.5089972741512975e-06,
+            0.0
+          ]
+        },
+        "config": {
+          "contact_enabled": false,
+          "contact_friction": 0.0,
+          "elbow_drive": true,
+          "elbow_target_deg": 110.0,
+          "elbow_torque_limit_N_m": 0.3,
+          "load_N": 0.0,
+          "power": true,
+          "shoulder_drive": false,
+          "shoulder_target_deg": 20.0,
+          "shoulder_torque_limit_N_m": 0.6
+        },
+        "contact": {
+          "closing_speed_m_s": -7.5089972741512975e-06,
+          "enabled": false,
+          "friction": false,
+          "friction_force_N": 0.0,
+          "friction_impact_impulse_N_s": 0.0,
+          "friction_mu": 0.0,
+          "gap_m": 0.01652596563110506,
+          "generalized_reaction_N_m": [
+            0.0,
+            0.0
+          ],
+          "grasp": false,
+          "impact_heat_J": 0.0,
+          "impact_impulse_N_s": 0.0,
+          "jacobian_m_per_rad": [
+            0.1091082963445366,
+            0.1583701428997466
+          ],
+          "mode": "off",
+          "normal_world_up": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "plane_world_up_m": 0.35,
+          "proxy_radius_m": 0.007,
+          "reaction_N": 0.0,
+          "slip_speed_m_s": 7.903286635928431e-06,
+          "touching": false
+        },
+        "contacts": {
+          "environment": false,
+          "joint_limits": true
+        },
+        "coupling": {
+          "bias_torque_N_m": [
+            -4.50840558660337e-12,
+            1.801863600696832e-12
+          ],
+          "mass_matrix_kg_m2": [
+            [
+              0.006026048396960172,
+              0.001964917902446941
+            ],
+            [
+              0.001964917902446941,
+              0.00199396878293371
+            ]
+          ]
+        },
+        "energy": {
+          "actuator_work_J": -0.01734632698885198,
+          "balance_error_J": 2.9118894795399086e-12,
+          "battery_J": 1.9797799885912697,
+          "battery_initial_J": 2.0,
+          "battery_usable": true,
+          "brake_heat_J": 0.03756633839758627,
+          "contact_impact_heat_J": 0.0,
+          "damping_heat_J": 0.029361197880926806,
+          "external_work_J": 0.0,
+          "friction_heat_J": 0.0,
+          "gravitational_J": -0.04670752487192914,
+          "impact_heat_J": 0.0,
+          "kinetic_J": 5.0622448849094525e-12,
+          "mechanical_J": -0.0467075248668669,
+          "potential_reference": "reset pose",
+          "store_balance_error_J": 2.915889751875511e-12
+        },
+        "joints": [
+          {
+            "angle_deg": -23.209529291317946,
+            "drive_enabled": false,
+            "gravity_torque_N_m": 1.1795739619138712e-05,
+            "limit_reaction_N_m": 0.0,
+            "motor_torque_N_m": 0.0,
+            "name": "shoulder_flexion",
+            "speed_rad_s": -3.038732048287501e-05,
+            "target_deg": 20.0,
+            "torque_limit_N_m": 0.6
+          },
+          {
+            "angle_deg": 84.25555045824956,
+            "drive_enabled": true,
+            "gravity_torque_N_m": -0.14147812020144063,
+            "limit_reaction_N_m": 0.0,
+            "motor_torque_N_m": 0.14148237456222368,
+            "name": "elbow_flexion",
+            "speed_rad_s": -2.6479034677918914e-05,
+            "target_deg": 110.0,
+            "torque_limit_N_m": 0.3
+          }
+        ],
+        "load_N": 0.0,
+        "power": true,
+        "sim_time_s": 10.0,
+        "ticks": 3000
+      },
+      "input": {
+        "shoulder_drive": false
+      },
+      "peak_residual_J": 2.915889751875511e-12
+    },
+    {
+      "final": {
+        "battery_empty_events": 0,
+        "body": {
+          "position_m": [
+            0.1177280256514069,
+            0.28090073031582385,
+            0.007835990781146291
+          ],
+          "radius_m": 0.007,
+          "velocity_m_s": [
+            6.93803257232664e-16,
+            3.0216477925378584e-16,
+            0.0
+          ]
+        },
+        "config": {
+          "contact_enabled": false,
+          "contact_friction": 0.0,
+          "elbow_drive": false,
+          "elbow_target_deg": 110.0,
+          "elbow_torque_limit_N_m": 0.3,
+          "load_N": 0.0,
+          "power": true,
+          "shoulder_drive": true,
+          "shoulder_target_deg": 20.0,
+          "shoulder_torque_limit_N_m": 0.6
+        },
+        "contact": {
+          "closing_speed_m_s": 3.0216477925378584e-16,
+          "enabled": false,
+          "friction": false,
+          "friction_force_N": 0.0,
+          "friction_impact_impulse_N_s": 0.0,
+          "friction_mu": 0.0,
+          "gap_m": -0.06209926968417612,
+          "generalized_reaction_N_m": [
+            0.0,
+            0.0
+          ],
+          "grasp": false,
+          "impact_heat_J": 0.0,
+          "impact_impulse_N_s": 0.0,
+          "jacobian_m_per_rad": [
+            0.1177280256514069,
+            0.0958616739991828
+          ],
+          "mode": "off",
+          "normal_world_up": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "plane_world_up_m": 0.35,
+          "proxy_radius_m": 0.007,
+          "reaction_N": 0.0,
+          "slip_speed_m_s": 0.0,
+          "touching": false
+        },
+        "contacts": {
+          "environment": false,
+          "joint_limits": true
+        },
+        "coupling": {
+          "bias_torque_N_m": [
+            -1.2351730313322757e-34,
+            5.655487058288333e-33
+          ],
+          "mass_matrix_kg_m2": [
+            [
+              0.009574248044680819,
+              0.003739017726307264
+            ],
+            [
+              0.003739017726307264,
+              0.0019939687829337097
+            ]
+          ]
+        },
+        "energy": {
+          "actuator_work_J": -0.0529078400362094,
+          "balance_error_J": 1.0473337475058742e-11,
+          "battery_J": 1.9746440572735984,
+          "battery_initial_J": 2.0,
+          "battery_usable": true,
+          "brake_heat_J": 0.07826378276261925,
+          "contact_impact_heat_J": 0.0,
+          "damping_heat_J": 0.05099964326373375,
+          "external_work_J": 0.0,
+          "friction_heat_J": 0.0,
+          "gravitational_J": -0.13473748963907983,
+          "impact_heat_J": 0.030830006349610015,
+          "kinetic_J": 3.1248846069646425e-32,
+          "mechanical_J": -0.13473748963907983,
+          "potential_reference": "reset pose",
+          "store_balance_error_J": 1.0481837620091028e-11
+        },
+        "joints": [
+          {
+            "angle_deg": 10.074631891090585,
+            "drive_enabled": true,
+            "gravity_torque_N_m": -0.1541673493217368,
+            "limit_reaction_N_m": 0.0,
+            "motor_torque_N_m": 0.1541673493217369,
+            "name": "shoulder_flexion",
+            "speed_rad_s": 2.544134304219313e-15,
+            "target_deg": 20.0,
+            "torque_limit_N_m": 0.6
+          },
+          {
+            "angle_deg": 19.99999997714667,
+            "drive_enabled": false,
+            "gravity_torque_N_m": -0.09136279623330558,
+            "limit_reaction_N_m": 0.09136279623330561,
+            "motor_torque_N_m": 0.0,
+            "name": "elbow_flexion",
+            "speed_rad_s": 2.7632217501781673e-17,
+            "target_deg": 110.0,
+            "torque_limit_N_m": 0.3
+          }
+        ],
+        "load_N": 0.0,
+        "power": true,
+        "sim_time_s": 10.0,
+        "ticks": 3000
+      },
+      "input": {
+        "elbow_drive": false
+      },
+      "peak_residual_J": 1.0513367953990382e-11
+    },
+    {
+      "final": {
+        "battery_empty_events": 0,
+        "body": {
+          "position_m": [
+            0.07609042454303344,
+            0.26751689371053483,
+            0.007835990781146291
+          ],
+          "radius_m": 0.007,
+          "velocity_m_s": [
+            -9.901270212390692e-11,
+            3.1015774469237024e-11,
+            0.0
+          ]
+        },
+        "config": {
+          "contact_enabled": false,
+          "contact_friction": 0.0,
+          "elbow_drive": true,
+          "elbow_target_deg": 110.0,
+          "elbow_torque_limit_N_m": 0.3,
+          "load_N": 3.0,
+          "power": true,
+          "shoulder_drive": true,
+          "shoulder_target_deg": 20.0,
+          "shoulder_torque_limit_N_m": 0.6
+        },
+        "contact": {
+          "closing_speed_m_s": 3.1015774469237024e-11,
+          "enabled": false,
+          "friction": false,
+          "friction_force_N": 0.0,
+          "friction_impact_impulse_N_s": 0.0,
+          "friction_mu": 0.0,
+          "gap_m": -0.07548310628946514,
+          "generalized_reaction_N_m": [
+            0.0,
+            0.0
+          ],
+          "grasp": false,
+          "impact_heat_J": 0.0,
+          "impact_impulse_N_s": 0.0,
+          "jacobian_m_per_rad": [
+            0.07609042454303344,
+            0.07527043950843923
+          ],
+          "mode": "off",
+          "normal_world_up": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "plane_world_up_m": 0.35,
+          "proxy_radius_m": 0.007,
+          "reaction_N": 0.0,
+          "slip_speed_m_s": 0.0,
+          "touching": false
+        },
+        "contacts": {
+          "environment": false,
+          "joint_limits": true
+        },
+        "coupling": {
+          "bias_torque_N_m": [
+            1.500192588841826e-21,
+            1.6704069265092698e-21
+          ],
+          "mass_matrix_kg_m2": [
+            [
+              0.009509924662638461,
+              0.0037068560352860867
+            ],
+            [
+              0.0037068560352860867,
+              0.00199396878293371
+            ]
+          ]
+        },
+        "energy": {
+          "actuator_work_J": -0.4861894114155393,
+          "balance_error_J": 4.241071105415273e-10,
+          "battery_J": 1.7760664104275656,
+          "battery_initial_J": 2.0,
+          "battery_usable": true,
+          "brake_heat_J": 0.7101230009879742,
+          "contact_impact_heat_J": 0.0,
+          "damping_heat_J": 0.09132693458860251,
+          "external_work_J": 0.504776965540746,
+          "friction_heat_J": 0.0,
+          "gravitational_J": -0.15135110452730322,
+          "impact_heat_J": 0.07861172448801455,
+          "kinetic_J": 2.857556858712727e-21,
+          "mechanical_J": -0.15135110452730322,
+          "potential_reference": "reset pose",
+          "store_balance_error_J": 4.241075268751615e-10
+        },
+        "joints": [
+          {
+            "angle_deg": 0.37585614964409936,
+            "drive_enabled": true,
+            "gravity_torque_N_m": -0.07654384291347555,
+            "limit_reaction_N_m": 0.0,
+            "motor_torque_N_m": 0.30481511702555264,
+            "name": "shoulder_flexion",
+            "speed_rad_s": -1.3364450218066173e-09,
+            "target_deg": 20.0,
+            "torque_limit_N_m": 0.6
+          },
+          {
+            "angle_deg": 22.03708801204492,
+            "drive_enabled": true,
+            "gravity_torque_N_m": -0.07418868122688238,
+            "limit_reaction_N_m": 0.0,
+            "motor_torque_N_m": 0.3,
+            "name": "elbow_flexion",
+            "speed_rad_s": 1.7630618928702713e-09,
+            "target_deg": 110.0,
+            "torque_limit_N_m": 0.3
+          }
+        ],
+        "load_N": 3.0,
+        "power": true,
+        "sim_time_s": 10.0,
+        "ticks": 3000
+      },
+      "input": {
+        "load_N": 3.0
+      },
+      "peak_residual_J": 4.2412640066658014e-10
+    },
+    {
+      "final": {
+        "battery_empty_events": 0,
+        "body": {
+          "position_m": [
+            -0.1660265473209892,
+            0.3137804516176584,
+            0.007835990781146291
+          ],
+          "radius_m": 0.007,
+          "velocity_m_s": [
+            1.4939113072817503e-14,
+            -8.842479568508889e-15,
+            0.0
+          ]
+        },
+        "config": {
+          "contact_enabled": false,
+          "contact_friction": 0.0,
+          "elbow_drive": true,
+          "elbow_target_deg": 20.0,
+          "elbow_torque_limit_N_m": 0.3,
+          "load_N": 0.0,
+          "power": true,
+          "shoulder_drive": true,
+          "shoulder_target_deg": -75.0,
+          "shoulder_torque_limit_N_m": 0.6
+        },
+        "contact": {
+          "closing_speed_m_s": -8.842479568508889e-15,
+          "enabled": false,
+          "friction": false,
+          "friction_force_N": 0.0,
+          "friction_impact_impulse_N_s": 0.0,
+          "friction_mu": 0.0,
+          "gap_m": -0.029219548382341587,
+          "generalized_reaction_N_m": [
+            0.0,
+            0.0
+          ],
+          "grasp": false,
+          "impact_heat_J": 0.0,
+          "impact_impulse_N_s": 0.0,
+          "jacobian_m_per_rad": [
+            -0.1660265473209892,
+            -0.06569586780930353
+          ],
+          "mode": "off",
+          "normal_world_up": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "plane_world_up_m": 0.35,
+          "proxy_radius_m": 0.007,
+          "reaction_N": 0.0,
+          "slip_speed_m_s": 0.0,
+          "touching": false
+        },
+        "contacts": {
+          "environment": false,
+          "joint_limits": true
+        },
+        "coupling": {
+          "bias_torque_N_m": [
+            -4.1407195469921265e-30,
+            1.8406380480883338e-30
+          ],
+          "mass_matrix_kg_m2": [
+            [
+              0.00927133172927983,
+              0.0035875595686067695
+            ],
+            [
+              0.0035875595686067695,
+              0.001993968782933709
+            ]
+          ]
+        },
+        "energy": {
+          "actuator_work_J": 0.06815886836951304,
+          "balance_error_J": 1.1585110648582031e-10,
+          "battery_J": 1.7113534847761112,
+          "battery_initial_J": 2.0,
+          "battery_usable": true,
+          "brake_heat_J": 0.2204876468543948,
+          "contact_impact_heat_J": 0.0,
+          "damping_heat_J": 0.0836919658962557,
+          "external_work_J": 0.0,
+          "friction_heat_J": 0.0,
+          "gravitational_J": -0.01807865166291389,
+          "impact_heat_J": 0.002545554252022339,
+          "kinetic_J": 1.3328508508517104e-29,
+          "mechanical_J": -0.01807865166291389,
+          "potential_reference": "reset pose",
+          "store_balance_error_J": 1.1586998027723894e-10
+        },
+        "joints": [
+          {
+            "angle_deg": -53.38347066583334,
+            "drive_enabled": true,
+            "gravity_torque_N_m": 0.3357621593896004,
+            "limit_reaction_N_m": 0.0,
+            "motor_torque_N_m": -0.33576215938959997,
+            "name": "shoulder_flexion",
+            "speed_rad_s": 4.0421192925735435e-14,
+            "target_deg": -75.0,
+            "torque_limit_N_m": 0.6
+          },
+          {
+            "angle_deg": 28.660066764678465,
+            "drive_enabled": true,
+            "gravity_torque_N_m": 0.04759229968878809,
+            "limit_reaction_N_m": 0.0,
+            "motor_torque_N_m": -0.047592299688787955,
+            "name": "elbow_flexion",
+            "speed_rad_s": 3.2444787465789284e-14,
+            "target_deg": 20.0,
+            "torque_limit_N_m": 0.3
+          }
+        ],
+        "load_N": 0.0,
+        "power": true,
+        "sim_time_s": 10.0,
+        "ticks": 3000
+      },
+      "input": {
+        "elbow_target_deg": 20.0,
+        "shoulder_target_deg": -75.0
+      },
+      "peak_residual_J": 1.1587086845565864e-10
+    },
+    {
+      "final": {
+        "battery_empty_events": 0,
+        "body": {
+          "position_m": [
+            0.014026258799664367,
+            0.6587104436700232,
+            0.007835990781146291
+          ],
+          "radius_m": 0.007,
+          "velocity_m_s": [
+            -9.581135019041208e-15,
+            1.258257770082721e-15,
+            0.0
+          ]
+        },
+        "config": {
+          "contact_enabled": false,
+          "contact_friction": 0.0,
+          "elbow_drive": true,
+          "elbow_target_deg": 140.0,
+          "elbow_torque_limit_N_m": 0.6,
+          "load_N": 0.0,
+          "power": true,
+          "shoulder_drive": true,
+          "shoulder_target_deg": 90.0,
+          "shoulder_torque_limit_N_m": 1.0
+        },
+        "contact": {
+          "closing_speed_m_s": 1.258257770082721e-15,
+          "enabled": false,
+          "friction": false,
+          "friction_force_N": 0.0,
+          "friction_impact_impulse_N_s": 0.0,
+          "friction_mu": 0.0,
+          "gap_m": 0.3157104436700232,
+          "generalized_reaction_N_m": [
+            0.0,
+            0.0
+          ],
+          "grasp": false,
+          "impact_heat_J": 0.0,
+          "impact_impulse_N_s": 0.0,
+          "jacobian_m_per_rad": [
+            0.014026258799664367,
+            -0.10624741474407975
+          ],
+          "mode": "off",
+          "normal_world_up": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "plane_world_up_m": 0.35,
+          "proxy_radius_m": 0.007,
+          "reaction_N": 0.0,
+          "slip_speed_m_s": 0.0,
+          "touching": false
+        },
+        "contacts": {
+          "environment": false,
+          "joint_limits": true
+        },
+        "coupling": {
+          "bias_torque_N_m": [
+            -1.7134149322700656e-33,
+            8.658929722949992e-30
+          ],
+          "mass_matrix_kg_m2": [
+            [
+              0.0028257122213923786,
+              0.00036474981466304355
+            ],
+            [
+              0.00036474981466304355,
+              0.0019939687829337097
+            ]
+          ]
+        },
+        "energy": {
+          "actuator_work_J": 0.44006999791557744,
+          "balance_error_J": 1.801896305775319e-11,
+          "battery_J": 1.5018725927773926,
+          "battery_initial_J": 2.0,
+          "battery_usable": true,
+          "brake_heat_J": 0.05805740930703911,
+          "contact_impact_heat_J": 0.0,
+          "damping_heat_J": 0.07378448511287723,
+          "external_work_J": 0.0,
+          "friction_heat_J": 0.0,
+          "gravitational_J": 0.35947529967038966,
+          "impact_heat_J": 0.00681021315032951,
+          "kinetic_J": 1.1387168707178058e-29,
+          "mechanical_J": 0.35947529967038966,
+          "potential_reference": "reset pose",
+          "store_balance_error_J": 1.8028245563073142e-11
+        },
+        "joints": [
+          {
+            "angle_deg": 74.19398174514359,
+            "drive_enabled": true,
+            "gravity_torque_N_m": -0.24550947742630785,
+            "limit_reaction_N_m": 0.0,
+            "motor_torque_N_m": 0.24550947742630885,
+            "name": "shoulder_flexion",
+            "speed_rad_s": 8.977457600611921e-14,
+            "target_deg": 90.0,
+            "torque_limit_N_m": 1.0
+          },
+          {
+            "angle_deg": 139.99999984002667,
+            "drive_enabled": true,
+            "gravity_torque_N_m": 0.09994066603420004,
+            "limit_reaction_N_m": -0.09994066691335013,
+            "motor_torque_N_m": 8.791500877337258e-10,
+            "name": "elbow_flexion",
+            "speed_rad_s": 8.881784197001251e-18,
+            "target_deg": 140.0,
+            "torque_limit_N_m": 0.6
+          }
+        ],
+        "load_N": 0.0,
+        "power": true,
+        "sim_time_s": 10.0,
+        "ticks": 3000
+      },
+      "input": {
+        "elbow_target_deg": 140.0,
+        "elbow_torque_limit_N_m": 0.6,
+        "shoulder_target_deg": 90.0,
+        "shoulder_torque_limit_N_m": 1.0
+      },
+      "peak_residual_J": 1.8028245563073142e-11
+    }
+  ],
+  "worst_absolute_error": 1.2732925824820995e-11
+}

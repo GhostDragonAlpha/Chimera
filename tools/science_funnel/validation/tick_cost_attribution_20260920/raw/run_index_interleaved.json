@@ -1,0 +1,165 @@
+{
+ "scene_sha256": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342",
+ "lane_fence_sha256": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+ "ancestor_fence_sha256": "71065ac54fa988704ce29cd79cfb5cdbe0d4e2eab3f7db69b10d4b8d94517592",
+ "runs": [
+  {
+   "exit": 0,
+   "wall_s": 69.604,
+   "stdout_sha256": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+   "stdout_bytes": 22530,
+   "stderr_markers": [
+    {
+     "marker": "run F-G5",
+     "t_s": 0.0128
+    },
+    {
+     "marker": "run F-G1..G4 walk",
+     "t_s": 4.5674
+    }
+   ],
+   "kind": "plain",
+   "n": 1,
+   "pair": 1
+  },
+  {
+   "exit": 0,
+   "wall_s": 98.492,
+   "stdout_sha256": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+   "stdout_bytes": 22530,
+   "stderr_markers": [
+    {
+     "marker": "run F-G5",
+     "t_s": 0.0128
+    },
+    {
+     "marker": "run F-G1..G4 walk",
+     "t_s": 4.9919
+    }
+   ],
+   "kind": "tc",
+   "n": 1,
+   "pair": 1
+  },
+  {
+   "exit": 0,
+   "wall_s": 66.811,
+   "stdout_sha256": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+   "stdout_bytes": 22530,
+   "stderr_markers": [
+    {
+     "marker": "run F-G5",
+     "t_s": 0.0111
+    },
+    {
+     "marker": "run F-G1..G4 walk",
+     "t_s": 4.5859
+    }
+   ],
+   "kind": "plain",
+   "n": 2,
+   "pair": 2
+  },
+  {
+   "exit": 0,
+   "wall_s": 92.325,
+   "stdout_sha256": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+   "stdout_bytes": 22530,
+   "stderr_markers": [
+    {
+     "marker": "run F-G5",
+     "t_s": 0.0091
+    },
+    {
+     "marker": "run F-G1..G4 walk",
+     "t_s": 4.4598
+    }
+   ],
+   "kind": "tc",
+   "n": 2,
+   "pair": 2
+  },
+  {
+   "exit": 0,
+   "wall_s": 69.158,
+   "stdout_sha256": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+   "stdout_bytes": 22530,
+   "stderr_markers": [
+    {
+     "marker": "run F-G5",
+     "t_s": 0.0092
+    },
+    {
+     "marker": "run F-G1..G4 walk",
+     "t_s": 4.7185
+    }
+   ],
+   "kind": "plain",
+   "n": 3,
+   "pair": 3
+  },
+  {
+   "exit": 0,
+   "wall_s": 94.018,
+   "stdout_sha256": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+   "stdout_bytes": 22530,
+   "stderr_markers": [
+    {
+     "marker": "run F-G5",
+     "t_s": 0.0092
+    },
+    {
+     "marker": "run F-G1..G4 walk",
+     "t_s": 4.5639
+    }
+   ],
+   "kind": "tc",
+   "n": 3,
+   "pair": 3
+  },
+  {
+   "exit": 0,
+   "wall_s": 66.337,
+   "stdout_sha256": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+   "stdout_bytes": 22530,
+   "stderr_markers": [
+    {
+     "marker": "run F-G5",
+     "t_s": 0.0081
+    },
+    {
+     "marker": "run F-G1..G4 walk",
+     "t_s": 4.5073
+    }
+   ],
+   "kind": "plain",
+   "n": 4,
+   "pair": 4
+  },
+  {
+   "exit": 0,
+   "wall_s": 95.333,
+   "stdout_sha256": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+   "stdout_bytes": 22530,
+   "stderr_markers": [
+    {
+     "marker": "run F-G5",
+     "t_s": 0.0109
+    },
+    {
+     "marker": "run F-G1..G4 walk",
+     "t_s": 4.8618
+    }
+   ],
+   "kind": "tc",
+   "n": 4,
+   "pair": 4
+  }
+ ],
+ "interleaved": true,
+ "guard": {
+  "plain_all_equal": true,
+  "tc_all_equal": true,
+  "f2_byte_neutral": true
+ }
+}

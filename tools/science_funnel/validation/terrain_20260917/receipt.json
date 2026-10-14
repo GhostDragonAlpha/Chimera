@@ -1,0 +1,78 @@
+{
+  "schema": "chimera.scoped_validation.v1",
+  "recorded_utc": "2026-09-17T22:43:13.636210+00:00",
+  "scope": "One terrain reduction slice on pinned real data: the Copernicus GLO-30 tile N18W066 and the EGM08 2.5' geoid grid (both sha256-pinned; the geoid admitted through the batch layer as source nga.egm08_25) reduced through the admitted 7-step law at the Cayo Santiago patch centre, with a Luquillo coastal-plain land control and an El Yunque steep-terrain gate refusal. The plane normal stays [0,1,0]; tilt is recorded, not consumed; no scene wiring.",
+  "checks": {
+    "terrain_unit_tests": 9,
+    "funnel_suite": 147,
+    "batch_admission": "nga_egm08: 4 records, 0 quarantined, idempotent, receipt validation/batch_nga_egm08_20260917",
+    "batch_reprove": "all five existing imports byte-identical (3,821 records)",
+    "graphify_consumer": "HONEST (7 checks, 7,970 objects / 12,583 relations)",
+    "falsifiers": {
+      "reader_exactness": "synthetic predictor-3 TIFF round-trips bit-exactly through imagecodecs.floatpred_encode + tifffile",
+      "decode_two_implementations": "PASS: my reader vs tifffile+imagecodecs on the pinned grids (see development_findings: the hand-rolled predictor decode was FALSIFIED and replaced by tifffile as the authoritative reader)",
+      "geoid_two_methods": "PASS: gap 1.4e-14 m (Cayo), 5.0e-14 m (control) vs the 0.1 m bar",
+      "holdout_identity": "PASS: exact discrete identity axial_mean-node=(d2x+d2y)/4 asserted at 1e-12 at all 9 interior nodes of every window",
+      "planarity_gate": "PASS with refusal: El Yunque 24.2 deg REFUSED (terrain_patch_too_tilted); Luquillo 1.72 deg admitted (1-cos=4.5e-4 <= 1e-3)",
+      "pin_integrity": "geoid staged with sha256 receipt; batch staging re-hashes every artifact every run",
+      "cross_source_nasadem": "DEFERRED with cause (Earthdata login wall)"
+    },
+    "historical_evidence_unchanged": 11
+  },
+  "metrics": {
+    "cayo_patch": {
+      "H_orthometric_m": 0.0,
+      "N_geoid_m": -42.82679794555668,
+      "h_ellipsoidal_m": -42.82679794555668,
+      "geoid_method_gap_m": 1.4210854715202004e-14,
+      "height_error_bar_m": 0.0,
+      "theta_deg": 0.0,
+      "note": "the 5x5 window at the patch centre is open ocean in GLO-30 (flat zeros): the islet is below the DSM's effective resolution at this centre; the law closes on the real pinned bytes regardless"
+    },
+    "luquillo_control": {
+      "H_orthometric_m": 1.142284631733326,
+      "N_geoid_m": -44.529496154785015,
+      "h_ellipsoidal_m": -43.38721152305169,
+      "geoid_method_gap_m": 4.973799150320701e-14,
+      "height_error_bar_m": 0.15998560190200806,
+      "worst_laplacian_quarter_m": 0.3536031097173691,
+      "theta_deg": 1.716839104044603,
+      "plane_residual_m": 0.00045453671117018634
+    },
+    "el_yunque_gate_refusal": {
+      "code": "terrain_patch_too_tilted",
+      "detail": "0.42095492723273586"
+    }
+  },
+  "development_findings": [
+    "The hand-rolled stdlib predictor decode was FALSIFIED by the tifffile cross-check: four byte-lane accumulate variants x two byte orders all mismatched the authoritative decoder on the pinned grids. tifffile (already in the venv, plus imagecodecs for the float predictor) is now the authoritative reader; the synthetic writer encodes via imagecodecs.floatpred_encode so the round trip is exact by construction.",
+    "Three derivation corrections landed pre-freeze, each falsified by a test before the law was fixed: (1) the banked holdout bound (|dxx|+|dyy|)/8 was off by 2x and vacuous as stated; the implemented law asserts the exact discrete identity axial_mean-node=(d2x+d2y)/4 and REPORTS the bilinear remainder bar (|f_xx|+|f_yy|)/8; (2) an intermediate axial-vs-diagonal 'theorem' was falsified by the x^2*y^2 surface and discarded; (3) the TIFF tiepoint check read world coordinates where the raster side belongs.",
+    "The EGM08 artifact needed the intake cap raised 64->128 MB (resource limit, not a law; reason recorded in pipeline.py). The SI token vocabulary gained 'degree' for the geoid spacing record.",
+    "The planarity gate refuses honestly: El Yunque's 24.2 deg slope is refused as a flat-plane admission -- steep terrain needs its own tilted-surface qualification, which this slice deliberately does not claim."
+  ],
+  "limits": [
+    "The Cayo patch window resolves to flat open ocean in GLO-30; a macaque-scale ground patch on the islet itself is below this dataset's resolution.",
+    "Tilt is recorded, never consumed: the solver plane normal stays [0,1,0]; tilted/curved contact surfaces are a new qualification.",
+    "Cross-source NASADEM envelope test deferred (Earthdata auth).",
+    "No scene wiring yet: contact_plane_height_m takes the reduced height at the next relaunch window; the live 8127 scene was never touched.",
+    "Geoid N interpolated bilinearly between 2.5' nodes; no uncertainty field exists in the grid."
+  ],
+  "replay": [
+    "python -B -m unittest tools.science_funnel.tests.test_terrain -v",
+    "python -B -m tools.creature_graph.batch_qualify --reprove all --admit nga_egm08 --apply --work .tmp/batch-terrain --out <receipt path>",
+    "python -B .tmp/run_terrain_reduction.py (writes the reduction result json)"
+  ],
+  "artifacts": {
+    "reduction_result.json": "80819234789f85122ff6d764539325f9ccd9b578271fa324322fce35f58b2e77",
+    "dem_sha256": "371b1449f8bbaf632cf7b1e0b078c60603390a98403c2a5e2038ad98330dbca0",
+    "geoid_sha256": "4191d471eefebf24091b56dbc604353cb3b8cf8cc70e448bb9ae56a272bef17a"
+  },
+  "source_file_manifest_sha256": {
+    "tools/science_funnel/terrain.py": "5b03953b911035a76d55bcb523f5c76c08b3217fd792230ad6fcffcbaef5c5b8",
+    "tools/science_funnel/tests/test_terrain.py": "f3843e8ab722f8fc12237a2345d1498d09e71415e9b253d20a5bca1a7caa506d",
+    "tools/science_funnel/adapters_egm08.py": "8fc758f06efa053edbbe3261774298bb517b9cfa2604c9a92a088ccabbe89a3d",
+    "tools/science_funnel/pipeline.py": "4de7f275d2b883e1b50fada2785a7441568c330d1ad25d48ed6ec60bf4e76c20",
+    "tools/science_funnel/batch/connectors.py": "05d5707a46d28483af90b1d6065aa5ae28294a9da811a7512bd721a09fab7c62",
+    "tools/science_funnel/batch/contract.py": "adbab2689d723ee439f5bf79ac9a5fea04b057a714545a91f3cdb3e4f815c37f"
+  }
+}

@@ -1,0 +1,98 @@
+{
+ "schema": "chimera.render_truth_20260920.judgement.v1",
+ "prompt": "You are watching a short movie: an ordered sequence of frames from one camera watching one creature in a dark 3D world with a floor grid. The frames are in order and show the same creature over time. Describe what this creature's body is doing across the frames: which parts you can see, which parts move, how, and in what order. Then answer the one question that matters: does the skeleton read as ONE CONNECTED PHYSICAL ANIMAL being moved and carried by physics, or as SEPARATE FLOATING PARTS? Be specific and factual; do not speculate beyond the frames.",
+ "prompt_provenance": "VERBATIM the realbody_movie_20260920 lane's prompt -- the RED finding's own prompt, unchanged (no tuning to flatter)",
+ "lane": "ollama (senses.py ollama branch: qwen3.8, think:false, num_ctx sized to the frames)",
+ "model": "qwen3.8",
+ "protocol": "ONE senses.watch call over 12 ordered 384 px resizes of evenly spaced captured frames (walk-movie precedent); verdict verbatim below",
+ "n_frames": 12,
+ "frames_total_captured": 530,
+ "frame_mapping": [
+  {
+   "movie_frame": 0,
+   "src": "E:\\ChimeraWork\\rendertruth-agent\\tools\\science_funnel\\validation\\render_truth_20260920\\frames\\f00000.jpg",
+   "src_sha256": "33f61908de62bc946c738e58e3d5507278633afbab9a13da2fc565c56a26d81a",
+   "judge_png": "E:\\ChimeraWork\\rendertruth-agent\\tools\\science_funnel\\validation\\render_truth_20260920\\frames\\judge_watch\\f00000_384.png",
+   "judge_png_sha256": "bbd819a3db34246a7908d474b03ca1175a851a1ff9b7fd8d54291904a54b33bc"
+  },
+  {
+   "movie_frame": 48,
+   "src": "E:\\ChimeraWork\\rendertruth-agent\\tools\\science_funnel\\validation\\render_truth_20260920\\frames\\f00048.jpg",
+   "src_sha256": "33f61908de62bc946c738e58e3d5507278633afbab9a13da2fc565c56a26d81a",
+   "judge_png": "E:\\ChimeraWork\\rendertruth-agent\\tools\\science_funnel\\validation\\render_truth_20260920\\frames\\judge_watch\\f00048_384.png",
+   "judge_png_sha256": "bbd819a3db34246a7908d474b03ca1175a851a1ff9b7fd8d54291904a54b33bc"
+  },
+  {
+   "movie_frame": 96,
+   "src": "E:\\ChimeraWork\\rendertruth-agent\\tools\\science_funnel\\validation\\render_truth_20260920\\frames\\f00096.jpg",
+   "src_sha256": "33f61908de62bc946c738e58e3d5507278633afbab9a13da2fc565c56a26d81a",
+   "judge_png": "E:\\ChimeraWork\\rendertruth-agent\\tools\\science_funnel\\validation\\render_truth_20260920\\frames\\judge_watch\\f00096_384.png",
+   "judge_png_sha256": "bbd819a3db34246a7908d474b03ca1175a851a1ff9b7fd8d54291904a54b33bc"
+  },
+  {
+   "movie_frame": 144,
+   "src": "E:\\ChimeraWork\\rendertruth-agent\\tools\\science_funnel\\validation\\render_truth_20260920\\frames\\f00144.jpg",
+   "src_sha256": "33f61908de62bc946c738e58e3d5507278633afbab9a13da2fc565c56a26d81a",
+   "judge_png": "E:\\ChimeraWork\\rendertruth-agent\\tools\\science_funnel\\validation\\render_truth_20260920\\frames\\judge_watch\\f00144_384.png",
+   "judge_png_sha256": "bbd819a3db34246a7908d474b03ca1175a851a1ff9b7fd8d54291904a54b33bc"
+  },
+  {
+   "movie_frame": 192,
+   "src": "E:\\ChimeraWork\\rendertruth-agent\\tools\\science_funnel\\validation\\render_truth_20260920\\frames\\f00192.jpg",
+   "src_sha256": "33f61908de62bc946c738e58e3d5507278633afbab9a13da2fc565c56a26d81a",
+   "judge_png": "E:\\ChimeraWork\\rendertruth-agent\\tools\\science_funnel\\validation\\render_truth_20260920\\frames\\judge_watch\\f00192_384.png",
+   "judge_png_sha256": "bbd819a3db34246a7908d474b03ca1175a851a1ff9b7fd8d54291904a54b33bc"
+  },
+  {
+   "movie_frame": 240,
+   "src": "E:\\ChimeraWork\\rendertruth-agent\\tools\\science_funnel\\validation\\render_truth_20260920\\frames\\f00240.jpg",
+   "src_sha256": "76f016fea453e8adf60b51b064d1525f7e1d01580357b8f196cdfd634d8c225e",
+   "judge_png": "E:\\ChimeraWork\\rendertruth-agent\\tools\\science_funnel\\validation\\render_truth_20260920\\frames\\judge_watch\\f00240_384.png",
+   "judge_png_sha256": "7e7fbb36d240fc0571bafda713a6f23c22a4c3217570926a49dbc3f0b35d2b86"
+  },
+  {
+   "movie_frame": 289,
+   "src": "E:\\ChimeraWork\\rendertruth-agent\\tools\\science_funnel\\validation\\render_truth_20260920\\frames\\f00289.jpg",
+   "src_sha256": "949172035abd04bbf59c9cccee208b8bf06a090c7ddd725f9dbb31e151bc03ae",
+   "judge_png": "E:\\ChimeraWork\\rendertruth-agent\\tools\\science_funnel\\validation\\render_truth_20260920\\frames\\judge_watch\\f00289_384.png",
+   "judge_png_sha256": "03823f10ded32a0c41296deb351e7656c2b8602bc631622c2e6349e8561a1d4a"
+  },
+  {
+   "movie_frame": 337,
+   "src": "E:\\ChimeraWork\\rendertruth-agent\\tools\\science_funnel\\validation\\render_truth_20260920\\frames\\f00337.jpg",
+   "src_sha256": "ba1f287f08d1ad6975904e55f229056d31cb12dfa41a3313b20961643a5d8ce9",
+   "judge_png": "E:\\ChimeraWork\\rendertruth-agent\\tools\\science_funnel\\validation\\render_truth_20260920\\frames\\judge_watch\\f00337_384.png",
+   "judge_png_sha256": "2e560309968f73c8880934243573da508cfbcf5b5d7fbb0ea6a89e81b1c9ee3d"
+  },
+  {
+   "movie_frame": 385,
+   "src": "E:\\ChimeraWork\\rendertruth-agent\\tools\\science_funnel\\validation\\render_truth_20260920\\frames\\f00385.jpg",
+   "src_sha256": "38b37a71eeb04cf41423bdfada1aa29f2039ee474801ec5580ea1f4842bffcf6",
+   "judge_png": "E:\\ChimeraWork\\rendertruth-agent\\tools\\science_funnel\\validation\\render_truth_20260920\\frames\\judge_watch\\f00385_384.png",
+   "judge_png_sha256": "9370ee1bc56e6a6cf88a1b19caa0c95f5ca9997fca161efacf57f41f8fcc6901"
+  },
+  {
+   "movie_frame": 433,
+   "src": "E:\\ChimeraWork\\rendertruth-agent\\tools\\science_funnel\\validation\\render_truth_20260920\\frames\\f00433.jpg",
+   "src_sha256": "faeb49d1ba4926de023dec40c660093c1394686824b5ea81dcc1f9c843abd443",
+   "judge_png": "E:\\ChimeraWork\\rendertruth-agent\\tools\\science_funnel\\validation\\render_truth_20260920\\frames\\judge_watch\\f00433_384.png",
+   "judge_png_sha256": "f8e70de5066419a7f16ee201d82dc5313288ca3bd09990c9e2003e19f657a865"
+  },
+  {
+   "movie_frame": 481,
+   "src": "E:\\ChimeraWork\\rendertruth-agent\\tools\\science_funnel\\validation\\render_truth_20260920\\frames\\f00481.jpg",
+   "src_sha256": "749b7d59f16753b904ff6d005c6f9c397ca4750f766f1887160c0fc9b294e343",
+   "judge_png": "E:\\ChimeraWork\\rendertruth-agent\\tools\\science_funnel\\validation\\render_truth_20260920\\frames\\judge_watch\\f00481_384.png",
+   "judge_png_sha256": "5c1cbfa6ccea5f6a1635b05cf9789d5f98b41ebd7f2683d8bc62727c126fba37"
+  },
+  {
+   "movie_frame": 529,
+   "src": "E:\\ChimeraWork\\rendertruth-agent\\tools\\science_funnel\\validation\\render_truth_20260920\\frames\\f00529.jpg",
+   "src_sha256": "749b7d59f16753b904ff6d005c6f9c397ca4750f766f1887160c0fc9b294e343",
+   "judge_png": "E:\\ChimeraWork\\rendertruth-agent\\tools\\science_funnel\\validation\\render_truth_20260920\\frames\\judge_watch\\f00529_384.png",
+   "judge_png_sha256": "5c1cbfa6ccea5f6a1635b05cf9789d5f98b41ebd7f2683d8bc62727c126fba37"
+  }
+ ],
+ "verbatim_report": null,
+ "eye_lane_available": true
+}

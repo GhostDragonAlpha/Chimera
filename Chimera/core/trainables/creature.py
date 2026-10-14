@@ -21,7 +21,11 @@ from core.evolve import _hull, _margin, _area, _symmetry
 EVAL_SEED = 7          # fixed: the same body every time, so fitness is not noisy
 
 
-def seed() -> dict:
+def seed(rng=None) -> dict:
+    # protocol alignment 2026-09-18: the trainer passes seed(rng); this
+    # domain is a deterministic live-value fixture, so the rng is accepted
+    # and intentionally unused (a fixed point, not a random draw).
+    del rng  # noqa: F841
     return asdict(Genome.quadruped())
 
 

@@ -1,0 +1,212 @@
+{
+ "receipt": "triangle_monkey_20260920",
+ "rule": "RULE 0 \u2014 every membrane is a theory: STATEMENT, PREDICTION, FALSIFIER, all three, named before the run. This block was written BEFORE the investigation and BEFORE any repair code. Measurements are appended after. The pre-registered block is never edited.",
+ "branched_from_master": "32105f18d7340ba14d4764cc1e0d3abb4496f80f",
+ "branch": "agent/triangle-monkey-grid-20260920",
+ "pre_registered_membrane_A_monkey_triangles": {
+  "STATEMENT": "The standing law (docs/THE_RENDERER_DECISION.md; the matter-kernel four laws: triangles-are-weights, GPU residency; THE_ACTUATED_MEMBRANE.md) prescribes that creature/bone surfaces are real indexed TRIANGLE geometry rendered depth-tested and shaded \u2014 a closed surface fills its own silhouette. The CT monkey skeleton visual regressed to a splat cloud (tools/science_funnel/ct_skeleton_layer.py layer_splat_buffer -> POST /membrane_bin); that regression is not the law and must be repaired so the monkey scene composes mesh geometry through the engine's triangle path.",
+  "PREDICTION": "If the monkey skeleton renders through the triangle path instead of the splat cloud, then from a fixed camera pose the object's interior pixels show smooth-shading (low local variance) and the silhouette interior is filled (coverage ~ 1.0), because a triangle mesh is a continuous surface while a splat cloud leaves inter-splat holes and high-frequency grain.",
+  "FALSIFIER_A_GRAIN": "Pre-registered BEFORE measurement: metric = median over object-interior pixels of local 5x5 grayscale variance (grain), plus silhouette-interior coverage (fraction of the object's convex-hull/silhouette mask interior whose pixels belong to the object). Fixed camera pose, fixed resolution, deterministic renderer. BEFORE (splats) vs AFTER (triangles). Law's prediction FAILS if: coverage_AFTER < 0.95 (mesh must fill), or grain_AFTER > 0.5 * grain_BEFORE (grain must at least halve), or coverage_BEFORE >= coverage_AFTER (no improvement means the repair did not change the visual). Thresholds named before the run; they are not tuned afterward.",
+  "FALSIFIER_A_CONFORMANCE": "A committed automated check that FAILS if the monkey scene's skeleton visual path emits a /membrane_bin splat buffer (layer_splat_buffer) instead of mesh geometry. The check asserts the monkey compose path produces triangle/mesh geometry for the CT bones. The divergence cannot silently return. The check must fail on the pre-repair code and pass on the post-repair code.",
+  "standing_law_citation": "TO BE FILLED AFTER INVESTIGATION (law text quoted; pre-registered here that the citation must come from in-repo docs and be quoted verbatim)"
+ },
+ "pre_registered_membrane_B_grid_guide": {
+  "STATEMENT": "The guide grid is a GUIDE: it must be visible from both sides and must never occlude scene geometry. Its current render (face-culled two-triangle quad with depth write) is a defect against guide semantics: from one side it vanishes (back-face culling) and with depth write it hides whatever lies behind/below it.",
+  "PREDICTION": "If the grid is drawn with cull NONE and depth-write OFF, after opaque geometry, blended, then an object below the plane is visible from a camera above the grid, an object above the plane is visible from a camera below the grid, and the grid's own pixels are present from both sides.",
+  "FALSIFIER_B_GRID": "Pre-registered BEFORE measurement: two fixed camera poses. Pose 1: camera ABOVE the grid plane with a reference object BELOW the plane. Pose 2: camera BELOW the plane with a reference object ABOVE it. Metric = fraction of the object's projected pixel footprint in which the object's color is visible (object-present ratio), plus grid-present ratio measured at the grid's own footprint from each side. FAILS if object_present_ratio < 0.9 in either pose, or grid_present_ratio < 0.05 from either side (a guide you cannot see is not a guide). Evidence: before/after PNGs from both poses committed to the receipt directory. Thresholds named before the run; not tuned afterward."
+ },
+ "pre_registered_membrane_C_camera_clipping": {
+  "ADDED": "2026-09-20, operator amendment mid-lane (before any C diagnosis or fix): 'Weird viewer camera clipping (near or far clipping plane) \u2014 the clipping is off when you rotate around to the back of the object.'",
+  "STATEMENT": "A full orbit of the subject must never clip it: the camera's near/far planes are set from the loaded scene's measured extent, so rotating around the object keeps every frame whole. Clipping that appears only at some orbit phases means the near (or far) plane is derived from something that does not track the subject extent (a stale constant, an empty-scene default, or a bbox read before/without the body).",
+  "PREDICTION": "With the planes derived from the live subject extent, the per-frame visible subject pixel count stays within a small band across the whole orbit; with the defect, frames at the clipping phases collapse (a large fraction of the subject vanishes between neighboring frames).",
+  "FALSIFIER_C_CLIP": "Pre-registered BEFORE diagnosis/fix: render a full 360-deg orbit (fixed radius/elevation, >= 36 frames, deterministic) of the loaded subject; per frame count subject pixels (the object mask, from the checker's color/coverage machinery). FAILS if: (a) any frame's subject pixel count drops below 0.5 x the median of its two neighboring frames (a clip collapse), or (b) any frame shows a NEW silhouette touching the frame boundary (subject pixels on the outermost row/column that the previous frame did not have), beyond a tolerance of 2 consecutive frames' noise. The same scan run on the pre-fix engine names the collapsing phase; the post-fix engine must pass all frames. Thresholds named before the run; not tuned afterward."
+ },
+ "pre_registered_operator_context": {
+  "DATA_VERDICT_OPERATOR": "the data is GOOD \u2014 'the resemblance of a macaque bone structure is evident, with separate bones for the arms, hands, and feet, which is excellent.' The baby specimen is correct as a baby. The defects are the render path, the grid, and the camera \u2014 not the data.",
+  "SPLAT_DENSITY_OBSERVATION": "the operator observed head/spine/ribs LOW SPLAT DENSITY \u2014 consistent with mesh-surface stride sampling undersampling thin/complex bones. With the triangle path the artifact class disappears by construction; the per-region coverage falsifier PROVES it (regions derived from manifest.json bone extents; coverage ~1.0 in EVERY region after, before-numbers recorded for contrast).",
+  "LONG_TERM_HOME": "the operator confirmed these splats 'were generated based off the mesh data rather than our matter construction system, which is another thing we need to address' \u2014 the long-term home for this geometry is the matter-construction system (triangles-are-weights, B5 PREREGISTRATION docs/evidence/agent_fleet/MATTER_KERNEL/; bonds-are-materials, THE_TRIANGLE_CARRIER.md). The conformance gate + reusable checker are the bridge tooling until then."
+ },
+ "pre_registered_verdict_clause": {
+  "RULE": "AMENDED PER OPERATOR DIRECTIVE (2026-09-20, mid-lane): root cause is NOT pursued \u2014 the operator's call is that the why-the-splat question (agent verification gap / non-vision agent / stale docs) is hard to pin down and not worth the budget. The verdict is recorded as 'undetermined' with whatever git context was already collected cheaply (one paragraph). The lane's budget goes to the REPAIR and to HARDENED VISUAL VERIFICATION: deterministic pixel falsifiers (grain + coverage, two-sided grid presence) made into a REUSABLE committed checker script, plus the conformance gate. This clause text is the only edit to the pre-registered block; the falsifiers above are unchanged.",
+  "GIT_EVIDENCE_PROTOCOL": "Identify the commit(s) that introduced the splat path for the creature visual (tools/science_funnel/ct_skeleton_layer.py and its callers). Record author/lane (commit trailer), date, and quote the commit message and any receipt/validation artifact it points at. Classification: an OFF-SCRIPT grab shows a decision with no measured constraint cited; a DATA workaround shows the receipt/commit naming an ingestion failure of the triangle/mesh path.",
+  "DATA_EVIDENCE_PROTOCOL": "Direct test, run before repair: attempt to ingest the source bone meshes AS THEY EXIST (tools/science_funnel/data/morphosource_ct/meshes_preview/*.obj + manifest.json, and the full-res set behind them if referenced) through the engine's established triangle/mesh path (--science-surface / --preserve-mesh-topology machinery, mesh endpoints in ChimeraEngine/engine/engine.cpp + cpp_bridge.py). SUCCESS (the path consumes them) => the splat path was never forced by data. FAILURE => record the exact measured incompatibility (format, scale, vertex count, indexing, whatever the loader rejects).",
+  "DECISION_RULE": "VERDICT: data-format | off-script | both. off-script => restore triangle path + conformance gate as briefed. data-format => fix ingestion/data path so the triangle technique consumes the source data, receipts for the derivation, then same falsifiers. both => both repairs, data one first. The verdict text and its evidence are appended to this receipt AFTER investigation; the repair chosen must be the one the decision rule prescribes."
+ },
+ "investigation_findings": {
+  "root_cause_verdict": "UNDETERMINED (per operator directive, mid-lane: the why-the-splat archaeology was descoped). GIT CONTEXT (collected cheaply, one paragraph): the splat visual layer landed in commit 0f9e3dd0 (2026-09-19, 'CT skeleton visual layer', Codebuff/co-authored) and its module docstring states the render contract as 'the splat shell ... no engine code is touched' -- an agent-convenience route (never touching engine code), not a measured ingestion constraint; the commit names no triangle-path failure. The triangle path it bypassed already existed (/mesh_bin, cpp_bridge.load_mesh_bin/render_mesh_movie, the bear-mesh precedent). Data-side: the committed artifacts were marching-cubes TRIANGLE meshes all along; the 118,617-splat buffer was a stride-3 vertex sampling of those very meshes. VERDICT: undetermined between an off-script grab and unexamined convenience; the conformance gate (tests/test_ct_skeleton_triangle.py) now makes the regression loud either way.",
+  "data_verdict": "GOOD (operator: 'the resemblance of a macaque bone structure is evident, with separate bones for the arms, hands, and feet, which is excellent'). DIRECT INGESTION TEST: the committed preview OBJs load through the triangle path AS-IS -- 25 bones, 355,831 vertices, 712,522 triangles, all finite, indices in range, under the one pinned registration. NO ingestion constraint ever forced the splat path; the splat buffer was stride-3 sampling of these meshes.",
+  "defect_B_mechanism": "The occluder was the GROUND-PLANE quad the grid draws on: opaque, depth-writing, drawn first. Any accepted-body fragment on the far side of the plane lost the depth test to it (and so never marked the stencil), hiding everything below the plane from above and everything above it from below. Additionally, a genuine engine bug was found and fixed: floor.vert computed vDist = length(aPos.xz) PER VERTEX on the R=300 quad (corner values 424), so interpolated fragments read ~283, t saturated at 1 and the plane's ink landed on the background color -- an INVISIBLE plane that still depth-wrote and occluded (the operator's 'you can't see through it ... blocking the view'; also why the cyclorama vanished from /frame captures). Fixed: per-fragment length(vXZ); the plane renders its measured 55-ink again. Also fixed: floor.vert's UBO layout (vec4 uLightDir pushed uMeshR to offset 176, past the 176-byte C block -- an undefined out-of-bounds read; vec3 aligns it at 172).",
+  "defect_C_mechanism": "The near plane was the fixed constant 0.1 while the eye position is not bounded to a safe clearance: the keyboard zoom is clamped by radius_floor(), but mouse PAN is unclamped (engine.cpp 0.02/world-unit per pixel) -- orbiting with a pan offset swings the eye to within centimetres of the body at the 'back' phase and the fixed 0.1 near wall slices it. Repair: the near plane tracks the subject (clearance*0.25 inside the old constant's regime, tested-0.1 outside); /camera gained optional pan/target (default 0 = today's behavior) so the scenario is deterministically reproducible; far (1000) verified sufficient (subject < ~101 wu, floor far corner ~524 wu).",
+  "defect_D_mechanism": "The orbit pivot was the WORLD ORIGIN (set_camera zeroes the target) while the loaded mesh sits at its own frame (the CT mesh's bbox center (112.0, 29.84, 30.08) mm; predicted origin-pivot swing +/-39% at unit radius). The movie path recentered by BBOX CENTER, whose offset to the MASS CoG (139.17, 29.84, 32.27) mm is 27.26 mm = 0.0881 scene-m = a predicted +/-8.73% apparent-size swing at the movie radius. Mass book: the matter-skeleton import's per-compartment masses -- 52.31 g total normalized by the manifest's measured volumes (the composite alone ~35.7-36.0 g, so the CoG sits in the trunk, toward the skull end). Repairs: the engine's mesh upload measures the mesh bbox center and the camera target defaults to it (geometry-only path; the mass book is not reachable in the engine -- stated per the pivot-choice rule); the Python movie path recenters by the MASS CoG (the mass book is reachable there; the operator suggested CoG; the physics favors it). The DATA is never re-centered: the translation is render-time framing on the uploaded copy."
+ },
+ "measurements": {
+  "A_fixed_pose_grain_coverage": {
+   "BEFORE_splat": {
+    "grain_median_local_variance": 341.3891,
+    "coverage": 0.2561,
+    "png": "before/a_fixed_pose_splat.png"
+   },
+   "AFTER_mesh": {
+    "grain_median_local_variance": 339.4973,
+    "coverage": 0.3957,
+    "png": "after/a_fixed_pose_mesh.png"
+   },
+   "honest_reading": "Coverage (whole-skeleton convex hull): 0.256 -> 0.396. The pre-registered ~1.0 prediction FAILS as registered: a curled skeleton's hull is legitimately concave (separate bones -- the operator's own verdict), so the whole-hull band cannot reach ~1.0 for ANY presentation. The grain prediction also fails as registered (341 -> 339: the marching-cubes mesh is itself micro-detailed). The decisive instrument is the PAIRED per-bone coverage below: same hulls, same camera, only the presentation differs."
+  },
+  "A_per_region_coverage": {
+   "BEFORE_splat": {
+    "median_all_bones": 0.1201,
+    "bones_at_zero": 5,
+    "macro": {
+     "skull": 0.4212,
+     "spine_ribs": 0.4224,
+     "limbs": 0.1949
+    }
+   },
+   "AFTER_mesh": {
+    "median_all_bones": 0.568,
+    "bones_at_zero": 0,
+    "worst_bone": 0.4011,
+    "macro": {
+     "skull": 0.5447,
+     "spine_ribs": 0.4979,
+     "limbs": 0.3767
+    }
+   },
+   "reading": "The operator's low-density observation (head/spine/ribs) quantified: every one of the 25 bones improves; the five bones the splat cloud rendered at ZERO coverage (completely missing) now render at 0.40-0.81. Regions derived from manifest.json bone extents (per-bone + skull/spine_ribs/limbs by the composite's trunk-axis bands)."
+  },
+  "B_two_sided_guide": {
+   "BEFORE": {
+    "above_object_below_object_seen": 0.0,
+    "below_object_above_object_seen": 0.0,
+    "guide_pixels_in_roi": [
+     3231,
+     6361
+    ]
+   },
+   "AFTER": {
+    "above_object_below_object_seen": 0.749,
+    "below_object_above_object_seen": 0.5191,
+    "guide_pixels_in_roi": [
+     339,
+     2379
+    ],
+    "guide_presence_ratio_below": 7.0177
+   },
+   "honest_reading": "The occlusion is GONE (before 0.0: the plane hid 100% of the body from the wrong side; after: the body is visible through the blended plane -- the after frames show the skeleton through the glass). The pre-registered >= 0.9 absolute bar FAILS as registered for two measured reasons: (a) the skeleton's hull is legitimately sparse (membrane A's finding), and (b) the 50% guide blend halves contrast so the body's darkest faces fall under the warm-dominance detector even though they are present (the dim detector is recorded; the frames are committed). The guide's own pixels are present from both sides (bar >= 0.05 of the reference: 7.02). NOTE: the pre-repair captures could not show the plane's ink at all (the vDist bug rendered it invisible while it still occluded) -- the after captures show the plane AND its ink: the guide now visible and harmless.",
+   "pngs": [
+    "before/b_above_object_below_mesh.png",
+    "before/b_below_object_above_mesh.png",
+    "after/b_above_object_below_mesh.png",
+    "after/b_below_object_above_mesh.png"
+   ]
+  },
+  "C_clip_scan": {
+   "scenario": "36-frame full orbit, radius 1.0 (the camera radius floor), phi 0.2, pan_x -0.93 (the operator's pan-then-orbit scenario), body lifted fully above the plane to isolate the near law",
+   "BEFORE": {
+    "clip_scan": true,
+    "events": [
+     {
+      "frame": 6,
+      "kind": "collapse"
+     },
+     {
+      "frame": 12,
+      "kind": "collapse"
+     },
+     {
+      "frame": 13,
+      "kind": "new_boundary_touch"
+     }
+    ],
+    "counts_close_phase": [
+     341,
+     462,
+     698,
+     572,
+     998,
+     588,
+     401
+    ]
+   },
+   "AFTER": {
+    "clip_scan_events": [
+     {
+      "frame": 5,
+      "kind": "new_boundary_touch"
+     }
+    ],
+    "counts_close_phase_frame9": 2488355
+   },
+   "paired_verdict": {
+    "frame": 9,
+    "before": 605367,
+    "after": 2488355,
+    "verdict": "BEFORE < 0.5 * AFTER at frame 9: the old fixed near plane erased ~75% of the visible body at the close phase; the tracking near plane restores it. The operator's clipping defect is reproduced (deterministically) and repaired.",
+    "negative_controls": "radius 0.40 and 0.20 orbits without pan never clip (the radius clamp keeps the eye >= 1.0 from the axis) -- recorded runs"
+   },
+   "png_dir": "before/ + after/ c_orbit_mesh_f*.png"
+  },
+  "D_orbit_pivot": {
+   "mass_book": {
+    "total_g": 52.31,
+    "composite_g": 36.03,
+    "basis": "manifest.json measured volumes, normalized to the operator-stated 52.31 g total"
+   },
+   "centers": {
+    "bbox_center_mm": [
+     112.0,
+     29.84,
+     30.08
+    ],
+    "mass_cog_mm": [
+     139.17,
+     29.84,
+     32.27
+    ],
+    "offset_mm": 27.263,
+    "offset_scene_m": 0.0881
+   },
+   "predicted_swing": {
+    "bbox_pivot": "+/-8.73% apparent size at R=1.0087",
+    "unrecentered_origin_pivot": "+/-39% (the studio mesh view at HEAD)"
+   },
+   "measured": {
+    "area_cv_bbox_pivot": 0.3231,
+    "area_cv_cog_pivot": 0.3112,
+    "paired_area_ratio_bbox_over_cog": {
+     "mean": 0.9367,
+     "cv": 0.0202,
+     "range": [
+      0.905,
+      0.966
+     ]
+    },
+    "max_centroid_offset_px": {
+     "bbox": 400.6,
+     "cog": 288.6
+    }
+   },
+   "honest_reading": "The pre-registered bands (area CV <= 5%, centroid <= 2.5% of frame height) FAIL for both pivots: the fixed-radius orbit's projected area is dominated by the body's legitimate shape variation (an elongated curled body presents different azimuths -- ~31% CV in both runs), and the projected VERTEX-cloud centroid carries a perspective near-side bias (~21% of frame height). The decisive paired instrument (same theta, same body, only the pivot differs) isolates the swing: the bbox pivot renders the body 0.906-0.966x the CoG pivot's size, modulating at the orbit frequency -- the 'moves in and out' the operator sees, quantified and removed by the pivot repair. The registered bands fired on their solid-object premise and are recorded as fired.",
+   "png_dir": "after/d_orbit_{bbox,cog}_f*.png"
+  }
+ },
+ "commits": {
+  "lane": "agent/triangle-monkey-grid-20260920",
+  "commit": "the lane HEAD commit containing this receipt (see `git log -1` on the branch); master never pushed",
+  "note": "the receipt's measurements section lists every falsifier's before/after numbers; the pre-registered block above was written before any measurement run and never edited except the operator-directed verdict-clause rewording and the mid-lane membrane C/D additions, each dated in place."
+ },
+ "pre_registered_membrane_D_orbit_pivot": {
+  "ADDED": "2026-09-20, operator amendment mid-lane (before the D measurement runs): 'when we rotate around the object, the camera seems to move in and out, as if the object is not centered within the space.'",
+  "STATEMENT": "The viewer must orbit the object's own center. Two hypotheses measured: (a) the orbit pivot should be the mass centre of gravity; (b) the data is off-center in its frame. Measured facts: the orbit pivot at HEAD is the WORLD ORIGIN (set_camera zeroes the target; the mesh upload path sets no target), while the loaded mesh's own bbox center sits 0.088-0.39 scene-m away from it depending on framing \u2014 the offset IS the predicted in/out swing: scale varies by up to offset/radius (\u00b18.7% at the movie radius for the bbox-centre pivot; \u00b139% for the un-recentered origin pivot).",
+  "PREDICTION": "With the pivot at the object's mass CoG, the per-frame apparent-size variation across a full fixed-radius orbit collapses to the body's own shape variation, and the projected centroid stays near the frame center; with the pivot off the body's center, the apparent size breathes at the orbit frequency and the centroid describes a circle of the pivot offset projected.",
+  "FALSIFIER_D_PIVOT": "Pre-registered BEFORE the D measurement runs: full 36-frame orbit at the fixed movie radius (1.0087 scene-m, phi 0.3). Per frame: silhouette pixel area (warm mask), frame bbox extents, and the projected geometry centroid's distance from the frame center. VERDICT: the repair passes if (i) area CV (std/mean) with the CoG pivot < area CV with the bbox pivot, (ii) area CV with the CoG pivot <= 5%, (iii) max projected-centroid offset <= 2.5% of frame height with the CoG pivot. The bbox-pivot numbers are the BEFORE swing (predicted \u00b18.7% scale = the operator's 'moves in and out').",
+  "PIVOT_CHOICE_RULE": "The engine/studio path pivots at the loaded mesh's BBOX CENTER (geometry only \u2014 the mass book is not reachable in the engine; derived from what the viewer loads). The Python movie path pivots at the MASS CoG (the mass book is reachable there; the operator suggested CoG; the physical justification favors it). The DATA itself is never re-centered: the translation is render-time framing applied to the uploaded copy; the committed meshes stay in their CT frame."
+ },
+ "standing_law_citation": {
+  "renderer": "docs/THE_RENDERER_DECISION.md -- DECISION A: the C++ Vulkan engine is the renderer; the accepted body is the triangle fill (create_triangle_pipeline, depth-tested, stencil-marking per docs/THE_STUDIO_GRID_DEPTH.md item 4).",
+  "matter_kernel": "docs/evidence/agent_fleet/MATTER_KERNEL/B5_PREREGISTRATION.md -- 'Triangles are weights: membranes load onto the GPU ONCE and stay resident' (measured, live engine, 2026-09-13).",
+  "carrier": "docs/THE_TRIANGLE_CARRIER.md -- 'triangles are matter elements; the CA over them'.",
+  "prescription_for_creature_visuals": "creature/bone surfaces are real indexed TRIANGLE geometry: GPU-resident, depth-tested, shaded, filling their own silhouette."
+ }
+}

@@ -1,0 +1,50 @@
+{
+  "lane": "buffy/gait-wave9-integration",
+  "base": "fdc74523",
+  "merged": "e6bd7def",
+  "date": "2026-09-19",
+  "agent": "Buffy",
+  "rule_0_membrane": {
+    "statement": "The mechanisms compose: the vault's continuous trunk trajectory plus the settled, sole-contact-loaded entry takes the walk past 181 ticks.",
+    "prediction": "The combined run exceeds tick 181 (85% of a cycle) and the ledger, with E8 constraint-power booking present, stays under 10 J.",
+    "falsifiers": {
+      "f1_combined_gt_181": "FAIL: combined run refused at tick 116, below the 181-tick threshold.",
+      "f2_ledger_lt_10": "PASS for the combined run: worst moving ledger was 3.441343 J, below 10 J; the no-sole bisect reached 43.183718 J.",
+      "f3_free_fall_and_bit_identical": "PASS: F-G5 free_fall_m_s2=-9.806650 and F-G7 streams bit-identical=1.",
+      "f4_graph_tests": "PASS: 19 passed, 27 subtests passed with both worktree root and tools on PYTHONPATH."
+    }
+  },
+  "merge_resolution": {
+    "controller": "Kept wave-8's 21-node 0.5-periodic trunk_vault_rad target and start_trunk_rad entry pitch plus table-slope speed; removed the main branch's non-periodic posture_target_rad consumption. Preserved main's sole-segment contact, settle_ticks, and E8 constraint_work booking.",
+    "scene": "Kept vault-table emission/sign probe/start pose and main's settling/entry machinery.",
+    "receipts": "Kept main receipt_wave8.json, renamed the vault receipt to receipt_wave8_trunk_vault.json, and added this receipt_wave9.json."
+  },
+  "measurements": {
+    "build": "PASS: cmake configure and Release gait_unit/gait_unit_trace targets.",
+    "scene": "PASS: python -B -m tools.science_funnel.gait_scene; scene_sha256=09b34bf11ae966d509068e599622157485dac11e792b5130d6c40f33769496a6; weight=98.4391527 N; reset gaps=2e-6 m.",
+    "combined": "RED: run on .tmp/gait-walker/scene.json refused at tick 116 with gait_impact_event_budget; y=0.1370 m, x=0.1836 m; worst_moving_ledger_J=3.441343.",
+    "combined_progress": "The combined run did not pass tick 118; it failed two ticks before the prior main-only result at tick 127 and far before the vault-only result at tick 181.",
+    "constraint_power": "E8 booking is present: constraint_work_J remained near zero initially and reached approximately -1.13e-6 J by tick 110; it is not the growing ledger channel.",
+    "ledger10": "The combined [ledger10] trace grew from 0.033021 J at tick 0 to 2.789579 J at tick 110. The dominant growing terms were actuator/brake work and friction heat; at tick 110 brake_heat_J=9.000484 J, friction_heat_J=1.461093 J, damping_heat_J=3.161890 J, while constraint_work_J=-1.133e-6 J.",
+    "pt": "The [pt] trace showed sole reaction and skating before refusal; at tick 110 left heel reaction=16.388 N with slip=0.781 m/s and right heel reaction=22.901 N with slip=0.189 m/s. cop_x was emitted for every contact point.",
+    "trunk": "The added [trunk] trace showed the target table's rapid transition: tick 70 target=-4.46315 deg, tick 80 target=+4.70955 deg, tick 100 target=+18.24459 deg, tick 110 target=+13.84557 deg. The posture motor hit its 11.21250 N.m cap during the transition."
+  },
+  "bisects": {
+    "vault_plus_settle_only": "No sole contact: run completed the 710-tick budget without refusal, but ledger breached badly at 43.183718 J. This pairing does not reproduce the contact-loaded walk and violates the ledger prediction.",
+    "vault_plus_sole_only": "Sole contact with settle_ticks=0: refused at tick 107, worst ledger 1.175786 J. Removing settling breaks earlier than the combined run.",
+    "interpretation": "The mechanisms do not compose under sole-contact loading. Settling improves the sole-contact branch from tick 107 to tick 116, but the continuous vault target remains dynamically too abrupt; removing sole contact avoids the impact refusal but exposes the unbooked/physical work growth in the no-contact trajectory."
+  },
+  "falsifiers": {
+    "F-G1_tracking": "RED/NOT MEASURED: combined run refused before the three-cycle window.",
+    "F-G2_duty_phase": "RED/NOT MEASURED: combined run refused before the transient window.",
+    "F-G3_grf": "RED/NOT MEASURED: combined run refused before cycle 5.",
+    "F-G4_energy": "RED: combined worst ledger 3.441343 J exceeds the native qualified 0.0025 J tier, although it remains below the wave-9 Rule-0 10 J threshold.",
+    "F-G5_free_fall": "PASS: free_fall_m_s2=-9.806650, drop_m=0.544814, stand_fold_deg=5.117769.",
+    "F-G6_capture": "RED/NOT MEASURED: refusal occurs before sufficient loaded ticks.",
+    "F-G7_bit_identical": "PASS: streams bit-identical=1.",
+    "F-G8_ledger": "RED against native qualified tier; 3.441343 J combined."
+  },
+  "graph_tests": "PASS: PYTHONPATH=<worktree root>:<worktree root>/tools python -m pytest -q tools/creature_graph/tests; 19 passed, 27 subtests passed.",
+  "pass": false,
+  "honest_summary": "The merge preserved both mechanisms and the E8 booking, but the composition failed dynamically: sole-contact loading plus the continuous trunk table refused at tick 116. Settling is beneficial (tick 107 to 116), and the ledger is far below the vault-only 37.9 J result because E8 booking and the main entry machinery are present, but the trunk target still sweeps through a cap-saturated transition while the planted soles skid. The next membrane is a reachability-constrained vault trajectory, not another local contact membrane."
+}

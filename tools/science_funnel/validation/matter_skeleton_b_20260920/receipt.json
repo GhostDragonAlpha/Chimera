@@ -1,0 +1,126 @@
+{
+ "schema": "chimera.rule0_receipt.v1",
+ "lane": "agent/matter-skeleton-b-20260920",
+ "captured_utc": "2026-09-20T17:05:00Z",
+ "base_commit": "2d585c7b76a60dc299b2df798e8de22b4a59acfc",
+ "scope": "Import specimen B (MorphoSource 000875599, Macaca mulatta USNM 497135, infant, 160um CT) into the matter construction system as the SECOND stage-true creature: the 14 v3-identified bones, one compartment each (triangles-are-weights residency), bonds-are-materials at the measured touching edges whose BOTH endpoints are identified, stage-true at scale 1.0. The 10 unidentified bones and the unlabeled axial composite stay OUT -- never invented. No engine, gait-lane, A-lane, or visual-repair files touched; the A import path must stay byte-unchanged (proved by regenerating A in this clone and demanding an empty git diff).",
+
+ "membrane_frame": "Operator doctrine 2026-09-20: mesh data with triangles is all we need -- the triangles ARE the membranes. Specimen B is the doctrine's second instance and its first HONEST-PARTIAL instance: v3 identifies 14 of 24 nonaxial bones (the honest count; the refusals stand with evidence), so the imported body is a strict partial skeleton, and its mass book is checked as a subset, never dressed up as a whole skeleton.",
+
+ "rule_0": {
+  "statement": "Specimen B's IDENTIFIED skeleton can be expressed AS MATTER with zero invented numbers, exactly as specimen A was: the 14 identified bone meshes' own triangles carry real mass (mesh volume x the same cited 1900 kg/m^3 cortical upper anchor via derived equivalent shell thickness t=V/A), and the bond graph is exactly the measured touching edges with both endpoints identified (8 bonds) -- while every edge with an unidentified endpoint (7 measured edges) and every unidentified bone (10 nonaxial + the axial composite) is EXCLUDED with itemized evidence, and v1's superseded low-confidence labels for B (axial_composite rank 1; femur_class 23/25, refused by v3) are NOT resurrected. The matter body is the measured, identified PART of the infant creature -- honestly partial, not plausibly whole.",
+  "prediction": "(a) Triangle-integrated compartment volumes reproduce the voxel-counted manifest volumes within 5% total (predicted near -0.1% to -0.5%: every B compartment is a decimated non-composite mesh, the population A's ranks 2-25 came from with measured per-compartment deltas -0.43%..-0.019%; NO multi-million-face composite is imported, so no A-rank-1-style -3.27% outlier is expected). (b) The imported 14-bone mass lands within 5% of the identified-subset voxel book 12.0898 g (predicted 11.5-12.7 g); the FULL specimen voxel book (all 25 manifest ranks, same cited density) lands in the 30-65 g full-skeleton window at 58.6289 g, i.e. 10.66-14.66% of the 400-550 g infant body band (inside 8-15%) -- the literature check binds to the FULL book because the import is a strict partial skeleton; the full book's deviation vs the adult-taxon Prange regression (26.08-36.9 g) is NAMED with the same three HIGH-direction biases as A, never tuned. (c) A definition built this way passes the matter kernel's own parser/validator unmodified (no side format) with exactly 14 membranes and 8 bonds. (d) The bond set is exactly the 8 measured touching edges whose both endpoints are identified (5 hind + 3 fore), rest_length_mm equal to the measured gap_mm exactly; the 7 measured-but-excluded edges are itemized: 3 in the all-unidentified unknown chain {14,23,25}, 4 fragment pairs with one unidentified endpoint {2,16},{4,20},{6,10},{12,15}.",
+  "falsifiers": {
+   "geometry_preserved": "Each of the 14 bone compartments' meshes loaded back from the committed matter definition matches the source OBJ: face count equal, referenced vertex count equal, per-axis bbox extents within 1e-3 mm (float32 quantization floor), sha256 of canonical float32 vertex serialization equal between source and blob. Any loss itemized per compartment, never averaged away.",
+   "adjacency_reproduced": "The definition's bond set IS the measured touching-edge set restricted to both-endpoints-identified pairs: exactly 8 bonds, zero invented, zero dropped, each rest_length_mm equal to the measured gap_mm exactly (hundredth-of-a-mm resolution), and each excluded measured edge (7) itemized with its reason. The body's 7 connected components are the honest reading: hind chain {3,7,19,21,24}, fore chain {5,8,9,11}, and 5 singletons (10, 12, 16, 17, 20 -- transferred labels with no measured adjacency). Cross-component and unidentified-bone joint measurement is named successor work, never invented here.",
+   "honest_labels": "The import set is EXACTLY the v3 segment_label ranks {3,5,7,8,9,10,11,12,16,17,19,20,21,24} (14); ranks 1,2,4,6,13,14,15,18,22,23,25 are ABSENT from the definition; labels come from bone_identification_v3.json ONLY -- bone_identification.json(v1)'s superseded B entries (rank 1 axial_composite; ranks 23/25 femur_class at low mirror confidence, which v3's homolog transfer REFUSED to assign) must not appear; confidence strings carried verbatim including the transferred(...) provenance.",
+   "mass_book": "Per compartment: stated mass equals kernel-derived mass (area x thickness x density, validator 5% law) and equals volume x density with thickness := V/A (the only parameter, derived not authored). Books: imported sum(mesh volume) vs identified-subset sum(voxel volume) within 5%; imported mass within 5% of 12.0898 g; the FULL 25-rank voxel book at the same density lands in the 30-65 g literature skeleton window and its fraction of the 400-550 g body band lands in 8-15% -- OR the deviation named and explained (adult-density upper anchor on under-mineralized infant bone, Rauch 2001; CT 95th-percentile threshold including partially mineralized growth cartilage; cortical density applied to whole-bone porous volume) -- never tuned.",
+   "kernel_conformance": "tools.matter_kernel.definition.parse_body succeeds on the committed infant_skeleton_875599.body.json unmodified (14 membranes, 8 bonds), and the kernel's own suite stays green (test_definition 9/9 plus the scratch/glue/tensile/drape/residency battery), together with the creature_graph regression battery (19 passed from the repo root AND from tools/). The import uses the kernel's format, not a side format.",
+   "stage_true": "The body carries stage=infant with B's own provenance (MorphoSource media 000875599 metadata: Macaca mulatta USNM 497135, infant, 160um CT -- meshes_875599/manifest.json source field + download_receipt.json) and scale=1.0; the import writer applies NO transform to source vertex coordinates (identity, proven by the geometry hashes); no allometric scaling code path exists in the tool (the H2 3.79-8.8x per-bone stretch factors remain the named negative example).",
+   "reproducibility": "Byte-exact verify in a TRUE fresh clone of the branch after proving worktree==blob for EVERY input (the CRLF lesson: all 27 B data files git-hash-object == git rev-parse HEAD:path before anything runs; LF-only blobs). In the authoring clone build must regenerate byte-identically (temp-dir probe); in the fresh clone verify must re-derive everything from committed artifacts and demand byte equality -- and the pre-check refusal power must be demonstrated: A's committed definition still verifies green in this clone (no drift), and any tampering with a committed byte must be refused."
+  }
+ },
+
+ "rule_1_derivation_plan": {
+  "note": "Every number below is derived or cited; the tool authors none. The same laws and the same cited constants as the A lane -- B introduces NO new constants.",
+  "volume_law": "V_k = |sum over faces (1/6) * v_a . (v_b x v_c)| -- divergence theorem on the compartment's own triangles (the exact triangles that go resident), CT mm frame.",
+  "area_law": "A_k = sum over faces 0.5*|(v_b - v_a) x (v_c - v_a)|, accumulated exactly as the kernel validator accumulates it.",
+  "thickness_law": "t_k = V_k / A_k -- the equivalent shell thickness that conserves the measured volume; with it the kernel's mass law (area x thickness x density) reproduces V_k * rho exactly. The only derived parameter; computed per compartment, never chosen.",
+  "mass_law": "m_k = V_k * rho_bone; rho_bone = 1900 kg/m^3 = 1.9e-6 kg/mm^3, the SAME cited adult cortical wet density upper anchor as A (Cowin / Currey; Feldmann et al. 1800-2100). No infant-macaque tissue-density citation exists; the bias is named, not tuned.",
+  "bond_law": "Bond set = measured touching_edges of bone_identification_v3.json specimen 000875599 restricted to pairs whose BOTH members carry a v3 segment_label: the hind chain [3,7,19,21,24] contributes {3-19 2.97, 7-19 0.53, 7-24 2.62, 19-24 2.94, 21-24 0.93} and the fore chain [5,8,9,11] contributes {5-9 2.71, 5-11 1.48, 8-9 0.70} = 8 bonds. Per bond: material = cartilage, cure_strength = 13 MPa (Yamada 1970), rest_length_mm = measured gap_mm. Excluded measured edges (7, itemized in verify.json): unknown chain {14-23 0.96, 14-25 0.92, 23-25 0.72} (all endpoints unidentified) and fragment pairs {2-16 1.24, 4-20 0.47, 6-10 0.36, 12-15 0.57} (one endpoint unidentified each). Bond geometry is measured, never authored.",
+  "total_check": "Imported subset: M = sum of the 14 m_k, checked against the identified-subset voxel book 6363.0541 mm3 -> 12.0898 g (5%). Literature binding on the FULL book: all 25 manifest ranks = 30857.3061 mm3 -> 58.6289 g at the same density, window 30-65 g (rhesus infant birth mass 400-550 g, NC3Rs; skeleton fraction 8-15%, mammalian range; Prange, Anderson & Rahn 1979 M_skel = 0.0708 * M_body^1.09 -> 26.08-36.9 g over the band, adult-taxon)."
+ },
+
+ "inputs_and_artifacts": {
+  "tools/science_funnel/data/morphosource_ct/bone_identification_v3.json": "sha256 1d84854fd1770ed6548221ee803c949a487d9005133548eb162a5c64d4161d33 -- v3 homolog-transfer book; specimen 000875599: 24 bones, 14 segment_labels, 3 chains (hind/fore/unknown), per-bone touching_neighbors",
+  "tools/science_funnel/data/morphosource_ct/download_receipt.json": "sha256 67438dd2e44a7554bc87e1274259e60265b1a70259f0daceeb3bc687aa36baf9 -- provenance: media 000875599, Macaca mulatta USNM 497135, X-Ray CT 160um",
+  "tools/science_funnel/data/morphosource_ct/mesh_receipt_875599.json": "sha256 f8d5e0f314b71ded71d59e41c931b13aed115e495d6f11db4b16334a8c57180e -- segmentation params (threshold 148 = 95th pct, voxel 0.16mm, shape [1402,377,378]) + full-res sha256 pinning; previews committed",
+  "tools/science_funnel/data/morphosource_ct/meshes_875599/manifest.json": "sha256 764c970ac6d9bd5b084ad6b2b1825e78ef811abd857f68e2ac6af69f63ddc76c -- voxel book: 25 ranks, volume_mm3 + extents + centroids; source field carries the infant stage provenance",
+  "tools/science_funnel/data/morphosource_ct/meshes_preview_875599/bone_{03,05,07,08,09,10,11,12,16,17,19,20,21,24}_*_lo.obj": "the 14 identified preview meshes, committed from origin/buffy/bone-id-v3-companion (tree cfd9a8feddd636d5069027df176212fd03294912, identical on every carrying branch); per-file sha256 banked in derivation.json source_obj_sha256; worktree==blob proved for all 27 B files before this receipt was written",
+  "tools/matter_kernel/definition.py": "the kernel parser/validator this lane builds on (unchanged from base_commit)"
+ },
+
+ "outputs_planned": {
+  "tools/science_funnel/data/morphosource_ct/matter_skeleton_875599/infant_skeleton_875599.body.json": "the kernel-format body definition for specimen B (14 membranes, 8 bonds)",
+  "tools/science_funnel/data/morphosource_ct/matter_skeleton_875599/tris/bone_XX.bin": "36-byte-per-triangle binary blobs (kernel triangle format), one per identified rank",
+  "tools/science_funnel/validation/matter_skeleton_b_20260920/derivation.json": "the derivation book (masses, bonds, excluded-edge book, totals, checks)",
+  "tools/science_funnel/validation/matter_skeleton_b_20260920/verify.json": "falsifier verdicts with measured numbers (appended after the run)",
+  "tools/science_funnel/validation/matter_skeleton_b_20260920/preregistration.sha256": "sha256 of THIS receipt's pre-run bytes, written before the tool ran; the receipt's measurements section is appended after"
+ },
+
+ "limits_and_successors": [
+  "The 10 unidentified nonaxial bones (2,4,6,13,14,15,18,22,23,25) and the unlabeled axial composite (rank 1, 4909791 voxels) stay out of the matter body until identified WITH EVIDENCE; they are never invented, never placeholder-named.",
+  "The unknown chain {14,23,25} has MEASURED adjacency (gaps 0.72-0.96 mm) but no labels: its edges are banked here and become bonds the moment any two of its bones are identified -- the measurement already exists.",
+  "Fragment pairs {2,16},{4,20},{6,10},{12,15} look like reassociation work (v3 fragments_2bone): a successor that reassociates a fragment into its identified partner gains both a compartment and a measured bond in one step.",
+  "v1's B labels (axial_composite; femur_class 23/25 at low mirror confidence) are superseded by v3's refusals and are dead letters for this lane.",
+  "Muscles are the next membrane layer over the bone compartments; skin eventually (operator membrane-layer roadmap).",
+  "Cross-specimen: A (25 compartments, 21 bonds) and B (14 compartments, 8 bonds) are two separate stage-true matter bodies; merging or co-simulating them is successor work.",
+  "Adult-density upper anchor: when an infant-macaque tissue-density citation is found, re-derive BOTH mass books with it (one constant change; the derivation law does not move)."
+ ],
+
+ "measurements": {
+  "completed_utc": "2026-09-20T17:55:00Z",
+  "compartments": 14,
+  "bonds": 8,
+  "total_mass_g": 12.0824,
+  "identified_subset_voxel_book_g": 12.0898,
+  "subset_vs_voxel_dev_frac": 0.0006120862214429119,
+  "total_volume_mm3_mesh": 6359.1664,
+  "total_volume_mm3_voxel": 6363.0541,
+  "total_volume_delta_pct": -0.061,
+  "worst_compartment_volume_delta_pct": -0.3079,
+  "worst_compartment": "mem.bone_19",
+  "identified_ranks": [3, 5, 7, 8, 9, 10, 11, 12, 16, 17, 19, 20, 21, 24],
+  "unimported_ranks": [1, 2, 4, 6, 13, 14, 15, 18, 22, 23, 25],
+  "imported_fraction_of_full_book_pct": 20.608,
+  "full_specimen_voxel_book_mass_g": 58.6289,
+  "full_specimen_volume_mm3_voxel": 30857.3061,
+  "full_book_fraction_of_body_band_pct": [10.66, 14.66],
+  "kernel_stated_vs_derived_mass_max_rel": 7.200124719762125e-07,
+  "geometry_worst_bbox_dev_mm": 1.3875292950160656e-06,
+  "adjacency_max_rest_length_dev_mm": 0.0,
+  "connected_components": 7,
+  "excluded_measured_edges": {
+   "2-16": 1.24, "4-20": 0.47, "6-10": 0.36, "12-15": 0.57,
+   "14-23": 0.96, "14-25": 0.92, "23-25": 0.72
+  },
+  "prediction_audit": {
+   "a_volume": "predicted total within 5%, near -0.1..-0.5%, no composite outlier: measured total -0.061%, worst compartment -0.3079% (mem.bone_19) -- HIT",
+   "b_mass": "predicted subset 11.5-12.7 g around the 12.0898 g voxel book: measured 12.0824 g -- HIT; full book 58.6289 g in the 30-65 g window -- HIT; full-book fraction 10.66-14.66% inside 8-15% -- HIT; Prange 26.08-36.9 g deviation NAMED (partial skeleton + the three HIGH biases), not tuned",
+   "c_kernel": "parse_body validates unmodified, 14 membranes / 8 bonds -- HIT",
+   "d_adjacency": "8 bonds both-endpoints-identified, 0 invented / 0 dropped, gaps exact (max dev 0.0 mm), 7 measured-but-excluded edges itemized -- HIT"
+  },
+  "regression_battery": {
+   "creature_graph_repo_root": "19 passed, 27 subtests passed",
+   "creature_graph_tools_root": "19 passed, 27 subtests passed",
+   "creature_graph_fresh_clone": "19 passed, 27 subtests passed",
+   "matter_kernel_test_definition": "9 tests OK",
+   "matter_kernel_other_modules": "37 tests OK",
+   "matter_kernel_fresh_clone": "9 + 37 tests OK"
+  },
+  "fresh_clone_proof": {
+   "clone": "TRUE fresh single-branch clone of agent/matter-skeleton-b-20260920 at d921d0314a550ce8d2ecf47c65b7eda14cac71f8 from the shared origin",
+   "pre_check": "102 committed files under morphosource_ct + matter_skeleton_b_20260920: git show HEAD:bytes == worktree bytes for every one (0 mismatches); the CRLF-byte hits are coincidental float32 pairs inside binary triangle blobs and canonical CRLF committed as upstream bytes in the identification JSONs -- all byte-identical worktree==blob",
+   "verify_b": "matter_skeleton_import verify b -- byte-exact reproducible, all falsifiers green",
+   "verify_a": "matter_skeleton_import verify (A) -- green in the same fresh clone",
+   "tamper_test": "a value-preserving digit flip in the committed body.json -> 'REFUSED definition_drift: committed body.json != fresh regeneration', exit 2; git checkout restore -> verify green again",
+   "additive_proof": "A build in the B lane's authoring clone through the refactored tool regenerates every A artifact byte-identically (git status: only the tool file + new B paths); A verify green"
+  },
+  "mid_flight_refusals_banked": [
+   "REFUSED kernel_membranes expected 14: the first B build iterated ALL 24 v3 records instead of the labeled subset -- the kernel-conformance gate caught the bug before any artifact was accepted; fixed by deriving import_ranks from labels",
+   "REFUSED nondeterministic_output tris\\bone_02.bin: the refused first run had already written bins for all 24 ranks, leaving an UNIMPORTED bone's triangles in the output dir; the temp-dir determinism probe refused the stale file -- exactly the leftover-state class the CRLF lesson is about; output dir cleared, rebuilt clean"
+  ]
+ },
+
+ "verdicts": {
+  "geometry_preserved": "GREEN -- 14/14 compartments: face counts equal, referenced vertex counts equal, every triangle's float32 components equal to the source OBJ's, worst per-axis bbox deviation 1.3875e-06 mm (tolerance 1e-3), all canonical vertex sha256s match. Losses itemized: none.",
+  "adjacency_reproduced": "GREEN -- bond set == the measured touching edges with both endpoints identified: 8/8 pairs (5 hind + 3 fore), 0 invented, 0 dropped, every rest_length_mm equals its measured gap_mm exactly (max dev 0.0 mm at 0.01 mm resolution). The 7 measured-but-excluded edges are itemized with reasons (3 unknown-chain edges among unidentified bones 14/23/25; fragment pairs 2-16, 4-20, 6-10, 12-15 with one unidentified endpoint). Body honestly has 7 components: hind chain {3,7,19,21,24} + fore chain {5,8,9,11} + 5 transferred-label singletons.",
+  "honest_labels": "GREEN -- the definition contains EXACTLY the 14 v3 segment_label ranks; every label verbatim from bone_identification_v3.json (v3 ONLY), label_source v3 for all, sides assigned: 0 (v3 side_rule); the 11 absent ranks (composite 1 + 10 unidentified) appear nowhere; v1's superseded dead letters (rank 1 axial_composite; ranks 23/25 femur_class at low mirror confidence) are banked as NOT resurrected.",
+  "mass_book": "GREEN -- imported 12.0824 g vs identified-subset voxel book 12.0898 g: dev 6.12e-04 (5% tolerance); mesh vs voxel volumes -0.061% total, worst compartment -0.3079% (mem.bone_19), itemized; stated vs kernel-derived masses 7.20e-07 relative. Literature binding on the FULL specimen book (the import is a strict partial skeleton): 58.6289 g inside the 30-65 g window, fraction 10.66-14.66% of the 400-550 g body band inside 8-15%. Deviation vs the adult-taxon Prange regression (26.08-36.9 g) is NAMED with the partial-skeleton exclusion and the three same-direction HIGH biases, never tuned.",
+  "kernel_conformance": "GREEN -- the kernel's own parse_body validates infant_skeleton_875599.body.json unmodified (14 membranes, 8 bonds); test_definition 9/9 OK; scratch/glue/tensile/drape/residency 37 OK; creature_graph 19 passed + 27 subtests from repo root AND tools/ root, repeated in the fresh clone. The import IS the kernel format.",
+  "stage_true": "GREEN -- body.stage carries life_stage=infant with specimen B's own provenance (MorphoSource media 000875599: Macaca mulatta USNM 497135, infant, 160 um CT), scale=1.0, allometric_scaling_applied=false; identity transform proven by the geometry hashes; no scaling code path exists in the tool. The H2 3.79-8.8x stretch factors remain the named negative example.",
+  "reproducibility": "GREEN -- build regenerates byte-identical artifacts (in-run temp probe, demonstrated twice including once refusing stale leftover bins); verify green in a TRUE fresh clone of the pushed branch with the worktree==blob pre-check (102 files, 0 mismatches) run BEFORE anything; the tamper test demonstrated the named refusal power (definition_drift, exit 2) before restore-and-green.",
+  "honest_reds": "none -- all pre-registered falsifiers measured green; both predictions that could have failed (subset mass window, volume-delta band) hit. The two mid-flight REFUSALS are banked as evidence the gates fire, not as reds: they refused buggy intermediate states before any artifact was accepted."
+ },
+ "corrections": []
+}

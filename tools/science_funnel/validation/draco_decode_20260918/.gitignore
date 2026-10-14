@@ -1,0 +1,7 @@
+# Local run artifacts of the decode harness: the browser profiles, the raw
+# result posts (superseded by decode_receipt.json + the pinned decode
+# manifests) and the staging area stay local. The receipt, the scripts, the
+# pinned cdn/ bytes and cdn.lock.json are the committed lane evidence.
+out/
+logs/
+staging/

@@ -1,0 +1,30 @@
+{
+ "falsifier": "F-SLICE-RESTART",
+ "restarts": [
+  {
+   "n": 0,
+   "scene_sha256": "cadb6565431e272b81196f9fd92fe4043da7b2fc088ef79491157229d9cd1d0c",
+   "start_state_sha256": "84877cccfacfd74ea0ca9f93ed54516b96cca03731f9292f85002d98e63dd466",
+   "served_verts_sha256_unoffset": "84877cccfacfd74ea0ca9f93ed54516b96cca03731f9292f85002d98e63dd466",
+   "settled_root_y": 0.255118
+  },
+  {
+   "n": 1,
+   "scene_sha256": "cadb6565431e272b81196f9fd92fe4043da7b2fc088ef79491157229d9cd1d0c",
+   "start_state_sha256": "84877cccfacfd74ea0ca9f93ed54516b96cca03731f9292f85002d98e63dd466",
+   "served_verts_sha256_unoffset": "84877cccfacfd74ea0ca9f93ed54516b96cca03731f9292f85002d98e63dd466",
+   "settled_root_y": 0.255336
+  },
+  {
+   "n": 2,
+   "scene_sha256": "cadb6565431e272b81196f9fd92fe4043da7b2fc088ef79491157229d9cd1d0c",
+   "start_state_sha256": "84877cccfacfd74ea0ca9f93ed54516b96cca03731f9292f85002d98e63dd466",
+   "served_verts_sha256_unoffset": "84877cccfacfd74ea0ca9f93ed54516b96cca03731f9292f85002d98e63dd466",
+   "settled_root_y": 0.255472
+  }
+ ],
+ "same_scene_sha": true,
+ "same_start_state_sha": true,
+ "pass": true,
+ "law": "the import bytes are a pure function of committed files; the settled start rides the root law's attractor; the start-state sha is the measured evidence"
+}

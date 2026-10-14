@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>draco decode harness (official Google Draco WASM decoder)</title>
+<script type="importmap">
+{ "imports": { "three": "/lib/three.module.js" } }
+</script>
+<style>
+  body { font-family: monospace; background: #101418; color: #cde; margin: 12px; }
+  #log { white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<div id="log">harness starting...</div>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from '/lib/GLTFLoader.js';
+import { DRACOLoader } from '/lib/DRACOLoader.js';
+
+const LOG = document.getElementById('log');
+function say(msg) { LOG.textContent += '\n' + msg; }
+
+// --- pure-JS SHA-256 (sync; no secure-context dependency) ------------------
+const K = new Uint32Array([
+  0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+  0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
+  0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
+  0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
+  0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
+  0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+  0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
+  0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2]);
+function sha256Hex(bytes) {
+  const H = new Uint32Array([0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,
+                             0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19]);
+  const l = bytes.length;
+  const padded = new Uint8Array((((l + 8) >> 6) + 1) << 6);
+  padded.set(bytes);
+  padded[l] = 0x80;
+  const dv = new DataView(padded.buffer);
+  dv.setUint32(padded.length - 8, Math.floor(l / 0x20000000));
+  dv.setUint32(padded.length - 4, (l << 3) >>> 0);
+  const w = new Uint32Array(64);
+  for (let off = 0; off < padded.length; off += 64) {
+    for (let i = 0; i < 16; i++) w[i] = dv.getUint32(off + i * 4);
+    for (let i = 16; i < 64; i++) {
+      const x = w[i - 15], y = w[i - 2];
+      const s0 = ((x >>> 7) | (x << 25)) ^ ((x >>> 18) | (x << 14)) ^ (x >>> 3);
+      const s1 = ((y >>> 17) | (y << 15)) ^ ((y >>> 19) | (y << 13)) ^ (y >>> 10);
+      w[i] = (w[i - 16] + s0 + w[i - 7] + s1) >>> 0;
+    }
+    let a = H[0], b = H[1], c = H[2], d = H[3],
+        e = H[4], f = H[5], g = H[6], h = H[7];
+    for (let i = 0; i < 64; i++) {
+      const S1 = ((e >>> 6) | (e << 26)) ^ ((e >>> 11) | (e << 21)) ^ ((e >>> 25) | (e << 7));
+      const ch = (e & f) ^ (~e & g);
+      const t1 = (h + S1 + ch + K[i] + w[i]) >>> 0;
+      const S0 = ((a >>> 2) | (a << 30)) ^ ((a >>> 13) | (a << 19)) ^ ((a >>> 22) | (a << 10));
+      const maj = (a & b) ^ (a & c) ^ (b & c);
+      const t2 = (S0 + maj) >>> 0;
+      h = g; g = f; f = e; e = (d + t1) >>> 0;
+      d = c; c = b; b = a; a = (t1 + t2) >>> 0;
+    }
+    H[0] = (H[0] + a) >>> 0; H[1] = (H[1] + b) >>> 0; H[2] = (H[2] + c) >>> 0;
+    H[3] = (H[3] + d) >>> 0; H[4] = (H[4] + e) >>> 0; H[5] = (H[5] + f) >>> 0;
+    H[6] = (H[6] + g) >>> 0; H[7] = (H[7] + h) >>> 0;
+  }
+  let out = '';
+  for (let i = 0; i < 8; i++) out += H[i].toString(16).padStart(8, '0');
+  return out;
+}
+
+function errStr(e) {
+  if (!e) return String(e);
+  if (e instanceof Error && e.message) return e.message;
+  try {
+    const s = JSON.stringify(e);
+    if (s && s !== 'undefined') return s;
+  } catch (_) { }
+  return String(e);
+}
+
+function b64(bytes) {
+  let s = '';
+  const CH = 0x8000;
+  for (let i = 0; i < bytes.length; i += CH) {
+    s += String.fromCharCode.apply(null, bytes.subarray(i, i + CH));
+  }
+  return btoa(s);
+}
+
+function u8OfTyped(typed) {
+  return new Uint8Array(typed.buffer, typed.byteOffset, typed.byteLength);
+}
+
+// --- GLB container + draco header facts (stdlib-equivalent, in-page) -------
+function glbFacts(bytes) {
+  const dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const magicHex = dv.getUint32(0, true).toString(16).padStart(8, '0');
+  const version = dv.getUint32(4, true);
+  const length = dv.getUint32(8, true);
+  let pos = 12, json = null, binOffset = -1, binLength = 0;
+  while (pos < length) {
+    const clen = dv.getUint32(pos, true);
+    const ctype = dv.getUint32(pos + 4, true);
+    if (ctype === 0x4E4F534A) {
+      json = JSON.parse(new TextDecoder().decode(bytes.subarray(pos + 8, pos + 8 + clen)));
+    } else if (ctype === 0x004E4942) {
+      binOffset = pos + 8; binLength = clen;
+    }
+    pos += 8 + clen;
+  }
+  const prim = json.meshes[0].primitives[0];
+  const ext = (prim.extensions || {}).KHR_draco_mesh_compression;
+  const bv = json.bufferViews[ext.bufferView];
+  const blobStart = binOffset + (bv.byteOffset || 0);
+  return {
+    magic_hex: magicHex, version, glb_length: length,
+    draco_blob_start: blobStart,
+    draco_blob_length: bv.byteLength,
+    bin_chunk_start: binOffset,
+    bin_chunk_length: binLength,
+    draco: {
+      bitstream: bytes[blobStart + 5] + '.' + bytes[blobStart + 6],
+      encoder_type: bytes[blobStart + 7],
+      encoder_method: bytes[blobStart + 8],
+      encoder_method_name: bytes[blobStart + 8] === 1 ? 'MESH_EDGEBREAKER_ENCODING' : 'other',
+      traversal_type: bytes[blobStart + 11],
+      traversal_name: bytes[blobStart + 11] === 2 ? 'MESH_EDGEBREAKER_VALENCE_ENCODING' : 'other',
+    },
+    accessors: {
+      position_count: json.accessors[prim.attributes.POSITION].count,
+      index_count: json.accessors[prim.indices].count,
+    },
+  };
+}
+
+// --- decode once with a FRESH DRACOLoader (fresh WASM instances) -----------
+async function decodeOnce(glbBytes) {
+  const draco = new DRACOLoader();
+  draco.setDecoderPath(location.origin + '/lib/');
+  draco.setDecoderConfig({ type: 'wasm' });
+  const loader = new GLTFLoader();
+  loader.setDRACOLoader(draco);
+  try {
+    const gltf = await loader.parseAsync(glbBytes.buffer.slice(0), '');
+    let mesh = null, meshes = 0;
+    gltf.scene.traverse((o) => { if (o.isMesh) { meshes++; if (!mesh) mesh = o; } });
+    if (!mesh) throw new Error('no mesh in decoded scene');
+    const g = mesh.geometry;
+    const posAttr = g.attributes.position;
+    if (!posAttr) throw new Error('decoded mesh has no POSITION');
+    const norAttr = g.attributes.normal || null;
+    const idxAttr = g.index || null;
+    return {
+      positions: new Float32Array(posAttr.array),
+      normals: norAttr ? new Float32Array(norAttr.array) : null,
+      indices: idxAttr
+        ? (idxAttr.array.constructor === Uint16Array
+            ? new Uint16Array(idxAttr.array) : new Uint32Array(idxAttr.array))
+        : null,
+      index_type: idxAttr ? idxAttr.array.constructor.name : 'none',
+      vertex_count: posAttr.count,
+      index_count: idxAttr ? idxAttr.count : 0,
+      meshes,
+    };
+  } finally {
+    draco.dispose();
+  }
+}
+
+function hashPass(p) {
+  return {
+    positions_sha256: sha256Hex(u8OfTyped(p.positions)),
+    normals_sha256: p.normals ? sha256Hex(u8OfTyped(p.normals)) : null,
+    indices_sha256: p.indices ? sha256Hex(u8OfTyped(p.indices)) : null,
+    index_type: p.index_type,
+    vertex_count: p.vertex_count,
+    index_count: p.index_count,
+    meshes: p.meshes,
+  };
+}
+
+function sameHash(a, b) {
+  return a.positions_sha256 === b.positions_sha256
+      && a.normals_sha256 === b.normals_sha256
+      && a.indices_sha256 === b.indices_sha256
+      && a.vertex_count === b.vertex_count
+      && a.index_count === b.index_count;
+}
+
+// --- perceptual-evidence screenshot (NOT the proof; labelled as such) ------
+function screenshot(meshDecoded, label, posSha) {
+  const W = 320, H = 240;
+  const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+  renderer.setSize(W, H, false);
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x101418);
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.BufferAttribute(meshDecoded.positions, 3));
+  if (meshDecoded.normals) {
+    geometry.setAttribute('normal', new THREE.BufferAttribute(meshDecoded.normals, 3));
+  }
+  if (meshDecoded.indices) geometry.setIndex(new THREE.BufferAttribute(meshDecoded.indices, 1));
+  const material = new THREE.MeshStandardMaterial({
+    color: 0xcfc4b0, roughness: 0.85, metalness: 0.0,
+    flatShading: !meshDecoded.normals,
+    side: THREE.DoubleSide,
+  });
+  const mesh = new THREE.Mesh(geometry, material);
+  scene.add(mesh);
+  const box = new THREE.Box3().setFromObject(mesh);
+  const sphere = box.getBoundingSphere(new THREE.Sphere());
+  const camera = new THREE.PerspectiveCamera(50, W / H, sphere.radius / 100, sphere.radius * 30);
+  const dir = new THREE.Vector3(1, 0.35, 1).normalize();
+  camera.position.copy(sphere.center).addScaledVector(dir, sphere.radius * 2.2);
+  camera.lookAt(sphere.center);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x445566, 1.1));
+  const head = new THREE.DirectionalLight(0xffffff, 1.4);
+  head.position.copy(camera.position);
+  scene.add(head);
+  renderer.render(scene, camera);
+
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(renderer.domElement, 0, 0);
+  ctx.fillStyle = 'rgba(0,0,0,0.72)';
+  ctx.fillRect(0, H - 42, W, 42);
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '10px monospace';
+  ctx.fillText('PERCEPTUAL EVIDENCE - THE HASH IS THE PROOF', 6, H - 31);
+  ctx.fillText(label + ' - OFFICIAL DRACO WASM DECODE', 6, H - 19);
+  ctx.fillStyle = '#ffd27f';
+  ctx.fillText('POS SHA ' + posSha.slice(0, 24), 6, H - 7);
+  const url = canvas.toDataURL('image/png');
+  renderer.dispose();
+  return url.substring(url.indexOf(',') + 1);
+}
+
+// --- main -------------------------------------------------------------------
+async function post(name, obj) {
+  const body = JSON.stringify(obj);
+  const res = await fetch('/results/' + name,
+    { method: 'POST', headers: { 'Content-Type': 'application/json' }, body });
+  say('POST ' + name + ' -> ' + res.status);
+}
+
+async function main() {
+  const params = new URLSearchParams(location.search);
+  const tag = params.get('run') || 'run1';
+  const jobs = await (await fetch('/jobs.json')).json();
+  const selftest = sha256Hex(new TextEncoder().encode('abc'));
+  say('sha256 selftest(abc) = ' + selftest);
+  const libHashes = {};
+  for (const f of jobs.libs) {
+    const bytes = new Uint8Array(await (await fetch('/lib/' + f)).arrayBuffer());
+    libHashes[f] = sha256Hex(bytes);
+  }
+  say('libs hashed: ' + Object.keys(libHashes).length);
+  const pass1ById = {};
+
+  for (const job of jobs.glbs) {
+    const id = job.id;
+    try {
+      const bytes = new Uint8Array(await (await fetch(job.url)).arrayBuffer());
+      const glbSha = sha256Hex(bytes);
+      const facts = glbFacts(bytes);
+      say(id + ' glb ' + glbSha.slice(0, 12) + ' draco ' + facts.draco.bitstream
+          + ' method ' + facts.draco.encoder_method);
+      const p1raw = await decodeOnce(bytes);
+      const p2raw = await decodeOnce(bytes);   // fresh decoder instance
+      const pass1 = hashPass(p1raw);
+      const pass2 = hashPass(p2raw);
+      pass1ById[id] = pass1;
+      const match = sameHash(pass1, pass2);
+      say(id + ' pass1==pass2: ' + match + ' verts ' + pass1.vertex_count);
+      let shotB64 = null, shotError = null;
+      try {
+        shotB64 = screenshot(p1raw, job.label, pass1.positions_sha256);
+      } catch (e) {
+        shotError = errStr(e);
+        say(id + ' WEBGL/SCREENSHOT ERROR: ' + shotError);
+      }
+      await post(tag + '__' + id + '.json', {
+        kind: 'draco_decode_result.v1', id, tag,
+        selftest_sha256_abc: selftest,
+        user_agent: navigator.userAgent,
+        glb: { sha256: glbSha, bytes: bytes.length, url: job.url },
+        gltf_facts: facts,
+        decoder: {
+          three_revision: THREE.REVISION,
+          decoder_config: 'wasm',
+          libs_sha256: libHashes,
+        },
+        pass1, pass2, redecode_identical: match,
+        screenshot_png_base64: shotB64,
+        screenshot_error: shotError,
+        buffers: {
+          positions_b64: b64(u8OfTyped(p1raw.positions)),
+          normals_b64: p1raw.normals ? b64(u8OfTyped(p1raw.normals)) : null,
+          indices_b64: p1raw.indices ? b64(u8OfTyped(p1raw.indices)) : null,
+        },
+      });
+    } catch (e) {
+      say(id + ' DECODE FAILED: ' + (e && e.message || e));
+      await post(tag + '__' + id + '.error.json', {
+        kind: 'draco_decode_error.v1', id, tag, error: errStr(e),
+      });
+    }
+  }
+
+  // corrupted-GLB probe: one flipped byte PROVABLY INSIDE the draco
+  // bufferView must either refuse loudly or change the decode identity; it
+  // can never reproduce the pinned identity.
+  if (jobs.corrupt) {
+    const srcJob = jobs.glbs.find((g) => g.id === jobs.corrupt.of);
+    try {
+      const cbytes = new Uint8Array(await (await fetch(srcJob.url)).arrayBuffer());
+      const cfacts = glbFacts(cbytes);
+      const flipOff = cfacts.draco_blob_start
+        + Math.min(4096, cfacts.draco_blob_length - 16);
+      cbytes[flipOff] ^= 0x01;
+      const csha = sha256Hex(cbytes);
+      try {
+        const dec = await decodeOnce(cbytes);
+        const cpass = hashPass(dec);
+        const pinned = pass1ById[jobs.corrupt.of];
+        const identical = pinned
+          ? cpass.positions_sha256 === pinned.positions_sha256
+          : null;
+        await post(tag + '__corrupt.json', {
+          kind: 'draco_corrupt_probe.v1', tag,
+          source_glb: srcJob.url, flip_offset: flipOff,
+          draco_blob_start: cfacts.draco_blob_start,
+          corrupted_sha256: csha,
+          decoded_positions_sha256: cpass.positions_sha256,
+          identical_to_pinned: identical,
+          outcome: identical ? 'SILENTLY DECODED IDENTICAL -- FALSIFIER FAILED'
+                             : 'SILENTLY DECODED DIFFERENT GEOMETRY',
+          error: null,
+        });
+        say('corrupt GLB silently decoded; identical_to_pinned=' + identical);
+      } catch (e) {
+        await post(tag + '__corrupt.json', {
+          kind: 'draco_corrupt_probe.v1', tag,
+          source_glb: srcJob.url, flip_offset: flipOff,
+          draco_blob_start: cfacts.draco_blob_start,
+          corrupted_sha256: csha,
+          decoded_positions_sha256: null,
+          identical_to_pinned: false,
+          outcome: 'REFUSED',
+          error: errStr(e),
+        });
+        say('corrupt GLB refused loudly: ' + errStr(e).slice(0, 120));
+      }
+    } catch (e) {
+      await post(tag + '__corrupt.json', {
+        kind: 'draco_corrupt_probe.v1', tag,
+        outcome: 'FETCH_FAILED', error: errStr(e),
+      });
+    }
+  }
+
+  await fetch('/done', { method: 'POST', body: tag });
+  say('DONE tag=' + tag);
+}
+
+main().catch(async (e) => {
+  say('FATAL: ' + (e && e.message || e));
+  try {
+    const params = new URLSearchParams(location.search);
+    await fetch('/results/' + (params.get('run') || 'run1') + '__fatal.json', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fatal: String(e && e.stack || e) }),
+    });
+  } catch (_) { /* nothing else to do */ }
+});
+</script>
+</body>
+</html>
