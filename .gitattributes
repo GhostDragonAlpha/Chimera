@@ -20,6 +20,11 @@ agent_logs/codex/graph_contracts_20260915/** -text whitespace=blank-at-eol,blank
 
 # Preserve graph-workflow proof bytes across checkouts.
 tools/agent_fleet/graph_workflow/validation/*.log -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+# 11.18 mechanism-factory receipts pin these sources by sha256 (source_file_hashes);
+# checkout bytes must equal committed bytes or genuine receipts self-refuse.
+tools/membrane_scale_lab/** -text
+tools/mechanism_factory/** -text
 tools/science_funnel/examples/* -text
 tools/science_funnel/validation/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 
