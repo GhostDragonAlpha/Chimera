@@ -137,10 +137,12 @@ These are different claims and this candidate keeps them separate:
 - Gate evidence: `docs/evidence/construction_packet_20261012/`
   (`B0_baseline_and_ownership_map.md` … `B7_bounds_evidence.md`,
   `B8_gallery_evidence.md`, `B9_envelope_scope.md`,
-  `B9_envelope_evidence.md`, `FULL_PLAN_AUDIT.md`, frames, envelope JSON).
+  `B9_envelope_evidence.md`, `OBJECTIVE_LOOP_EVIDENCE.md`,
+  `FULL_PLAN_AUDIT.md`, frames, envelope JSON).
 - Batteries: `tools/construction_packet/test_b*.py` +
-  `test_construction_packet.py` — **84 passed** full regression at this
-  commit (133.20 s, sequential; disjoint engine ports).
+  `test_construction_packet.py` + `test_objective_loop.py` — **88 passed**
+  full regression (84 at the pin commit, +4 objective-loop falsifiers added
+  test-only on top; 186.79 s, sequential; disjoint engine ports).
 - Recipe comparison: `docs/evidence/recipe_comparison_rc1_27314746/`
   (4 reversed-order trials, contract checks green, exact reproduction of
   the `def4d82d` candidate's equilibrium; predecessor receipt preserved
@@ -150,7 +152,7 @@ These are different claims and this candidate keeps them separate:
   `docs/evidence/CAPTURE_RETENTION.md`; committed evidence in this chain is
   JSON-only, and the receipts' `artifacts_sha256` preserve the byte-identity
   audit of everything deleted.
-- Caveat, stated plainly: the 84-test regression was measured on the shared
+- Caveat, stated plainly: the 88-test regression was measured on the shared
   checkout's build, which differs from the candidate binary only by three
   uncommitted UI-only lines in `ui.cpp` (another agent's work, not in the
   pin). The recipe comparison was measured on the candidate binary itself.
@@ -169,11 +171,17 @@ future workers at this candidate's pin instead of `def4d82d`):
 ## 6. Open blockers — visible, not hidden
 
 1. **Human observation (release blocker).** No designated player-observation
-   workflow exists in the inspected contract. Automated tests establish
-   mechanical behavior; they cannot establish that an unfamiliar player
-   understands it. Operator observation can satisfy the operator-confirmation
-   clause of `req.engine_game_release`; unfamiliar-player claims require
-   actual unfamiliar participants. Encounter packets remain proposals.
+   workflow exists in the inspected contract. The engineering falsifier
+   layer under the gate is now in place — objective, success, failure,
+   recovery and agent-less operation are mechanically evidenced on the
+   qualified runtime (`test_objective_loop.py`;
+   `OBJECTIVE_LOOP_EVIDENCE.md`, including the measured pair-contact limit
+   cycle that bounds any future transient claim). What remains is exactly
+   the human clause: automated tests establish mechanical behavior; they
+   cannot establish that an unfamiliar player understands it. Operator
+   observation can satisfy the operator-confirmation clause of
+   `req.engine_game_release`; unfamiliar-player claims require actual
+   unfamiliar participants. Encounter packets remain proposals.
 2. **Transient comparisons are unqualified.** The recipe chain qualifies the
    equilibrium fixture only. Exact transient comparison needs its own gate:
    exact native step counts, exclusive clock ownership during trials,
