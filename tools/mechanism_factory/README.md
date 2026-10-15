@@ -110,3 +110,27 @@ fields (owner scope: only `tools/mechanism_factory/` and
 `docs/evidence/mechanism_factory/` are written; the lab is imported
 read-only) and the failure-response law (refuse before simulation;
 convergence failure stays FAILED/stagnated, never rewritten) are honored.
+
+## Receipt adapter (seam 2b) — `receipt_adapter.py`
+
+Independent, versioned verifier (`ADAPTER_VERSION = receipt-adapter-v1`,
+accepted schema `chimera-mechanism-factory-qualification-receipt-v1`).
+`verify_receipt(receipt, packet) -> Verdict(passed, refusals)` trusts nothing
+it can recompute: packet digest, solver/law/fixture file hashes, units,
+finiteness, the convergence acceptance law (`unconverged_label`: stationary,
+or stagnated with the case residual within the PACKET threshold), domain and
+split integrity, declared-verdict forgery (tolerances read ONLY from the
+packet; thresholds carried in the receipt are inert), and `gpu_job`
+reservation unless a clean-resume block matches a checkpoint hash on disk.
+Run: `python tools/mechanism_factory/receipt_adapter.py RECEIPT PACKET`
+(exit 0 pass / 1 refused / 2 usage-or-unreadable).
+
+Acceptance suite — `receipt_adapter_faults.py` (exit 0 only if all green):
+builds a genuine pair fresh, then injects F1 receipt deleted; F2 receipt
+hash byte flipped; F3 units `cm`; F4 holdout family duplicated under train;
+F5 NaN output; F6 `step_limit` and over-threshold `stagnated`; F7 foreign
+family `twisted_torus`; F8 packet threshold widened post hoc; F9 PASS
+claimed over an over-threshold number; F10 gpu_job reserved vs. clean
+resume with a real checkpoint; F11 absurd receipt thresholds proven inert.
+Results are stamped as `chimera-mechanism-factory-adapter-faults-v1` into
+`docs/evidence/mechanism_factory/` via `resolve_evidence_path`.
