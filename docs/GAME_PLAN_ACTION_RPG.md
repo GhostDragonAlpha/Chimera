@@ -25,8 +25,21 @@ simulation from one trained table. SEALED and its genre library supply concrete
 worlds and interactions that exercise this foundation. The rescue slice remains
 a bounded game demonstration; it does not define the limit of the matter engine.
 
-**Reading route for the worker:** start with §13.1 for the next assignment,
-§11.16 for the multiscale component architecture, and §3 for existing owners.
+**Reading route for the worker:** start with §11.22 for the peer-agent development
+method and evidence checkpoints, §11.23 for nested/repeating geometry families,
+then §11.21 for database-grounded
+structure-to-response training, then §11.20 for the artificial-protein
+making-to-game workflow, §11.19 for creative recursive research, and §11.18 for
+qualification. Use §11.20.11 and §13.1 for the next implementation assignment;
+§11.20.9 retains the original increment contract,
+§11.16 for the multiscale component architecture, §11.17 for membrane learning
+with Noether, and §3 for existing owners.
+**Building-block direction, 2026-10-14:** artificial proteins are the reusable
+matter mechanisms described in §11.20: generated physical arrangements whose
+functions are discovered and independently qualified, composed through their ports,
+and reused recursively as larger pieces. Their immutable recipes and validated
+representations serve many game objects; native instances retain physical state.
+
 Reuse §§11.1–11.15 for construction, CA, membranes, rendering and experiments.
 Preserve B0–B8's scoped evidence; they are a construction foundation, not proof
 that the multiscale simulator is complete. §§1–10 retain game applications.
@@ -1832,6 +1845,9 @@ the player to memorize a universal formula.
 
 #### A component is a mechanism, a representation and an instance
 
+Artificial proteins (§11.20) are the design and gameplay expression of this
+mechanism library; they reuse its identities and contracts.
+
 Keep three identities distinct. The mechanism defines the physical relationships
 and boundary exchanges. A representation implements that mechanism at a declared
 resolution, scale/regime and error budget. An instance owns its current state,
@@ -1958,6 +1974,1298 @@ at several supported sizes and in a second assembly with less computation, while
 its declared response error and conservation budgets remain satisfied. Faster
 world construction and richer game interactions must be demonstrated separately;
 a faster lookup alone does not prove either.
+
+### 11.17 Learn reusable membrane responses from qualified experiments
+
+**Methodology update, 2026-10-13:** use the installed Emmi AI Noether framework
+as an isolated research tool for the mechanism library in §11.16. The learning
+unit is a bounded membrane mechanism with physical ports and state, rather than
+a finished object or a visually plausible deformation. The native simulator
+provides qualified examples; a learned representation proposes responses; the
+existing acceptance, state and rendering contracts govern their use. This is a
+proposed extension of S2–S4, not a new solver already admitted to the engine.
+
+#### What is installed, and what the evidence actually establishes
+
+The separate environment is `D:/Chimera-Maintenance/Runtime/physics-ai/`, running
+Noether 2026.4.0 and PyTorch 2.11.0+cu128 in Ubuntu/WSL on the RTX 4090. Its
+`README.md`, `packages.freeze.txt`, scripts and JSON receipts identify the local
+setup. `Noether.ps1 -Action GpuTests` uses the existing GPU handoff and holds the
+reservation across the tests; the requested local model reloads on next inference.
+Noether is a training/inference framework, not a pretrained universal material.
+
+The installation check exercised the actual Universal Physics Transformer with
+finite GPU predictions and gradients. A separate manufactured uniaxial elastic
+field used 128 training points, 256 withheld spatial points and 200 updates:
+2.529% relative L2 displacement error, 0.04394 maximum absolute dimensionless
+component error, and 4.204 seconds for the measured training/evaluation interval.
+Imports and model setup were outside that interval. See
+`elasticity-cuda-receipt.json` and `smoke-cuda-receipt.json` in that environment.
+These measurements concern one analytic field at fixed geometry and Poisson ratio;
+they establish neither membrane accuracy nor material/geometry/scale generalization,
+solver acceleration, conservation or a gameplay acceptance tolerance. Preserve
+this result as an installation baseline, not an S3 pass.
+
+Upstream: [Noether](https://github.com/Emmi-AI/noether) and its
+[license](https://github.com/Emmi-AI/noether/blob/main/LICENSE.txt). The installed
+release is for non-production research/evaluation under those terms. Before any
+production adoption, resolve the license for the framework, derived artifacts
+and outputs; retain provenance so research assets are not silently shipped.
+
+#### The membrane LEGO: one contract, several representations
+
+Reuse the existing recipe/material/assembly identities. Attach the following
+characterization record to a mechanism family; do not create a parallel material
+catalog or a new inspector:
+
+| Contract part | Required content |
+|---|---|
+| Geometry | Rest and current vertex coordinates, faces and adjacency, orientation, boundary loops, physical size, independent mesh resolution and material axes where applicable |
+| Material and state | Sourced law/parameters and units; rest metric or prestress only when supported; required history, inventories and their owner; explicit unsupported properties |
+| Ports | Attachment patches with stable IDs and frames; prescribed/free DOFs, imposed loads or displacements, reactions and work; pressure/flow/thermal ports only after their laws are qualified |
+| Representation | Detailed reference, analytical reduction, response table or learned model; versioned input/output schema, normalization and state mapping |
+| Qualification | Geometry/load/scale/material/topology domain, error metrics and thresholds, coupled tests, reference/data/model hashes, freshness and a named fallback/refusal |
+
+Point coordinates alone do not encode a membrane: two meshes with identical points
+but different connectivity, seams or boundary conditions can behave differently.
+The adapter must preserve those distinctions. Audit the selected Noether model's
+actual inputs; a geometry-only example cannot learn responses to omitted loads,
+material coefficients or history. Refuse an incomplete input contract instead of
+fitting contradictory targets. Distinguish rigid motion, deformation and material
+orientation; test translation/rotation covariance and permutation consistency.
+
+#### Build the training curriculum from existing membrane machinery
+
+1. **One supported patch law.** Start with
+   `tools/membrane_scale_lab/surface_energy_reference.py`: its current-area,
+   constant nonnegative gamma law is `U = sum(gamma_t * A_t)`, with forces from
+   the geometric derivative. It differs from frozen-normal projected-area laws.
+   Reuse its checks, named invalid-geometry refusals and GPU fixtures. A simple
+   analytic triangle force may already be cheaper and more accurate than an AI
+   call; the first useful approximation candidate is a costly bounded equilibrium
+   response or solver initial guess, only if benchmarked benefit exists. Constant
+   tension does not supply shear elasticity, bending stiffness, fracture or tissue.
+2. **Vary the conditions that change the response.** Characterize supported
+   asymmetric patches, clamped/free/attachment boundaries, imposed displacement
+   or admissible loading, and gamma. Keep physical scale separate from mesh
+   refinement. Derive the similarity mapping: for uniform length scaling by s
+   and unchanged gamma, area energy scales as s squared and geometric forces as
+   s; unchanged external loads generally break similarity. Add other effects
+   only through their own qualified references, not guessed labels.
+3. **Learn a bounded representation.** Compare an analytical baseline, a compact
+   interpolated table and a small Noether model on identical cases. The dataset
+   generator remains the existing experiment machinery. An offline adapter reads
+   its receipts into training tensors; Python does not take over native ticks.
+   Prefer a conservative energy representation with differentiated forces when
+   suitable and verify its derivatives. A learned energy alone does not guarantee
+   stability, conservation under integration, or correct physics. Initially use
+   predictions in shadow comparisons or as admissible initial guesses followed
+   by the existing converged solve; enforce boundary constraints before acceptance.
+4. **Connect two patches.** Test a shared seam and a finite-area attachment using
+   existing attachment references and topology transactions. Balance reactions,
+   moments and work on both sides; give each DOF and inventory one owner. Compare
+   full coupled solutions, including feedback and stiffness contrast. Two accurate
+   isolated surrogates can still form an unstable assembly.
+5. **Build asymmetric layers.** Progress from a sheet to a folded/seamed layer,
+   then separated layers with explicit interfaces, then a supported closed shell.
+   Rendering overlap never creates a bond. Contact, sliding, bending, sealing,
+   pressure coupling, puncture and fracture each require their own admitted law,
+   characterization and failure tests. Keep thin layers distinct; a learned field
+   must not bridge unrelated surfaces because their vertices are nearby.
+6. **Reuse across assemblies and scales.** Withhold complete geometries, physical
+   scales, load families and combinations of neighbors. Qualify matched regimes
+   and reject deliberately unmatched ones. A second assembly must reuse the same
+   qualified mechanism artifact; retraining a separate model for each object
+   does not demonstrate the intended LEGO reuse.
+
+#### Dataset and comparison discipline
+
+Extend the existing experiment receipts with case IDs, source/binary/shader hashes,
+recipe and material revisions, normalization, units, boundary/port state, convergence
+status, physical time/step and resolution. For learned artifacts, add split manifests,
+training seed/configuration, package versions, checkpoint hash and license provenance.
+Keep dataset/checkpoint artifacts outside Git; the plan and compact evidence index
+point to them. Preserve failed, refused and unknown cases with their reasons, but
+exclude them from successful-response regression targets. A changed relevant law,
+solver, recipe or material invalidates dependent evidence; requalify the model or
+retain it explicitly as stale. Do not rewrite historical measurements.
+
+Split by case family before preprocessing or fitting normalization; related frames,
+resolutions and scaled copies must not leak into an ostensibly independent test set.
+Keep a final held-out suite untouched by adaptive sampling or model selection. Sample
+new training/validation cases where residuals or regime boundaries warrant it; uncertainty
+estimates must be calibrated against measured errors and cannot guarantee safe extrapolation.
+
+Preregister observable-specific absolute and relative tolerances, including sensible
+near-zero denominators. Measure displacement, port forces/moments, energy/work residuals,
+constraint violation, worst-case errors and refusal behavior. For dynamics, separately
+qualify synchronized native advancement, timestep sensitivity, history and long rollouts;
+an equilibrium fit grants no transient capability. Distinguish approximation error,
+reference discretization error and uncertainty in the physical/material model.
+
+#### Runtime, rendering and resource acceptance
+
+The initial integration is offline characterization plus shadow comparison in the
+existing inspector/A-B/evidence channels. Show the measured native response alongside
+the prediction, residual and qualification domain. Predictions do not write alternate
+render vertices or silently replace accepted physics. Later admission must preserve
+§§11.5–11.6: native accepted state drives mesh, picking and attachment identities together.
+
+Before adopting a runtime approximation, measure the complete path: feature assembly,
+normalization, transfer, inference, conservation/constraint checks, fallback and render
+synchronization. Include cold start, steady-state cost, tail latency, RAM/VRAM and training
+amortization at equal error tolerance. Small operators may favor CPU tables or analytical
+laws; framework GPU timing alone is not a game speedup. Production inference format and
+resident-kernel compatibility are separate qualification tasks, not implied by a WSL test.
+
+Batch experiments through the existing GPU handoff; bound concurrent cases, reuse immutable
+geometry, retain compact results and selected witness traces, and verify memory returns
+after each process or declared pool lifetime. Keep Qwen/Maya quantization and context intact.
+For invalid inputs, topology changes or an out-of-domain live state, choose the qualified
+detailed fallback before accepting a mutation; if none is available within budget, return
+a named unsupported result. Never conceal the failure with clipping or attractive animation.
+
+### 11.18 Procedure-driven mechanism factory: the worker follows evidence
+
+**Operator direction, 2026-10-14; peer workflow clarified 2026-10-15:** develop
+with the retained local Qwen/Maya models, the optional DeepSeek peer in §11.22,
+and the installed GPU experiment/training system. Full GLM is retired on
+this machine. Progress must depend on executable procedures and measured physics,
+not on a language model improvising a correct mathematical explanation. The agent
+selects a bounded task, prepares validated inputs, invokes existing tools and
+reports their artifacts. Numerical solvers and independent checks establish the
+answer. Training a response operator is distinct from training the chat model.
+
+This section specifies the operating workflow for §§11.16–11.17 and §13.1.
+It is repository-level proposed workflow, not a claim of deployed enforcement.
+No controller session is provisioned for this plan edit. Before autonomous fleet
+dispatch, admit its executable checklist through the selected graph authority.
+A prose instruction cannot force a model to comply; the controller and verifier
+must reject invalid transitions and missing evidence. This reduces dependence on
+agent reasoning; it cannot guarantee correct science from an incorrect reference.
+
+#### Reuse map: what the worker actually has
+
+| Existing owner | Use in this workflow | Limit the worker must respect |
+|---|---|---|
+| `tools/membrane_scale_lab/surface_energy_reference.py`, `surface_energy_checks.py` | Constant-tension patch reference and falsifiers | Not an elastic tissue, bending or fracture model |
+| `tools/membrane_scale_lab/` fixtures, correctness verifier, lab runner, GPU probes | Bounded geometry cases, native/GPU comparisons, costs and receipts | Inspect the executed backend; a lab report or CPU benchmark is not evidence of GPU execution |
+| `tools/recipe_experiments/runner.py` | Baseline restoration, converged native cradle comparison and freshness checking | Equilibrium fixture only; no generic membrane dataset exporter is established |
+| Existing assembly inspector, Studio A/B, recorder and native state | Inspect accepted geometry, measurements and comparisons | Images supplement numeric evidence; they do not approve physics |
+| `D:/Chimera-Maintenance/Runtime/physics-ai/Noether.ps1` | Installed isolated Noether research environment and managed GPU setup checks | `GpuTests` proves setup; it does not train a qualified Chimera mechanism |
+| `tools/agent_fleet/graph_workflow_runner.py` and graph workflow | Pinned checklist execution and independently governed attestation | Requires the proper assigned session; never borrow credentials or self-attest |
+
+The missing seams are a versioned receipt-to-training adapter, a bounded fitting
+and evaluation entrypoint, and an admitted checklist connecting those artifacts
+to the existing verifier. Implement these seams in that order. Do not rebuild a
+renderer, inspector, solver, material catalog, GPU scheduler or training framework
+for these seams. New capabilities and evidence-backed replacements may be proposed
+through §11.19 rather than silently duplicating existing owners.
+
+#### One small work packet, one measurable physical function
+
+Every qualification packet names one mechanism/recipe ID (existing or registered
+as experimental under §11.19) and one response, for example
+boundary displacement -> equilibrium port reactions for an asymmetric constant-
+tension patch. Require the following fields before execution; unknown is an error,
+not permission to invent a number:
+
+- Task and candidate revision; source/build/shader hashes; law and recipe revisions;
+  owner and allowed file scope; exact reference and verifier identities.
+- Input/output schema, SI units and normalization; geometry/connectivity, material,
+  boundary conditions, ports and history required by the chosen law.
+- Admitted physical domain and exclusions; physical size and mesh resolution as
+  separate axes; scale mapping and the assumptions that make it valid.
+- Frozen case-family splits, seeds and negative controls; quantitative acceptance
+  thresholds justified by reference error and the gameplay need, before fitting.
+- Exact commands/arguments, expected output schemas, time/RAM/VRAM/disk budgets,
+  maximum trials, checkpoint policy, fallback and stopping conditions.
+
+Keep the packet compact: retrieve only the current contract, failed checks and
+artifact index into agent context. Large tensors and full traces stay on disk.
+Resume from a verified checkpoint with matching hashes, not a conversational
+reconstruction. Record commands and return codes so another worker can repeat it.
+
+#### Mandatory execution sequence
+
+| Stage | Worker action | Required evidence / refusal |
+|---|---|---|
+| P0: prepare | Resolve existing owners and freeze the packet | Missing law, threshold, owner or command -> BLOCKED; implement/approve that prerequisite first |
+| P1: reference | Run analytical cases, native correctness and GPU parity where supported | PASS at the pinned inputs; stale, unconverged or unsupported cases cannot become labels |
+| P2: characterize | Sweep only approved geometry/load/material/scale ranges in bounded batches | Receipt per case, convergence, physical steps/time, units, failures and provenance retained |
+| P3: fit | First evaluate analytical/table baselines; then fit a small Noether candidate if justified | Frozen training/validation splits, seed, normalization, checkpoint hash, resource cost; no final-test access during tuning |
+| P4: verify | Independent verifier evaluates the frozen held-out families and negative controls | Numeric errors, worst cases, constraints, forces/moments/work and refusal results; candidate cannot edit verifier/tolerances |
+| P5: compose | Join two pieces, then reuse the same artifact in a second assembly and supported scale | Balanced ports, ownership, seam behavior and coupled reference agreement; isolated accuracy alone is insufficient |
+| P6: compare | Compare complete runtime paths at equal accepted error | Reference vs table vs learned response, total latency/memory and amortization; retain the simplest qualified useful representation |
+| P7: admit | Submit artifact index and independent receipt through existing review | Only authorized integration promotes it; otherwise native reference remains authoritative |
+
+These stages govern qualification and adoption; exploratory discovery follows
+§11.19 and cannot bypass them when claiming a qualified result. No stage may be
+skipped because the agent says the result is obvious. Failures
+stay attached to their case IDs. A successful command exit or attractive render
+is not a pass unless the verifier checks the declared measurements. Learn only
+from qualified labels. A fit to a wrong solver merely reproduces its error.
+
+#### Fixed response to failures: no free-form rescue tuning
+
+- Missing input, unit mismatch or unsupported topology: refuse before simulation.
+- Reference/GPU disagreement: stop fitting; reduce to the smallest failing fixture
+  and repair/qualify the implementation. Never average conflicting labels.
+- Convergence failure: retain UNKNOWN or FAILED and the trace. A longer run or
+  changed solver setting is a new versioned trial, not a rewritten success.
+- Validation error: use the packet's bounded refinement budget on training and
+  validation cases only. Do not widen thresholds or inspect the final holdout.
+- Final holdout failure: reject the candidate. Any revised selection process needs
+  a new independently governed holdout; retain the old failure.
+- Out-of-domain state or stale artifact: use a qualified detailed fallback, or
+  return a named refusal before changing live state. No silent extrapolation.
+- No useful cost/accuracy benefit: keep the qualified analytical law or table;
+  record the learned candidate as rejected. Training is not an end in itself.
+
+The first packet permits one baseline comparison and at most three preregistered
+training configurations. Exhausting the budget produces a compact failure report
+and a specific prerequisite, not an open-ended agent tuning loop. Changes to a
+law, domain or acceptance threshold require a new reviewed packet.
+
+#### GPU work as one reserved batch
+
+Prepare schemas, fixture lists and CPU validation first. Use the existing GPU
+handoff to release the local language model once, then run characterization,
+fitting and evaluation under the same bounded reservation. The process executing
+that batch must not call the unloaded language model to decide the next step;
+its preregistered manifest determines the sequence. Release in a finally/cleanup
+path on success, error or cancellation, then allow the retained local model to
+reload through the existing router. Preserve its context and quantization.
+
+Measure live/reserved RAM and VRAM before, during and after the declared pool or
+process lifetime. Stop on the packet's memory/disk limits; do not solve an OOM by
+silently changing precision, reducing physical steps or dropping cases. Keep
+compact reductions plus selected witness traces; deduplicate immutable fixtures.
+The existing Noether `GpuTests` action is a setup check only. The production-sized
+batch manifest and adapter are implementation work, not an existing command.
+
+#### First deliverable and enforcement acceptance
+
+First build the smallest receipt adapter and executable checklist for one
+supported asymmetric patch equilibrium response. Reuse the constant-gamma law;
+qualify its boundary/load solve before producing targets. If that solve is absent,
+implement and validate it first. Include multiple shapes, loads and physical
+scales, with complete families withheld; keep resolution studies separate.
+Compare the direct/reference solve, a bounded table and a small learned candidate.
+Use shadow comparison or a solver initial guess before any runtime replacement.
+
+Acceptance of the workflow itself requires fault-injection tests: missing receipt,
+changed solver hash, mismatched units, split overlap, NaN output, unconverged label,
+out-of-domain input, edited tolerance, forged worker PASS and interrupted GPU job.
+Each must block promotion or cleanly resume from a matching checkpoint as
+appropriate. Verify cleanup releases the reservation and the retained model can
+serve again. A worker with access to implementation files must not thereby gain
+permission to change the independent acceptance suite or promote its own result.
+
+Deliver a schema-validated example packet, exact reproducible commands, raw
+receipts, independent verdict, resource measurements and a short next action.
+Until that adapter/checklist is implemented and admitted, report
+WORKFLOW_NOT_IMPLEMENTED rather than claiming that this plan enforces compliance.
+Noether's existing research/license boundary in §11.17 still applies; production
+admission is a separate gate. The resulting LEGO library grows one measured,
+reusable function at a time, with native physics and rendering ownership intact.
+
+### 11.19 Recursive research: creative discovery with independent physics checks
+
+**Operator direction, 2026-10-14:** the ambition is a matter-simulator game engine
+whose reusable mechanisms and research methods improve through repeated discovery,
+experiment and qualification. Agents have creative freedom to invent structures,
+ask unexpected questions, challenge assumptions and propose new research directions.
+The current game slice, task list and component catalog are starting points, not
+permanent boundaries of discovery. A claim of being the world's first requires
+separate historical evidence; it is not an engineering acceptance criterion.
+
+#### Two connected loops: discover freely, qualify explicitly
+
+The discovery loop is open-ended in ideas and bounded in each expenditure of
+resources. Agents may explore new membrane geometries, asymmetric layers, physical
+ports, scale relationships, laws, representations, assembly strategies, gameplay
+and experimental methods. They may reframe or abandon an unproductive hypothesis
+and propose a better question without having to manufacture success on the old one.
+Reuse existing owners and tools when applicable; a genuinely new capability may
+justify an extension or replacement backed by a measured comparison.
+
+Exploratory work declares its question, resource budget, ownership and observables;
+it need not know the answer or a runtime acceptance tolerance in advance. Keep its
+measurements and surprises as exploratory evidence. They do not become qualified
+training labels, physical laws or accepted runtime behavior merely because they
+look useful. Unknown phenomena are valid research outputs. The qualification loop
+then turns a promising discovery into a versioned packet under §11.18, with frozen
+reference checks, independent evaluation and explicit adoption criteria.
+
+An agent may propose a new mechanism identity when no admitted one fits. Register
+it as experimental through the existing catalog/graph workflow before treating it
+as an admitted component. The requirement to identify an existing owner prevents
+duplication; it does not prohibit discovery of new classes of matter behavior.
+
+#### The recursive research cycle
+
+1. **Observe.** Read compact receipts, failures, unexplained residuals, costly
+   solves, composition limits and player observations. Separate measured facts,
+   inferred explanations and unanswered questions.
+2. **Invent.** Propose alternative mechanisms or methods, including ideas outside
+   the current game milestone. State what new behavior or knowledge each could
+   unlock and what observation would distinguish the alternatives.
+3. **Choose a bounded experiment.** Select for information gained, physical reuse,
+   potential gameplay value and cost. Reserve an explicit exploration budget in
+   the work assignment so immediate milestone work cannot consume it silently.
+   The budget is finite; exceeding it requires a new allocation.
+4. **Experiment.** Use the existing native/GPU tools, preserve failed cases and
+   distinguish exploratory results from independently qualified evidence. New
+   laws require a justified reference, not labels generated solely by themselves.
+5. **Qualify or reject.** Promote promising candidates into §11.18's comparison
+   process. Test held-out families, physical invariants and coupled assemblies;
+   retain the old qualified path until the replacement is independently accepted.
+6. **Compose and discover again.** Reuse accepted pieces in new combinations and
+   supported scales. Feed unexpected interactions and remaining limitations back
+   into the research queue rather than assuming isolated qualification transfers.
+7. **Improve the method.** Propose better case selection, adapters, fitting,
+   numerical methods, diagnostics or verification. Evaluate that proposed research
+   process against the pinned incumbent before changing the default procedure.
+
+Every cycle leaves a compact record: question, parent evidence IDs, alternatives,
+experiment identity, result, independent status, cost, applicability and next
+questions. Attach these to existing graph work and evidence; do not create a
+second authority. Preserve rejected hypotheses so another agent can avoid repeating
+an unchanged failure. Retrieve only relevant records into context.
+
+#### Improving the research process without weakening its judge
+
+Recursive improvement means versioned, tested changes to methods and artifacts.
+It does not authorize a worker to rewrite its success conditions, silently change
+the project goal, promote itself to verifier or modify its model weights. Agents
+can propose revisions to goals or scientific checks; the existing authorized
+review path decides adoption. Creative scope is broad, while source ownership,
+resource reservations and independent admission remain explicit.
+
+Compare a candidate research method against the incumbent on a frozen independent
+suite with matched budgets and declared domains. Measure error, worst-case failures,
+physical consistency, useful coverage, reproducibility and total resource cost.
+More generated cases, lower training loss or a higher self-reported score alone
+are not improvements. Keep raw outcomes, version the method, and retain a rollback
+path. A useful tradeoff may be admitted only with its narrower scope made explicit.
+
+Verification itself can improve: propose new adversarial fixtures or a corrected
+reference when evidence warrants it. The candidate author cannot approve that
+change. Independent review must establish why the correction is physically valid,
+retain the old results, and rerun affected baselines under the new version. Never
+weaken a check merely to admit the candidate it rejected. Final evaluation cases
+exposed during research no longer count as unseen evidence for later selection.
+
+#### Implementation and acceptance of the recursive loop
+
+Extend the §11.18 adapter/checklist work with experimental proposal records,
+evidence-linked follow-up questions, method-version comparisons and an explicit
+exploration allocation. Use the existing graph's proposal and review mechanisms;
+do not invent command names or claim deployed autonomy before this is implemented.
+
+Demonstrate one full cycle: a retained failure generates a new hypothesis; a bounded
+experiment distinguishes it; an independently qualified improvement is reused by
+a second assembly; the result produces a follow-up question. Also demonstrate that
+an unproductive idea can be stopped without marking it successful, an out-of-scope
+idea can enter the proposal queue, and an attempted acceptance-test weakening is
+rejected. Scope the claim to that demonstrated cycle; it does not prove unlimited
+self-improvement or universal physical accuracy.
+
+The guiding rule is **freedom to invent, evidence required to adopt**. The library
+and the research process may both grow. Native accepted physics remains the source
+of rendered state, and independently justified physical checks remain the basis
+for trusting what the game world does.
+
+### 11.20 Artificial proteins: from physical alphabet to playable matter
+
+**Operator direction, 2026-10-14:** make artificial proteins the reusable building
+blocks of this matter-simulator game engine. Here an artificial protein is a
+versioned, physically qualified arrangement of matter with a reproducible recipe,
+external ports, retained internal state and one or more measured functions. The
+name describes a design strategy; these pieces are not assumed to be biological
+proteins or an atomistic chemistry simulation. They implement the mechanism,
+representation and instance distinctions in §11.16, using the existing catalog.
+
+This is the complete proposed making-and-using workflow. §§11.18–11.19 govern
+qualification and creative research; §13.1 supplies the immediate engineering
+assignment. The following stages organize that work rather than add another set
+of release gates. Existing S0–S5 evidence remains necessary. This document does
+not claim that a generator, universal folding solver or learned assembly runtime
+has already been implemented.
+
+#### 11.20.1 What a piece contains and what makes it useful
+
+A piece is useful because its physical structure does something measurable:
+transmits a load, provides a response to displacement, constrains motion, stores
+energy, or exchanges a supported quantity with neighboring pieces. A shape alone
+is a candidate. A fitted response alone is a representation. Neither constitutes
+a qualified artificial protein without the construction, state and port contract.
+
+| Record | Contents and owner |
+|---|---|
+| Design recipe | Immutable versioned graph of existing matter regions/patches and explicit connections; parameters, seed and parent candidates; no executable user code |
+| Physical definition | Law/material IDs and revisions, units, topology, geometry, reference configuration, valid loads/scales and excluded phenomena |
+| Ports | Stable attachment IDs, patch geometry and local frame, compatible exchanges, sign conventions, prescribed/free variables and work accounting |
+| Instance state | Unique native owner of DOFs, inventory, motion, stored energy and any qualified history; multiple instances share immutable recipes, not mutable state |
+| Representations | Detailed reference and optional analytical/table/learned alternatives; validity queries, transfer/reconstruction maps, numerical error and fallback |
+| Function card | Measured response curves and behavior descriptors, operating domain, costs, failures, independent evidence IDs and freshness |
+| Fabrication and game binding | Required material/energy, permitted construction process, physical-to-render/pick mapping, saved-state compatibility and gameplay affordances |
+
+Reuse existing recipe and material identities. A proposed catalog extension holds
+these fields; it is not a new parallel database. A component can have several
+measured functions without changing its identity for every game use. Conversely,
+calling a piece a muscle, valve or shock absorber grants no corresponding law.
+
+#### 11.20.2 The physical alphabet and construction grammar
+
+Start with the smallest qualified alphabet: membrane patches under the supported
+surface-energy law, defined boundaries and qualified attachment formulations.
+Additional elastic, contact, bending, transport or active elements enter only
+when their laws and runtime coupling are qualified. The generator edits legal
+parameters and topology; it cannot add a desired force as an arbitrary animation.
+
+The design genome is a recipe graph: nodes describe patches/regions and edges
+describe seams, attachments or other explicit interfaces. Its permitted edits
+include changing supported shape parameters, relocating ports, connecting motifs,
+copying a motif with a new instance identity, and resizing within a qualified
+physical mapping. Recombination preserves valid subgraphs and checks their new
+boundaries. Begin with deterministic seeded enumeration and simple mutations;
+a learned generator is optional after enough trustworthy examples exist.
+
+For three-dimensional asymmetrical polygon layers, the construction path is:
+
+1. Define each patch's topology, orientation, boundary loops, material axes and
+   reference geometry. Validate degeneracy, unsupported self-intersections and
+   the law's mesh/resolution assumptions before running physics.
+2. Place layers in local frames with declared separation and thickness where the
+   selected model supports thickness. Keep independent surfaces and DOFs distinct;
+   proximity or visual overlap creates neither an attachment nor a shared wall.
+3. Declare each interface: shared continuous material, a qualified seam or finite-
+   area attachment, or separated surfaces. Contact, sliding and separation require
+   their explicit laws. Nonmatching meshes need qualified conservative transfer.
+4. For volume-backed material, supply a conforming volume discretization to the
+   existing compiler and verify exclusive ownership, mass, COM and inertia.
+   `tools/material_volume.py` validates a supplied complex; it is not a mesher.
+   Geometry-to-volume meshing is a missing seam if no existing path supplies it.
+5. For reduced shells, declare what material they replace and how inventory is
+   assigned. Never count both shell mass and the same underlying volume. Constant-
+   gamma surface-energy coupons do not acquire bulk elasticity by gaining a label.
+6. Compile the candidate transactionally into the private native experiment.
+   Rejected geometry leaves the accepted world unchanged. Stable region, face and
+   port IDs survive compilation into renderer, picking and inspector bindings.
+
+Folding is an optional physical experiment after the necessary energy, bending,
+contact and boundary laws exist. An optimizer placing a finished shape is design
+search; it does not demonstrate that the structure can physically fold or assemble
+itself. Likewise, a stable final shape is not proof of an accessible construction
+path. Record geometry generation, physical settling and fabrication separately.
+
+#### 11.20.3 The connected factory workflow
+
+```mermaid
+flowchart TD
+  Q[Player need or open research question] --> G[Generate legal recipe candidates]
+  G --> C[Compile and validate geometry, units and ownership]
+  C --> E[Run bounded native and GPU experiments]
+  E --> A[Archive measured functions and failed cases]
+  A --> R[Compare detailed, table and learned responses]
+  R --> V[Independent physical qualification]
+  V --> L[Versioned artificial-protein library]
+  L --> J[Connect ports and solve coupled assemblies]
+  J --> W[Accepted world state and existing renderer]
+  W --> O[Gameplay observations and physical residuals]
+  O --> Q
+  J --> H[Characterize a larger structure at its external ports]
+  H --> V
+  A --> Q
+```
+
+The arrow from qualification to the library is conditional on a pass. A failure
+returns evidence to research and cannot reach the accepted runtime by another
+arrow. Discovery records and qualified runtime entries have distinct statuses.
+
+| Stage | Concrete work and artifacts | Existing owner / missing connection | Gate mapping |
+|---|---|---|---|
+| 1. Ask | Desired response or open question; observables, resource budget and candidate domain | Graph work packet and §§11.18–11.19; final acceptance frozen before qualification | S0 |
+| 2. Generate | Seeded recipe graphs and legal variants; parent IDs and parameter differences | Existing builders, recipe/material contracts; bounded mutation/search adapter still needed | S0–S1 |
+| 3. Compile | Valid geometry, material inventory, ports and executable private fixture | Material-volume compiler, membrane fixtures and attachment references; adapt only missing seams | S1 |
+| 4. Experiment | Detailed responses, converged equilibrium or qualified timed trajectories, negative controls and resource receipts | Existing native/scale-lab/GPU paths plus shared handoff; extend receipt coverage to the chosen piece | S1–S2 |
+| 5. Discover functions | Response curves and behavior descriptors; retain unexpected functions and failures | Existing evidence index/recorder; candidate archive and descriptor extraction need implementation | S2 |
+| 6. Represent | Direct baseline, interpolation table and optional Noether fit on family-separated data | Installed Noether; receipt-to-tensor adapter and bounded training/evaluation entrypoint needed | S3 |
+| 7. Qualify | Independent held-out accuracy, invariance, constraints, domain refusals and cost comparison | Existing verifier/controller; admitted executable checklist needed | S3 |
+| 8. Compose | Two-sided port solve, coupled checks, state ownership and second-context reuse | Existing attachment/native machinery; audit and implement missing general coupling/reduction adapters | S4 |
+| 9. Build and play | Catalog selection, transactional fabrication, inspector measurements and real game task | Existing Studio, native save/restore, render and picking; qualified artifact selection/binding needs wiring | S5, M2 onward |
+| 10. Recurse | Characterize a successful assembly as a larger piece; new question and method comparison | Same library, experiment path and independent review, with dependency tracking | Repeat applicable S gates |
+
+A language-model agent chooses questions, prepares packets and explains receipts.
+It does not supply trusted numerical labels or independently declare its results
+correct. The GPU executes bounded numerical experiments and, where useful, fits
+specialized functions. The native solver owns accepted world state. The renderer
+shows that state. The independent verifier decides whether claimed scope is met.
+
+#### 11.20.4 Find useful functions without forcing every candidate into one score
+
+Use target-driven searches and open exploration together. For a target search,
+compare the measured response with a preregistered curve or operating requirement.
+For open exploration, archive diverse measured behaviors: response direction,
+compliance, useful range, coupling between ports, material cost and solver cost,
+restricted to quantities actually supported by the law. The first archive can be
+a compact evidence index, not another agent service or large database.
+
+Retain alternatives with different useful tradeoffs instead of discarding every
+candidate except the current highest-scoring one. A failed target candidate may
+become a new research hypothesis for a different function. It must undergo fresh
+qualification for that function; renaming the target cannot erase the original
+failure. Novelty, visual complexity and training loss are not physical validity.
+
+Search can exploit flaws in a simulator. Recheck promising candidates against an
+independent analytical/reference path where available, refined resolution and
+solver tolerances, perturbed geometry/loading and unseen boundary conditions.
+Separate fit error from discretization error and missing physics. Reject apparent
+performance that comes from penetrations, duplicate material, energy creation,
+invalid constraints or unqualified timestep behavior. Keep the counterexample as
+a regression fixture under independently governed review.
+
+#### 11.20.5 Learn a response, then connect pieces through an assembly solve
+
+For the first quasistatic piece, a useful response maps external port displacements
+and admissible conditions to reaction forces, stored energy and the information
+needed to reconstruct the observed geometry. Pin what is prescribed and what is
+solved; do not simultaneously prescribe incompatible forces and displacements.
+Include orientation, scale, material and internal branch/history variables whenever
+they affect the answer. A force-only table cannot by itself reconstruct deformation.
+
+At a joined interface, enforce compatible motion and equal-and-opposite exchange
+in consistent frames. The assembly solve must find a state satisfying all pieces
+and imposed boundaries together; simply evaluating each piece once in isolation
+is insufficient. Use qualified derivatives/tangents if the solve requires them.
+Check balance, constraints, work and convergence for the full assembly. An active
+piece must declare its energy source; passive pieces cannot create net energy.
+
+A table or learned model first operates in shadow comparison or as a solver initial
+guess. Later replacement requires the complete coupled-path accuracy and cost
+checks. Out-of-domain inputs, branch changes, topology edits or failed convergence
+select a qualified detailed fallback before acceptance, or produce a named refusal.
+Learning accelerates a specified response; it does not remove the coupling problem.
+
+Dynamic use requires separate tests of physical time, state/history, inertia,
+dissipation and long rollouts. An equilibrium response grants no oscillation,
+impact, locomotion or damage capability. CA/local-rule integration must preserve
+paired exchanges, ownership and resolution behavior; a surface-response artifact
+does not automatically become a general bulk-cell update rule.
+
+#### 11.20.6 Recursion: turn a tested assembly into a larger artificial protein
+
+After a coupled assembly passes, choose which of its ports remain externally
+visible. Characterize the detailed assembly under varied surrounding constraints.
+Build a proposed reduced representation of that external response, retaining the
+internal variables needed to distinguish physically different states. Preserve
+material inventory, necessary inertia, energy and qualified history through the
+mapping. A lookup indexed only by external shape is invalid when hidden state
+changes the response.
+
+Qualify reduction against the unreduced assembly, then reuse the same frozen
+artifact in two distinct surroundings. Hold out complete loading/boundary families;
+record cumulative approximation error and coupled stability rather than merely
+adding isolated accuracy claims. Increase detail where the declared error budget
+or domain no longer holds. Keep a detailed recipe for inspection and fallback.
+
+This enables patches -> motifs -> assemblies -> larger functional components.
+It does not imply that a larger component can be shrunk arbitrarily or applied
+at every scale. Derive the supported similarity map and retest unmatched regimes.
+Dependencies form a versioned graph: changing a child law, recipe or representation
+marks affected parent evidence stale, while historical artifacts remain intact.
+Do not invalidate unrelated evidence without a dependency reason.
+
+Each completed cycle should contribute a reusable physical function, a justified
+refusal/domain boundary, or a better independently tested research method. All
+three are useful knowledge. Unproductive lines can stop, and new questions can
+enter under §11.19's creative exploration allocation.
+
+#### 11.20.7 How the library becomes a building game
+
+The player loop is observe a need -> inspect available functions -> assemble ->
+load/test -> understand the failure or success -> adapt and reuse. Research grows
+the available vocabulary; the player uses qualified pieces through the existing
+assembly bench rather than waiting for a GPU training run on every placement.
+
+- **Discover and inspect:** show function cards with geometry, ports, measured
+  behavior, supported scale/load range and material cost. Allow cutaway/layer views
+  and load-path measurements through the existing inspector. Experimental pieces
+  belong to the research sandbox until qualified.
+- **Build:** instantiate a recipe with new state ownership, connect compatible
+  ports and commit through the existing topology/material transaction. Account
+  for required resources once. Copying a blueprint creates instructions, not free
+  physical material. Unsupported edits return an understandable reason.
+- **Test:** apply an explicit load or boundary action and display the native result,
+  observed response and relevant limits. Show actual broken connections or loss
+  of support only where their physical transitions are implemented.
+- **Reuse creatively:** the same load-carrying motif might support a carried object,
+  a shelter element or a creature attachment once each use's operating domain and
+  dynamics are qualified. Discover applications instead of assigning a separate
+  scripted solution to each puzzle.
+- **Persist:** save recipe/artifact versions plus actual instance state, topology
+  and history. Save/restore does not recreate a pristine object or discard damage.
+  Compatibility checks detect stale/missing representations and use only declared
+  migrations/fallbacks; no silent reconstruction under a different law.
+- **Feed research:** failed constructions, costly solves and unfamiliar-player
+  observations produce reproducible cases and new questions. Human usability and
+  fun remain measured in play sessions, separate from physical correctness.
+
+The first visible demonstration is a construction-bench experiment: assemble and
+load one asymmetric patch motif, compare it with its qualified response, then reuse
+it in a second bench arrangement. Progress into the existing rescue slice after
+the required live-load and time-dependent behavior is qualified. More advanced
+chambers, pumps, valves, adaptive skins and powered movement are research directions
+with explicit law dependencies, not automatic consequences of this first piece.
+
+#### 11.20.8 Bounded execution and durable knowledge on this computer
+
+Use the existing local agent service under §11.22: Qwen coordinates, Maya
+contributes implementation and visual reasoning, and DeepSeek is an optional
+mathematics/physics peer. Agents plan and interpret reports; native numerical
+tools execute the experiments.
+Prepare the whole finite batch before reserving the GPU: candidate recipes, case
+splits, seeds, references, commands, trial/resource limits and cleanup policy.
+Release the local model once through the existing handoff; run numerical cases,
+optional fitting and independent evaluation under that reservation; then release
+it and permit model reload. No model change or context/quantization change is
+required by this workflow.
+
+Checkpoint completed candidate/case IDs and immutable input hashes. Resume only
+matching unfinished cases; never overwrite failures or assume a partial file is a
+completed measurement. Bound live candidates, batch sizes, RAM/VRAM and storage.
+Share immutable geometry, keep compact measurements and selected witness states,
+and record memory reclamation after the declared process/pool lifetime. GPU
+parallelism means independent cases, not skipped physical integration steps.
+
+The agent receives a small frontier summary: what is qualified, what failed, the
+next discriminating experiment and links to artifacts. Large training data and
+checkpoints remain outside Git and conversation context. Independent verification
+receives the actual artifacts and pinned hashes, not just that agent summary.
+
+#### 11.20.9 First implementation packet and definition of completion
+
+Use the following order, preserving the original S gates and existing construction
+release evidence. These are planned deliverables, not new executable commands:
+
+1. **Pin the baseline and schema (S0).** Audit the current supported membrane law,
+   attachment path and solver/build. Register one experimental asymmetric patch
+   family with fixed support ports and a displaced test port. Define response
+   outputs, domain, source provenance, units, resource budget and independent
+   tolerances. Unknown numerical thresholds must be justified before qualification.
+2. **Generate and solve (S1).** Extend existing fixture builders with a small seeded
+   set of legal shapes and port positions. Prove the prescribed-boundary equilibrium
+   solve or implement that missing seam first. Reject degenerate and unsupported
+   cases. Do not introduce bending, elasticity or self-contact implicitly.
+3. **Characterize (S2).** Run displacement/load cases from controlled baselines,
+   with multiple physical scales and independently varied mesh resolution. Retain
+   complete-case splits, convergence and energy/reaction measurements. Include a
+   deliberately invalid similarity transfer and resource-cleanup evidence.
+4. **Compare representations (S3).** Implement the receipt adapter and compare the
+   detailed solve, bounded table and optional small Noether candidate. Keep the
+   final holdout private to independent evaluation. Use the bounded trial budget
+   from §11.18; a rejected fit leaves the detailed path available.
+5. **Connect and reduce (S4).** Couple two qualified patches and compare the full
+   assembly with its detailed reference. Characterize that assembly as a larger
+   piece; reuse its frozen artifact in two different boundary arrangements. Keep
+   the unreduced baseline if reduction has no useful error/cost tradeoff.
+6. **Show the making-to-use chain (S5).** In the existing inspector, reproduce one
+   recipe -> measured function -> qualified artifact -> assembly -> accepted render
+   chain. Check port picking, material ownership and saved-state round trips, plus
+   refusal/fallback outside the qualified domain. Then prepare the scoped gameplay
+   integration packet and its human observation questions.
+
+For this first family, completion means reproducible construction, independent
+response accuracy, a valid coupled solution, demonstrated second-context reuse,
+measured end-to-end cost and bounded resources. A failed reduction is an honest
+research result, not completion of the reduced-component objective. A larger
+library is earned by repeating and broadening this chain, not by counting generated
+meshes or assigning biological names to untested structures.
+
+Deliver the recipe/specimen IDs, schema and adapters, executable checklist, split
+manifest, raw receipts, independent verdict, visual/state bindings, reuse evidence,
+resource report and next research questions. The implementation backlog is the
+missing connections in §11.20.3; do not rebuild the systems that already own them.
+Noether remains subject to §11.17's existing research/production boundary. This
+section changes the plan only; runtime integration, controller admission and
+physical qualification require their own implementation and evidence.
+
+#### 11.20.10 Implemented first increment: AP01, 2026-10-14
+
+The first executable research chain is now in
+[`tools/artificial_proteins/`](../tools/artificial_proteins/README.md), with its
+frozen [preregistration](../tools/artificial_proteins/PREREGISTRATION.md), recipe
+adapter, Vulkan batch adapter, response tables, coupled solver, independent
+mathematical checks and resumable receipts. The retained small result is
+[`AP01_RESULT.json`](evidence/artificial_proteins_20261014/AP01_RESULT.json);
+it links the full local artifacts and their source/build identities.
+
+Measured scope: three seeded asymmetric six-triangle membrane fans with fixed
+rims and one central normal-rail port, using the existing current-area constant-
+gamma law. The RTX 4090 evaluated 351 cases, including off-grid checks and three
+physical scales. Worst normalized triangle/GPU mismatch was below 2.5e-7; worst
+held-out response-table force error was below 7.8e-5 against a frozen 5e-4 limit.
+The GPU-trained table here means numerical tabulation/interpolation, not a neural
+model. No Noether fit or generalization to unseen geometry is claimed.
+
+The same reduced two-piece artifact was used in two three-piece boundary/load
+arrangements. Both equilibria agreed with a separate analytic-energy minimization
+within 5e-6 m; this is numerical model agreement, not measured real-material
+accuracy. Sixteen unit tests passed, including conservation/energy derivatives,
+invalid units/laws, zero gamma, unsupported scaling, stale artifacts, excessive
+loads, numerical forgery and resume checks. The GPU reservation was released;
+GPU allocation was 770 MiB before and after the numerical batch on this run.
+
+Existing native rendering displayed the measured patches, and uploaded accepted
+position hashes plus native energy/force matched. **Full render binding remains
+unqualified:** this native build leaves its rendered-byte hash at zero. Rendered
+bytes and accepted positions also use different hash schemas, so equality of their
+IDs is not a valid check. The failed synchronization attempt is preserved. No S5,
+controller admission or engine-release gate is marked complete by these results.
+
+This implementation closes the first local end-to-end research seam, not the
+entire mechanism program. It has no inertia, free motion, material inventory,
+contact, fracture, general multiport coupling or coupled live-game integration.
+The new native code drives the existing membrane shader; it changes no shared
+engine law or public world route. Native snapshots are observational evidence,
+not a claim that the reduced assembly runs inside the world solver.
+
+**AP01 next direction (numerically addressed by AP02 below):** introduce a second independent port using the existing
+finite-area attachment references, measure cross-port forces and moments, and
+repair/qualify render-state correspondence before live construction admission.
+Compare a small Noether representation only when that response is expensive or
+high-dimensional enough to justify it. Preserve the first scalar coupon as a
+fast regression and avoid growing a catalog ahead of demonstrated composition.
+
+The package README contains the exact build, CPU, managed GPU, native-capture,
+freshness-check and resume commands. Completed-run resume rechecks evidence without
+rerunning the GPU or overwriting the original receipt. Failed/interrupted trials
+remain distinct. The current workflow is repository-local; authoritative checklist
+admission and independent release review are still separate steps.
+
+#### 11.20.11 AP02 numerical increment verified, 2026-10-14
+
+AP02 is complete within its **CPU-only quasistatic research scope**. A fresh
+run, independent-formulation `check` and completed-run `--resume` passed in
+[the current local receipt](../.tmp/ap02-cpu-codex-20261014-reverify/receipt.json);
+28 focused AP01/AP02 regression tests passed. The earlier `.tmp/ap02-cpu-2`
+receipt is retained: it predates the added `test_workflow2.py` and now correctly
+refuses as `stale_sources`. Existing physics/source hashes were unchanged; the
+fresh run adds the test-file dependency without weakening any limit.
+
+Two related fixtures now demonstrate the next composition seams:
+
+- `core2.py` supplies an asymmetric eight-triangle piece with two independently
+  prescribed normal-rail ports. Its sampled cross stiffness is 27–35% of direct
+  stiffness. Separate Heron/edge-length energy and conjugate-gradient checks
+  validate the numerical response and equilibrium. These remain constrained
+  quasistatic ports, not freely moving material bodies.
+- `faa_port.py` couples two rigid carriers with a finite-area attachment, with
+  each carrier welded to an AP01 fan node. The existing attachment reference
+  admits the patch with rank six and a measured couple stiffness near
+  25 N*m/rad. Force/moment transfer, wrench balance and analytic-gradient
+  equilibrium checks pass. The far carrier remains a bolted fixture; this is
+  not yet two independently compliant pieces coupled through the full solver.
+
+The reduced quadratic response has a **measured normalized domain of 0.02**.
+The proposed 0.15 and 0.03 domains exceeded the frozen 5e-3 error budget and
+remain recorded as rejected reductions. The detailed response remains available
+and authoritative; smaller-domain admission neither raises the error tolerance
+nor claims an error bound proved over every unsampled state. No two-dimensional
+response table or Noether fit is claimed by AP02.
+
+The worker reports a focused coworker review after an earlier 2.9-hour model
+request failure. That report supplements the executable numerical evidence; it
+does not substitute for independent engine-release/controller admission. This
+plan update preserves all existing S-gate, GPU, native and rendered-state gaps.
+
+**Next engineering assignment:** repair and qualify render-state correspondence
+before live construction admission, and replace the bolted far carrier with a
+second qualified compliant piece. Preserve the native state/port ownership and
+verify coupled forces, moments, energy and reconstruction in that new arrangement.
+Do not grow a library of finished objects to substitute for these seams. The
+§11.21 database adapter can use AP01/AP02 as clearly labeled synthetic records
+for provenance and reproducibility testing; they establish no real tissue or
+construction-material measurements. GPU multiport characterization, runtime
+save/pick/inspector integration, dynamics and gameplay admission remain open.
+
+### 11.21 Database-grounded matter: structure snapshots become reusable responses
+
+**Operator direction, 2026-10-14:** use databases as the foundation for learning
+matter functions. Bone, muscle, skin, masonry and reinforced structures provide
+examples of arrangements and measured behavior. Players and agents should be able
+to invent new constructions from that physical vocabulary without asking a chat
+model to derive every force law and assembly response again. The database supplies
+evidence and starting structures; bounded numerical experiments characterize the
+pieces; qualified representations supply repeatable computation during use.
+
+This extends the artificial-protein factory in §11.20. A snapshot describes one
+specimen or state. The reusable object is a parameterized mechanism family with
+explicit interfaces, conditions, history and a measured domain. Copying a finished
+bone or wall mesh alone does not create that family. The long-term aim is broad
+construction freedom backed by progressively qualified physical coverage.
+
+#### 11.21.1 Keep four kinds of knowledge connected and distinguish their meaning
+
+| Knowledge | Useful content | What it cannot establish alone |
+|---|---|---|
+| Structure observations | CT or microscopy volumes, segmented surfaces, fiber directions, pore networks, material regions, layer thicknesses and assembly layouts | Stiffness, activation, contact, damage or failure thresholds from appearance alone |
+| Physical measurements | Force/displacement or stress/strain curves, density, orientation, loading protocol, environment, uncertainty and specimen conditions | Universality across specimens, rates, scales or boundary conditions that were not measured |
+| Detailed model experiments | Calibrated laws and explicit boundaries, converged native/reference responses, field and port histories, numerical error | Independent real-material truth merely because the simulation produced many samples |
+| Qualified reusable representations | Analytical laws, tables or learned response operators with operating domain, state, ports, error and cost receipts | Arbitrary behavior outside that domain or acceptance of a new assembly without interface checks |
+
+Appearance evidence remains a separate linked channel. Existing
+`tools/train_material.py` fits distributions of appearance/relief features; it
+must not be relabeled as training elasticity or strength. Likewise, an attractive
+render, a segmented scan, a literature summary or an agent-generated parameter
+is not a mechanical measurement. Numerical agreement with a detailed model and
+agreement with independent real measurements are separate verdicts.
+
+#### 11.21.2 Reuse the data owners; add adapters and a queryable evidence index
+
+The selected project graph owns admitted identities and requirements. Extend
+existing material/recipe records and the evidence index rather than create a
+competing master catalog. Use `tools/material_contract.py` for sourced values,
+units, validity conditions and named refusals; use the acquisition/hash pattern
+in `tools/science_funnel/force_catalog.py` and its source lock for pinned inputs.
+The implemented artificial-protein receipts and recipe experiments already supply
+local numerical examples and dependency identities. Audit the current AP01/AP02
+artifacts before adding overlapping schemas or runners.
+
+Proposed data linkage:
+
+```mermaid
+flowchart LR
+  D[External structure and measurement records] --> P[Pinned source snapshot]
+  P --> N[Normalize units frames topology and provenance]
+  N --> R[Existing recipe and material records]
+  R --> C[Calibrate and check detailed physics]
+  C --> G[GPU experiments over a declared family]
+  G --> T[Analytical table or learned response]
+  T --> V[Independent held-out qualification]
+  V --> L[Qualified mechanism library]
+  L --> A[New port-connected construction]
+  A --> S[Native coupled solve and renderer]
+  S --> E[Residuals unknown regimes and new questions]
+  E --> G
+```
+
+Qualification arrows require an actual pass. Unknown or failed candidates remain
+searchable research records and cannot enter the live library through a shortcut.
+
+A small local indexed store may accelerate queries when the current index becomes
+insufficient. Choose its format after auditing existing graph/evidence storage;
+SQLite is an option, not a requirement for another service. Keep large volumes,
+meshes, training arrays and checkpoints in deduplicated immutable artifact files.
+The index stores IDs, provenance, summaries and artifact references, not repeated
+copies of every dataset or model in each agent conversation.
+
+Each proposed specimen record links:
+
+- Source URI, release/specimen IDs, retrieved time, exact content hash and permitted
+  uses; retain the raw source and the extraction/segmentation adapter version.
+- Geometry/topology and dimensional scale; coordinate frame, material axes,
+  segmentation confidence and reference configuration. A length unit cannot be
+  guessed from the mesh's coordinate magnitudes.
+- Material fields with units, conditions, uncertainty, source locators and
+  relationships to the geometry. Borrowed measurements from another specimen are
+  marked as transferred assumptions, never presented as paired observations.
+- Load/activation history, supports, contact/interface assumptions, observations,
+  missing quantities and the physical law revision used to interpret them.
+- Recipe family/instance IDs, source-family split assignment, numerical receipts,
+  fitted artifact, qualified domain, independent verdict and dependencies.
+
+The adapters are deterministic data conversions, not executable instructions
+received from a dataset. Refuse missing units, malformed topology and unsupported
+laws explicitly. A source record may be usable for geometry while still lacking
+mechanical evidence; preserve that partial usefulness and the named gap.
+
+#### 11.21.3 Candidate sources and what to extract first
+
+These are source candidates checked for this plan, not newly downloaded,
+license-cleared or calibrated corpora:
+
+| Source candidate | Initial use | Admission work still required |
+|---|---|---|
+| [NLM Visible Human](https://www.nlm.nih.gov/research/visible/visible_human.html) | Anatomical imaging and aligned structural observations for tissue regions | Resolve the actual dataset release, access terms, image spacing, segmentation and specimen conditions; obtain separate mechanical measurements |
+| [FEBio material calibration tutorial](https://febio.org/knowledgebase/tutorials/parameter_optimization/parameter-optimization-with-febio-studio/) and [model repository](https://febio.org/knowledgebase/) | Examples of fitting a declared material model to target measurements and reference biomechanical problems | Audit each model's law, parameter source, numerical settings and rights; an example model is not a universal tissue database or a replacement native solver |
+| [NIST Materials Data Repository](https://materialsdata.nist.gov/) | Search for traceable material measurement records and their schemas | Select and inspect a concrete dataset before promising any bone, steel or concrete property coverage |
+| [buildingSMART IFC material layers](https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcMaterialLayer.htm) | Structural layer identities and thickness/layout relationships in building records | Pin schema and file revision; check that the particular file contains the required geometry, materials and interfaces; add separately sourced constitutive and bond measurements |
+
+Use a small, relevant subset before acquiring large anatomical or construction
+archives. Maintain the distinction between a database schema and an actual usable
+dataset. Inspect sampling coverage and rights per record; a downloadable mesh
+cannot establish permission or evidence for every downstream use.
+
+#### 11.21.4 The procedural training workflow
+
+1. **Query a function, not just an object name.** State the response wanted, the
+   supported phenomena and observables: anisotropic support, tensile actuation,
+   layered compliance or bonded load transfer. Retrieve candidate structures and
+   measurements through IDs and bounded summaries.
+2. **Normalize a source snapshot.** Pin source bytes and transform geometry,
+   frames, units, fields and test histories into existing recipe/material records.
+   Preserve specimen variation. Annotate gaps instead of filling them with guessed
+   constants; use declared synthetic parameters only for numerical research.
+3. **Select and calibrate the detailed model.** Use qualified laws already present
+   where possible. Fit parameters against the measured protocol, retaining units,
+   uncertainty and independent measurements. Check identifiability: several models
+   can fit one curve and predict different assemblies. Missing constraints trigger
+   a new measurement requirement or a narrowed claim, not a falsely precise fit.
+4. **Generate a bounded family.** Vary legal geometry, layer spacing, fiber/port
+   orientation, material parameters and boundary conditions within their declared
+   ranges. The structure database seeds the grammar; players need not reproduce
+   the original specimen. Preserve negative controls and failed candidates.
+5. **Run numerical experiments in one managed GPU batch.** Reuse the existing
+   reservation, native kernels and receipt path. Sample independent port motions,
+   loads and relevant histories. Use controlled physical advancement for transient
+   laws; a collection of final snapshots cannot teach hysteresis or dynamics.
+6. **Build the cheapest adequate response.** Try the analytic and interpolation
+   baselines before a Noether/operator fit. Learn a family-conditioned response
+   only when the data cover the geometry/material descriptors being conditioned
+   on. A table fitted separately for one recipe is not an unseen-design predictor.
+7. **Qualify independently.** Separate source specimens, geometry families and
+   loading histories before fitting; do not randomly split neighboring pixels,
+   mesh vertices or steps of the same experiment across train and final test.
+   Keep held-out real measurements distinct from simulator-generated checks.
+   Compare forces, moments, energy/work, constraints, numerical stability,
+   uncertainty and measured inference cost under the applicable S gates.
+8. **Publish a function card and compiled recipe.** Include the data/model/checkpoint
+   hashes, state and port contract, qualified domain and refusal/fallback behavior.
+   Admit through the existing workflow. Share immutable responses across instances;
+   each native instance retains its own physical state and inventory.
+9. **Compose, solve and recurse.** Connect qualified ports, solve compatibility and
+   balanced exchanges, test the new assembly, then characterize it as a larger
+   piece when useful. Feed a new regime or systematic residual back into research;
+   training never changes a live world law silently during a tick.
+
+The agent follows this procedure and supplies compact packets. Numerical solvers,
+GPU kernels and qualified response artifacts do the repeated mathematics. DeepSeek
+consultation may suggest a missing assumption or experiment; its prose is neither
+a training label nor an independent physical verdict. No database import removes
+the need to implement and qualify a law that the runtime does not yet support.
+
+#### 11.21.5 What the learned piece must provide during construction
+
+For a passive quasistatic piece, the preferred conservative representation is a
+stored-energy function of declared port coordinates, material/shape descriptors
+and any qualified internal state. Its conjugate forces/moments follow the same
+work convention used by the assembly solver. A direct force map instead needs
+explicit integrability/work checks; unconstrained independent force predictions
+can introduce energy even when individual errors look small.
+
+An active, dissipative or dynamic piece needs more: an explicit state-transition
+rule, activation/external power, dissipation, mass/inertia where relevant, history
+initialization, and a qualified physical timestep. It cannot be encoded as a static
+energy table and called a muscle merely because its geometry resembles one.
+
+At runtime, query validity using actual shape, state and proposed boundary inputs.
+Inside the qualified domain, evaluate the inexpensive representation and solve
+port compatibility using the existing native system. Near a boundary, refine or
+use the detailed model only if that model is itself qualified for the requested
+phenomena; otherwise refuse the unsupported operation with the missing scope.
+Never silently extrapolate, clamp away a physical failure or treat confidence as
+proof. Budget assembly error: many individually small response errors can amplify
+in unstable or poorly conditioned constructions.
+
+The designer remains free to create asymmetric geometry and new combinations.
+The system reports unsupported functions or uncertain forecasts while preserving
+accepted state. A representation's numerical domain boundary is distinct from a
+physical breakage threshold. Breaking, tearing, slip, heating or growth occur only
+under their admitted laws. Renderer detail can come from a separate appearance
+record, but visible boundaries and motion remain tied to native physical state.
+
+#### 11.21.6 Worked design targets: the same factory, different laws
+
+| Proposed family | Structure descriptors and experiments | Required physical scope before a game claim |
+|---|---|---|
+| Bone-inspired load-bearing lattice | Porosity, strut thickness, orientation and outer shell; independently varied compression, tension, shear and bending | Qualified elastic/anisotropic response; buckling, damage and fracture separately if claimed; anatomical similarity does not establish biological accuracy |
+| Muscle-inspired active bundle | Fiber direction, cross section, series attachment, length and activation histories; force-length-velocity observations | Bounded actuator law, energy supply, passive elasticity, dissipation and state evolution; appearance scans cannot supply these curves |
+| Layered skin-inspired barrier | Thickness, fiber axes, seams and interlayer interfaces; tension/shear, curvature and rate sweeps | Qualified shell/bending or volume elasticity and interface laws; tearing, sliding and healing only after their own checks |
+| Brick/mortar/reinforcement construction | Unit geometry, bond pattern, mortar regions, reinforcement placement and anchorage; shear, compression, bending and bond tests | Separate constituent laws and mortar/steel interface transfer; reinforcing a wall changes the load path, not just its rendered material label |
+
+Train constituents and interfaces separately where those models are reusable,
+then measure representative coupled cells and larger assemblies. A cell's effective
+response needs declared size/boundary assumptions and validation against finer
+models and measurements. Scale transfer follows §11.16; geometric resemblance does
+not erase size effects, instability, rate changes or a change of physical regime.
+
+#### 11.21.7 First database-to-response implementation seam
+
+Preserve AP01 as the scalar numerical regression and inspect the current AP02
+multiport work before assigning implementation. Start with one source adapter and
+one parameterized, independently testable family on an already supported law.
+A synthetic database made from existing recipes can first validate ingestion,
+splitting, provenance and round-trip reproducibility; label it synthetic and make
+no real-bone, skin or building-material claim from that exercise.
+
+Deliver, in order: one pinned source manifest; deterministic normalized records;
+a recipe/material adapter; specimen/family-separated split manifest; a bounded
+GPU experiment manifest; analytical/table baseline; a separate numerical verdict;
+and a function card referenced by the existing evidence index. Retain the law and
+schema dependencies so a source, segmentation, calibration or solver change marks
+all affected descendants stale without erasing earlier trials.
+
+Acceptance requires reproduction from the pinned snapshot, refusal of missing
+units/provenance and unsupported laws, exclusion of held-out specimens during
+fitting, response tests on a new arrangement, conservative port exchange, measured
+cost/memory, and unchanged accepted world state on refusal. Rendering/inspector
+binding and real-material validation retain their separate checks. Add a neural
+fit only when its benefit is demonstrated against the baseline.
+
+This is a plan amendment and worker handoff, not an implemented database pipeline
+or a newly closed release gate. No new large dataset, solver or training service
+is installed by this section.
+
+### 11.22 Peer-agent development: creative discovery, executable evidence
+
+**Operator direction, 2026-10-15:** Qwen Flash Next coordinates a group of peers.
+Maya and DeepSeek may propose designs, disagree, discover unexpected functions
+and help develop the game. Qwen mainly delegates and integrates, and may also
+implement. The coordinator chooses consultations according to the work; DeepSeek
+is available for occasional advanced mathematics, physics and spatial reasoning.
+There is no mandatory DeepSeek sign-off on every increment. A named scientific
+check remains mandatory when its applicable contract requires it, regardless of
+which model does the work.
+
+#### 11.22.1 Roles and discussion
+
+| Participant | Useful contribution | Responsibility at handoff |
+|---|---|---|
+| Qwen Flash Next | Coordinate work, design experiments, implement when useful, reconcile findings | Select one bounded next question, preserve source ownership and integrate only supported claims |
+| Maya | Implementation, image interpretation, geometry and game/physics discussion | Return changed artifacts or observations, assumptions, checks and unresolved questions |
+| DeepSeek Flash | Optional mathematical derivation, physical assumptions, coupled mechanisms and difficult cross-checks | Explain the reasoning and propose a discriminating check; identify uncertainty and counterexamples |
+| Native solvers, GPU experiments and independent verifier | Execute physical models, characterize responses and evaluate frozen acceptance criteria | Produce reproducible measurements, failures, input identities and scoped verdicts |
+
+Use `chimera-deepseek` for a difficult mathematical/physical question or assigned
+coding problem when the reasoning justifies its long prefill, generation and
+switching cost. This is the single DeepSeek agent for questions, review and coding.
+A review-only assignment stays read-only; a coding assignment may edit its owned
+files and run checks. It uses the installed provider without additional weights.
+The active profiles are copied into `D:/Chimera-Maintenance/.zcode/agents` for
+the containing workspace, with matching definitions in the repository workspace.
+
+These are strengths, not exclusive intellectual territories. Any peer can propose
+an alternative mechanism, question the goal of an experiment, or challenge another
+peer's result. Coordination does not make Qwen's interpretation true, and agreement
+among three models is not physical evidence. Preserve unresolved disagreements
+until a derivation, source measurement or experiment distinguishes them.
+
+Use Z Code's existing native Agent, SendMessage and TaskOutput path. Resume the
+same child for follow-up where supported; pass its identity and artifact references
+through compression rather than replacing its work with a fresh, uninformed child.
+On this computer, run one foreground expert at a time and broker discussion through
+the coordinator. This gives peers freedom to discuss without requiring simultaneous
+model residency or concurrent writes to a shared source scope.
+
+A useful consultation packet contains the question, relevant geometry/diagram,
+equations with units and conventions, exact source/receipt identities, the competing
+hypotheses, and the requested deliverable. Supply relevant excerpts and evidence
+links rather than a whole conversation. DeepSeek's installed path is text-only;
+Maya can inspect images and supply explicit coordinates or observations for a
+mathematical discussion. Distinguish observed image content from inferred geometry.
+
+#### 11.22.2 One connected development loop
+
+Apply this loop to the existing artificial-protein factory, not a second framework:
+
+1. **Choose a useful function and an open question.** Start from a construction or
+   player possibility, an unexplained residual, or a peer's discovery. Inspect
+   existing recipes, assembly inspector, laws and current AP01/AP02 evidence before
+   adding anything. The next increment still follows §11.20.11 and §13.1.
+2. **Ground the candidate.** Retrieve a pinned database snapshot or explicitly
+   synthetic record through §11.21. Describe reusable geometry, asymmetric membrane
+   layers, material/state and typed ports. Declare units, missing knowledge and
+   the physical regime; resemblance to a natural structure supplies a hypothesis.
+3. **Freeze the question before tuning.** Record the prediction, independent
+   reference, falsifier, split, error/resource budget and supported domain. Invite
+   peer criticism when it can expose a real ambiguity; consult DeepSeek when a
+   difficult derivation, scaling argument or coupled load path warrants the cost.
+4. **Let numerical tools do the repeated mathematics.** Prepare a finite batch of
+   candidate states, loads and histories. Use the existing GPU reservation once,
+   run detailed experiments and optional calibration/fitting, checkpoint results,
+   then release the reservation. Preserve failed and interrupted trials. Small
+   checks may coexist with a loaded model only inside their measured GPU budget.
+5. **Qualify the reusable response independently.** Compare the simplest adequate
+   analytic/table/learned representation against independent references and held-out
+   cases. Verify force/moment exchange, work/energy, constraints, stability and cost
+   within the claimed regime. A learned response cannot validate itself, and a
+   simulator-generated dataset alone does not establish real-material accuracy.
+6. **Compose and observe.** Admit a function card with its envelope and named
+   refusal or qualified fallback. Solve connected port compatibility and exchanges
+   in the native owner, then verify renderer/inspector correspondence to accepted
+   physical state. Test a new arrangement before calling it a transferable piece.
+7. **Feed discovery back into research.** Record the result, uncertainty, failed
+   domains and next discriminating experiment in the existing evidence index.
+   Unexpected useful behavior may seed another artificial protein, a larger
+   assembly or a game mechanic. Explore it freely while preserving the original
+   frozen test and keeping new claims separate from already qualified scope.
+
+The durable product is a reusable physical function and its evidence, not a chat
+consensus or a larger object catalog. Characterize pieces, interfaces and their
+assemblies so the same mechanism can become a limb, support, tool or building
+component where its declared scale and regime permit. Agents invent and organize;
+the solver and trained representations carry the repeated computational burden.
+
+#### 11.22.3 Checkpoints, recovery and actual installation scope
+
+At each increment, keep a compact continuation record: task/child identity, base
+revision, owned files, input hashes, completed cases, receipt paths, outstanding
+checks and next command. Recover from compression or a reload using these artifacts;
+an empty response or model request failure is an interrupted task, not a verdict.
+Do not restart unchanged models between ordinary requests. Compression, explicit
+GPU reservations, actual model switches and fault recovery retain their existing
+safe release boundaries. Bound caches and verify reclamation at the declared
+process/pool lifetime; a prose workflow does not guarantee absence of memory leaks.
+
+The installed peer setup uses 262,144-token configured context and a matching
+262,144-token output ceiling (operator update, 2026-10-15), with thinking enabled
+and each model's existing quantization. Input, thinking and answer share that
+context window: Z Code budgets the remaining space, and Strata/Maya use their
+built-in `fit_max_tokens` option to fit output to the fully tokenized prompt,
+including tools and images. The ceiling does not promise 262K output after a
+populated prompt. Context compression inherits the active conversation model
+and reasoning settings, including each subagent's own model; there is no fixed
+Maya override. Compression uses the same 262,144-token local output ceiling,
+fitted to the remaining window, with the separate 20K summary cap removed for
+these local providers. Preserve the assignment, child identity, decisions,
+unresolved questions and source/receipt paths in the handoff; larger artifacts
+remain available for retrieval. The ceiling permits completion and does not
+require a full-window summary. Keep native tuning specific to its runtime. DeepSeek uses the H: weights and is a costly
+optional consultation: the verified tiny Qwen-to-DeepSeek-to-Qwen round trip took
+about 14.6 minutes including prefill and switching. Prefer focused packets and
+retain Maya/Qwen for ordinary work. A short successful handoff proves wiring;
+it does not qualify a fully populated 262K conversation, mathematical superiority,
+or the proposed GPU/database training pipeline.
+
+This amendment records the worker method in the requested plan. Existing peer
+wiring and numerical receipts keep their individual evidence scopes. New physics,
+trained representations and live construction behavior still need their applicable
+independent checks and graph admission; this section closes no scientific gate.
+
+### 11.23 Structure as nested membranes and repeating physical arrangements
+
+**Operator direction, 2026-10-15:** develop the geometric approach alongside the
+artificial-protein factory. A structure records how boundaries, material regions
+and connections are organized and recur inside larger structures. Its recipe can
+nest, layer, wind, branch and join reusable motifs. The physical state and the
+qualified laws determine what the resulting arrangement actually does.
+
+Inspiration: Buddy James's [Geometry of the Electric Universe, publisher page](https://www.thunderbolts.info/wp/2026/10/10/buddy-james-geometry-of-the-electric-universe-thunderbolts-2/)
+and [his own geometric-art statement](https://gallery.bridgesmathart.org/exhibitions/2017-bridges-conference/buddy-james)
+describe nested forms, helices/tori and recursive patterns under the Dougherty Set
+name. The publisher description and author statement were inspected; the full
+video/transcript was not retrieved. This plan adopts a testable geometric research
+direction. Those sources do not establish a universal material law, exact physical
+scale invariance or an electromagnetic explanation of every mechanism.
+
+#### 11.23.1 A reusable generator and its physical contract
+
+Extend existing recipe/material/assembly records and the inspector. A generated
+family needs the following inputs and identities, in addition to §11.17's contract:
+
+| Recipe operation | Parameters to preserve | Physical meaning to check |
+|---|---|---|
+| Nest or layer | Parent/child transforms, layer spacing, thickness where the law supports it, boundary orientation and material ownership | Distinct surfaces/regions; clearance and explicitly qualified interfaces; no duplicated inventory or implicit bond |
+| Wind or twist | Axis/frame, pitch, winding count, radius and handedness | Admissible geometry and connectivity; torsion/bending response only under laws that represent it |
+| Repeat or branch | Motif ID, copy transforms, branch connectivity and interface frames | Independent instance state, explicit paths for force/moment or admitted transport, and boundary effects |
+| Join or close | Stable seam/port IDs, finite-area attachment, open/closed boundary topology | Compatible degrees of freedom and one owner per constraint/state; closure alone supplies no pressure or sealing law |
+| Recurse or rescale | Child recipe/version, nesting depth, physical scale and independent mesh resolution | Derived regime-specific scale mapping, cumulative error/cost and no double-counted parent/child energy |
+
+A motif may be asymmetric and its repeats need not be identical. Preserve the
+connectivity graph, material axes, boundary loops and port maps through every
+operation. Nearby vertices on separate layers remain distinct until an explicit
+admitted connection or contact law relates them. Rendering intersections must not
+create constraints. Define clearance and degeneracy tests before generating a batch.
+
+Expose dimensionless descriptors such as spacing-to-size and pitch-to-radius
+alongside dimensional size, units and material coefficients. A ratio is a recipe
+parameter; its visual appeal or relation to a familiar constant does not establish
+optimality. Compare candidate ratios against controls. Reflection changes
+handedness and orientation: test the transformed port frames and predicted response
+under the declared law instead of assuming mirrored pieces behave identically.
+
+Use the native physical owner and existing CA state/update path. A geometry
+operation or a CA label cannot silently introduce stiffness, actuation, damage,
+healing or a new force. Topology-changing proposals follow the existing transaction,
+inventory and state-transfer checks. The render mesh, picking and inspector must
+refer to the same accepted structure and stable physical identities.
+
+#### 11.23.2 Connect geometry families to the GPU training workflow
+
+1. **Select one supported function.** Use §11.20.11's current composition/render
+   gaps to choose the next useful question. Audit existing generators and references.
+   Do not require a new vortex, fluid or electromagnetic solver to test membrane
+   arrangements under an already supported mechanical law.
+2. **Generate and identify a bounded family.** A pinned database or synthetic recipe
+   seeds the motif. Vary nesting, spacing, relative orientation, supported seams and
+   loading independently. Record generator/source hashes, parameters, topology,
+   material amount, units and instance state. Refuse illegal geometry before fitting.
+3. **Preregister a discriminating comparison.** State which geometric change is
+   predicted to alter port response and by how much. Define controls, loading,
+   convergence/error limits, independent checks, held-out families and resources.
+   Record which quantities are matched and which deliberately vary; do not attribute
+   extra material, different supports or mesh resolution to a geometric advantage.
+4. **Run one finite GPU experiment batch.** Reuse the existing reservation and
+   receipt runner. Native kernels solve admissible states and record port reactions,
+   work/energy, convergence and failures. Preserve equal physical advancement for
+   transients; replicas are independent cases, not skipped timesteps. Finish the
+   batch before returning the GPU to the chat model.
+5. **Learn only the response that was covered.** Compare the detailed solution,
+   analytic/table baseline and optional trained representation at the same error
+   tolerance. Include geometry/topology descriptors and boundary/state inputs when
+   claiming a family-conditioned model. Hold out entire arrangements and nesting
+   patterns. One fitted table per object does not demonstrate unseen-structure reuse.
+6. **Qualify and compile the piece.** Independent references and held-out cases
+   establish the domain and limits. Publish a function card, then compose it through
+   qualified ports and check the coupled native solution and render correspondence.
+   A larger assembly may become a new motif with its own measured response and
+   error budget; do not count its children's energy/inventory a second time.
+7. **Recurse from discoveries.** Retain surprising functions and failed hypotheses.
+   Promote a new useful arrangement into the existing recipe library after its
+   checks, and feed unexplained behavior back into §11.19's research cycle. Game
+   uses emerge from demonstrated functions, with human play observations kept
+   separate from numerical qualification.
+
+The training target is physical response under stated conditions. A familiar
+spiral, nested drawing, repeated polygon or model's explanation is not a force
+label. Geometry generates hypotheses; the numerical and experimental evidence
+selects which functions are reusable.
+
+#### 11.23.3 Independent checks and the first bounded comparison
+
+Keep the existing independent formulations and frozen S-gate tolerances. Check
+analytic/reference force and energy where available; force/moment balance and
+virtual work at interfaces; rigid-motion covariance; mesh refinement separately
+from physical scaling; and held-out coupled cases. Check stability and accumulated
+error at increasing assembly/nesting depth. Qualify dynamic effects separately
+from quasistatic response. A trained surrogate cannot be its own reference.
+
+For the constant-tension area law already used in the membrane lab, unchanged
+gamma and uniform geometric scaling give area energy proportional to size squared
+and geometric force proportional to size. Scale the boundary loads consistently
+when testing similarity. That mapping does not supply elasticity, bending,
+self-contact, pressure or fracture; each additional effect can change the regime
+and requires its own derivation, data and checks.
+
+**First comparison packet, after the current AP02 priorities:** reuse qualified
+compliant pieces and the finite-area coupling to compare a baseline arrangement
+with a changed relative orientation or admissible layered arrangement. Freeze
+material amount, supports, port loading and resolution policy, and measure the
+cross-coupled reaction, work error and total solve/inference cost. Choose a small
+parameter range permitted by the current laws; keep reference, training and
+held-out cases separate. If the proposed layers require unsupported collision,
+sliding or bending, narrow the geometry or declare the missing law before running.
+Keep the failed comparison rather than weakening its threshold.
+
+Deliver a generator/recipe manifest, preregistration, case/split manifests,
+source-bound measurements, independent verdict, qualified-domain function card
+and native/inspector correspondence evidence. Reuse the existing owners; no new
+catalog, training service or inspector is implied. This is a planned increment,
+not evidence that a nested-membrane GPU training pipeline is already implemented
+or that a new scientific gate has passed.
 
 ### Shared component checks
 
@@ -2144,7 +3452,7 @@ the graph requires. That release freezes interfaces, evidence scope and compatib
 it does not declare all future science finished. Do not turn this design document
 into an automatic controller queue or begin implementing all rows at once.
 
-**Immediate next engineering assignment:** follow §13.1 to establish the first
+**Immediate next engineering assignment:** follow §11.20.9 and §13.1 to establish the first
 scale-aware mechanism and its characterization path from existing code. The
 construction packet described below is the retained foundation, not a request
 to rebuild completed B0–B8 work. The worker must verify its reported commit and
@@ -2154,8 +3462,21 @@ receipts before treating it as the current baseline.
 
 **Objective:** demonstrate one physical mechanism reused across declared scales
 and composed into a second configuration, with measured error, conservation and
-cost. This is the first bounded increment toward the operator's holodeck matter
-simulator. Do not replace it with more finished-object variants alone.
+cost. This is the first artificial-protein family in §11.20 and a bounded increment
+toward the operator's holodeck matter simulator. Carry its recipe through the
+making, characterization, qualification, composition and visible-use chain in
+§11.20.9. Do not replace it with more finished-object variants alone.
+
+**Development method:** use §11.22 for Qwen-led peer discussion, optional DeepSeek
+consultation, compact resumable handoffs and evidence checkpoints. Follow the
+source-to-GPU-experiment-to-qualified-piece loop, using §11.23's nested/repeating
+geometry families when relevant; preserve AP02's next-step order
+and the independent acceptance checks.
+
+**Database-grounded extension:** §11.21 supplies the source-snapshot, calibration,
+training and composition workflow. Audit current AP01/AP02 scope before adding
+the first adapter; reuse supported laws and existing data owners. This amendment
+does not claim those tissue or construction families are already qualified.
 
 **Existing assets to inspect and reuse:**
 
@@ -2202,6 +3523,22 @@ current pin, not `def4d82d`.
 | S4 — composition and state transfer | Two coupled pieces and a second assembly using the same mechanism | Coupled response versus detailed reference, two-sided exchanges, no duplicated inventory/DOFs, stable switching where implemented |
 | S5 — visible authoring demonstration | Existing inspector/viewer shows mechanism, active representation, scale and measurements | Physical/render/pick correspondence; repeatable build–test–reuse demonstration; human usability remains separately observed |
 
+**Noether work sequence added 2026-10-13:** preserve the existing S0–S5 gates.
+The next worker should (a) pin the current membrane law and missing boundary inputs,
+(b) extend existing fixtures/receipts with a small case-family split and three-scale
+reference suite, (c) verify GPU/native parity and data freshness, then (d) train a
+small offline candidate in the separate Noether environment and compare it with the
+analytical/table baseline on held-out cases. Deliver the input/output adapter contract,
+case/split manifest, error and full-cost report, refusal examples and memory receipt.
+Keep the final held-out suite separate from tuning. A failed accuracy or cost comparison
+is a valid stop result; retain it and keep the detailed representation. Detailed
+coupled references may be developed after their underlying laws pass S1; reduced
+pieces require S3 before reduced composition claims. Asymmetric layers and native
+admission retain their own interface and physical checks in §11.20.
+The successful analytic-cube GPU probe is setup evidence only; it closes no S gate.
+No provisioned controller session was supplied for this document update: these are
+repository-level proposals, not live queue dispatch or graph gate advancement.
+
 **First mechanism selection:** inspect the existing membrane surface-energy and
 elastic references first. Prefer a supported membrane/patch mechanism with a
 clear geometric scale law and available GPU implementation. If the available
@@ -2222,8 +3559,10 @@ report the exact missing interface/law and a scoped implementation proposal.
 Deliver the scale/port contract, executable case definitions, source/build/input
 identities, retained pass/fail measurements, a cost/error comparison, and a brief
 next-step decision in this same plan. Extend existing modules at their ownership
-boundaries; introduce an adapter only for a demonstrated missing seam. No general
-neural-training framework or universal material database is required for S0–S2.
+boundaries; introduce an adapter only for a demonstrated missing seam. Follow the executable-workflow implementation sequence and bounded trial budget
+in §11.18. Reuse the already installed Noether environment for the optional S3 fitting
+experiment in §11.17; do not build another training framework. S0–S2 still qualify
+the physical reference and dataset before learned-response admission.
 
 On this 4090/128 GB host, check current resource headroom. Batch exclusive GPU
 qualification through the existing release mechanism once when necessary and
