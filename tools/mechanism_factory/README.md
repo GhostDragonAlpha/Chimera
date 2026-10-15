@@ -134,3 +134,20 @@ claimed over an over-threshold number; F10 gpu_job reserved vs. clean
 resume with a real checkpoint; F11 absurd receipt thresholds proven inert.
 Results are stamped as `chimera-mechanism-factory-adapter-faults-v1` into
 `docs/evidence/mechanism_factory/` via `resolve_evidence_path`.
+## Executable checklist (seam 3) — `test_workflow_checklist.py`
+
+Work object `work.mechanism-factory-patch-equilibrium` in
+`tools/creature_graph/data/creature_graph.json` binds the 11.18 first
+deliverable (smallest receipt adapter + executable checklist): four pinned
+checks (p1-battery, qualification-receipt, adapter-faults,
+adapter-verify-committed) run by the trusted `graph_workflow_runner` on a
+clean committed candidate, with `verifier_inputs` sha256 pins over the five
+mechanism_factory modules, `port_registry.py`, the packet, the committed
+receipt and the four imported lab files. Checks write evidence OUTSIDE the
+tracked candidate via `--out ../mechanism_<name>.json --force-out`, so
+`candidate()` stays clean before and after.
+Read-first graph documents: this README and `example_packet.json`
+(losslessly absorbed, immutable by oid).
+Run: `python tools/mechanism_factory/test_workflow_checklist.py`
+(builds the control plane on a temp service over the real graph and runs
+claim -> prepare -> pinned checks -> attest -> submit_review to REVIEW).
