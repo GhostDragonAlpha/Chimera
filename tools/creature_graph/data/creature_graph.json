@@ -603136,7 +603136,7 @@
    "evidence": [],
    "falsifier": {
     "statement": "Any pinned check exits nonzero, evidence lands inside the tracked candidate, or the committed receipt stops verifying against the packet",
-    "acceptance_test": "All four pinned checks exit 0 from a clean committed worktree; adapter fault suite F0-F11 green.",
+    "acceptance_test": "All four pinned checks exit 0 from a clean committed worktree; adapter fault suite F0-F12 green.",
     "status": "untested"
    },
    "authored_priority": 1,
@@ -603148,7 +603148,7 @@
    },
    "execution_workflow": {
     "statement": "The P1 patch-equilibrium solve (registered falsifier battery), the qualification receipt writer and the versioned receipt adapter with its fault-injection acceptance suite together are the executable checklist named by 11.18: smallest receipt adapter plus executable checklist, run by the trusted runner on a clean committed candidate with pinned verifier bytes.",
-    "prediction": "On a clean committed candidate all four pinned checks exit 0 (6/6 battery, genuine receipt, F0-F11 adapter faults green, committed receipt verifies); tampering with pinned verifier bytes, thresholds or the worktree is refused by the runner or the adapter.",
+    "prediction": "On a clean committed candidate all four pinned checks exit 0 (6/6 battery, genuine receipt, F0-F12 adapter faults green, committed receipt verifies); tampering with pinned verifier bytes, thresholds or the worktree is refused by the runner or the adapter.",
     "read_first": [
      "source.document.5976a685465798b0174eb458d63aa891eabfa834a79bf37dad71bde3ff931ad4.1065dd7206ab87254b39e53cb76a82caa6c1644a185f5dfabb8c733d66ae0eeb",
      "source.document.d6cb2b9eb7f122cba9a090d3fb62156e6d7c8baa4006f92d7280eff28d0ba971.926bff90afc0859f413b7a7f8c9486bb975eda4335c4ea39dc0f398d99ffacc6"
@@ -603156,16 +603156,16 @@
     "verifier_inputs": {
      "tools/mechanism_factory/patch_equilibrium.py": "4007e23217ddedc4963b1e92b68f213a20fe402b32da2aef1bffdff8b6e15b40",
      "tools/mechanism_factory/patch_equilibrium_checks.py": "1ae4417bb4792ee28b4ad225a9d4b33f6fbcb8e7d8a1e92829db633945a6746c",
-     "tools/mechanism_factory/qualification_receipt.py": "451f570886192776f645ed2966a782ef470b8e1355edc21ff0ec5185af7555b0",
-     "tools/mechanism_factory/receipt_adapter.py": "edf24ee7d42df8b85c203ae4165a0e46a2bbd6e43f896fab054bafa51cf78881",
-     "tools/mechanism_factory/receipt_adapter_faults.py": "9379f09c8e2980b0264eaf112856636e79b8ce633b1770c702ae815a2a14ec91",
+     "tools/mechanism_factory/qualification_receipt.py": "d4fcb57d2d923463d275b47f12b6ebbfd3f2c70185ad30b9725ed283fb886689",
+     "tools/mechanism_factory/receipt_adapter.py": "34eb338d388ac749ab0c2b9f5cf30f0d81ea9431fb886e25c47f4f06a45ef87a",
+     "tools/mechanism_factory/receipt_adapter_faults.py": "0caea2138a3b372ebc1787a4650cd2d04487aa81e120c103b8bf0363a46571fa",
      "tools/mechanism_factory/example_packet.json": "1065dd7206ab87254b39e53cb76a82caa6c1644a185f5dfabb8c733d66ae0eeb",
      "tools/port_registry.py": "a061d42e7315a135517a40cf564c5963f3998646a68ba5519d457dce0d33923c",
      "tools/membrane_scale_lab/surface_energy_reference.py": "ee9effcfbddad8d02e03f71d414b27da177f0656de535eaab0d76ae39796f0b7",
      "tools/membrane_scale_lab/overdamped_descent.py": "a940ac9da88a8852ee57709fe7a44df5469d418be73a75801ea7123d91d930f6",
      "tools/membrane_scale_lab/fixture_generator.py": "1ebd13b9a659fd85d3ca1dacd29ee8f879636a8863ae836db1756b573ea5b260",
      "tools/membrane_scale_lab/evidence_output.py": "201c200c6e682dbd1fdb8b44e50ae29c428de93e22b3310518c9ed068557dba2",
-     "docs/evidence/mechanism_factory/qualification_receipt_20261015T160534.073121Z.json": "6f918c355682b048e700fdceba415c55520882d59d63b6e8dc10aaad647ebba5"
+     "docs/evidence/mechanism_factory/qualification_receipt_20261015T205346.498645Z.json": "d4955bf75f587ad9969abd1e5c99ab516f655e29fdda9187779ab8f05a02bc21"
     },
     "checks": [
      {
@@ -603194,7 +603194,7 @@
      },
      {
       "id": "adapter-faults",
-      "falsifier": "any injected fault F1-F11 is not refused with its preregistered name, or the control pair fails",
+      "falsifier": "any injected fault F1-F12 is not refused with its preregistered name, or the control pair fails",
       "argv": [
        "python",
        "tools/mechanism_factory/receipt_adapter_faults.py",
@@ -603210,7 +603210,7 @@
       "argv": [
        "python",
        "tools/mechanism_factory/receipt_adapter.py",
-       "docs/evidence/mechanism_factory/qualification_receipt_20261015T160534.073121Z.json",
+       "docs/evidence/mechanism_factory/qualification_receipt_20261015T205346.498645Z.json",
        "tools/mechanism_factory/example_packet.json"
       ],
       "timeout_s": 300

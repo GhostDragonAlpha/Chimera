@@ -1,9 +1,11 @@
 """Fault-injection acceptance suite for the seam-2b receipt adapter.
 
 Generates one genuine receipt/packet pair fresh (subprocess of
-qualification_receipt.py into a temp evidence dir), then injects faults F1-F11
+qualification_receipt.py into a temp evidence dir), then injects faults F1-F12
 and checks each expected named refusal against the adapter's observed
-refusals. Emits chimera-mechanism-factory-adapter-faults-v1 JSON into
+refusals. F12 exercises the schema-v2 balance-residual law: a recorded
+balance residual above the packet threshold under a declared PASS is
+verdict_forgery. Emits chimera-mechanism-factory-adapter-faults-v1 JSON into
 docs/evidence/mechanism_factory/ via resolve_evidence_path.
 
 Exit 0 only if ALL faults green / 1 a fault failed / 2 evidence-path refusal.
@@ -198,6 +200,14 @@ def main() -> int:
     r11 = _mutate(genuine, TMP / "f11.json", f11)
     check("F11_forged_thresholds_inert",
           ["unconverged_label", "verdict_forgery"], _verify(r11, PACKET))
+
+    # F12 v2 balance residuals: a recorded balance residual above the packet
+    # threshold under a declared PASS is forgery, recomputed from the PACKET.
+    def f12(d):
+        d["cases"][0]["outputs"]["max_force_balance_residual"] = 1e-3
+    r12 = _mutate(genuine, TMP / "f12.json", f12)
+    check("F12_balance_residual_forgery", ["verdict_forgery"],
+          _verify(r12, PACKET))
 
     all_passed = all(row["pass"] for row in rows)
     fault_receipt = {

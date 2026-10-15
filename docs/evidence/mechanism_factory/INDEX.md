@@ -2,18 +2,27 @@
 
 Current (adapter-verifiable in a clean checkout of HEAD):
 
-- `qualification_receipt_20261015T160534.073121Z.json` — genuine
+- `qualification_receipt_20261015T205346.498645Z.json` — genuine
   qualification receipt for the asymmetric constant-tension patch
-  mechanism, regenerated against the seam-2b code bytes; three CPU
+  mechanism, schema
+  `chimera-mechanism-factory-qualification-receipt-v2`; three CPU
   cases (stagnated at the machine-scale floor, all residuals under the
-  packet thresholds). Verified by `tools/mechanism_factory/receipt_adapter.py`
-  against `tools/mechanism_factory/example_packet.json`.
+  packet thresholds). v2 records each case's
+  `max_force_balance_residual` and `max_moment_balance_residual`, so
+  `receipt_adapter.py` recomputes the packet's two balance thresholds
+  through the same verdict-forgery path as the other thresholds.
+  Verified by `tools/mechanism_factory/receipt_adapter.py`
+  against `tools/mechanism_factory/example_packet.json` (PASS).
 - `patch_equilibrium_receipt_20261015T123339.081217Z.json` — P1
   boundary/load solve falsifier battery, 6/6 (schema
   chimera-mechanism-factory-patch-equilibrium-v1).
-- `adapter_faults_20261015T154126.354864Z.json` — fault-injection suite
-  worker run; `adapter_faults_20261015T155352.835286Z.json` —
-  independent verifier rerun. F0-F11 green in both.
+- `adapter_faults_20261015T210124.045050Z.json` — fault-injection suite
+  against the schema-v2 adapter, F0-F12 green (F12: a v2 receipt with a
+  recorded balance residual above the packet threshold under a declared
+  PASS is `verdict_forgery`). The earlier
+  `adapter_faults_20261015T154126.354864Z.json` (worker run) and
+  `adapter_faults_20261015T155352.835286Z.json` (independent verifier
+  rerun) cover F0-F11 against the schema-v1 adapter and are retained.
 
 Stale (retained, do not consume):
 
@@ -24,6 +33,16 @@ Stale (retained, do not consume):
   any committed bytes. Superseded by
   `qualification_receipt_20261015T160534.073121Z.json`. Solver-change
   reason: writer refactor only; the three case numbers are identical.
+- `qualification_receipt_20261015T160534.073121Z.json` — STALE:
+  superseded by schema
+  `chimera-mechanism-factory-qualification-receipt-v2`
+  (`qualification_receipt_20261015T205346.498645Z.json`). Reason: v1
+  receipts record only `energy_J`, `max_free_residual_N` and
+  `reactions_N`, so the packet's force/moment balance thresholds were
+  enforced at qualification time but not recomputable by the adapter
+  alone; v2 adds the two balance-residual outputs, and the adapter now
+  refuses v1 explicitly as `receipt_schema_unsupported`. The three case
+  numbers are unchanged; only the outputs block was extended.
 
 Line-ending note: the lab files `surface_energy_reference.py`,
 `overdamped_descent.py`, `evidence_output.py` were CRLF in the lab

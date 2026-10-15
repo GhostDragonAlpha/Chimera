@@ -1,0 +1,162 @@
+{
+  "schema": "chimera-mechanism-factory-adapter-faults-v1",
+  "utc": "2026-10-15T21:01:24.044862+00:00",
+  "adapter_version": "receipt-adapter-v1",
+  "accepted_schema": "chimera-mechanism-factory-qualification-receipt-v2",
+  "genuine_receipt_sha256": "a6df1ba3f6e413ed76d4332f47928d6f17ec18ccef27a696fa02b33dd88af41c",
+  "packet_sha256": "1065dd7206ab87254b39e53cb76a82caa6c1644a185f5dfabb8c733d66ae0eeb",
+  "faults": [
+    {
+      "fault": "F0_genuine_pair",
+      "expected": [],
+      "observed": [],
+      "pass": true
+    },
+    {
+      "fault": "F1_receipt_missing",
+      "expected": [
+        "receipt_missing"
+      ],
+      "observed": [
+        "receipt_missing"
+      ],
+      "pass": true
+    },
+    {
+      "fault": "F2_solver_hash_mismatch",
+      "expected": [
+        "solver_hash_mismatch"
+      ],
+      "observed": [
+        "solver_hash_mismatch"
+      ],
+      "pass": true
+    },
+    {
+      "fault": "F3_unit_mismatch",
+      "expected": [
+        "unit_mismatch"
+      ],
+      "observed": [
+        "unit_mismatch"
+      ],
+      "pass": true
+    },
+    {
+      "fault": "F4_split_overlap",
+      "expected": [
+        "split_overlap"
+      ],
+      "observed": [
+        "packet_digest_mismatch",
+        "split_overlap"
+      ],
+      "pass": true
+    },
+    {
+      "fault": "F5_nonfinite_output",
+      "expected": [
+        "nonfinite_output"
+      ],
+      "observed": [
+        "nonfinite_output",
+        "verdict_forgery"
+      ],
+      "pass": true
+    },
+    {
+      "fault": "F6a_unconverged_step_limit",
+      "expected": [
+        "unconverged_label"
+      ],
+      "observed": [
+        "unconverged_label",
+        "verdict_forgery"
+      ],
+      "pass": true
+    },
+    {
+      "fault": "F6b_unconverged_over_threshold",
+      "expected": [
+        "unconverged_label"
+      ],
+      "observed": [
+        "unconverged_label",
+        "verdict_forgery"
+      ],
+      "pass": true
+    },
+    {
+      "fault": "F7_out_of_domain",
+      "expected": [
+        "out_of_domain"
+      ],
+      "observed": [
+        "out_of_domain",
+        "verdict_forgery"
+      ],
+      "pass": true
+    },
+    {
+      "fault": "F8_packet_digest_mismatch",
+      "expected": [
+        "packet_digest_mismatch"
+      ],
+      "observed": [
+        "packet_digest_mismatch"
+      ],
+      "pass": true
+    },
+    {
+      "fault": "F9_verdict_forgery",
+      "expected": [
+        "verdict_forgery"
+      ],
+      "observed": [
+        "unconverged_label",
+        "verdict_forgery"
+      ],
+      "pass": true
+    },
+    {
+      "fault": "F10a_interrupted_gpu_job",
+      "expected": [
+        "interrupted_gpu_job"
+      ],
+      "observed": [
+        "interrupted_gpu_job"
+      ],
+      "pass": true
+    },
+    {
+      "fault": "F10b_clean_resume",
+      "expected": [],
+      "observed": [],
+      "pass": true
+    },
+    {
+      "fault": "F11_forged_thresholds_inert",
+      "expected": [
+        "unconverged_label",
+        "verdict_forgery"
+      ],
+      "observed": [
+        "unconverged_label",
+        "verdict_forgery"
+      ],
+      "pass": true
+    },
+    {
+      "fault": "F12_balance_residual_forgery",
+      "expected": [
+        "verdict_forgery"
+      ],
+      "observed": [
+        "max_force_balance_residual_exceeded",
+        "verdict_forgery"
+      ],
+      "pass": true
+    }
+  ],
+  "all_passed": true
+}

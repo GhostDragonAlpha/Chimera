@@ -2,7 +2,7 @@
 mechanism (seam 2). Reads tools/mechanism_factory/example_packet.json, runs
 solve_equilibrium on three small CPU apex-cone fixtures (one per frozen
 family), asserts the packet's terminal-state and threshold laws, and stamps a
-chimera-mechanism-factory-qualification-receipt-v1 receipt into
+chimera-mechanism-factory-qualification-receipt-v2 receipt into
 docs/evidence/mechanism_factory/ via the lab's resolve_evidence_path law.
 
 Exit 0 pass / 1 threshold-or-status failure / 2 evidence-path-exists refusal.
@@ -31,7 +31,7 @@ from evidence_output import (                     # via pe's lab path insert
 
 EVID_DIR = _REPO / "docs" / "evidence" / "mechanism_factory"
 PACKET_PATH = _HERE / "example_packet.json"
-RECEIPT_SCHEMA = "chimera-mechanism-factory-qualification-receipt-v1"
+RECEIPT_SCHEMA = "chimera-mechanism-factory-qualification-receipt-v2"
 HASHED_SOURCES = [
     "tools/mechanism_factory/patch_equilibrium.py",
     "tools/mechanism_factory/qualification_receipt.py",
@@ -166,6 +166,11 @@ def main() -> int:
                 "max_free_residual_N": c["free_residual"],
                 "reactions_N": [[float(v) for v in row]
                                 for row in c["reactions"]],
+                # v2: the two balance residuals are recorded so the adapter
+                # can recompute the packet's force/moment balance thresholds
+                # (previously enforced at qualification time only).
+                "max_force_balance_residual": c["force_balance_residual"],
+                "max_moment_balance_residual": c["moment_balance_residual"],
             },
             "gpu_job": None,
         })

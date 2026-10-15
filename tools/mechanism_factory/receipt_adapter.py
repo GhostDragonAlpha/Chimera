@@ -21,7 +21,12 @@ from pathlib import Path
 
 # -- preregistered adapter constants -----------------------------------------
 ADAPTER_VERSION = "receipt-adapter-v1"
-ACCEPTED_RECEIPT_SCHEMA = "chimera-mechanism-factory-qualification-receipt-v1"
+ACCEPTED_RECEIPT_SCHEMA = "chimera-mechanism-factory-qualification-receipt-v2"
+# Versioned honesty: the v1 receipt carried only energy_J,
+# max_free_residual_N and reactions_N, so the packet's force/moment balance
+# thresholds could not be recomputed by the adapter alone; v1 is refused
+# explicitly, never silently upgraded.
+RECEIPT_SCHEMA_V1 = "chimera-mechanism-factory-qualification-receipt-v1"
 GPU_RELEASED_STATE = "released"
 RESUME_BLOCK_KEY = "resume"            # receipt["resume"] = {checkpoint_path,
 RESUME_PATH_KEY = "checkpoint_path"    #   resumed_from_checkpoint_sha256}
@@ -64,9 +69,28 @@ def _load_json(path: Path):
 
 def _case_outputs_finite(case: dict) -> bool:
     out = case.get("outputs") or {}
-    vals = [out.get("energy_J"), out.get("max_free_residual_N")]
+    vals = [out.get("energy_J"), out.get("max_free_residual_N"),
+            out.get("max_force_balance_residual"),
+            out.get("max_moment_balance_residual")]
     vals += [v for row in (out.get("reactions_N") or []) for v in row]
     return all(isinstance(v, (int, float)) and math.isfinite(v) for v in vals)
+
+
+_BALANCE_KEYS = ("max_force_balance_residual", "max_moment_balance_residual")
+
+
+def _balance_within_thresholds(case: dict, thr: dict) -> list:
+    """Refusal names for the packet's two balance thresholds, recomputed
+    against the residuals the receipt now records (v2)."""
+    out = case.get("outputs") or {}
+    names = []
+    for key in _BALANCE_KEYS:
+        val = out.get(key)
+        if not (isinstance(val, (int, float)) and math.isfinite(val)):
+            continue          # already flagged as nonfinite_output
+        if val > thr.get(key):
+            names.append(f"{key}_exceeded:{case.get('case_id')}")
+    return names
 
 
 def _case_converged(case: dict, thr: dict) -> bool:
@@ -109,7 +133,9 @@ def verify_receipt(receipt_path, packet_path) -> Verdict:
             receipt.get("schema") != ACCEPTED_RECEIPT_SCHEMA:
         return Verdict(False, ["receipt_schema_unsupported"],
                        {"got_schema": receipt.get("schema")
-                        if isinstance(receipt, dict) else None})
+                        if isinstance(receipt, dict) else None,
+                       "accepted_schema": ACCEPTED_RECEIPT_SCHEMA,
+                       "rejected_schema_v1": RECEIPT_SCHEMA_V1})
     packet, err = _load_json(Path(packet_path))
     if err:
         return Verdict(False, ["packet_unreadable"], {"packet_error": err})
@@ -155,6 +181,9 @@ def verify_receipt(receipt_path, packet_path) -> Verdict:
             recomputed_pass = False
         if not _case_converged(case, thr):
             refusals.append(f"unconverged_label:{case.get('case_id')}")
+            recomputed_pass = False
+        for name in _balance_within_thresholds(case, thr):
+            refusals.append(name)
             recomputed_pass = False
 
     # gpu_job reservation/release
