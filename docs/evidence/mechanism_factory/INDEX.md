@@ -48,6 +48,27 @@ identity moved.
   is likewise adapter-PASS. Topology witnesses (free seam ring: no
   equilibrium, residual 1.08; grounded ring: zero transfer,
   bit-for-bit) recorded in the battery receipt.
+- P5 REUSE — `composed_chain_receipt_20261016T092136.068087Z.json` +
+  `composed_chain_checks_20261016T093949.650913Z.json` (6/6; its internal
+  stamp `composed_chain_qualification_receipt_20261016T094004.837261Z.json`
+  is adapter-PASS) (`composed_chain.py` / `composed_chain_checks.py`):
+  the SAME piece artifacts A and B (vertex/face blocks hashed
+  byte-identical to assembly 1's) plus new piece C reassembled into the
+  k=2 fan-out STAR (A = grounded owner at the single seam vertex, both
+  welds at apexes only; the seam law's generalized hanger placement
+  z -> (hA + h) - z reduces to assembly 1's transform for B, preserving
+  byte-identical reuse). Minimal-legal-topology witness under check (g):
+  free seam rings have no equilibrium and grounded rings transfer
+  nothing, so connected assemblies are single-seam stars; a two-seam
+  chain through rim vertices is impossible. Reference = ONE
+  `solve_equilibrium`: scale 1.0 stagnated at free residual 7.32e-7
+  (<= the packet's 1e-6 law), block margin 0.488, port nets
+  B 0.922 N / C 0.737 N (transfer margin >= the C4 precedent 0.1
+  through BOTH welds); new scale point 0.75 stagnated at 3.36e-7 with
+  resolution untouched; stripping C reproduces assembly 1's mesh
+  byte-for-byte (energy within 1e-9). Adapter verdict PASS on the
+  standalone receipt under the unchanged composed-v1 schema (no adapter
+  edit; F13 already refuses unknown variants).
 - `fit_receipt_20261016T075201.333890Z.json` — bounded-table fit+eval
   receipt (`bounded_fit.py`, P3), regenerated against the reworded
   packet. Same physics as before: bounded PCHIP interpolant, knot-point
@@ -90,6 +111,16 @@ identity moved.
   `gpu_fit_dryrun_20261016T080658.581626Z.json` (clean,
   `reservation_available_not_taken`), and pytest
   `test_workflow_checklist.py` 3 passed over the refreshed graph.
+- POST-REUSE SUITE RERUN (P5 reuse round): all suites re-greened —
+  `adapter_faults_20261016T092258.859987Z.json` (F0-F13 green),
+  `patch_equilibrium_receipt_20261016T092259.068491Z.json` (6/6),
+  `composed_patch_receipt_20261016T092303.625898Z.json` (7/7),
+  `bounded_fit_checks_20261016T092328.431715Z.json` (7/7),
+  `fit_job_checks_20261016T093154.134037Z.json` (5/5),
+  `gpu_fit_checks_20261016T093305.360305Z.json` (6/6) +
+  `gpu_fit_dryrun_20261016T093306.144822Z.json` (clean), pytest
+  `test_workflow_checklist.py` 3 passed. No pinned-file edits this
+  round, so all graph `verifier_inputs` pins still match disk.
 
 Stale (retained, do not consume):
 
