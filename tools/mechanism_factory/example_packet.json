@@ -14,7 +14,7 @@
     "fixtures": "tools/membrane_scale_lab/fixture_generator.py:high_degree_fan (apex-cone variants; see exclusions for why loaded irregular_patch is excluded)"
   },
   "verifier_identity": {
-    "receipt_adapter": "tools/mechanism_factory/receipt_adapter.py (accepted schema chimera-mechanism-factory-qualification-receipt-v2; v1 receipts are refused explicitly as receipt_schema_unsupported)",
+    "receipt_adapter": "tools/mechanism_factory/receipt_adapter.py (the accepted receipt-schema set is defined by that file as pinned by its verifier_inputs hash -- this prose deliberately enumerates no schemas, so adding a versioned schema to the adapter does not drift this packet)",
     "evidence_path_law": "tools/membrane_scale_lab/evidence_output.py:resolve_evidence_path"
   },
   "io_schema": {

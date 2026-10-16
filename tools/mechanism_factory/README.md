@@ -113,9 +113,12 @@ convergence failure stays FAILED/stagnated, never rewritten) are honored.
 
 ## Receipt adapter (seam 2b) — `receipt_adapter.py`
 
-Independent, versioned verifier (`ADAPTER_VERSION = receipt-adapter-v1`,
-accepted schema `chimera-mechanism-factory-qualification-receipt-v2`; v1
-receipts are refused explicitly as `receipt_schema_unsupported`).
+Independent, versioned verifier (`ADAPTER_VERSION = receipt-adapter-v1`;
+the accepted receipt-schema set is whatever the PINNED adapter file
+accepts — its `verifier_inputs` hash is the law, and this section
+deliberately enumerates no schemas so additions never drift it; unknown
+or superseded schemas are refused explicitly as
+`receipt_schema_unsupported`).
 `verify_receipt(receipt, packet) -> Verdict(passed, refusals)` trusts nothing
 it can recompute: packet digest, solver/law/fixture file hashes, units,
 finiteness, the convergence acceptance law (`unconverged_label`: stationary,
