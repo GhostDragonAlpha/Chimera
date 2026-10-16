@@ -379,3 +379,33 @@ def load_record(record_id: str) -> dict:
     if not p.is_file():
         raise PieceRecordRefused("piece_record_missing", record_id)
     return json.loads(p.read_text(encoding="utf-8"))
+
+
+def amend_representations(record_id: str, entry: dict) -> Path:
+    """ADDITIVE-ONLY amendment law: append exactly ONE representation
+    entry to a retained record; every other byte stays untouched. The
+    PRIOR bytes are archived under pieces/archive/ (append-only evidence
+    stays intact). Idempotent: if the identical entry is already present,
+    the retained record is returned unchanged."""
+    rec = load_record(record_id)
+    path = PIECES_DIR / f"{record_id}.json"
+    for r in rec["representations"]:
+        if r.get("kind") == entry.get("kind"):
+            if r == entry:
+                return path
+            raise PieceRecordRefused(
+                "piece_representation_kind_exists",
+                f"{record_id} already carries a different "
+                f"{entry.get('kind')!r} entry")
+    prior_bytes = path.read_bytes()
+    amended = json.loads(json.dumps(rec))     # deep copy
+    amended["representations"].append(entry)
+    validate(amended)
+    stamp = hashlib.sha256(prior_bytes).hexdigest()[:16]
+    archive = PIECES_DIR / "archive" / f"{record_id}.{stamp}.json"
+    archive.parent.mkdir(parents=True, exist_ok=True)
+    if not archive.exists():
+        archive.write_bytes(prior_bytes)
+    path.write_text(json.dumps(amended, indent=1, default=str) + "\n",
+                    encoding="utf-8")
+    return path

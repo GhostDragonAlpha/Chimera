@@ -129,6 +129,43 @@ identity moved.
   `gpu_fit_dryrun_20261016T121014.836973Z.json` (clean),
   `research_cycle_checks_20261016T121143.163287Z.json` (7/7), pytest
   `test_workflow_checklist.py` 3 passed, graph `check()` clean.
+- POST-PORT-SOLVE SUITE RERUN (all green; no pinned-file edits):
+  `port_solve_checks_20261016T131007.892691Z.json` (6/6 + record
+  amendment), `piece_record_checks_20261016T131048.000256Z.json` (6/6
+  over the amended record),
+  `adapter_faults_20261016T131242.752611Z.json` (F0-F13),
+  `patch_equilibrium_receipt_20261016T131242.983415Z.json` (6/6),
+  `composed_patch_receipt_20261016T131244.079238Z.json` (7/7),
+  `bounded_fit_checks_20261016T131312.954171Z.json` (7/7),
+  `fit_job_checks_20261016T132143.939485Z.json` (5/5),
+  `gpu_fit_checks_20261016T132214.337220Z.json` (6/6) +
+  `gpu_fit_dryrun_20261016T132215.152402Z.json` (clean),
+  `research_cycle_checks_20261016T132344.487794Z.json` (7/7), pytest
+  `test_workflow_checklist.py` 3 passed, graph `check()` clean.
+- 11.20.5 PORT-BASED ASSEMBLY SOLVE (the LEGO composition primitive) —
+  `port_solve.py` + `port_solve_checks_20261016T131007.892691Z.json`
+  (6/6): two pieces coupled through their PORT RESPONSE OPERATORS ONLY
+  (Newton on the interface residual; the interface DOF is the seam
+  vertex's FULL 3D displacement — no reduction: the weld consumes every
+  other DOF and the law's vertex forces are local to incident faces).
+  AGREEMENT with the fused-mesh reference (the composed artifact):
+  A rim net diff 3.17e-8 N, B rim net diff 2.14e-8 N, seam position
+  diff 1.04e-8 wu (preregistered tolerances 1e-6 N / 1e-5 wu);
+  3 Newton iterations to |R| = 3.45e-12 (gate 1e-10).
+  (a) agreement PASS; (b) coupled global force 3.5e-12 N / moment
+  8.7e-16 N·m at the unchanged 1e-6 law; (c) NOT one-shot: a single
+  isolated evaluation fails the interface residual at 8.2e-1 N
+  (~8e5 times the gate) — the iteration is load-bearing; (d) frames
+  bit-identical, exchange closed, net joint work 5.4e-13 J (tol 1e-7),
+  stored energy matches the fused reference to 8.3e-9 J; (e)
+  `port_solve_out_of_domain` and `port_solve_not_converged` both
+  refused by name, each with the qualified detailed fallback (the
+  fused-mesh solve_equilibrium) already run and attached; (f)
+  deterministic (solution hash da2d90d76f831804). The fused solve
+  REMAINS the qualified reference and detailed fallback. RECORD
+  AMENDMENT: `assembly.star-k2` gained the `port-based` representation
+  entry (qualified, citing this receipt) via the additive-only
+  amendment law; prior bytes archived under `pieces/archive/`.
 - `fit_receipt_20261016T075201.333890Z.json` — bounded-table fit+eval
   receipt (`bounded_fit.py`, P3), regenerated against the reworded
   packet. Same physics as before: bounded PCHIP interpolant, knot-point

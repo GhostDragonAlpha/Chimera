@@ -331,7 +331,7 @@ def _record_law() -> dict:
 
 
 def _record_star() -> dict:
-    return {
+    rec = {
         "record_id": "assembly.star-k2",
         "kind": "assembly",
         "name": "The k=2 fan-out star: ground piece A + inverted hangers "
@@ -483,6 +483,18 @@ def _record_star() -> dict:
             "physical_to_render": "unset: no engine binding exists yet",
         },
     }
+    # additive amendments made AFTER this record was first retained (the
+    # 11.20.5 port-based representation, amended by port_solve_checks and
+    # archived under pieces/archive/) are carried forward so this
+    # battery's idempotent write matches the retained bytes
+    try:
+        retained = pr.load_record("assembly.star-k2")
+        for r in retained["representations"]:
+            if r["kind"] not in {x["kind"] for x in rec["representations"]}:
+                rec["representations"].append(r)
+    except pr.PieceRecordRefused:
+        pass                                    # first run: not yet retained
+    return rec
 
 
 def _state_hashes_fill(*records: dict) -> None:

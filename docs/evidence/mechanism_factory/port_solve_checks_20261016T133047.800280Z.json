@@ -1,0 +1,119 @@
+{
+ "schema": "chimera-mechanism-factory-port-solve-checks-v1",
+ "utc": "2026-10-16T13:30:53.624850+00:00",
+ "what": "11.20.5 port-based assembly solve qualified against the fused-mesh reference: agreement, coupled balance, one-shot insufficiency, interface work accounting, named refusals with the fused fallback, determinism",
+ "source_commit": "b0219c609293e6845343f7e5ed222d3141c0af6a",
+ "source_file_hashes": {
+  "tools/membrane_scale_lab/surface_energy_reference.py": "ee9effcfbddad8d02e03f71d414b27da177f0656de535eaab0d76ae39796f0b7",
+  "tools/membrane_scale_lab/overdamped_descent.py": "a940ac9da88a8852ee57709fe7a44df5469d418be73a75801ea7123d91d930f6",
+  "tools/membrane_scale_lab/fixture_generator.py": "1ebd13b9a659fd85d3ca1dacd29ee8f879636a8863ae836db1756b573ea5b260",
+  "tools/mechanism_factory/patch_equilibrium.py": "4007e23217ddedc4963b1e92b68f213a20fe402b32da2aef1bffdff8b6e15b40",
+  "tools/mechanism_factory/qualification_receipt.py": "d4fcb57d2d923463d275b47f12b6ebbfd3f2c70185ad30b9725ed283fb886689",
+  "tools/mechanism_factory/receipt_adapter.py": "b452511a092ac83e8f7c530c7c9101706381b09ff30adf6a9ae84c392645d015",
+  "tools/mechanism_factory/composed_patch.py": "12d4c08b9fcc1b7b294b1cfd2c522af27b664e486e42c91e28f2e97b9d37d662",
+  "tools/mechanism_factory/composed_patch_checks.py": "569a447de2d9370c0418d5ebf19da8370f61460fc71df790080969fd5b562a3b"
+ },
+ "packet_sha256": "75e24523dc1cb002e4b0fbc3de811e1d4c7eec76e887e70d209e56ee320f0a0d",
+ "units": {
+  "length": "m",
+  "force": "N",
+  "energy": "J"
+ },
+ "preregistered_allowances": {
+  "agreement_tol_N": 1e-06,
+  "agreement_tol_wu": 1e-05,
+  "balance_law_source": "example_packet.acceptance_thresholds (1e-6)",
+  "joint_work_tol_J": 1e-07,
+  "energy_tol_J": 1e-06,
+  "interface_gate_N": 1e-10,
+  "domain_radius_wu": 0.25
+ },
+ "checks": {
+  "a_agreement_with_fused_reference": {
+   "pass": true
+  },
+  "b_coupled_balance": {
+   "pass": true
+  },
+  "c_not_one_shot": {
+   "pass": true
+  },
+  "d_work_energy_interface": {
+   "pass": true
+  },
+  "e_named_refusals_with_fallback": {
+   "pass": true
+  },
+  "f_determinism": {
+   "pass": true
+  }
+ },
+ "cases": {
+  "a_agreement_with_fused_reference": {
+   "pass": true,
+   "measured": {
+    "A_rim_net_diff_N": 3.1740767403309955e-08,
+    "B_rim_net_diff_N": 2.143528354814385e-08,
+    "seam_pos_diff_wu": 1.0415777018662272e-08,
+    "iters": 3,
+    "interface_residual_N": 3.450464040745592e-12
+   }
+  },
+  "b_coupled_balance": {
+   "pass": true,
+   "measured": {
+    "global_force_residual_N": 3.4504646542912616e-12,
+    "global_moment_residual_Nm": 8.701001276088344e-16
+   }
+  },
+  "c_not_one_shot": {
+   "pass": true,
+   "measured": {
+    "one_shot_residual_N": 0.8202664407376664,
+    "gate_N": 1e-06,
+    "margin_factor": 820266.4407376664,
+    "converged_residual_N": 3.450464040745592e-12,
+    "iterations": 3
+   }
+  },
+  "d_work_energy_interface": {
+   "pass": true,
+   "measured": {
+    "closure_N": 3.450464040745592e-12,
+    "frames_bit_identical": true,
+    "net_joint_work_J": 5.404079855219962e-13,
+    "stored_energy_diff_J": 8.332622591922245e-09
+   }
+  },
+  "e_named_refusals_with_fallback": {
+   "pass": true,
+   "measured": {
+    "out_of_domain_refused_as": "port_solve_out_of_domain",
+    "not_converged_refused_as": "port_solve_not_converged",
+    "fallback": "fused-mesh solve_equilibrium on the joined mesh (composed_patch.solve_assembly)",
+    "fallback_fused_residual_N": 5.317260087789322e-08
+   }
+  },
+  "f_determinism": {
+   "pass": true,
+   "measured": {
+    "hash": "da2d90d76f831804",
+    "matches": true
+   }
+  }
+ },
+ "solve_law": {
+  "interface_gate_N": 1e-10,
+  "max_iterations": 20,
+  "fd_h_wu": 1e-07,
+  "domain_radius_wu": 0.25,
+  "fallback": "fused-mesh solve_equilibrium on the joined mesh (composed_patch.solve_assembly)",
+  "interface_dof": "the seam vertex's FULL 3D displacement (no reduction; the weld consumes every other DOF and vertex forces are local to incident faces)"
+ },
+ "record_amendment": {
+  "record": "assembly.star-k2",
+  "entry_kind": "port-based",
+  "law": "additive-only amendment (piece_record.amend_representations); the prior bytes are archived under pieces/archive/; this receipt is the entry's cited evidence"
+ },
+ "scope_note": "qualified for THIS apex-weld interface and load class; the fused-mesh solve remains the qualified detailed fallback and the admission path for other interfaces"
+}
