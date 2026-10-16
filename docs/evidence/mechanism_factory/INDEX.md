@@ -59,6 +59,44 @@ Current (adapter-verifiable in a clean checkout of HEAD):
   reproduction, monotone/no-overshoot, real-table LOO agreement to
   1e-12 N; math-tools evidence
   `Runtime/local-ai/math-tools/results/20261015-211510-d9656b3c`).
+- `gpu_fit_manifest_20261016T030615.852906Z.json` +
+  `gpu_manifest_receipt_20261016T030615.852976Z.json` — §11.18 GPU
+  learned-candidate batch manifest (implementation-only seam; no live
+  reservation taken), schema
+  `chimera-mechanism-factory-gpu-manifest-v1`, manifest sha256
+  7a9a23587eb955ac29b8d0d1eefc58df4fbdbd967a94c6a1716e50b3de89276d.
+  One job (learned_candidate_fit, Strata venv python, timeout 600 s,
+  seed 1729 per the reference bounded fit), packet budgets verbatim
+  (time_s 300, ram_mb 512) plus preregistered VRAM/disk headroom,
+  packet checkpoint policy and stopping conditions verbatim
+  (OOM fails the job — no silent precision/step/case changes), the
+  release-in-cleanup contract, and the no-LLM-call law (no
+  router/HTTP marker in any command; build-time and dry-run
+  enforcement). Fixtures: 5 knots per train/validation family derived
+  from the adapter-PASSed receipts (holdout excluded structurally);
+  label receipts + packet sha-pinned in `identities` so gpu_batch
+  refuses the batch if any input changes. The fit job script is
+  authored in the next seam, so the manifest carries it as a pending
+  input and `eligible_for_live_batch` is false — the live command is
+  documented in `tools/mechanism_factory/GPU_LIVE_BATCH.md` as NOT
+  YET RUN.
+- `gpu_fit_dryrun_20261016T032645.207808Z.json` — dry run, schema
+  `chimera-mechanism-factory-gpu-dryrun-v1`, clean (all structural
+  validations PASS through gpu_batch.load_plan's own law). Reservation
+  verdict: `reservation_available_not_taken` — the read-only
+  `run_gpu_job.py --check` probe (no HTTP call, no model touch) found
+  the lock free and released it immediately; a refused probe (exit 75)
+  would have recorded `reservation_unavailable` as an expected dry-run
+  outcome.
+- `gpu_fit_checks_20261016T032644.947848Z.json` — manifest/dry-run
+  falsifier battery, 6/6 green: (a) manifest determinism (in-memory
+  build reproduces the stamped artifact's sha256 exactly), (b) holdout
+  absent from operative sections + split gate reads 0 holdout cases +
+  `refusal_holdout_fixture` fires, (c) timeout > 600 s and
+  missing-budget builds refused by name, (d) LLM/router invocation in
+  a job command refused (`llm_call_in_job_command`), (e) build with
+  no qualified receipt refused (`no_qualified_receipt`), (f) real
+  dry run exits 0 without a reservation and records its verdict.
 - `bounded_fit_checks_20261016T021808.526204Z.json` — fit falsifier
   battery, **7/7 green**: T1 determinism, T2 unqualified receipts
   refused as label sources, T3 structural holdout sentinel untouched,
