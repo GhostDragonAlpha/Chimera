@@ -1,0 +1,96 @@
+{
+  "schema": "chimera-mechanism-factory-gpu-dryrun-v1",
+  "utc": "2026-10-16T12:10:15.063394+00:00",
+  "manifest_path": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\gpu_fit_manifest_20261016T075313.181707Z.json",
+  "manifest_sha256": "e4d839794e9781c0136e15383b89633c4299e5894fa7f4a8b1ccc90459295569",
+  "reservation": {
+    "verdict": "reservation_available_not_taken",
+    "exit_code": 0,
+    "note": "the reservation is currently free; the check path released the momentary lock immediately; no unload, load or inference call was made"
+  },
+  "no_reservation_taken": true,
+  "live_batch_not_run": true,
+  "validation": {
+    "all_validations_pass": true,
+    "clean_probe": true,
+    "rows": {
+      "manifest_schema": {
+        "pass": true,
+        "note": "gpu_batch.load_plan accepted the manifest (jobs/identities/cwd/timeout law)"
+      },
+      "identities": {
+        "pass": true,
+        "n_pinned_inputs": 4
+      },
+      "paths_and_timeouts": {
+        "pass": true,
+        "bad_executables": [],
+        "bad_timeouts": []
+      },
+      "budgets": {
+        "pass": true,
+        "missing_fields": [],
+        "budgets": {
+          "packet_time_s": 300,
+          "packet_ram_mb": 512,
+          "max_vram_mib": 1024,
+          "min_free_vram_mib": 384,
+          "evidence_disk_mb": 512,
+          "why": "packet budgets verbatim plus preregistered GPU headroom (the small-fixture floor is 384 MiB reported free); an OOM FAILS the job -- never silently change precision, physical steps or drop cases"
+        }
+      },
+      "fixtures": {
+        "pass": true,
+        "bad_label_receipts": [],
+        "expected_knots": {
+          "fan-full-rim-pin": [
+            0.4,
+            0.8,
+            1.2,
+            1.6,
+            2.0
+          ],
+          "fan-full-rim-pin-alt-geometry": [
+            0.2,
+            0.6,
+            1.0,
+            1.4,
+            1.8
+          ]
+        },
+        "manifest_knots": {
+          "fan-full-rim-pin": [
+            0.4,
+            0.8,
+            1.2,
+            1.6,
+            2.0
+          ],
+          "fan-full-rim-pin-alt-geometry": [
+            0.2,
+            0.6,
+            1.0,
+            1.4,
+            1.8
+          ]
+        },
+        "holdout_families": [
+          "fan-full-rim-pin-alt-load"
+        ],
+        "holdout_absent": true,
+        "splits_ok": true
+      },
+      "no_llm_calls": {
+        "pass": true,
+        "violations": [],
+        "n_markers": 18
+      },
+      "reservation": {
+        "verdict": "reservation_available_not_taken",
+        "exit_code": 0,
+        "note": "the reservation is currently free; the check path released the momentary lock immediately; no unload, load or inference call was made"
+      }
+    }
+  },
+  "clean_dry_run": true
+}

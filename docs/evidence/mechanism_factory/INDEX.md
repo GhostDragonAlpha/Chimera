@@ -97,6 +97,38 @@ identity moved.
   `workflow_evidence_requires_measurement_api`), so outcome records
   (experiment/method_comparison/stop) honestly stay file-level.
   Scope: this demonstrated cycle only.
+- 11.20 PIECE LIBRARY (first increment) — `piece_record.py` (schema
+  `chimera-mechanism-factory-piece-record-v1`; the §11.20.1 record
+  table: design recipe / physical definition / ports / instance state /
+  representations / function card / fabrication binding; records under
+  `pieces/`) + `piece_record_checks_20261016T115835.248024Z.json`
+  (6/6). THREE records instantiated from the qualified alphabet, with
+  MEASURED domain bounds:
+  `piece.patch-equilibrium` (loads 0.4-2.0 N vertical; scales
+  0.5x/0.75x/1.0x/2.0x), `law.apex-weld-seam` (apex welds only; the
+  witness (g) exclusions recorded), `assembly.star-k2` (0.8 N input;
+  scales 0.75x/1.0x ONLY — 1.5x/2.0x recorded over the gate).
+  Laws: unknown top-level fields refused; every receipt id resolves AND
+  domain claims must be covered by in-gate measured cases in the cited
+  receipts (`piece_domain_unmeasured` catches domain drift, not just
+  link rot); quasistatic work accounting — port work along a 9-point
+  load ramp equals the stored surface-energy change to 1.99e-4 relative
+  (preregistered tol 1e-3; honest finding: the ramp's INTERMEDIATE
+  states stagnate over the unchanged gate); immutable shared recipes
+  with per-instance state (state hashes differ); naming grants nothing
+  (`function_card_required`); rejected table/learned representations
+  cannot be dropped (`representations_incomplete`); freshness =
+  re-verified source pins. Scope: record layer only; no engine binding
+  claimed. POST-PIECE-LIBRARY SUITE RERUN (all green; no pinned-file
+  edits): `adapter_faults_20261016T120042.595179Z.json` (F0-F13),
+  `patch_equilibrium_receipt_20261016T120042.800680Z.json` (6/6),
+  `composed_patch_receipt_20261016T120043.856152Z.json` (7/7),
+  `bounded_fit_checks_20261016T120112.752908Z.json` (7/7),
+  `fit_job_checks_20261016T120943.703372Z.json` (5/5),
+  `gpu_fit_checks_20261016T121014.017044Z.json` (6/6) +
+  `gpu_fit_dryrun_20261016T121014.836973Z.json` (clean),
+  `research_cycle_checks_20261016T121143.163287Z.json` (7/7), pytest
+  `test_workflow_checklist.py` 3 passed, graph `check()` clean.
 - `fit_receipt_20261016T075201.333890Z.json` — bounded-table fit+eval
   receipt (`bounded_fit.py`, P3), regenerated against the reworded
   packet. Same physics as before: bounded PCHIP interpolant, knot-point

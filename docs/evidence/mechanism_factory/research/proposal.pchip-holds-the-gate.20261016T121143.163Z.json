@@ -1,0 +1,25 @@
+{
+ "record_id": "proposal.pchip-holds-the-gate.20261016T121143.163Z",
+ "kind": "proposal",
+ "question": "Can a bounded interpolant hold the packet's 1e-6 N interpolation gate better than the REJECTED piecewise-linear knot table, on the same frozen LOO suite and matched budget?",
+ "parent_evidence_ids": [
+  "fit_receipt_20261016T075201.333890Z.json"
+ ],
+ "alternatives": [
+  "incumbent piecewise-linear knot table (REJECTED 3.9417e-4 N)",
+  "PCHIP monotone cubic in |f| (the retained failure's own bounded interpolant)",
+  "learned candidate (deferred to the GPU-batch seam, never self-admitted)"
+ ],
+ "experiment_identity": "bounded_fit LOO on interior tabulated knots, frozen families",
+ "budget": {
+  "allocated": 2,
+  "consumed": 0
+ },
+ "applicability": "port-reaction response of the frozen fan families within the packet's admitted domain",
+ "next_questions": [
+  "does any bounded interpolant reach 1e-6?",
+  "what does the comparison say about adoption?"
+ ],
+ "schema": "chimera-mechanism-factory-research-record-v1",
+ "utc": "2026-10-16T12:11:43.347293+00:00"
+}

@@ -1,0 +1,252 @@
+{
+ "record_id": "assembly.star-k2",
+ "kind": "assembly",
+ "name": "The k=2 fan-out star: ground piece A + inverted hangers B and C, two apex welds at one seam vertex",
+ "design_recipe": {
+  "immutable": true,
+  "executable_code": false,
+  "nodes": [
+   {
+    "node_id": "A",
+    "kind": "patch",
+    "generator": "fixture_generator.high_degree_fan",
+    "params": {
+     "n_rim": 200,
+     "radius": 1.0,
+     "height": 0.3
+    },
+    "seed": 1,
+    "parent_ids": [],
+    "role": "ground piece; owns the seam; input port"
+   },
+   {
+    "node_id": "B",
+    "kind": "patch",
+    "generator": "fixture_generator.high_degree_fan",
+    "params": {
+     "n_rim": 200,
+     "radius": 0.8,
+     "height": 0.3
+    },
+    "seed": 2,
+    "parent_ids": [],
+    "role": "reused hanger; far rim = output port"
+   },
+   {
+    "node_id": "C",
+    "kind": "patch",
+    "generator": "fixture_generator.high_degree_fan",
+    "params": {
+     "n_rim": 200,
+     "radius": 0.5,
+     "height": 0.25
+    },
+    "seed": 3,
+    "parent_ids": [],
+    "role": "new hanger; far rim = output port"
+   }
+  ],
+  "edges": [
+   {
+    "edge_id": "weld-A-B",
+    "kind": "apex-weld",
+    "endpoints": [
+     "A",
+     "B"
+    ],
+    "seam_owner": "A",
+    "law_id": "apex-weld-seam"
+   },
+   {
+    "edge_id": "weld-A-C",
+    "kind": "apex-weld",
+    "endpoints": [
+     "A",
+     "C"
+    ],
+    "seam_owner": "A",
+    "law_id": "apex-weld-seam"
+   }
+  ],
+  "recipe_hash": "8a97616190f283d7"
+ },
+ "physical_definition": {
+  "law_id": "constant-gamma-current-area-surface-energy + apex-weld-seam",
+  "law_revision": "ee9effcfbddad8d02e03f71d414b27da177f0656de535eaab0d76ae39796f0b7",
+  "units": {
+   "length": "m",
+   "force": "N",
+   "energy": "J"
+  },
+  "topology": "601 vertices / 600 faces / 600 pins; one seam vertex carrying both welded joints",
+  "reference_configuration": "built star mesh (byte-identical reuse of assembly 1's A and B blocks, hashed by reuse check (a))",
+  "valid_loads_N": [
+   0.8
+  ],
+  "valid_scales": [
+   0.75,
+   1.0
+  ],
+  "excluded_phenomena": [
+   "scales 1.5x/2.0x for THIS topology: measured OVER the packet's unchanged 1e-6 gate (1.11e-6 / 1.64e-6 N) -- domain drift recorded, not tuned",
+   "free seam rings and rim welds (witness (g))",
+   "loads on pinned vertices"
+  ],
+  "measured_in": [
+   "composed_chain_receipt_20261016T092136.068087Z.json",
+   "composed_chain_checks_20261016T093949.650913Z.json"
+  ],
+  "reuse_lineage": [
+   "composed_qualification_receipt_20261016T075201.116240Z.json"
+  ]
+ },
+ "ports": [
+  {
+   "port_id": "star-input-seam-apex",
+   "kind": "input",
+   "patch_geometry": "the seam apex on piece A's side (the only legal free vertex)",
+   "local_frame": "vertical axis; load applied -z",
+   "exchanges": "vertical dead load [N], displacement [m]",
+   "sign_convention": "W = f.x, positive along the load",
+   "variables": {
+    "prescribed": "vertical dead load 0.8 N",
+    "free": "seam displacement"
+   },
+   "work_accounting": "quasistatic ramp identity (check (c))"
+  },
+  {
+   "port_id": "star-output-B-rim",
+   "kind": "output",
+   "patch_geometry": "piece B's 200 far-rim pins",
+   "local_frame": "global frame",
+   "exchanges": "reaction forces [N]",
+   "sign_convention": "port net = sum of pin reactions",
+   "variables": {
+    "prescribed": "far-rim positions (fixed)",
+    "free": "none"
+   },
+   "work_accounting": "measured port net 0.922 N at 1.0x"
+  },
+  {
+   "port_id": "star-output-C-rim",
+   "kind": "output",
+   "patch_geometry": "piece C's 200 far-rim pins",
+   "local_frame": "global frame",
+   "exchanges": "reaction forces [N]",
+   "sign_convention": "port net = sum of pin reactions",
+   "variables": {
+    "prescribed": "far-rim positions (fixed)",
+    "free": "none"
+   },
+   "work_accounting": "measured port net 0.737 N at 1.0x"
+  }
+ ],
+ "instance_state": {
+  "owner": "piece_record layer (no engine runtime yet); two instances SHARE this immutable recipe and own SEPARATE state",
+  "instances": [
+   {
+    "instance_id": "assembly.star-k2.instance-loaded",
+    "state": {
+     "applied_load_N": 0.8,
+     "stored_surface_energy_J": 6.315991884,
+     "seam_z_wu": 0.28438,
+     "free_residual_N": 7.076e-07
+    },
+    "state_hash": "bee69aa2d4960b75"
+   },
+   {
+    "instance_id": "assembly.star-k2.instance-rest",
+    "state": {
+     "applied_load_N": 0.0,
+     "stored_surface_energy_J": 6.274436846,
+     "seam_z_wu": 0.386957,
+     "free_residual_N": 9.794e-08
+    },
+    "state_hash": "8807b10712f4182c"
+   }
+  ]
+ },
+ "representations": [
+  {
+   "kind": "direct-reference",
+   "status": "qualified",
+   "receipt_ids": [
+    "composed_chain_receipt_20261016T092136.068087Z.json",
+    "composed_chain_checks_20261016T093949.650913Z.json"
+   ],
+   "note": "ONE solve_equilibrium per scale; 6/6 reuse battery; adapter PASS under the unchanged composed-v1 schema"
+  },
+  {
+   "kind": "table",
+   "status": "rejected_at_gate",
+   "receipt_ids": [
+    "fit_receipt_20261016T075201.333890Z.json"
+   ],
+   "measured": {
+    "pchip_loo_max_N": 0.00014422663666699073,
+    "gate_N": 1e-06
+   },
+   "note": "the piece library's table representation is REJECTED for every member; retained here too"
+  },
+  {
+   "kind": "learned",
+   "status": "rejected_at_gate",
+   "receipt_ids": [
+    "fit_job_receipt_20261016T075339.472945Z.json"
+   ],
+   "measured": {
+    "validation_max_error_N": 0.03366755675170242,
+    "gate_N": 1e-06
+   },
+   "note": "RETAINED FAILURE: stopped without success"
+  }
+ ],
+ "function_card": {
+  "function_label": "",
+  "measured_response_anchors": [
+   {
+    "quantity": "input->output transfer through both welds",
+    "measured_in": "composed_chain_checks_20261016T093949.650913Z.json",
+    "values": "block margin 0.488; port nets 0.922 / 0.737 N at 1.0x"
+   },
+   {
+    "quantity": "coupled balance",
+    "measured_in": "composed_chain_receipt_20261016T092136.068087Z.json",
+    "values": "free residual 7.32e-7 N <= the packet's unchanged 1e-6 law at 1.0x; 3.36e-7 at 0.75x"
+   }
+  ],
+  "operating_domain": "vertical dead load 0.8 N; rigid scales 0.75x and 1.0x ONLY (1.5x/2.0x measured over the unchanged gate)",
+  "costs": {
+   "solve": "two CPU solves (601-vertex meshes), minutes"
+  },
+  "failures": [
+   "scale drift at 1.5x/2.0x (over the gate)",
+   "rim-weld chain alternatives impossible (witness (g))"
+  ],
+  "evidence_ids": [
+   "composed_chain_receipt_20261016T092136.068087Z.json",
+   "composed_chain_checks_20261016T093949.650913Z.json",
+   "fit_receipt_20261016T075201.333890Z.json",
+   "fit_job_receipt_20261016T075339.472945Z.json"
+  ],
+  "freshness": {
+   "source_pins": {
+    "tools/mechanism_factory/composed_chain.py": "67a274fe611807d5793e8d5a1590ec89d29dc14de8c6b3ca087015b77464b7b5",
+    "tools/mechanism_factory/composed_patch.py": "12d4c08b9fcc1b7b294b1cfd2c522af27b664e486e42c91e28f2e97b9d37d662",
+    "tools/membrane_scale_lab/surface_energy_reference.py": "ee9effcfbddad8d02e03f71d414b27da177f0656de535eaab0d76ae39796f0b7"
+   }
+  }
+ },
+ "fabrication_binding": {
+  "required_material": "constant-gamma membrane pieces",
+  "required_energy": "none beyond solver CPU",
+  "permitted_assembly_ops": [
+   "apex-weld"
+  ],
+  "exclusions": [
+   "rim welds; free/grounded rings (witness (g)); any second seam vertex"
+  ],
+  "physical_to_render": "unset: no engine binding exists yet"
+ },
+ "schema": "chimera-mechanism-factory-piece-record-v1"
+}
