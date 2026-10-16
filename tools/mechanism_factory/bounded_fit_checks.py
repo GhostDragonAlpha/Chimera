@@ -1,7 +1,7 @@
 """bounded_fit_checks.py -- falsifier battery for the §11.18 P3 bounded
 fitting/evaluation entrypoint (bounded_fit.py).
 
-Six checks through the house harness (tools/port_registry.py), all
+Seven checks through the house harness (tools/port_registry.py), all
 tolerances preregistered below BEFORE any run:
 
   T1 determinism: fit on the same adapter-PASSed receipts twice -> the
@@ -26,7 +26,12 @@ tolerances preregistered below BEFORE any run:
   T6 fit-receipt honesty: the receipt records seed, normalization,
      split usage, table hash (recomputed and matched), wall-time/peak-RAM
      cost, and no_final_test_access true; the learned-candidate hook is
-     exposed with its named refusal learned_candidate_not_justified.
+     exposed with its gate-consistent named reason.
+  T7 interpolation gate consistency: the bounded table is either
+     qualified at the preregistered leave-one-out gate (1e-6 N, the
+     reference's own error scale) or explicitly REJECTED at it in the
+     fit receipt with the learned-candidate hook flipped -- never
+     silently passed. The measured error is recorded as data either way.
 
 Run:  python tools/mechanism_factory/bounded_fit_checks.py
       exit 0 = all PASS, 1 = a check failed, 2 = evidence-path refusal.
@@ -65,7 +70,16 @@ ALLOW = {
 PACKET = json.loads(bf.PACKET_PATH.read_text(encoding="utf-8"))
 ALLOW["max_validation_reaction_error_N"] = float(
     PACKET["acceptance_thresholds"][bf.TABLE_ERROR_TOLERANCE_KEY])
-EXPECTED_CHECKS = 6
+# Preregistered BEFORE any multi-point run: the bounded table's off-point
+# (interpolation) gate. Justification: the reference's OWN error scale --
+# the solver's machine-scale stagnation floor gives balance residuals
+# ~3e-8 N and the packet's force-balance threshold (the fit tolerance
+# above) is 1e-6 N; an interpolant over adapter-verified reference labels
+# must not err beyond the scale of the references it interpolates. NOT
+# widened after seeing results; if the measured curve exceeds it, that is
+# a REAL FINDING (reported per knot, nothing widened).
+ALLOW["max_interpolation_error_N"] = 1e-6
+EXPECTED_CHECKS = 7
 EVID_DIR = bf.EVID_DIR
 
 
@@ -163,11 +177,12 @@ def t3_holdout_sentinel_untouched(tmp: Path) -> dict:
         raise bf.FitRefusal("sentinel_not_adapter_passable",
                             {"refusals": list(v.refusals)})
     # the sentinel receipt carries ALL genuine cases plus the planted one,
-    # so it is used as the ONLY label source: the table must come out
-    # identical to the clean fit if (and only if) the split gate works.
+    # so the control fit must use exactly the same case set: the genuine
+    # receipt alone (NOT the clean multi-receipt fit, whose table now has
+    # more knots from the multi-point writer).
     r = bf.fit(PACKET, [str(sent)])
     h_sent = r["table"]["table_sha256"]
-    h_clean = _fit_clean()["table"]["table_sha256"]
+    h_clean = bf.fit(PACKET, [genuine])["table"]["table_sha256"]
     # STRUCTURAL probe, not a byte-substring probe: genuine reaction values
     # legitimately contain the digit run "777" (e.g. 0.00889664220777553),
     # so the sentinel is looked for as planted case IDs and exact sentinel
@@ -285,6 +300,15 @@ def t6_fit_receipt_honesty() -> dict:
     recomputed = bf._sha256_bytes(
         bf._canonical(receipt["table"]["families"]))
     # build_receipt flattens the P3 fields at top level
+    ev = receipt.get("evaluation", {})
+    err = max(ev.get("validation_max_reaction_error_N", 0.0),
+              ev.get("interpolation_error", {}).get(
+                  "max_reaction_error_N", 0.0))
+    thr = float(PACKET["acceptance_thresholds"]
+                [bf.TABLE_ERROR_TOLERANCE_KEY])
+    expected_reason = ("learned_candidate_not_justified" if err <= thr
+                       else "learned_candidate_deferred_gpu_seam")
+    lc = receipt.get("learned_candidate", {})
     checks = {
         "seed_recorded": receipt.get("seed") == bf.FIT_SEED,
         "normalization_recorded": bool(receipt.get("normalization", {}).get(
@@ -301,14 +325,61 @@ def t6_fit_receipt_honesty() -> dict:
         "no_final_test_access_true":
             receipt.get("no_final_test_access") is True,
         "learned_candidate_hook_named":
-            receipt.get("learned_candidate", {}).get("reason")
-            == "learned_candidate_not_justified",
+            lc.get("status") in ("refused", "deferred")
+            and lc.get("reason") == expected_reason,
     }
     ok = all(checks.values())
     return {"pass": bool(ok), "fields": checks,
             "table_hash": receipt.get("table_hash"),
-            "learned_candidate": receipt.get("learned_candidate", {}).get(
-                "reason")}
+            "learned_candidate": lc.get("reason"),
+            "expected_reason": expected_reason}
+
+
+# ── T7 ──────────────────────────────────────────────────────────────────────
+
+@port_test(
+    "T7_interpolation_gate_consistency",
+    "GATE CONSISTENCY, not a win assertion: the bounded table is EITHER "
+    "qualified (measured leave-one-off max error <= the preregistered "
+    "1e-6 N gate, the reference's own error scale) OR explicitly REJECTED "
+    "at that gate in the fit receipt with the learned-candidate hook "
+    "flipped (learned_candidate_deferred_gpu_seam). The measured error is "
+    "recorded as data either way. A system that silently passes an "
+    "over-gate table -- or flips the hook without recording the "
+    "rejection -- trips this check. Nothing is widened.",
+    "The measured leave-one-out error exceeds the gate but no rejection "
+    "is recorded / the hook did not flip; or the table qualifies while "
+    "the receipt still records a rejection or a flipped hook.")
+def t7_interpolation_gate_consistency() -> dict:
+    r = _fit_clean()
+    receipt = bf.build_receipt(PACKET, r, _qualified_receipt_paths())
+    loo = r["eval"]["interpolation_error"]
+    loo_max = loo["max_reaction_error_N"]
+    gate = ALLOW["max_interpolation_error_N"]
+    status = (receipt.get("table_status") or {}).get("status")
+    hook = (receipt.get("learned_candidate") or {}).get("reason")
+    wins = loo_max <= gate
+    qualified_branch = (wins and status == "qualified"
+                        and hook == "learned_candidate_not_justified")
+    rejected_branch = ((not wins)
+                       and status == "rejected_at_preregistered_tolerance"
+                       and hook == "learned_candidate_deferred_gpu_seam")
+    ok = qualified_branch != rejected_branch and (qualified_branch
+                                                  or rejected_branch)
+    return {"pass": bool(ok),
+            "measured_max_interpolation_error_N": loo_max,
+            "gate_N": gate,
+            "table_status": status,
+            "learned_candidate": hook,
+            "per_family_curve_N": {
+                f: [(e["load_magnitude_N"], e["max_reaction_error_N"])
+                    for e in d.get("per_knot", [])]
+                for f, d in loo["families"].items() if d.get("gated")},
+            "finding_note": None if wins else
+                "REAL FINDING: the bounded table does not reach the "
+                "reference's own error scale; REJECTED at the "
+                "preregistered gate, measured curve recorded, nothing "
+                "widened; learned candidate justified (GPU-batch seam)"}
 
 
 expect(EXPECTED_CHECKS)
@@ -318,7 +389,8 @@ expect(EXPECTED_CHECKS)
 
 ORDER = ["T1_deterministic_table", "T2_unqualified_receipt_refused",
          "T3_holdout_sentinel_untouched", "T4_out_of_domain_refused",
-         "T5_validation_error_within_tolerance", "T6_fit_receipt_honesty"]
+         "T5_validation_error_within_tolerance", "T6_fit_receipt_honesty",
+         "T7_interpolation_gate_consistency"]
 
 
 def main(argv: list) -> int:
@@ -338,7 +410,9 @@ def main(argv: list) -> int:
     print("  BOUNDED FIT / EVALUATION entrypoint: falsifier battery")
     print(f"  allowances (preregistered): validation reaction error <= "
           f"{ALLOW['max_validation_reaction_error_N']:.0e} N "
-          f"(packet {bf.TABLE_ERROR_TOLERANCE_KEY})")
+          f"(packet {bf.TABLE_ERROR_TOLERANCE_KEY}); interpolation "
+          f"(leave-one-out) error <= {ALLOW['max_interpolation_error_N']:.0e} N "
+          f"(reference's own error scale)")
     print("=" * 100)
     try:
         for name in ORDER:

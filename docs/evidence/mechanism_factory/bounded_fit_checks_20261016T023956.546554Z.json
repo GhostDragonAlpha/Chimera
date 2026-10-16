@@ -1,0 +1,134 @@
+{
+  "schema": "chimera-mechanism-factory-fit-checks-v1",
+  "utc": "2026-10-16T02:48:24.440319+00:00",
+  "fit_schema": "chimera-mechanism-factory-fit-eval-v1",
+  "tolerances": {
+    "max_validation_reaction_error_N": 1e-06,
+    "max_interpolation_error_N": 1e-06
+  },
+  "checks": {
+    "T1_deterministic_table": {
+      "pass": true,
+      "measured": {
+        "table_hash": "bd2876120ed65f06d175c87edcea4f65a5c90b988669309dc40df7b46c581f3d",
+        "repeat_hash": "bd2876120ed65f06d175c87edcea4f65a5c90b988669309dc40df7b46c581f3d",
+        "n_families": 2
+      }
+    },
+    "T2_unqualified_receipt_refused": {
+      "pass": true,
+      "measured": {
+        "stale_receipt": "qualification_receipt_20261015T151456.178807Z.json",
+        "adapter_refusals": [
+          "receipt_schema_unsupported"
+        ],
+        "table_hash_with": "bd2876120ed65f06d175c87edcea4f65a5c90b988669309dc40df7b46c581f3d",
+        "table_hash_without": "bd2876120ed65f06d175c87edcea4f65a5c90b988669309dc40df7b46c581f3d"
+      }
+    },
+    "T3_holdout_sentinel_untouched": {
+      "pass": true,
+      "measured": {
+        "table_hash_unchanged": true,
+        "sentinel_case_ids_in_table": [],
+        "sentinel_reaction_value_present": false,
+        "holdout_cases_seen": 2,
+        "holdout_cases_read": 0,
+        "no_final_test_access": true
+      }
+    },
+    "T4_out_of_domain_refused": {
+      "pass": true,
+      "measured": {
+        "cases": {
+          "unknown_family": {
+            "refused": true,
+            "reason": "refusal_out_of_domain",
+            "name_ok": true
+          },
+          "over_admitted_load": {
+            "refused": true,
+            "reason": "refusal_out_of_domain",
+            "name_ok": true
+          },
+          "valid_control": {
+            "refused": false,
+            "source": "exact_tabulated",
+            "reactions_shape": [
+              200,
+              3
+            ]
+          }
+        }
+      }
+    },
+    "T5_validation_error_within_tolerance": {
+      "pass": true,
+      "measured": {
+        "validation_max_reaction_error_N": 0.0,
+        "validation_mean_reaction_error_N": 0.0,
+        "tolerance_N": 1e-06,
+        "n_validation_cases": 5,
+        "finding_note": null
+      }
+    },
+    "T6_fit_receipt_honesty": {
+      "pass": true,
+      "measured": {
+        "fields": {
+          "seed_recorded": true,
+          "normalization_recorded": true,
+          "split_usage_recorded": true,
+          "table_hash_recomputes": true,
+          "cost_recorded": true,
+          "no_final_test_access_true": true,
+          "learned_candidate_hook_named": true
+        },
+        "table_hash": "bd2876120ed65f06d175c87edcea4f65a5c90b988669309dc40df7b46c581f3d",
+        "learned_candidate": "learned_candidate_deferred_gpu_seam",
+        "expected_reason": "learned_candidate_deferred_gpu_seam"
+      }
+    },
+    "T7_interpolation_gate_consistency": {
+      "pass": true,
+      "measured": {
+        "measured_max_interpolation_error_N": 0.00014422663666699073,
+        "gate_N": 1e-06,
+        "table_status": "rejected_at_preregistered_tolerance",
+        "learned_candidate": "learned_candidate_deferred_gpu_seam",
+        "per_family_curve_N": {
+          "fan-full-rim-pin": [
+            [
+              0.8,
+              9.719638800656516e-06
+            ],
+            [
+              1.2,
+              2.2243519442147197e-05
+            ],
+            [
+              1.6,
+              7.07289461787941e-05
+            ]
+          ],
+          "fan-full-rim-pin-alt-geometry": [
+            [
+              0.6,
+              1.2300121907338202e-05
+            ],
+            [
+              1.0,
+              3.296617098138069e-05
+            ],
+            [
+              1.4,
+              0.00014422663666699073
+            ]
+          ]
+        },
+        "finding_note": "REAL FINDING: the bounded table does not reach the reference's own error scale; REJECTED at the preregistered gate, measured curve recorded, nothing widened; learned candidate justified (GPU-batch seam)"
+      }
+    }
+  },
+  "all_passed": true
+}
