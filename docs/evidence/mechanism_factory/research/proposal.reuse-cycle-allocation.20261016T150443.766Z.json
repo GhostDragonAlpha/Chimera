@@ -1,0 +1,14 @@
+{
+ "record_id": "proposal.reuse-cycle-allocation.20261016T150443.766Z",
+ "kind": "proposal",
+ "question": "reuse the qualified seam law in a second assembly (the P5 clause)",
+ "parent_evidence_ids": [
+  "composed_qualification_receipt_20261016T075201.116240Z.json"
+ ],
+ "budget": {
+  "allocated": 1,
+  "consumed": 0
+ },
+ "schema": "chimera-mechanism-factory-research-record-v1",
+ "utc": "2026-10-16T15:04:43.817025+00:00"
+}

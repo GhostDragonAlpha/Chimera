@@ -1,0 +1,21 @@
+{
+ "record_id": "followup.star-scale-drift.20261016T150443.966Z",
+ "kind": "followup",
+ "question": "Why does the star's stagnation residual grow ~linearly with rigid scale (measured 1.15e-7 N at 0.5x, 5.9e-7 at 1x, 1.11e-6 at 1.5x, 1.64e-6 at 2.0x), so that 1.5x/2.0x sit OVER the packet's unchanged 1e-6 gate while 0.75x qualifies at 3.0e-7 N?",
+ "parent_evidence_ids": [
+  "composed_chain_receipt_20261016T092136.068087Z.json"
+ ],
+ "alternatives": [
+  "machine-scale stagnation floor scales with the mesh's absolute force scale",
+  "seam singularity concentrates residual at the apex"
+ ],
+ "experiment_identity": "scale_window_probe over the packet's [0.5, 2.0] size axis, resolution fixed",
+ "result": "measured window recorded as a finding; 1.5x/2.0x are honestly NOT qualified -- reported, never tuned; supported scales stay (1.0, 0.5, 0.75)",
+ "independent_status": "recorded in composed_chain_checks ALLOWANCES + receipt scale_window_measured",
+ "applicability": "any future multi-piece assembly on this law",
+ "next_questions": [
+  "does a finer n_rim at large scale lower the floor, and at what cost?"
+ ],
+ "schema": "chimera-mechanism-factory-research-record-v1",
+ "utc": "2026-10-16T15:04:44.023721+00:00"
+}

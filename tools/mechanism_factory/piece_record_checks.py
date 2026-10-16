@@ -98,7 +98,7 @@ def _pins(*relpaths) -> dict:
 
 
 def _record_patch() -> dict:
-    return {
+    rec = {
         "record_id": "piece.patch-equilibrium",
         "kind": "piece",
         "name": "Full-rim-pinned high-degree fan patch under the "
@@ -228,6 +228,20 @@ def _record_patch() -> dict:
                                    "(recorded honestly, not claimed)",
         },
     }
+    # additive physical_definition amendments (e.g. the S1 resolution
+    # validity map added by scale_resolution_checks via
+    # piece_record.amend_physical_definition, prior bytes archived under
+    # pieces/archive/) are carried forward so this battery's idempotent
+    # write matches the retained bytes
+    try:
+        retained_pd = pr.load_record("piece.patch-equilibrium")[
+            "physical_definition"]
+        for k, v in retained_pd.items():
+            if k not in rec["physical_definition"]:
+                rec["physical_definition"][k] = v
+    except pr.PieceRecordRefused:
+        pass                                    # first run: not yet retained
+    return rec
 
 
 def _record_law() -> dict:

@@ -166,6 +166,104 @@ identity moved.
   AMENDMENT: `assembly.star-k2` gained the `port-based` representation
   entry (qualified, citing this receipt) via the additive-only
   amendment law; prior bytes archived under `pieces/archive/`.
+- 13.1 S1 DETAILED MULTISCALE REFERENCE — `scale_resolution.py` +
+  `scale_resolution_checks_20261016T145040.956432Z.json` (6/6; study
+  receipt `scale_resolution_study_checks_20261016T145149.987Z.json`,
+  study hash 52da3267b663350c...): the SAME mechanism (the qualified
+  patch piece, piece.patch-equilibrium response) on the grid
+  scales {0.5, 0.75, 1.0, 1.5, 2.0} x resolutions {n_rim 100, 150,
+  200, 300} (resolution axis = fan rim vertex count; vertices =
+  n_rim+1, triangles = n_rim; the physical-size axis varied
+  INDEPENDENTLY). PREREGISTERED: convergence observable = apex
+  displacement; tol_u = 1e-6 wu DERIVED from the packet's 1e-6 N gate
+  through the law's compliance P = 1/gamma_max = 1 wu/N (never
+  widened); matched regime = n_rim 300 per scale; unmatched = the
+  qualification resolution n_rim 200 reused / n_rim 100 coarse. The
+  rim reaction norms are EXCLUDED by preregistration with the
+  measured DEFINITION law mean*n_rim ~= 6.34 N (constant to 0.06%)
+  — a fixed resultant over n vertices, not a convergence error.
+  (a) convergence at 1.0x: dz 4.65e-5 -> 1.63e-5 -> 1.16e-5 wu,
+  monotone; noisy sub-linear order estimates 1.51/0.49; HONEST
+  RESOLUTION LIMIT retained: the n_rim<=300 ladder does NOT reach
+  tol_u (finest dz = 11.6x tol_u). (b) SCALE TRANSFER vs REMESHING:
+  on the piece the 2.0x physics component is 6591x tol_u vs a 12x
+  remeshing component (567x); on the star, refining n200->n300 at
+  1.5x/2.0x moves the residual 1.3%/3.4% (1.467e-6 -> 1.448e-6,
+  2.575e-6 -> 2.486e-6 N) and it STAYS over the 1e-6 gate
+  (1.45x/2.49x) — the star's drift is SCALE PHYSICS under this law
+  (the descent's machine-precision stagnation floor at the larger
+  energy scale), NOT discretization. (c) deliberately unmatched:
+  n_rim 100 misstates the apex response 7.44e-5 wu = 74x tol_u at
+  both 1.0x and 2.0x (n_rim 200 reused: ~11.6x) — recorded, not
+  hidden. (d) cost: mean wall 1.48/2.42/3.49/5.90 s per cell at
+  n_rim 100/150/200/300, monotone (S2 throughput planning). (e)
+  honesty: all 20 grid cells + 4 star cells recorded with
+  status/residual/wall, none dropped (20/20 piece cells in-gate,
+  including 2.0x at every resolution; all 4 star drift cells
+  retained over the gate). (f) determinism: same grid twice ->
+  same study hash. RECORD AMENDMENT:
+  `piece.patch-equilibrium.physical_definition` gained
+  `resolution_validity` (the measured (scale, resolution) in-gate
+  map, 20/20; domain verdict: bounds STAND — no extension claimed;
+  the resolution limit is recorded) via the NEW additive-only
+  `piece_record.amend_physical_definition` law; prior bytes archived
+  under `pieces/archive/piece.patch-equilibrium.7021015e482860c5.json`.
+  RESEARCH LOOP: the retained `followup.star-scale-drift` record got
+  its result link — allocation
+  `proposal.scale-study-allocation.20261016T145403.398Z` (1 bounded
+  experiment) + `experiment.star-scale-drift-verdict.20261016T145403.
+  398Z` citing the study receipt, the followup and the chain receipt
+  (verdict: scale physics, with the numbers above; the gate was
+  never widened and 1.5x/2.0x stay honestly unqualified scales for
+  the star topology).
+- POST-S1 SUITE RERUN (all green; no pinned-file edits):
+  `scale_resolution_checks_20261016T145040.956432Z.json` (6/6 +
+  record amendment + research records),
+  `piece_record_checks_20261016T150414.003245Z.json` (6/6 over the
+  amended record), `port_solve_checks_20261016T151602.441560Z.json`
+  (6/6; the retained port-based entry now STANDS on materially
+  identical re-runs instead of being re-amended),
+  `research_cycle_checks_20261016T150443.562660Z.json` (7/7),
+  `bounded_fit_checks_20261016T150450.829539Z.json` (7/7),
+  `fit_job_checks_20261016T151311.744876Z.json` (5/5),
+  `gpu_fit_checks_20261016T151636.950191Z.json` (6/6) +
+  `gpu_fit_dryrun_20261016T151637.777479Z.json` (clean),
+  `adapter_faults_20261016T151931.721440Z.json` (F0-F13),
+  `patch_equilibrium_receipt_20261016T145513.861919Z.json` (6/6),
+  `composed_patch_receipt_20261016T145514.964591Z.json` (7/7),
+  `composed_qualification_receipt_20261016T145539.705835Z.json` +
+  `composed_chain_checks_20261016T145540.007956Z.json` (6/6),
+  pytest `test_workflow_checklist.py` 3 passed, graph `check()`
+  clean. RETAINED FAILURES of this round: 
+  `scale_resolution_checks_20261016T144603.301993Z.json` (5/6 —
+  check (e) miscounted the over-gate star cells as 2 instead of 4;
+  fixed, rerun green; the study numbers were identical),
+  `piece_record_checks_20261016T145555.574964Z.json` and
+  `piece_record_checks_20261016T150040.707626Z.json` (5/6 — the
+  physical_definition merge first landed in `_record_star`, then
+  was unreachable after `_record_patch`'s direct dict return; the
+  honest `piece_record_conflict` refusal caught both; fixed, rerun
+  green), `port_solve_checks_20261016T150444.782537Z.json` (6/6
+  checks but amendment FAIL: the port-based entry embeds each run's
+  receipt name, so re-amendment is a DIFFERENT same-kind entry —
+  refused `piece_representation_kind_exists` by the amendment law,
+  correctly; fixed by honoring the retained entry on materially
+  identical re-runs),
+  `scale_resolution_checks_20261016T152615.713492Z.json` (6/6 checks
+  but amendment FAIL: the study hash had been computed over the star
+  cells WITH their wall times — machine noise, not study content —
+  so the retained validity's hash could not match; the hash now
+  strips star wall times too, and the retained-stands comparison is
+  material: same in-gate map, same tol_u, same finest dz; rerun
+  `scale_resolution_checks_20261016T153151.197734Z.json` GREEN with
+  the retained `resolution_validity` STANDING — idempotent, the
+  piece record's bytes untouched). STALE study artifacts retained
+  from the S1 probes:
+  `scale_resolution_study_20261016T142319.584Z.json`
+  (in-gate law bug: stagnated-under-gate terminations miscounted as
+  out-of-gate) and `scale_resolution_study_20261016T142810.182Z.json`
+  (correct 20/20 standalone run, superseded by the battery-bound
+  study receipt).
 - `fit_receipt_20261016T075201.333890Z.json` — bounded-table fit+eval
   receipt (`bounded_fit.py`, P3), regenerated against the reworded
   packet. Same physics as before: bounded PCHIP interpolant, knot-point

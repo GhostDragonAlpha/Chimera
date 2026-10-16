@@ -359,11 +359,45 @@ def main(argv: list) -> int:
                     results["a_agreement_with_fused_reference"]["measured"]
                     ["interface_residual_N"]}
             entry = ps.port_representation_entry(out_path.name, measured)
-            pr.amend_representations("assembly.star-k2", entry)
-            amended = pr.load_record("assembly.star-k2")
-            kinds = [r["kind"] for r in amended["representations"]]
-            print(f"amendment: assembly.star-k2 representations now "
-                  f"{kinds} (prior bytes archived under pieces/archive/)")
+            # rerun idempotency: the amendment law refuses a DIFFERENT
+            # entry of the same kind (append-only evidence). If a
+            # port-based entry is already retained and materially
+            # identical (same law, measured agreement within the same
+            # preregistered tolerances), the retained entry STANDS and
+            # the re-run amends nothing.
+            existing = None
+            try:
+                retained = pr.load_record("assembly.star-k2")
+                existing = next((r for r in retained["representations"]
+                                 if r.get("kind") == "port-based"), None)
+            except pr.PieceRecordRefused:
+                existing = None          # first run: nothing retained yet
+            if existing is not None:
+                m_old = existing.get("measured", {})
+                close = (abs(m_old.get("A_rim_net_diff_N", 1.0)
+                             - measured["A_rim_net_diff_N"])
+                         <= ALLOWANCES["agreement_tol_N"]
+                         and abs(m_old.get("B_rim_net_diff_N", 1.0)
+                                 - measured["B_rim_net_diff_N"])
+                         <= ALLOWANCES["agreement_tol_N"]
+                         and abs(m_old.get("seam_pos_diff_wu", 1.0)
+                                 - measured["seam_pos_diff_wu"])
+                         <= ALLOWANCES["agreement_tol_wu"])
+                if close:
+                    print(f"amendment: retained port-based entry stands "
+                          f"(idempotent re-run; it cites receipt "
+                          f"{existing.get('receipt_ids', ['?'])[0]})")
+                else:
+                    raise pr.PieceRecordRefused(
+                        "piece_representation_kind_exists",
+                        "a retained port-based entry disagrees with this "
+                        "run's measurements; investigate, never overwrite")
+            else:
+                pr.amend_representations("assembly.star-k2", entry)
+                amended = pr.load_record("assembly.star-k2")
+                kinds = [r["kind"] for r in amended["representations"]]
+                print(f"amendment: assembly.star-k2 representations now "
+                      f"{kinds} (prior bytes archived under pieces/archive/)")
         except Exception as ex:
             failed += 1
             print(f"  -> FAIL (record amendment) {type(ex).__name__}: {ex}")

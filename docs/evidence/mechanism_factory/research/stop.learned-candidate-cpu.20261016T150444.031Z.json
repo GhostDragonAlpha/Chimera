@@ -1,0 +1,16 @@
+{
+ "record_id": "stop.learned-candidate-cpu.20261016T150444.031Z",
+ "kind": "stop",
+ "question": "The learned candidate was justified by the bounded table's rejection -- did it hold the gate?",
+ "parent_evidence_ids": [
+  "fit_job_receipt_20261016T075339.472945Z.json"
+ ],
+ "successful": false,
+ "result": "STOPPED without success: validation max error 3.3668e-2 N against the packet's unchanged 1e-6 gate (physically_qualified false, gate never lowered); the candidate is retained as a rejected hypothesis and the reference solve remains the only qualified path",
+ "independent_status": "fit_job receipt schema chimera-mechanism-factory-fit-job-v1; gate_N 1e-06 recorded in the receipt",
+ "cost": "3.5 s CPU fit, no GPU batch consumed",
+ "applicability": "the GPU-batch seam remains available for a SEPARATELY justified candidate",
+ "next_questions": [],
+ "schema": "chimera-mechanism-factory-research-record-v1",
+ "utc": "2026-10-16T15:04:44.080852+00:00"
+}

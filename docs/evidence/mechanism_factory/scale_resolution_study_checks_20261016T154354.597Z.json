@@ -1,0 +1,507 @@
+{
+ "schema": "chimera-mechanism-factory-scale-resolution-study-v1",
+ "utc": "2026-10-16T15:43:54.597426+00:00",
+ "title": "S1 detailed multiscale reference: same mechanism, independent scale x resolution grid",
+ "mechanism": "piece.patch-equilibrium response (single high-degree fan, rim pinned in 3D, apex dead load (0,0,-0.8 N), frozen recipe seed=1 radius=1.0 height=0.3 gamma=1.0)",
+ "resolution_axis_mapping": "n_rim = fan rim vertex count; fixture vertices = n_rim + 1 (apex last); triangles = n_rim; the SAME continuous patch discretized at four refinements",
+ "preregistered": {
+  "convergence_observable": "apex_z_wu (piece response)",
+  "tol_u_wu": 1e-06,
+  "tol_derivation": "displacement equivalent of the packet's 1e-6 N gate through P = 1/gamma_max = 1 wu/N",
+  "rim_norms_excluded": "mean/max rim reaction norms obey the measured definition law ~6.5*scale/n_rim N (fixed resultant over n vertices); recorded, not a convergence test",
+  "matched_regime": "n_rim=300 (finest rung) at each scale",
+  "unmatched_regime": "n_rim=200 (the qualification resolution) reused unchanged",
+  "honest_limit": "the n_rim<=300 ladder does NOT reach tol_u (finest dz ~1.16e-5 wu = 11.6x tol_u); 'resolved at tol_u' is not claimed"
+ },
+ "cells": [
+  {
+   "scale_m": 0.5,
+   "n_rim": 100,
+   "status": "stagnated",
+   "reason": "decrease_below_machine_scale",
+   "free_residual_N": 1.4768976264178946e-08,
+   "apex_z_wu": -0.29581838061359533,
+   "rim_mean_norm_N": 0.03274239624955934,
+   "rim_max_norm_N": 0.03274239624955966,
+   "surface_energy_J": 0.9120781431811231,
+   "wall_time_s": 2.2087155999979586,
+   "in_gate": true
+  },
+  {
+   "scale_m": 0.5,
+   "n_rim": 150,
+   "status": "stagnated",
+   "reason": "decrease_below_machine_scale",
+   "free_residual_N": 2.7862653295684936e-09,
+   "apex_z_wu": -0.29586300634665325,
+   "rim_mean_norm_N": 0.02183567189329391,
+   "rim_max_norm_N": 0.021835671893294346,
+   "surface_energy_J": 0.9123824641102498,
+   "wall_time_s": 3.577573599999596,
+   "in_gate": true
+  },
+  {
+   "scale_m": 0.5,
+   "n_rim": 200,
+   "status": "stagnated",
+   "reason": "decrease_below_machine_scale",
+   "free_residual_N": 1.2135959681636166e-08,
+   "apex_z_wu": -0.2958786259075884,
+   "rim_mean_norm_N": 0.016378698771352257,
+   "rim_max_norm_N": 0.01637869877135292,
+   "surface_energy_J": 0.9124889921306499,
+   "wall_time_s": 5.140196300002572,
+   "in_gate": true
+  },
+  {
+   "scale_m": 0.5,
+   "n_rim": 300,
+   "status": "stagnated",
+   "reason": "decrease_below_machine_scale",
+   "free_residual_N": 1.442103547688589e-09,
+   "apex_z_wu": -0.29588977372902275,
+   "rim_mean_norm_N": 0.010920058675027726,
+   "rim_max_norm_N": 0.010920058675028625,
+   "surface_energy_J": 0.9125650812097423,
+   "wall_time_s": 8.594874700000219,
+   "in_gate": true
+  },
+  {
+   "scale_m": 0.75,
+   "n_rim": 100,
+   "status": "stagnated",
+   "reason": "decrease_below_machine_scale",
+   "free_residual_N": 3.182098562426461e-08,
+   "apex_z_wu": -0.2706473973822909,
+   "rim_mean_norm_N": 0.04785472270152203,
+   "rim_max_norm_N": 0.047854722701522544,
+   "surface_energy_J": 1.8775574788142746,
+   "wall_time_s": 1.6204878000062308,
+   "in_gate": true
+  },
+  {
+   "scale_m": 0.75,
+   "n_rim": 150,
+   "status": "stagnated",
+   "reason": "decrease_below_machine_scale",
+   "free_residual_N": 1.6313242201526634e-08,
+   "apex_z_wu": -0.27069365440104054,
+   "rim_mean_norm_N": 0.0319144661173127,
+   "rim_max_norm_N": 0.03191446611731326,
+   "surface_energy_J": 1.8782216815947963,
+   "wall_time_s": 2.5852304000000004,
+   "in_gate": true
+  },
+  {
+   "scale_m": 0.75,
+   "n_rim": 200,
+   "status": "stagnated",
+   "reason": "decrease_below_machine_scale",
+   "free_residual_N": 3.0628008906852244e-08,
+   "apex_z_wu": -0.2707098509693726,
+   "rim_mean_norm_N": 0.023938820952107694,
+   "rim_max_norm_N": 0.023938820952108236,
+   "surface_energy_J": 1.8784541916719966,
+   "wall_time_s": 3.7598866000043927,
+   "in_gate": true
+  },
+  {
+   "scale_m": 0.75,
+   "n_rim": 300,
+   "status": "stagnated",
+   "reason": "decrease_below_machine_scale",
+   "free_residual_N": 2.0395983124643635e-08,
+   "apex_z_wu": -0.2707214118243269,
+   "rim_mean_norm_N": 0.015960628986177835,
+   "rim_max_norm_N": 0.01596062898617848,
+   "surface_energy_J": 1.8786202745362988,
+   "wall_time_s": 6.360456599999452,
+   "in_gate": true
+  },
+  {
+   "scale_m": 1.0,
+   "n_rim": 100,
+   "status": "stagnated",
+   "reason": "decrease_below_machine_scale",
+   "free_residual_N": 8.327468825619633e-08,
+   "apex_z_wu": -0.26324518722917467,
+   "rim_mean_norm_N": 0.06333312247429591,
+   "rim_max_norm_N": 0.06333312247429654,
+   "surface_energy_J": 3.2465893651587745,
+   "wall_time_s": 1.3810996000029263,
+   "in_gate": true
+  },
+  {
+   "scale_m": 1.0,
+   "n_rim": 150,
+   "status": "stagnated",
+   "reason": "decrease_below_machine_scale",
+   "free_residual_N": 5.377734524358857e-08,
+   "apex_z_wu": -0.2632916625161418,
+   "rim_mean_norm_N": 0.0422372661945612,
+   "rim_max_norm_N": 0.04223726619456181,
+   "surface_energy_J": 3.2477559905482787,
+   "wall_time_s": 2.207594399995287,
+   "in_gate": true
+  },
+  {
+   "scale_m": 1.0,
+   "n_rim": 200,
+   "status": "stagnated",
+   "reason": "decrease_below_machine_scale",
+   "free_residual_N": 5.628603916285613e-08,
+   "apex_z_wu": -0.2633079630900263,
+   "rim_mean_norm_N": 0.031681936266689595,
+   "rim_max_norm_N": 0.031681936266690455,
+   "surface_energy_J": 3.2481643966448956,
+   "wall_time_s": 3.217634000000544,
+   "in_gate": true
+  },
+  {
+   "scale_m": 1.0,
+   "n_rim": 300,
+   "status": "stagnated",
+   "reason": "decrease_below_machine_scale",
+   "free_residual_N": 3.589328223529975e-08,
+   "apex_z_wu": -0.26331954596416196,
+   "rim_mean_norm_N": 0.02112318928131054,
+   "rim_max_norm_N": 0.0211231892813112,
+   "surface_energy_J": 3.2484560859667027,
+   "wall_time_s": 5.492880399993737,
+   "in_gate": true
+  },
+  {
+   "scale_m": 1.5,
+   "n_rim": 100,
+   "status": "stagnated",
+   "reason": "decrease_below_machine_scale",
+   "free_residual_N": 9.227543251721926e-08,
+   "apex_z_wu": -0.2583149647488675,
+   "rim_mean_norm_N": 0.09453496198803238,
+   "rim_max_norm_N": 0.09453496198803327,
+   "surface_energy_J": 7.168015092614704,
+   "wall_time_s": 1.1433936000030371,
+   "in_gate": true
+  },
+  {
+   "scale_m": 1.5,
+   "n_rim": 150,
+   "status": "stagnated",
+   "reason": "decrease_below_machine_scale",
+   "free_residual_N": 9.951942081531939e-08,
+   "apex_z_wu": -0.25836143248315935,
+   "rim_mean_norm_N": 0.06304618657205904,
+   "rim_max_norm_N": 0.0630461865720599,
+   "surface_energy_J": 7.170616769908401,
+   "wall_time_s": 1.8708742000017082,
+   "in_gate": true
+  },
+  {
+   "scale_m": 1.5,
+   "n_rim": 200,
+   "status": "stagnated",
+   "reason": "decrease_below_machine_scale",
+   "free_residual_N": 8.138555762648991e-08,
+   "apex_z_wu": -0.25837777783144317,
+   "rim_mean_norm_N": 0.04729064656730932,
+   "rim_max_norm_N": 0.047290646567310454,
+   "surface_energy_J": 7.1715275564650565,
+   "wall_time_s": 2.735090800000762,
+   "in_gate": true
+  },
+  {
+   "scale_m": 1.5,
+   "n_rim": 300,
+   "status": "stagnated",
+   "reason": "decrease_below_machine_scale",
+   "free_residual_N": 1.1342914130185733e-07,
+   "apex_z_wu": -0.25838942050106095,
+   "rim_mean_norm_N": 0.031529958176866324,
+   "rim_max_norm_N": 0.03152995817686717,
+   "surface_energy_J": 7.172178134831723,
+   "wall_time_s": 4.612266800002544,
+   "in_gate": true
+  },
+  {
+   "scale_m": 2.0,
+   "n_rim": 100,
+   "status": "stagnated",
+   "reason": "decrease_below_machine_scale",
+   "free_residual_N": 2.079600784909985e-07,
+   "apex_z_wu": -0.25665374234632665,
+   "rim_mean_norm_N": 0.12583978442114904,
+   "rim_max_norm_N": 0.12583978442115015,
+   "surface_energy_J": 12.661185047466745,
+   "wall_time_s": 1.0596440999943297,
+   "in_gate": true
+  },
+  {
+   "scale_m": 2.0,
+   "n_rim": 150,
+   "status": "stagnated",
+   "reason": "decrease_below_machine_scale",
+   "free_residual_N": 1.3082135519315585e-07,
+   "apex_z_wu": -0.2567001737915432,
+   "rim_mean_norm_N": 0.08392374230513433,
+   "rim_max_norm_N": 0.08392374230513543,
+   "surface_energy_J": 12.6657957875079,
+   "wall_time_s": 1.6772987000003923,
+   "in_gate": true
+  },
+  {
+   "scale_m": 2.0,
+   "n_rim": 200,
+   "status": "stagnated",
+   "reason": "decrease_below_machine_scale",
+   "free_residual_N": 1.595473986260032e-07,
+   "apex_z_wu": -0.2567164532713166,
+   "rim_mean_norm_N": 0.06295082803521615,
+   "rim_max_norm_N": 0.06295082803521761,
+   "surface_energy_J": 12.667409807604383,
+   "wall_time_s": 2.4694892999978038,
+   "in_gate": true
+  },
+  {
+   "scale_m": 2.0,
+   "n_rim": 300,
+   "status": "stagnated",
+   "reason": "decrease_below_machine_scale",
+   "free_residual_N": 2.098178697451658e-07,
+   "apex_z_wu": -0.25672807150400473,
+   "rim_mean_norm_N": 0.041971038606359735,
+   "rim_max_norm_N": 0.04197103860636082,
+   "surface_energy_J": 12.668562746786172,
+   "wall_time_s": 4.162893099994108,
+   "in_gate": true
+  }
+ ],
+ "apex_ladders": {
+  "scale0.5": [
+   {
+    "from_n_rim": 100,
+    "to_n_rim": 150,
+    "dz_wu": 4.462573305791251e-05,
+    "under_tol_u": false
+   },
+   {
+    "from_n_rim": 150,
+    "to_n_rim": 200,
+    "dz_wu": 1.561956093515393e-05,
+    "under_tol_u": false,
+    "order_estimate": 1.5145219682109976
+   },
+   {
+    "from_n_rim": 200,
+    "to_n_rim": 300,
+    "dz_wu": 1.114782143435411e-05,
+    "under_tol_u": false,
+    "order_estimate": 0.4865921013150237
+   }
+  ],
+  "scale0.75": [
+   {
+    "from_n_rim": 100,
+    "to_n_rim": 150,
+    "dz_wu": 4.625701874966248e-05,
+    "under_tol_u": false
+   },
+   {
+    "from_n_rim": 150,
+    "to_n_rim": 200,
+    "dz_wu": 1.6196568332071948e-05,
+    "under_tol_u": false,
+    "order_estimate": 1.5139841150344573
+   },
+   {
+    "from_n_rim": 200,
+    "to_n_rim": 300,
+    "dz_wu": 1.1560854954295596e-05,
+    "under_tol_u": false,
+    "order_estimate": 0.48644007998333366
+   }
+  ],
+  "scale1": [
+   {
+    "from_n_rim": 100,
+    "to_n_rim": 150,
+    "dz_wu": 4.647528696710701e-05,
+    "under_tol_u": false
+   },
+   {
+    "from_n_rim": 150,
+    "to_n_rim": 200,
+    "dz_wu": 1.630057388452011e-05,
+    "under_tol_u": false,
+    "order_estimate": 1.511541015813111
+   },
+   {
+    "from_n_rim": 200,
+    "to_n_rim": 300,
+    "dz_wu": 1.1582874135662724e-05,
+    "under_tol_u": false,
+    "order_estimate": 0.49292947417557115
+   }
+  ],
+  "scale1.5": [
+   {
+    "from_n_rim": 100,
+    "to_n_rim": 150,
+    "dz_wu": 4.646773429184403e-05,
+    "under_tol_u": false
+   },
+   {
+    "from_n_rim": 150,
+    "to_n_rim": 200,
+    "dz_wu": 1.6345348283819394e-05,
+    "under_tol_u": false,
+    "order_estimate": 1.5073491844456801
+   },
+   {
+    "from_n_rim": 200,
+    "to_n_rim": 300,
+    "dz_wu": 1.164266961778404e-05,
+    "under_tol_u": false,
+    "order_estimate": 0.4894582177197004
+   }
+  ],
+  "scale2": [
+   {
+    "from_n_rim": 100,
+    "to_n_rim": 150,
+    "dz_wu": 4.643144521654374e-05,
+    "under_tol_u": false
+   },
+   {
+    "from_n_rim": 150,
+    "to_n_rim": 200,
+    "dz_wu": 1.627947977339561e-05,
+    "under_tol_u": false,
+    "order_estimate": 1.5120475890434104
+   },
+   {
+    "from_n_rim": 200,
+    "to_n_rim": 300,
+    "dz_wu": 1.1618232688137553e-05,
+    "under_tol_u": false,
+    "order_estimate": 0.48666396828811687
+   }
+  ]
+ },
+ "scale_transfer_vs_remeshing": [
+  {
+   "scale_m": 0.5,
+   "physics_component_wu": 0.03257022776486079,
+   "physics_x_tol_u": 32570.227764860796,
+   "remeshing_component_wu": 1.114782143435411e-05,
+   "remeshing_x_tol_u": 11.14782143435411,
+   "physics_over_remeshing": 2921.667516532827,
+   "matched_resolution": 300,
+   "unmatched_resolution": 200
+  },
+  {
+   "scale_m": 0.75,
+   "physics_component_wu": 0.007401865860164947,
+   "physics_x_tol_u": 7401.865860164947,
+   "remeshing_component_wu": 1.1560854954295596e-05,
+   "remeshing_x_tol_u": 11.560854954295596,
+   "physics_over_remeshing": 640.2524631117079,
+   "matched_resolution": 300,
+   "unmatched_resolution": 200
+  },
+  {
+   "scale_m": 1.0,
+   "physics_component_wu": 0.0,
+   "physics_x_tol_u": 0.0,
+   "remeshing_component_wu": 1.1582874135662724e-05,
+   "remeshing_x_tol_u": 11.582874135662724,
+   "physics_over_remeshing": 0.0,
+   "matched_resolution": 300,
+   "unmatched_resolution": 200
+  },
+  {
+   "scale_m": 1.5,
+   "physics_component_wu": 0.004930125463101009,
+   "physics_x_tol_u": 4930.12546310101,
+   "remeshing_component_wu": 1.164266961778404e-05,
+   "remeshing_x_tol_u": 11.64266961778404,
+   "physics_over_remeshing": 423.4531791205602,
+   "matched_resolution": 300,
+   "unmatched_resolution": 200
+  },
+  {
+   "scale_m": 2.0,
+   "physics_component_wu": 0.006591474460157232,
+   "physics_x_tol_u": 6591.474460157232,
+   "remeshing_component_wu": 1.1618232688137553e-05,
+   "remeshing_x_tol_u": 11.618232688137553,
+   "physics_over_remeshing": 567.3388231316161,
+   "matched_resolution": 300,
+   "unmatched_resolution": 200
+  }
+ ],
+ "star_drift_cells": [
+  {
+   "scale_m": 1.5,
+   "n_rim": 200,
+   "status": "stagnated",
+   "free_residual_N": 1.4673556133493193e-06,
+   "surface_energy_J": 14.15829548816874,
+   "wall_time_s": 0.3678005000037956,
+   "in_gate": false
+  },
+  {
+   "scale_m": 1.5,
+   "n_rim": 300,
+   "status": "stagnated",
+   "free_residual_N": 1.4477166740967107e-06,
+   "surface_energy_J": 14.159485224713746,
+   "wall_time_s": 0.6716324000008171,
+   "in_gate": false
+  },
+  {
+   "scale_m": 2.0,
+   "n_rim": 200,
+   "status": "stagnated",
+   "free_residual_N": 2.575054594888826e-06,
+   "surface_energy_J": 25.138220872186697,
+   "wall_time_s": 0.654426399996737,
+   "in_gate": false
+  },
+  {
+   "scale_m": 2.0,
+   "n_rim": 300,
+   "status": "stagnated",
+   "free_residual_N": 2.486216315600309e-06,
+   "surface_energy_J": 25.140335259114384,
+   "wall_time_s": 1.2600151000006008,
+   "in_gate": false
+  }
+ ],
+ "star_drift_verdict": {
+  "question": "is the star's 1.5x/2.0x drift over the 1e-6 gate discretization or scale physics?",
+  "decision_rule": "discretization iff n_rim=300 refinement brings the residual under 1e-6 N at both scales",
+  "per_scale": [
+   {
+    "scale_m": 1.5,
+    "residual_n200_N": 1.4673556133493193e-06,
+    "residual_n300_N": 1.4477166740967107e-06,
+    "refinement_change_pct": 1.338389894988146,
+    "refined_in_gate": false,
+    "over_gate_x_at_n300": 1.4477166740967107,
+    "surface_energy_J_n300": 14.159485224713746
+   },
+   {
+    "scale_m": 2.0,
+    "residual_n200_N": 2.575054594888826e-06,
+    "residual_n300_N": 2.486216315600309e-06,
+    "refinement_change_pct": 3.4499571179908197,
+    "refined_in_gate": false,
+    "over_gate_x_at_n300": 2.486216315600309,
+    "surface_energy_J_n300": 25.140335259114384
+   }
+  ],
+  "verdict": "scale_physics",
+  "verdict_text": "refining the resolution does NOT bring the star under the gate (residual moves a few percent and stays over it): the drift is SCALE PHYSICS under this law -- the descent's machine-precision stagnation floor at the larger energy scale -- not a mesh-resolution artifact"
+ },
+ "study_hash": "b1556eecb42e2986c39bd5d4cc662d0105a36fb607b3daa497feb2e39ed7a658"
+}

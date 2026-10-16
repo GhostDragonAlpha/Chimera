@@ -1,0 +1,173 @@
+{
+  "schema": "chimera-mechanism-factory-adapter-faults-v1",
+  "utc": "2026-10-16T15:19:31.721166+00:00",
+  "adapter_version": "receipt-adapter-v1",
+  "accepted_schema": "chimera-mechanism-factory-qualification-receipt-v2",
+  "accepted_composed_schema": "chimera-mechanism-factory-composed-qualification-v1",
+  "genuine_receipt_sha256": "10b2103715c0f07562015623eab3657a80d27256b3d10a0d39ab33dc5276490f",
+  "packet_sha256": "75e24523dc1cb002e4b0fbc3de811e1d4c7eec76e887e70d209e56ee320f0a0d",
+  "faults": [
+    {
+      "fault": "F0_genuine_pair",
+      "expected": [],
+      "observed": [],
+      "pass": true
+    },
+    {
+      "fault": "F1_receipt_missing",
+      "expected": [
+        "receipt_missing"
+      ],
+      "observed": [
+        "receipt_missing"
+      ],
+      "pass": true
+    },
+    {
+      "fault": "F2_solver_hash_mismatch",
+      "expected": [
+        "solver_hash_mismatch"
+      ],
+      "observed": [
+        "solver_hash_mismatch"
+      ],
+      "pass": true
+    },
+    {
+      "fault": "F3_unit_mismatch",
+      "expected": [
+        "unit_mismatch"
+      ],
+      "observed": [
+        "unit_mismatch"
+      ],
+      "pass": true
+    },
+    {
+      "fault": "F4_split_overlap",
+      "expected": [
+        "split_overlap"
+      ],
+      "observed": [
+        "packet_digest_mismatch",
+        "split_overlap"
+      ],
+      "pass": true
+    },
+    {
+      "fault": "F5_nonfinite_output",
+      "expected": [
+        "nonfinite_output"
+      ],
+      "observed": [
+        "nonfinite_output",
+        "verdict_forgery"
+      ],
+      "pass": true
+    },
+    {
+      "fault": "F6a_unconverged_step_limit",
+      "expected": [
+        "unconverged_label"
+      ],
+      "observed": [
+        "unconverged_label",
+        "verdict_forgery"
+      ],
+      "pass": true
+    },
+    {
+      "fault": "F6b_unconverged_over_threshold",
+      "expected": [
+        "unconverged_label"
+      ],
+      "observed": [
+        "unconverged_label",
+        "verdict_forgery"
+      ],
+      "pass": true
+    },
+    {
+      "fault": "F7_out_of_domain",
+      "expected": [
+        "out_of_domain"
+      ],
+      "observed": [
+        "out_of_domain",
+        "verdict_forgery"
+      ],
+      "pass": true
+    },
+    {
+      "fault": "F8_packet_digest_mismatch",
+      "expected": [
+        "packet_digest_mismatch"
+      ],
+      "observed": [
+        "packet_digest_mismatch"
+      ],
+      "pass": true
+    },
+    {
+      "fault": "F9_verdict_forgery",
+      "expected": [
+        "verdict_forgery"
+      ],
+      "observed": [
+        "unconverged_label",
+        "verdict_forgery"
+      ],
+      "pass": true
+    },
+    {
+      "fault": "F10a_interrupted_gpu_job",
+      "expected": [
+        "interrupted_gpu_job"
+      ],
+      "observed": [
+        "interrupted_gpu_job"
+      ],
+      "pass": true
+    },
+    {
+      "fault": "F10b_clean_resume",
+      "expected": [],
+      "observed": [],
+      "pass": true
+    },
+    {
+      "fault": "F11_forged_thresholds_inert",
+      "expected": [
+        "unconverged_label",
+        "verdict_forgery"
+      ],
+      "observed": [
+        "unconverged_label",
+        "verdict_forgery"
+      ],
+      "pass": true
+    },
+    {
+      "fault": "F12_balance_residual_forgery",
+      "expected": [
+        "verdict_forgery"
+      ],
+      "observed": [
+        "max_force_balance_residual_exceeded",
+        "verdict_forgery"
+      ],
+      "pass": true
+    },
+    {
+      "fault": "F13_unknown_composed_schema",
+      "expected": [
+        "receipt_schema_unsupported"
+      ],
+      "observed": [
+        "receipt_schema_unsupported"
+      ],
+      "pass": true
+    }
+  ],
+  "all_passed": true
+}

@@ -1,0 +1,33 @@
+{
+ "record_id": "experiment.star-scale-drift-verdict.20261016T153514.006Z",
+ "kind": "experiment",
+ "question": "is the star's 1.5x/2.0x drift over the 1e-6 gate discretization or scale physics?",
+ "parent_evidence_ids": [
+  "followup.star-scale-drift.20261016T150443.966Z.json",
+  "scale_resolution_study_checks_20261016T153300.746Z.json",
+  "composed_chain_receipt_20261016T092136.068087Z.json"
+ ],
+ "allocation_id": "proposal.scale-study-allocation.20261016T153514.006Z",
+ "budget": {
+  "allocated": null,
+  "consumed": 1
+ },
+ "alternatives": [
+  "discretization: refining resolution brings the residual under the gate",
+  "scale physics: it does not"
+ ],
+ "experiment_identity": "scale_resolution.py S1 grid (20 cells, 5 scales x 4 resolutions) + star drift block (4 cells)",
+ "result": "refining the resolution does NOT bring the star under the gate (residual moves a few percent and stays over it): the drift is SCALE PHYSICS under this law -- the descent's machine-precision stagnation floor at the larger energy scale -- not a mesh-resolution artifact Numbers: 1.5x residual 1.4674e-06 -> 1.4477e-06 N (1.3% change, 1.45x gate); 2.0x residual 2.5751e-06 -> 2.4862e-06 N (3.4% change, 2.49x gate); on the piece the 2.0x physics component exceeds the remeshing component by 567x",
+ "cost": {
+  "kind": "cpu_wall_s",
+  "value": 66.55426350000198
+ },
+ "applicability": "the apex-weld star under the constant-gamma law at 0.5-2.0x; the gate is never widened, 1.5x/2.0x stay honestly unqualified scales for THIS topology",
+ "next_questions": [
+  "does a different preconditioner or an energy-relative residual law move the stagnation floor at larger scales (S2 preregistration)",
+  "does the piece's resolution limit (11.6x tol_u at n_rim 300) bound the library's per-piece accuracy budget"
+ ],
+ "independent_status": "the study is deterministic (same study hash on rerun); the drift verdict is a measured finding, not a tuned one",
+ "schema": "chimera-mechanism-factory-research-record-v1",
+ "utc": "2026-10-16T15:35:14.202908+00:00"
+}

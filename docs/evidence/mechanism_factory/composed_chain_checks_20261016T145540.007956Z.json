@@ -1,0 +1,182 @@
+{
+ "schema": "chimera-mechanism-factory-composed-chain-checks-v1",
+ "utc": "2026-10-16T14:55:55.305235+00:00",
+ "what": "P5 REUSE falsifier battery: assembly 1's pieces A and B byte-identically plus new piece C in the k=2 fan-out star; reference = ONE solve_equilibrium on the joined mesh; new scale point; reduction to assembly 1",
+ "source_commit": "240d02cb2f79f9471ad61f6906548059ac441114",
+ "source_file_hashes": {
+  "tools/membrane_scale_lab/surface_energy_reference.py": "ee9effcfbddad8d02e03f71d414b27da177f0656de535eaab0d76ae39796f0b7",
+  "tools/membrane_scale_lab/overdamped_descent.py": "a940ac9da88a8852ee57709fe7a44df5469d418be73a75801ea7123d91d930f6",
+  "tools/membrane_scale_lab/fixture_generator.py": "1ebd13b9a659fd85d3ca1dacd29ee8f879636a8863ae836db1756b573ea5b260",
+  "tools/mechanism_factory/patch_equilibrium.py": "4007e23217ddedc4963b1e92b68f213a20fe402b32da2aef1bffdff8b6e15b40",
+  "tools/mechanism_factory/qualification_receipt.py": "d4fcb57d2d923463d275b47f12b6ebbfd3f2c70185ad30b9725ed283fb886689",
+  "tools/mechanism_factory/receipt_adapter.py": "b452511a092ac83e8f7c530c7c9101706381b09ff30adf6a9ae84c392645d015",
+  "tools/mechanism_factory/composed_patch.py": "12d4c08b9fcc1b7b294b1cfd2c522af27b664e486e42c91e28f2e97b9d37d662",
+  "tools/mechanism_factory/composed_patch_checks.py": "569a447de2d9370c0418d5ebf19da8370f61460fc71df790080969fd5b562a3b",
+  "tools/mechanism_factory/composed_chain.py": "67a274fe611807d5793e8d5a1590ec89d29dc14de8c6b3ca087015b77464b7b5",
+  "tools/mechanism_factory/composed_chain_checks.py": "077fcc60a8fa0e9d1ee946bb55e019342e76f34fcc0d6208cdf77874e400648a"
+ },
+ "packet_sha256": "75e24523dc1cb002e4b0fbc3de811e1d4c7eec76e887e70d209e56ee320f0a0d",
+ "units": {
+  "length": "m",
+  "force": "N",
+  "energy": "J"
+ },
+ "preregistered_allowances": {
+  "balance_law_source": "example_packet.acceptance_thresholds (1e-6 force/moment/free-residual, preregistered at P0/P1; the reuse certificate adds none)",
+  "reduction_energy_tol": 1e-09,
+  "transfer_margin": 0.1,
+  "duplicate_coordinate_tol": 1e-09,
+  "new_scale_point": 0.75,
+  "scale_window_measured": "star stagnation residual ~linear in scale: 1.15e-7 (0.5x), 5.9e-7 (1x), 1.11e-6 (1.5x), 1.64e-6 (2.0x); 1.5x/2.0x are honestly OVER the packet's unchanged 1e-6 law -- finding, reported not tuned"
+ },
+ "composed_receipt_adapter": {
+  "verified": true,
+  "refusals": [],
+  "detail": {
+   "recomputed_verdict": "PASS",
+   "declared_verdict": "PASS"
+  },
+  "receipt": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\composed_chain_qualification_receipt_20261016T145555.280953Z.json"
+ },
+ "checks": {
+  "a_piece_reuse_byte_identical": {
+   "pass": true
+  },
+  "b_coupled_balance": {
+   "pass": true
+  },
+  "c_seam_single_valued_both_joints": {
+   "pass": true
+  },
+  "d_transfer_through_both_welds": {
+   "pass": true
+  },
+  "e_reduction_degenerate_to_assembly1": {
+   "pass": true
+  },
+  "f_supported_scale_new_point": {
+   "pass": true
+  }
+ },
+ "cases": {
+  "a_piece_reuse_byte_identical": {
+   "pass": true,
+   "measured": {
+    "A_block_sha256": "5bb740cc29d92102",
+    "A_matches_asm1": true,
+    "B_block_sha256": "7857974be40d3eaf",
+    "B_matches_asm1": true,
+    "C_is_new_piece": true
+   }
+  },
+  "b_coupled_balance": {
+   "pass": true,
+   "status": "stagnated",
+   "free_residual": 7.32231333233635e-07,
+   "steps": 1014,
+   "force_balance": 7.322313324564789e-07,
+   "moment_balance": 7.897781141130775e-16,
+   "tolerances": {
+    "force": 1e-06,
+    "moment": 1e-06,
+    "free_residual": 1e-06
+   },
+   "pin_blocks": {
+    "A_rim": 200,
+    "B_far_rim": 200,
+    "C_far_rim": 200
+   }
+  },
+  "c_seam_single_valued_both_joints": {
+   "pass": true,
+   "measured": {
+    "min_vertex_distance": 0.01570731731182054,
+    "seam_incident_faces": {
+     "A": 200,
+     "B": 200,
+     "C": 200
+    },
+    "seam_is_free": true,
+    "seam_total_force_norm_N": 7.32231333233635e-07,
+    "duplicate_probe_fires": true,
+    "refusals": {
+     "mismatched_hanger_claim": {
+      "refused": true,
+      "reason": "seam_vertex_coordinate_mismatch",
+      "name_ok": true
+     }
+    }
+   }
+  },
+  "d_transfer_through_both_welds": {
+   "pass": true,
+   "measured": {
+    "block_mean_reaction_norms_N": {
+     "A_rim_near_load": 0.031726851890349704,
+     "B_far_rim_reused": 0.02561306917688339,
+     "C_far_rim_output": 0.016250209192697415
+    },
+    "block_margin": 0.4878089622992122,
+    "port_net_forces_N": {
+     "B_reused_port": 0.9224209434702243,
+     "C_output_port": 0.7369760349467287
+    },
+    "transfer_scale": 1.0
+   },
+   "allowances": {
+    "margin": 0.1
+   }
+  },
+  "e_reduction_degenerate_to_assembly1": {
+   "pass": true,
+   "measured": {
+    "stripped_positions_byte_equal": true,
+    "stripped_faces_byte_equal": true,
+    "energy_delta_J": 0.0,
+    "stripped_energy_J": 5.602681086523496,
+    "assembly1_energy_J": 5.602681086523496
+   },
+   "allowances": {
+    "energy": 1e-09
+   }
+  },
+  "f_supported_scale_new_point": {
+   "pass": true,
+   "measured": {
+    "status": "stagnated",
+    "free_residual": 3.359111495626621e-07,
+    "force_balance": 3.359111501177736e-07,
+    "moment_balance": 4.1143171301476246e-16,
+    "n_rim_per_piece": 200,
+    "block_margin": 0.48169466489813884,
+    "scale_window_measured": [
+     {
+      "scale_m": 0.5,
+      "free_residual_N": 1.6721181017587128e-07,
+      "within_packet_law": true
+     },
+     {
+      "scale_m": 0.75,
+      "free_residual_N": 3.359111495626621e-07,
+      "within_packet_law": true
+     },
+     {
+      "scale_m": 1.0,
+      "free_residual_N": 7.32231333233635e-07,
+      "within_packet_law": true
+     },
+     {
+      "scale_m": 1.5,
+      "free_residual_N": 1.4673556133493193e-06,
+      "within_packet_law": false
+     },
+     {
+      "scale_m": 2.0,
+      "free_residual_N": 2.575054594888826e-06,
+      "within_packet_law": false
+     }
+    ]
+   }
+  }
+ }
+}

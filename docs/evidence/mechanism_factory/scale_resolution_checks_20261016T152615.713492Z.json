@@ -1,0 +1,213 @@
+{
+ "schema": "chimera-mechanism-factory-scale-resolution-checks-v1",
+ "utc": "2026-10-16T15:29:38.317027+00:00",
+ "what": "13.1 S1 detailed multiscale reference: same mechanism at 5 physical scales x 4 mesh resolutions; preregistered convergence tolerance and matched-regime definition; scale transfer distinguished from remeshing; deliberately unmatched regimes recorded",
+ "source_commit": "240d02cb2f79f9471ad61f6906548059ac441114",
+ "source_file_hashes": {
+  "tools/membrane_scale_lab/surface_energy_reference.py": "ee9effcfbddad8d02e03f71d414b27da177f0656de535eaab0d76ae39796f0b7",
+  "tools/membrane_scale_lab/overdamped_descent.py": "a940ac9da88a8852ee57709fe7a44df5469d418be73a75801ea7123d91d930f6",
+  "tools/membrane_scale_lab/fixture_generator.py": "1ebd13b9a659fd85d3ca1dacd29ee8f879636a8863ae836db1756b573ea5b260",
+  "tools/mechanism_factory/patch_equilibrium.py": "4007e23217ddedc4963b1e92b68f213a20fe402b32da2aef1bffdff8b6e15b40",
+  "tools/mechanism_factory/qualification_receipt.py": "d4fcb57d2d923463d275b47f12b6ebbfd3f2c70185ad30b9725ed283fb886689",
+  "tools/mechanism_factory/receipt_adapter.py": "b452511a092ac83e8f7c530c7c9101706381b09ff30adf6a9ae84c392645d015",
+  "tools/mechanism_factory/composed_patch.py": "12d4c08b9fcc1b7b294b1cfd2c522af27b664e486e42c91e28f2e97b9d37d662",
+  "tools/mechanism_factory/composed_patch_checks.py": "569a447de2d9370c0418d5ebf19da8370f61460fc71df790080969fd5b562a3b"
+ },
+ "packet_sha256": "75e24523dc1cb002e4b0fbc3de811e1d4c7eec76e887e70d209e56ee320f0a0d",
+ "units": {
+  "length": "m",
+  "force": "N",
+  "energy": "J"
+ },
+ "preregistered_allowances": {
+  "tol_u_wu": 1e-06,
+  "packet_gate_N": 1e-06,
+  "rim_deflaw_spread_max": 0.02,
+  "unmatched_misstate_min_x_tol": 10.0,
+  "physics_over_mesh_min_2x": 100.0,
+  "star_refinement_change_max_pct": 5.0,
+  "matched_regime": "n_rim=300 (finest rung) at each scale",
+  "unmatched_regime": "n_rim=200 (qualification resolution) reused; n_rim=100 deliberately coarse"
+ },
+ "study_receipt": "scale_resolution_study_checks_20261016T152725.177Z.json",
+ "study_hash": "8110641878294ea57c233048935e4560a9c86f50e6bf3caa079c4ac797fb49bd",
+ "resolution_axis_mapping": "n_rim = fan rim vertex count; fixture vertices = n_rim + 1 (apex last); triangles = n_rim; the SAME continuous patch discretized at four refinements",
+ "checks": {
+  "a_convergence_scale_one": {
+   "pass": true
+  },
+  "b_scale_transfer_vs_remeshing": {
+   "pass": true
+  },
+  "c_deliberately_unmatched": {
+   "pass": true
+  },
+  "d_cost_resolution": {
+   "pass": true
+  },
+  "e_honesty_all_cells": {
+   "pass": true
+  },
+  "f_determinism": {
+   "pass": true
+  }
+ },
+ "cases": {
+  "a_convergence_scale_one": {
+   "pass": true,
+   "measured": {
+    "dz_ladder_wu": [
+     4.647528696710701e-05,
+     1.630057388452011e-05,
+     1.1582874135662724e-05
+    ],
+    "monotone_decrease": true,
+    "order_estimates": [
+     1.511541015813111,
+     0.49292947417557115
+    ],
+    "rim_deflaw_mean_n_prods": [
+     6.333312247429592,
+     6.335589929184181,
+     6.336387253337919,
+     6.336956784393163
+    ],
+    "rim_deflaw_spread": 0.000575250817586635,
+    "finest_dz_under_tol_u": false,
+    "finest_dz_x_tol_u": 11.582874135662724,
+    "scale1_cells_in_gate": true
+   }
+  },
+  "b_scale_transfer_vs_remeshing": {
+   "pass": true,
+   "measured": {
+    "piece_2x_physics_x_tol_u": 6591.474460157232,
+    "piece_2x_remeshing_x_tol_u": 11.618232688137553,
+    "piece_2x_physics_over_remeshing": 567.3388231316161,
+    "star_verdict": "scale_physics",
+    "star_per_scale": [
+     {
+      "scale_m": 1.5,
+      "residual_n200_N": 1.4673556133493193e-06,
+      "residual_n300_N": 1.4477166740967107e-06,
+      "refinement_change_pct": 1.338389894988146,
+      "refined_in_gate": false,
+      "over_gate_x_at_n300": 1.4477166740967107,
+      "surface_energy_J_n300": 14.159485224713746
+     },
+     {
+      "scale_m": 2.0,
+      "residual_n200_N": 2.575054594888826e-06,
+      "residual_n300_N": 2.486216315600309e-06,
+      "refinement_change_pct": 3.4499571179908197,
+      "refined_in_gate": false,
+      "over_gate_x_at_n300": 2.486216315600309,
+      "surface_energy_J_n300": 25.140335259114384
+     }
+    ]
+   }
+  },
+  "c_deliberately_unmatched": {
+   "pass": true,
+   "measured": {
+    "unmatched_cells": [
+     {
+      "scale_m": 1.0,
+      "n100_vs_n300_wu": 7.435873498728984e-05,
+      "n100_vs_n300_x_tol_u": 74.35873498728985,
+      "n200_vs_n300_wu": 1.1582874135662724e-05,
+      "n200_vs_n300_x_tol_u": 11.582874135662724
+     },
+     {
+      "scale_m": 2.0,
+      "n100_vs_n300_wu": 7.432915767807691e-05,
+      "n100_vs_n300_x_tol_u": 74.32915767807691,
+      "n200_vs_n300_wu": 1.1618232688137553e-05,
+      "n200_vs_n300_x_tol_u": 11.618232688137553
+     }
+    ],
+    "threshold_x_tol": 10.0
+   }
+  },
+  "d_cost_resolution": {
+   "pass": true,
+   "measured": {
+    "mean_wall_s_by_resolution": {
+     "100": 1.4764444400003414,
+     "150": 2.4099658600011025,
+     "200": 3.4895571599990944,
+     "300": 5.908783539998694
+    },
+    "monotone_increase": true,
+    "throughput_note": "S2 planning: cost grows ~ superlinearly with n_rim; budget the finest rung accordingly"
+   }
+  },
+  "e_honesty_all_cells": {
+   "pass": true,
+   "measured": {
+    "cells_recorded": 20,
+    "grid_complete": true,
+    "piece_cells_in_gate": 20,
+    "star_cells_recorded": 4,
+    "star_over_gate_retained": [
+     [
+      1.5,
+      200,
+      1.4673556133493193e-06
+     ],
+     [
+      1.5,
+      300,
+      1.4477166740967107e-06
+     ],
+     [
+      2.0,
+      200,
+      2.575054594888826e-06
+     ],
+     [
+      2.0,
+      300,
+      2.486216315600309e-06
+     ]
+    ]
+   }
+  },
+  "f_determinism": {
+   "pass": true,
+   "measured": {
+    "study_hash": "52da3267b663350ca68ff958f0b717f1449eb0982fdc86168e86062f36cf58ee",
+    "matches": true
+   }
+  }
+ },
+ "verdicts": {
+  "convergence": "apex displacement decreases monotonically on the ladder (order est ~1.5/0.5, noisy sub-linear); tol_u = 1e-6 wu is NOT reached at n_rim <= 300 (finest dz 1.16e-5 wu = 11.6x tol_u) -- honest resolution limit",
+  "star_drift_verdict": "scale_physics",
+  "star_drift_numbers": [
+   {
+    "scale_m": 1.5,
+    "residual_n200_N": 1.4673556133493193e-06,
+    "residual_n300_N": 1.4477166740967107e-06,
+    "refinement_change_pct": 1.338389894988146,
+    "refined_in_gate": false,
+    "over_gate_x_at_n300": 1.4477166740967107,
+    "surface_energy_J_n300": 14.159485224713746
+   },
+   {
+    "scale_m": 2.0,
+    "residual_n200_N": 2.575054594888826e-06,
+    "residual_n300_N": 2.486216315600309e-06,
+    "refinement_change_pct": 3.4499571179908197,
+    "refined_in_gate": false,
+    "over_gate_x_at_n300": 2.486216315600309,
+    "surface_energy_J_n300": 25.140335259114384
+   }
+  ],
+  "domain_amendment": "piece.patch-equilibrium: every studied (scale, resolution) cell is in-gate (20/20), including 2.0x at every resolution; the domain bounds STAND (no extension claimed); the measured resolution validity map is appended to physical_definition"
+ },
+ "record_amendment": {
+  "record": "piece.patch-equilibrium",
+  "law": "additive-only amendment (piece_record.amend_physical_definition); the prior bytes are archived under pieces/archive/; this receipt is the entry's cited evidence"
+ }
+}

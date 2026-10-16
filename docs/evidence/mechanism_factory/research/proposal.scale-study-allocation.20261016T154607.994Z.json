@@ -1,0 +1,14 @@
+{
+ "record_id": "proposal.scale-study-allocation.20261016T154607.994Z",
+ "kind": "proposal",
+ "question": "answer the retained star-scale-drift followup with ONE bounded S1 study",
+ "parent_evidence_ids": [
+  "scale_resolution_study_checks_20261016T154354.597Z.json"
+ ],
+ "budget": {
+  "allocated": 1,
+  "consumed": 0
+ },
+ "schema": "chimera-mechanism-factory-research-record-v1",
+ "utc": "2026-10-16T15:46:08.079608+00:00"
+}

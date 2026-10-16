@@ -57,7 +57,65 @@
    "qualification_receipt_20261016T075137.420787Z.json",
    "composed_qualification_receipt_20261016T075201.116240Z.json",
    "composed_chain_receipt_20261016T092136.068087Z.json"
-  ]
+  ],
+  "resolution_validity": {
+   "study_receipt": "scale_resolution_study_checks_20261016T145149.987Z.json",
+   "study_hash": "07c132340b7d7ad29cfe868169d346868795e5036a5ed1fbfc7fc4165f428b34",
+   "grid": {
+    "scales": [
+     0.5,
+     0.75,
+     1.0,
+     1.5,
+     2.0
+    ],
+    "resolutions": [
+     100,
+     150,
+     200,
+     300
+    ]
+   },
+   "in_gate_map": {
+    "0.5": {
+     "100": true,
+     "150": true,
+     "200": true,
+     "300": true
+    },
+    "0.75": {
+     "100": true,
+     "150": true,
+     "200": true,
+     "300": true
+    },
+    "1": {
+     "100": true,
+     "150": true,
+     "200": true,
+     "300": true
+    },
+    "1.5": {
+     "100": true,
+     "150": true,
+     "200": true,
+     "300": true
+    },
+    "2": {
+     "100": true,
+     "150": true,
+     "200": true,
+     "300": true
+    }
+   },
+   "cells_in_gate": 20,
+   "cells_total": 20,
+   "convergence_observable": "apex_z_wu",
+   "tol_u_wu": 1e-06,
+   "finest_successive_resolution_change_wu": 1.1582874135662724e-05,
+   "matched_regime": "n_rim=300 (finest rung) at each scale",
+   "domain_verdict": "bounds stand: every studied (scale, resolution) cell solves in-gate, including 2.0x at every resolution; no domain extension claimed; the n_rim<=300 ladder does not reach tol_u (honest resolution limit)"
+  }
  },
  "ports": [
   {

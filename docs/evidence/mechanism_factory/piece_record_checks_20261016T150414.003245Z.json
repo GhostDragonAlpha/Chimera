@@ -1,0 +1,163 @@
+{
+ "schema": "chimera-mechanism-factory-piece-record-checks-v1",
+ "utc": "2026-10-16T15:04:22.427963+00:00",
+ "what": "11.20 first increment: the qualified alphabet (fan patch, apex-weld seam law, k=2 star) as piece-library records with measured domains, retained failures, quasistatic work accounting and immutable shared recipes with per-instance state",
+ "source_commit": "240d02cb2f79f9471ad61f6906548059ac441114",
+ "source_file_hashes": {
+  "tools/membrane_scale_lab/surface_energy_reference.py": "ee9effcfbddad8d02e03f71d414b27da177f0656de535eaab0d76ae39796f0b7",
+  "tools/membrane_scale_lab/overdamped_descent.py": "a940ac9da88a8852ee57709fe7a44df5469d418be73a75801ea7123d91d930f6",
+  "tools/membrane_scale_lab/fixture_generator.py": "1ebd13b9a659fd85d3ca1dacd29ee8f879636a8863ae836db1756b573ea5b260",
+  "tools/mechanism_factory/patch_equilibrium.py": "4007e23217ddedc4963b1e92b68f213a20fe402b32da2aef1bffdff8b6e15b40",
+  "tools/mechanism_factory/qualification_receipt.py": "d4fcb57d2d923463d275b47f12b6ebbfd3f2c70185ad30b9725ed283fb886689",
+  "tools/mechanism_factory/receipt_adapter.py": "b452511a092ac83e8f7c530c7c9101706381b09ff30adf6a9ae84c392645d015",
+  "tools/mechanism_factory/composed_patch.py": "12d4c08b9fcc1b7b294b1cfd2c522af27b664e486e42c91e28f2e97b9d37d662",
+  "tools/mechanism_factory/composed_patch_checks.py": "569a447de2d9370c0418d5ebf19da8370f61460fc71df790080969fd5b562a3b"
+ },
+ "packet_sha256": "75e24523dc1cb002e4b0fbc3de811e1d4c7eec76e887e70d209e56ee320f0a0d",
+ "units": {
+  "length": "m",
+  "force": "N",
+  "energy": "J"
+ },
+ "preregistered_allowances": {
+  "work_accounting_rel_tol": 0.001,
+  "ramp_points": 9,
+  "ramp_finding": "the ramp's INTERMEDIATE states (lambda 0.25-0.625) stagnate OVER the packet's unchanged 1e-6 gate (up to 2.8e-6 N); only the endpoints are qualified states -- recorded, not tuned",
+  "balance_law_source": "example_packet.acceptance_thresholds",
+  "scale_drift_note": "star scales 1.5x/2.0x honestly OVER the gate (chain receipt scale_window_finding); a record claiming them is refused piece_domain_unmeasured"
+ },
+ "checks": {
+  "a_record_completeness": {
+   "pass": true
+  },
+  "b_evidence_links_and_domain_match": {
+   "pass": true
+  },
+  "c_work_accounting_quasistatic": {
+   "pass": true
+  },
+  "d_recipe_immutability_state_separation": {
+   "pass": true
+  },
+  "e_naming_grants_nothing": {
+   "pass": true
+  },
+  "f_failure_persistence": {
+   "pass": true
+  }
+ },
+ "cases": {
+  "a_record_completeness": {
+   "pass": true,
+   "measured": {
+    "records": [
+     "piece.patch-equilibrium.json",
+     "law.apex-weld-seam.json",
+     "assembly.star-k2.json"
+    ],
+    "unknown_field_refused_as": "piece_unknown_field"
+   }
+  },
+  "b_evidence_links_and_domain_match": {
+   "pass": true,
+   "measured": {
+    "cited_receipts": 10,
+    "dangling": [],
+    "patch_measured_scales": [
+     0.5,
+     0.75,
+     1.0,
+     2.0
+    ],
+    "star_measured_scales": [
+     0.75,
+     1.0
+    ],
+    "star_measured_loads_N": [
+     0.8
+    ],
+    "over_gate_claim_refused_as": "piece_domain_unmeasured"
+   }
+  },
+  "c_work_accounting_quasistatic": {
+   "pass": true,
+   "measured": {
+    "W_ramp_J": 0.041546792,
+    "dS_J": 0.041555038,
+    "rel_diff": 0.000198,
+    "tolerance": 0.001,
+    "max_mid_ramp_residual_N": 2.746e-06,
+    "ramp_finding": "the ramp's INTERMEDIATE states (lambda 0.25-0.625) stagnate OVER the packet's unchanged 1e-6 gate (up to 2.8e-6 N); only the endpoints are qualified states -- recorded, not tuned"
+   }
+  },
+  "d_recipe_immutability_state_separation": {
+   "pass": true,
+   "measured": {
+    "recipe_hash": "8a97616190f283d7",
+    "instance_state_hashes_differ": true,
+    "third_instance_state_hash": "524eb6893b6f9d65"
+   }
+  },
+  "e_naming_grants_nothing": {
+   "pass": true,
+   "measured": {
+    "retained_labels_empty": true,
+    "muscle_claim_refused_as": "function_card_required"
+   }
+  },
+  "f_failure_persistence": {
+   "pass": true,
+   "measured": {
+    "retained_rejections": {
+     "table": "rejected_at_gate",
+     "learned": "rejected_at_gate"
+    },
+    "dropped_failure_refused_as": "representations_incomplete"
+   }
+  }
+ },
+ "record_ids": [
+  "piece.patch-equilibrium",
+  "law.apex-weld-seam",
+  "assembly.star-k2"
+ ],
+ "law_revision": "ee9effcfbddad8d02e03f71d414b27da177f0656de535eaab0d76ae39796f0b7",
+ "domain_bounds": {
+  "piece.patch-equilibrium": {
+   "valid_loads_N": [
+    0.4,
+    0.8,
+    1.2,
+    1.6,
+    2.0
+   ],
+   "valid_scales": [
+    0.5,
+    0.75,
+    1.0,
+    2.0
+   ]
+  },
+  "law.apex-weld-seam": {
+   "valid_scales": [
+    0.5,
+    0.75,
+    1.0,
+    2.0
+   ],
+   "permitted_ops": [
+    "apex-weld"
+   ]
+  },
+  "assembly.star-k2": {
+   "valid_loads_N": [
+    0.8
+   ],
+   "valid_scales": [
+    0.75,
+    1.0
+   ]
+  }
+ },
+ "scope_note": "the packet's 1e-6 law is quoted, never widened; no engine binding is claimed"
+}

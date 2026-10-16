@@ -409,3 +409,38 @@ def amend_representations(record_id: str, entry: dict) -> Path:
     path.write_text(json.dumps(amended, indent=1, default=str) + "\n",
                     encoding="utf-8")
     return path
+
+
+def amend_physical_definition(record_id: str, key: str, value) -> Path:
+    """ADDITIVE-ONLY amendment law for physical_definition: add exactly ONE
+    new key (e.g. a measured resolution validity map) to a retained record;
+    every other byte stays untouched. The PRIOR bytes are archived under
+    pieces/archive/ (append-only evidence stays intact). Idempotent: if the
+    identical key->value is already present, the retained record is
+    returned unchanged. Refusals: piece_pd_key_exists when the key exists
+    with DIFFERENT bytes (amend by adding a NEW dated key, never by
+    overwriting a measured claim), piece_record_missing when the record is
+    not retained."""
+    rec = load_record(record_id)
+    path = PIECES_DIR / f"{record_id}.json"
+    pd = rec["physical_definition"]
+    if key in pd:
+        if pd[key] == value:
+            return path
+        raise PieceRecordRefused(
+            "piece_pd_key_exists",
+            f"{record_id} already carries physical_definition.{key!r} with "
+            f"different bytes; add a NEW dated key instead of overwriting "
+            f"a measured claim")
+    prior_bytes = path.read_bytes()
+    amended = json.loads(json.dumps(rec))     # deep copy
+    amended["physical_definition"][key] = value
+    validate(amended)
+    stamp = hashlib.sha256(prior_bytes).hexdigest()[:16]
+    archive = PIECES_DIR / "archive" / f"{record_id}.{stamp}.json"
+    archive.parent.mkdir(parents=True, exist_ok=True)
+    if not archive.exists():
+        archive.write_bytes(prior_bytes)
+    path.write_text(json.dumps(amended, indent=1, default=str) + "\n",
+                    encoding="utf-8")
+    return path
