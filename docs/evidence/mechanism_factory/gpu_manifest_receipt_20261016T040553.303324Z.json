@@ -1,0 +1,73 @@
+{
+  "schema": "chimera-mechanism-factory-gpu-manifest-v1",
+  "utc": "2026-10-16T04:05:53.324082+00:00",
+  "mechanism_id": "asymmetric-constant-tension-patch-equilibrium",
+  "manifest_path": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\gpu_fit_manifest_20261016T040553.303266Z.json",
+  "manifest_sha256": "874ec7031242a5877d66a58926f9956b6baaef1d450ece9de518c83ec6cca96d",
+  "seed": 1729,
+  "fixture_provenance": {
+    "label_receipts": [
+      "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\qualification_receipt_20261015T205346.498645Z.json",
+      "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\qualification_receipt_20261016T011306.154827Z.json"
+    ],
+    "refused_receipts": [
+      {
+        "receipt": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\qualification_receipt_20261015T151456.178807Z.json",
+        "adapter_refusals": [
+          "receipt_schema_unsupported"
+        ]
+      },
+      {
+        "receipt": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\qualification_receipt_20261015T160534.073121Z.json",
+        "adapter_refusals": [
+          "receipt_schema_unsupported"
+        ]
+      },
+      {
+        "receipt": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\qualification_receipt_20261016T005949.067106Z.json",
+        "adapter_refusals": [
+          "solver_hash_mismatch:tools/mechanism_factory/qualification_cases.py"
+        ]
+      }
+    ],
+    "holdout_families": [
+      "fan-full-rim-pin-alt-load"
+    ],
+    "holdout_excluded": "structurally (split gate before any output read; sentinel-proven by bounded_fit_checks T3)"
+  },
+  "budgets": {
+    "packet_time_s": 300,
+    "packet_ram_mb": 512,
+    "max_vram_mib": 1024,
+    "min_free_vram_mib": 384,
+    "evidence_disk_mb": 512,
+    "why": "packet budgets verbatim plus preregistered GPU headroom (the small-fixture floor is 384 MiB reported free); an OOM FAILS the job -- never silently change precision, physical steps or drop cases"
+  },
+  "checkpoint_policy": "none: single-pass CPU runs, seconds-scale; the stamped evidence receipt is the only artifact and is never silently overwritten",
+  "stopping_conditions": [
+    "jobs run sequentially in preregistered order; stop on first failure (continue_on_failure false)",
+    "stop when the packet's acceptance thresholds are met on the validation split; the physically_qualified flag is the only success marker",
+    "an OOM or any packet-limit breach FAILS the job: silently changing precision, physical steps or dropping cases is forbidden",
+    "the batch never calls the unloaded language model between jobs; results are read only after the entire suite returns"
+  ],
+  "release_contract": {
+    "one_reservation": "gpu_batch.py invokes the handoff once and holds the OS reservation across every job",
+    "release_in_cleanup": "run_gpu_job's GpuLease closes on success, error and cancellation (context manager); timeouts close the whole owned process tree (OwnedChild); the runner releases in its finally path; the next inference reloads the requested model normally",
+    "no_model_touching": "this manifest's jobs contain no router/HTTP invocation; the batch process must not call the unloaded language model"
+  },
+  "pending_inputs": [],
+  "eligible_for_live_batch": true,
+  "no_live_reservation_taken": true,
+  "candidate_receipts_considered": [
+    "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\qualification_receipt_20261015T151456.178807Z.json",
+    "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\qualification_receipt_20261015T160534.073121Z.json",
+    "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\qualification_receipt_20261015T205346.498645Z.json",
+    "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\qualification_receipt_20261016T005949.067106Z.json",
+    "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\qualification_receipt_20261016T011306.154827Z.json"
+  ],
+  "live_command_not_yet_run": [
+    "D:/Chimera-Maintenance/Runtime/local-ai/Strata/.venv/Scripts/python.exe",
+    "D:\\Chimera-Maintenance\\Runtime\\local-ai\\gpu_batch.py",
+    "<manifest_path>"
+  ]
+}

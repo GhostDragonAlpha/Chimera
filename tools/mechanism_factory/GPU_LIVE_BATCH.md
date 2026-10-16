@@ -1,18 +1,20 @@
 # GPU learned-candidate live batch — NOT YET RUN
 
-Status: implementation-only seam (manifest + dry run complete; the fit
-job script `gpu_learned_candidate_fit.py` is authored in the next seam).
+Status: the manifest is now ELIGIBLE (fit_job.py authored, CPU-validated,
+pinned in identities); the live batch itself remains a separately
+scheduled action. The CPU smoke fit ran unqualified (honest 1e-2 N
+validation error vs the 1e-6 gate).
 
-Prerequisites before the live run: author the fit script, regenerate the
-manifest (`python tools/mechanism_factory/gpu_fit_manifest.py`) so its
-`identities` pin the script, and confirm `eligible_for_live_batch: true`.
-
-Exact command (one reservation; the batch never calls the unloaded model):
+Exact command (one reservation; the batch never calls the unloaded model;
+the job's own python is C:/Python314/python.exe, which carries torch):
 
 ```
-D:/Chimera-Maintenance/Runtime/local-ai/Strata/.venv/Scripts/python.exe D:/Chimera-Maintenance/Runtime/local-ai/gpu_batch.py <stamped_manifest_path>
+D:/Chimera-Maintenance/Runtime/local-ai/Strata/.venv/Scripts/python.exe D:/Chimera-Maintenance/Runtime/local-ai/gpu_batch.py D:/Chimera-Maintenance/PythonChimera/docs/evidence/mechanism_factory/gpu_fit_manifest_20261016T040553.303266Z.json
 ```
 
-It unloads once, runs the preregistered job sequence, releases in cleanup
-(success/error/cancellation), and writes evidence under
-`Runtime/local-ai/gpu-batches/`; results are read only after it returns.
+It unloads once, runs the preregistered fit job (--device cuda --seed
+1729 --packet), releases in cleanup (success/error/cancellation), and
+writes evidence under `Runtime/local-ai/gpu-batches/`; results are read
+only after it returns. If any pinned input changed meanwhile, regenerate
+the manifest first.
+

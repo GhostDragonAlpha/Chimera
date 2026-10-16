@@ -1,0 +1,55 @@
+{
+  "schema": "chimera-mechanism-factory-fit-job-checks-v1",
+  "utc": "2026-10-16T04:02:09.282131+00:00",
+  "fit_job_schema": "chimera-mechanism-factory-fit-job-v1",
+  "gate_N": 1e-06,
+  "checks": {
+    "T1_fit_determinism": {
+      "pass": true,
+      "measured": {
+        "checkpoint_sha256": "db6525b61d992112df6f60b8b0cd3d2d2614a76121074faf0f1d44a37c814ae1",
+        "validation_max_error_N": 0.03366755675170242,
+        "gate_N": 1e-06
+      }
+    },
+    "T2_holdout_sentinel_never_read": {
+      "pass": true,
+      "measured": {
+        "checkpoint_hash_unchanged": true,
+        "holdout_cases_read": 0,
+        "receipt_sentinel_free": true
+      }
+    },
+    "T3_budget_breach_clean_failure": {
+      "pass": false,
+      "measured": {
+        "exit_code": 1,
+        "status_recorded": null,
+        "physically_qualified": null
+      }
+    },
+    "T4_receipt_honesty_forgery_refused": {
+      "pass": false,
+      "measured": {
+        "error": "KeyError: 'split_usage'"
+      }
+    },
+    "T5_manifest_pins_fit_job_and_flips_flag": {
+      "pass": false,
+      "measured": {
+        "manifest_sha256": "7684d4bcfa7ec6fe94bbe48ba801b804bdf198b15ca3ed091c4f1b7e5789cac4",
+        "fit_job_pinned": false,
+        "pending_inputs": [
+          {
+            "path": "D:\\Chimera-Maintenance\\PythonChimera\\tools\\mechanism_factory\\gpu_learned_candidate_fit.py",
+            "role": "learned-candidate fit job script",
+            "status": "authored_in_next_seam"
+          }
+        ],
+        "job_executable_exists": true
+      }
+    }
+  },
+  "all_passed": false,
+  "live_batch_not_run": true
+}

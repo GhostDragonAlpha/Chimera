@@ -1,0 +1,11 @@
+{
+  "schema": "chimera-mechanism-factory-fit-job-v1",
+  "utc": "2026-10-16T04:24:36.731286+00:00",
+  "status": "budget_breach",
+  "which": "packet_time_s",
+  "measured": 0.06735980000303243,
+  "limit": 0.0001,
+  "seed": 1729,
+  "device": "cpu",
+  "physically_qualified": false
+}

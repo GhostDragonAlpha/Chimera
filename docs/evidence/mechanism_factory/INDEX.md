@@ -59,44 +59,58 @@ Current (adapter-verifiable in a clean checkout of HEAD):
   reproduction, monotone/no-overshoot, real-table LOO agreement to
   1e-12 N; math-tools evidence
   `Runtime/local-ai/math-tools/results/20261015-211510-d9656b3c`).
-- `gpu_fit_manifest_20261016T030615.852906Z.json` +
-  `gpu_manifest_receipt_20261016T030615.852976Z.json` — §11.18 GPU
-  learned-candidate batch manifest (implementation-only seam; no live
-  reservation taken), schema
+- `gpu_fit_manifest_20261016T040553.303266Z.json` +
+  `gpu_manifest_receipt_20261016T040553.303324Z.json` — §11.18 GPU
+  learned-candidate batch manifest, schema
   `chimera-mechanism-factory-gpu-manifest-v1`, manifest sha256
-  7a9a23587eb955ac29b8d0d1eefc58df4fbdbd967a94c6a1716e50b3de89276d.
-  One job (learned_candidate_fit, Strata venv python, timeout 600 s,
+  874ec7031242a5877d66a58926f9956b6baaef1d450ece9de518c83ec6cca96d,
+  `eligible_for_live_batch: true`. One job (learned_candidate_fit:
+  `fit_job.py --device cuda --seed 1729 --packet ...`, timeout 600 s,
   seed 1729 per the reference bounded fit), packet budgets verbatim
   (time_s 300, ram_mb 512) plus preregistered VRAM/disk headroom,
-  packet checkpoint policy and stopping conditions verbatim
-  (OOM fails the job — no silent precision/step/case changes), the
-  release-in-cleanup contract, and the no-LLM-call law (no
-  router/HTTP marker in any command; build-time and dry-run
-  enforcement). Fixtures: 5 knots per train/validation family derived
-  from the adapter-PASSed receipts (holdout excluded structurally);
-  label receipts + packet sha-pinned in `identities` so gpu_batch
-  refuses the batch if any input changes. The fit job script is
-  authored in the next seam, so the manifest carries it as a pending
-  input and `eligible_for_live_batch` is false — the live command is
-  documented in `tools/mechanism_factory/GPU_LIVE_BATCH.md` as NOT
+  packet checkpoint policy and stopping conditions verbatim (OOM
+  fails the job — no silent precision/step/case changes), the
+  release-in-cleanup contract, and the no-LLM-call law. Fixtures: 5
+  knots per train/validation family derived from the adapter-PASSed
+  receipts (holdout excluded structurally); packet, label receipts and
+  `fit_job.py`'s exact bytes are sha-pinned in `identities` so
+  gpu_batch refuses the batch if any input changes. The live command
+  is documented in `tools/mechanism_factory/GPU_LIVE_BATCH.md` as NOT
   YET RUN.
-- `gpu_fit_dryrun_20261016T032645.207808Z.json` — dry run, schema
-  `chimera-mechanism-factory-gpu-dryrun-v1`, clean (all structural
-  validations PASS through gpu_batch.load_plan's own law). Reservation
-  verdict: `reservation_available_not_taken` — the read-only
-  `run_gpu_job.py --check` probe (no HTTP call, no model touch) found
-  the lock free and released it immediately; a refused probe (exit 75)
-  would have recorded `reservation_unavailable` as an expected dry-run
-  outcome.
-- `gpu_fit_checks_20261016T032644.947848Z.json` — manifest/dry-run
-  falsifier battery, 6/6 green: (a) manifest determinism (in-memory
-  build reproduces the stamped artifact's sha256 exactly), (b) holdout
-  absent from operative sections + split gate reads 0 holdout cases +
-  `refusal_holdout_fixture` fires, (c) timeout > 600 s and
-  missing-budget builds refused by name, (d) LLM/router invocation in
-  a job command refused (`llm_call_in_job_command`), (e) build with
-  no qualified receipt refused (`no_qualified_receipt`), (f) real
-  dry run exits 0 without a reservation and records its verdict.
+- `fit_job_receipt_20261016T035302.105613Z.json` +
+  `fit_job_checkpoint_20261016T035302.105509Z.json` — P3 fit stage
+  proper, schema `chimera-mechanism-factory-fit-job-v1`
+  (`tools/mechanism_factory/fit_job.py`, CPU smoke fit): small torch
+  MLP response operator (pin angle, load magnitude, fixture geometry
+  -> pin reaction components), seed 1729, labels only from the
+  adapter-PASSed receipts through the SAME split gate the sentinel
+  check proved. Deterministic: repeat runs give the identical
+  checkpoint sha256 db6525b61d992112...; stopping max_epochs (3000);
+  wall 3.5 s, traced peak 0.2 MiB (packet budgets enforced; breach
+  fails the job cleanly). **VALIDATION MAX ERROR 3.3668e-02 N vs the
+  preregistered 1e-6 N gate -> `physically_qualified: false`** (the
+  gate was not lowered; the learned candidate — like the bounded
+  table — does not reach the reference's own error scale; the next
+  decision, more data via GPU characterization batch vs accepting the
+  reference, is referred back). Receipt carries
+  `no_llm_calls: true` and is verified by `fit_job.py`'s own
+  verifier (forge -> named refusal).
+- `fit_job_checks_20261016T040453.179798Z.json` — fit-stage falsifier
+  battery, 5/5 green: (a) determinism (two runs, identical checkpoint
+  hash + validation error), (b) holdout sentinel never read (merged
+  adapter-PASSable sentinel receipt -> identical checkpoint hash,
+  holdout_cases_read 0, no sentinel value in either artifact),
+  (c) budget breach -> clean failure (exit 1, receipt records
+  budget_breach, physically_qualified false), (d) receipt honesty
+  (clean verifies; forged flag/seed/holdout-read/no-LLM/checkpoint
+  hash each refused by name), (e) manifest regeneration pins
+  fit_job.py and flips eligibility.
+- `gpu_fit_checks_20261016T040612.400941Z.json` — manifest/dry-run
+  battery rerun after the regeneration, 6/6 green (determinism now
+  reproduces the NEW manifest's sha256).
+- `gpu_fit_dryrun_20261016T040553.519171Z.json` — dry run on the
+  regenerated manifest, clean; reservation verdict
+  `reservation_available_not_taken` (read-only probe).
 - `bounded_fit_checks_20261016T021808.526204Z.json` — fit falsifier
   battery, **7/7 green**: T1 determinism, T2 unqualified receipts
   refused as label sources, T3 structural holdout sentinel untouched,
@@ -111,6 +125,31 @@ Current (adapter-verifiable in a clean checkout of HEAD):
 
 Stale (retained, do not consume):
 
+- `gpu_fit_manifest_20261016T030615.852906Z.json` (+ manifest receipt)
+  — STALE: first manifest, sha256 7a9a23587eb955ac..., which carried
+  `fit_job.py` as a PENDING input (`eligible_for_live_batch: false`)
+  and pointed the job at the old planned script name. Superseded by
+  `gpu_fit_manifest_20261016T040553.303266Z.json` (script authored and
+  pinned; job executable moved to the torch-bearing local Python).
+- `gpu_fit_dryrun_20261016T032645.207808Z.json` and
+  `gpu_fit_checks_20261016T032644.947848Z.json` — STALE: validated the
+  superseded manifest; rerun clean against the regenerated one
+  (`gpu_fit_dryrun_20261016T040553.519171Z.json`,
+  `gpu_fit_checks_20261016T040612.400941Z.json`).
+- `fit_job_receipt_20261016T034921.208926Z.json` (+ checkpoint) —
+  STALE: first stamped CPU fit run; its checkpoint was raw float64
+  bytes (nondeterministic archive formats avoided, but the opaque
+  artifact was replaced by a deterministic JSON checkpoint). Same
+  training data and validation error as
+  `fit_job_receipt_20261016T035302.105613Z.json`.
+- `fit_job_receipt_20261016T040208.820815Z.json` and
+  `fit_job_receipt_20261016T040521.852816Z.json` — the T3 battery's
+  budget-breach failure records (kept: evidence the breach path writes
+  an honest failure receipt and never a partial success).
+- `fit_job_checks_20261016T040139.919918Z.json` — STALE: first battery
+  run, 2/5 (T3's receipt parse missed the failure-receipt line, T4
+  picked a breach record as latest, T5 ran before the manifest pointed
+  at `fit_job.py`); all three fixed, rerun 5/5 green (above).
 - `fit_receipt_20261016T013441.544043Z.json` — STALE: fit receipt for
   the LINEAR interpolant, superseded by
   `fit_receipt_20261016T022858.761939Z.json` (PCHIP, method config

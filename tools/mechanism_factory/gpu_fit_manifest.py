@@ -52,16 +52,17 @@ PACKET_PATH = bf.PACKET_PATH
 MANIFEST_SCHEMA = "chimera-mechanism-factory-gpu-manifest-v1"
 FIT_RECEIPT_SCHEMA = "chimera-mechanism-factory-learned-candidate-fit-v1"
 SEED = 1729                              # reference bounded-fit seed
-STRATA_PYTHON = Path(
-    "D:/Chimera-Maintenance/Runtime/local-ai/Strata/.venv/Scripts/python.exe"
-)
+# torch lives in the local Python (2.13+cu126), not in the Strata venv;
+# the batch job is a raw command, so the executable just has to exist.
+FIT_PYTHON = Path("C:/Python314/python.exe")
 RUN_GPU_JOB = Path(
     "D:/Chimera-Maintenance/Runtime/local-ai/run_gpu_job.py")
 GPU_BATCH = Path(
     "D:/Chimera-Maintenance/Runtime/local-ai/gpu_batch.py")
-FIT_SCRIPT = _HERE / "gpu_learned_candidate_fit.py"   # authored next seam
+FIT_SCRIPT = _HERE / "fit_job.py"        # the P3 fit stage (this seam)
 LIVE_COMMAND = [                        # NOT YET RUN (see GPU_LIVE_BATCH.md)
-    str(STRATA_PYTHON), str(GPU_BATCH), "<manifest_path>",
+    "D:/Chimera-Maintenance/Runtime/local-ai/Strata/.venv/Scripts/python.exe",
+    str(GPU_BATCH), "<manifest_path>",
 ]
 
 # No-LLM-call law: the batch process must not call the unloaded language
@@ -168,7 +169,7 @@ def build_manifest(packet: dict, receipt_paths: list, *,
                                       "from the packet"})
     if job_command is None:
         job_command = [
-            str(STRATA_PYTHON), str(FIT_SCRIPT),
+            str(FIT_PYTHON), str(FIT_SCRIPT),
             "--device", "cuda", "--seed", str(SEED),
             "--packet", str(PACKET_PATH),
         ]
