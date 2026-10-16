@@ -264,7 +264,12 @@ def t4_receipt_honesty_forgery_refused() -> dict:
     llm = dict(receipt)
     llm["no_llm_calls"] = False
     r_llm = fj.verify_job_receipt(llm, str(ckpts[-1]))
-    r_ckpt = fj.verify_job_receipt(receipt, str(ckpts[-2]))
+    # every real checkpoint is byte-identical (the fit is deterministic),
+    # so the hash-mismatch refusal is exercised with a TAMPERED copy.
+    tampered = Path(tempfile.mkdtemp(prefix="fit_ckpt_tamper_")) / "ck.json"
+    tampered.write_text(ckpts[-1].read_text(encoding="utf-8").replace(
+        '"tensors"', '"tensorZ"', 1), encoding="utf-8")
+    r_ckpt = fj.verify_job_receipt(receipt, str(tampered))
     expect_names = {
         "clean": base["passed"],
         "flag_forgery": "physically_qualified_forgery"

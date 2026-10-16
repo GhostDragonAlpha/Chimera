@@ -1,0 +1,136 @@
+{
+  "schema": "chimera-mechanism-factory-gpu-manifest-v1",
+  "batch_runner": "D:\\Chimera-Maintenance\\Runtime\\local-ai\\gpu_batch.py",
+  "seed": 1729,
+  "seed_provenance": "reference bounded fit seed (Runtime/physics-ai/elasticity_probe.py)",
+  "jobs": [
+    {
+      "name": "learned_candidate_fit",
+      "command": [
+        "C:\\Python314\\python.exe",
+        "D:\\Chimera-Maintenance\\PythonChimera\\tools\\mechanism_factory\\fit_job.py",
+        "--device",
+        "cuda",
+        "--seed",
+        "1729",
+        "--packet",
+        "D:\\Chimera-Maintenance\\PythonChimera\\tools\\mechanism_factory\\example_packet.json"
+      ],
+      "cwd": "D:\\Chimera-Maintenance\\PythonChimera",
+      "timeout": 600.0,
+      "expect": [
+        "learned-candidate receipt written"
+      ],
+      "budgets": {
+        "packet_time_s": 300,
+        "packet_ram_mb": 512,
+        "max_vram_mib": 1024,
+        "min_free_vram_mib": 384,
+        "evidence_disk_mb": 512,
+        "why": "packet budgets verbatim plus preregistered GPU headroom (the small-fixture floor is 384 MiB reported free); an OOM FAILS the job -- never silently change precision, physical steps or drop cases"
+      },
+      "output_schemas": {
+        "receipt": "chimera-mechanism-factory-learned-candidate-fit-v1",
+        "required_fields": [
+          "seed",
+          "device",
+          "splits_used",
+          "labels_receipt_hashes",
+          "train_mse",
+          "validation_mse",
+          "physically_qualified",
+          "gpu_memory_sampled"
+        ],
+        "physically_qualified_law": "true only if the packet's thresholds are met on the validation split; the flag defaults false"
+      }
+    }
+  ],
+  "fixtures": {
+    "fan-full-rim-pin": {
+      "split": "train",
+      "load_magnitudes_N": [
+        0.4,
+        0.8,
+        1.2,
+        1.6,
+        2.0
+      ],
+      "n_knots": 5
+    },
+    "fan-full-rim-pin-alt-geometry": {
+      "split": "validation",
+      "load_magnitudes_N": [
+        0.2,
+        0.6,
+        1.0,
+        1.4,
+        1.8
+      ],
+      "n_knots": 5
+    }
+  },
+  "fixture_provenance": {
+    "label_receipts": [
+      "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\qualification_receipt_20261016T043801.479415Z.json",
+      "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\qualification_receipt_20261016T043900.489112Z.json"
+    ],
+    "refused_receipts": [
+      {
+        "receipt": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\qualification_receipt_20261015T151456.178807Z.json",
+        "adapter_refusals": [
+          "receipt_schema_unsupported"
+        ]
+      },
+      {
+        "receipt": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\qualification_receipt_20261015T160534.073121Z.json",
+        "adapter_refusals": [
+          "receipt_schema_unsupported"
+        ]
+      },
+      {
+        "receipt": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\qualification_receipt_20261015T205346.498645Z.json",
+        "adapter_refusals": [
+          "packet_digest_mismatch"
+        ]
+      },
+      {
+        "receipt": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\qualification_receipt_20261016T005949.067106Z.json",
+        "adapter_refusals": [
+          "packet_digest_mismatch",
+          "solver_hash_mismatch:tools/mechanism_factory/qualification_cases.py"
+        ]
+      },
+      {
+        "receipt": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\qualification_receipt_20261016T011306.154827Z.json",
+        "adapter_refusals": [
+          "packet_digest_mismatch"
+        ]
+      }
+    ],
+    "holdout_families": [
+      "fan-full-rim-pin-alt-load"
+    ],
+    "holdout_excluded": "structurally (split gate before any output read; sentinel-proven by bounded_fit_checks T3)"
+  },
+  "identities": {
+    "D:\\Chimera-Maintenance\\PythonChimera\\tools\\mechanism_factory\\example_packet.json": "3a0375ef9a811e0c9120155fe4673a58cd4a698856f0f917fea3034cd6595a2b",
+    "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\qualification_receipt_20261016T043801.479415Z.json": "23ae44bec77e568ab340e64618aacdca3930957af0a159e2dc615e3d658b5ef3",
+    "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\qualification_receipt_20261016T043900.489112Z.json": "9e845d7e9d36589077c99b3695d498aaa5eed1f0737ee1909f0082d1323c5bf4",
+    "D:\\Chimera-Maintenance\\PythonChimera\\tools\\mechanism_factory\\fit_job.py": "2af939d5998f89c7b33d013798b2094032004893f7221fa6d11fbc3952314d8d"
+  },
+  "pending_inputs": [],
+  "continue_on_failure": false,
+  "checkpoint_policy": "none: single-pass CPU runs, seconds-scale; the stamped evidence receipt is the only artifact and is never silently overwritten",
+  "stopping_conditions": [
+    "jobs run sequentially in preregistered order; stop on first failure (continue_on_failure false)",
+    "stop when the packet's acceptance thresholds are met on the validation split; the physically_qualified flag is the only success marker",
+    "an OOM or any packet-limit breach FAILS the job: silently changing precision, physical steps or dropping cases is forbidden",
+    "the batch never calls the unloaded language model between jobs; results are read only after the entire suite returns"
+  ],
+  "release_contract": {
+    "one_reservation": "gpu_batch.py invokes the handoff once and holds the OS reservation across every job",
+    "release_in_cleanup": "run_gpu_job's GpuLease closes on success, error and cancellation (context manager); timeouts close the whole owned process tree (OwnedChild); the runner releases in its finally path; the next inference reloads the requested model normally",
+    "no_model_touching": "this manifest's jobs contain no router/HTTP invocation; the batch process must not call the unloaded language model"
+  },
+  "manifest_sha256": "b20e0589574e5de9751abe3831ffea7adeb3eb3f1c2bc10913de1c13c0318e83"
+}

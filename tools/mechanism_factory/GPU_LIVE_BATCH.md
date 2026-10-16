@@ -9,7 +9,7 @@ Exact command (one reservation; the batch never calls the unloaded model;
 the job's own python is C:/Python314/python.exe, which carries torch):
 
 ```
-D:/Chimera-Maintenance/Runtime/local-ai/Strata/.venv/Scripts/python.exe D:/Chimera-Maintenance/Runtime/local-ai/gpu_batch.py D:/Chimera-Maintenance/PythonChimera/docs/evidence/mechanism_factory/gpu_fit_manifest_20261016T040553.303266Z.json
+D:/Chimera-Maintenance/Runtime/local-ai/Strata/.venv/Scripts/python.exe D:/Chimera-Maintenance/Runtime/local-ai/gpu_batch.py D:/Chimera-Maintenance/PythonChimera/docs/evidence/mechanism_factory/gpu_fit_manifest_20261016T044124.832275Z.json
 ```
 
 It unloads once, runs the preregistered fit job (--device cuda --seed

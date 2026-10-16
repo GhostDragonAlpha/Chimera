@@ -2,83 +2,88 @@
 
 Current (adapter-verifiable in a clean checkout of HEAD):
 
-- `qualification_receipt_20261015T205346.498645Z.json` — genuine
+Coordinated doc bump (2026-10-16): `example_packet.json`'s
+`verifier_identity` and `README.md` were updated from the schema-v1
+wording to the v2 reality (adapter = `receipt_adapter.py`; v1 receipts
+refused as `receipt_schema_unsupported`; balance-residual recomputation;
+F12 verdict forgery; a new bounded-fit / learned-candidate / GPU-batch
+section). Both files are graph-pinned, so the whole receipt chain was
+regenerated in dependency order and the graph re-pinned
+(`creature_graph.json`: read_first document oids re-absorbed,
+verifier_inputs packet pin and committed-receipt pin moved to the new
+stamps, old document versions retained as immutable graph nodes,
+`check()` clean). Every pre-bump artifact is listed under Stale below:
+the packet digest moved, so old qualification receipts are now
+adapter-refused (`packet_digest_mismatch`) and old manifests' sha-pinned
+`identities` no longer match. Measured numbers did not change (same
+fixtures, same seed); only the packet identity moved.
+
+- `qualification_receipt_20261016T043801.479415Z.json` — genuine
   qualification receipt for the asymmetric constant-tension patch
-  mechanism, schema
+  mechanism, regenerated against the bumped packet via the pinned
+  writer; schema
   `chimera-mechanism-factory-qualification-receipt-v2`; three CPU
   cases (stagnated at the machine-scale floor, all residuals under the
-  packet thresholds). v2 records each case's
-  `max_force_balance_residual` and `max_moment_balance_residual`, so
-  `receipt_adapter.py` recomputes the packet's two balance thresholds
-  through the same verdict-forgery path as the other thresholds.
-  Verified by `tools/mechanism_factory/receipt_adapter.py`
-  against `tools/mechanism_factory/example_packet.json` (PASS).
-- `patch_equilibrium_receipt_20261015T123339.081217Z.json` — P1
-  boundary/load solve falsifier battery, 6/6 (schema
-  chimera-mechanism-factory-patch-equilibrium-v1).
-- `adapter_faults_20261015T210124.045050Z.json` — fault-injection suite
-  against the schema-v2 adapter, F0-F12 green (F12: a v2 receipt with a
-  recorded balance residual above the packet threshold under a declared
-  PASS is `verdict_forgery`). The earlier
-  `adapter_faults_20261015T154126.354864Z.json` (worker run) and
-  `adapter_faults_20261015T155352.835286Z.json` (independent verifier
-  rerun) cover F0-F11 against the schema-v1 adapter and are retained.
-- `qualification_receipt_20261016T011306.154827Z.json` — multi-point
-  qualification-case receipt (schema
-  `chimera-mechanism-factory-qualification-receipt-v2`), written by
+  packet thresholds). Adapter verdict PASS (recomputed + declared;
+  `receipt_adapter.py` recomputes the packet's balance thresholds
+  through the same verdict-forgery path as the other thresholds).
+- `qualification_receipt_20261016T043900.489112Z.json` — multi-point
+  qualification-case receipt (same schema), written by
   `tools/mechanism_factory/qualification_cases.py`: 5 vertical load
   magnitudes per train/validation family across the admitted domain
   (train 0.4-2.0 N, validation 0.2-1.8 N; frozen fixtures; the pinned
   writer's `run_case` solve path and negative controls; each case
-  records its own `load_magnitude_N`). Adapter verdict: PASS
-  (recomputed + declared). Provenance (writer file hash, solve
-  parameters) recorded in the receipt's `provenance` block; the
-  holdout family is never run.
-- `fit_receipt_20261016T022858.761939Z.json` — bounded-table fit+eval
+  records its own `load_magnitude_N`). Adapter verdict PASS
+  (recomputed + declared). The holdout family is never run.
+- `fit_receipt_20261016T043900.694301Z.json` — bounded-table fit+eval
   receipt, schema `chimera-mechanism-factory-fit-eval-v1`
-  (`tools/mechanism_factory/bounded_fit.py`, P3). Labels only from
-  adapter-PASSed receipts (3 receipts refused and recorded); 5 knots
-  per family after cross-writer deduplication (identical reactions at
-  the shared magnitudes — consistency witness passed). Bounded PCHIP
-  interpolant (monotone cubic in |f|, method config #1; no overshoot,
-  no extrapolation past knots; out-of-domain refused by name). Table
-  hash bd2876120ed65f06...; seed 0; cost wall 48.7 s, traced peak
-  8.6 MiB. Validation max/mean reaction error at the knots 0.0/0.0 N
-  (tolerance 1e-6 N). Shadow latency: table query 24.8 us vs
-  reference solve 15.29 s mean. Holdout: seen, 0 read,
-  `no_final_test_access: true`. **TABLE REJECTED at the preregistered
-  interpolation gate**: leave-one-out max error 1.44e-4 N vs the
-  1e-6 N gate (PCHIP improved on the linear table's 3.94e-4 N but
-  does not reach the reference's own error scale; measured curve
-  recorded per knot: train 9.7e-6 @0.8, 2.2e-5 @1.2, 7.1e-5 @1.6;
-  validation 1.2e-5 @0.6, 3.3e-5 @1.0, 1.4e-4 @1.4). The
-  learned-candidate hook is therefore flipped:
-  `learned_candidate_deferred_gpu_seam` — the learned candidate is
-  justified. The PCHIP implementation was CPU-verified against
-  scipy's `PchipInterpolator` (5/5: slopes, values, knot
-  reproduction, monotone/no-overshoot, real-table LOO agreement to
-  1e-12 N; math-tools evidence
+  (`tools/mechanism_factory/bounded_fit.py`, P3), regenerated against
+  the bumped packet. Labels only from adapter-PASSed receipts (3
+  receipts refused and recorded); 5 knots per family after
+  cross-writer deduplication (identical reactions at the shared
+  magnitudes — consistency witness passed). Bounded PCHIP interpolant
+  (monotone cubic in |f|, method config #1; no overshoot, no
+  extrapolation past knots; out-of-domain refused by name). Validation
+  max/mean reaction error at the knots 0.0/0.0 N (tolerance 1e-6 N).
+  Shadow latency: table query 36.6 us vs reference solve 15.11 s mean.
+  Holdout: seen, 0 read, `no_final_test_access: true`. **TABLE
+  REJECTED at the preregistered interpolation gate**: leave-one-out
+  max error 1.44e-4 N vs the 1e-6 N gate (PCHIP improved on the
+  linear table's 3.94e-4 N but does not reach the reference's own
+  error scale; measured curve recorded per knot: train 9.7e-6 @0.8,
+  2.2e-5 @1.2, 7.1e-5 @1.6; validation 1.2e-5 @0.6, 3.3e-5 @1.0,
+  1.4e-4 @1.4). The learned-candidate hook is therefore flipped:
+  `learned_candidate_deferred_gpu_seam`. The PCHIP implementation was
+  CPU-verified against scipy's `PchipInterpolator` (5/5: slopes,
+  values, knot reproduction, monotone/no-overshoot, real-table LOO
+  agreement to 1e-12 N; math-tools evidence
   `Runtime/local-ai/math-tools/results/20261015-211510-d9656b3c`).
-- `gpu_fit_manifest_20261016T040553.303266Z.json` +
-  `gpu_manifest_receipt_20261016T040553.303324Z.json` — §11.18 GPU
+- `patch_equilibrium_receipt_20261015T123339.081217Z.json` — P1
+  boundary/load solve falsifier battery, 6/6 (schema
+  chimera-mechanism-factory-patch-equilibrium-v1). Its inputs do not
+  touch the bumped documents; the post-bump rerun
+  `patch_equilibrium_receipt_20261016T044911.994703Z.json` is 6/6
+  green with the recorded results unchanged.
+- `gpu_fit_manifest_20261016T044124.832275Z.json` +
+  `gpu_manifest_receipt_20261016T044124.832337Z.json` — §11.18 GPU
   learned-candidate batch manifest, schema
   `chimera-mechanism-factory-gpu-manifest-v1`, manifest sha256
-  874ec7031242a5877d66a58926f9956b6baaef1d450ece9de518c83ec6cca96d,
-  `eligible_for_live_batch: true`. One job (learned_candidate_fit:
-  `fit_job.py --device cuda --seed 1729 --packet ...`, timeout 600 s,
-  seed 1729 per the reference bounded fit), packet budgets verbatim
-  (time_s 300, ram_mb 512) plus preregistered VRAM/disk headroom,
-  packet checkpoint policy and stopping conditions verbatim (OOM
-  fails the job — no silent precision/step/case changes), the
-  release-in-cleanup contract, and the no-LLM-call law. Fixtures: 5
-  knots per train/validation family derived from the adapter-PASSed
-  receipts (holdout excluded structurally); packet, label receipts and
-  `fit_job.py`'s exact bytes are sha-pinned in `identities` so
-  gpu_batch refuses the batch if any input changes. The live command
-  is documented in `tools/mechanism_factory/GPU_LIVE_BATCH.md` as NOT
-  YET RUN.
-- `fit_job_receipt_20261016T035302.105613Z.json` +
-  `fit_job_checkpoint_20261016T035302.105509Z.json` — P3 fit stage
+  b20e0589574e5de9751abe3831ffea7adeb3eb3f1c2bc10913de1c13c0318e83,
+  `pending_inputs: []`, `eligible_for_live_batch: true`. One job
+  (learned_candidate_fit: `fit_job.py --device cuda --seed 1729
+  --packet ...`, timeout 600 s, seed 1729 per the reference bounded
+  fit), packet budgets verbatim (time_s 300, ram_mb 512) plus
+  preregistered VRAM/disk headroom, packet checkpoint policy and
+  stopping conditions verbatim (OOM fails the job — no silent
+  precision/step/case changes), the release-in-cleanup contract, and
+  the no-LLM-call law. Fixtures: 5 knots per train/validation family
+  derived from the adapter-PASSed receipts (holdout excluded
+  structurally); packet, label receipts and `fit_job.py`'s exact
+  bytes are sha-pinned in `identities` so gpu_batch refuses the batch
+  if any input changes. The live command is documented in
+  `tools/mechanism_factory/GPU_LIVE_BATCH.md` as NOT YET RUN.
+- `fit_job_receipt_20261016T044141.958228Z.json` +
+  `fit_job_checkpoint_20261016T044141.958119Z.json` — P3 fit stage
   proper, schema `chimera-mechanism-factory-fit-job-v1`
   (`tools/mechanism_factory/fit_job.py`, CPU smoke fit): small torch
   MLP response operator (pin angle, load magnitude, fixture geometry
@@ -86,44 +91,65 @@ Current (adapter-verifiable in a clean checkout of HEAD):
   adapter-PASSed receipts through the SAME split gate the sentinel
   check proved. Deterministic: repeat runs give the identical
   checkpoint sha256 db6525b61d992112...; stopping max_epochs (3000);
-  wall 3.5 s, traced peak 0.2 MiB (packet budgets enforced; breach
-  fails the job cleanly). **VALIDATION MAX ERROR 3.3668e-02 N vs the
-  preregistered 1e-6 N gate -> `physically_qualified: false`** (the
-  gate was not lowered; the learned candidate — like the bounded
-  table — does not reach the reference's own error scale; the next
-  decision, more data via GPU characterization batch vs accepting the
-  reference, is referred back). Receipt carries
-  `no_llm_calls: true` and is verified by `fit_job.py`'s own
-  verifier (forge -> named refusal).
-- `fit_job_checks_20261016T040453.179798Z.json` — fit-stage falsifier
-  battery, 5/5 green: (a) determinism (two runs, identical checkpoint
-  hash + validation error), (b) holdout sentinel never read (merged
-  adapter-PASSable sentinel receipt -> identical checkpoint hash,
-  holdout_cases_read 0, no sentinel value in either artifact),
-  (c) budget breach -> clean failure (exit 1, receipt records
-  budget_breach, physically_qualified false), (d) receipt honesty
-  (clean verifies; forged flag/seed/holdout-read/no-LLM/checkpoint
-  hash each refused by name), (e) manifest regeneration pins
-  fit_job.py and flips eligibility.
-- `gpu_fit_checks_20261016T040612.400941Z.json` — manifest/dry-run
-  battery rerun after the regeneration, 6/6 green (determinism now
-  reproduces the NEW manifest's sha256).
-- `gpu_fit_dryrun_20261016T040553.519171Z.json` — dry run on the
+  packet budgets enforced (breach fails the job cleanly). **VALIDATION
+  MAX ERROR 3.3668e-02 N vs the preregistered 1e-6 N gate ->
+  `physically_qualified: false`** (the gate was not lowered; the
+  learned candidate — like the bounded table — does not reach the
+  reference's own error scale; the next decision, more data via GPU
+  characterization batch vs accepting the reference, is referred
+  back). Receipt carries `no_llm_calls: true` and is verified by
+  `fit_job.py`'s own verifier (forge -> named refusal).
+- `adapter_faults_20261016T044810.797759Z.json` — fault-injection
+  suite rerun against the bumped packet, F0-F12 green (F12: a v2
+  receipt with a recorded balance residual above the packet threshold
+  under a declared PASS is `verdict_forgery`).
+- `bounded_fit_checks_20261016T045355.854421Z.json` — fit falsifier
+  battery rerun after the doc bump, **7/7 green**: T1 determinism,
+  T2 unqualified receipts refused as label sources, T3 structural
+  holdout sentinel untouched, T4 out-of-domain refused by name, T5
+  knot-point error within the preregistered packet tolerance, T6
+  fit-receipt honesty, T7 GATE CONSISTENCY (the table is either
+  qualified at the preregistered leave-one-out gate or explicitly
+  rejected with the hook flipped). Current run: the rejection branch
+  is active and internally consistent.
+- `fit_job_checks_20261016T045306.970480Z.json` — fit-stage falsifier
+  battery rerun, 5/5 green: (a) determinism (two runs, identical
+  checkpoint hash + validation error), (b) holdout sentinel never
+  read (merged adapter-PASSable sentinel receipt -> identical
+  checkpoint hash, holdout_cases_read 0, no sentinel value in either
+  artifact), (c) budget breach -> clean failure (exit 1, receipt
+  records budget_breach, physically_qualified false), (d) receipt
+  honesty (clean verifies; forged flag/seed/holdout-read/no-LLM/
+  checkpoint hash each refused by name), (e) manifest regeneration
+  pins fit_job.py and flips eligibility.
+- `gpu_fit_checks_20261016T044911.264376Z.json` — manifest/dry-run
+  battery rerun against the regenerated manifest, 6/6 green
+  (determinism reproduces the new manifest's sha256).
+- `gpu_fit_dryrun_20261016T044811.006952Z.json` — dry run on the
   regenerated manifest, clean; reservation verdict
   `reservation_available_not_taken` (read-only probe).
-- `bounded_fit_checks_20261016T021808.526204Z.json` — fit falsifier
-  battery, **7/7 green**: T1 determinism, T2 unqualified receipts
-  refused as label sources, T3 structural holdout sentinel untouched,
-  T4 out-of-domain refused by name, T5 knot-point error within the
-  preregistered packet tolerance, T6 fit-receipt honesty, T7 GATE
-  CONSISTENCY (the table is either qualified at the preregistered
-  leave-one-out gate or explicitly rejected with the hook flipped —
-  a silently-passed over-gate table trips it). Current run: the
-  rejection branch is active and internally consistent.
-- `adapter_faults_20261016T022755.396222Z.json` — fault-injection
-  suite rerun after the PCHIP work, F0-F12 green.
 
 Stale (retained, do not consume):
+
+- PRE-DOC-BUMP CHAIN (superseded 2026-10-16 by the coordinated packet/
+  README doc bump above): the packet digest changed, so these are
+  refused by the current adapter (`packet_digest_mismatch`) or pin
+  inputs whose hashes no longer match. Retained in full:
+  `qualification_receipt_20261015T205346.498645Z.json` (the pre-bump
+  genuine receipt), `qualification_receipt_20261016T011306.154827Z.json`
+  (the pre-bump multi-point receipt), `fit_receipt_20261016T022858.761939Z.json`
+  (PCHIP fit), `gpu_fit_manifest_20261016T040553.303266Z.json` +
+  `gpu_manifest_receipt_20261016T040553.303324Z.json` (manifest sha
+  874ec7031242a587...), `fit_job_receipt_20261016T035302.105613Z.json`
+  (+ `fit_job_checkpoint_20261016T035302.105509Z.json`),
+  `adapter_faults_20261016T022755.396222Z.json`,
+  `bounded_fit_checks_20261016T021808.526204Z.json`,
+  `fit_job_checks_20261016T040453.179798Z.json`,
+  `gpu_fit_checks_20261016T040612.400941Z.json`,
+  `gpu_fit_dryrun_20261016T040553.519171Z.json`. Measured numbers
+  (rejection curve, validation errors, checkpoint hash) are identical
+  in the post-bump chain; only the packet identity moved.
+
 
 - `gpu_fit_manifest_20261016T030615.852906Z.json` (+ manifest receipt)
   — STALE: first manifest, sha256 7a9a23587eb955ac..., which carried

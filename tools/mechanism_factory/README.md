@@ -114,13 +114,15 @@ convergence failure stays FAILED/stagnated, never rewritten) are honored.
 ## Receipt adapter (seam 2b) — `receipt_adapter.py`
 
 Independent, versioned verifier (`ADAPTER_VERSION = receipt-adapter-v1`,
-accepted schema `chimera-mechanism-factory-qualification-receipt-v1`).
+accepted schema `chimera-mechanism-factory-qualification-receipt-v2`; v1
+receipts are refused explicitly as `receipt_schema_unsupported`).
 `verify_receipt(receipt, packet) -> Verdict(passed, refusals)` trusts nothing
 it can recompute: packet digest, solver/law/fixture file hashes, units,
 finiteness, the convergence acceptance law (`unconverged_label`: stationary,
-or stagnated with the case residual within the PACKET threshold), domain and
-split integrity, declared-verdict forgery (tolerances read ONLY from the
-packet; thresholds carried in the receipt are inert), and `gpu_job`
+or stagnated with the case residual within the PACKET threshold), the v2
+balance residuals recomputed against the packet's force/moment thresholds,
+domain and split integrity, declared-verdict forgery (tolerances read ONLY
+from the packet; thresholds carried in the receipt are inert), and `gpu_job`
 reservation unless a clean-resume block matches a checkpoint hash on disk.
 Run: `python tools/mechanism_factory/receipt_adapter.py RECEIPT PACKET`
 (exit 0 pass / 1 refused / 2 usage-or-unreadable).
@@ -131,9 +133,23 @@ hash byte flipped; F3 units `cm`; F4 holdout family duplicated under train;
 F5 NaN output; F6 `step_limit` and over-threshold `stagnated`; F7 foreign
 family `twisted_torus`; F8 packet threshold widened post hoc; F9 PASS
 claimed over an over-threshold number; F10 gpu_job reserved vs. clean
-resume with a real checkpoint; F11 absurd receipt thresholds proven inert.
+resume with a real checkpoint; F11 absurd receipt thresholds proven inert;
+F12 a v2 receipt recording a balance residual above the packet threshold
+under a declared PASS (`verdict_forgery`).
 Results are stamped as `chimera-mechanism-factory-adapter-faults-v1` into
 `docs/evidence/mechanism_factory/` via `resolve_evidence_path`.
+
+## P3 bounded fit, learned candidate and GPU batch — `bounded_fit.py`, `fit_job.py`
+
+`bounded_fit.py` builds the bounded PCHIP table from adapter-PASSed
+receipts only (out-of-domain refused by name; holdout structurally unread;
+`no_final_test_access` recorded), evaluates against direct reference
+solves, and refuses or justifies the learned candidate by gate
+consistency. `fit_job.py` is the device-agnostic learned-candidate fit
+(seed 1729, fit-job-v1 receipt, `physically_qualified` flag vs the packet
+gate, budgets enforced). `gpu_fit_manifest.py` + `gpu_fit_dryrun.py`
+preregister the one-reservation GPU batch (no LLM calls, release in
+cleanup) and validate it without reserving; see `GPU_LIVE_BATCH.md`.
 ## Executable checklist (seam 3) — `test_workflow_checklist.py`
 
 Work object `work.mechanism-factory-patch-equilibrium` in
