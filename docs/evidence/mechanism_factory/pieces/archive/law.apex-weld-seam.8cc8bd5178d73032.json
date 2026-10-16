@@ -1,0 +1,129 @@
+{
+ "record_id": "law.apex-weld-seam",
+ "kind": "law",
+ "name": "The apex-weld seam law: hangers weld only at apexes, reflected about (hA + h)/2, seam owned by the ground piece",
+ "design_recipe": {
+  "immutable": true,
+  "executable_code": false,
+  "nodes": [],
+  "edges": [],
+  "law_spec": {
+   "coordinate_agreement_tol": 1e-12,
+   "refusal": "seam_vertex_coordinate_mismatch before any solve",
+   "placement": "hanger reflection z -> (hA + h) - z; reduces to assembly 1's transform for hangers with h = hA (byte-identical reuse)",
+   "winding_fix": "reflected faces get [0, 2, 1] winding",
+   "ownership": "one seam vertex, owned by the ground piece, referenced by every hanger; deduplicated"
+  },
+  "recipe_hash": "57501e5c6808b3e1"
+ },
+ "physical_definition": {
+  "law_id": "apex-weld-seam",
+  "law_revision": "ee9effcfbddad8d02e03f71d414b27da177f0656de535eaab0d76ae39796f0b7",
+  "units": {
+   "length": "m",
+   "force": "N",
+   "energy": "J"
+  },
+  "topology": "any connected assembly of fan patches is a single-seam star (one grounded piece + k inverted hangers); two-seam chains cannot exist",
+  "reference_configuration": "n/a (a law, not a geometry)",
+  "valid_loads_N": [
+   0.8
+  ],
+  "valid_scales": [
+   0.5,
+   0.75,
+   1.0,
+   2.0
+  ],
+  "excluded_phenomena": [
+   "rim welds (witness (g): free seam rings have no equilibrium, residual ~1.08)",
+   "grounded rings (zero transfer, bit-for-bit)",
+   "seam coordinate mismatch above 1e-12 (refused before any solve)",
+   "second ownership claims (SEAM_OWNER_CONFLICT)"
+  ],
+  "measured_in": [
+   "composed_qualification_receipt_20261016T075201.116240Z.json",
+   "composed_chain_receipt_20261016T092136.068087Z.json",
+   "composed_chain_checks_20261016T093949.650913Z.json"
+  ]
+ },
+ "ports": [
+  {
+   "port_id": "weld-interface",
+   "kind": "input",
+   "patch_geometry": "one shared seam vertex; the opposing films' pull balances the transferred load (real port transfer)",
+   "local_frame": "vertical axis at the seam apex",
+   "exchanges": "load transfer through the weld [N]",
+   "sign_convention": "transfer measured by the port net reaction norms",
+   "variables": {
+    "prescribed": "weld topology (which apexes)",
+    "free": "seam vertex DOFs"
+   },
+   "work_accounting": "port transfer measured via block mean reaction norms (margin 0.488 in the star)"
+  }
+ ],
+ "instance_state": {
+  "owner": "piece_record layer; the law is immutable, shared by every assembly record citing it",
+  "instances": [
+   {
+    "instance_id": "law.apex-weld-seam.application-star-k2",
+    "state": {
+     "applied_to": "assembly.star-k2"
+    },
+    "state_hash": "6882a348cd6ddc9f"
+   }
+  ]
+ },
+ "representations": [
+  {
+   "kind": "direct-reference",
+   "status": "qualified",
+   "receipt_ids": [
+    "composed_qualification_receipt_20261016T075201.116240Z.json",
+    "composed_chain_receipt_20261016T092136.068087Z.json",
+    "composed_chain_checks_20261016T093949.650913Z.json"
+   ],
+   "note": "qualified twice: assembly 1 (0.5x/1.0x/2.0x) and the byte-identical-reuse star (1.0x/0.75x)"
+  }
+ ],
+ "function_card": {
+  "function_label": "",
+  "measured_response_anchors": [
+   {
+    "quantity": "weld transfer margin",
+    "measured_in": "composed_chain_checks_20261016T093949.650913Z.json",
+    "values": "0.488 block margin; port nets 0.922/0.737 N at 1.0x"
+   }
+  ],
+  "operating_domain": "fan-patch assemblies whose pieces each have exactly one apex",
+  "costs": {
+   "weld": "placement reflection + index remap; no extra solve cost"
+  },
+  "failures": [
+   "rim-weld chains: structurally impossible (witness (g), recorded in composed receipts)"
+  ],
+  "evidence_ids": [
+   "composed_qualification_receipt_20261016T075201.116240Z.json",
+   "composed_chain_receipt_20261016T092136.068087Z.json",
+   "composed_chain_checks_20261016T093949.650913Z.json"
+  ],
+  "freshness": {
+   "source_pins": {
+    "tools/mechanism_factory/composed_patch.py": "12d4c08b9fcc1b7b294b1cfd2c522af27b664e486e42c91e28f2e97b9d37d662",
+    "tools/mechanism_factory/composed_chain.py": "67a274fe611807d5793e8d5a1590ec89d29dc14de8c6b3ca087015b77464b7b5"
+   }
+  }
+ },
+ "fabrication_binding": {
+  "required_material": "as for the pieces it joins",
+  "required_energy": "none beyond solver CPU",
+  "permitted_assembly_ops": [
+   "apex-weld"
+  ],
+  "exclusions": [
+   "every seam topology other than apex welds (witness (g))"
+  ],
+  "physical_to_render": "unset: no engine binding exists yet"
+ },
+ "schema": "chimera-mechanism-factory-piece-record-v1"
+}

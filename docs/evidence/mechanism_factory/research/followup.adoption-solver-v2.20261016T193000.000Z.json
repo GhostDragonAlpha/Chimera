@@ -1,0 +1,21 @@
+{
+ "record_id": "followup.adoption-solver-v2.20261016T193000.000Z",
+ "kind": "followup",
+ "question": "ADOPTION RULING (coordinator, published 912f688f): is the v2 candidate adopted as the pinned patch-equilibrium solver, on the method-comparison evidence?",
+ "parent_evidence_ids": [
+  "solver_method_comparison_20261016T171921.421472Z.json",
+  "solver_method_comparison_20261016T190912.903350Z.json",
+  "research/method_comparison.incumbent-vs-v2-candidate.20261016T191459.083Z.json",
+  "composed_chain_qualification_receipt_20261016T180652.327348Z.json",
+  "scale_resolution_study_checks_20261016T184725.015Z.json",
+  "piece_record_checks_20261016T184512.602870Z.json"
+ ],
+ "result": "ADOPTED: patch_equilibrium.solve_equilibrium is now 'patch-equilibrium-solver-v2' (phase 1 = the former v1 machinery verbatim; phase 2 = Newton-by-FD-diagonal continuation engaged ONLY when the phase-1 termination is over the packet's unchanged 1e-6 N free-residual law). STATUS CHANGES ACROSS THE REGENERATED CHAIN: the only loaded solves that changed are the S1 star-drift cells (all pieces n_rim 300): 1.5x 1.4477e-06 N and 2.0x 2.4862e-06 N (v1 machinery, stagnated OVER the law) are now STATIONARY at 1.0336e-13 and 1.9962e-13 N -- the drift was the v1 machinery's stagnation floor, not law-level physics; every already-law-passing solve is bit-identical (regression guard max shift 0.0 on 29/29 law-passing frozen cases). The S1 study verdict is machinery_superseded; the piece-level convergence ladder still does NOT reach tol_u = 1e-6 wu (discretization). STAR DOMAIN EXTENDED BY MEASUREMENT: assembly.star-k2 valid_scales now [0.75, 1.0, 1.5, 2.0] at valid_loads_N [0.8], citing composed_chain_qualification_receipt_20261016T180652.327348Z.json; scales 3.0x and out remain excluded (no in-gate measurement). GRAPH PINS UPDATED: work.mechanism-factory-patch-equilibrium verifier_inputs now pins patch_equilibrium.py a0f4b9f9b289ef1eb76d1c903fd1e458979d7da2f8dcd5ef7683efe5898db99c and the regenerated genuine qualification receipt qualification_receipt_20261016T180445.582336Z.json (2f28df86bbd0d71c5468ebb14a68259c85b20beefdc8c7aa8494a0d9e3435e42); lifecycle checklist 3 passed (p1-battery runs v2, 6/6 incl. C6 honesty). GPU manifest regenerated: gpu_fit_manifest_20261016T190441.979869Z.json sha256 6e9940478cae11789f1cb477f23235448271f07ae147a512d08f278e2318c4ec with a fresh clean dry run; the live GPU batch remains a separately scheduled action.",
+ "independent_status": "all suites green post-adoption: P1 6/6, qualification + multi-point receipts, composed 7/7, chain 6/6 (adapter-PASS), pieces 6/6, research 7/7, port 6/6, bounded fit 7/7, fit job 5/5, gpu 6/6 + clean dry run, S1 6/6, adapter faults F0-F13, solver comparison 6/6 with incumbent = adopted v2 reproducing the REGENERATED receipts (check f worst relative 0.0)",
+ "next_questions": [
+  "the piece-level convergence ladder gap is discretization (remeshing), a separate question",
+  "the deferred learned candidate's GPU seam stays separately scheduled"
+ ],
+ "schema": "chimera-mechanism-factory-research-record-v1",
+ "utc": "2026-10-16T19:28:22.520562+00:00"
+}

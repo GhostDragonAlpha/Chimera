@@ -229,8 +229,10 @@
   "freshness": {
    "source_pins": {
     "tools/membrane_scale_lab/surface_energy_reference.py": "ee9effcfbddad8d02e03f71d414b27da177f0656de535eaab0d76ae39796f0b7",
-    "tools/mechanism_factory/patch_equilibrium.py": "4007e23217ddedc4963b1e92b68f213a20fe402b32da2aef1bffdff8b6e15b40"
-   }
+    "tools/mechanism_factory/patch_equilibrium.py": "a0f4b9f9b289ef1eb76d1c903fd1e458979d7da2f8dcd5ef7683efe5898db99c"
+   },
+   "refreshed_utc": "2026-10-16T18:11:05.613458+00:00",
+   "refresh_reason": "11.19 solver-v2 adoption: pinned sources patch_equilibrium.py (v2 machinery promoted) and composed_chain.py (measured scale extension) changed; re-pinned to current bytes"
   }
  },
  "fabrication_binding": {

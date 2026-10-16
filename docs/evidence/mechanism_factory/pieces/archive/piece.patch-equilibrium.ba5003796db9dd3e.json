@@ -1,0 +1,250 @@
+{
+ "record_id": "piece.patch-equilibrium",
+ "kind": "piece",
+ "name": "Full-rim-pinned high-degree fan patch under the constant-gamma current-area surface-energy law",
+ "design_recipe": {
+  "immutable": true,
+  "executable_code": false,
+  "nodes": [
+   {
+    "node_id": "fan",
+    "kind": "patch",
+    "generator": "fixture_generator.high_degree_fan",
+    "params": {
+     "n_rim": 200,
+     "radius": 1.0,
+     "height": 0.3
+    },
+    "seed": 1,
+    "parent_ids": []
+   }
+  ],
+  "edges": [],
+  "recipe_hash": "5b746c23526e2c15"
+ },
+ "physical_definition": {
+  "law_id": "constant-gamma-current-area-surface-energy",
+  "law_revision": "ee9effcfbddad8d02e03f71d414b27da177f0656de535eaab0d76ae39796f0b7",
+  "units": {
+   "length": "m",
+   "force": "N",
+   "energy": "J"
+  },
+  "topology": "one triangular fan membrane: 200 rim vertices pinned, 1 free apex, 200 faces",
+  "reference_configuration": "the generator's seeded rest geometry (fixture_generator)",
+  "valid_loads_N": [
+   0.4,
+   0.8,
+   1.2,
+   1.6,
+   2.0
+  ],
+  "valid_scales": [
+   0.5,
+   0.75,
+   1.0,
+   2.0
+  ],
+  "excluded_phenomena": [
+   "loads on pinned vertices (load_on_fixed_vertex)",
+   "loads with zero tension (LOAD_ZERO_TENSION: U unbounded below, no equilibrium exists)",
+   "free seam rings: NO equilibrium under this law (witness (g): step_limit, free residual ~1e0)",
+   "grounded rings: bit-for-bit zero port transfer",
+   "rim-weld chains: impossible; apex welds only"
+  ],
+  "measured_in": [
+   "qualification_receipt_20261016T075038.618903Z.json",
+   "qualification_receipt_20261016T075137.420787Z.json",
+   "composed_qualification_receipt_20261016T075201.116240Z.json",
+   "composed_chain_receipt_20261016T092136.068087Z.json"
+  ],
+  "resolution_validity": {
+   "study_receipt": "scale_resolution_study_checks_20261016T145149.987Z.json",
+   "study_hash": "07c132340b7d7ad29cfe868169d346868795e5036a5ed1fbfc7fc4165f428b34",
+   "grid": {
+    "scales": [
+     0.5,
+     0.75,
+     1.0,
+     1.5,
+     2.0
+    ],
+    "resolutions": [
+     100,
+     150,
+     200,
+     300
+    ]
+   },
+   "in_gate_map": {
+    "0.5": {
+     "100": true,
+     "150": true,
+     "200": true,
+     "300": true
+    },
+    "0.75": {
+     "100": true,
+     "150": true,
+     "200": true,
+     "300": true
+    },
+    "1": {
+     "100": true,
+     "150": true,
+     "200": true,
+     "300": true
+    },
+    "1.5": {
+     "100": true,
+     "150": true,
+     "200": true,
+     "300": true
+    },
+    "2": {
+     "100": true,
+     "150": true,
+     "200": true,
+     "300": true
+    }
+   },
+   "cells_in_gate": 20,
+   "cells_total": 20,
+   "convergence_observable": "apex_z_wu",
+   "tol_u_wu": 1e-06,
+   "finest_successive_resolution_change_wu": 1.1582874135662724e-05,
+   "matched_regime": "n_rim=300 (finest rung) at each scale",
+   "domain_verdict": "bounds stand: every studied (scale, resolution) cell solves in-gate, including 2.0x at every resolution; no domain extension claimed; the n_rim<=300 ladder does not reach tol_u (honest resolution limit)"
+  }
+ },
+ "ports": [
+  {
+   "port_id": "seam-apex",
+   "kind": "input",
+   "patch_geometry": "the free apex vertex (index n_rim)",
+   "local_frame": "vertical axis; +z up, load applied -z",
+   "exchanges": "vertical dead load [N], displacement [m]",
+   "sign_convention": "work W = f.x positive when the load displaces along its own direction",
+   "variables": {
+    "prescribed": "vertical dead load magnitude (|f| <= packet max_force_N 2.0)",
+    "free": "apex displacement (x,y,z)"
+   },
+   "work_accounting": "quasistatic: W_port = stored-energy change along the load ramp (battery check (c))"
+  },
+  {
+   "port_id": "rim-ground",
+   "kind": "output",
+   "patch_geometry": "the 200 pinned rim vertices",
+   "local_frame": "global frame at rest coordinates",
+   "exchanges": "reaction forces [N] at the pins",
+   "sign_convention": "reactions are the pin-APPLIED forces reported by the solver",
+   "variables": {
+    "prescribed": "rim positions (fixed)",
+    "free": "none (grounded)"
+   },
+   "work_accounting": "pins do no work (zero displacement)"
+  }
+ ],
+ "instance_state": {
+  "owner": "piece_record layer (no engine runtime exists yet); recipes are immutable and shared, state is per instance",
+  "instances": [
+   {
+    "instance_id": "piece.patch-equilibrium.instance-1",
+    "state": {
+     "stored_energy_J": 6.274436846,
+     "state_kind": "zero-load rest equilibrium of the star's ground piece"
+    },
+    "state_hash": "2597dface927fe56"
+   }
+  ]
+ },
+ "representations": [
+  {
+   "kind": "direct-reference",
+   "status": "qualified",
+   "receipt_ids": [
+    "qualification_receipt_20261016T075038.618903Z.json",
+    "qualification_receipt_20261016T075137.420787Z.json"
+   ],
+   "note": "the solver itself is the reference representation; three frozen CPU cases + 5-point load sweep, all within the packet thresholds"
+  },
+  {
+   "kind": "table",
+   "status": "rejected_at_gate",
+   "receipt_ids": [
+    "fit_receipt_20261016T075201.333890Z.json",
+    "bounded_fit_checks_20261016T012234.469338Z.json"
+   ],
+   "measured": {
+    "pchip_loo_max_N": 0.00014422663666699073,
+    "linear_loo_max_N": 0.00039416871530697714,
+    "gate_N": 1e-06
+   },
+   "note": "RETAINED FAILURE: bounded knot table REJECTED at the preregistered 1e-6 LOO gate; nothing widened"
+  },
+  {
+   "kind": "learned",
+   "status": "rejected_at_gate",
+   "receipt_ids": [
+    "fit_job_receipt_20261016T075339.472945Z.json"
+   ],
+   "measured": {
+    "validation_max_error_N": 0.03366755675170242,
+    "gate_N": 1e-06,
+    "physically_qualified": false
+   },
+   "note": "RETAINED FAILURE: CPU learned candidate stopped; renaming it cannot erase the failure"
+  }
+ ],
+ "function_card": {
+  "function_label": "",
+  "measured_response_anchors": [
+   {
+    "quantity": "pin reactions vs vertical load magnitude",
+    "measured_in": "qualification_receipt_20261016T075137.420787Z.json",
+    "values": "5 magnitudes per train/validation family, residuals 2.2e-9..1.2e-7 N (all in-gate)"
+   },
+   {
+    "quantity": "stored surface energy at 0.8 N",
+    "measured_in": "composed_chain_receipt_20261016T092136.068087Z.json",
+    "values": "see receipts"
+   }
+  ],
+  "operating_domain": "vertical dead loads 0.4-2.0 N (packet max_force_N); rigid scales 0.5x/0.75x/1.0x/2.0x as measured by the cited composed receipts; rim fully pinned",
+  "costs": {
+   "reference_solve": "~15-19 s CPU mean per case (fit receipt probe)",
+   "table_probe": "23.5 us shadow (unqualified)"
+  },
+  "failures": [
+   "bounded table rejected at LOO gate",
+   "learned candidate rejected (3.37e-2 N)",
+   "1.5x/2.0x assembly scales over the unchanged gate (star topology)"
+  ],
+  "evidence_ids": [
+   "qualification_receipt_20261016T075038.618903Z.json",
+   "qualification_receipt_20261016T075137.420787Z.json",
+   "fit_receipt_20261016T075201.333890Z.json",
+   "fit_job_receipt_20261016T075339.472945Z.json"
+  ],
+  "freshness": {
+   "source_pins": {
+    "tools/membrane_scale_lab/surface_energy_reference.py": "ee9effcfbddad8d02e03f71d414b27da177f0656de535eaab0d76ae39796f0b7",
+    "tools/mechanism_factory/patch_equilibrium.py": "4007e23217ddedc4963b1e92b68f213a20fe402b32da2aef1bffdff8b6e15b40"
+   }
+  }
+ },
+ "fabrication_binding": {
+  "required_material": "constant-gamma membrane; gamma from the pinned lab law [J/m^2]",
+  "required_energy": "none beyond solver CPU (no engine runtime)",
+  "permitted_assembly_ops": [
+   "apex-weld"
+  ],
+  "exclusions": [
+   "free seam rings (witness (g))",
+   "grounded rings (zero transfer)",
+   "rim welds: impossible under the seam law"
+  ],
+  "physical_to_render": "unset: no engine binding exists yet (recorded honestly, not claimed)"
+ },
+ "schema": "chimera-mechanism-factory-piece-record-v1"
+}

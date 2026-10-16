@@ -215,7 +215,20 @@ identity moved.
   398Z` citing the study receipt, the followup and the chain receipt
   (verdict: scale physics, with the numbers above; the gate was
   never widened and 1.5x/2.0x stay honestly unqualified scales for
-  the star topology).
+  the star topology). ADOPTION UPDATE (11.19 solver-v2, supersession
+  with predecessors retained): the star-drift verdict above is
+  REVISED to `machinery_superseded` — under the adopted
+  `patch-equilibrium-solver-v2` the drift cells converge STATIONARY
+  at 1.0336e-13 / 1.9962e-13 N (in-gate), so the 1.45x/2.49x
+  over-gate residuals were the v1 MACHINERY's stagnation floor, not
+  law-level scale physics and not discretization; the study and
+  battery receipts above stand append-only and are revised by
+  `scale_resolution_study_checks_20261016T184725.015Z.json` +
+  `scale_resolution_checks_20261016T184614.025681Z.json` (6/6; new
+  experiment `experiment.star-scale-drift-verdict.20261016T185030.358Z`)
+  and by the adoption record
+  `followup.adoption-solver-v2.20261016T193000.000Z`; the star
+  domain was extended BY MEASUREMENT to [0.75, 1.0, 1.5, 2.0].
 - POST-S1 SUITE RERUN (all green; no pinned-file edits):
   `scale_resolution_checks_20261016T145040.956432Z.json` (6/6 +
   record amendment + research records),
@@ -375,8 +388,110 @@ identity moved.
   `gpu_fit_checks_20261016T105051.453131Z.json` (6/6) +
   `gpu_fit_dryrun_20261016T105052.212501Z.json` (clean), pytest
   `test_workflow_checklist.py` 3 passed over the edited graph.
+- POST-ADOPTION SUITE RERUN (11.19 solver-v2 adoption, coordinator
+  ruling published 912f688f: the v2 candidate IS the pinned solver —
+  `patch_equilibrium.solve_equilibrium` is now
+  `patch-equilibrium-solver-v2`, phase 1 = the former v1 machinery
+  verbatim, phase 2 = Newton-by-FD-diagonal continuation engaged only
+  over the packet's unchanged 1e-6 N law; `solver_candidate.py` kept as
+  the historical candidate record with an adoption pointer). The whole
+  chain was regenerated in dependency order because the solver hash
+  moved: `patch_equilibrium_receipt_20261016T180352.545823Z.json` (6/6,
+  C6 honesty intact), genuine
+  `qualification_receipt_20261016T180445.582336Z.json`, multi-point
+  `qualification_receipt_20261016T180543.963553Z.json`,
+  `composed_patch_receipt_20261016T180557.276658Z.json` (7/7) +
+  `composed_qualification_receipt_20261016T180621.760306Z.json`,
+  `composed_chain_checks_20261016T181251.019867Z.json` (6/6,
+  adapter-PASS) +
+  `composed_chain_qualification_receipt_20261016T180652.327348Z.json`
+  (NEW star scale cases 1.5x/2.0x: STATIONARY 4.230e-14 / 1.054e-13 N —
+  the pre-adoption drift was the v1 machinery's stagnation floor, not
+  law-level physics), pieces `piece_record_checks_20261016T184512.602870Z.json`
+  (6/6; assembly.star-k2 domain extended BY MEASUREMENT to
+  valid_scales [0.75, 1.0, 1.5, 2.0] at valid_loads_N [0.8], citing the
+  new chain receipt; 3.0x and out stay excluded), port
+  `port_solve_checks_20261016T184557.606145Z.json` (6/6), S1
+  `scale_resolution_checks_20261016T184614.025681Z.json` (6/6) +
+  study `scale_resolution_study_checks_20261016T184725.015Z.json`
+  (star-drift verdict now `machinery_superseded`; drift cells
+  1.0336e-13 / 1.9962e-13 N in-gate),
+  `bounded_fit_checks_20261016T185109.749490Z.json` (7/7) +
+  `fit_receipt_20261016T190222.230347Z.json` (same table hash
+  bd2876120ed65f06d175c87edcea4f65a5c90b988669309dc40df7b46c581f3d —
+  the fan labels were law-passing under v1, so phase 1 reproduces them
+  bit-exactly), `fit_job_receipt_20261016T191423.548554Z.json` +
+  checkpoint (validation 3.3668e-02 N, unqualified, unchanged),
+  `gpu_fit_manifest_20261016T190441.979869Z.json` sha256
+  6e9940478cae11789f1cb477f23235448271f07ae147a512d08f278e2318c4ec +
+  `gpu_manifest_receipt_20261016T190441.979933Z.json` +
+  `gpu_fit_dryrun_20261016T190442.212979Z.json` (clean) +
+  `gpu_fit_checks_20261016T190442.690603Z.json` (6/6),
+  `adapter_faults_20261016T190509.160047Z.json` (F0-F13 green),
+  solver comparison POST-adoption
+  `solver_method_comparison_20261016T190912.903350Z.json` (6/6;
+  incumbent = adopted v2 reproduces the REGENERATED receipts, check (f)
+  worst relative 0.0; drift rows stationary in BOTH arms,
+  bit-identical), `research_cycle_checks_20261016T191703.608623Z.json`
+  (7/7), research records `followup.adoption-solver-v2.20261016T193000.000Z`
+  (the adoption record) +
+  `method_comparison.incumbent-vs-v2-candidate.20261016T191459.083Z`
+  (post-adoption validation rerun). Graph:
+  `verifier_inputs` re-pinned for `patch_equilibrium.py`
+  (a0f4b9f9b289ef1eb76d1c903fd1e458979d7da2f8dcd5ef7683efe5898db99c)
+  and the regenerated genuine qualification receipt
+  (2f28df86bbd0d71c5468ebb14a68259c85b20beefdc8c7aa8494a0d9e3435e42);
+  the adapter-verify-committed check now verifies the NEW receipt;
+  pytest `test_workflow_checklist.py` 3 passed.
 
 Stale (retained, do not consume):
+
+- PRE-ADOPTION CHAIN (superseded 2026-10-16 by the 11.19 solver-v2
+  adoption above: the solver hash moved, so every receipt stamped by
+  the pre-adoption bytes is adapter-refused
+  `solver_hash_mismatch:tools/mechanism_factory/patch_equilibrium.py`
+  against current bytes, and the graph's verifier_inputs no longer pin
+  them). Retained in full, predecessors intact:
+  `patch_equilibrium_receipt_20261016T145513.861919Z.json`,
+  `qualification_receipt_20261016T075038.618903Z.json` (genuine) and
+  `qualification_receipt_20261016T075137.420787Z.json` (multi-point),
+  `composed_patch_receipt_20261016T075706.009891Z.json` and
+  `composed_qualification_receipt_20261016T075201.116240Z.json`,
+  `composed_chain_receipt_20261016T092136.068087Z.json` +
+  `composed_chain_checks_20261016T093949.650913Z.json`,
+  `piece_record_checks_20261016T170142.970502Z.json`,
+  `port_solve_checks_20261016T170152.531173Z.json`,
+  `scale_resolution_study_checks_20261016T145149.987Z.json` +
+  `scale_resolution_checks_20261016T154245.714903Z.json` (the S1
+  study whose star-drift verdict `scale_physics` is REVISED by the
+  adoption to `machinery_superseded` — the drift was solver machinery,
+  not scale physics; the study stands append-only),
+  `fit_receipt_20261016T075201.333890Z.json`,
+  `bounded_fit_checks_20261016T170158.490364Z.json`,
+  `fit_job_receipt_20261016T171051.412292Z.json` + checkpoint,
+  `gpu_fit_manifest_20261016T171119.494497Z.json` +
+  `gpu_manifest_receipt_20261016T171119.494503Z.json` +
+  `gpu_fit_dryrun_20261016T171119.946387Z.json` +
+  `gpu_fit_checks_20261016T171119.160073Z.json`,
+  `adapter_faults_20261016T171134.289314Z.json`, the pre-adoption
+  method comparison `solver_method_comparison_20261016T171921.421472Z.json`
+  (the evidence the ruling adopted on; its NOT-ADOPTED verdict is
+  superseded by the ruling) and research records
+  `method_comparison.incumbent-vs-v2-candidate.20261016T172321.471Z.json`
+  and earlier. Retained adoption-round failure receipts (each caught by
+  an append-only law, then fixed):
+  `composed_chain_checks_20261016T180636.034974Z.json` (5/6,
+  `piece_freshness_violated` — the composed_chain.py edit staled the
+  retained star record's source pins; fixed with
+  `piece_record.refresh_source_pins`),
+  `piece_record_checks_20261016T181419.145728Z.json`,
+  `piece_record_checks_20261016T182010.558534Z.json`,
+  `piece_record_checks_20261016T182516.626360Z.json` (5/6,
+  `piece_record_conflict` — the canonical rebuild cited new receipt
+  names / carried new exclusion text vs the retained record; fixed by
+  adopting retained citation histories verbatim and by extending
+  `amend_domain_measurements` with an idempotent
+  excluded_phenomena replacement).
 
 - PRE-BUMP-2 CHAIN (superseded 2026-10-16 by the drift-proof
   verifier_identity doc bump above; the packet digest moved again, so

@@ -5,6 +5,13 @@
 on the FROZEN SUITE, matched budgets, judged by the packet's UNCHANGED
 1e-6 N free-residual law.
 
+POST-ADOPTION RERUN (coordinator ruling, published 912f688f): the v2
+candidate WAS adopted -- patch_equilibrium.solve_equilibrium now IS
+"patch-equilibrium-solver-v2", so the two arms route through the same
+machinery by construction and this battery validates the ADOPTED solver
+against the REGENERATED chain receipts (the incumbent arm must reproduce
+the new receipts, check (f); both arms are bit-identical, check (a)).
+
 THE FROZEN SUITE (every case already qualified in the chain; none
 dropped): the 13 qualification cases (3 genuine + 10 multi-point), the P1
 battery's solve cases (C1 anchor, C2 flat/bump disks, C3 composite, C6
@@ -36,8 +43,9 @@ Checks:
   (f) the suite itself is validated: the incumbent's fresh results
       reproduce the pinned receipts' recorded residuals.
 
-DO NOT ADOPT: no chain regeneration, no pin changes, no piece-record
-edits -- adoption is a separate decision backed by this comparison.
+DO NOT ADOPT (historical, method round): adoption was a separate decision
+-- since taken (ruling 912f688f); this battery now runs POST-adoption and
+validates the adopted incumbent on the regenerated chain.
 
 Run:  python tools/mechanism_factory/solver_candidate_checks.py
       exit 0 = all PASS, 1 = a check failed, 2 = evidence-path refusal.
@@ -72,12 +80,12 @@ import qualification_receipt as qr                   # noqa: E402 CASES
 import research_record as rr                         # noqa: E402 the loop
 
 EVID_DIR = cp.EVID_DIR
-QUAL_RECEIPT = "qualification_receipt_20261016T075038.618903Z.json"
-MULTI_RECEIPT = "qualification_receipt_20261016T075137.420787Z.json"
-P1_RECEIPT = "patch_equilibrium_receipt_20261016T145513.861919Z.json"
-ASM1_RECEIPT = "composed_qualification_receipt_20261016T075201.116240Z.json"
-CHAIN_RECEIPT = "composed_chain_receipt_20261016T092136.068087Z.json"
-STUDY_RECEIPT = "scale_resolution_study_checks_20261016T145149.987Z.json"
+QUAL_RECEIPT = "qualification_receipt_20261016T180445.582336Z.json"
+MULTI_RECEIPT = "qualification_receipt_20261016T180543.963553Z.json"
+P1_RECEIPT = "patch_equilibrium_receipt_20261016T180352.545823Z.json"
+ASM1_RECEIPT = "composed_qualification_receipt_20261016T180621.760306Z.json"
+CHAIN_RECEIPT = "composed_chain_qualification_receipt_20261016T180652.327348Z.json"
+STUDY_RECEIPT = "scale_resolution_study_checks_20261016T184725.015Z.json"
 
 # PREREGISTERED (the packet's law is the judge and does not move)
 ALLOWANCES = {
@@ -556,7 +564,8 @@ def main(argv: list) -> int:
 
     print("\n" + "-" * 100)
     print(f"  {len(ORDER) - failed}/{len(ORDER)} checks PASS. The packet's "
-          f"law is the judge; nothing moved, nothing adopted.")
+          f"law is the judge; the adopted v2 machinery is validated "
+          f"against the regenerated chain.")
 
     drift = {r["case_id"]: {
         "incumbent_N": r["incumbent"]["free_residual_N"],
@@ -637,9 +646,15 @@ def main(argv: list) -> int:
                                               "n200": 1.98e-08,
                                               "n300": 1.26e-08},
             },
-            "adoption": "NOT ADOPTED here: no chain regeneration, no pin "
-                        "changes, no piece-record edits; adoption is a "
-                        "separate decision backed by this comparison",
+                "adoption": "ADOPTED (coordinator ruling, published "
+                            "912f688f): the v2 machinery now IS "
+                            "patch_equilibrium.solve_equilibrium as "
+                            "'patch-equilibrium-solver-v2'; this rerun is "
+                            "the post-adoption validation -- the incumbent "
+                            "arm routes through the adopted machinery, "
+                            "reproduces the REGENERATED chain receipts "
+                            "(check (f)) and stays bit-identical to the "
+                            "candidate arm (check (a))",
         },
     }
     out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -688,8 +703,9 @@ def main(argv: list) -> int:
                           "candidate's reactions are bit-identical (max "
                           f"shift {guard.get('max_reaction_shift_N'):.1e} "
                           "N <= the 1e-9 bound). STAR: the candidate "
-                          "brings 1.5x/2.0x from 1.45e-6/2.49e-6 N "
-                          "(incumbent stagnation) to "
+                          "brings 1.5x/2.0x from the v1 machinery's "
+                          "1.45e-6/2.49e-6 N stagnation (measured in the "
+                          "method round) to "
                           + "; ".join(f"{v['candidate_N']:.2e}"
                                       for v in drift.values())
                           + " N (stationary at the incumbent's own "
@@ -709,18 +725,18 @@ def main(argv: list) -> int:
                                        for r in _ROWS)},
                 "applicability": "the same interface, statuses and "
                                  "refusals; judged by the packet's "
-                                 "unchanged 1e-6 N law; NOT ADOPTED -- "
-                                 "no chain regeneration, no pin changes, "
-                                 "no piece-record edits; adoption comes "
-                                 "back to the coordinator with this "
-                                 "comparison as evidence",
-                "next_questions": ["adopt or not: the candidate beats the "
-                                    "incumbent on the drifted scales with "
-                                    "zero regression -- the adoption "
-                                    "decision is the coordinator's",
-                                    "if adopted: re-run the S1 star drift "
-                                    "block under the candidate to "
-                                    "regenerate the drift finding"],
+                                 "unchanged 1e-6 N law; ADOPTED in the "
+                                 "11.19 adoption round (ruling 912f688f): "
+                                 "the machinery now lives in "
+                                 "patch_equilibrium.solve_equilibrium as "
+                                 "'patch-equilibrium-solver-v2' and the "
+                                 "whole chain was regenerated on it; this "
+                                 "record is the post-adoption validation "
+                                 "of that adoption",
+                "next_questions": ["the piece-level convergence ladder "
+                                    "still does not reach tol_u = 1e-6 wu "
+                                    "-- a DISCRETIZATION limit, a remeshing "
+                                    "question, not a solver one"],
                 "independent_status": "the suite is deterministic; the "
                                       "incumbent's fresh results reproduce "
                                       "the pinned receipts (check (f)); "

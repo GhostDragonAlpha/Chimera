@@ -268,13 +268,16 @@ def _star_drift_verdict(star_cells: list) -> dict:
     by = {(c["scale_m"], c["n_rim"]): c for c in star_cells}
     per_scale = []
     all_refined_in_gate = True
+    all_coarse_in_gate = True
     for s in (1.5, 2.0):
         c200, c300 = by.get((s, 200)), by.get((s, 300))
         if not c200 or not c300:
             all_refined_in_gate = False
+            all_coarse_in_gate = False
             continue
         refined_in = c300["in_gate"]
         all_refined_in_gate = all_refined_in_gate and refined_in
+        all_coarse_in_gate = all_coarse_in_gate and c200["in_gate"]
         per_scale.append({
             "scale_m": s,
             "residual_n200_N": c200["free_residual_N"],
@@ -289,20 +292,34 @@ def _star_drift_verdict(star_cells: list) -> dict:
     return {
         "question": "is the star's 1.5x/2.0x drift over the 1e-6 gate "
                     "discretization or scale physics?",
-        "decision_rule": "discretization iff n_rim=300 refinement brings "
-                         "the residual under 1e-6 N at both scales",
+        "decision_rule": "refined under 1e-6 N at both scales AND the "
+                         "coarse rung also in-gate -> the drift was the "
+                         "SOLVER MACHINERY's floor (superseded by the "
+                         "11.19 v2 adoption); refined in-gate but coarse "
+                         "over -> discretization; refined still over -> "
+                         "scale physics",
         "per_scale": per_scale,
-        "verdict": ("discretization" if all_refined_in_gate
+        "verdict": ("machinery_superseded" if all_refined_in_gate
+                    and all_coarse_in_gate else
+                    "discretization" if all_refined_in_gate
                     else "scale_physics"),
-        "verdict_text": ("refining the resolution does NOT bring the star "
-                         "under the gate (residual moves a few percent and "
-                         "stays over it): the drift is SCALE PHYSICS under "
-                         "this law -- the descent's machine-precision "
-                         "stagnation floor at the larger energy scale -- "
-                         "not a mesh-resolution artifact"
+        "verdict_text": ("refining does NOT bring the star under the gate "
+                         "(residual moves a few percent and stays over "
+                         "it): the drift is SCALE PHYSICS under this law "
+                         "-- the descent's machine-precision stagnation "
+                         "floor at the larger energy scale -- not a "
+                         "mesh-resolution artifact"
                         if not all_refined_in_gate else
-                        "refinement brings the residual under the gate: "
-                        "the drift was discretization"),
+                        ("the coarse rung is ALSO in-gate under the "
+                         "adopted v2 solver: the pre-adoption drift was "
+                         "the SOLVER MACHINERY's stagnation floor (the "
+                         "v1 scalar-preconditioned descent), not a "
+                         "mesh-resolution artifact and not law-level "
+                         "physics; the packet's law was never widened"
+                        ) if all_coarse_in_gate else
+                        "refinement brings the residual under the gate "
+                        "from an over-gate coarse rung: the drift was "
+                        "discretization"),
     }
 
 

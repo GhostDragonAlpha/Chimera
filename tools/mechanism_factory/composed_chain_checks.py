@@ -32,10 +32,12 @@ law) -- the reuse certificate adds no thresholds.
       qualified artifact.
   (f) supported scale at the NEW point 0.75x (resolution untouched, load
       unchanged): converged, balances within the packet's 1e-6 law, seam
-      transfer still real. The measured scale window is recorded as a
-      finding: the star's stagnation residual grows ~linearly with scale
-      and 1.5x/2.0x measure OVER the packet's unchanged 1e-6 gate --
-      reported, never tuned.
+      transfer still real. MEASURED SCALE WINDOW (11.19 solver-v2
+      adoption round): under the ADOPTED v2 solver the whole packet
+      scale axis measures in-gate -- the pre-adoption 1.5x/2.0x drift
+      was the v1 machinery's stagnation floor; the law itself was never
+      widened, and the star's domain is amended by measurement citing
+      this battery's fresh reuse receipt.
 
 Run:  python tools/mechanism_factory/composed_chain_checks.py
       exit 0 = all PASS + adapter PASS on a fresh reuse receipt,
@@ -82,11 +84,12 @@ ALLOWANCES = {
     "new_scale_point": 0.75,            # NEW on the packet's size axis
                                         # (assembly 1 qualified 0.5/2.0);
                                         # measured residual 3.0e-7 N
-    "scale_window_measured": "star stagnation residual ~linear in scale: "
-                             "1.15e-7 (0.5x), 5.9e-7 (1x), 1.11e-6 (1.5x), "
-                             "1.64e-6 (2.0x); 1.5x/2.0x are honestly "
-                             "OVER the packet's unchanged 1e-6 law -- "
-                             "finding, reported not tuned",
+    "scale_window_measured": "under the ADOPTED v2 solver every packet "
+                             "scale measures in-gate (pre-adoption v1: "
+                             "1.15e-7 at 0.5x, 5.9e-7 at 1x, 1.11e-6 at "
+                             "1.5x, 1.64e-6 at 2.0x -- machinery floor, "
+                             "not law physics); the 1e-6 law is unchanged "
+                             "and was never widened",
 }
 EXPECTED_CHECKS = 6
 
@@ -315,10 +318,11 @@ def e_reduction() -> dict:
     "load magnitude unchanged and within the packet's max_force_N) stays "
     "converged with force/moment balance within the packet's preregistered "
     "1e-6 law and keeps the seam transfer real. MEASURED SCALE WINDOW "
-    "(finding, recorded): the star's stagnation residual grows ~linearly "
-    "with scale; 1.5x and 2.0x measure OVER the packet's unchanged gate "
-    "and are recorded as honestly unqualified scales for this topology -- "
-    "reported, not tuned.",
+    "(11.19 solver-v2 adoption round): under the ADOPTED v2 solver the "
+    "whole packet scale axis measures in-gate -- the pre-adoption 1.5x/"
+    "2.0x drift was the v1 machinery's stagnation floor (recorded "
+    "honestly then, revised now by measurement); the law itself was "
+    "never widened.",
     "The new scale point fails to converge, violates the packet's balance "
     "law, changes resolution, or loses the seam transfer.")
 def f_scale() -> dict:
@@ -419,6 +423,35 @@ def main(argv: list) -> int:
         failed += 1
         adapter = {"verified": False, "error": f"{type(ex).__name__}: {ex}"}
         print(f"  -> FAIL (reuse receipt/adapter) {type(ex).__name__}: {ex}")
+
+    # ── 11.19 ADOPTION ROUND: the star's domain is amended BY MEASUREMENT
+    # citing THIS battery's fresh reuse receipt (additive history +
+    # archived prior bytes; idempotent on re-runs). Extension only, and
+    # only on an adapter-PASS receipt: the law's validate() refuses any
+    # claim the cited receipt does not measure in-gate.
+    if not failed and adapter.get("verified"):
+        try:
+            import piece_record as pr
+            pr.amend_domain_measurements(
+                "assembly.star-k2",
+                valid_scales=[0.75, 1.0, 1.5, 2.0], valid_loads_N=[0.8],
+                receipt_name=Path(adapter["receipt"]).name,
+                excluded_phenomena=[
+                    "scales beyond the measured window (3.0x and out): "
+                    "no cited receipt measures them in-gate -- domain "
+                    "drift refused, not tuned (1.5x/2.0x were EXCLUDED "
+                    "under the pre-adoption v1 machinery and were "
+                    "extended by measurement in the 11.19 solver-v2 "
+                    "adoption round; see domain_amendment_history)",
+                    "free seam rings and rim welds (witness (g))",
+                    "loads on pinned vertices",
+                ])
+            print("domain amendment: assembly.star-k2 valid_scales -> "
+                  "[0.75, 1.0, 1.5, 2.0] by measurement (prior bytes "
+                  "archived under pieces/archive/)")
+        except Exception as ex:
+            failed += 1
+            print(f"  -> FAIL (domain amendment) {type(ex).__name__}: {ex}")
 
     print("\n" + "-" * 100)
     print(f"  {len(ORDER) - failed}/{len(ORDER)} checks PASS. Tolerances "

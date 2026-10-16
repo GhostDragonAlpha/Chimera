@@ -63,7 +63,8 @@ EVID_DIR = cp.EVID_DIR
 V2_RECEIPT = "qualification_receipt_20261016T075038.618903Z.json"
 MULTI_RECEIPT = "qualification_receipt_20261016T075137.420787Z.json"
 ASM1_RECEIPT = "composed_qualification_receipt_20261016T075201.116240Z.json"
-CHAIN_RECEIPT = "composed_chain_receipt_20261016T092136.068087Z.json"
+CHAIN_RECEIPT = "composed_chain_qualification_receipt_20261016T180652.327348Z.json"
+CHAIN_RECEIPT_RETAINED = "composed_chain_receipt_20261016T092136.068087Z.json"
 CHAIN_CHECKS = "composed_chain_checks_20261016T093949.650913Z.json"
 FIT_RECEIPT = "fit_receipt_20261016T075201.333890Z.json"
 FIT_JOB_RECEIPT = "fit_job_receipt_20261016T075339.472945Z.json"
@@ -132,7 +133,7 @@ def _record_patch() -> dict:
                 "rim-weld chains: impossible; apex welds only",
             ],
             "measured_in": [V2_RECEIPT, MULTI_RECEIPT, ASM1_RECEIPT,
-                             CHAIN_RECEIPT],
+                             CHAIN_RECEIPT_RETAINED],
         },
         "ports": [
             {"port_id": "seam-apex", "kind": "input",
@@ -198,7 +199,7 @@ def _record_patch() -> dict:
                   "values": "5 magnitudes per train/validation family, "
                             "residuals 2.2e-9..1.2e-7 N (all in-gate)"},
                 {"quantity": "stored surface energy at 0.8 N",
-                  "measured_in": CHAIN_RECEIPT, "values": "see receipts"}],
+                  "measured_in": CHAIN_RECEIPT_RETAINED, "values": "see receipts"}],
             "operating_domain": "vertical dead loads 0.4-2.0 N "
                                  "(packet max_force_N); rigid scales "
                                  "0.5x/0.75x/1.0x/2.0x as measured by the "
@@ -234,18 +235,24 @@ def _record_patch() -> dict:
     # pieces/archive/) are carried forward so this battery's idempotent
     # write matches the retained bytes
     try:
-        retained_pd = pr.load_record("piece.patch-equilibrium")[
-            "physical_definition"]
+        retained_rec = pr.load_record("piece.patch-equilibrium")
+        retained_pd = retained_rec["physical_definition"]
         for k, v in retained_pd.items():
             if k not in rec["physical_definition"]:
                 rec["physical_definition"][k] = v
+        # measured_in is a citation HISTORY: adopt the retained list
+        # verbatim (the retention-time citations stand; the adoption
+        # round's new receipt is already in the retained history)
+        if "measured_in" in retained_pd:
+            rec["physical_definition"]["measured_in"] =                 retained_pd["measured_in"]
+        _merge_retained_freshness(rec, retained_rec)
     except pr.PieceRecordRefused:
         pass                                    # first run: not yet retained
     return rec
 
 
 def _record_law() -> dict:
-    return {
+    rec = {
         "record_id": "law.apex-weld-seam",
         "kind": "law",
         "name": "The apex-weld seam law: hangers weld only at apexes, "
@@ -284,7 +291,7 @@ def _record_law() -> dict:
                 "any solve)",
                 "second ownership claims (SEAM_OWNER_CONFLICT)",
             ],
-            "measured_in": [ASM1_RECEIPT, CHAIN_RECEIPT, CHAIN_CHECKS],
+            "measured_in": [ASM1_RECEIPT, CHAIN_RECEIPT_RETAINED, CHAIN_CHECKS],
         },
         "ports": [
             {"port_id": "weld-interface", "kind": "input",
@@ -312,7 +319,7 @@ def _record_law() -> dict:
         },
         "representations": [
             {"kind": "direct-reference", "status": "qualified",
-             "receipt_ids": [ASM1_RECEIPT, CHAIN_RECEIPT, CHAIN_CHECKS],
+             "receipt_ids": [ASM1_RECEIPT, CHAIN_RECEIPT_RETAINED, CHAIN_CHECKS],
              "note": "qualified twice: assembly 1 (0.5x/1.0x/2.0x) and "
                      "the byte-identical-reuse star (1.0x/0.75x)"},
         ],
@@ -328,7 +335,7 @@ def _record_law() -> dict:
                                "extra solve cost"},
             "failures": ["rim-weld chains: structurally impossible "
                          "(witness (g), recorded in composed receipts)"],
-            "evidence_ids": [ASM1_RECEIPT, CHAIN_RECEIPT, CHAIN_CHECKS],
+            "evidence_ids": [ASM1_RECEIPT, CHAIN_RECEIPT_RETAINED, CHAIN_CHECKS],
             "freshness": {"source_pins": _pins(
                 "tools/mechanism_factory/composed_patch.py",
                 "tools/mechanism_factory/composed_chain.py")},
@@ -342,6 +349,17 @@ def _record_law() -> dict:
             "physical_to_render": "unset: no engine binding exists yet",
         },
     }
+    return _record_law_merge_retained(rec)
+
+
+def _record_law_merge_retained(rec: dict) -> dict:
+    """The law record's retained freshness extras (the 11.19 adoption
+    re-pinning) carried into the canonical rebuild."""
+    try:
+        _merge_retained_freshness(rec, pr.load_record("law.apex-weld-seam"))
+    except pr.PieceRecordRefused:
+        pass                                    # first run: not yet retained
+    return rec
 
 
 def _record_star() -> dict:
@@ -387,14 +405,17 @@ def _record_star() -> dict:
                                         "reuse of assembly 1's A and B "
                                         "blocks, hashed by reuse check (a))",
             "valid_loads_N": [0.8],
-            "valid_scales": [0.75, 1.0],
+            "valid_scales": [0.75, 1.0, 1.5, 2.0],
             "excluded_phenomena": [
-                "scales 1.5x/2.0x for THIS topology: measured OVER the "
-                "packet's unchanged 1e-6 gate (1.11e-6 / 1.64e-6 N) -- "
-                "domain drift recorded, not tuned",
+                "scales beyond the measured window (3.0x and out): no "
+                "cited receipt measures them in-gate -- domain drift "
+                "refused, not tuned (1.5x/2.0x were EXCLUDED under the "
+                "pre-adoption v1 machinery and were extended by "
+                "measurement in the 11.19 solver-v2 adoption round; see "
+                "domain_amendment_history)",
                 "free seam rings and rim welds (witness (g))",
                 "loads on pinned vertices"],
-            "measured_in": [CHAIN_RECEIPT, CHAIN_CHECKS],
+            "measured_in": [CHAIN_RECEIPT_RETAINED, CHAIN_CHECKS],
             "reuse_lineage": [ASM1_RECEIPT],
         },
         "ports": [
@@ -445,7 +466,7 @@ def _record_star() -> dict:
         },
         "representations": [
             {"kind": "direct-reference", "status": "qualified",
-             "receipt_ids": [CHAIN_RECEIPT, CHAIN_CHECKS],
+             "receipt_ids": [CHAIN_RECEIPT_RETAINED, CHAIN_CHECKS],
              "note": "ONE solve_equilibrium per scale; 6/6 reuse battery; "
                      "adapter PASS under the unchanged composed-v1 "
                      "schema"},
@@ -469,7 +490,7 @@ def _record_star() -> dict:
                   "values": "block margin 0.488; port nets 0.922 / 0.737 "
                              "N at 1.0x"},
                 {"quantity": "coupled balance",
-                  "measured_in": CHAIN_RECEIPT,
+                  "measured_in": CHAIN_RECEIPT_RETAINED,
                   "values": "free residual 7.32e-7 N <= the packet's "
                              "unchanged 1e-6 law at 1.0x; 3.36e-7 at "
                              "0.75x"}],
@@ -481,7 +502,7 @@ def _record_star() -> dict:
             "failures": ["scale drift at 1.5x/2.0x (over the gate)",
                           "rim-weld chain alternatives impossible "
                           "(witness (g))"],
-            "evidence_ids": [CHAIN_RECEIPT, CHAIN_CHECKS, FIT_RECEIPT,
+            "evidence_ids": [CHAIN_RECEIPT_RETAINED, CHAIN_CHECKS, FIT_RECEIPT,
                               FIT_JOB_RECEIPT],
             "freshness": {"source_pins": _pins(
                 "tools/mechanism_factory/composed_chain.py",
@@ -506,9 +527,32 @@ def _record_star() -> dict:
         for r in retained["representations"]:
             if r["kind"] not in {x["kind"] for x in rec["representations"]}:
                 rec["representations"].append(r)
+        # additive physical_definition amendments carried forward (e.g.
+        # domain_amendment_history from the adoption round's
+        # piece_record.amend_domain_measurements), plus the UNION of the
+        # measured_in receipt lists (the history cites the FIRST receipt;
+        # this battery cites the regenerated one)
+        rpd = retained["physical_definition"]
+        for k, v in rpd.items():
+            if k not in rec["physical_definition"]:
+                rec["physical_definition"][k] = v
+        if "measured_in" in rpd:
+            rec["physical_definition"]["measured_in"] = rpd["measured_in"]
+        _merge_retained_freshness(rec, retained)
     except pr.PieceRecordRefused:
         pass                                    # first run: not yet retained
     return rec
+
+
+def _merge_retained_freshness(rec: dict, retained: dict) -> None:
+    """Carry the retained freshness card's refresh extras (refreshed_utc,
+    refresh_reason, and any re-pinned source pins) into the battery's
+    canonical rebuild so the idempotent write matches the retained bytes
+    (the 11.19 adoption round re-pinned all three records)."""
+    rf = retained.get("function_card", {}).get("freshness", {}) or {}
+    cf = rec["function_card"].setdefault("freshness", {})
+    for k, v in rf.items():
+        cf.setdefault(k, v)
 
 
 def _state_hashes_fill(*records: dict) -> None:
@@ -559,9 +603,11 @@ def a_completeness() -> dict:
     "b_evidence_links_and_domain_match",
     "Every receipt id in the three records resolves to a real file, AND "
     "the domain claims are covered by IN-GATE measured cases in the "
-    "cited receipts: the star's valid scales are exactly {0.75, 1.0}; a "
-    "copy claiming 1.5x/2.0x is refused piece_domain_unmeasured because "
-    "the chain receipt records the scale drift OVER the gate there.",
+    "cited receipts: the star's valid scales are exactly {0.75, 1.0, "
+    "1.5, 2.0} (extended by measurement in the 11.19 solver-v2 adoption "
+    "round, citing the new chain receipt); a copy claiming 3.0x -- "
+    "which NO cited receipt measures -- is refused "
+    "piece_domain_unmeasured: domain drift is still caught.",
     "A receipt id dangles, a domain claim exceeds what the cited "
     "receipts measured in-gate, or the refusal fires for the wrong "
     "reason.")
@@ -583,6 +629,9 @@ def b_evidence_and_domain() -> dict:
     # domain-match assertion runs against the primary receipt while the
     # record-layer coverage law (claims <= measured over ALL cited
     # receipts) stays in piece_record.validate
+    # the star's PRIMARY domain receipt is the regenerated chain
+    # qualification receipt (it carries the measured 4-scale window,
+    # including the adoption round's 1.5x/2.0x extension)
     scales_s, _ = pr.measured_domain([pr.EVID_ROOT / CHAIN_RECEIPT])
     domain_match = (
         set(patch["physical_definition"]["valid_scales"]) == scales_p
@@ -591,7 +640,8 @@ def b_evidence_and_domain() -> dict:
         and set(star["physical_definition"]["valid_loads_N"]) <= loads_s
         and set(patch["physical_definition"]["valid_loads_N"]) <= loads_p)
     forged = copy.deepcopy(star)
-    forged["physical_definition"]["valid_scales"] = [0.75, 1.0, 1.5, 2.0]
+    forged["physical_definition"]["valid_scales"] = [0.75, 1.0, 1.5, 2.0,
+                                                      3.0]
     reason = _refused(forged)
     ok = bool(not dangling and domain_match
               and reason == "piece_domain_unmeasured")

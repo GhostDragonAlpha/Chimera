@@ -1,0 +1,14 @@
+{
+ "record_id": "proposal.allocation-1.20261016T191704.204Z",
+ "kind": "proposal",
+ "question": "explore the scale-drift question with ONE bounded experiment",
+ "parent_evidence_ids": [
+  "composed_chain_qualification_receipt_20261016T180652.327348Z.json"
+ ],
+ "budget": {
+  "allocated": 1,
+  "consumed": 0
+ },
+ "schema": "chimera-mechanism-factory-research-record-v1",
+ "utc": "2026-10-16T19:17:04.259692+00:00"
+}

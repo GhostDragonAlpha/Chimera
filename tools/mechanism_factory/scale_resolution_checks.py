@@ -15,18 +15,19 @@ the piece record carries the measured resolution validity map.
       NOT reach tol_u = 1e-6 wu (finest dz = 11.6x tol_u).
   (b) SCALE TRANSFER vs REMESHING: on the piece, the scale (physics)
       component at 2.0x is 6591x tol_u vs a remeshing component of 12x
-      tol_u (physics/remeshing = 567x); on the star, refining resolution
-      n200->n300 moves the drifted residuals by only 1.3%/3.4% and leaves
-      them OVER the packet's 1e-6 gate (1.45x/2.49x) -> the star's 1.5x/
-      2.0x drift is SCALE PHYSICS under this law, not discretization.
+      tol_u (physics/remeshing = 567x); on the star (11.19 v2 adoption
+      round): under the ADOPTED v2 solver BOTH rungs measure in-gate at
+      1.5x/2.0x -- the pre-adoption drift was the v1 MACHINERY's
+      stagnation floor (machinery_superseded), the law never widened.
   (c) deliberately unmatched regime: n_rim=100 at 1.0x and 2.0x misstates
       the apex response by ~7.4e-5 wu = 74x tol_u vs matched n_rim=300;
       recorded, never hidden.
   (d) cost: mean wall time per cell rises monotonically with resolution
       (throughput table for S2 planning).
   (e) honesty: every grid cell (20) and every star drift cell (4) is
-      recorded with status/residual/wall -- none dropped, including the
-      star's over-gate stagnations.
+      recorded with status/residual/wall -- none dropped (under the
+      adopted v2 solver the star drift cells measure in-gate; the
+      pre-adoption over-gate run is retained in history).
   (f) determinism: the same grid run twice -> the same study hash.
 
 Run:  python tools/mechanism_factory/scale_resolution_checks.py
@@ -110,14 +111,17 @@ def a_convergence() -> dict:
 @port_test(
     "b_scale_transfer_vs_remeshing",
     "Scale transfer is distinguished from remeshing with numbers: on the "
-    "piece the 2.0x physics component is 6591x tol_u vs a 12x-tol_u "
-    "remeshing component; on the star, refining resolution 200->300 at "
-    "1.5x/2.0x moves the over-gate residual by only a few percent and "
-    "NEVER under the 1e-6 gate -> the drift is SCALE PHYSICS, not "
-    "discretization.",
-    "Refining resolution brings the star under the gate (that would be "
-    "discretization and the verdict must flip), or the physics component "
-    "does not dominate remeshing at 2.0x.")
+    "piece the 2.0x physics component dominates the remeshing component "
+    "by hundreds (measured 567x, unchanged by the solver). On the star "
+    "(11.19 v2 adoption round): under the ADOPTED v2 solver BOTH "
+    "resolutions measure in-gate at 1.5x/2.0x and the study's verdict "
+    "rule records machinery_superseded -- the pre-adoption drift was the "
+    "v1 machinery's stagnation floor, not discretization and not "
+    "law-level physics.",
+    "The star's drift cells fail the packet's unchanged 1e-6 law under "
+    "the adopted solver, the verdict rule is not derived from the "
+    "measured flags, or the physics component does not dominate "
+    "remeshing at 2.0x.")
 def b_scale_transfer() -> dict:
     study = _STUDY
     tr = {r["scale_m"]: r for r in study["scale_transfer_vs_remeshing"]}
@@ -125,11 +129,10 @@ def b_scale_transfer() -> dict:
     physics_dominates = (two["physics_over_remeshing"]
                          >= ALLOWANCES["physics_over_mesh_min_2x"])
     verdict = study["star_drift_verdict"]
-    ok = bool(verdict["verdict"] == "scale_physics" and physics_dominates
-              and all(ps_["refinement_change_pct"]
-                      <= ALLOWANCES["star_refinement_change_max_pct"]
-                      and not ps_["refined_in_gate"]
-                      for ps_ in verdict["per_scale"]))
+    ok = bool(verdict["verdict"] == "machinery_superseded"
+              and physics_dominates
+              and all(ps_["refined_in_gate"] and ps_["over_gate_x_at_n300"]
+                      <= 1.0 for ps_ in verdict["per_scale"]))
     return {"pass": ok,
             "measured": {"piece_2x_physics_x_tol_u":
                              two["physics_x_tol_u"],
@@ -215,10 +218,12 @@ def e_honesty() -> dict:
         for c in star)
     in_gate_n = sum(1 for c in cells if c["in_gate"])
     over_gate_star = [c for c in star if not c["in_gate"]]
-    # ALL star drift cells (both resolutions at 1.5x and 2.0x) sit over
-    # the gate -- that is exactly the drift finding; all are retained
+    # every star drift cell is recorded with its measured flags; under
+    # the ADOPTED v2 solver all four measure IN-gate (the pre-adoption
+    # over-gate drift is superseded), and none is dropped either way
     ok = bool(len(cells) == 20 and got == full_grid and keys_ok
-              and star_ok and len(over_gate_star) == len(sr.STAR_DRIFT_CELLS))
+              and star_ok
+              and all(c["in_gate"] for c in star))
     return {"pass": ok,
             "measured": {"cells_recorded": len(cells),
                           "grid_complete": got == full_grid,

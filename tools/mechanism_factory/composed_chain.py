@@ -38,13 +38,18 @@ PIECES:
      r_C(z) = 0.5*(z-0.3)/0.25 < 0.8*(z-0.3)/0.3 = r_B(z) for z in (0.3,
      0.55]).
 
-MEASURED SCALE WINDOW (finding, reported not tuned): the three-film star's
-stagnation residual grows ~linearly with the physical scale (1.15e-7 at
-0.5x, 5.9e-7 at 1x, 1.11e-6 at 1.5x, 1.64e-6 at 2.0x -- the packet's
-preregistered 1e-6 law unchanged), so the star's supported window on the
-packet's size axis is ~[0.5, 1.5]. Assembly 2 qualifies at 1.0 and at the
-NEW point 0.75 (residual 3.0e-7); 1.5x is recorded as honestly over the
-gate, never tuned.
+MEASURED SCALE WINDOW (finding, reported not tuned; PRE-ADOPTION text
+retained for history): the three-film star's stagnation residual grows
+~linearly with the physical scale (1.15e-7 at 0.5x, 5.9e-7 at 1x, 1.11e-6
+at 1.5x, 1.64e-6 at 2.0x under the pre-adoption v1 machinery -- the
+packet's preregistered 1e-6 law unchanged), so under v1 the star's
+supported window on the packet's size axis was ~[0.5, 1.0]. ADOPTION
+UPDATE (11.19, solver v2): under the adopted solver the 1.5x/2.0x
+stagnation floors were MACHINERY, not law-level physics -- phase 2
+continuation brings both to ~1e-13 N (stationary), so the star's
+supported scales extend to the full measured window with the law
+unchanged (see the new chain receipt and assembly.star-k2's domain
+amendment).
 
 RECEIPT: schema chimera-mechanism-factory-composed-qualification-v1 -- the
 VERSIONED schema the adapter already accepts explicitly (no adapter change,
@@ -93,9 +98,14 @@ HASHED_SOURCES = list(cp.HASHED_SOURCES) + [
 # ── frozen assembly-2 parameters (before any run) ───────────────────────────
 PIECE_C = {"n_rim": 200, "radius": 0.5, "height": 0.25, "seed": 3}
 SEAM_LOAD_N = cp.SEAM_LOAD_N            # input port: same port law (0.8 N)
-SUPPORTED_SCALES = (1.0, 0.75)          # 0.75 = NEW scale point (assembly 1
-                                        # qualified 0.5/2.0; see the measured
-                                        # scale-window finding above)
+SUPPORTED_SCALES = (1.0, 0.75, 1.5, 2.0)  # 0.75 = NEW scale point (assembly
+                                          # 1 qualified 0.5/2.0); 1.5/2.0
+                                          # EXTENDED BY MEASUREMENT in the
+                                          # 11.19 solver-v2 adoption round
+                                          # (under the adopted solver the
+                                          # star solves in-gate at every
+                                          # packet scale; see the new chain
+                                          # receipt and the domain amendment)
 MAX_STEPS = cp.MAX_STEPS
 
 
@@ -244,10 +254,11 @@ def reduction_case() -> dict:
 
 
 def scale_window_probe() -> list:
-    """The measured supported-scale window (finding): stagnation residuals
-    across the packet's size axis; 1.5x and 2.0x exceed the packet's 1e-6
-    law and are recorded as honestly unqualified scales for THIS topology
-    (the gate is never widened)."""
+    """The measured supported-scale window (finding): free residuals
+    across the packet's size axis judged by the packet's unchanged 1e-6
+    law. Under the ADOPTED v2 solver every scale measures in-gate (the
+    pre-adoption 1.5x/2.0x drift was the v1 machinery's stagnation
+    floor; the gate itself was never widened)."""
     rows = []
     for s in (0.5, 0.75, 1.0, 1.5, 2.0):
         star = build_star(scale=s)
@@ -337,13 +348,15 @@ def composition_record() -> dict:
                   "output": "reactions at piece C's far rim pins (distinct "
                             "from assembly 1's B far rim)"},
         "supported_scales_m": list(SUPPORTED_SCALES),
-        "scale_window_finding": "the star's stagnation residual grows "
-                                "~linearly with scale (1.15e-7 at 0.5x, "
-                                "1.11e-6 at 1.5x, 1.64e-6 at 2.0x); within "
-                                "the packet's UNCHANGED 1e-6 law the star "
-                                "qualifies at 1.0 and the NEW 0.75; 1.5x "
-                                "and 2.0x are recorded as honestly "
-                                "over-gate for this topology",
+        "scale_window_finding": "under the ADOPTED v2 solver every "
+                                "packet scale measures in-gate: the "
+                                "pre-adoption 1.5x/2.0x over-gate drift "
+                                "(1.11e-6 at 1.5x, 1.64e-6 at 2.0x under "
+                                "the v1 machinery) was the v1 machinery's "
+                                "machine-scale stagnation floor, not a "
+                                "law-level impossibility; the packet's "
+                                "1e-6 law is unchanged and was never "
+                                "widened",
         "reduction": "removing C leaves a mesh byte-identical to assembly 1 "
                      "(hashed) whose solve reproduces assembly 1's energy "
                      "exactly (check (e))",

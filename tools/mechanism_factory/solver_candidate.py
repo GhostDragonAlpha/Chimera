@@ -2,6 +2,15 @@
 ("patch-equilibrium-solver-v2-candidate", mechanism factory, 11.19 method
 improvement round judged the §13.1/11.19 way).
 
+ADOPTION POINTER (coordinator ruling, published 912f688f): this
+candidate was ADOPTED -- its machinery now LIVES in
+patch_equilibrium.solve_equilibrium as "patch-equilibrium-solver-v2"
+(phase 1 = the v1 machinery verbatim on law-passing terminations,
+phase 2 = the Newton-by-FD-diagonal continuation). THIS FILE IS KEPT
+UNCHANGED as the historical candidate record; calling its
+solve_equilibrium now routes through the adopted v2 (its phase 1 calls
+the promoted solver), so it measures the same physics.
+
 WHAT THE EVIDENCE SUPPORTS (the choice, documented):
 The S1 scale-resolution study measured the incumbent's stagnation floor on
 large-scale loaded solves: the star at 1.5x/2.0x stagnates at 1.45e-6 /

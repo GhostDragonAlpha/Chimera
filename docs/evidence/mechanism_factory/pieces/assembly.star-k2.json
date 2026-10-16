@@ -85,19 +85,91 @@
   ],
   "valid_scales": [
    0.75,
-   1.0
+   1.0,
+   1.5,
+   2.0
   ],
   "excluded_phenomena": [
-   "scales 1.5x/2.0x for THIS topology: measured OVER the packet's unchanged 1e-6 gate (1.11e-6 / 1.64e-6 N) -- domain drift recorded, not tuned",
+   "scales beyond the measured window (3.0x and out): no cited receipt measures them in-gate -- domain drift refused, not tuned (1.5x/2.0x were EXCLUDED under the pre-adoption v1 machinery and were extended by measurement in the 11.19 solver-v2 adoption round; see domain_amendment_history)",
    "free seam rings and rim welds (witness (g))",
    "loads on pinned vertices"
   ],
   "measured_in": [
    "composed_chain_receipt_20261016T092136.068087Z.json",
-   "composed_chain_checks_20261016T093949.650913Z.json"
+   "composed_chain_checks_20261016T093949.650913Z.json",
+   "composed_chain_qualification_receipt_20261016T180652.327348Z.json"
   ],
   "reuse_lineage": [
    "composed_qualification_receipt_20261016T075201.116240Z.json"
+  ],
+  "domain_amendment_history": [
+   {
+    "utc": "2026-10-16T18:11:07.602061+00:00",
+    "receipt": "composed_chain_qualification_receipt_20261016T180652.327348Z.json",
+    "prior_valid_scales": [
+     0.75,
+     1.0
+    ],
+    "prior_valid_loads_N": [
+     0.8
+    ],
+    "new_valid_scales": [
+     0.75,
+     1.0,
+     1.5,
+     2.0
+    ],
+    "new_valid_loads_N": [
+     0.8
+    ],
+    "reason": "domain extension by measurement (11.19 solver-v2 adoption round; the extension is covered by in-gate measured cases in the cited receipt)"
+   },
+   {
+    "utc": "2026-10-16T18:28:29.143802+00:00",
+    "receipt": "composed_chain_qualification_receipt_20261016T180652.327348Z.json",
+    "prior_valid_scales": [
+     0.75,
+     1.0,
+     1.5,
+     2.0
+    ],
+    "prior_valid_loads_N": [
+     0.8
+    ],
+    "new_valid_scales": [
+     0.75,
+     1.0,
+     1.5,
+     2.0
+    ],
+    "new_valid_loads_N": [
+     0.8
+    ],
+    "reason": "domain extension by measurement (11.19 solver-v2 adoption round; the extension is covered by in-gate measured cases in the cited receipt)"
+   },
+   {
+    "utc": "2026-10-16T18:45:11.618961+00:00",
+    "receipt": "composed_chain_qualification_receipt_20261016T180652.327348Z.json",
+    "prior_valid_scales": [
+     0.75,
+     1.0,
+     1.5,
+     2.0
+    ],
+    "prior_valid_loads_N": [
+     0.8
+    ],
+    "new_valid_scales": [
+     0.75,
+     1.0,
+     1.5,
+     2.0
+    ],
+    "new_valid_loads_N": [
+     0.8
+    ],
+    "reason": "domain extension by measurement (11.19 solver-v2 adoption round; the extension is covered by in-gate measured cases in the cited receipt)"
+   }
   ]
  },
  "ports": [
@@ -246,10 +318,12 @@
   ],
   "freshness": {
    "source_pins": {
-    "tools/mechanism_factory/composed_chain.py": "67a274fe611807d5793e8d5a1590ec89d29dc14de8c6b3ca087015b77464b7b5",
+    "tools/mechanism_factory/composed_chain.py": "c3c0ae0a40b3ba0480ea0466e4fda34193871966e08d394b0e2f8c4839cea084",
     "tools/mechanism_factory/composed_patch.py": "12d4c08b9fcc1b7b294b1cfd2c522af27b664e486e42c91e28f2e97b9d37d662",
     "tools/membrane_scale_lab/surface_energy_reference.py": "ee9effcfbddad8d02e03f71d414b27da177f0656de535eaab0d76ae39796f0b7"
-   }
+   },
+   "refreshed_utc": "2026-10-16T18:11:06.901032+00:00",
+   "refresh_reason": "11.19 solver-v2 adoption: pinned sources patch_equilibrium.py (v2 machinery promoted) and composed_chain.py (measured scale extension) changed; re-pinned to current bytes"
   }
  },
  "fabrication_binding": {

@@ -40,6 +40,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+from datetime import datetime, timezone
 from pathlib import Path
 
 _HERE = Path(__file__).resolve().parent            # tools/mechanism_factory
@@ -379,6 +380,104 @@ def load_record(record_id: str) -> dict:
     if not p.is_file():
         raise PieceRecordRefused("piece_record_missing", record_id)
     return json.loads(p.read_text(encoding="utf-8"))
+
+
+def refresh_source_pins(record_id: str, reason: str) -> Path:
+    """FRESHNESS REFRESH (adoption rounds): the freshness law requires
+    every function-card source pin to match the CURRENT bytes of the
+    pinned file; when a pinned source legitimately changes (e.g. the
+    11.19 solver-v2 adoption promoted new machinery into a pinned
+    module), the record is re-pinned to the fresh bytes -- prior bytes
+    archived, the refresh recorded on the freshness card. Idempotent
+    when the pins already match. validate() runs, so a stale pin can
+    never pass silently and an unrelated change cannot hide."""
+    rec = load_record(record_id)
+    path = PIECES_DIR / f"{record_id}.json"
+    fc = rec["function_card"]
+    pins = (fc.get("freshness") or {}).get("source_pins", {})
+    fresh = {rel: _sha256_file(_REPO / rel) for rel in pins}
+    if fresh == pins:
+        return path                        # pins already current
+    prior_bytes = path.read_bytes()
+    amended = json.loads(json.dumps(rec))
+    afc = amended["function_card"]
+    afc["freshness"]["source_pins"] = fresh
+    afc["freshness"]["refreshed_utc"] = datetime.now(
+        timezone.utc).isoformat()
+    afc["freshness"]["refresh_reason"] = reason
+    validate(amended)
+    stamp = hashlib.sha256(prior_bytes).hexdigest()[:16]
+    archive = PIECES_DIR / "archive" / f"{record_id}.{stamp}.json"
+    archive.parent.mkdir(parents=True, exist_ok=True)
+    if not archive.exists():
+        archive.write_bytes(prior_bytes)
+    path.write_text(json.dumps(amended, indent=1, default=str) + "\n",
+                    encoding="utf-8")
+    return path
+
+
+def amend_domain_measurements(record_id: str, valid_scales, valid_loads_N,
+                              receipt_name: str,
+                              excluded_phenomena=None) -> Path:
+    """DOMAIN RE-MEASUREMENT amendment (11.19 adoption round): update the
+    measured domain claims (valid_scales / valid_loads_N) of a retained
+    record to a NEWLY measured domain, citing the receipt that carries
+    the new in-gate cases. The PRIOR bytes are archived under
+    pieces/archive/ and the prior claims are retained in
+    physical_definition.domain_amendment_history (append-only evidence
+    stays intact; nothing is silently clobbered). Idempotent: if the
+    claims already match AND the receipt is already cited, the retained
+    record is returned unchanged. validate() still runs -- a claim not
+    covered by an in-gate measured case in the cited receipts is refused
+    (piece_domain_unmeasured), so this law cannot invent domain."""
+    rec = load_record(record_id)
+    path = PIECES_DIR / f"{record_id}.json"
+    pd = rec["physical_definition"]
+    new_scales = [float(s) for s in valid_scales]
+    new_loads = [float(s) for s in valid_loads_N]
+    hist = pd.get("domain_amendment_history", [])
+    already = (pd.get("valid_scales") == new_scales
+               and pd.get("valid_loads_N") == new_loads
+               and (excluded_phenomena is None
+                    or pd.get("excluded_phenomena")
+                    == [str(x) for x in excluded_phenomena]))
+    if already:
+        return path             # claims already match: idempotent no-op
+                                # (the history entry keeps the FIRST
+                                # citation; later receipts measuring the
+                                # same domain add nothing)
+    prior_bytes = path.read_bytes()
+    amended = json.loads(json.dumps(rec))     # deep copy
+    apd = amended["physical_definition"]
+    apd.setdefault("domain_amendment_history", hist).append({
+        "utc": datetime.now(timezone.utc).isoformat(),
+        "receipt": receipt_name,
+        "prior_valid_scales": apd.get("valid_scales"),
+        "prior_valid_loads_N": apd.get("valid_loads_N"),
+        "new_valid_scales": new_scales,
+        "new_valid_loads_N": new_loads,
+        "reason": "domain extension by measurement (11.19 solver-v2 "
+                  "adoption round; the extension is covered by in-gate "
+                  "measured cases in the cited receipt)",
+    })
+    apd["valid_scales"] = new_scales
+    apd["valid_loads_N"] = new_loads
+    if excluded_phenomena is not None:
+        # the adoption may REVOKE a pre-adoption exclusion (e.g. "1.5x/
+        # 2.0x measured over the gate") -- the prior list is retained in
+        # the amendment history and the prior bytes are archived
+        apd["excluded_phenomena"] = [str(x) for x in excluded_phenomena]
+    if receipt_name not in apd.get("measured_in", []):
+        apd["measured_in"] = list(apd.get("measured_in", [])) + [receipt_name]
+    validate(amended)
+    stamp = hashlib.sha256(prior_bytes).hexdigest()[:16]
+    archive = PIECES_DIR / "archive" / f"{record_id}.{stamp}.json"
+    archive.parent.mkdir(parents=True, exist_ok=True)
+    if not archive.exists():
+        archive.write_bytes(prior_bytes)
+    path.write_text(json.dumps(amended, indent=1, default=str) + "\n",
+                    encoding="utf-8")
+    return path
 
 
 def amend_representations(record_id: str, entry: dict) -> Path:

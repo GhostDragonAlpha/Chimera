@@ -1,0 +1,29 @@
+{
+ "record_id": "method_comparison.incumbent-vs-v2-candidate.20261016T191459.083Z",
+ "kind": "method_comparison",
+ "question": "can better convergence machinery bring the star's 1.5x/2.0x residuals under the packet's unchanged 1e-6 N law, and does the piece ladder reach tol_u -- with converged answers unchanged?",
+ "parent_evidence_ids": [
+  "solver_method_comparison_20261016T190912.903350Z.json",
+  "composed_chain_qualification_receipt_20261016T180652.327348Z.json",
+  "scale_resolution_study_checks_20261016T184725.015Z.json",
+  "composed_qualification_receipt_20261016T180621.760306Z.json",
+  "experiment.star-scale-drift-verdict.20261016T185030.358Z.json"
+ ],
+ "alternatives": [
+  "incumbent (pinned): scalar P=1/gamma_max gradient descent, energy-scale stagnation trigger",
+  "candidate (patch-equilibrium-solver-v2-candidate): incumbent verbatim on law-passing terminations; Newton-by-FD-diagonal continuation on the FREE vertices with restart-on-stall, an energy guard at the incumbent's own machine-scale noise constant and residual-nonincrease acceptance"
+ ],
+ "experiment_identity": "frozen suite, 31 cases (13 qualification + 6 P1 + 2 composed + 2 star + 5 S1 matched + 2 star-drift + 1 C6 control), matched budgets (same max_steps and wall cap per case)",
+ "result": "regression guard: on every law-passing case (29) the candidate's reactions are bit-identical (max shift 0.0e+00 N <= the 1e-9 bound). STAR: the candidate brings 1.5x/2.0x from the v1 machinery's 1.45e-6/2.49e-6 N stagnation (measured in the method round) to 1.03e-13; 2.00e-13 N (stationary at the incumbent's own residual scale) -- UNDER the unchanged law; the drift was the incumbent solver's machinery floor, not a law-level impossibility. LADDER: does NOT reach tol_u -- the gap is discretization (forced tightening shifts apex_z ~1e-8 wu, three orders below the finest dz). NO-EQUILIBRIUM HONESTY: the overload and partial-rim witnesses stay honestly over the law (budget-exhausted, bit-identical).",
+ "cost": {
+  "kind": "cpu_wall_s",
+  "value": 313.12467870004184
+ },
+ "applicability": "the same interface, statuses and refusals; judged by the packet's unchanged 1e-6 N law; ADOPTED in the 11.19 adoption round (ruling 912f688f): the machinery now lives in patch_equilibrium.solve_equilibrium as 'patch-equilibrium-solver-v2' and the whole chain was regenerated on it; this record is the post-adoption validation of that adoption",
+ "next_questions": [
+  "the piece-level convergence ladder still does not reach tol_u = 1e-6 wu -- a DISCRETIZATION limit, a remeshing question, not a solver one"
+ ],
+ "independent_status": "the suite is deterministic; the incumbent's fresh results reproduce the pinned receipts (check (f)); the candidate's results are hash-verified (check (e))",
+ "schema": "chimera-mechanism-factory-research-record-v1",
+ "utc": "2026-10-16T19:14:59.651650+00:00"
+}

@@ -603154,7 +603154,7 @@
      "source.document.d6cb2b9eb7f122cba9a090d3fb62156e6d7c8baa4006f92d7280eff28d0ba971.0a1bfc28e94a5af9c24eb19128ee54bbcaccc9dc1425c21c57869547cbb39b87"
     ],
     "verifier_inputs": {
-     "tools/mechanism_factory/patch_equilibrium.py": "4007e23217ddedc4963b1e92b68f213a20fe402b32da2aef1bffdff8b6e15b40",
+     "tools/mechanism_factory/patch_equilibrium.py": "a0f4b9f9b289ef1eb76d1c903fd1e458979d7da2f8dcd5ef7683efe5898db99c",
      "tools/mechanism_factory/patch_equilibrium_checks.py": "1ae4417bb4792ee28b4ad225a9d4b33f6fbcb8e7d8a1e92829db633945a6746c",
      "tools/mechanism_factory/qualification_receipt.py": "d4fcb57d2d923463d275b47f12b6ebbfd3f2c70185ad30b9725ed283fb886689",
      "tools/mechanism_factory/receipt_adapter.py": "b452511a092ac83e8f7c530c7c9101706381b09ff30adf6a9ae84c392645d015",
@@ -603165,7 +603165,7 @@
      "tools/membrane_scale_lab/overdamped_descent.py": "a940ac9da88a8852ee57709fe7a44df5469d418be73a75801ea7123d91d930f6",
      "tools/membrane_scale_lab/fixture_generator.py": "1ebd13b9a659fd85d3ca1dacd29ee8f879636a8863ae836db1756b573ea5b260",
      "tools/membrane_scale_lab/evidence_output.py": "201c200c6e682dbd1fdb8b44e50ae29c428de93e22b3310518c9ed068557dba2",
-     "docs/evidence/mechanism_factory/qualification_receipt_20261016T075038.618903Z.json": "aad6cc14202055ecad5ab5b1dcd406844067b6e3ebe4690a753a228a4d6d4a3b"
+     "docs/evidence/mechanism_factory/qualification_receipt_20261016T180445.582336Z.json": "2f28df86bbd0d71c5468ebb14a68259c85b20beefdc8c7aa8494a0d9e3435e42"
     },
     "checks": [
      {
@@ -603210,7 +603210,7 @@
       "argv": [
        "python",
        "tools/mechanism_factory/receipt_adapter.py",
-       "docs/evidence/mechanism_factory/qualification_receipt_20261016T075038.618903Z.json",
+       "docs/evidence/mechanism_factory/qualification_receipt_20261016T180445.582336Z.json",
        "tools/mechanism_factory/example_packet.json"
       ],
       "timeout_s": 300

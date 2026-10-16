@@ -63,12 +63,12 @@ EVID_DIR = cp.EVID_DIR
 
 # The REAL retained evidence this cycle is built on (all under
 # docs/evidence/mechanism_factory/; the battery refuses if any dangles).
-FIT_RECEIPT = "fit_receipt_20261016T075201.333890Z.json"       # PCHIP LOO
-LINEAR_T7_RECEIPT = "bounded_fit_checks_20261016T012234.469338Z.json"
-FIT_JOB_RECEIPT = "fit_job_receipt_20261016T075339.472945Z.json"
-ASM1_RECEIPT = "composed_qualification_receipt_20261016T075201.116240Z.json"
-CHAIN_RECEIPT = "composed_chain_receipt_20261016T092136.068087Z.json"
-CHAIN_CHECKS = "composed_chain_checks_20261016T093949.650913Z.json"
+FIT_RECEIPT = "fit_receipt_20261016T190222.230347Z.json"       # PCHIP LOO
+LINEAR_T7_RECEIPT = "bounded_fit_checks_20261016T185109.749490Z.json"
+FIT_JOB_RECEIPT = "fit_job_receipt_20261016T191423.548554Z.json"
+ASM1_RECEIPT = "composed_qualification_receipt_20261016T180621.760306Z.json"
+CHAIN_RECEIPT = "composed_chain_qualification_receipt_20261016T180652.327348Z.json"
+CHAIN_CHECKS = "composed_chain_checks_20261016T181251.019867Z.json"
 
 # PREREGISTERED (frozen before any run; the packet's gate is quoted, never
 # widened): the measured numbers below come from the cited receipts.

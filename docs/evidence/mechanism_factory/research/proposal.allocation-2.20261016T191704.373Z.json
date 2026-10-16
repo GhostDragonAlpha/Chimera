@@ -1,0 +1,14 @@
+{
+ "record_id": "proposal.allocation-2.20261016T191704.373Z",
+ "kind": "proposal",
+ "question": "one more bounded experiment on the drift question, explicitly re-allocated",
+ "parent_evidence_ids": [
+  "experiment.probe-n-rim-scaling.20261016T191704.260Z.json"
+ ],
+ "budget": {
+  "allocated": 1,
+  "consumed": 0
+ },
+ "schema": "chimera-mechanism-factory-research-record-v1",
+ "utc": "2026-10-16T19:17:04.422550+00:00"
+}

@@ -1,0 +1,23 @@
+{
+ "record_id": "method_comparison.linear-vs-pchip-loo.20261016T191703.710Z",
+ "kind": "method_comparison",
+ "question": "Does PCHIP beat the piecewise-linear incumbent on the frozen LOO suite, and does that justify adoption?",
+ "parent_evidence_ids": [
+  "fit_receipt_20261016T190222.230347Z.json",
+  "bounded_fit_checks_20261016T185109.749490Z.json"
+ ],
+ "alternatives": [
+  "piecewise-linear in |f| (3.9417e-4 N LOO)",
+  "PCHIP monotone cubic (1.4423e-4 N LOO)"
+ ],
+ "experiment_identity": "leave-one-out on interior tabulated knots, same frozen families, matched budget (one bounded-fit run each)",
+ "result": "PCHIP improves LOO max error 3.9417e-4 -> 1.4423e-4 N (2.7x) but BOTH methods are REJECTED at the packet's unchanged 1e-6 gate; improvement measured, adoption REFUSED -- more generated cases or lower loss alone are not improvements; the rejected bounded-table path is retained and the learned candidate stays deferred to its separately qualified GPU seam",
+ "independent_status": "bounded_fit_checks T7 (chimera-mechanism-factory-fit-checks-v1) green on both runs; receipts cited as parents",
+ "cost": "two CPU bounded-fit evaluations, no GPU",
+ "applicability": "interpolation across load magnitude in |f| within the packet's admitted domain",
+ "next_questions": [
+  "is the gate itself mis-calibrated? (must go through review, never through a record)"
+ ],
+ "schema": "chimera-mechanism-factory-research-record-v1",
+ "utc": "2026-10-16T19:17:03.806602+00:00"
+}
