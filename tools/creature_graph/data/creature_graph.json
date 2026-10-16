@@ -15,7 +15,7 @@
    "source": "E:\\PythonChimera\\tools\\reference_data\\data\\reference_store.json",
    "sha256": "12e9824123cac48fff41b8281a0b62efb2a643deefef6201512fbb3e34d8618f"
   },
-  "saved_utc": "2026-10-16T04:47:12+00:00",
+  "saved_utc": "2026-10-16T07:18:23+00:00",
   "loaded_schema_version": "2.0.0"
  },
  "objects": {
@@ -603157,8 +603157,8 @@
      "tools/mechanism_factory/patch_equilibrium.py": "4007e23217ddedc4963b1e92b68f213a20fe402b32da2aef1bffdff8b6e15b40",
      "tools/mechanism_factory/patch_equilibrium_checks.py": "1ae4417bb4792ee28b4ad225a9d4b33f6fbcb8e7d8a1e92829db633945a6746c",
      "tools/mechanism_factory/qualification_receipt.py": "d4fcb57d2d923463d275b47f12b6ebbfd3f2c70185ad30b9725ed283fb886689",
-     "tools/mechanism_factory/receipt_adapter.py": "34eb338d388ac749ab0c2b9f5cf30f0d81ea9431fb886e25c47f4f06a45ef87a",
-     "tools/mechanism_factory/receipt_adapter_faults.py": "0caea2138a3b372ebc1787a4650cd2d04487aa81e120c103b8bf0363a46571fa",
+     "tools/mechanism_factory/receipt_adapter.py": "b452511a092ac83e8f7c530c7c9101706381b09ff30adf6a9ae84c392645d015",
+     "tools/mechanism_factory/receipt_adapter_faults.py": "065f5ee1c900dd62b6b596c6b5d9b1622c0480b9eb56161a32f823b5e1d51208",
      "tools/mechanism_factory/example_packet.json": "3a0375ef9a811e0c9120155fe4673a58cd4a698856f0f917fea3034cd6595a2b",
      "tools/port_registry.py": "a061d42e7315a135517a40cf564c5963f3998646a68ba5519d457dce0d33923c",
      "tools/membrane_scale_lab/surface_energy_reference.py": "ee9effcfbddad8d02e03f71d414b27da177f0656de535eaab0d76ae39796f0b7",

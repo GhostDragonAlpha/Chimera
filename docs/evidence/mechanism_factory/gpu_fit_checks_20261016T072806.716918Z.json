@@ -1,0 +1,68 @@
+{
+  "schema": "chimera-mechanism-factory-gpu-manifest-checks-v1",
+  "utc": "2026-10-16T07:28:07.255899+00:00",
+  "manifest_schema": "chimera-mechanism-factory-gpu-manifest-v1",
+  "checks": {
+    "T1_manifest_determinism": {
+      "pass": true,
+      "measured": {
+        "manifest_sha256": "b20e0589574e5de9751abe3831ffea7adeb3eb3f1c2bc10913de1c13c0318e83",
+        "repeat_sha256": "b20e0589574e5de9751abe3831ffea7adeb3eb3f1c2bc10913de1c13c0318e83",
+        "n_jobs": 1
+      }
+    },
+    "T2_holdout_fixture_absent": {
+      "pass": true,
+      "measured": {
+        "holdout_families": [
+          "fan-full-rim-pin-alt-load"
+        ],
+        "leak_in_operative_sections": [],
+        "holdout_labels_reaching_builder": {},
+        "holdout_cases_seen": 1,
+        "holdout_cases_read": 0,
+        "structural_refusal": "refusal_holdout_fixture",
+        "fixture_families": [
+          "fan-full-rim-pin",
+          "fan-full-rim-pin-alt-geometry"
+        ]
+      }
+    },
+    "T3_timeout_budget_violations_refused": {
+      "pass": true,
+      "measured": {
+        "refusals": {
+          "timeout": "refusal_timeout_out_of_range",
+          "budget": "refusal_missing_budget_fields"
+        }
+      }
+    },
+    "T4_llm_call_in_job_command_refused": {
+      "pass": true,
+      "measured": {
+        "refusals": {
+          "nested_handoff": "llm_call_in_job_command",
+          "router_url": "llm_call_in_job_command",
+          "http": "llm_call_in_job_command"
+        }
+      }
+    },
+    "T5_missing_qualified_receipt_refused": {
+      "pass": true,
+      "measured": {
+        "refusal": "no_qualified_receipt"
+      }
+    },
+    "T6_dry_run_completes_without_reservation": {
+      "pass": true,
+      "measured": {
+        "exit_code": 0,
+        "reservation_verdict": "reservation_available_not_taken",
+        "clean_dry_run": true,
+        "dry_run_receipt": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\gpu_fit_dryrun_20261016T072807.006570Z.json"
+      }
+    }
+  },
+  "all_passed": true,
+  "live_batch_not_run": true
+}

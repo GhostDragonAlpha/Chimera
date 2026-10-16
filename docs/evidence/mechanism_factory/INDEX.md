@@ -18,6 +18,59 @@ adapter-refused (`packet_digest_mismatch`) and old manifests' sha-pinned
 `identities` no longer match. Measured numbers did not change (same
 fixtures, same seed); only the packet identity moved.
 
+- `composed_qualification_receipt_20261016T071604.131817Z.json` and
+  `composed_qualification_receipt_20261016T071312.835237Z.json` — P5
+  COMPOSITION receipts, schema
+  `chimera-mechanism-factory-composed-qualification-v1`
+  (`tools/mechanism_factory/composed_patch.py`): two qualified
+  `high_degree_fan` patches joined into ONE apex-weld hourglass assembly —
+  piece A (rim at z=0 pinned, apex UP = the SEAM, free, carrying the 0.8 N
+  input load) and piece B INVERTED (apex welded down onto the seam, far
+  rim at z=0.6 pinned = the OUTPUT port). SEAM OWNERSHIP recorded in the
+  receipt: A owns the seam vertex, B references it (deduplicated;
+  `seam_vertex_coordinate_mismatch` / `seam_owner_conflict` refused
+  before any solve). The reference is ONE `solve_equilibrium` on the
+  joined mesh (connectivity union, seam deduplicated) — no new physics.
+  The adapter accepted the composed schema explicitly (versioned; the
+  composed path reuses the packet's preregistered 1e-6 law and the same
+  convergence/verdict-forgery machinery; F13 in the faults suite refuses
+  a v0/unknown composed schema). Measured (scale 1.0): stagnated at the
+  machine floor, free residual 5.3e-8, force balance 5.3e-8 N, moment
+  balance 3.4e-16; per-block mean reaction norms A 0.0315 / B 0.0261
+  (margin 0.170 > the C4 precedent 0.1); B-port net reaction 1.25 N vs
+  ~1e-7 N for B alone unloaded (transfer real). Supported scale: the
+  SAME assembly at 0.5x and 2.0x (packet size axis, n_rim untouched,
+  load unchanged) — residuals 4.6e-8 / 1.0e-7, balances within the 1e-6
+  law, margins 0.142 / 0.183. Adapter verdict (CLI, on 071312): **PASS**
+  (recomputed + declared). The battery
+  `composed_patch_receipt_20261016T071539.282973Z.json` is 7/7 green:
+  (a) seam single-valued (no duplicate coordinates; one seam index with
+  2x200 incident faces; free; seam force 5.3e-8 N), (b) coupled balance
+  across both pin sets, (c) reduction — B alone unloaded flattens onto
+  its pinned rim with dE = 0.0 vs the same fan without the placement,
+  (d) transfer real (block margin 0.170; B-port delta 1.25 N), (e)
+  seam/scale refusals by name, (f) supported scale, (g) TOPOLOGY
+  WITNESSES (physics findings, reported not tuned away): a rim-to-rim
+  weld with a FREE seam ring has NO equilibrium under this law
+  (step_limit, residual 1.08 — the packet's own free-boundary exclusion
+  at assembly scale) and a rim-to-rim weld onto a GROUNDED ring
+  transmits NOTHING (B-port delta 0.0 bit-for-bit); hence the apex weld,
+  the one topology with both equilibrium and real transfer.
+- POST-P5 RERUN of every existing suite after the adapter gained the
+  composed schema and the graph's adapter-file pins moved:
+  `adapter_faults_20261016T071909.735094Z.json` (F0-F13 green; F13 new:
+  a `composed-qualification-v0`/unknown schema is refused as
+  `receipt_schema_unsupported`), `bounded_fit_checks_20261016T071909.944298Z.json`
+  (7/7), `fit_job_checks_20261016T072736.582791Z.json` (5/5),
+  `gpu_fit_checks_20261016T072806.716918Z.json` (6/6),
+  `gpu_fit_dryrun_20261016T072807.462506Z.json` (clean,
+  `reservation_available_not_taken`),
+  `patch_equilibrium_receipt_20261016T072807.881870Z.json` (6/6), and
+  pytest `test_workflow_checklist.py` 3 passed (`creature_graph.json`
+  verifier_inputs pins for `receipt_adapter.py` and
+  `receipt_adapter_faults.py` refreshed to the new bytes; `check()`
+  clean). The pre-P5 suite stamps are superseded by these reruns and
+  retained under Stale.
 - `qualification_receipt_20261016T043801.479415Z.json` — genuine
   qualification receipt for the asymmetric constant-tension patch
   mechanism, regenerated against the bumped packet via the pinned
@@ -130,6 +183,23 @@ fixtures, same seed); only the packet identity moved.
   `reservation_available_not_taken` (read-only probe).
 
 Stale (retained, do not consume):
+
+- `composed_qualification_receipt_20261016T071144.424155Z.json` — STALE:
+  first composed receipt run; a build bug applied NO rigid scale (all
+  three scale cases returned the unit-scale numbers verbatim). Fixed in
+  `composed_patch.py`; superseded by the 071312 / 071604 receipts above.
+  Retained as the bug record; never adapter-verified.
+- PRE-P5 SUITE STAMPS (superseded 2026-10-16 by the post-P5 reruns
+  above, because the adapter's accepted-schema set changed — composed-v1
+  added explicitly, versioned — and the graph's verifier_inputs pins for
+  `receipt_adapter.py` / `receipt_adapter_faults.py` moved):
+  `adapter_faults_20261016T044810.797759Z.json` (F0-F12),
+  `bounded_fit_checks_20261016T045355.854421Z.json` (7/7),
+  `fit_job_checks_20261016T045306.970480Z.json` (5/5),
+  `gpu_fit_checks_20261016T044911.264376Z.json` (6/6),
+  `gpu_fit_dryrun_20261016T044811.006952Z.json` (clean),
+  `patch_equilibrium_receipt_20261016T044911.994703Z.json` (6/6). All
+  were green at their time; retained.
 
 - PRE-DOC-BUMP CHAIN (superseded 2026-10-16 by the coordinated packet/
   README doc bump above): the packet digest changed, so these are

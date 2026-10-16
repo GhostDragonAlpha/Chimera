@@ -27,6 +27,16 @@ ACCEPTED_RECEIPT_SCHEMA = "chimera-mechanism-factory-qualification-receipt-v2"
 # thresholds could not be recomputed by the adapter alone; v1 is refused
 # explicitly, never silently upgraded.
 RECEIPT_SCHEMA_V1 = "chimera-mechanism-factory-qualification-receipt-v1"
+# P5 composition: the composed case shape differs from the single-piece v2
+# receipt (composed family, composition/ownership record, per-scale cases),
+# so the adapter accepts this schema EXPLICITLY and versioned; the composed
+# path reuses the SAME packet thresholds (the preregistered 1e-6 law), the
+# SAME convergence acceptance law and the SAME verdict-forgery rule, but
+# replaces the frozen-splits domain check with a composition-record check
+# (the packet's splits govern the single-piece domain by construction). Any
+# other schema -- including a v0/unknown composed schema -- is refused
+# explicitly as receipt_schema_unsupported, never silently upgraded.
+COMPOSED_RECEIPT_SCHEMA = "chimera-mechanism-factory-composed-qualification-v1"
 GPU_RELEASED_STATE = "released"
 RESUME_BLOCK_KEY = "resume"            # receipt["resume"] = {checkpoint_path,
 RESUME_PATH_KEY = "checkpoint_path"    #   resumed_from_checkpoint_sha256}
@@ -129,18 +139,27 @@ def verify_receipt(receipt_path, packet_path) -> Verdict:
     receipt, err = _load_json(Path(receipt_path))
     if err:
         return Verdict(False, ["receipt_missing"], {"receipt_error": err})
-    if not isinstance(receipt, dict) or \
-            receipt.get("schema") != ACCEPTED_RECEIPT_SCHEMA:
+    schema = receipt.get("schema") if isinstance(receipt, dict) else None
+    if schema not in (ACCEPTED_RECEIPT_SCHEMA, COMPOSED_RECEIPT_SCHEMA):
         return Verdict(False, ["receipt_schema_unsupported"],
-                       {"got_schema": receipt.get("schema")
-                        if isinstance(receipt, dict) else None,
-                       "accepted_schema": ACCEPTED_RECEIPT_SCHEMA,
-                       "rejected_schema_v1": RECEIPT_SCHEMA_V1})
+                       {"got_schema": schema,
+                        "accepted_schema": ACCEPTED_RECEIPT_SCHEMA,
+                        "accepted_composed_schema": COMPOSED_RECEIPT_SCHEMA,
+                        "rejected_schema_v1": RECEIPT_SCHEMA_V1})
     packet, err = _load_json(Path(packet_path))
     if err:
         return Verdict(False, ["packet_unreadable"], {"packet_error": err})
 
     refusals: list = []
+    composed = (schema == COMPOSED_RECEIPT_SCHEMA)
+    if composed:
+        # the composed artifact must declare its composition/ownership
+        # record; a composed receipt without it is malformed by definition
+        comp = receipt.get("composition")
+        if not (isinstance(comp, dict)
+                and all(k in comp for k in ("pieces", "seam", "ports"))):
+            refusals.append("composed_receipt_malformed")
+
     # packet digest, against the packet AS IT IS NOW
     try:
         packet_bytes = Path(packet_path).read_bytes()
@@ -159,7 +178,11 @@ def verify_receipt(receipt_path, packet_path) -> Verdict:
     if receipt.get("units") != packet.get("units"):
         refusals.append("unit_mismatch")
 
-    # domain and split integrity (packet side)
+    # domain and split integrity (packet side). The composed schema replaces
+    # the frozen-splits case-domain check with the composition record above
+    # (its cases are composed families, outside the single-piece splits by
+    # construction); the packet-side split law itself is still packet data
+    # and is checked the same way for both schemas.
     splits = packet.get("frozen_splits") or {}
     names = [f for lst in splits.values() for f in lst]
     union = set(names)
@@ -172,8 +195,12 @@ def verify_receipt(receipt_path, packet_path) -> Verdict:
     recomputed_pass = True
     for case in receipt.get("cases", []):
         fam = case.get("family")
-        if fam not in union:
+        if not composed and fam not in union:
             refusals.append(f"out_of_domain:{fam}")
+            recomputed_pass = False
+            continue
+        if composed and not (isinstance(fam, str) and fam):
+            refusals.append(f"out_of_domain:{fam!r}")
             recomputed_pass = False
             continue
         if not _case_outputs_finite(case):

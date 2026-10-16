@@ -209,12 +209,22 @@ def main() -> int:
     check("F12_balance_residual_forgery", ["verdict_forgery"],
           _verify(r12, PACKET))
 
+    # F13 P5 composition: a v0/unknown composed schema is refused explicitly,
+    # never silently upgraded (the adapter accepts exactly
+    # chimera-mechanism-factory-composed-qualification-v1 alongside v2).
+    def f13(d):
+        d["schema"] = "chimera-mechanism-factory-composed-qualification-v0"
+    r13 = _mutate(genuine, TMP / "f13.json", f13)
+    check("F13_unknown_composed_schema", ["receipt_schema_unsupported"],
+          _verify(r13, PACKET))
+
     all_passed = all(row["pass"] for row in rows)
     fault_receipt = {
         "schema": "chimera-mechanism-factory-adapter-faults-v1",
         "utc": datetime.now(timezone.utc).isoformat(),
         "adapter_version": ra.ADAPTER_VERSION,
         "accepted_schema": ra.ACCEPTED_RECEIPT_SCHEMA,
+        "accepted_composed_schema": ra.COMPOSED_RECEIPT_SCHEMA,
         "genuine_receipt_sha256": _sha256_file(genuine),
         "packet_sha256": _sha256_file(PACKET),
         "faults": rows,
