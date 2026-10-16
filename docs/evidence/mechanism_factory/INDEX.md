@@ -69,6 +69,34 @@ identity moved.
   byte-for-byte (energy within 1e-9). Adapter verdict PASS on the
   standalone receipt under the unchanged composed-v1 schema (no adapter
   edit; F13 already refuses unknown variants).
+- 11.19 RESEARCH-LOOP RECORD LAYER — `research_record.py` (schema
+  `chimera-mechanism-factory-research-record-v1`; append-only JSON under
+  `research/`) + `research_cycle_checks_20261016T103302.207984Z.json`
+  (7/7): the demonstrated cycle over the REAL retained evidence —
+  (a) retained bounded-table rejection -> PCHIP hypothesis proposal
+  (dangling parents refused `research_parent_evidence_dangling`);
+  (b) method_comparison: piecewise-linear LOO 3.9417e-4 N vs PCHIP
+  1.4423e-4 N on the SAME frozen suite, BOTH rejected at the unchanged
+  1e-6 gate — improvement measured, adoption REFUSED; (c) the qualified
+  apex-weld seam law + byte-identical pieces A/B reused by the star
+  assembly (both receipts cited, adapter-PASS); (d) evidence-linked
+  followup on the 1.5x/2.0x scale drift (honestly over the gate);
+  (e) learned candidate STOPPED without success (`successful: false`
+  explicit; a stop claiming success is refused);
+  (f) gate-widening refused three ways (`research_gate_override_forbidden`
+  on the forged record; the adapter's threshold law and
+  `packet_digest_mismatch` on forged receipts — the record layer cannot
+  touch any pinned file); (g) finite exploration allocation (second
+  experiment refused `budget_exhausted` until a NEW allocation record).
+  24 records retained. GRAPH ATTACHMENT via the EXISTING mechanisms
+  only: the proposal and followup records attached to
+  `work.mechanism-factory-patch-equilibrium` as kind=work objects
+  through the workflow's graph_apply intake-proposal law (derived_from
+  provenance edges only; `check()` CLEAN); the store admits NO
+  evidence-kind proposal (graph_apply refuses
+  `workflow_evidence_requires_measurement_api`), so outcome records
+  (experiment/method_comparison/stop) honestly stay file-level.
+  Scope: this demonstrated cycle only.
 - `fit_receipt_20261016T075201.333890Z.json` — bounded-table fit+eval
   receipt (`bounded_fit.py`, P3), regenerated against the reworded
   packet. Same physics as before: bounded PCHIP interpolant, knot-point
@@ -121,6 +149,17 @@ identity moved.
   `gpu_fit_dryrun_20261016T093306.144822Z.json` (clean), pytest
   `test_workflow_checklist.py` 3 passed. No pinned-file edits this
   round, so all graph `verifier_inputs` pins still match disk.
+- POST-11.19 SUITE RERUN (research-record round; graph file edited for
+  the two research attachments, `check()` clean, pytest re-greened):
+  `research_cycle_checks_20261016T103302.207984Z.json` (7/7),
+  `adapter_faults_20261016T104122.353469Z.json` (F0-F13 green),
+  `patch_equilibrium_receipt_20261016T104122.562226Z.json` (6/6),
+  `composed_patch_receipt_20261016T104123.596029Z.json` (7/7),
+  `bounded_fit_checks_20261016T104151.392925Z.json` (7/7),
+  `fit_job_checks_20261016T105021.398774Z.json` (5/5),
+  `gpu_fit_checks_20261016T105051.453131Z.json` (6/6) +
+  `gpu_fit_dryrun_20261016T105052.212501Z.json` (clean), pytest
+  `test_workflow_checklist.py` 3 passed over the edited graph.
 
 Stale (retained, do not consume):
 

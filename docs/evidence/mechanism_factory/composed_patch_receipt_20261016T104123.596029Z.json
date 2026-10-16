@@ -1,0 +1,214 @@
+{
+ "schema": "chimera-mechanism-factory-composed-checks-v1",
+ "utc": "2026-10-16T10:41:48.166885+00:00",
+ "what": "P5 composition falsifier battery: two qualified fan patches joined into one apex-weld hourglass assembly; reference = ONE solve_equilibrium on the joined mesh; supported scale; seam ownership; topology witnesses",
+ "source_commit": "8980edf6e49a0ca38dd8bf0d13c79c27ab347c81",
+ "source_file_hashes": {
+  "tools/membrane_scale_lab/surface_energy_reference.py": "ee9effcfbddad8d02e03f71d414b27da177f0656de535eaab0d76ae39796f0b7",
+  "tools/membrane_scale_lab/overdamped_descent.py": "a940ac9da88a8852ee57709fe7a44df5469d418be73a75801ea7123d91d930f6",
+  "tools/membrane_scale_lab/fixture_generator.py": "1ebd13b9a659fd85d3ca1dacd29ee8f879636a8863ae836db1756b573ea5b260",
+  "tools/mechanism_factory/patch_equilibrium.py": "4007e23217ddedc4963b1e92b68f213a20fe402b32da2aef1bffdff8b6e15b40",
+  "tools/mechanism_factory/qualification_receipt.py": "d4fcb57d2d923463d275b47f12b6ebbfd3f2c70185ad30b9725ed283fb886689",
+  "tools/mechanism_factory/receipt_adapter.py": "b452511a092ac83e8f7c530c7c9101706381b09ff30adf6a9ae84c392645d015",
+  "tools/mechanism_factory/composed_patch.py": "12d4c08b9fcc1b7b294b1cfd2c522af27b664e486e42c91e28f2e97b9d37d662",
+  "tools/mechanism_factory/composed_patch_checks.py": "569a447de2d9370c0418d5ebf19da8370f61460fc71df790080969fd5b562a3b"
+ },
+ "packet_sha256": "75e24523dc1cb002e4b0fbc3de811e1d4c7eec76e887e70d209e56ee320f0a0d",
+ "units": {
+  "length": "m",
+  "force": "N",
+  "energy": "J"
+ },
+ "preregistered_allowances": {
+  "balance_law_source": "example_packet.acceptance_thresholds (1e-6 force/moment/free-residual, preregistered at P0/P1; the composed schema adds none)",
+  "reduction_energy_tol": 1e-09,
+  "apex_rest_on_rim_plane_tol": 1e-06,
+  "transfer_margin": 0.1,
+  "duplicate_coordinate_tol": 1e-09,
+  "witness_residual_floor": 0.001,
+  "witness_pinned_delta_tol": 1e-12,
+  "supported_scales": [
+   1.0,
+   0.5,
+   2.0
+  ]
+ },
+ "composed_receipt_adapter": {
+  "verified": true,
+  "refusals": [],
+  "detail": {
+   "recomputed_verdict": "PASS",
+   "declared_verdict": "PASS"
+  },
+  "receipt": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\composed_qualification_receipt_20261016T104148.142729Z.json"
+ },
+ "checks": {
+  "a_seam_agreement_single_valued": {
+   "pass": true
+  },
+  "b_coupled_balance": {
+   "pass": true
+  },
+  "c_reduction_degenerate_to_qualified_piece": {
+   "pass": true
+  },
+  "d_transfer_real_not_rigid_pass_through": {
+   "pass": true
+  },
+  "e_seam_refusals": {
+   "pass": true
+  },
+  "f_supported_scale": {
+   "pass": true
+  },
+  "g_topology_witnesses": {
+   "pass": true
+  }
+ },
+ "cases": {
+  "a_seam_agreement_single_valued": {
+   "pass": true,
+   "measured": {
+    "min_vertex_distance": 0.02513170769891284,
+    "seam_incident_faces": {
+     "piece_A": 200,
+     "piece_B": 200
+    },
+    "seam_is_free": true,
+    "seam_total_force_norm_N": 5.317260087789322e-08,
+    "duplicate_probe_fires": true
+   },
+   "allowances": {
+    "duplicate": 1e-09,
+    "seam_force": 1e-06
+   }
+  },
+  "b_coupled_balance": {
+   "pass": true,
+   "status": "stagnated",
+   "free_residual": 5.317260087789322e-08,
+   "steps": 6236,
+   "force_balance": 5.317260109993783e-08,
+   "moment_balance": 3.386796056781761e-16,
+   "tolerances": {
+    "force": 1e-06,
+    "moment": 1e-06,
+    "free_residual": 1e-06
+   },
+   "pin_sets": {
+    "A_rim": 200,
+    "B_far_rim": 200
+   }
+  },
+  "c_reduction_degenerate_to_qualified_piece": {
+   "pass": true,
+   "measured": {
+    "status_inverted": "stagnated",
+    "status_reference": "stagnated",
+    "energy_inverted_J": 2.010288581000213,
+    "energy_reference_J": 2.010288581000213,
+    "energy_delta_J": 0.0,
+    "apex_rest_on_rim_plane_wu": 3.166644135799146e-08
+   },
+   "allowances": {
+    "energy": 1e-09,
+    "rest": 1e-06
+   }
+  },
+  "d_transfer_real_not_rigid_pass_through": {
+   "pass": true,
+   "measured": {
+    "block_mean_reaction_norms_N": {
+     "A_rim_near_load": 0.031491413176953545,
+     "B_far_rim_output": 0.02613231314503202
+    },
+    "block_margin": 0.17017654945518584,
+    "b_port_net_force_N": 1.2459202789188282,
+    "b_alone_net_force_N": 9.949124249691e-08,
+    "transfer_delta_over_scale": 1.2459201794275856
+   },
+   "allowances": {
+    "margin": 0.1
+   }
+  },
+  "e_seam_refusals": {
+   "pass": true,
+   "cases": {
+    "seam_vertex_coordinate_mismatch": {
+     "refused": true,
+     "reason": "seam_vertex_coordinate_mismatch",
+     "expected": "seam_vertex_coordinate_mismatch",
+     "name_ok": true
+    },
+    "unsupported_scale": {
+     "refused": true,
+     "reason": "unsupported_scale",
+     "expected": "unsupported_scale",
+     "name_ok": true
+    },
+    "genuine_control_accepted": {
+     "refused": false
+    }
+   }
+  },
+  "f_supported_scale": {
+   "pass": true,
+   "scales": {
+    "scale_1": {
+     "status": "stagnated",
+     "free_residual": 5.317260087789322e-08,
+     "force_balance": 5.317260109993783e-08,
+     "moment_balance": 3.386796056781761e-16,
+     "n_rim_per_piece": 200,
+     "seam_height_wu": 0.14338097338518807,
+     "block_margin": 0.17017654945518584,
+     "pass": true
+    },
+    "scale_0.5": {
+     "status": "stagnated",
+     "free_residual": 4.578090584406169e-08,
+     "force_balance": 4.578090517792788e-08,
+     "moment_balance": 1.2152465445081022e-16,
+     "n_rim_per_piece": 200,
+     "seam_height_wu": -0.009739960159763519,
+     "block_margin": 0.1421495035009002,
+     "pass": true
+    },
+    "scale_2": {
+     "status": "stagnated",
+     "free_residual": 1.0174714026867093e-07,
+     "force_balance": 1.0174714060173785e-07,
+     "moment_balance": 2.98461085965743e-15,
+     "n_rim_per_piece": 200,
+     "seam_height_wu": 0.44127484791022453,
+     "block_margin": 0.18277104746890668,
+     "pass": true
+    }
+   },
+   "allowances": {
+    "margin": 0.1,
+    "balance_law": "example_packet.acceptance_thresholds (1e-6 force/moment/free-residual, preregistered at P0/P1; the composed schema adds none)"
+   }
+  },
+  "g_topology_witnesses": {
+   "pass": true,
+   "measured": {
+    "free_ring": {
+     "status": "step_limit",
+     "free_residual": 1.083897911305882,
+     "steps": 2000
+    },
+    "pinned_ring": {
+     "status_with_load": "stagnated",
+     "status_no_load": "stagnated",
+     "b_port_reaction_delta": 0.0
+    }
+   },
+   "allowances": {
+    "residual_floor": 0.001,
+    "pinned_delta": 1e-12
+   },
+   "note": "free-ring non-equilibrium is PHYSICS under the pure area law (free boundary carries line tension gamma), not a solver defect -- same finding as P1's partial-rim exclusion, now witnessed at assembly scale"
+  }
+ }
+}

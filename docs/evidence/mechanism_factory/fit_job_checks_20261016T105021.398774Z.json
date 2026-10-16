@@ -1,0 +1,58 @@
+{
+  "schema": "chimera-mechanism-factory-fit-job-checks-v1",
+  "utc": "2026-10-16T10:50:50.866830+00:00",
+  "fit_job_schema": "chimera-mechanism-factory-fit-job-v1",
+  "gate_N": 1e-06,
+  "checks": {
+    "T1_fit_determinism": {
+      "pass": true,
+      "measured": {
+        "checkpoint_sha256": "db6525b61d992112df6f60b8b0cd3d2d2614a76121074faf0f1d44a37c814ae1",
+        "validation_max_error_N": 0.03366755675170242,
+        "gate_N": 1e-06
+      }
+    },
+    "T2_holdout_sentinel_never_read": {
+      "pass": true,
+      "measured": {
+        "checkpoint_hash_unchanged": true,
+        "holdout_cases_read": 0,
+        "receipt_sentinel_free": true
+      }
+    },
+    "T3_budget_breach_clean_failure": {
+      "pass": true,
+      "measured": {
+        "exit_code": 1,
+        "status_recorded": "budget_breach",
+        "physically_qualified": false
+      }
+    },
+    "T4_receipt_honesty_forgery_refused": {
+      "pass": true,
+      "measured": {
+        "refusals": {
+          "clean": true,
+          "flag_forgery": true,
+          "seed": true,
+          "holdout": true,
+          "no_llm": true,
+          "checkpoint": true
+        },
+        "recorded_validation_max_error_N": 0.03366755675170242,
+        "recorded_physically_qualified": false
+      }
+    },
+    "T5_manifest_pins_fit_job_and_flips_flag": {
+      "pass": true,
+      "measured": {
+        "manifest_sha256": "e4d839794e9781c0136e15383b89633c4299e5894fa7f4a8b1ccc90459295569",
+        "fit_job_pinned": true,
+        "pending_inputs": [],
+        "job_executable_exists": true
+      }
+    }
+  },
+  "all_passed": true,
+  "live_batch_not_run": true
+}

@@ -1,0 +1,201 @@
+{
+ "schema": "chimera-mechanism-factory-research-cycle-checks-v1",
+ "utc": "2026-10-16T10:33:03.055179+00:00",
+ "what": "11.19 demonstrated cycle: retained failure -> hypothesis; bounded method comparison (both rejected at the unchanged gate, adoption refused); qualified seam law reused by the second assembly byte-identically; evidence-linked followup; explicit stop without success; gate-widening refused twice; finite exploration allocation",
+ "source_commit": "8980edf6e49a0ca38dd8bf0d13c79c27ab347c81",
+ "source_file_hashes": {
+  "tools/membrane_scale_lab/surface_energy_reference.py": "ee9effcfbddad8d02e03f71d414b27da177f0656de535eaab0d76ae39796f0b7",
+  "tools/membrane_scale_lab/overdamped_descent.py": "a940ac9da88a8852ee57709fe7a44df5469d418be73a75801ea7123d91d930f6",
+  "tools/membrane_scale_lab/fixture_generator.py": "1ebd13b9a659fd85d3ca1dacd29ee8f879636a8863ae836db1756b573ea5b260",
+  "tools/mechanism_factory/patch_equilibrium.py": "4007e23217ddedc4963b1e92b68f213a20fe402b32da2aef1bffdff8b6e15b40",
+  "tools/mechanism_factory/qualification_receipt.py": "d4fcb57d2d923463d275b47f12b6ebbfd3f2c70185ad30b9725ed283fb886689",
+  "tools/mechanism_factory/receipt_adapter.py": "b452511a092ac83e8f7c530c7c9101706381b09ff30adf6a9ae84c392645d015",
+  "tools/mechanism_factory/composed_patch.py": "12d4c08b9fcc1b7b294b1cfd2c522af27b664e486e42c91e28f2e97b9d37d662",
+  "tools/mechanism_factory/composed_patch_checks.py": "569a447de2d9370c0418d5ebf19da8370f61460fc71df790080969fd5b562a3b"
+ },
+ "packet_sha256": "75e24523dc1cb002e4b0fbc3de811e1d4c7eec76e887e70d209e56ee320f0a0d",
+ "units": {
+  "length": "m",
+  "force": "N",
+  "energy": "J"
+ },
+ "checks": {
+  "a_retained_failure_generates_hypothesis": {
+   "pass": true
+  },
+  "b_bounded_experiment_distinguishes": {
+   "pass": true
+  },
+  "c_qualified_improvement_reused_by_second_assembly": {
+   "pass": true
+  },
+  "d_followup_question_from_result": {
+   "pass": true
+  },
+  "e_stop_without_success": {
+   "pass": true
+  },
+  "f_weakening_rejected": {
+   "pass": true
+  },
+  "g_exploration_allocation": {
+   "pass": true
+  }
+ },
+ "cases": {
+  "a_retained_failure_generates_hypothesis": {
+   "pass": true,
+   "measured": {
+    "proposal": "proposal.pchip-holds-the-gate.20261016T103302.208Z.json",
+    "dangling_refused_as": "research_parent_evidence_dangling"
+   }
+  },
+  "b_bounded_experiment_distinguishes": {
+   "pass": true,
+   "measured": {
+    "record": "method_comparison.linear-vs-pchip-loo.20261016T103302.296Z.json",
+    "linear_loo_N": 0.00039416871530697714,
+    "pchip_loo_N": 0.00014422663666699073,
+    "gate_N": 1e-06,
+    "both_rejected": true,
+    "adoption": "refused"
+   }
+  },
+  "c_qualified_improvement_reused_by_second_assembly": {
+   "pass": true,
+   "measured": {
+    "record": "experiment.seam-law-reuse-star.20261016T103302.445Z.json",
+    "reuse_battery_check_a": true,
+    "adapter": "PASS on both cited receipts"
+   }
+  },
+  "d_followup_question_from_result": {
+   "pass": true,
+   "measured": {
+    "record": "followup.star-scale-drift.20261016T103302.580Z.json",
+    "scale_window_N": {
+     "0.5": 1.15e-07,
+     "1.0": 5.9e-07,
+     "1.5": 1.11e-06,
+     "2.0": 1.64e-06
+    },
+    "gate_N": 1e-06,
+    "over_gate_points": [
+     1.5,
+     2.0
+    ]
+   }
+  },
+  "e_stop_without_success": {
+   "pass": true,
+   "measured": {
+    "record": "stop.learned-candidate-cpu.20261016T103302.638Z.json",
+    "successful_declared": false,
+    "stop_claiming_success_refused_as": "research_stop_must_declare_failure",
+    "learned_val_error_N": 0.03366755675170242,
+    "gate_N": 1e-06
+   }
+  },
+  "f_weakening_rejected": {
+   "pass": true,
+   "measured": {
+    "forged_record_refused_as": "research_gate_override_forbidden",
+    "residual_forgery_refused_as": "unconverged_label:composed-apex-weld-fanout-star_scale1",
+    "digest_forgery_refused_as": "packet_digest_mismatch",
+    "pinned_files_touched_by_layer": 0
+   }
+  },
+  "g_exploration_allocation": {
+   "pass": true,
+   "measured": {
+    "allocation_1": {
+     "allocated": 1,
+     "consumed": 1,
+     "remaining": 0
+    },
+    "allocation_2": {
+     "allocated": 1,
+     "consumed": 1,
+     "remaining": 0
+    },
+    "second_experiment_refused_as": "budget_exhausted",
+    "no_allocation_refused_as": "research_unknown_allocation"
+   }
+  }
+ },
+ "records_written": [
+  "experiment.probe-n-rim-scaling.20261016T103038.359Z.json",
+  "experiment.probe-n-rim-scaling.20261016T103302.803Z.json",
+  "experiment.seam-law-reuse-star.20261016T103038.007Z.json",
+  "experiment.seam-law-reuse-star.20261016T103302.445Z.json",
+  "experiment.seam-refinement-allocated.20261016T103038.502Z.json",
+  "experiment.seam-refinement-allocated.20261016T103302.953Z.json",
+  "followup.star-scale-drift.20261016T102648.211Z.json",
+  "followup.star-scale-drift.20261016T103038.148Z.json",
+  "followup.star-scale-drift.20261016T103302.580Z.json",
+  "method_comparison.linear-vs-pchip-loo.20261016T102647.986Z.json",
+  "method_comparison.linear-vs-pchip-loo.20261016T103037.864Z.json",
+  "method_comparison.linear-vs-pchip-loo.20261016T103302.296Z.json",
+  "proposal.allocation-1.20261016T103038.309Z.json",
+  "proposal.allocation-1.20261016T103302.751Z.json",
+  "proposal.allocation-2.20261016T103038.460Z.json",
+  "proposal.allocation-2.20261016T103302.908Z.json",
+  "proposal.pchip-holds-the-gate.20261016T102647.893Z.json",
+  "proposal.pchip-holds-the-gate.20261016T103037.772Z.json",
+  "proposal.pchip-holds-the-gate.20261016T103302.208Z.json",
+  "proposal.reuse-cycle-allocation.20261016T103037.963Z.json",
+  "proposal.reuse-cycle-allocation.20261016T103302.399Z.json",
+  "stop.learned-candidate-cpu.20261016T102648.258Z.json",
+  "stop.learned-candidate-cpu.20261016T103038.206Z.json",
+  "stop.learned-candidate-cpu.20261016T103302.638Z.json"
+ ],
+ "record_count_total": 24,
+ "allocations": {
+  "proposal.allocation-1.20261016T103038.309Z": {
+   "allocated": 1,
+   "consumed": 1,
+   "remaining": 0
+  },
+  "proposal.allocation-1.20261016T103302.751Z": {
+   "allocated": 1,
+   "consumed": 1,
+   "remaining": 0
+  },
+  "proposal.allocation-2.20261016T103038.460Z": {
+   "allocated": 1,
+   "consumed": 1,
+   "remaining": 0
+  },
+  "proposal.allocation-2.20261016T103302.908Z": {
+   "allocated": 1,
+   "consumed": 1,
+   "remaining": 0
+  },
+  "proposal.pchip-holds-the-gate.20261016T102647.893Z": {
+   "allocated": 2,
+   "consumed": 0,
+   "remaining": 2
+  },
+  "proposal.pchip-holds-the-gate.20261016T103037.772Z": {
+   "allocated": 2,
+   "consumed": 0,
+   "remaining": 2
+  },
+  "proposal.pchip-holds-the-gate.20261016T103302.208Z": {
+   "allocated": 2,
+   "consumed": 0,
+   "remaining": 2
+  },
+  "proposal.reuse-cycle-allocation.20261016T103037.963Z": {
+   "allocated": 1,
+   "consumed": 1,
+   "remaining": 0
+  },
+  "proposal.reuse-cycle-allocation.20261016T103302.399Z": {
+   "allocated": 1,
+   "consumed": 1,
+   "remaining": 0
+  }
+ },
+ "scope_note": "demonstrates the single recorded cycle only; no unlimited self-improvement and no universal physical accuracy are claimed"
+}

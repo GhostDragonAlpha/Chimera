@@ -15,7 +15,7 @@
    "source": "E:\\PythonChimera\\tools\\reference_data\\data\\reference_store.json",
    "sha256": "12e9824123cac48fff41b8281a0b62efb2a643deefef6201512fbb3e34d8618f"
   },
-  "saved_utc": "2026-10-16T07:56:08+00:00",
+  "saved_utc": "2026-10-16T10:40:34+00:00",
   "loaded_schema_version": "2.0.0"
  },
  "objects": {
@@ -603337,6 +603337,36 @@
     "anchored_to": "work.mechanism-factory-patch-equilibrium"
    },
    "notes": "Lossless imported version; not a verified claim or instruction."
+  },
+  "research.proposal.pchip-holds-the-gate.20261016T103302.208Z": {
+   "id": "research.proposal.pchip-holds-the-gate.20261016T103302.208Z",
+   "kind": "work",
+   "name": "Research record (proposal): Can a bounded interpolant hold the packet's 1e-6 N interpolation gate better than the REJECTED piecewise-linea",
+   "status": "specified",
+   "priority": "P2",
+   "dependencies": [],
+   "evidence": [],
+   "attachments": [],
+   "enables": [],
+   "notes": "11.19 research record, schema chimera-mechanism-factory-research-record-v1, retained at docs/evidence/mechanism_factory/research/proposal.pchip-holds-the-gate.20261016T103302.208Z.json; attached through the EXISTING intake-proposal path (graph_apply provenance law: derived_from edges only). The graph has NO dedicated proposal kind; kind=work (the implementation queue) is the honest carrier for open question records; outcome records (experiment/method_comparison/stop) stay file-level because graph_apply refuses evidence-kind objects (workflow_evidence_requires_measurement_api).",
+   "provenance": {
+    "source": "research_record.py record layer; plan section 11.19 implementation clause (GAME_PLAN_ACTION_RPG.md lines 2360-2373); record file cited in notes"
+   }
+  },
+  "research.followup.star-scale-drift.20261016T103302.580Z": {
+   "id": "research.followup.star-scale-drift.20261016T103302.580Z",
+   "kind": "work",
+   "name": "Research record (followup): Why does the star's stagnation residual grow ~linearly with rigid scale (measured 1.15e-7 N at 0.5x, 5.9e-7 at",
+   "status": "specified",
+   "priority": "P2",
+   "dependencies": [],
+   "evidence": [],
+   "attachments": [],
+   "enables": [],
+   "notes": "11.19 research record, schema chimera-mechanism-factory-research-record-v1, retained at docs/evidence/mechanism_factory/research/followup.star-scale-drift.20261016T103302.580Z.json; attached through the EXISTING intake-proposal path (graph_apply provenance law: derived_from edges only). The graph has NO dedicated proposal kind; kind=work (the implementation queue) is the honest carrier for open question records; outcome records (experiment/method_comparison/stop) stay file-level because graph_apply refuses evidence-kind objects (workflow_evidence_requires_measurement_api).",
+   "provenance": {
+    "source": "research_record.py record layer; plan section 11.19 implementation clause (GAME_PLAN_ACTION_RPG.md lines 2360-2373); record file cited in notes"
+   }
   }
  },
  "relations": [
@@ -667410,6 +667440,20 @@
    "rel": "attached_to",
    "dst": "work.mechanism-factory-patch-equilibrium",
    "note": "document subject anchor; location inherited"
+  },
+  {
+   "rid": "r_bd03c36ed310befefa0d2e13462c0ad0a9ea0fd53c217173fd4bf6aa31a91bff_0",
+   "src": "research.proposal.pchip-holds-the-gate.20261016T103302.208Z",
+   "rel": "derived_from",
+   "dst": "work.mechanism-factory-patch-equilibrium",
+   "note": "11.19 research record attached to the qualified work; record file proposal.pchip-holds-the-gate.20261016T103302.208Z.json"
+  },
+  {
+   "rid": "r_c414327c7af05fca7b1264811504295826a439c243565745fb2ec2c174373b93_0",
+   "src": "research.followup.star-scale-drift.20261016T103302.580Z",
+   "rel": "derived_from",
+   "dst": "work.mechanism-factory-patch-equilibrium",
+   "note": "11.19 research record attached to the qualified work; record file followup.star-scale-drift.20261016T103302.580Z.json"
   }
  ],
  "layout": {

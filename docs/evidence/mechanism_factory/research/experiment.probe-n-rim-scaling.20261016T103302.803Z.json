@@ -1,0 +1,16 @@
+{
+ "record_id": "experiment.probe-n-rim-scaling.20261016T103302.803Z",
+ "kind": "experiment",
+ "question": "does a finer n_rim lower the large-scale stagnation floor?",
+ "parent_evidence_ids": [
+  "composed_chain_receipt_20261016T092136.068087Z.json"
+ ],
+ "allocation_id": "proposal.allocation-1.20261016T103302.751Z",
+ "experiment_identity": "one CPU n_rim sweep at 2.0x",
+ "budget": {
+  "allocated": null,
+  "consumed": 1
+ },
+ "schema": "chimera-mechanism-factory-research-record-v1",
+ "utc": "2026-10-16T10:33:02.856711+00:00"
+}
