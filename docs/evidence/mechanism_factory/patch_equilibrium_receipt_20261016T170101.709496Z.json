@@ -1,0 +1,311 @@
+{
+ "schema": "chimera-mechanism-factory-patch-equilibrium-v1",
+ "utc": "2026-10-16T17:01:02.523225+00:00",
+ "what": "P1 reference layer (\u00a711.18): constant-gamma patch boundary/load equilibrium solve and its falsifier battery",
+ "law_reused": "U = sum gamma_t A_t (current-area, exact derivative), tools/membrane_scale_lab/surface_energy_reference.py",
+ "load_term_added": "U -= sum f_i . x_i (dead loads at named vertices; grad of load potential is -f)",
+ "solver_discipline": "monotone backtracking projected descent, P = 1/gamma_max, Armijo c1=1e-4, geometry gate = reference's own refusals (mirrors overdamped_descent.run_descent)",
+ "source_commit": "c4055cc4acae6a3d228eef6af254f00fdb2bf1ee",
+ "source_file_hashes": {
+  "tools/membrane_scale_lab/surface_energy_reference.py": "ee9effcfbddad8d02e03f71d414b27da177f0656de535eaab0d76ae39796f0b7",
+  "tools/membrane_scale_lab/overdamped_descent.py": "a940ac9da88a8852ee57709fe7a44df5469d418be73a75801ea7123d91d930f6",
+  "tools/membrane_scale_lab/fixture_generator.py": "1ebd13b9a659fd85d3ca1dacd29ee8f879636a8863ae836db1756b573ea5b260",
+  "tools/membrane_scale_lab/evidence_output.py": "201c200c6e682dbd1fdb8b44e50ae29c428de93e22b3310518c9ed068557dba2",
+  "tools/mechanism_factory/patch_equilibrium.py": "4007e23217ddedc4963b1e92b68f213a20fe402b32da2aef1bffdff8b6e15b40",
+  "tools/mechanism_factory/patch_equilibrium_checks.py": "1ae4417bb4792ee28b4ad225a9d4b33f6fbcb8e7d8a1e92829db633945a6746c"
+ },
+ "preregistered_allowances": {
+  "C1_residual_tol": 1e-06,
+  "C1_identity_tol": 1e-06,
+  "C2_energy_equiv_tol": 1e-09,
+  "C2_stationary_agree": true,
+  "C3_force_balance_tol": 1e-06,
+  "C3_moment_balance_tol": 1e-06,
+  "C4_asymmetry_margin": 0.1,
+  "C6_not_stationary": true,
+  "C6_unconverged_residual_floor": 0.001
+ },
+ "solver_constants": {
+  "kind": "numerical_algorithm_choices_not_physical_constants",
+  "imported_from": "tools/membrane_scale_lab/overdamped_descent.py",
+  "ARMIJO_C1": 0.0001,
+  "BACKTRACK_FACTOR": 0.5,
+  "MAX_BACKTRACKS": 50,
+  "GUARD_FRAC": 0.001,
+  "RESIDUAL_TOL_FRAC": 1e-12,
+  "STAGNATION_FRAC": 8.0,
+  "DEFAULT_MAX_STEPS": 200
+ },
+ "units": {
+  "positions": "wu",
+  "gamma": "J/wu^2",
+  "loads": "J/wu",
+  "energy": "J",
+  "residual": "wu"
+ },
+ "checks": {
+  "C1_analytic_anchor": {
+   "pass": true
+  },
+  "C2_zero_load_equivalence": {
+   "pass": true
+  },
+  "C3_balance_identity": {
+   "pass": true
+  },
+  "C4_asymmetry_real": {
+   "pass": true
+  },
+  "C5_refusals": {
+   "pass": true
+  },
+  "C6_convergence_honesty": {
+   "pass": true
+  }
+ },
+ "cases": {
+  "C1_single_triangle_anchor": {
+   "pass": true,
+   "allowances": {
+    "residual": 1e-06,
+    "identity": 1e-06
+   },
+   "measured": {
+    "status": "stagnated",
+    "free_residual": 2.4002786909883337e-09,
+    "normal_dot_fhat": 4.800557381976667e-09,
+    "height_cross_fhat": 4.800557381976667e-09,
+    "Rb_vs_heron_fd": 2.432091188998646e-11,
+    "Rc_vs_heron_fd": 1.744983231435622e-11,
+    "reaction_sum_identity": 2.4002786909883337e-09
+   },
+   "reactions": [
+    [
+     -0.225055895668045,
+     -1.2001393454941668e-09,
+     -0.25
+    ],
+    [
+     0.225055895668045,
+     -1.2001393454941668e-09,
+     -0.25
+    ]
+   ],
+   "final_positions": [
+    [
+     -0.5,
+     0.0,
+     0.0
+    ],
+    [
+     0.5,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     2.160787482613208e-09,
+     0.45011179133609
+    ]
+   ]
+  },
+  "C2_zero_load_equivalence": {
+   "pass": true,
+   "allowances": {
+    "energy": 1e-09,
+    "residual": 1e-12
+   },
+   "measured": {
+    "flat_disk": {
+     "lab_status": "stationary",
+     "mine_status": "stationary",
+     "dE": 0.0,
+     "d_residual": 0.0,
+     "lab_residual": 8.326672684688674e-17
+    },
+    "bump_disk": {
+     "lab_status": "stagnated",
+     "mine_status": "stagnated",
+     "dE": 0.0,
+     "d_residual": 0.0,
+     "lab_residual": 1.8607747841117301e-09
+    }
+   }
+  },
+  "C3_asymmetric_composite": {
+   "pass": true,
+   "status": "stagnated",
+   "free_residual": 3.091456424186845e-07,
+   "steps": 534,
+   "force_balance": 3.537747603477026e-07,
+   "moment_balance": 3.1833736723933097e-07,
+   "force_balance_tol": 1e-06,
+   "moment_balance_tol": 1e-06,
+   "reactions": [
+    [
+     0.8660260820629664,
+     -0.0,
+     0.025000006916401345
+    ],
+    [
+     0.43301304103148325,
+     0.7500005874064358,
+     0.025000006916401377
+    ],
+    [
+     -0.43301304103148314,
+     0.7500005874064359,
+     0.025000006916401384
+    ],
+    [
+     -0.8660260820629664,
+     3.3306690738754696e-16,
+     0.025000006916401345
+    ],
+    [
+     -0.4330130410314833,
+     -0.750000587406436,
+     0.025000006916401314
+    ],
+    [
+     0.4330130410314832,
+     -0.750000587406436,
+     0.02500000691640132
+    ],
+    [
+     0.6657397519868435,
+     -1.1102230246251565e-16,
+     -0.015999938170871527
+    ],
+    [
+     0.20572489719489737,
+     0.633156129283807,
+     -0.01599993817087152
+    ],
+    [
+     -0.5385947731883192,
+     0.3913120080827154,
+     -0.01599993817087151
+    ],
+    [
+     -0.5385947731883192,
+     -0.39131200808271527,
+     -0.015999938170871513
+    ],
+    [
+     0.2057248971948973,
+     -0.633156129283807,
+     -0.015999938170871524
+    ],
+    [
+     0.6010409280907596,
+     -1.1102230246251565e-16,
+     0.012500000391338726
+    ],
+    [
+     0.4250001160236322,
+     0.4250001160236322,
+     0.012500000391338724
+    ],
+    [
+     -0.0,
+     0.6010409280907596,
+     0.012500000391338733
+    ],
+    [
+     -0.42500011602363214,
+     0.4250001160236322,
+     0.01250000039133873
+    ],
+    [
+     -0.6010409280907596,
+     1.1102230246251565e-16,
+     0.012500000391338733
+    ],
+    [
+     -0.4250001160236323,
+     -0.42500011602363214,
+     0.012500000391338728
+    ],
+    [
+     -1.1102230246251565e-16,
+     -0.6010409280907596,
+     0.012500000391338719
+    ],
+    [
+     0.42500011602363225,
+     -0.42500011602363225,
+     0.01250000039133873
+    ]
+   ],
+   "fixture": {
+    "n_vertices": 22,
+    "n_faces": 19,
+    "pin_set": "all rim vertices of three apex fans (6+5+8 = 19 pins), apexes free",
+    "loads": [
+     [
+      6,
+      [
+       0.0,
+       0.0,
+       -0.15
+      ]
+     ],
+     [
+      12,
+      [
+       0.0,
+       0.0,
+       0.08
+      ]
+     ],
+     [
+      21,
+      [
+       0.0,
+       0.0,
+       -0.1
+      ]
+     ]
+    ]
+   }
+  },
+  "C4_asymmetry": {
+   "pass": true,
+   "block_mean_reaction_norms": {
+    "block0_6rim": 0.8663868507538375,
+    "block1_5rim": 0.6659319900687874,
+    "block2_8rim": 0.6083665738968965
+   },
+   "margin": 0.29781185694639667,
+   "margin_required": 0.1,
+   "load_magnitudes": [
+    0.08,
+    0.1,
+    0.15
+   ]
+  },
+  "C6_honesty": {
+   "pass": true,
+   "floor": 0.001,
+   "measured": {
+    "overload": {
+     "status": "step_limit",
+     "free_residual": 0.10507385186728285,
+     "steps": 400
+    },
+    "partial_rim": {
+     "status": "step_limit",
+     "free_residual": 0.2967910819788033,
+     "steps": 1500
+    },
+    "control": {
+     "status": "stagnated",
+     "free_residual": 3.091456424186845e-07,
+     "steps": 534
+    }
+   },
+   "note": "partial-rim non-convergence is PHYSICS under the pure area law (free boundary carries line tension gamma), not a solver defect -- reported as stagnation/step_limit"
+  }
+ }
+}

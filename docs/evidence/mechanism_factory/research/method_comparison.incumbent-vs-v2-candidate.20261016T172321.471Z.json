@@ -1,0 +1,30 @@
+{
+ "record_id": "method_comparison.incumbent-vs-v2-candidate.20261016T172321.471Z",
+ "kind": "method_comparison",
+ "question": "can better convergence machinery bring the star's 1.5x/2.0x residuals under the packet's unchanged 1e-6 N law, and does the piece ladder reach tol_u -- with converged answers unchanged?",
+ "parent_evidence_ids": [
+  "solver_method_comparison_20261016T171921.421472Z.json",
+  "composed_chain_receipt_20261016T092136.068087Z.json",
+  "scale_resolution_study_checks_20261016T145149.987Z.json",
+  "composed_qualification_receipt_20261016T075201.116240Z.json",
+  "experiment.star-scale-drift-verdict.20261016T154607.994Z.json"
+ ],
+ "alternatives": [
+  "incumbent (pinned): scalar P=1/gamma_max gradient descent, energy-scale stagnation trigger",
+  "candidate (patch-equilibrium-solver-v2-candidate): incumbent verbatim on law-passing terminations; Newton-by-FD-diagonal continuation on the FREE vertices with restart-on-stall, an energy guard at the incumbent's own machine-scale noise constant and residual-nonincrease acceptance"
+ ],
+ "experiment_identity": "frozen suite, 31 cases (13 qualification + 6 P1 + 2 composed + 2 star + 5 S1 matched + 2 star-drift + 1 C6 control), matched budgets (same max_steps and wall cap per case)",
+ "result": "regression guard: on every law-passing case (27) the candidate's reactions are bit-identical (max shift 0.0e+00 N <= the 1e-9 bound). STAR: the candidate brings 1.5x/2.0x from 1.45e-6/2.49e-6 N (incumbent stagnation) to 1.03e-13; 2.00e-13 N (stationary at the incumbent's own residual scale) -- UNDER the unchanged law; the drift was the incumbent solver's machinery floor, not a law-level impossibility. LADDER: does NOT reach tol_u -- the gap is discretization (forced tightening shifts apex_z ~1e-8 wu, three orders below the finest dz). NO-EQUILIBRIUM HONESTY: the overload and partial-rim witnesses stay honestly over the law (budget-exhausted, bit-identical).",
+ "cost": {
+  "kind": "cpu_wall_s",
+  "value": 217.77151469993987
+ },
+ "applicability": "the same interface, statuses and refusals; judged by the packet's unchanged 1e-6 N law; NOT ADOPTED -- no chain regeneration, no pin changes, no piece-record edits; adoption comes back to the coordinator with this comparison as evidence",
+ "next_questions": [
+  "adopt or not: the candidate beats the incumbent on the drifted scales with zero regression -- the adoption decision is the coordinator's",
+  "if adopted: re-run the S1 star drift block under the candidate to regenerate the drift finding"
+ ],
+ "independent_status": "the suite is deterministic; the incumbent's fresh results reproduce the pinned receipts (check (f)); the candidate's results are hash-verified (check (e))",
+ "schema": "chimera-mechanism-factory-research-record-v1",
+ "utc": "2026-10-16T17:23:21.751050+00:00"
+}

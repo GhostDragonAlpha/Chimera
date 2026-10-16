@@ -1,0 +1,16 @@
+{
+ "record_id": "experiment.seam-refinement-allocated.20261016T170152.141Z",
+ "kind": "experiment",
+ "question": "does seam refinement lower the floor?",
+ "parent_evidence_ids": [
+  "experiment.probe-n-rim-scaling.20261016T170151.986Z.json"
+ ],
+ "allocation_id": "proposal.allocation-2.20261016T170152.091Z",
+ "experiment_identity": "one CPU seam-refinement probe",
+ "budget": {
+  "allocated": null,
+  "consumed": 1
+ },
+ "schema": "chimera-mechanism-factory-research-record-v1",
+ "utc": "2026-10-16T17:01:52.194463+00:00"
+}

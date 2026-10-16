@@ -1,0 +1,938 @@
+{
+ "schema": "chimera-mechanism-factory-solver-method-comparison-v1",
+ "utc": "2026-10-16T16:58:41.813516+00:00",
+ "what": "11.19 method comparison on the frozen suite: the pinned incumbent solver vs the v2 candidate (patch-equilibrium-solver-v2-candidate), matched budgets, judged by the packet's unchanged 1e-6 N free-residual law",
+ "candidate_id": "patch-equilibrium-solver-v2-candidate",
+ "source_commit": "c4055cc4acae6a3d228eef6af254f00fdb2bf1ee",
+ "source_file_hashes": {
+  "tools/membrane_scale_lab/surface_energy_reference.py": "ee9effcfbddad8d02e03f71d414b27da177f0656de535eaab0d76ae39796f0b7",
+  "tools/membrane_scale_lab/overdamped_descent.py": "a940ac9da88a8852ee57709fe7a44df5469d418be73a75801ea7123d91d930f6",
+  "tools/membrane_scale_lab/fixture_generator.py": "1ebd13b9a659fd85d3ca1dacd29ee8f879636a8863ae836db1756b573ea5b260",
+  "tools/mechanism_factory/patch_equilibrium.py": "4007e23217ddedc4963b1e92b68f213a20fe402b32da2aef1bffdff8b6e15b40",
+  "tools/mechanism_factory/qualification_receipt.py": "d4fcb57d2d923463d275b47f12b6ebbfd3f2c70185ad30b9725ed283fb886689",
+  "tools/mechanism_factory/receipt_adapter.py": "b452511a092ac83e8f7c530c7c9101706381b09ff30adf6a9ae84c392645d015",
+  "tools/mechanism_factory/composed_patch.py": "12d4c08b9fcc1b7b294b1cfd2c522af27b664e486e42c91e28f2e97b9d37d662",
+  "tools/mechanism_factory/composed_patch_checks.py": "569a447de2d9370c0418d5ebf19da8370f61460fc71df790080969fd5b562a3b"
+ },
+ "packet_sha256": "75e24523dc1cb002e4b0fbc3de811e1d4c7eec76e887e70d209e56ee320f0a0d",
+ "units": {
+  "length": "m",
+  "force": "N",
+  "energy": "J"
+ },
+ "preregistered_allowances": {
+  "packet_law_free_residual_N": 1e-06,
+  "regression_bound_N": 1e-09,
+  "wall_cap_s": 120.0,
+  "receipt_reproduction_rel": 1e-12
+ },
+ "budget_law": "matched budgets: both arms get the case's own frozen max_steps and the same wall cap; unequal budgets are refused (budget_mismatch)",
+ "rows": [
+  {
+   "case_id": "fan-full-rim-pin_seed1",
+   "source_receipt": "qualification_receipt_20261016T075038.618903Z.json",
+   "recorded_free_residual_N": 5.628603916285613e-08,
+   "reactions_max_abs_diff_N": 0.0,
+   "positions_max_abs_diff_wu": 0.0,
+   "incumbent_under_packet_law": true,
+   "candidate_under_packet_law": true,
+   "incumbent": {
+    "status": "stagnated",
+    "free_residual_N": 5.628603916285613e-08,
+    "energy_J": 3.0375180261728745,
+    "wall_s": 3.219856499999878,
+    "max_steps": 60000
+   },
+   "candidate": {
+    "status": "stagnated",
+    "free_residual_N": 5.628603916285613e-08,
+    "energy_J": 3.0375180261728745,
+    "wall_s": 3.229489700002887,
+    "max_steps": 60000,
+    "solution_hash": "1583fadd25c18c1a",
+    "phase2": "not_engaged"
+   }
+  },
+  {
+   "case_id": "fan-full-rim-pin-alt-geometry_seed7",
+   "source_receipt": "qualification_receipt_20261016T075038.618903Z.json",
+   "recorded_free_residual_N": 3.3832969981162364e-08,
+   "reactions_max_abs_diff_N": 0.0,
+   "positions_max_abs_diff_wu": 0.0,
+   "incumbent_under_packet_law": true,
+   "candidate_under_packet_law": true,
+   "incumbent": {
+    "status": "stagnated",
+    "free_residual_N": 3.3832969981162364e-08,
+    "energy_J": 1.9522135954110886,
+    "wall_s": 5.5865637000024435,
+    "max_steps": 60000
+   },
+   "candidate": {
+    "status": "stagnated",
+    "free_residual_N": 3.3832969981162364e-08,
+    "energy_J": 1.9522135954110886,
+    "wall_s": 5.620895299995027,
+    "max_steps": 60000,
+    "solution_hash": "5c22539d29e410b8",
+    "phase2": "not_engaged"
+   }
+  },
+  {
+   "case_id": "fan-full-rim-pin-alt-load_seed13",
+   "source_receipt": "qualification_receipt_20261016T075038.618903Z.json",
+   "recorded_free_residual_N": 3.568881568050131e-08,
+   "reactions_max_abs_diff_N": 0.0,
+   "positions_max_abs_diff_wu": 0.0,
+   "incumbent_under_packet_law": true,
+   "candidate_under_packet_law": true,
+   "incumbent": {
+    "status": "stagnated",
+    "free_residual_N": 3.568881568050131e-08,
+    "energy_J": 4.326526899890225,
+    "wall_s": 4.651969099999405,
+    "max_steps": 60000
+   },
+   "candidate": {
+    "status": "stagnated",
+    "free_residual_N": 3.568881568050131e-08,
+    "energy_J": 4.326526899890225,
+    "wall_s": 4.664775400000508,
+    "max_steps": 60000,
+    "solution_hash": "39c1110c70f19f7b",
+    "phase2": "not_engaged"
+   }
+  },
+  {
+   "case_id": "fan-full-rim-pin_m0.40_qcases",
+   "source_receipt": "qualification_receipt_20261016T075137.420787Z.json",
+   "recorded_free_residual_N": 7.97736993130016e-08,
+   "reactions_max_abs_diff_N": 0.0,
+   "positions_max_abs_diff_wu": 0.0,
+   "incumbent_under_packet_law": true,
+   "candidate_under_packet_law": true,
+   "incumbent": {
+    "status": "stagnated",
+    "free_residual_N": 7.97736993130016e-08,
+    "energy_J": 3.115509161246832,
+    "wall_s": 2.4664578000010806,
+    "max_steps": 60000
+   },
+   "candidate": {
+    "status": "stagnated",
+    "free_residual_N": 7.97736993130016e-08,
+    "energy_J": 3.115509161246832,
+    "wall_s": 2.5581993000014336,
+    "max_steps": 60000,
+    "solution_hash": "f32190ab9cdb6fec",
+    "phase2": "not_engaged"
+   }
+  },
+  {
+   "case_id": "fan-full-rim-pin_m0.80_qcases",
+   "source_receipt": "qualification_receipt_20261016T075137.420787Z.json",
+   "recorded_free_residual_N": 5.628603916285613e-08,
+   "reactions_max_abs_diff_N": 0.0,
+   "positions_max_abs_diff_wu": 0.0,
+   "incumbent_under_packet_law": true,
+   "candidate_under_packet_law": true,
+   "incumbent": {
+    "status": "stagnated",
+    "free_residual_N": 5.628603916285613e-08,
+    "energy_J": 3.0375180261728745,
+    "wall_s": 3.2588548000057926,
+    "max_steps": 60000
+   },
+   "candidate": {
+    "status": "stagnated",
+    "free_residual_N": 5.628603916285613e-08,
+    "energy_J": 3.0375180261728745,
+    "wall_s": 3.2305712000015774,
+    "max_steps": 60000,
+    "solution_hash": "1583fadd25c18c1a",
+    "phase2": "not_engaged"
+   }
+  },
+  {
+   "case_id": "fan-full-rim-pin_m1.20_qcases",
+   "source_receipt": "qualification_receipt_20261016T075137.420787Z.json",
+   "recorded_free_residual_N": 2.2260842058585695e-08,
+   "reactions_max_abs_diff_N": 0.0,
+   "positions_max_abs_diff_wu": 0.0,
+   "incumbent_under_packet_law": true,
+   "candidate_under_packet_law": true,
+   "incumbent": {
+    "status": "stagnated",
+    "free_residual_N": 2.2260842058585695e-08,
+    "energy_J": 2.90288014481805,
+    "wall_s": 4.133360799998627,
+    "max_steps": 60000
+   },
+   "candidate": {
+    "status": "stagnated",
+    "free_residual_N": 2.2260842058585695e-08,
+    "energy_J": 2.90288014481805,
+    "wall_s": 4.134837300000072,
+    "max_steps": 60000,
+    "solution_hash": "0e51ff155f082da7",
+    "phase2": "not_engaged"
+   }
+  },
+  {
+   "case_id": "fan-full-rim-pin_m1.60_qcases",
+   "source_receipt": "qualification_receipt_20261016T075137.420787Z.json",
+   "recorded_free_residual_N": 2.4271919363272332e-08,
+   "reactions_max_abs_diff_N": 0.0,
+   "positions_max_abs_diff_wu": 0.0,
+   "incumbent_under_packet_law": true,
+   "candidate_under_packet_law": true,
+   "incumbent": {
+    "status": "stagnated",
+    "free_residual_N": 2.4271919363272332e-08,
+    "energy_J": 2.703144365618317,
+    "wall_s": 5.161902299994836,
+    "max_steps": 60000
+   },
+   "candidate": {
+    "status": "stagnated",
+    "free_residual_N": 2.4271919363272332e-08,
+    "energy_J": 2.703144365618317,
+    "wall_s": 5.145956899999874,
+    "max_steps": 60000,
+    "solution_hash": "a0f345c9090f7418",
+    "phase2": "not_engaged"
+   }
+  },
+  {
+   "case_id": "fan-full-rim-pin_m2.00_qcases",
+   "source_receipt": "qualification_receipt_20261016T075137.420787Z.json",
+   "recorded_free_residual_N": 2.1985040010719104e-08,
+   "reactions_max_abs_diff_N": 0.0,
+   "positions_max_abs_diff_wu": 0.0,
+   "incumbent_under_packet_law": true,
+   "candidate_under_packet_law": true,
+   "incumbent": {
+    "status": "stagnated",
+    "free_residual_N": 2.1985040010719104e-08,
+    "energy_J": 2.422260253959249,
+    "wall_s": 6.537705299997469,
+    "max_steps": 60000
+   },
+   "candidate": {
+    "status": "stagnated",
+    "free_residual_N": 2.1985040010719104e-08,
+    "energy_J": 2.422260253959249,
+    "wall_s": 6.520966999996745,
+    "max_steps": 60000,
+    "solution_hash": "1e090cf49f3589c5",
+    "phase2": "not_engaged"
+   }
+  },
+  {
+   "case_id": "fan-full-rim-pin-alt-geometry_m0.20_qcases",
+   "source_receipt": "qualification_receipt_20261016T075137.420787Z.json",
+   "recorded_free_residual_N": 9.808411735590106e-08,
+   "reactions_max_abs_diff_N": 0.0,
+   "positions_max_abs_diff_wu": 0.0,
+   "incumbent_under_packet_law": true,
+   "candidate_under_packet_law": true,
+   "incumbent": {
+    "status": "stagnated",
+    "free_residual_N": 9.808411735590106e-08,
+    "energy_J": 2.003970100239398,
+    "wall_s": 4.637270599996555,
+    "max_steps": 60000
+   },
+   "candidate": {
+    "status": "stagnated",
+    "free_residual_N": 9.808411735590106e-08,
+    "energy_J": 2.003970100239398,
+    "wall_s": 4.55927050000173,
+    "max_steps": 60000,
+    "solution_hash": "33f949f999a5590f",
+    "phase2": "not_engaged"
+   }
+  },
+  {
+   "case_id": "fan-full-rim-pin-alt-geometry_m0.60_qcases",
+   "source_receipt": "qualification_receipt_20261016T075137.420787Z.json",
+   "recorded_free_residual_N": 3.3832969981162364e-08,
+   "reactions_max_abs_diff_N": 0.0,
+   "positions_max_abs_diff_wu": 0.0,
+   "incumbent_under_packet_law": true,
+   "candidate_under_packet_law": true,
+   "incumbent": {
+    "status": "stagnated",
+    "free_residual_N": 3.3832969981162364e-08,
+    "energy_J": 1.9522135954110886,
+    "wall_s": 5.658946000003198,
+    "max_steps": 60000
+   },
+   "candidate": {
+    "status": "stagnated",
+    "free_residual_N": 3.3832969981162364e-08,
+    "energy_J": 1.9522135954110886,
+    "wall_s": 5.685452699995949,
+    "max_steps": 60000,
+    "solution_hash": "5c22539d29e410b8",
+    "phase2": "not_engaged"
+   }
+  },
+  {
+   "case_id": "fan-full-rim-pin-alt-geometry_m1.00_qcases",
+   "source_receipt": "qualification_receipt_20261016T075137.420787Z.json",
+   "recorded_free_residual_N": 6.659951079512894e-08,
+   "reactions_max_abs_diff_N": 0.0,
+   "positions_max_abs_diff_wu": 0.0,
+   "incumbent_under_packet_law": true,
+   "candidate_under_packet_law": true,
+   "incumbent": {
+    "status": "stagnated",
+    "free_residual_N": 6.659951079512894e-08,
+    "energy_J": 1.8443485139790363,
+    "wall_s": 6.896237600005406,
+    "max_steps": 60000
+   },
+   "candidate": {
+    "status": "stagnated",
+    "free_residual_N": 6.659951079512894e-08,
+    "energy_J": 1.8443485139790363,
+    "wall_s": 6.921060200002103,
+    "max_steps": 60000,
+    "solution_hash": "c6d856ff4cbcf44e",
+    "phase2": "not_engaged"
+   }
+  },
+  {
+   "case_id": "fan-full-rim-pin-alt-geometry_m1.40_qcases",
+   "source_receipt": "qualification_receipt_20261016T075137.420787Z.json",
+   "recorded_free_residual_N": 1.1943443523065866e-07,
+   "reactions_max_abs_diff_N": 0.0,
+   "positions_max_abs_diff_wu": 0.0,
+   "incumbent_under_packet_law": true,
+   "candidate_under_packet_law": true,
+   "incumbent": {
+    "status": "stagnated",
+    "free_residual_N": 1.1943443523065866e-07,
+    "energy_J": 1.6695348811509958,
+    "wall_s": 8.582485500002804,
+    "max_steps": 60000
+   },
+   "candidate": {
+    "status": "stagnated",
+    "free_residual_N": 1.1943443523065866e-07,
+    "energy_J": 1.6695348811509958,
+    "wall_s": 8.541575600000215,
+    "max_steps": 60000,
+    "solution_hash": "99bf9040b652a993",
+    "phase2": "not_engaged"
+   }
+  },
+  {
+   "case_id": "fan-full-rim-pin-alt-geometry_m1.80_qcases",
+   "source_receipt": "qualification_receipt_20261016T075137.420787Z.json",
+   "recorded_free_residual_N": 2.8139817143113532e-09,
+   "reactions_max_abs_diff_N": 0.0,
+   "positions_max_abs_diff_wu": 0.0,
+   "incumbent_under_packet_law": true,
+   "candidate_under_packet_law": true,
+   "incumbent": {
+    "status": "stagnated",
+    "free_residual_N": 2.8139817143113532e-09,
+    "energy_J": 1.4029660570368154,
+    "wall_s": 10.871551600001112,
+    "max_steps": 60000
+   },
+   "candidate": {
+    "status": "stagnated",
+    "free_residual_N": 2.8139817143113532e-09,
+    "energy_J": 1.4029660570368154,
+    "wall_s": 10.778866200002085,
+    "max_steps": 60000,
+    "solution_hash": "8fe8ee4d88cecb42",
+    "phase2": "not_engaged"
+   }
+  },
+  {
+   "case_id": "P1_C1_anchor_triangle",
+   "source_receipt": "patch_equilibrium_receipt_20261016T145513.861919Z.json",
+   "recorded_free_residual_N": 2.4002786909883337e-09,
+   "reactions_max_abs_diff_N": 0.0,
+   "positions_max_abs_diff_wu": 0.0,
+   "incumbent_under_packet_law": true,
+   "candidate_under_packet_law": true,
+   "incumbent": {
+    "status": "stagnated",
+    "free_residual_N": 2.4002786909883337e-09,
+    "energy_J": 0.0,
+    "wall_s": 0.05611740000313148,
+    "max_steps": 5000
+   },
+   "candidate": {
+    "status": "stagnated",
+    "free_residual_N": 2.4002786909883337e-09,
+    "energy_J": 0.0,
+    "wall_s": 0.05915580000146292,
+    "max_steps": 5000,
+    "solution_hash": "84a1179fb8a356cd",
+    "phase2": "not_engaged"
+   }
+  },
+  {
+   "case_id": "P1_C2_flat_disk",
+   "source_receipt": "patch_equilibrium_receipt_20261016T145513.861919Z.json",
+   "recorded_free_residual_N": [
+    8.326672684688674e-17,
+    0.0
+   ],
+   "reactions_max_abs_diff_N": 0.0,
+   "positions_max_abs_diff_wu": 0.0,
+   "incumbent_under_packet_law": true,
+   "candidate_under_packet_law": true,
+   "incumbent": {
+    "status": "stationary",
+    "free_residual_N": 8.326672684688674e-17,
+    "energy_J": 2.82842712474619,
+    "wall_s": 0.0003452000019024126,
+    "max_steps": 2000
+   },
+   "candidate": {
+    "status": "stationary",
+    "free_residual_N": 8.326672684688674e-17,
+    "energy_J": 2.82842712474619,
+    "wall_s": 0.00030329999572131783,
+    "max_steps": 2000,
+    "solution_hash": "6a4c29a5d6655b1b",
+    "phase2": "not_engaged"
+   }
+  },
+  {
+   "case_id": "P1_C2_bump_disk",
+   "source_receipt": "patch_equilibrium_receipt_20261016T145513.861919Z.json",
+   "recorded_free_residual_N": [
+    1.8607747841117301e-09,
+    0.0
+   ],
+   "reactions_max_abs_diff_N": 0.0,
+   "positions_max_abs_diff_wu": 0.0,
+   "incumbent_under_packet_law": true,
+   "candidate_under_packet_law": true,
+   "incumbent": {
+    "status": "stagnated",
+    "free_residual_N": 1.8607747841117301e-09,
+    "energy_J": 2.8284271247461907,
+    "wall_s": 0.05411259999527829,
+    "max_steps": 2000
+   },
+   "candidate": {
+    "status": "stagnated",
+    "free_residual_N": 1.8607747841117301e-09,
+    "energy_J": 2.8284271247461907,
+    "wall_s": 0.055259900000237394,
+    "max_steps": 2000,
+    "solution_hash": "8fd018fdfc0859bc",
+    "phase2": "not_engaged"
+   }
+  },
+  {
+   "case_id": "P1_C3_asymmetric_composite",
+   "source_receipt": "patch_equilibrium_receipt_20261016T145513.861919Z.json",
+   "recorded_free_residual_N": null,
+   "reactions_max_abs_diff_N": 0.0,
+   "positions_max_abs_diff_wu": 0.0,
+   "incumbent_under_packet_law": true,
+   "candidate_under_packet_law": true,
+   "incumbent": {
+    "status": "stagnated",
+    "free_residual_N": 3.091456424186845e-07,
+    "energy_J": 5.788018755250421,
+    "wall_s": 0.0751313000000664,
+    "max_steps": 6000
+   },
+   "candidate": {
+    "status": "stagnated",
+    "free_residual_N": 3.091456424186845e-07,
+    "energy_J": 5.788018755250421,
+    "wall_s": 0.07643519999692217,
+    "max_steps": 6000,
+    "solution_hash": "5321128406205823",
+    "phase2": "not_engaged"
+   }
+  },
+  {
+   "case_id": "P1_C6_overload_no_equilibrium",
+   "source_receipt": "patch_equilibrium_receipt_20261016T145513.861919Z.json",
+   "recorded_free_residual_N": 0.10507385186728285,
+   "reactions_max_abs_diff_N": 0.0,
+   "positions_max_abs_diff_wu": 0.0,
+   "incumbent_under_packet_law": false,
+   "candidate_under_packet_law": false,
+   "incumbent": {
+    "status": "step_limit",
+    "free_residual_N": 0.10507385186728285,
+    "energy_J": -0.05489422494994051,
+    "wall_s": 0.052600800001528114,
+    "max_steps": 400
+   },
+   "candidate": {
+    "status": "step_limit",
+    "free_residual_N": 0.10507385186728285,
+    "energy_J": -0.05489422494994051,
+    "wall_s": 0.0551262000008137,
+    "max_steps": 400,
+    "solution_hash": "93a136b85da41f44",
+    "phase2": "not_engaged_budget_exhausted"
+   }
+  },
+  {
+   "case_id": "P1_C6_partial_rim_no_equilibrium",
+   "source_receipt": "patch_equilibrium_receipt_20261016T145513.861919Z.json",
+   "recorded_free_residual_N": 0.2967910819788033,
+   "reactions_max_abs_diff_N": 0.0,
+   "positions_max_abs_diff_wu": 0.0,
+   "incumbent_under_packet_law": false,
+   "candidate_under_packet_law": false,
+   "incumbent": {
+    "status": "step_limit",
+    "free_residual_N": 0.2967910819788033,
+    "energy_J": 0.35012513768873477,
+    "wall_s": 0.21221620000142138,
+    "max_steps": 1500
+   },
+   "candidate": {
+    "status": "step_limit",
+    "free_residual_N": 0.2967910819788033,
+    "energy_J": 0.35012513768873477,
+    "wall_s": 0.21078420000412734,
+    "max_steps": 1500,
+    "solution_hash": "a94f718e739375e7",
+    "phase2": "not_engaged_budget_exhausted"
+   }
+  },
+  {
+   "case_id": "P1_C6_control_composite",
+   "source_receipt": "patch_equilibrium_receipt_20261016T145513.861919Z.json",
+   "recorded_free_residual_N": 3.091456424186845e-07,
+   "reactions_max_abs_diff_N": 0.0,
+   "positions_max_abs_diff_wu": 0.0,
+   "incumbent_under_packet_law": true,
+   "candidate_under_packet_law": true,
+   "incumbent": {
+    "status": "stagnated",
+    "free_residual_N": 3.091456424186845e-07,
+    "energy_J": 5.788018755250421,
+    "wall_s": 0.07484000000113156,
+    "max_steps": 6000
+   },
+   "candidate": {
+    "status": "stagnated",
+    "free_residual_N": 3.091456424186845e-07,
+    "energy_J": 5.788018755250421,
+    "wall_s": 0.07042369999544462,
+    "max_steps": 6000,
+    "solution_hash": "5321128406205823",
+    "phase2": "not_engaged"
+   }
+  },
+  {
+   "case_id": "composed-apex-weld-hourglass_scale1",
+   "source_receipt": "composed_qualification_receipt_20261016T075201.116240Z.json",
+   "recorded_free_residual_N": 5.317260087789322e-08,
+   "reactions_max_abs_diff_N": 0.0,
+   "positions_max_abs_diff_wu": 0.0,
+   "incumbent_under_packet_law": true,
+   "candidate_under_packet_law": true,
+   "incumbent": {
+    "status": "stagnated",
+    "free_residual_N": 5.317260087789322e-08,
+    "energy_J": 5.602681086523496,
+    "wall_s": 1.403560999999172,
+    "max_steps": 60000
+   },
+   "candidate": {
+    "status": "stagnated",
+    "free_residual_N": 5.317260087789322e-08,
+    "energy_J": 5.602681086523496,
+    "wall_s": 1.4455191000015475,
+    "max_steps": 60000,
+    "solution_hash": "495f352f0c407ed9",
+    "phase2": "not_engaged"
+   }
+  },
+  {
+   "case_id": "composed-apex-weld-hourglass_scale0.5",
+   "source_receipt": "composed_qualification_receipt_20261016T075201.116240Z.json",
+   "recorded_free_residual_N": 4.578090584406169e-08,
+   "reactions_max_abs_diff_N": 0.0,
+   "positions_max_abs_diff_wu": 0.0,
+   "incumbent_under_packet_law": true,
+   "candidate_under_packet_law": true,
+   "incumbent": {
+    "status": "stagnated",
+    "free_residual_N": 4.578090584406169e-08,
+    "energy_J": 1.4132885513064442,
+    "wall_s": 2.873335700001917,
+    "max_steps": 60000
+   },
+   "candidate": {
+    "status": "stagnated",
+    "free_residual_N": 4.578090584406169e-08,
+    "energy_J": 1.4132885513064442,
+    "wall_s": 2.86090040000272,
+    "max_steps": 60000,
+    "solution_hash": "4bc3d742399ada26",
+    "phase2": "not_engaged"
+   }
+  },
+  {
+   "case_id": "composed-apex-weld-fanout-star_scale1",
+   "source_receipt": "composed_chain_receipt_20261016T092136.068087Z.json",
+   "recorded_free_residual_N": 7.32231333233635e-07,
+   "reactions_max_abs_diff_N": 0.0,
+   "positions_max_abs_diff_wu": 0.0,
+   "incumbent_under_packet_law": true,
+   "candidate_under_packet_law": true,
+   "incumbent": {
+    "status": "stagnated",
+    "free_residual_N": 7.32231333233635e-07,
+    "energy_J": 6.54349627141125,
+    "wall_s": 0.28850080000120215,
+    "max_steps": 60000
+   },
+   "candidate": {
+    "status": "stagnated",
+    "free_residual_N": 7.32231333233635e-07,
+    "energy_J": 6.54349627141125,
+    "wall_s": 0.28141400000458816,
+    "max_steps": 60000,
+    "solution_hash": "ccf8775f62277283",
+    "phase2": "not_engaged"
+   }
+  },
+  {
+   "case_id": "composed-apex-weld-fanout-star_scale0.75",
+   "source_receipt": "composed_chain_receipt_20261016T092136.068087Z.json",
+   "recorded_free_residual_N": 3.359111495626621e-07,
+   "reactions_max_abs_diff_N": 0.0,
+   "positions_max_abs_diff_wu": 0.0,
+   "incumbent_under_packet_law": true,
+   "candidate_under_packet_law": true,
+   "incumbent": {
+    "status": "stagnated",
+    "free_residual_N": 3.359111495626621e-07,
+    "energy_J": 3.7206749455227683,
+    "wall_s": 0.9082434000010835,
+    "max_steps": 60000
+   },
+   "candidate": {
+    "status": "stagnated",
+    "free_residual_N": 3.359111495626621e-07,
+    "energy_J": 3.7206749455227683,
+    "wall_s": 0.9479876000041259,
+    "max_steps": 60000,
+    "solution_hash": "064feef08451d693",
+    "phase2": "not_engaged"
+   }
+  },
+  {
+   "case_id": "S1_matched_scale0.5_n300",
+   "source_receipt": "scale_resolution_study_checks_20261016T145149.987Z.json",
+   "recorded_free_residual_N": 1.442103547688589e-09,
+   "reactions_max_abs_diff_N": 0.0,
+   "positions_max_abs_diff_wu": 0.0,
+   "incumbent_under_packet_law": true,
+   "candidate_under_packet_law": true,
+   "incumbent": {
+    "status": "stagnated",
+    "free_residual_N": 1.442103547688589e-09,
+    "energy_J": 0.6758532622265241,
+    "wall_s": 8.791385500000615,
+    "max_steps": 60000
+   },
+   "candidate": {
+    "status": "stagnated",
+    "free_residual_N": 1.442103547688589e-09,
+    "energy_J": 0.6758532622265241,
+    "wall_s": 8.725858199999493,
+    "max_steps": 60000,
+    "solution_hash": "9549a37ea03d6a65",
+    "phase2": "not_engaged"
+   }
+  },
+  {
+   "case_id": "S1_matched_scale0.75_n300",
+   "source_receipt": "scale_resolution_study_checks_20261016T145149.987Z.json",
+   "recorded_free_residual_N": 2.0395983124643635e-08,
+   "reactions_max_abs_diff_N": 0.0,
+   "positions_max_abs_diff_wu": 0.0,
+   "incumbent_under_packet_law": true,
+   "candidate_under_packet_law": true,
+   "incumbent": {
+    "status": "stagnated",
+    "free_residual_N": 2.0395983124643635e-08,
+    "energy_J": 1.6620431450768371,
+    "wall_s": 6.4682654999996885,
+    "max_steps": 60000
+   },
+   "candidate": {
+    "status": "stagnated",
+    "free_residual_N": 2.0395983124643635e-08,
+    "energy_J": 1.6620431450768371,
+    "wall_s": 6.510910400000284,
+    "max_steps": 60000,
+    "solution_hash": "091b204c677b4bd0",
+    "phase2": "not_engaged"
+   }
+  },
+  {
+   "case_id": "S1_matched_scale1_n300",
+   "source_receipt": "scale_resolution_study_checks_20261016T145149.987Z.json",
+   "recorded_free_residual_N": 3.589328223529975e-08,
+   "reactions_max_abs_diff_N": 0.0,
+   "positions_max_abs_diff_wu": 0.0,
+   "incumbent_under_packet_law": true,
+   "candidate_under_packet_law": true,
+   "incumbent": {
+    "status": "stagnated",
+    "free_residual_N": 3.589328223529975e-08,
+    "energy_J": 3.037800449195373,
+    "wall_s": 5.562330000000657,
+    "max_steps": 60000
+   },
+   "candidate": {
+    "status": "stagnated",
+    "free_residual_N": 3.589328223529975e-08,
+    "energy_J": 3.037800449195373,
+    "wall_s": 5.564951899999869,
+    "max_steps": 60000,
+    "solution_hash": "83380e0a5a5012b9",
+    "phase2": "not_engaged"
+   }
+  },
+  {
+   "case_id": "S1_matched_scale1.5_n300",
+   "source_receipt": "scale_resolution_study_checks_20261016T145149.987Z.json",
+   "recorded_free_residual_N": 1.1342914130185733e-07,
+   "reactions_max_abs_diff_N": 0.0,
+   "positions_max_abs_diff_wu": 0.0,
+   "incumbent_under_packet_law": true,
+   "candidate_under_packet_law": true,
+   "incumbent": {
+    "status": "stagnated",
+    "free_residual_N": 1.1342914130185733e-07,
+    "energy_J": 6.965466598430875,
+    "wall_s": 4.625183500000276,
+    "max_steps": 60000
+   },
+   "candidate": {
+    "status": "stagnated",
+    "free_residual_N": 1.1342914130185733e-07,
+    "energy_J": 6.965466598430875,
+    "wall_s": 4.656458000004932,
+    "max_steps": 60000,
+    "solution_hash": "6898a47b3f3b8320",
+    "phase2": "not_engaged"
+   }
+  },
+  {
+   "case_id": "S1_matched_scale2_n300",
+   "source_receipt": "scale_resolution_study_checks_20261016T145149.987Z.json",
+   "recorded_free_residual_N": 2.098178697451658e-07,
+   "reactions_max_abs_diff_N": 0.0,
+   "positions_max_abs_diff_wu": 0.0,
+   "incumbent_under_packet_law": true,
+   "candidate_under_packet_law": true,
+   "incumbent": {
+    "status": "stagnated",
+    "free_residual_N": 2.098178697451658e-07,
+    "energy_J": 12.463180289582969,
+    "wall_s": 4.200791000002937,
+    "max_steps": 60000
+   },
+   "candidate": {
+    "status": "stagnated",
+    "free_residual_N": 2.098178697451658e-07,
+    "energy_J": 12.463180289582969,
+    "wall_s": 4.230557800001407,
+    "max_steps": 60000,
+    "solution_hash": "b5f625032d9f6fcf",
+    "phase2": "not_engaged"
+   }
+  },
+  {
+   "case_id": "S1_star_drift_scale1.5_n300",
+   "source_receipt": "scale_resolution_study_checks_20261016T145149.987Z.json",
+   "recorded_free_residual_N": 1.4477166740967107e-06,
+   "reactions_max_abs_diff_N": 1.7000143324313877e-09,
+   "positions_max_abs_diff_wu": 1.8781137306467244e-07,
+   "incumbent_under_packet_law": false,
+   "candidate_under_packet_law": true,
+   "incumbent": {
+    "status": "stagnated",
+    "free_residual_N": 1.4477166740967107e-06,
+    "energy_J": 14.542847896878026,
+    "wall_s": 0.6786359000034281,
+    "max_steps": 60000
+   },
+   "candidate": {
+    "status": "stationary",
+    "free_residual_N": 1.0336176359260207e-13,
+    "energy_J": 14.54284789687789,
+    "wall_s": 0.6906589999998687,
+    "max_steps": 60000,
+    "solution_hash": "e37c7665333fbafe",
+    "phase2": "engaged"
+   }
+  },
+  {
+   "case_id": "S1_star_drift_scale2_n300",
+   "source_receipt": "scale_resolution_study_checks_20261016T145149.987Z.json",
+   "recorded_free_residual_N": 2.486216315600309e-06,
+   "reactions_max_abs_diff_N": 2.856497829939464e-09,
+   "positions_max_abs_diff_wu": 3.1828736501982036e-07,
+   "incumbent_under_packet_law": false,
+   "candidate_under_packet_law": true,
+   "incumbent": {
+    "status": "stagnated",
+    "free_residual_N": 2.486216315600309e-06,
+    "energy_J": 25.678976519053467,
+    "wall_s": 1.251679900000454,
+    "max_steps": 60000
+   },
+   "candidate": {
+    "status": "stationary",
+    "free_residual_N": 1.9961809982760315e-13,
+    "energy_J": 25.67897651905307,
+    "wall_s": 1.25337700000091,
+    "max_steps": 60000,
+    "solution_hash": "f033d443c34ae4e4",
+    "phase2": "engaged"
+   }
+  }
+ ],
+ "checks": {
+  "a_regression_guard": {
+   "pass": true
+  },
+  "b_suite_completeness": {
+   "pass": true
+  },
+  "c_matched_budgets": {
+   "pass": true
+  },
+  "d_star_verdict_honest": {
+   "pass": true
+  },
+  "e_candidate_determinism": {
+   "pass": true
+  },
+  "f_incumbent_reproduces_receipts": {
+   "pass": true
+  }
+ },
+ "cases": {
+  "a_regression_guard": {
+   "pass": true,
+   "measured": {
+    "law_passing_cases": 27,
+    "max_reaction_shift_N": 0.0,
+    "max_position_shift_wu": 0.0,
+    "bound_N": 1e-09
+   }
+  },
+  "b_suite_completeness": {
+   "pass": true,
+   "measured": {
+    "cases": 31,
+    "expected": 31,
+    "unique": 31,
+    "both_arms_recorded": true,
+    "receipt_linked": true,
+    "by_family": {
+     "fan-full-rim-pin": 13,
+     "P1": 7,
+     "composed": 4,
+     "S1": 7
+    }
+   }
+  },
+  "c_matched_budgets": {
+   "pass": true,
+   "measured": {
+    "all_rows_equal_budgets": true,
+    "all_walls_within_cap": true,
+    "mismatch_refused_as": "budget_mismatch"
+   }
+  },
+  "d_star_verdict_honest": {
+   "pass": true,
+   "measured": {
+    "per_case": {
+     "S1_star_drift_scale1.5_n300": {
+      "incumbent_N": 1.4477166740967107e-06,
+      "candidate_N": 1.0336176359260207e-13,
+      "incumbent_under": false,
+      "candidate_under": true
+     },
+     "S1_star_drift_scale2_n300": {
+      "incumbent_N": 2.486216315600309e-06,
+      "candidate_N": 1.9961809982760315e-13,
+      "incumbent_under": false,
+      "candidate_under": true
+     }
+    },
+    "verdict_derived_from_flags": "candidate brings the star 1.5x/2.0x residuals UNDER the packet's unchanged 1e-6 N law"
+   }
+  },
+  "e_candidate_determinism": {
+   "pass": true,
+   "measured": {
+    "solution_hashes": {
+     "S1_star_drift_scale2_n300": "f033d443c34ae4e4",
+     "composed-apex-weld-hourglass_scale1": "495f352f0c407ed9",
+     "fan-full-rim-pin-alt-geometry_m1.40_qcases": "99bf9040b652a993"
+    }
+   }
+  },
+  "f_incumbent_reproduces_receipts": {
+   "pass": true,
+   "measured": {
+    "receipt_backed_cases": 30,
+    "mismatches": [],
+    "worst_relative": 0.0
+   }
+  }
+ },
+ "verdicts": {
+  "star_drift_question": {
+   "per_case": {
+    "S1_star_drift_scale1.5_n300": {
+     "incumbent_N": 1.4477166740967107e-06,
+     "candidate_N": 1.0336176359260207e-13,
+     "incumbent_status": "stagnated",
+     "candidate_status": "stationary",
+     "candidate_under_packet_law": true
+    },
+    "S1_star_drift_scale2_n300": {
+     "incumbent_N": 2.486216315600309e-06,
+     "candidate_N": 1.9961809982760315e-13,
+     "incumbent_status": "stagnated",
+     "candidate_status": "stationary",
+     "candidate_under_packet_law": true
+    }
+   },
+   "verdict": "under the packet's unchanged 1e-6 N law the candidate DOES bring the star 1.5x/2.0x residuals under: S1_star_drift_scale1.5_n300: 1.4477e-06 -> 1.0336e-13 N (stationary); S1_star_drift_scale2_n300: 2.4862e-06 -> 1.9962e-13 N (stationary)",
+   "interpretation": "the drift the S1 study measured at unchanged resolution was the INCUMBENT SOLVER's machine-scale stagnation floor (scalar 1/gamma_max preconditioning vs soft directions), not a law-level impossibility; the S1 receipt stands append-only and is revised by THIS record for the machinery question"
+  },
+  "ladder_tol_u_question": {
+   "verdict": "the piece-level convergence ladder does NOT reach tol_u = 1e-6 wu, with the candidate either: the qualified candidate never engages on the piece (every S1 piece cell already satisfies the packet's law; regression guard max shift 0.0e+00 N, bit-exact), and the forced-continuation DIAGNOSTIC on the 1.0x matched cells tightens the solves to ~1e-15 N and shifts apex_z by only 1.3e-8..2.9e-8 wu -- three orders below the ladder's finest dz 1.16e-5 wu = 11.6x tol_u. The ladder gap is a DISCRETIZATION limit (the S1 study's own remeshing component), not solver slack.",
+   "diagnostic_apex_shifts_wu": {
+    "n100": 2.93e-08,
+    "n150": 1.89e-08,
+    "n200": 1.98e-08,
+    "n300": 1.26e-08
+   }
+  },
+  "adoption": "NOT ADOPTED here: no chain regeneration, no pin changes, no piece-record edits; adoption is a separate decision backed by this comparison"
+ }
+}

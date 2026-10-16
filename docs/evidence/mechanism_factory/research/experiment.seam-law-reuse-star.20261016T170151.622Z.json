@@ -1,0 +1,29 @@
+{
+ "record_id": "experiment.seam-law-reuse-star.20261016T170151.622Z",
+ "kind": "experiment",
+ "question": "Does the apex-weld seam law qualified on assembly 1 transfer to a DIFFERENT topology without re-derivation?",
+ "parent_evidence_ids": [
+  "composed_qualification_receipt_20261016T075201.116240Z.json",
+  "composed_chain_receipt_20261016T092136.068087Z.json",
+  "composed_chain_checks_20261016T093949.650913Z.json"
+ ],
+ "allocation_id": "proposal.reuse-cycle-allocation.20261016T170151.573Z",
+ "budget": {
+  "allocated": null,
+  "consumed": 1
+ },
+ "alternatives": [
+  "rim-weld chain (impossible under the seam law: witness (g))",
+  "single-seam star: k=2 hangers at apexes only"
+ ],
+ "experiment_identity": "composed_chain.py k=2 fan-out star, reference = ONE solve_equilibrium",
+ "result": "pieces A and B reused BYTE-IDENTICALLY (sha256 vertex/face block hashes equal to assembly 1's, reuse battery check (a)); new piece C welded at the same seam law; scale 1.0 stagnated at 7.32e-7 N <= the packet's 1e-6 law, block margin 0.488, port nets 0.922/0.737 N; new scale point 0.75x qualified at 3.36e-7 N; stripping C reproduces assembly 1 byte-for-byte within 1e-9 J",
+ "independent_status": "composed_chain_checks 6/6 PASS + adapter verdict PASS on both receipts (chimera-mechanism-factory-composed-qualification-v1, unchanged adapter)",
+ "cost": "two CPU solves (601-vertex meshes), minutes",
+ "applicability": "connected assemblies under the constant-gamma membrane law: single-seam stars only (witness (g))",
+ "next_questions": [
+  "why does the stagnation residual grow with rigid scale? (check d)"
+ ],
+ "schema": "chimera-mechanism-factory-research-record-v1",
+ "utc": "2026-10-16T17:01:51.759369+00:00"
+}

@@ -264,6 +264,54 @@ identity moved.
   out-of-gate) and `scale_resolution_study_20261016T142810.182Z.json`
   (correct 20/20 standalone run, superseded by the battery-bound
   study receipt).
+- 11.19 METHOD IMPROVEMENT (candidate solver, judged the §11.19 way) —
+  `solver_candidate.py` (versioned
+  "patch-equilibrium-solver-v2-candidate"; convergence machinery ONLY —
+  the energy law, the packet's unchanged 1e-6 N acceptance law and the
+  refusal semantics untouched) +
+  `solver_method_comparison_20261016T165441.030287Z.json`
+  (6/6, 31-case frozen suite, matched budgets). DESIGN (from the S1
+  evidence): phase 1 = the incumbent VERBATIM — on every termination
+  that already satisfies the packet's law the candidate returns the
+  incumbent's result to the last bit; phase 2 = Newton-by-FD-diagonal
+  (Jacobi blocks of dF_free/dx_free by exact-force columns) engaged ONLY
+  when the incumbent terminates OVER the law, with restart-on-stall, an
+  energy guard at the incumbent's own machine-scale noise constant and
+  residual-nonincrease acceptance. RESULTS: (a) REGRESSION GUARD — on
+  all 27 law-passing cases the reactions are BIT-IDENTICAL (max shift
+  0.0 N vs the 1e-9 bound; the candidate never moves a converged
+  answer); (b) suite completeness 31/31 (13 qualification + 7 P1 + 2
+  composed + 2 star + 5 S1 matched + 2 star-drift), both arms on every
+  case, every case receipt-linked; (c) matched budgets enforced —
+  mismatched budgets refused `budget_mismatch`, all walls within cap;
+  (d) STAR VERDICT: under the unchanged 1e-6 N law the candidate DOES
+  bring the star 1.5x/2.0x residuals under — 1.4477e-6 -> 1.03e-13 N
+  and 2.4862e-6 -> 2.00e-13 N (ONE continuation step each, stationary
+  at the incumbent's own residual scale): the drift the S1 study
+  measured was the INCUMBENT SOLVER's machine-scale stagnation floor,
+  not a law-level impossibility (the S1 receipt stands append-only and
+  is revised by this record for the machinery question); (e) candidate
+  determinism hash-verified on drift/composed/qualification cases;
+  (f) the incumbent's fresh results reproduce all 30 receipt-backed
+  residuals (worst relative 0.0). LADDER: does NOT reach tol_u even
+  with the candidate — the qualified candidate never engages on the
+  piece (all piece cells pass the law), and the forced-continuation
+  DIAGNOSTIC tightens the 1.0x matched cells to ~1e-15 N shifting
+  apex_z only 1.3e-8..2.9e-8 wu (three orders below the finest dz
+  1.16e-5 wu = 11.6x tol_u): the ladder gap is DISCRETIZATION, not
+  solver slack. NO-EQUILIBRIUM HONESTY: the overload and partial-rim
+  witnesses stay honestly over the law (budget-exhausted,
+  bit-identical). RESEARCH RECORD:
+  `method_comparison.incumbent-vs-v2-candidate.20261016T165841.829Z`
+  (kind method_comparison, citing the comparison receipt, the chain,
+  the S1 study and the drift-verdict experiment). NOT ADOPTED: no
+  chain regeneration, no pin changes, no piece-record edits —
+  adoption is the coordinator's call. RETAINED FAILURE:
+  `solver_method_comparison_20261016T165008.148041Z.json` (5/6 —
+  check (e)'s pick list carried a stale case id `scale2.0` vs the
+  suite's `:g`-formatted `scale2`; fixed, rerun green) and the
+  registry-count refusal it followed (the imported P1 battery's 6
+  tests register in the shared harness; the expectation now counts 12).
 - `fit_receipt_20261016T075201.333890Z.json` — bounded-table fit+eval
   receipt (`bounded_fit.py`, P3), regenerated against the reworded
   packet. Same physics as before: bounded PCHIP interpolant, knot-point
