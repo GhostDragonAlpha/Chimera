@@ -643,3 +643,16 @@ LF, breaking receipt verification in clean checkouts. Blobs now hold the
 hashed bytes and `.gitattributes` marks `tools/membrane_scale_lab/**`
 and `tools/mechanism_factory/**` `-text` (checkout-invariant, per the
 `docs/evidence/** -text` doctrine).
+
+## Independent review round — solver v2 adoption (2026-10-16)
+
+- `reviews/step_review_solver_v2_adoption.md` — chimera-step37's
+  independent review of the v2 adoption (claims C1-C5). C1/C4/C5
+  CONFIRMED; C2 UNCERTAIN as an honest limit (eight adversarial attacks
+  failed to break phase 2; absence of breaks is not a soundness proof);
+  C3 flagged a headline-vs-receipt number discrepancy.
+- `reviews/qwen_reconciliation_step_review_c3.md` — reconciliation: the
+  two number sets belong to two different fixtures (S1 n300 star-drift
+  cases vs the composed-chain star assembly); both verified, both under
+  the unchanged 1e-6 N law, no published evidence wrong. Lesson kept:
+  method-comparison summary lines must name their fixture case IDs.
