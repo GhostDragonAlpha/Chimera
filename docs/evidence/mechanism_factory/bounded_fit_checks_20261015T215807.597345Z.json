@@ -1,0 +1,91 @@
+{
+  "schema": "chimera-mechanism-factory-fit-checks-v1",
+  "utc": "2026-10-15T22:09:07.406946+00:00",
+  "fit_schema": "chimera-mechanism-factory-fit-eval-v1",
+  "tolerances": {
+    "max_validation_reaction_error_N": 1e-06
+  },
+  "checks": {
+    "T1_deterministic_table": {
+      "pass": true,
+      "measured": {
+        "table_hash": "e702b38438bedc16f26c8637c90b55dde877a9c957e1cbaea6e3777092a7cb98",
+        "repeat_hash": "e702b38438bedc16f26c8637c90b55dde877a9c957e1cbaea6e3777092a7cb98",
+        "n_families": 2
+      }
+    },
+    "T2_unqualified_receipt_refused": {
+      "pass": true,
+      "measured": {
+        "stale_receipt": "qualification_receipt_20261015T151456.178807Z.json",
+        "adapter_refusals": [
+          "receipt_schema_unsupported"
+        ],
+        "table_hash_with": "e702b38438bedc16f26c8637c90b55dde877a9c957e1cbaea6e3777092a7cb98",
+        "table_hash_without": "e702b38438bedc16f26c8637c90b55dde877a9c957e1cbaea6e3777092a7cb98"
+      }
+    },
+    "T3_holdout_sentinel_untouched": {
+      "pass": false,
+      "measured": {
+        "table_hash_unchanged": true,
+        "sentinel_in_table": true,
+        "holdout_cases_seen": 2,
+        "holdout_cases_read": 0,
+        "no_final_test_access": true
+      }
+    },
+    "T4_out_of_domain_refused": {
+      "pass": true,
+      "measured": {
+        "cases": {
+          "unknown_family": {
+            "refused": true,
+            "reason": "refusal_out_of_domain",
+            "name_ok": true
+          },
+          "over_admitted_load": {
+            "refused": true,
+            "reason": "refusal_out_of_domain",
+            "name_ok": true
+          },
+          "valid_control": {
+            "refused": false,
+            "source": "exact_tabulated",
+            "reactions_shape": [
+              200,
+              3
+            ]
+          }
+        }
+      }
+    },
+    "T5_validation_error_within_tolerance": {
+      "pass": true,
+      "measured": {
+        "validation_max_reaction_error_N": 0.0,
+        "validation_mean_reaction_error_N": 0.0,
+        "tolerance_N": 1e-06,
+        "n_validation_cases": 1,
+        "finding_note": null
+      }
+    },
+    "T6_fit_receipt_honesty": {
+      "pass": true,
+      "measured": {
+        "fields": {
+          "seed_recorded": true,
+          "normalization_recorded": true,
+          "split_usage_recorded": true,
+          "table_hash_recomputes": true,
+          "cost_recorded": true,
+          "no_final_test_access_true": true,
+          "learned_candidate_hook_named": true
+        },
+        "table_hash": "e702b38438bedc16f26c8637c90b55dde877a9c957e1cbaea6e3777092a7cb98",
+        "learned_candidate": "learned_candidate_not_justified"
+      }
+    }
+  },
+  "all_passed": false
+}
