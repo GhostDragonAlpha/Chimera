@@ -1,0 +1,181 @@
+{
+  "schema": "chimera.ap01.summary.v1",
+  "status": "PASS_NUMERICAL_PROTOTYPE",
+  "scope": "AP01 constrained fan response, response table and scalar coupled/reduced assembly",
+  "run_directory": "D:\\Chimera-Maintenance\\PythonChimera\\.tmp\\artificial-proteins-gpu-05",
+  "receipt_path": "D:\\Chimera-Maintenance\\PythonChimera\\.tmp\\artificial-proteins-gpu-05\\receipt.json",
+  "source_hashes": {
+    "tools/artificial_proteins/__init__.py": "d64346eae1256b0a378df4e4d31db900d980b50c2540fa294e5d0939a25f475a",
+    "tools/artificial_proteins/core.py": "3b9abb3d42e47a516ffeccc21b2043807f92d12ce516a26ffd877c8bf3f7d677",
+    "tools/artificial_proteins/native/batch.cpp": "c5808793248e8ce73a55e4861e6c92b29970244944892b2f520daf28c8900913",
+    "tools/artificial_proteins/native/CMakeLists.txt": "65ce538d4db675802f11efd2ea5f56b637a056c67a05ae3de6c6643f616632eb",
+    "tools/artificial_proteins/native_view.py": "8a7a98592dedb5e80fd043951fd29facdc1e70209cbf1d1391ef846db264fd02",
+    "tools/artificial_proteins/PREREGISTRATION.md": "2099ca23de293f8121eddb0ef35708159463f03601f18033fb9c10ec25ee4947",
+    "tools/artificial_proteins/runner.py": "676f063959d740b2f5ed5ab7711ff5be1aab2b9fe60293abb8c76f3f98459ebe",
+    "tools/artificial_proteins/test_workflow.py": "8db5e9d3e6beb626cb4304523fbb05ea02a731033e392e0482b7c5cf572df06d",
+    "tools/artificial_proteins/verify.py": "779551d056dff52590d207470a62d285016d26f938bd004c33badbb4ddeb11bd",
+    "tools/membrane_demo_client.py": "7af98848dab94f6a412f2c4c045a438b7b7306a0a6360b6180f0beb0dc278ce3",
+    "tools/membrane_scale_lab/membrane_gpu_probe/membrane.comp": "80a0981dd1f245aa551035c9336df521d363e33ea8a17137fc5cf60307d7c2ac",
+    "tools/membrane_scale_lab/membrane_gpu_probe/probe_core.hpp": "030695b60084c37e94badefdc38e3e7847843fbf416c3b9d664588099ccb065c",
+    "tools/membrane_scale_lab/surface_energy_reference.py": "ee9effcfbddad8d02e03f71d414b27da177f0656de535eaab0d76ae39796f0b7",
+    "tools/python_control/client.py": "cd0c16c1e5fad041fd230d5b093e4a0eac8bc0b0f8dc17679937acb1b015688b"
+  },
+  "gpu": {
+    "device": "NVIDIA GeForce RTX 4090",
+    "setup_and_dispatch_s": 0.1828748,
+    "worst_triangle_parity_normalized": 2.471741243950372e-07,
+    "inputs": {
+      "input": "9cebec8f239fac664f855e3c274f180f209f70292d83701e6a3fb9c59f3c36e5",
+      "exe": "ae19cfabd43877f8619cdb3101fdf73cee5277cea9223ab55a339d7886314e87",
+      "shader": "a147901f7e22b50c0406674fc0b8ca739dc4889a4ee117924c98a0c5e2d63c20",
+      "exe_path": "D:\\Chimera-Maintenance\\PythonChimera\\.tmp\\artificial-proteins-build\\Release\\artificial_protein_batch.exe",
+      "shader_path": "D:\\Chimera-Maintenance\\PythonChimera\\.tmp\\artificial-proteins-build\\Release\\membrane.comp.spv"
+    },
+    "memory_before": {
+      "gpu_used_total_mib": "770, 24564",
+      "host_available_bytes": 117159514112,
+      "python_rss_bytes": 41213952
+    },
+    "memory_after_process_exit": {
+      "gpu_used_total_mib": "770, 24564",
+      "host_available_bytes": 117163585536,
+      "python_rss_bytes": 42426368
+    }
+  },
+  "reference": {
+    "cases": 351,
+    "max_energy_error_normalized": 1.666350128992633e-07,
+    "max_force_error_normalized": 1.7600800616968115e-07,
+    "limit": 3e-05
+  },
+  "table_checks": [
+    {
+      "cases": 51,
+      "max_energy_error_normalized": 1.3986912914099037e-05,
+      "max_force_error_normalized": 7.729696103764283e-05,
+      "limit": 0.0005
+    },
+    {
+      "cases": 51,
+      "max_energy_error_normalized": 1.422336074030639e-05,
+      "max_force_error_normalized": 7.705712662375852e-05,
+      "limit": 0.0005
+    },
+    {
+      "cases": 51,
+      "max_energy_error_normalized": 1.3907902786769455e-05,
+      "max_force_error_normalized": 7.25340178124867e-05,
+      "limit": 0.0005
+    }
+  ],
+  "assembly": {
+    "pair": [
+      {
+        "load_n": -0.4,
+        "result": {
+          "q": -0.05579169508768244,
+          "residual_n": 6.188655143901656e-11,
+          "iterations": 33,
+          "reactions": [
+            0.16019027998433816,
+            -0.5601902799224516
+          ],
+          "energy": 4.6191157338469075
+        },
+        "verification": {
+          "independent_q_m": -0.05578676021005813,
+          "q_error_m": 4.934877624311607e-06,
+          "reference_balance_residual_n": -3.483897943767911e-05
+        }
+      },
+      {
+        "load_n": 0.25,
+        "result": {
+          "q": 0.035689201359637074,
+          "residual_n": -2.3470059229424578e-11,
+          "iterations": 32,
+          "reactions": [
+            0.4850862046807763,
+            -0.23508620470424635
+          ],
+          "energy": 4.612232425319988
+        },
+        "verification": {
+          "independent_q_m": 0.03568780840360121,
+          "q_error_m": 1.3929560358644233e-06,
+          "reference_balance_residual_n": 9.943628252795378e-06
+        }
+      }
+    ],
+    "recursive_reuse": [
+      {
+        "frozen_composite": "5cf82b87f51adcb1e9cc772fa6428d64082104f73cd9e5b74e2940b33fcd38a4",
+        "third_anchor_m": -0.08,
+        "load_n": -0.25,
+        "result": {
+          "q": -0.04992636028327979,
+          "residual_n": -3.8751335473818926e-11,
+          "iterations": 34,
+          "reactions": [
+            -0.35850253450096287,
+            0.10850253446221156
+          ],
+          "energy": 6.893507956310302
+        },
+        "verification": {
+          "independent_q_m": -0.04992308856601681,
+          "q_error_m": 3.271717262984253e-06,
+          "reference_balance_residual_n": -3.490788629867403e-05
+        }
+      },
+      {
+        "frozen_composite": "5cf82b87f51adcb1e9cc772fa6428d64082104f73cd9e5b74e2940b33fcd38a4",
+        "third_anchor_m": 0.13,
+        "load_n": 0.35,
+        "result": {
+          "q": 0.07690957926388364,
+          "residual_n": -2.181610447848925e-11,
+          "iterations": 35,
+          "reactions": [
+            0.5412460517946178,
+            -0.19124605181643395
+          ],
+          "energy": 6.908617988808285
+        },
+        "verification": {
+          "independent_q_m": 0.07690500624060004,
+          "q_error_m": 4.573023283604982e-06,
+          "reference_balance_residual_n": 4.852718863279648e-05
+        }
+      }
+    ],
+    "scope": "one shared scalar rail DOF; fixed supports; no dynamics or general multiport qualification"
+  },
+  "benchmark": {
+    "triangle_reference_median_seconds_per_call": 0.00014724350010510533,
+    "analytic_median_seconds_per_call": 2.2001999896019696e-05,
+    "table_median_seconds_per_call": 2.3444998078048228e-06,
+    "scope": "Python scalar call including validation/allocation; not game or GPU speedup"
+  },
+  "validation_observed": {
+    "unit_tests_passed": 16,
+    "freshness_and_recompute_check": "PASS",
+    "completed_run_resume": "PASS"
+  },
+  "render_binding": "UNQUALIFIED: rendered-byte hash is not populated by this native build; it is also a different hash schema from accepted positions",
+  "release_admission": "NOT_REQUESTED_OR_CLAIMED",
+  "controller_session": "NOT_PROVISIONED",
+  "failed_trials_retained": [
+    "D:\\Chimera-Maintenance\\PythonChimera\\.tmp\\artificial-proteins-gpu-01\\failure.json",
+    "D:\\Chimera-Maintenance\\PythonChimera\\.tmp\\artificial-proteins-gpu-04\\failure.json"
+  ],
+  "limitations": [
+    "Noether learned model",
+    "general multiport coupling",
+    "gameplay admission",
+    "controller attestation",
+    "dynamic physics",
+    "native rendered-state hash is unpopulated",
+    "single scalar constrained port; no general attachment or material inventory"
+  ]
+}

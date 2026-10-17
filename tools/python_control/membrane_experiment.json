@@ -1,0 +1,12 @@
+{
+  "operations": [
+    {"op": "fixture"},
+    {"op": "state"},
+    {"op": "tension", "args": {"gamma": 2.0}},
+    {"op": "state"},
+    {"op": "tension", "args": {"gamma": 1.0}},
+    {"op": "step", "args": {"count": 32}},
+    {"op": "state"},
+    {"op": "telemetry"}
+  ]
+}

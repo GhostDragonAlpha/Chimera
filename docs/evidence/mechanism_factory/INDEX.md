@@ -675,3 +675,33 @@ and `tools/mechanism_factory/**` `-text` (checkout-invariant, per the
   final review: S1-S5 CONFIRMED (tamper/stale/restore-drift attacks
   independently reproduced; cross-record domain asymmetry verified from
   the records themselves).
+
+## Stage 9 second increment — compile-transaction to private native engine (2026-10-17)
+
+- `tools/artificial_proteins/native_binding_engine.py` — replays the
+  existing AP01 capture law (native_view: port probe, private exe+shaders
+  copy, readiness poll, MD01 upload) for native_binding transactions;
+  one hidden-window engine session per capture, teardown by handle.
+- `native_binding_engine_receipt_20261017T051143.422076Z.json` — both
+  in-domain instances compiled into the engine with
+  `engine_accepted_state_id` equal to the documented accepted-hash of the
+  uploaded f32 positions (independently recomputed by Qwen and
+  chimera-step37); energy vs the f32-exact pinned-law reference within
+  the preregistered 3e-4 J allowance; relaxation moved both accepted
+  states; the existing reset control restored the uploaded initial state
+  bit-exactly (restart/replay affordance). `render_state_id` 0 recorded
+  honestly (the §11.20.10 rendered-byte gap stays open).
+- SAVE/RESTORE GAP (recorded, nothing built): no save/restore control
+  exists for the membrane-demo state class (engine ops
+  reset|step|run|pause|gamma|reject only; /tick_b2_save|restore own the
+  B2 scene class only; session snapshots carry no membrane_demo blob).
+  A true lived-state save/restore is a future engine-side seam.
+- `reviews/step_review_stage9_engine_binding.md` — chimera-step37 final
+  review: T1-T6 all PASS with independent recomputation and engine
+  source inspection.
+- Provenance note: `tools/python_control/` and `tools/artificial_proteins/`
+  (plus the AP01 evidence directory) existed only in the working tree —
+  never committed on any branch — while the published chain imported
+  them. Committed as-is in this increment to make the chain
+  reproducible from a clean checkout; no bytes of the pre-existing
+  modules were altered.
