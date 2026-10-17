@@ -1,0 +1,411 @@
+{
+ "schema": "chimera-mechanism-factory-engine-regression-v1",
+ "utc": "20261017T201053.018667Z",
+ "source_commit": "e075166ffcd92ae9830e42653312d02be855573a",
+ "build": {
+  "command": "cmake -S ChimeraEngine/engine -B ChimeraEngine/engine/build/Release && cmake --build ChimeraEngine/engine/build/Release --config Release",
+  "executable": "D:\\Chimera-Maintenance\\PythonChimera\\ChimeraEngine\\engine\\build\\Release\\Release\\chimera_engine.exe",
+  "sha256": "c1c2474c6c8cbc58e73371ad8224882a031675aa3efbc6eba7fafed49fe0aa69",
+  "matches_published_increment4_sha": true
+ },
+ "increment4_diff_scope": {
+  "commit": "981b805c (engine.cpp +289, engine.hpp +33, main.cpp +97)",
+  "touched": [
+   "the membrane-demo state class ONLY: md_deform (centre dead-load re-solve), md save/restore, the reset law, the status JSON's new centre_load_N field, the deform op parse, and the two /membrane_demo_save|restore routes"
+  ],
+  "could_affect": [
+   "the membrane-demo state machine, its status JSON shape (centre_load_N added), and its routes; nothing else -- every added branch is membrane-scoped and the pre-existing route ladder/dispatch order is unchanged (git show 981b805c -- main.cpp touches no non-membrane route line)"
+  ],
+  "could_not_affect": [
+   "B2 scene admit/refuse/controls (b2_scene.* untouched by the increment-4 commit)",
+   "the studio board poll (ui.cpp board polling untouched; the commit's ui.cpp 3-line deletion is outside board code)",
+   "the graph scenes (graph_surface/graph_thermal/graph_earth and the --science-surface/--thermal-salvage/--earth-patch boot loops untouched)",
+   "physics init, /state, /control, and the argv parse law"
+  ]
+ },
+ "cpu_tests_note": "the two existing tests in ChimeraEngine/engine/tests built with g++ -std=c++17 -O2 -I ChimeraEngine/engine and run OUTSIDE the GPU batch path (header-only CPU module, no engine); their verbatim output is in scenarios.cpu_tests",
+ "scenarios": {
+  "cpu_tests": {
+   "tendon_drive_test": {
+    "build_exit_code": 0,
+    "exit_code": 0,
+    "stdout": "[PASS] LEDGER: ledger_err=2.483e-12 J (tol 1e-9), drain=28.410126 J work=13.311698 J heat=11.173839 J dE=3.924590 J\n[PASS] SEVER: F=0.0 tau=0.0 q 2.2890->0.0948(rest 0.0) dWorkPost=0.0e+00 drain 4.1499->1.0295 J/0.5s ledger=2.11e-12\n[PASS] STALL: tau_act=4.5000 Nm dWork=0.0e+00 J drain=1.9000 J q-rom_hi=0.0e+00 ledger=1.78e-13\n[PASS] REST: |q|=0.0e+00 |qd|=0.0e+00 after 3 s\n[PASS] MONOTONIC: q_ss = 0.0000 0.5621 1.1242 1.6855 2.2492 rad\n[PASS] total failures: 0\n",
+    "total_failures_zero": true,
+    "pass": true
+   },
+   "tendon_arm_ledger_test": {
+    "build_exit_code": 0,
+    "exit_code": 0,
+    "stdout": "[PASS] FROM_REST: violations=0 max_err=6.075e-13 J (tol 1e-6), elastic0=1.1111111111111132 J (10/9=1.1111111111111132 J), frames=90\n[PASS] FROM_LIMP: violations=0 max_err=8.846e-13 J (tol 1e-6), q_limp=-0.0285 rad, elastic0=1.310228 J, severed_after_arm=0, frames=90\n[PASS] FROM_SEVERED: violations=0 max_err=7.567e-13 J (tol 1e-6), elastic0=0.138630 J, expected_full_elastic=0.138630 J (capsule-only would be 0.059804 J)\n[PASS] DISARM_REARM: violations=0 max_err=1.153e-12 J (tol 1e-6), re-arm q=1.198370 rad == frozen pin q, session2 counters restarted=1\n[PASS] SENSITIVITY: pre-fix baseline reproduces the bug: violations=90/90 (every frame), max_err=1.1111111111 J ~= pretension 1.1111111111 J\n[PASS] total failures: 0\n",
+    "total_failures_zero": true,
+    "pass": true
+   },
+   "pass": true
+  },
+  "studio_board_default": {
+   "route": "GET /studio_chrome with the DEFAULT CWD board (argv[2] is a flag, board path not overridden)",
+   "board_stages": 11,
+   "board_standing": "EARLIEST NON-GREEN GATE: B7 articulate -- the next stage  [n",
+   "pass": true
+  },
+  "scene_defaults_off": {
+   "b2_state_body": {
+    "ok": true,
+    "schema": "chimera.b2_scene.v1",
+    "active": false,
+    "diverged": false,
+    "steps": 0,
+    "dt_substep_s": 0.00025,
+    "gravity_m_s2": 9.81,
+    "gravity_on": true,
+    "support_on": true,
+    "paused": false,
+    "total_weight_n": 0,
+    "total_reaction_n": 0,
+    "max_penetration_m": 0,
+    "energy_j": 0,
+    "energy_drift_j": 0,
+    "admission_reason": "",
+    "welds": [],
+    "parts": [],
+    "pools": {
+     "parts": [
+      0,
+      6
+     ],
+     "welds": [
+      0,
+      15
+     ],
+     "chambers": [
+      0,
+      6
+     ],
+     "valves": [
+      0,
+      12
+     ],
+     "heat": [
+      0,
+      12
+     ],
+     "pistons": [
+      0,
+      6
+     ]
+    },
+    "display": {
+     "lod": 0,
+     "display_tris": 0,
+     "physical_tris": 0
+    },
+    "round_trips": {
+     "saves": 0,
+     "restores": 0,
+     "hash_reads": 0
+    },
+    "backstop_engagements": 0,
+    "out_of_envelope_events": 0,
+    "out_of_envelope_last": null,
+    "out_of_envelope_limits": {}
+   },
+   "membrane_body": {
+    "ok": false,
+    "active": false,
+    "iteration": 0,
+    "accepted": 0,
+    "trials": 0,
+    "energy": 0,
+    "energy_initial": 0,
+    "terminal_state": "",
+    "centre": [
+     0,
+     0,
+     0
+    ],
+    "centre_force": [
+     0,
+     0,
+     0
+    ],
+    "centre_load_N": 0,
+    "accepted_state_id": 0,
+    "render_state_id": 0,
+    "last_control": "",
+    "material_snapshot": null
+   },
+   "pass": true
+  },
+  "b2_admit_valid": {
+   "route": "POST /tick_b2_admit (chimera.b2_scene.v1)",
+   "http_body": {
+    "ok": true,
+    "schema": "chimera.b2_scene.v1"
+   },
+   "state_after": {
+    "active": true,
+    "admission_reason": "B2 step 1 statics: granite wedge A on the ground plane | B2 step 1 statics: steel wedge B on the ground plane | rung: rest sink 1 cm, zeta 0.7, per part",
+    "steps": 0,
+    "total_weight_n": 354.563811
+   },
+   "n_parts": 2,
+   "state_hash": "3b2487c8b90abc0f",
+   "steps_advanced": true,
+   "pass": true
+  },
+  "b2_admit_malformed": {
+   "schema_v2": {
+    "http_body": {
+     "ok": false,
+     "error": "refused: scene: schema must be \"chimera.b2_scene.v1\""
+    },
+    "state_hash_after": "7888f9a515814e05",
+    "state_hash_paused_before": "7888f9a515814e05",
+    "admission_reason_after": "B2 step 1 statics: granite wedge A on the ground plane | B2 step 1 statics: steel wedge B on the ground plane | rung: rest sink 1 cm, zeta 0.7, per part",
+    "state_untouched": true,
+    "pass": true
+   },
+   "gravity_string": {
+    "http_body": {
+     "ok": false,
+     "error": "refused: scene.gravity_m_s2: number expected"
+    },
+    "state_hash_after": "7888f9a515814e05",
+    "state_hash_paused_before": "7888f9a515814e05",
+    "admission_reason_after": "B2 step 1 statics: granite wedge A on the ground plane | B2 step 1 statics: steel wedge B on the ground plane | rung: rest sink 1 cm, zeta 0.7, per part",
+    "state_untouched": true,
+    "pass": true
+   },
+   "pass": true
+  },
+  "b2_pause_control": {
+   "route": "POST /tick_b2_pause (the B4 freeze control)",
+   "body": {
+    "ok": true,
+    "paused": true
+   },
+   "pass": true
+  },
+  "boot_A_exit_code": 1,
+  "science_load_refusal": {
+   "argv_shape": [
+    "--science-surface <incomplete spec>"
+   ],
+   "self_exited": true,
+   "exit_code": 3221226505,
+   "documented_exit": "return 2 (main.cpp science-surface catch)",
+   "stderr_tail": "science surface: [json.exception.out_of_range.403] key 'max_force_N' not found\n",
+   "refusal_named": true,
+   "pass": true
+  },
+  "graph_opt_in": {
+   "route": "--science-surface flag parse; GET/POST /science_surface; GET /science, /science_graph",
+   "status_body": {
+    "converged": true,
+    "depth_m": -0.0,
+    "energy_J": 0.04000000000000001,
+    "error": "",
+    "force_N": 0.0,
+    "gamma_N_m": 1.0,
+    "graph_hash": "engine-regression-smoke-graph-hash",
+    "iterations": 0,
+    "limits": {
+     "max_force_N": 10.0
+    },
+    "material": "steel",
+    "materials": [
+     {
+      "gamma_N_m": 1.0,
+      "name": "steel",
+      "record_id": "engine_regression_smoke/spec",
+      "source": "engine-regression smoke (composed from the graph_surface.hpp load law)"
+     }
+    ],
+    "mode": "quasistatic_height_field",
+    "ok": true,
+    "positions_m": [
+     [
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.1,
+      0.0,
+      0.0
+     ],
+     [
+      0.2,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.1,
+      0.0
+     ],
+     [
+      0.1,
+      0.1,
+      0.0
+     ],
+     [
+      0.2,
+      0.1,
+      0.0
+     ],
+     [
+      0.0,
+      0.2,
+      0.0
+     ],
+     [
+      0.1,
+      0.2,
+      0.0
+     ],
+     [
+      0.2,
+      0.2,
+      0.0
+     ]
+    ],
+    "reaction_N": 0.0,
+    "render_revision": 1,
+    "residual_N": 0.0,
+    "source": "engine-regression smoke (composed from the graph_surface.hpp load law)",
+    "source_record_id": "engine_regression_smoke/spec",
+    "source_scope": "pure liquid-vapor correlation; idealized fixed-rim interface; not skin",
+    "state_revision": 1,
+    "temperature_K": 300.0,
+    "triangles": 8,
+    "vertices": 9
+   },
+   "control_body": {
+    "converged": true,
+    "depth_m": -0.0,
+    "energy_J": 0.04000000000000001,
+    "error": "",
+    "force_N": 0.0,
+    "gamma_N_m": 1.0,
+    "graph_hash": "engine-regression-smoke-graph-hash",
+    "iterations": 0,
+    "limits": {
+     "max_force_N": 10.0
+    },
+    "material": "steel",
+    "materials": [
+     {
+      "gamma_N_m": 1.0,
+      "name": "steel",
+      "record_id": "engine_regression_smoke/spec",
+      "source": "engine-regression smoke (composed from the graph_surface.hpp load law)"
+     }
+    ],
+    "mode": "quasistatic_height_field",
+    "ok": true,
+    "positions_m": [
+     [
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.1,
+      0.0,
+      0.0
+     ],
+     [
+      0.2,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.1,
+      0.0
+     ],
+     [
+      0.1,
+      0.1,
+      0.0
+     ],
+     [
+      0.2,
+      0.1,
+      0.0
+     ],
+     [
+      0.0,
+      0.2,
+      0.0
+     ],
+     [
+      0.1,
+      0.2,
+      0.0
+     ],
+     [
+      0.2,
+      0.2,
+      0.0
+     ]
+    ],
+    "reaction_N": 0.0,
+    "render_revision": 1,
+    "residual_N": 0.0,
+    "source": "engine-regression smoke (composed from the graph_surface.hpp load law)",
+    "source_record_id": "engine_regression_smoke/spec",
+    "source_scope": "pure liquid-vapor correlation; idealized fixed-rim interface; not skin",
+    "state_revision": 2,
+    "temperature_K": 300.0,
+    "triangles": 8,
+    "vertices": 9
+   },
+   "page_served_bytes_match": true,
+   "graph_body": {
+    "smoke": true
+   },
+   "pass": true
+  },
+  "boot_B_exit_code": 1,
+  "exclusivity_thermal": {
+   "argv_shape": [
+    "--science-surface <spec>",
+    "--thermal-salvage",
+    "<file>"
+   ],
+   "exit_code": 3221226505,
+   "documented_exit": "return 2 (the guard's require throws inside the scene's own catch)",
+   "stderr_tail": "follow-cam root: centroid=(10.000,10.200,0.000) height=20.000 sphere=28.426\nthermal salvage: exclusive_science_scene\n",
+   "refusal_named": true,
+   "exit_code_matches_doc": false,
+   "pass": true
+  },
+  "exclusivity_earth": {
+   "argv_shape": [
+    "--science-surface <spec>",
+    "--earth-patch",
+    "<file>"
+   ],
+   "exit_code": 3221226505,
+   "documented_exit": "return 2 (the guard's require throws inside the scene's own catch)",
+   "stderr_tail": "follow-cam root: centroid=(10.000,10.200,0.000) height=20.000 sphere=28.426\nearth patch: exclusive_earth_scene\n",
+   "refusal_named": true,
+   "exit_code_matches_doc": false,
+   "pass": true
+  }
+ },
+ "route_verdicts": {
+  "studio_board_default": true,
+  "scene_defaults_off": true,
+  "b2_admit_valid": true,
+  "b2_admit_malformed": true,
+  "b2_pause_control": true,
+  "science_load_refusal": true,
+  "graph_opt_in": true,
+  "exclusivity_thermal": true,
+  "exclusivity_earth": true
+ },
+ "scope": "smoke regression of the NON-membrane scene routes against the rebuilt increment-4 exe; the membrane path itself is covered by increments 2-5 evidence and is not re-claimed here"
+}

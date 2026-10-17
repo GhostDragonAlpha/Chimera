@@ -825,3 +825,31 @@ and `tools/mechanism_factory/**` `-text` (checkout-invariant, per the
   all six claims CONFIRMED digit-for-digit, screenshots byte-identical
   across boots, both rulings issued, no driver defects. With AMENDMENT 1
   applied, the game loop meets all six frozen criteria.
+
+## Engine-suite regression beyond the membrane scene (2026-10-17, GPU batch)
+
+Closes the increment-4 open item. `engine_regression_smoke.py`
+(tools/artificial_proteins/) +
+`engine_regression_receipt_20261017T201053.035595Z.json` — Maya rebuilt
+the engine from the published tree (exe sha byte-exact c1c2474c...), ran
+the two tendon tests (6/6 each, ledger errors 2.5e-12 / 1.2e-12 J) and
+smoke-tested all nine non-membrane route families in one gpu_batch job:
+studio board default, scene defaults off, B2 admit (valid + two named
+malformed refusals with state untouched), B2 pause control, science-load
+refusal, graph opt-in (page bytes byte-match spec), thermal/earth
+exclusivity refusals. No regression; `git show 981b805c -- main.cpp`
+touches no non-membrane route line.
+- `reviews/step_review_engine_regression.md` — step CONFIRMED all five
+  claims (CPU tests digit-for-digit; route verdicts reproduced, state
+  hashes vary run-to-run by design — the generator is not hash-pinned).
+- FINDING (recorded-only per step's ruling, pre-existing, not a
+  regression): scene-refusal early returns documented `return 2`
+  (main.cpp:946/957/972) self-exit with fail-fast 0xC0000409 — the
+  catch runs (named stderr) and the return executes; the fail-fast
+  occurs in static destruction after main() returns. Pipeline harnesses
+  read stderr names and HTTP bodies, not exit codes, so nothing depends
+  on the documented code; a repair would touch non-membrane teardown
+  code for no pipeline benefit.
+- Driver limitation (step note): relative `--out` paths resolve against
+  the engine CWD, not the caller's; use absolute paths (as both batches
+  did).
