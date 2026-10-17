@@ -656,3 +656,22 @@ and `tools/mechanism_factory/**` `-text` (checkout-invariant, per the
   cases vs the composed-chain star assembly); both verified, both under
   the unchanged 1e-6 N law, no published evidence wrong. Lesson kept:
   method-comparison summary lines must name their fixture case IDs.
+
+## Stage 9 first increment — piece-record to compile-transaction binding (2026-10-16)
+
+- `tools/mechanism_factory/native_binding.py` — binding adapter (schema
+  `chimera-mechanism-factory-compile-transaction-v1`): qualified piece
+  record + in-domain instance parameters compile through the EXISTING
+  qualified paths (`composed_chain.build_star`,
+  `fixture_generator.high_degree_fan`) validated by the pinned law;
+  out-of-domain scale/load refused by name from the record's measured
+  domain; ids re-derived from the record, never invented; apply/restore
+  transactional (hash self-check, byte-reproducibility from the record,
+  instance collision, restore drift — refusals never mutate accepted
+  bytes). Render/pick/inspector binding remains the recorded unset gap.
+- `native_binding_checks.py` W1-W5 5/5 green; regressions
+  piece_record 6/6, composed_patch 7/7, composed_chain 6/6.
+- `reviews/step_review_stage9_binding_increment.md` — chimera-step37
+  final review: S1-S5 CONFIRMED (tamper/stale/restore-drift attacks
+  independently reproduced; cross-record domain asymmetry verified from
+  the records themselves).
