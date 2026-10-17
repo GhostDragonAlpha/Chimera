@@ -756,3 +756,12 @@ and `tools/mechanism_factory/**` `-text` (checkout-invariant, per the
   scale-1.0 residual digit-for-digit (7.322313e-07). Measured basis for
   the additive valid_loads_N amendment and for a game objective of the
   form "set the load so the apex settles in a target band".
+
+## Criteria freeze for the stage 9 game loop (2026-10-17, CPU-only)
+
+- `reviews/step_review_load_domain_study.md` — chimera-step37: L1-L3
+  CONFIRMED (table digit-for-digit; amendment legality per
+  piece_record.amend_domain_measurements lines 419-480; all 8 studied
+  loads eligible). L4 frozen game-loop criteria accepted by Qwen with
+  one correction: criterion 5's evidence is the engine reset control
+  (bit-exact, proven in increments 2-3), not builder seeds.
