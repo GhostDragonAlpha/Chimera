@@ -81,7 +81,14 @@
   "topology": "601 vertices / 600 faces / 600 pins; one seam vertex carrying both welded joints",
   "reference_configuration": "built star mesh (byte-identical reuse of assembly 1's A and B blocks, hashed by reuse check (a))",
   "valid_loads_N": [
-   0.8
+   0.0,
+   0.4,
+   0.8,
+   1.2,
+   1.6,
+   2.0,
+   2.5,
+   3.0
   ],
   "valid_scales": [
    0.75,
@@ -97,7 +104,8 @@
   "measured_in": [
    "composed_chain_receipt_20261016T092136.068087Z.json",
    "composed_chain_checks_20261016T093949.650913Z.json",
-   "composed_chain_qualification_receipt_20261016T180652.327348Z.json"
+   "composed_chain_qualification_receipt_20261016T180652.327348Z.json",
+   "load_domain_study_20261017.json"
   ],
   "reuse_lineage": [
    "composed_qualification_receipt_20261016T075201.116240Z.json"
@@ -167,6 +175,36 @@
     ],
     "new_valid_loads_N": [
      0.8
+    ],
+    "reason": "domain extension by measurement (11.19 solver-v2 adoption round; the extension is covered by in-gate measured cases in the cited receipt)"
+   },
+   {
+    "utc": "2026-10-17T16:35:55.428099+00:00",
+    "receipt": "load_domain_study_20261017.json",
+    "prior_valid_scales": [
+     0.75,
+     1.0,
+     1.5,
+     2.0
+    ],
+    "prior_valid_loads_N": [
+     0.8
+    ],
+    "new_valid_scales": [
+     0.75,
+     1.0,
+     1.5,
+     2.0
+    ],
+    "new_valid_loads_N": [
+     0.0,
+     0.4,
+     0.8,
+     1.2,
+     1.6,
+     2.0,
+     2.5,
+     3.0
     ],
     "reason": "domain extension by measurement (11.19 solver-v2 adoption round; the extension is covered by in-gate measured cases in the cited receipt)"
    }

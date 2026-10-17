@@ -765,3 +765,27 @@ and `tools/mechanism_factory/**` `-text` (checkout-invariant, per the
   loads eligible). L4 frozen game-loop criteria accepted by Qwen with
   one correction: criterion 5's evidence is the engine reset control
   (bit-exact, proven in increments 2-3), not builder seeds.
+
+## Domain amendment: assembly.star-k2 valid_loads_N (2026-10-17, CPU-only)
+
+- `pieces/assembly.star-k2.json` — additive domain amendment via
+  `piece_record.amend_domain_measurements`: valid_loads_N [0.8] ->
+  [0.0, 0.4, 0.8, 1.2, 1.6, 2.0, 2.5, 3.0], citing
+  `load_domain_study_20261017.json` (all 8 rows in-gate: residual <=
+  1e-6 N, valid terminal state). Prior bytes archived at
+  `pieces/archive/assembly.star-k2.4d7420e49a2d1a99.json`; the
+  domain_amendment_history entry (4th) records the prior claims.
+- Law extension in `piece_record.py`: `measured_domain` now reads the
+  load-domain-study receipt schema natively (rows with load_N,
+  free_residual_N, status); in-gate is recomputed from the row residual
+  against the packet gate and the terminal-state rule
+  (converged/stationary/stagnated), never trusted from a self-reported
+  flag. The coverage law still cannot invent domain: an uncited or
+  out-of-gate receipt adds nothing.
+- `piece_record_checks_20261017T163608.575037Z.json` — the append-only
+  conflict law caught the fixture drift mid-round (5/6:
+  piece_record_conflict on the amended bytes); the battery's canonical
+  star fixture then carried the amended claims forward (the adoption
+  round's precedent) and `piece_record_checks_20261017T163851.768220Z.json`
+  is 6/6 PASS. native_binding_checks 5/5 green; probe: loads 0.0/1.6/3.0
+  N now compile, 0.9 N still refused binding_load_out_of_domain.

@@ -71,6 +71,14 @@ _GATE_KEY = "max_free_residual_N"
 _SCALE_RE = re.compile(r"_scale(-?\d+(?:\.\d+)?)$")
 _LOAD_RE = re.compile(r"_m(\d+(?:\.\d+)?)_")
 
+# load-domain-study receipts record each studied load as a row; a row is
+# in-gate under the same terminal-state rule receipt_adapter._case_converged
+# applies: converged/stationary, or stagnated with residual <= the packet
+# gate (the gate is re-checked from the row's own residual, never trusted
+# from a self-reported flag).
+_STUDY_SCHEMA = "chimera-mechanism-factory-load-domain-study-v1"
+_VALID_TERMINAL = ("converged", "stationary", "stagnated")
+
 
 class PieceRecordRefused(Exception):
     def __init__(self, reason: str, detail: str = ""):
@@ -150,8 +158,9 @@ def measured_domain(receipt_paths: list) -> tuple:
     """(in_gate_scales, in_gate_loads) measured by the cited receipts:
     composed receipts record case dicts '..._scale<s>' with the case's
     max_free_residual_N; multi-point load receipts record '..._m<amp>_';
-    an assembly's seam load is recorded in its composition ports prose
-    ('(0.8 N ...)'). In-gate = residual <= the packet's unchanged
+    load-domain-study receipts record rows {load_N, free_residual_N,
+    status}; an assembly's seam load is recorded in its composition ports
+    prose ('(0.8 N ...)'). In-gate = residual <= the packet's unchanged
     max_free_residual_N."""
     gate = packet_gate()
     scales, loads = set(), set()
@@ -174,6 +183,21 @@ def measured_domain(receipt_paths: list) -> tuple:
                 m = _LOAD_RE.search(cid)
                 if m and res <= gate:
                     loads.add(float(m.group(1)))
+        # a load-domain study records its loads as rows: in-gate = valid
+        # terminal state AND residual <= gate (recomputed, not trusted)
+        if r.get("schema") == _STUDY_SCHEMA:
+            for row in r.get("rows", []):
+                if not isinstance(row, dict):
+                    continue
+                if str(row.get("status")) not in _VALID_TERMINAL:
+                    continue
+                try:
+                    res = float(row["free_residual_N"])
+                    load = float(row["load_N"])
+                except (KeyError, TypeError, ValueError):
+                    continue
+                if res <= gate:
+                    loads.add(load)
         # an assembly's seam load, recorded in the composition ports prose
         comp = r.get("composition") or {}
         for txt in _iter_strings(comp):
