@@ -853,3 +853,30 @@ touches no non-membrane route line.
 - Driver limitation (step note): relative `--out` paths resolve against
   the engine CWD, not the caller's; use absolute paths (as both batches
   did).
+
+## Live GPU learned-candidate fit batch (2026-10-17, GPU batch) — honest null
+
+- `fit_job_receipt_20261017T211647.364397Z.json` +
+  `fit_job_checkpoint_20261017T211647.364293Z.json` — the preregistered
+  live batch (GPU_LIVE_BATCH.md, manifest
+  gpu_fit_manifest_20261016T075313.181707Z.json, all four pinned input
+  identities re-verified MATCH before running) executed on device=cuda,
+  seed 1729: validation_max_error 3.3668e-2 N vs the unchanged 1e-6 gate
+  -> physically_qualified=False. This reproduces the retained CPU fit
+  failure digit-for-digit (CPU 0.03366755675170242 vs cuda
+  0.033667556751702514, ~1e-16 agreement), a clean CPU/GPU cross-check.
+  Per the preregistered law this is a valid stop result: the learned
+  representation stays rejected, the detailed representation is kept.
+  Wall 5.43 s, peak 0.2 MiB VRAM (budgets met).
+- Harness defect (recorded, not silently patched): the batch reported
+  FAIL because the manifest's expect string
+  "learned-candidate receipt written" does not match what fit_job.py
+  actually prints ("job receipt: {path}", fit_job.py:356); the manifest's
+  output_schemas field names likewise predate fit_job.py's actual
+  receipt schema (split_usage/labels_receipts/python_traced_peak_mib).
+  The job exited 0 and wrote a valid receipt; the physics is unaffected.
+  The pinned manifest is left byte-identical (its identity is recorded);
+  a future rerun needs a corrected manifest. Qwen verified directly
+  (full stdout, receipt fields, 21-receipt CPU/cuda comparison, source
+  grep); step review not routed for a deterministic reproduction of an
+  already-retained failure.

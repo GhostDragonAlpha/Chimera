@@ -1,0 +1,38 @@
+{
+  "schema": "chimera-mechanism-factory-fit-job-v1",
+  "utc": "2026-10-17T21:16:53.060207+00:00",
+  "seed": 1729,
+  "device": "cuda",
+  "split_usage": {
+    "fit": [
+      "train",
+      "validation"
+    ],
+    "holdout": "excluded structurally (bounded_fit split gate; sentinel-proven by bounded_fit_checks T3)",
+    "holdout_cases_seen": 1,
+    "holdout_cases_read": 0,
+    "train_samples": 1000,
+    "validation_samples": 1100
+  },
+  "labels_receipts": [
+    "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\qualification_receipt_20261016T180445.582336Z.json",
+    "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\qualification_receipt_20261016T180543.963553Z.json"
+  ],
+  "model": {
+    "kind": "mlp_tanh_16x16",
+    "inputs": "sin(theta),cos(theta),load_magnitude_N,radius_wu,height_wu",
+    "outputs": "pin reaction components (N)"
+  },
+  "checkpoint_sha256": "36f233ed0cb1d80b90e2b7df5b0e40b948bb903bd0ac579305b5d84660d489d7",
+  "wall_time_s": 5.434202500007814,
+  "python_traced_peak_mib": 0.2220306396484375,
+  "metric_note": "tracemalloc Python-heap peak over the fit; torch internal buffers are not fully traced",
+  "stopping_condition": "max_epochs",
+  "best_epoch": 3000,
+  "validation_max_error_N": 0.033667556751702514,
+  "gate_N": 1e-06,
+  "gate_note": "packet max_force_balance_residual; never lowered",
+  "physically_qualified": false,
+  "no_llm_calls": true,
+  "scope": "learned candidate for the port-reaction response of the frozen fixtures; interpolation across geometry and load within the packet's admitted domain; holdout never read"
+}
