@@ -1,0 +1,70 @@
+{
+ "schema": "chimera-mechanism-factory-load-domain-study-v1",
+ "utc": "2026-10-17T15:38:58.652667+00:00",
+ "title": "assembly.star-k2 load->apex equilibrium table at scale 1.0 (solver v2, max_steps 60000)",
+ "record_id": "assembly.star-k2",
+ "seam_vertex": 200,
+ "n_vertices": 601,
+ "cross_check": "load 0.8 N residual 7.322313e-07 matches composed_chain_qualification_receipt scale_m 1.0 digit-for-digit",
+ "law": "packet 1e-6 N acceptance law unchanged; stagnated-with-residual-in-gate is a valid terminal state",
+ "rows": [
+  {
+   "load_N": 0.0,
+   "status": "stagnated",
+   "free_residual_N": 9.793573355846436e-08,
+   "apex_z_wu": 0.386956838052729,
+   "within_1e_6_N_law": true
+  },
+  {
+   "load_N": 0.4,
+   "status": "stationary",
+   "free_residual_N": 5.268008251846368e-14,
+   "apex_z_wu": 0.3366523561687648,
+   "within_1e_6_N_law": true
+  },
+  {
+   "load_N": 0.8,
+   "status": "stagnated",
+   "free_residual_N": 7.32231333233635e-07,
+   "apex_z_wu": 0.2843804870391736,
+   "within_1e_6_N_law": true
+  },
+  {
+   "load_N": 1.2,
+   "status": "stagnated",
+   "free_residual_N": 4.595336984269949e-07,
+   "apex_z_wu": 0.2296675745291137,
+   "within_1e_6_N_law": true
+  },
+  {
+   "load_N": 1.6,
+   "status": "stagnated",
+   "free_residual_N": 3.3442362035174256e-07,
+   "apex_z_wu": 0.17205904840608507,
+   "within_1e_6_N_law": true
+  },
+  {
+   "load_N": 2.0,
+   "status": "stagnated",
+   "free_residual_N": 2.6958456378345375e-07,
+   "apex_z_wu": 0.11109764355919904,
+   "within_1e_6_N_law": true
+  },
+  {
+   "load_N": 2.5,
+   "status": "stagnated",
+   "free_residual_N": 1.4902951495088246e-07,
+   "apex_z_wu": 0.02941118429606554,
+   "within_1e_6_N_law": true
+  },
+  {
+   "load_N": 3.0,
+   "status": "stagnated",
+   "free_residual_N": 6.589785073174426e-08,
+   "apex_z_wu": -0.05953787307855677,
+   "within_1e_6_N_law": true
+  }
+ ],
+ "purpose": "measured basis for (a) additive valid_loads_N domain amendment and (b) the stage 9 game-loop objective: set the load so the apex settles in a target band derived from these equilibria",
+ "reproduce": "PYTHONPATH=tools python; builders composed_chain.build_star + patch_equilibrium.solve_equilibrium, seeds from the record"
+}

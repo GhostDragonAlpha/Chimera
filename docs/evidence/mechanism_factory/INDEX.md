@@ -746,3 +746,13 @@ and `tools/mechanism_factory/**` `-text` (checkout-invariant, per the
   under operator repair); step completed build+test with four minimal
   fixes recorded in the receipt. Broader engine-suite regression beyond
   the membrane scene remains an open item for the next increment.
+
+## Load-domain study for the stage 9 game loop (2026-10-17, CPU-only)
+
+- `load_domain_study_20261017.json` — assembly.star-k2 apex equilibrium
+  across loads 0.0-3.0 N at scale 1.0 (solver v2, max_steps 60000):
+  monotone apex_z 0.3870 -> -0.0595 wu, every row within the unchanged
+  1e-6 N law; the 0.8 N row reproduces the chain qualification receipt's
+  scale-1.0 residual digit-for-digit (7.322313e-07). Measured basis for
+  the additive valid_loads_N amendment and for a game objective of the
+  form "set the load so the apex settles in a target band".
