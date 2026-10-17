@@ -4523,6 +4523,7 @@ bool Engine::membrane_demo_status(MembraneDemoStatus& out) {
     out.centre_force[2] = md_last_vf_centre_[2];
     out.energy = md_energy_last_;
     out.energy_initial = md_energy_initial_;
+    out.centre_load_N = md_load_;
     return true;
 }
 
@@ -4735,6 +4736,162 @@ bool Engine::md_step_once(bool force_invalid_trial) {
     return true;
 }
 
+// md_deform: THE LOAD-CHANGE CONTROL (§increment 4). Sets the centre
+// dead-load to load_N [N] and RE-SOLVES the single free DOF (centre z) to
+// the new equilibrium under the SAME surface-energy law the descent runs:
+// the accepted state must satisfy fz_surface(centre) == load_N (the
+// balance residual is recorded in the descent law's own form
+// P*|fz - load| vs residual_tol). The solve is a bracketed bisection on
+// the centre z evaluated by the VERIFIED kernels (stage 0/1/2 on the
+// TRIAL buffer, md_valid_all gate) -- a converged re-solve, NOT
+// guard-capped incremental descent steps. No position is written outside
+// the law: the commit is the same TRIAL->ACCEPTED swap md_step_once
+// performs, of a candidate the kernels validated.
+bool Engine::md_deform(double load_N) {
+    // declared constants copied from md_step_once (declared, never re-tuned)
+    static constexpr double RESIDUAL_TOL_FRAC = 1.0e-12;
+    const double residual_tol = RESIDUAL_TOL_FRAC * md_mean_edge_;
+    if (!std::isfinite(load_N) || load_N < 0.0) {
+        md_last_control_ = "deform_REJECTED";
+        return false;
+    }
+    if (!md_active_ || md_pipe_ == VK_NULL_HANDLE) {
+        md_last_control_ = "deform_REJECTED";
+        return false;
+    }
+    const double P = 1.0 / md_gamma_admitted_;
+    const double W = load_N;
+    // Seed the TRIAL buffer with the accepted state, move ONLY the centre z,
+    // evaluate by the verified kernels; false = the law's geometry refusal
+    // at this candidate.
+    auto probe = [&](double zc, float& U_out, double& fz_out) -> bool {
+        std::vector<float> trial(size_t(md_nv_) * 4, 0.0f);
+        for (uint32_t v = 0; v < md_nv_; ++v) {
+            trial[size_t(v) * 4 + 0] = md_pos_host_[size_t(v) * 3 + 0];
+            trial[size_t(v) * 4 + 1] = md_pos_host_[size_t(v) * 3 + 1];
+            trial[size_t(v) * 4 + 2] = md_pos_host_[size_t(v) * 3 + 2];
+        }
+        trial[size_t(md_centre_) * 4 + 2] = static_cast<float>(zc);
+        std::memcpy(md_trial_map_, trial.data(), trial.size() * sizeof(float));
+        if (!md_eval(2, U_out)) return false;
+        const float* vf = static_cast<const float*>(md_vf_map_);
+        fz_out = double(vf[size_t(md_centre_) * 4 + 2]);
+        return md_valid_all();
+    };
+    // accepted-state balance first (md_eval(1) refreshes the force cache)
+    float U0 = 0.f;
+    if (!md_eval(1, U0) || !md_valid_all()) {
+        md_last_control_ = "deform_REJECTED";
+        return false;
+    }
+    const double fz0 = double(md_last_vf_centre_[2]);
+    const double z0 = double(md_pos_host_[size_t(md_centre_) * 3 + 2]);
+    const double F0 = fz0 - W;
+    if (std::abs(P * F0) <= residual_tol) {
+        md_load_ = W;                    // the accepted state already balances it
+        md_last_control_ = "deform_equilibrium_unchanged";
+        return true;
+    }
+    // bracket the balance point: march exponentially from z0 in the direction
+    // the load pushes (heavier load -> the centre sags, z decreases) until
+    // the surface force crosses the load or the law refuses the geometry
+    const double dir = (F0 < 0.0) ? -1.0 : 1.0;
+    double z_a = z0;                     // near bound: valid, F keeps F0's sign
+    double z_b = z0;                     // far bound: crossed or invalid
+    double best_z = z0, best_fz = fz0;   // best VALID candidate so far
+    bool saw_cross = false;              // a valid candidate passed the balance
+    bool invalid_far = false;
+    {
+        float Ux = 0.f; double fzx = 0.f;
+        double step = 1e-3 * md_min_edge_;
+        for (int k = 0; k < 40 && !saw_cross && !invalid_far; ++k) {
+            const double zc = z0 + dir * step;
+            step *= 2.0;
+            if (!probe(zc, Ux, fzx)) {           // the law refused the geometry
+                z_b = zc;                        // invalid sits on the far side
+                invalid_far = true;
+                break;
+            }
+            ++md_trials_;
+            const double F = fzx - W;
+            if ((dir < 0 && F >= 0.0) || (dir > 0 && F <= 0.0)) {
+                z_b = zc; saw_cross = true;
+            } else {
+                z_a = zc;
+            }
+            if (std::abs(F) < std::abs(best_fz - W)) { best_z = zc; best_fz = fzx; }
+        }
+    }
+    // bisect the bracket (invalid candidates always narrow from the far side)
+    {
+        float Ux = 0.f; double fzx = 0.f;
+        const double quantum = 4.0 * 1.1920929e-7 * (std::max)(std::abs(z0), 1.0);
+        for (int it = 0; it < 64; ++it) {
+            if (std::abs(z_a - z_b) <= quantum) break;
+            const double mid = 0.5 * (z_a + z_b);
+            if (!probe(mid, Ux, fzx)) { z_b = mid; ++md_trials_; continue; }
+            ++md_trials_;
+            const double F = fzx - W;
+            const bool f0_side = (dir < 0) ? (F < 0.0) : (F > 0.0);
+            if (f0_side) z_a = mid;
+            else { z_b = mid; saw_cross = true; }
+            if (std::abs(F) < std::abs(best_fz - W)) { best_z = mid; best_fz = fzx; }
+        }
+    }
+    if (!saw_cross) {
+        // the load change admits no valid equilibrium under the law
+        // (the geometry refused before the forces could balance)
+        md_last_control_ = "deform_REFUSED_no_equilibrium";
+        return false;
+    }
+    // commit the converged equilibrium: re-seed the TRIAL buffer with the
+    // best candidate, validate, and swap exactly like the descent law
+    float Uplus = 0.f; double fz_plus = 0.f;
+    if (!probe(best_z, Uplus, fz_plus)) {
+        md_last_control_ = "deform_REFUSED_no_equilibrium";
+        return false;
+    }
+    ++md_trials_;
+    {
+        const float* src = static_cast<const float*>(md_trial_map_);
+        float* dst = static_cast<float*>(md_pos_map_);
+        for (uint32_t v = 0; v < md_nv_; ++v) {
+            dst[size_t(v) * 4 + 0] = src[size_t(v) * 4 + 0];
+            dst[size_t(v) * 4 + 1] = src[size_t(v) * 4 + 1];
+            dst[size_t(v) * 4 + 2] = src[size_t(v) * 4 + 2];
+            dst[size_t(v) * 4 + 3] = 0.0f;
+        }
+    }
+    md_read_vec3(md_trial_map_, md_pos_host_, md_nv_);
+    {
+        const float* p = static_cast<const float*>(md_pos_map_);
+        std::vector<float> packed(size_t(md_nv_) * 3);
+        for (uint32_t v = 0; v < md_nv_; ++v) {
+            packed[size_t(v) * 3 + 0] = p[size_t(v) * 4 + 0];
+            packed[size_t(v) * 3 + 1] = p[size_t(v) * 4 + 1];
+            packed[size_t(v) * 3 + 2] = p[size_t(v) * 4 + 2];
+        }
+        md_accepted_id_ = md_fnv1a(packed.data(), packed.size() * sizeof(float));
+    }
+    md_geom_stats(md_pos_host_, md_idx_host_, md_min_edge_, md_mean_edge_);
+    md_energy_last_ = Uplus;
+    ++md_accepted_;
+    ++md_iteration_;
+    md_present_dirty_ = true;
+    md_load_ = W;
+    md_terminal_.clear();
+    md_last_control_ = "deform";
+    // refresh the accepted-state force cache for status
+    float U = 0.f;
+    md_eval(1, U);
+    md_energy_last_ = U;
+    const float* vf = static_cast<const float*>(md_vf_map_);
+    md_last_vf_centre_[0] = vf[size_t(md_centre_) * 4 + 0];
+    md_last_vf_centre_[1] = vf[size_t(md_centre_) * 4 + 1];
+    md_last_vf_centre_[2] = vf[size_t(md_centre_) * 4 + 2];
+    return true;
+}
+
 // md_admit_gamma: the material admission boundary. Scalar gamma [J/m^2] is
 // validated (finite, > 0) as f64, converted to f32, and the CONVERSION is
 // re-validated (finite, > 0): positive values lost to zero under f32 are
@@ -4774,7 +4931,7 @@ bool Engine::md_admit_gamma(double gamma) {
 }
 
 bool Engine::membrane_demo_ctl(int kind, uint32_t n_steps, double gamma,
-                               MembraneDemoStatus& out) {
+                               double load_N, MembraneDemoStatus& out) {
     out = MembraneDemoStatus{};
     if (!md_active_) return false;
     switch (kind) {
@@ -4793,6 +4950,7 @@ bool Engine::membrane_demo_ctl(int kind, uint32_t n_steps, double gamma,
     }
         md_iteration_ = md_accepted_ = md_trials_ = 0;
         md_terminal_.clear();
+        md_load_ = 0.0;   // the uploaded initial state carries no centre dead-load
         md_gamma_admitted_ = md_gamma_initial_;
         md_gamma_f32_ = md_gamma_initial_f32_;
         md_material_snapshot_ = md_material_snapshot_initial_;
@@ -4837,8 +4995,137 @@ bool Engine::membrane_demo_ctl(int kind, uint32_t n_steps, double gamma,
         break;
     }
     case 5: md_step_once(true); break;   // rejection-integrity control
+    case 6: md_deform(load_N); break;    // load change + converged re-solve
     default: return false;
     }
+    membrane_demo_status(out);
+    return true;
+}
+
+// membrane_demo_save: full-state document for the membrane-demo state class
+// (chimera.membrane_demo_state.v1) -- the /tick_b2_save pattern applied to
+// this state class. Doubles print %.17g (exact round-trip), the f32
+// positions print %.9g (exact IEEE f32 round-trip), and the FNV
+// accepted-state id rides as a decimal STRING (a u64 does not survive JSON
+// double parsing). The material snapshot is the gamma admission's own
+// derived state and is regenerated by restore through md_admit_gamma.
+bool Engine::membrane_demo_save(std::string& doc_out) {
+    if (!md_active_) return false;
+    std::string pos;
+    pos.reserve(size_t(md_nv_) * 3 * 14 + 16);
+    char buf[64];
+    for (uint32_t v = 0; v < md_nv_; ++v) {
+        for (int c = 0; c < 3; ++c) {
+            if (v || c) pos += ',';
+            snprintf(buf, sizeof buf, "%.9g",
+                     static_cast<double>(md_pos_host_[size_t(v) * 3 + c]));
+            pos += buf;
+        }
+    }
+    char hdr[768];
+    snprintf(hdr, sizeof hdr,
+        "{\"schema\":\"chimera.membrane_demo_state.v1\",\"n_verts\":%u,"
+        "\"n_faces\":%u,\"centre_index\":%u,\"gamma_admitted_f64\":%.17g,"
+        "\"gamma_uploaded_f32\":%.9g,\"centre_load_N\":%.17g,"
+        "\"energy_J\":%.17g,\"energy_initial_J\":%.17g,\"iteration\":%u,"
+        "\"n_accepted\":%u,\"n_trials\":%u,\"accepted_state_id\":\"%llu\","
+        "\"material_snapshot\":",
+        md_nv_, md_nf_, md_centre_, md_gamma_admitted_,
+        static_cast<double>(md_gamma_f32_), md_load_, md_energy_last_,
+        md_energy_initial_, md_iteration_, md_accepted_, md_trials_,
+        static_cast<unsigned long long>(md_accepted_id_));
+    doc_out = std::string(hdr)
+        + (md_material_snapshot_.empty() ? std::string("null")
+                                         : md_material_snapshot_)
+        + ",\"positions_f32\":[" + pos + "]}";
+    return true;
+}
+
+// membrane_demo_restore: validate a chimera.membrane_demo_state.v1 document
+// end-to-end against the LIVE demo state (geometry identity, f32 gamma
+// conversion, and the saved accepted-state id re-derived from the parsed
+// positions) and only then swap it in -- a refused document leaves the
+// accepted state untouched (the B2 restore law). The restore returns the
+// state BIT-EXACTLY: positions are the saved f32 values, the material is
+// re-admitted from the saved f64 gamma (its f32 conversion and snapshot
+// regenerate identically), and the deterministic kernels must reproduce the
+// saved f32 energy on re-evaluation.
+bool Engine::membrane_demo_restore(const MembraneDemoRestoreDoc& doc,
+                                   MembraneDemoStatus& out) {
+    out = MembraneDemoStatus{};
+    if (!md_active_) return false;
+    auto refuse = [&](const char* why) {
+        md_last_control_ = std::string("restore_REJECTED:") + why;
+        membrane_demo_status(out);
+        return false;
+    };
+    if (doc.n_verts != md_nv_ || doc.n_faces != md_nf_
+        || doc.centre_index != md_centre_)
+        return refuse("geometry_mismatch");
+    if (doc.positions_f32.size() != size_t(md_nv_) * 3)
+        return refuse("positions_size");
+    for (float x : doc.positions_f32)
+        if (!std::isfinite(x)) return refuse("positions_not_finite");
+    if (!std::isfinite(doc.gamma_admitted) || doc.gamma_admitted < 0.0
+        || !std::isfinite(doc.centre_load_N) || doc.centre_load_N < 0.0
+        || !std::isfinite(doc.energy_J) || !std::isfinite(doc.energy_initial_J))
+        return refuse("material_or_load");
+    // the saved f32 gamma conversion must reproduce from the saved f64 value
+    if (static_cast<double>(static_cast<float>(doc.gamma_admitted))
+        != doc.gamma_uploaded32)
+        return refuse("gamma_conversion");
+    // BIT-EXACTNESS PRE-CHECK, before any write: the parsed positions must
+    // reproduce the saved accepted-state id (FNV-1a over the packed f32 xyz).
+    {
+        std::vector<float> packed(size_t(md_nv_) * 3);
+        for (uint32_t v = 0; v < md_nv_; ++v) {
+            packed[size_t(v) * 3 + 0] = doc.positions_f32[size_t(v) * 3 + 0];
+            packed[size_t(v) * 3 + 1] = doc.positions_f32[size_t(v) * 3 + 1];
+            packed[size_t(v) * 3 + 2] = doc.positions_f32[size_t(v) * 3 + 2];
+        }
+        const uint64_t sid =
+            md_fnv1a(packed.data(), packed.size() * sizeof(float));
+        if (sid != doc.accepted_state_id) return refuse("state_id_mismatch");
+    }
+    // ── validated end-to-end; the swap is atomic from here ──────────────
+    md_write_vec3(md_pos_map_, doc.positions_f32, md_nv_);
+    md_pos_host_ = doc.positions_f32;
+    if (!md_admit_gamma(doc.gamma_admitted)) return refuse("gamma_admission");
+    md_load_ = doc.centre_load_N;
+    md_iteration_ = doc.iteration;
+    md_accepted_ = doc.n_accepted;
+    md_trials_ = doc.n_trials;
+    md_energy_initial_ = doc.energy_initial_J;
+    // recompute the accepted-state id from the restored positions (the
+    // save/restore pair must round-trip bit-exactly, including the id)
+    {
+        std::vector<float> packed(size_t(md_nv_) * 3);
+        for (uint32_t v = 0; v < md_nv_; ++v) {
+            packed[size_t(v) * 3 + 0] = md_pos_host_[size_t(v) * 3 + 0];
+            packed[size_t(v) * 3 + 1] = md_pos_host_[size_t(v) * 3 + 1];
+            packed[size_t(v) * 3 + 2] = md_pos_host_[size_t(v) * 3 + 2];
+        }
+        md_accepted_id_ = md_fnv1a(packed.data(), packed.size() * sizeof(float));
+    }
+    md_geom_stats(md_pos_host_, md_idx_host_, md_min_edge_, md_mean_edge_);
+    md_terminal_.clear();
+    md_last_control_ = "restored";
+    md_present_dirty_ = true;
+    // the deterministic kernels must reproduce the saved f32 energy
+    float U = 0.f;
+    if (!md_eval(1, U) || !md_valid_all()) {
+        md_terminal_ = "invalid_surface";
+        md_last_control_ = "restore_EVAL_FAILED";
+        membrane_demo_status(out);
+        return false;
+    }
+    if (U != static_cast<float>(doc.energy_J))
+        md_last_control_ = "restore_ENERGY_MISMATCH";
+    md_energy_last_ = U;
+    const float* vf = static_cast<const float*>(md_vf_map_);
+    md_last_vf_centre_[0] = vf[size_t(md_centre_) * 4 + 0];
+    md_last_vf_centre_[1] = vf[size_t(md_centre_) * 4 + 1];
+    md_last_vf_centre_[2] = vf[size_t(md_centre_) * 4 + 2];
     membrane_demo_status(out);
     return true;
 }

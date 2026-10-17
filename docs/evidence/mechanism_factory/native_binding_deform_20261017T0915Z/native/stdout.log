@@ -1,0 +1,21 @@
+studio: session log -> session_20261017_100323.jsonl
+floor: building pipeline (modules ok)
+floor: pipeline created
+Compute pipeline created
+THE ENGINE STUDIO: overlay ready (F1)
+Vulkan engine initialized: 2560 x 1440, 2 frames in flight
+Chimera Engine running at http://localhost:8837/state
+  /frame  -> PNG of the current render (membrane if one is loaded)
+  /membrane (POST) -> load a story membrane scene
+Window: 2560x1440, Press Ctrl+C to stop.
+Controls: Left-drag orbit | Scroll zoom | Right-drag pan
+          WASD move | Q/E up-down | Space/Ctrl zoom | R reset | P pose toggle
+          F1 THE ENGINE STUDIO overlay (pipeline board + live status)
+membrane_demo: init nv=601 nf=600 centre=6 lift=0.500 E0=6.30436897
+FPS: 233 (frame 234) | ft ms avg 1.18 max 22.46 | >16.7ms: 1 >33ms: 0
+FPS: 299 (frame 300) | ft ms avg 0.58 max 1.32 | >16.7ms: 0 >33ms: 0
+FPS: 284 (frame 284) | ft ms avg 0.56 max 1.46 | >16.7ms: 0 >33ms: 0
+FPS: 297 (frame 298) | ft ms avg 0.70 max 9.23 | >16.7ms: 0 >33ms: 0
+FPS: 289 (frame 290) | ft ms avg 0.50 max 1.16 | >16.7ms: 0 >33ms: 0
+FPS: 293 (frame 293) | ft ms avg 0.77 max 9.32 | >16.7ms: 0 >33ms: 0
+FPS: 295 (frame 296) | ft ms avg 0.54 max 1.47 | >16.7ms: 0 >33ms: 0

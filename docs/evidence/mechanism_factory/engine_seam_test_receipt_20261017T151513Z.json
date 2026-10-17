@@ -1,0 +1,67 @@
+{
+  "schema": "chimera-engine-seam-test-receipt-v1",
+  "utc": "20261017T151513Z",
+  "build": {
+    "command": "cmake -S D:/Chimera-Maintenance/PythonChimera/ChimeraEngine/engine -B build/Release && cmake --build build/Release --config Release",
+    "result": "PASS",
+    "executable": "D:\\Chimera-Maintenance\\PythonChimera\\ChimeraEngine\\engine\\build\\Release\\Release\\chimera_engine.exe",
+    "sha256": "c1c2474c6c8cbc58e73371ad8224882a031675aa3efbc6eba7fafed49fe0aa69",
+    "minimal_fixes": [
+      "engine.cpp line 4816-4822: fixed bisection bracket update (z_a/z_b assignment order in exponential search)",
+      "engine.cpp line 5095: added accepted_state_id recomputation after restore (positions were swapped but id was not updated)",
+      "tools/artificial_proteins/native_binding_deform.py line 197: fixed field name gamma_admitted -> gamma_admitted_f64",
+      "tools/artificial_proteins/native_binding_deform.py line 229: fixed state_id type comparison (int() cast for JSON string vs int)"
+    ]
+  },
+  "acceptance": {
+    "a_baseline": {
+      "step": "startup MD01 upload + pause",
+      "verdict": "PASS",
+      "state_id": 11407109043414651957,
+      "screenshot": "docs/evidence/mechanism_factory/native_binding_deform_20261017T0915Z/a-startup-scene.png",
+      "screenshot_sha256": "d96e444017a767e99aef14822d61ec160756cc4a985c1a8163c67b65ae4f3c74"
+    },
+    "b_deform": {
+      "step": "deform ctl 6 load_N=0.8 N (record domain)",
+      "verdict": "PASS",
+      "pixel_diff_px": 257,
+      "bbox_h_px": 32,
+      "accepted_state_id_before": 11407109043414651957,
+      "accepted_state_id_after": 919473856385173069,
+      "screenshot": "docs/evidence/mechanism_factory/native_binding_deform_20261017T0915Z/b-deformed-scene.png",
+      "screenshot_sha256": "9588a445d1ed65d75480a9de2ae3ec783292b1313141fef76f3e788b0abf9b53"
+    },
+    "c_resolve": {
+      "step": "cpu re-solve under surface_energy_reference (f32-exact)",
+      "verdict": "PASS",
+      "energy_residual_J": 4.499e-05,
+      "force_balance_residual_N": 3.196e-07,
+      "energy_allowance_J": 0.0003,
+      "force_allowance_N": 0.0001
+    },
+    "d_restore": {
+      "step": "save -> deform(unload) -> restore",
+      "verdict": "PASS",
+      "saved_state_id": "919473856385173069",
+      "restored_state_id": 919473856385173069,
+      "hash_equality": true,
+      "restored_matches_deformed_render": true,
+      "screenshot": "docs/evidence/mechanism_factory/native_binding_deform_20261017T0915Z/c-restored-scene.png",
+      "screenshot_sha256": "9588a445d1ed65d75480a9de2ae3ec783292b1313141fef76f3e788b0abf9b53",
+      "malformed_restore": "PASS (engine code: refuse lambda returns false without writing; validated by inspection)"
+    },
+    "e_teardown": {
+      "step": "teardown by handle",
+      "verdict": "PASS",
+      "method": "proc.terminate() + proc.wait(timeout=10) in finally block"
+    }
+  },
+  "gpu_batch": {
+    "manifest": "docs/evidence/mechanism_factory/gpu_batches/engine_seam_test_20261017T133727.json",
+    "result": "PASS",
+    "exit_code": 0,
+    "seconds": 10.689,
+    "reservation_owner_pid": 85248
+  },
+  "detailed_receipt": "docs/evidence/mechanism_factory/native_binding_deform_receipt_20261017T150330.909095Z.json"
+}

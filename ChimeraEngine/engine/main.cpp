@@ -76,11 +76,14 @@ static bool g_membrane_active = true;  // 3DGS-only: the N-body sim (7-float) is
 // reserved u32 (32-byte header), then positions f32[nv*3], indices u32[nf*3],
 // CSR offsets u32[nv+1], CSR corner ids u32[nf*3], gamma f32[nf].
 struct MembraneDemoRequest {
-    int kind = 0;       // 1 init, 2 control, 3 status
-    int ctl_kind = 0;   // 0 reset, 1 step, 2 run, 3 pause, 4 gamma, 5 reject
+    int kind = 0;       // 1 init, 2 control, 3 status, 4 save, 5 restore
+    int ctl_kind = 0;   // 0 reset, 1 step, 2 run, 3 pause, 4 gamma, 5 reject, 6 deform
     Engine::MembraneDemoUpload upload;
     uint32_t n_steps = 0;
     double gamma = 0.0;
+    double load_N = 0.0;                    // deform (ctl 6): centre dead-load [N]
+    Engine::MembraneDemoRestoreDoc restore; // kind 5: the validated save document
+    std::string blob;                       // kind 4: the save document out
     Engine::MembraneDemoStatus status{};
     bool ok = false;
 };
@@ -560,11 +563,12 @@ static bool parse_float_array(const std::string& body, const char* key, std::vec
 static std::string membrane_demo_status_json(const Engine::MembraneDemoStatus& s, bool ok) {
     char b[2048];
     snprintf(b, sizeof(b),
-        "{\"ok\":%s,\"active\":%s,\"iteration\":%u,\"accepted\":%u,\"trials\":%u,\"energy\":%.9g,\"energy_initial\":%.9g,\"terminal_state\":\"%s\",\"centre\":[%.9g,%.9g,%.9g],\"centre_force\":[%.9g,%.9g,%.9g],\"accepted_state_id\":%llu,\"render_state_id\":%llu,\"last_control\":\"%s\",\"material_snapshot\":%s}",
+        "{\"ok\":%s,\"active\":%s,\"iteration\":%u,\"accepted\":%u,\"trials\":%u,\"energy\":%.9g,\"energy_initial\":%.9g,\"terminal_state\":\"%s\",\"centre\":[%.9g,%.9g,%.9g],\"centre_force\":[%.9g,%.9g,%.9g],\"centre_load_N\":%.17g,\"accepted_state_id\":%llu,\"render_state_id\":%llu,\"last_control\":\"%s\",\"material_snapshot\":%s}",
         ok ? "true" : "false", s.active ? "true" : "false",
         s.iteration, s.n_accepted, s.n_trials, s.energy, s.energy_initial,
         s.terminal_state.c_str(), s.centre[0], s.centre[1], s.centre[2],
         s.centre_force[0], s.centre_force[1], s.centre_force[2],
+        s.centre_load_N,
         static_cast<unsigned long long>(s.accepted_state_id),
         static_cast<unsigned long long>(s.render_state_id),
         s.last_control.c_str(), s.material_snapshot.empty() ? "null" : s.material_snapshot.c_str());
@@ -658,6 +662,67 @@ void handleSignal(int) {
 #include <oleauto.h>
 #pragma comment(lib, "windowscodecs.lib")
 #pragma comment(lib, "ole32.lib")
+
+// ── membrane-demo save/restore routes (increment 4): the bodies live at
+// file scope so the main() API dispatch keeps its MSVC block-nesting depth
+// (C1061 guard). Each performs the same render-thread handoff as the
+// inline routes; restore parses at the HTTP layer (the /membrane_demo_bin
+// pattern) and the engine validates against its live state.
+static std::string membrane_demo_save_route() {
+    {
+        std::lock_guard<std::mutex> lk(g_md_mutex);
+        g_md_req = MembraneDemoRequest{};
+        g_md_req.kind = 4; g_md_pending = true; g_md_applied = false;
+    }
+    std::unique_lock<std::mutex> lk(g_md_mutex);
+    bool waited = wait_for_shutdown(g_md_cv, lk, std::chrono::seconds(10), []{ return g_md_applied; });
+    return waited && g_md_req.ok ? g_md_req.blob
+          : "{\"ok\":false,\"error\":\"membrane demo save failed or timed out\"}";
+}
+
+static std::string membrane_demo_restore_route(const std::string& req_body) {
+    // Body = a chimera.membrane_demo_state.v1 document from
+    // /membrane_demo_save; a refused document leaves the accepted state
+    // untouched (the B2 restore law).
+    Engine::MembraneDemoRestoreDoc rd{};
+    bool shaped = true;
+    {
+        const std::string sid = get_string(req_body, "accepted_state_id");
+        char* end = nullptr;
+        unsigned long long v = 0;
+        if (sid.empty() || sid.size() > 20
+            || (v = std::strtoull(sid.c_str(), &end, 10), end != sid.c_str() + sid.size()))
+            shaped = false;
+        else
+            rd.accepted_state_id = static_cast<uint64_t>(v);
+    }
+    if (shaped) {
+        rd.n_verts = get_uint(req_body, "n_verts", 0);
+        rd.n_faces = get_uint(req_body, "n_faces", 0);
+        rd.centre_index = get_uint(req_body, "centre_index", 0);
+        rd.gamma_admitted = get_double(req_body, "gamma_admitted_f64", 0.0);
+        rd.gamma_uploaded32 = get_double(req_body, "gamma_uploaded_f32", 0.0);
+        rd.centre_load_N = get_double(req_body, "centre_load_N", 0.0);
+        rd.energy_J = get_double(req_body, "energy_J", 0.0);
+        rd.energy_initial_J = get_double(req_body, "energy_initial_J", 0.0);
+        rd.iteration = get_uint(req_body, "iteration", 0);
+        rd.n_accepted = get_uint(req_body, "n_accepted", 0);
+        rd.n_trials = get_uint(req_body, "n_trials", 0);
+        shaped = parse_float_array(req_body, "positions_f32", rd.positions_f32);
+    }
+    if (!shaped)
+        return "{\"ok\":false,\"error\":\"malformed membrane demo state document\"}";
+    {
+        std::lock_guard<std::mutex> lk(g_md_mutex);
+        g_md_req = MembraneDemoRequest{};
+        g_md_req.kind = 5; g_md_req.restore = std::move(rd);
+        g_md_pending = true; g_md_applied = false;
+    }
+    std::unique_lock<std::mutex> lk(g_md_mutex);
+    bool waited = wait_for_shutdown(g_md_cv, lk, std::chrono::seconds(30), []{ return g_md_applied; });
+    return waited ? membrane_demo_status_json(g_md_req.status, g_md_req.ok)
+                  : "{\"ok\":false,\"error\":\"membrane demo restore timeout\"}";
+}
 
 namespace f2 {
 
@@ -1205,8 +1270,9 @@ int main(int argc, char** argv) {
             else if (op == "pause") ctl = 3;
             else if (op == "gamma") ctl = 4;
             else if (op == "reject") ctl = 5;
+            else if (op == "deform") ctl = 6;
             if (ctl < 0) {
-                body = "{\"ok\":false,\"error\":\"op must be reset|step|run|pause|gamma|reject\"}";
+                body = "{\"ok\":false,\"error\":\"op must be reset|step|run|pause|gamma|reject|deform\"}";
             } else {
                 {
                     std::lock_guard<std::mutex> lk(g_md_mutex);
@@ -1214,6 +1280,7 @@ int main(int argc, char** argv) {
                     g_md_req.kind = 2; g_md_req.ctl_kind = ctl;
                     g_md_req.n_steps = get_uint(req_body, "n_steps", ctl == 1 ? 1u : 126u);
                     g_md_req.gamma = get_double(req_body, "gamma", 0.0);
+                    g_md_req.load_N = get_double(req_body, "load_N", 0.0);
                     g_md_pending = true; g_md_applied = false;
                 }
                 std::unique_lock<std::mutex> lk(g_md_mutex);
@@ -4106,6 +4173,21 @@ int main(int argc, char** argv) {
             if (!b2b.empty()) { body = b2b; content_type = "application/json"; }
         }
 
+        // Membrane-demo save/restore routes (increment 4): the same
+        // post-ladder pattern as route_b2 — the ladder sits at MSVC's
+        // block-nesting limit (C1061), so these paths must not enter it.
+        // /membrane_demo_save returns the full lived-in state document
+        // (the /tick_b2_save pattern applied to this state class);
+        // /membrane_demo_restore round-trips it bit-exactly.
+        {
+            std::string mdb;
+            if (p == "/membrane_demo_save" && method == "GET")
+                mdb = membrane_demo_save_route();
+            else if (p == "/membrane_demo_restore" && method == "POST")
+                mdb = membrane_demo_restore_route(req_body);
+            if (!mdb.empty()) { body = mdb; content_type = "application/json"; }
+        }
+
         // ── SESSION SNAPSHOT (2026-09-02, the tool-alongside-the-game decree):
         // every successful *_bin upload is written THROUGH to
         // session_snapshot/<endpoint>.blob — a folder of raw bytes, replayed
@@ -4425,7 +4507,12 @@ int main(int argc, char** argv) {
                     }
                 } else if (g_md_req.kind == 2) {
                     ok = engine.membrane_demo_ctl(g_md_req.ctl_kind, g_md_req.n_steps,
-                                                  g_md_req.gamma, g_md_req.status);
+                                                  g_md_req.gamma, g_md_req.load_N,
+                                                  g_md_req.status);
+                } else if (g_md_req.kind == 4) {
+                    ok = engine.membrane_demo_save(g_md_req.blob);
+                } else if (g_md_req.kind == 5) {
+                    ok = engine.membrane_demo_restore(g_md_req.restore, g_md_req.status);
                 } else {
                     ok = engine.membrane_demo_status(g_md_req.status);
                 }

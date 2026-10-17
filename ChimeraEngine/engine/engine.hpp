@@ -209,20 +209,48 @@ public:
         uint64_t render_state_id = 0;        // FNV-1a over last presented bytes
         std::string last_control;            // last control outcome (rejection-integrity evidence)
         std::string material_snapshot;       // admitted-gamma snapshot (JSON)
+        double centre_load_N = 0.0;          // centre dead-load [N] (deform control)
+    };
+    // The membrane-demo save/restore document (chimera.membrane_demo_state.v1),
+    // parsed at the HTTP layer into typed fields (the /membrane_demo_bin
+    // pattern: parse at the edge, the engine validates against its own live
+    // state). The f32 positions ride as %.9g decimals (exact IEEE f32
+    // round-trip); the FNV accepted-state id rides as a decimal STRING (a
+    // u64 does not survive JSON double parsing).
+    struct MembraneDemoRestoreDoc {
+        uint32_t n_verts = 0, n_faces = 0, centre_index = 0;
+        double gamma_admitted = 0.0;         // admitted f64 scalar gamma [J/m^2]
+        double gamma_uploaded32 = 0.0;       // its f32 conversion, saved bit-exactly
+        double centre_load_N = 0.0;          // centre dead-load [N]
+        double energy_J = 0.0, energy_initial_J = 0.0;
+        uint32_t iteration = 0, n_accepted = 0, n_trials = 0;
+        uint64_t accepted_state_id = 0;      // FNV-1a over the saved f32 positions
+        std::vector<float> positions_f32;    // n_verts * 3
     };
     bool membrane_demo_init(const MembraneDemoUpload& up);
     // kind: 0 reset, 1 step (one accepted iteration), 2 run(n), 3 pause,
     // 4 set_gamma (re-admit through the material contract), 5 force-invalid
-    // trial (rejection-integrity control).
+    // trial (rejection-integrity control), 6 deform (set the centre
+    // dead-load to load_N and RE-SOLVE the free DOF to the new equilibrium
+    // under the same surface-energy law).
     bool membrane_demo_ctl(int kind, uint32_t n_steps, double gamma,
-                           MembraneDemoStatus& out);
+                           double load_N, MembraneDemoStatus& out);
     bool membrane_demo_status(MembraneDemoStatus& out);
+    // save/restore for the membrane-demo state class (the existing
+    // /tick_b2_save|restore pattern applied to this class): save serialises
+    // the FULL lived-in state; restore validates a saved document end-to-end
+    // and swaps it in atomically (a refused document leaves the state
+    // untouched).
+    bool membrane_demo_save(std::string& doc_out);
+    bool membrane_demo_restore(const MembraneDemoRestoreDoc& doc,
+                               MembraneDemoStatus& out);
     void membrane_demo_frame(VkCommandBuffer cb);   // per-frame present dispatch
     void md_dispatch(VkCommandBuffer cb, uint32_t stage, uint32_t sets,
                      const void* pc, size_t pc_size, bool to_vertex_input);
     bool md_eval(uint32_t sets, float& energy_out);  // stages 0,1,2 on a submitted cb
     bool md_valid_all();
     bool md_step_once(bool force_invalid_trial = false); // one accepted iteration (declared law)
+    bool md_deform(double load_N);      // load change + converged re-solve (declared law)
     bool md_admit_gamma(double gamma);               // the material admission boundary
     uint32_t find_mem_type_pub(uint32_t types, VkMemoryPropertyFlags flags) { return find_mem_type(types, flags); }
     // Runs n_macro macro-steps at dt_macro; records V after each step for
@@ -1172,6 +1200,7 @@ private:
     uint32_t        md_centre_ = 0;                     // free vertex index
     float           md_lift_ = 0.0f;                    // presentation lift
     double          md_gamma_admitted_ = 0.0;           // admitted scalar gamma [J/m^2]
+    double          md_load_ = 0.0;                     // centre dead-load [N] (deform control; 0 = none)
     float           md_gamma_f32_ = 0.0f;               // its float32 conversion
     double          md_gamma_initial_ = 0.0;            // reset restores the initial material admission
     float           md_gamma_initial_f32_ = 0.0f;

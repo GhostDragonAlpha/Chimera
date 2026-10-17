@@ -727,3 +727,22 @@ and `tools/mechanism_factory/**` `-text` (checkout-invariant, per the
   admitted as the next increment: a physically-legitimate deform control
   and save/restore for the membrane-demo state class (both trace to the
   op set at main.cpp:1199-1213).
+
+## Stage 9 fourth increment — engine seam: legitimate deform control + membrane save/restore (2026-10-17)
+
+- Engine diff (Maya authored, step built/tested/minimal-fixed):
+  membrane-demo op set gains ctl 6 deform (centre dead-load within the
+  record's qualified domain, converged bracketed-bisection re-solve under
+  the SAME surface-energy law via verified kernels, committed through the
+  standard TRIAL->ACCEPTED swap — no position written outside the law)
+  and save (kind 4) / restore (kind 5) following the B2 restore law
+  (malformed documents leave the accepted state untouched).
+- `engine_seam_test_receipt_20261017T151513Z.json` — build PASS (sha
+  c1c2474c...); acceptance: baseline PASS, deform PASS (257 px visibly
+  changed vs the 0.1273 px guard cap; state_id changed), CPU re-solve of
+  the deformed state under the pinned law PASS (|dE| 4.5e-5 J,
+  |fz-W| 3.2e-7 N), save->deform->restore bit-exact PASS, teardown PASS.
+- Authorship note: worker session died mid-report (Maya CUDA stall,
+  under operator repair); step completed build+test with four minimal
+  fixes recorded in the receipt. Broader engine-suite regression beyond
+  the membrane scene remains an open item for the next increment.
