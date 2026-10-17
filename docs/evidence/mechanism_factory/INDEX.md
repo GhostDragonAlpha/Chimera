@@ -789,3 +789,39 @@ and `tools/mechanism_factory/**` `-text` (checkout-invariant, per the
   round's precedent) and `piece_record_checks_20261017T163851.768220Z.json`
   is 6/6 PASS. native_binding_checks 5/5 green; probe: loads 0.0/1.6/3.0
   N now compile, 0.9 N still refused binding_load_out_of_domain.
+
+## Increment 5: stage 9 game-loop engine run (2026-10-17, GPU batch)
+
+- `native_binding_gameloop.py` (tools/artificial_proteins/) +
+  `gameloop_run_receipt_20261017T180310.890170Z.json` +
+  `gameloop_run_inc5/` — Maya's full-loop run on the increment-4 engine
+  (sha c1c2474c), one gpu_batch invocation: objective PASS (deform 1.6 N
+  -> apex_z 0.172058344 wu in the frozen band [0.147, 0.197], 810 px
+  visible change), failure path PASS (0.9 N refused
+  binding_load_out_of_domain at the record layer; engine admitted,
+  save->restore recovered), feedback PASS (per-frame telemetry +
+  screenshots), restart PASS (reset -> upload hash, 0 px), replay PASS
+  (boot B: same upload hash, same terminal id, byte-identical renders).
+- Centre binding (Qwen accepted, step CONFIRMED): the MD01 deform centre
+  binds to the transaction's own load-port vertex (200, the record's
+  free seam apex), not the demo-hardcoded pinned vertex 6, whose fz
+  profile saturates at 0.999463 N and cannot reach the frozen band;
+  md01 byte parity at centre 6 asserted at runtime. Resolves the
+  increment-3 PIN-LAW flag for the deform path.
+- AMENDMENT 1 to the frozen criteria (step_review_load_domain_study.md
+  L4), per chimera-step37 ruling in
+  `reviews/step_review_gameloop_increment5.md`: criterion 2's CPU
+  re-solve cross-check is in FORCE/RESIDUAL units (N), threshold
+  <= 1e-7 N -- measured |1.40e-7 - 6.62e-8| = 7.4e-8 N, PASS. The
+  position reading (wu) is structurally inconsistent with the published
+  increment-4 tolerances: the engine commit quantum 4.768e-7 wu
+  (engine.cpp:4828) is 4.8x the threshold, and the kernel-vs-CPU force
+  difference 4.5e-6 N (within the published 1e-4 N force allowance)
+  alone shifts the true root by the observed 6.63e-7 wu. Recorded as a
+  numbered amendment, not a silent adjustment.
+- `reviews/step_review_gameloop_increment5.md` +
+  `gameloop_run_receipt_20261017T185057.629963Z.json` +
+  `gameloop_run_inc5_zcode_final/` — step's independent reproduction:
+  all six claims CONFIRMED digit-for-digit, screenshots byte-identical
+  across boots, both rulings issued, no driver defects. With AMENDMENT 1
+  applied, the game loop meets all six frozen criteria.
