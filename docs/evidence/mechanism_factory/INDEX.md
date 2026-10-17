@@ -705,3 +705,25 @@ and `tools/mechanism_factory/**` `-text` (checkout-invariant, per the
   them. Committed as-is in this increment to make the chain
   reproducible from a clean checkout; no bytes of the pre-existing
   modules were altered.
+
+## Stage 9 third increment — first visible slice + affordance loop (2026-10-17)
+
+- Browser path is the engine's own `GET /frame` render-PNG endpoint
+  (`ChimeraEngine/engine/main.cpp:2863`, proxied by
+  `tools/game_shell/server.py:186-188`); no page was authored.
+- `native_binding_visible_receipt_20261017T100640.675172Z.json` +
+  `visible_slice_20261017/*.png` — one managed GPU batch, visible engine:
+  startup PASS (accepted_state_id == recomputed accepted_hash, |dE|
+  4.5e-5 J), gamma PASS (energy ratio 2.0 at fixed geometry), reset PASS
+  (bit-exact), replay PASS (identical state_id and energy on second
+  boot). DEFORM FAIL recorded honestly: the step-control travel guard
+  (`engine.cpp:4628`, GUARD_FRAC=1e-3) caps total travel at 0.1273 px —
+  no existing demo control can visibly deform a qualified piece
+  (screenshots byte-identical, sha256 d96e4440...; CPU mirror 4/4).
+- `reviews/step_review_visible_slice.md` — chimera-step37 final review:
+  V1-V4 CONFIRMED, including the negative deform claim.
+- DECISION (Qwen): material-only gamma is NOT accepted as the visible
+  physical consequence — that would move the judge. Engine-side seam
+  admitted as the next increment: a physically-legitimate deform control
+  and save/restore for the membrane-demo state class (both trace to the
+  op set at main.cpp:1199-1213).

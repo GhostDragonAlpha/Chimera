@@ -1,0 +1,90 @@
+{
+ "schema": "chimera-mechanism-factory-native-binding-visible-v1",
+ "utc": "20261017T100640.644766Z",
+ "source_commit": "49d1571bb2d57dabd6b4549712b60b9c57873fae",
+ "browser_path": {
+  "endpoint": "GET /frame (PNG of the CURRENT engine render)",
+  "evidence": [
+   "ChimeraEngine/engine/main.cpp:2863",
+   "tools/game_shell/server.py:186-188 (existing /api/frame -> /frame proxy, same path)"
+  ],
+  "note": "the browser displays the engine's OWN endpoint; no web page was authored (front-end law)"
+ },
+ "engine_executable": "D:\\Chimera-Maintenance\\PythonChimera\\.tmp\\body-engine\\Release\\chimera_engine.exe",
+ "engine_sha256": "bb9fddc5582526823418acf15602c388d964f26385ab70fc1bcb2712bf8a0c3e",
+ "engine_visible": true,
+ "port": 8835,
+ "instance": {
+  "instance_id": "nbe-visible-star",
+  "record_id": "assembly.star-k2",
+  "transaction_hash": "f180ebef4e9acaad",
+  "accepted_hash_wu": 11407109043414651957,
+  "energy_reference_J": 6.304413835446449,
+  "sequence": [
+   {
+    "step": "startup",
+    "control": "MD01 upload + pause",
+    "state_id": 11407109043414651957,
+    "screenshot": "a-startup-scene.png",
+    "screenshot_sha256": "d96e444017a767e99aef14822d61ec160756cc4a985c1a8163c67b65ae4f3c74"
+   },
+   {
+    "step": "consequence",
+    "control": "gamma 2.0 (admitted)",
+    "state_id": 11407109043414651957,
+    "energy_ratio": 1.9999999936551938,
+    "screenshot": "b-gamma-doubled-scene.png",
+    "screenshot_sha256": "d96e444017a767e99aef14822d61ec160756cc4a985c1a8163c67b65ae4f3c74"
+   },
+   {
+    "step": "deform",
+    "control": "run x1 batches of 126 (demo batch)",
+    "state_id": 4449187401810470492,
+    "centre_z_delta_wu": 9.58697899e-10,
+    "screenshot": "d-deformed-scene.png",
+    "screenshot_sha256": "d96e444017a767e99aef14822d61ec160756cc4a985c1a8163c67b65ae4f3c74"
+   },
+   {
+    "step": "restart",
+    "control": "reset",
+    "state_id": 11407109043414651957,
+    "screenshot": "e-reset-scene.png",
+    "screenshot_sha256": "d96e444017a767e99aef14822d61ec160756cc4a985c1a8163c67b65ae4f3c74"
+   },
+   {
+    "step": "replay",
+    "control": "fresh visible boot + same MD01 upload",
+    "state_id": 11407109043414651957
+   }
+  ],
+  "startup_state_id": 11407109043414651957,
+  "startup_energy_J": 6.30436897,
+  "material_snapshot": {
+   "gamma_admitted_f64": 1,
+   "gamma_uploaded_f32": 1,
+   "unit": "J/m^2",
+   "wu_to_m": 1.0
+  },
+  "gamma_doubled_energy_J": 12.6087379,
+  "gamma_doubling_ratio": 1.9999999936551938,
+  "gamma_pixel_diff_px": 0,
+  "gamma_visible_mesh_motion": "GAP (recorded, not worked around): the gamma control's consequence is MATERIAL only -- energy doubles at fixed geometry, accepted_state_id unchanged, screenshot pixel diff 0 px. The demo's only geometric freedom is the rail DOF at the packet's hardcoded centre index 6 (membrane_demo_client.py:43, engine.cpp:4587); the step control below exercises it.",
+  "deform_batches": 1,
+  "deform_state_id": 4449187401810470492,
+  "deform_terminal_state": "stagnated",
+  "deform_centre_z": 9.58697899e-10,
+  "deform_centre_z0": 0,
+  "deform_centre_z_delta_wu": 9.58697899e-10,
+  "deform_energy_J": 6.30436897,
+  "compiled_pins_include_centre6": true,
+  "deform_pixel_diff_px": 0,
+  "deform_visible_verdict": "FAIL (visibility acceptance item): the step control changed accepted_state_id after 1 batch(es) of 126 (centre z +0.000000 -> +0.000000 wu) but the browser screenshot is pixel-identical to startup (0 px changed): the demo's only geometric control is guard-limited to <1e-3 wu total travel (<0.36 px on screen) for this scene -- CPU mirror PASS 4/4, math-tools/nb_visible_deform_travel_check.py. No visible deformation is achievable through the demo's existing controls at qualified parameters.",
+  "reset_state_id": 11407109043414651957,
+  "reset_material_snapshot_matches": true,
+  "reset_pixel_diff_px": 0,
+  "replay_state_id": 11407109043414651957,
+  "replay_energy_J": 6.30436897,
+  "replay_verdict": "PASS: second visible boot compiled the SAME transaction to the same accepted_state_id 11407109043414651957"
+ },
+ "scope": "one qualified star instance (1.0x, 0.8 N) visible in the browser through the existing /frame path; gamma is the existing material control (energy doubling at fixed geometry, no state change); the step/run control moves the packet's declared centre (index 6, a rim vertex the record pins -- PIN-LAW FLAGGED, not resolved) and changes accepted_state_id; reset restores the uploaded state bit-exactly; replay is a second visible boot with identical state hash; rendered-byte hash remains UNQUALIFIED per AP01 \u00a711.20.10"
+}
