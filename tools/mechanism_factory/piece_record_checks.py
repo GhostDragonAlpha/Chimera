@@ -404,7 +404,7 @@ def _record_star() -> dict:
             "reference_configuration": "built star mesh (byte-identical "
                                         "reuse of assembly 1's A and B "
                                         "blocks, hashed by reuse check (a))",
-            "valid_loads_N": [0.0, 0.4, 0.8, 1.2, 1.6, 2.0, 2.5, 3.0],
+            "valid_loads_N": [0.0, 0.4, 0.8, 1.2, 1.6, 2.0],
             "valid_scales": [0.75, 1.0, 1.5, 2.0],
             "excluded_phenomena": [
                 "scales beyond the measured window (3.0x and out): no "

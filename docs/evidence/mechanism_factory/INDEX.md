@@ -880,3 +880,33 @@ touches no non-membrane route line.
   (full stdout, receipt fields, 21-receipt CPU/cuda comparison, source
   grep); step review not routed for a deterministic reproduction of an
   already-retained failure.
+
+## S0 mechanism and scale contract (2026-10-17, CPU-only) — gate closed-except
+
+- `S0_mechanism_scale_contract.md` — Maya's contract for the plan's open
+  gate (§13.1). Verdict closed-except: the piece-record layer already
+  carried the law pin (surface_energy_reference hash ee9effcf...), units
+  and measured-domain refusal; the derived scale mapping is new —
+  compile-path scale is rigid dilation with gamma/topology invariant,
+  U ∝ s^2, f ∝ s, unique dimensionless load group Pi = F/(gamma*s*r0)
+  with response eta = z_apex/(s*r0); exact similarity holds iff F ∝ s,
+  so the record's fixed-load scale family is a sweep of Pi (different
+  dimensionless problems) — the preregistered negative control. CPU
+  check 7/7 (similarity exact to double precision; fixed-N control
+  deviates 0.164 wu). Seven missing variables reported honestly.
+- `reviews/step_review_s0_contract.md` — step CONFIRMED all claims
+  (similarity reproduced, group uniqueness by dimensional analysis,
+  owner inventory, all seven gaps real) and recorded S0 closed-except.
+- GAP 2 RESOLVED by retraction (Qwen ruling, step UPHELD): the domain
+  amendment 025687a2 had pushed valid_loads_N to 3.0 N, exceeding the
+  preregistered packet's loads.max_force_N 2.0 (enforced by
+  bounded_fit, not by native_binding — an active layer disagreement).
+  The packet is quoted, never widened post-hoc; the record retracts to
+  [0.0, 0.4, 0.8, 1.2, 1.6, 2.0] (5th history entry, honest reason;
+  prior bytes archived). The 2.5/3.0 N measurements stay in
+  load_domain_study_20261017.json as science. Game loop unaffected
+  (objective 1.6 N, failure demo 0.9 N); criterion 3 strictly stronger.
+  piece_record.amend_domain_measurements gained an optional reason
+  parameter so retractions record honest history. piece_record_checks
+  6/6, native_binding_checks 5/5; probe: 1.6/2.0 compile, 0.9/2.5/3.0
+  refused binding_load_out_of_domain.

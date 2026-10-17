@@ -86,9 +86,7 @@
    0.8,
    1.2,
    1.6,
-   2.0,
-   2.5,
-   3.0
+   2.0
   ],
   "valid_scales": [
    0.75,
@@ -207,6 +205,41 @@
      3.0
     ],
     "reason": "domain extension by measurement (11.19 solver-v2 adoption round; the extension is covered by in-gate measured cases in the cited receipt)"
+   },
+   {
+    "utc": "2026-10-17T22:41:40.965578+00:00",
+    "receipt": "load_domain_study_20261017.json",
+    "prior_valid_scales": [
+     0.75,
+     1.0,
+     1.5,
+     2.0
+    ],
+    "prior_valid_loads_N": [
+     0.0,
+     0.4,
+     0.8,
+     1.2,
+     1.6,
+     2.0,
+     2.5,
+     3.0
+    ],
+    "new_valid_scales": [
+     0.75,
+     1.0,
+     1.5,
+     2.0
+    ],
+    "new_valid_loads_N": [
+     0.0,
+     0.4,
+     0.8,
+     1.2,
+     1.6,
+     2.0
+    ],
+    "reason": "domain RETRACTION to the preregistered packet port contract (loads.max_force_N 2.0): the 2.5/3.0 N measurements remain valid science in the cited study receipt, but the port contract may not exceed the preregistered packet (S0 gap 2, step_review_s0_contract.md ruling; no post-hoc widening)"
    }
   ]
  },

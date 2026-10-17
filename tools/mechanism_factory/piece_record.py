@@ -442,7 +442,7 @@ def refresh_source_pins(record_id: str, reason: str) -> Path:
 
 def amend_domain_measurements(record_id: str, valid_scales, valid_loads_N,
                               receipt_name: str,
-                              excluded_phenomena=None) -> Path:
+                              excluded_phenomena=None, reason=None) -> Path:
     """DOMAIN RE-MEASUREMENT amendment (11.19 adoption round): update the
     measured domain claims (valid_scales / valid_loads_N) of a retained
     record to a NEWLY measured domain, citing the receipt that carries
@@ -480,7 +480,8 @@ def amend_domain_measurements(record_id: str, valid_scales, valid_loads_N,
         "prior_valid_loads_N": apd.get("valid_loads_N"),
         "new_valid_scales": new_scales,
         "new_valid_loads_N": new_loads,
-        "reason": "domain extension by measurement (11.19 solver-v2 "
+        "reason": reason if reason is not None else
+                  "domain extension by measurement (11.19 solver-v2 "
                   "adoption round; the extension is covered by in-gate "
                   "measured cases in the cited receipt)",
     })
