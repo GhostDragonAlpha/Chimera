@@ -3066,7 +3066,11 @@ surface-tension coefficient; inspect existing elastic references and name the
 missing volume/shell/port mapping. A geometry-only import can still guide design.
 [UnitcellEngine](https://github.com/unitcellhub/unitcellengine) supplies source
 geometry/simulation definitions; its alpha status is a reason to pin the source,
-not to install a replacement runtime or regenerate the whole database.
+not to install a replacement runtime or regenerate the whole database. Its current
+[Git LFS pointer](https://raw.githubusercontent.com/unitcellhub/unitcelldb/main/unitcelldb.h5)
+identifies a 2,101,546,900-byte database (about 2.10 GB); the pointer alone is not
+the data. For a later authorized import, retain a compact selection of records
+and provenance for the game rather than ship the entire research database.
 
 **FEBio adapter:** the published collection includes explicit parameter and axis
 corrections for some compression/relaxation cases. Carry those corrections with
@@ -3090,6 +3094,35 @@ constant-current-area tension law. FEBio's [elementary beam example](https://feb
 uses a different finite-strain law; it is a future matched-scope reference, not a
 ready-made pass criterion for either current membrane law. First resolve the
 selected law/observable correspondence; do not rebuild the existing reference.
+
+**Proposed route to useful directional sheets:** orientation could let a player
+reuse one pattern for different support directions instead of requiring a new
+material for every task. For a small-strain, scale-separated sheet with negligible
+out-of-plane stress, first convert the bulk tensor to consistent work-conjugate
+coordinates and the sheet frame. Use the [plane-stress reduction](https://docs.oasys-software.com/structural/gsa/references-theory/material-inplane/)
+`Q = C_ii - C_ir solve(C_rr, C_ri)`, with retained components `xx, yy, xy` and
+eliminated components `zz, yz, xz`; taking a stiffness submatrix would impose a
+different constraint. Restore base-modulus normalization once, then obtain the
+membrane resultant stiffness `A = h Q` through the units boundary. Here `h` is the
+represented layer thickness, not the database's individual strut thickness.
+Check the adapter's isotropic limit, frame/work consistency and selected mapped
+responses; do not regenerate the source corpus. This does not qualify an isolated
+cell, a boundary attachment or finite-strain failure.
+
+**Layer reuse before more training:** [FEniCS-Shells' laminate reference](https://fenics-shells.readthedocs.io/en/latest/api-doc/fenics_shells.common.html#fenics-shells-common-laminates-module)
+computes membrane, bending and coupling matrices (`A`, `D`, `B`) from layer
+properties, thicknesses and orientations. This is a candidate way to calculate
+compatible bonded-stack responses from known layers before paying for GPU samples.
+The existing [B3 layer checks](../tools/construction_packet/test_b3_layers.py)
+already cover loose/bonded parts and exposed material; reuse them, while recognizing
+that rigid-part slip is a different behavior from compliant laminate bending.
+If a directional strap or layered flexure would improve the current encounter,
+compare two arrangements of the same inventory through the existing recipe and
+inspector workflow. Otherwise defer the extension. A laminate reduction requires
+its declared bonding/kinematic assumptions and an appropriate shell law; it cannot
+supply delamination or arbitrary nested geometry by itself. Preserve separate
+material ownership and the mass accounting in §11.2. This is a proposed extension,
+not a new prerequisite for shipping the present workshop controls.
 
 #### 11.21.4 The procedural training workflow
 
