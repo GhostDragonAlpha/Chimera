@@ -8,7 +8,10 @@ with the whole game plan or invent missing intent.
 Preserve the lead's freedom to research directly, choose suitable available peers,
 implement, select proportionate verification, optimize and recursively improve
 the workflow. Keep any adopted process change and its observed result/reason for
-retaining or reverting it. Roles are defaults, not compulsory routing.
+retaining or reverting it. Most specialties are defaults, not compulsory routing.
+Preserve Step's explicit read-only analyst/reviewer role: return findings to the
+lead; the lead assigns accepted fixes to an implementation agent. Step cannot
+write files or execute code, including to save reports or reproduce a finding.
 
 Retain current task/child/model identities, ownership, accepted decisions, exact
 code/evidence references, failed and unknown checks, independent-physics duties,

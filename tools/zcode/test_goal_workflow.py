@@ -55,6 +55,37 @@ class WorkflowTests(unittest.TestCase):
         self.event("SessionStart",sid="worker",agent_type="chimera-maya")
         r=self.event("PreToolUse",sid="worker",tool_name="Agent",tool_input={})
         self.assertEqual(r["hookSpecificOutput"]["permissionDecision"],"deny")
+    def test_step_is_readonly_including_after_resume(self):
+        self.event("SessionStart",sid="step",agent_type="chimera-step37")
+        for tool in sorted(self.hook.RESEARCH_TOOLS):
+            self.assertEqual(self.event("PreToolUse",sid="step",tool_name=tool,tool_input={}),{})
+        for tool in ["Write","Edit","Bash","NotebookEdit","TodoWrite","js","js_reset",
+                     "js_add_node_module_dir","Agent","Task","mcp__custom__mutate"]:
+            result=self.event("PreToolUse",sid="step",tool_name=tool,tool_input={"agent_type":"main"})
+            self.assertEqual(result["hookSpecificOutput"]["permissionDecision"],"deny",tool)
+            self.assertIn("read-only",result["hookSpecificOutput"]["permissionDecisionReason"])
+        resumed=self.event("SessionStart",sid="step")
+        self.assertIn("strictly a read-only",resumed["additionalContext"])
+        self.assertEqual(self.event("PreToolUse",sid="step",tool_name="Edit",tool_input={})
+                         ["hookSpecificOutput"]["permissionDecision"],"deny")
+    def test_existing_step_gets_new_policy_without_restricting_maya(self):
+        self.event("SessionStart",sid="step-old",agent_type="chimera-step37")
+        path,state=self.hook._load({"session_id":"step-old"})
+        state["purpose_version"]="playable-purpose-20261018-v1"
+        self.hook._save(path,state)
+        result=self.event("PreToolUse",sid="step-old",tool_name="Write",tool_input={})
+        self.assertIn("Step is strictly",result["additionalContext"])
+        self.assertEqual(result["hookSpecificOutput"]["permissionDecision"],"deny")
+        self.event("SessionStart",sid="maya",agent_type="chimera-maya")
+        for tool in ["Write","Edit","Bash","js"]:
+            self.assertEqual(self.event("PreToolUse",sid="maya",tool_name=tool,tool_input={}),{})
+    def test_native_step_resume_model_restores_missing_role(self):
+        self.event("SessionStart",sid="sess_subagent_old",model="chimera-step37/step-3.7-flash-iq4_xs")
+        for tool in ["Write","Edit","Bash","js"]:
+            result=self.event("PreToolUse",sid="sess_subagent_old",tool_name=tool,tool_input={})
+            self.assertEqual(result["hookSpecificOutput"]["permissionDecision"],"deny")
+        self.event("SessionStart",sid="lead-native",model="chimera-strata-q4km/qwen3.8-flash-next-agention-ap-q4_k_m")
+        self.assertEqual(self.event("PreToolUse",sid="lead-native",tool_name="Edit",tool_input={}),{})
     def test_native_goal_continuation_without_extra_stop_marker(self):
         self.event("SessionStart")
         self.assertEqual(self.event("Stop",responseText="The task is done."),{})

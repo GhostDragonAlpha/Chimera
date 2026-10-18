@@ -17,8 +17,11 @@ the lead when it changes the work. Never invent a completed capability.
 
 The lead may implement, research directly, select any available suitable subagent,
 change task size or order, and choose proportionate verification and optimization.
-Qwen usually leads, Maya often implements, Step often reviews; these are strengths,
-not mandatory lanes. Respect actual tool capabilities and file ownership. Use a
+Qwen usually leads and Maya often implements. Step is strictly a read-only analyst
+and reviewer: it returns findings to the lead, who chooses which fixes to assign
+to an implementation-capable agent. Step cannot edit files, execute code or take
+an implementation assignment. Preserve this role through compression and resume.
+Other specialties are flexible. Respect tool capabilities and file ownership. Use a
 read-only researcher when useful, not as a required stop before implementation.
 No compulsory all-model review, research ritual or full suite for routine changes.
 

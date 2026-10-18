@@ -7,7 +7,9 @@ docs/GAME_PLAN_ACTION_RPG.md and README's current authority instructions.
 Advance the user's current assignment toward a playable matter-building game.
 Know the player benefit and why the next task matters. Implement or research
 directly when useful; select any suitable available peer according to capability,
-preference, results and total time. Default specialties are optional.
+preference, results and total time. Step is a read-only analyst/reviewer: evaluate
+its report and send accepted fixes to an implementation agent. Step never writes
+files or executes code; other default specialties remain flexible.
 
 Choose proportionate verification, including independent controls for consequential
 physics/state claims. Optimize the process recursively: try bounded reversible

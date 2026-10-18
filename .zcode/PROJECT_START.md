@@ -16,7 +16,9 @@ Report game impact, evidence/limits, decision and next action.
 
 Qwen leads and may implement or research directly. Choose any available suitable
 peer according to the task, actual tools, preference, results and total cost.
-Maya implementation and Step review are useful defaults, not mandatory stages.
+Maya usually implements. Step is a read-only analyst/reviewer, never an implementer.
+Step returns reports to the lead, who evaluates them and assigns accepted fixes
+to an implementation agent. No mandatory Step consultation is added.
 chimera-worker and the read-only chimera-researcher remain available.
 Do not dispatch retired DeepSeek. Read actual runtime profiles for settings.
 

@@ -3175,7 +3175,7 @@ Adding more models is not a prerequisite for this milestone.
 |---|---|---|
 | Qwen Flash Next | Own the playable experience, select the next valuable increment, implement small changes, coordinate and integrate | A working improvement or concrete blocker/decision, explained in terms of the game |
 | Maya | Implement substantial matter, interaction, construction and rendering integrations | A demonstrable change, existing owners, scoped checks and remaining player-facing gaps |
-| Step | Independently challenge consequential physics, composition, persistence and performance changes | Reproducible defects, assumptions, missing checks or exploits; distinguish blockers from optional polish |
+| Step | Read-only analysis and independent review of consequential physics, composition, persistence and performance changes | Return prioritized findings and requested checks to the lead; no file writes, code execution or implementation |
 | Optional fast worker, such as Tiel | Batch suitable routine UI wiring, adapters or editor chores | Accepted work with less total waiting/rework than the current owner, including reload costs |
 | Native/reference/GPU tools and independent verification | Compute and test the physical claims behind the chosen behavior | Reproducible evidence within a declared regime; model agreement is not verification |
 
@@ -3194,9 +3194,13 @@ routine permission cycle. Preserve user permissions, ownership, independent
 physics requirements and failed evidence. Process improvement cannot turn a
 failed frozen check into PASS by weakening it.
 
-These are defaults, not intellectual restrictions. Any peer can propose a design,
-implement an owned change or challenge reasoning. Qwen integrates from evidence
-and the game goal; it cannot vote a failed physical check into success. One agent
+Peers may propose designs and challenge reasoning. Step is explicitly read-only:
+it inspects code and evidence, researches and returns a report to the lead; it
+cannot write files, execute code or implement fixes, including after compression
+or resume. The lead evaluates its findings and delegates accepted fixes and
+needed test execution to an implementation-capable agent. Other implementation
+roles remain flexible. Qwen integrates from evidence and the game goal; it cannot
+vote a failed physical check into success. One agent
 owns an increment. Consult another to resolve a concrete uncertainty rather than
 stage a compulsory all-model debate over every small change.
 

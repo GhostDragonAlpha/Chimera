@@ -1,0 +1,219 @@
+{
+  "status": "PASS",
+  "scope": "Read-only Step reviewer configuration and Z Code enforcement; no model quality or physics qualification",
+  "unit_tests": 11,
+  "native_integration": {
+    "status": "PASS",
+    "scope": "Installed Z Code dispatch/follow-up/manual compression/resume with deterministic mock model; no model intelligence or full-context claim",
+    "operations": [
+      {
+        "label": "dispatch",
+        "exit_code": 0,
+        "seconds": 3.13
+      },
+      {
+        "label": "main_compact",
+        "exit_code": 0,
+        "seconds": 1.26
+      },
+      {
+        "label": "main_resume",
+        "exit_code": 0,
+        "seconds": 1.65
+      },
+      {
+        "label": "child_compact",
+        "exit_code": 0,
+        "seconds": 1.27
+      },
+      {
+        "label": "child_resume",
+        "exit_code": 0,
+        "seconds": 2.17
+      }
+    ],
+    "request_count": 12,
+    "same_child_resumed": true,
+    "main_and_child_compression_purpose_injected": true,
+    "model_inheritance_preserved": true,
+    "real_provider_unchanged": true,
+    "child_profile": "chimera-step37",
+    "readonly_step_schema_checked": true,
+    "step_read_executed": true,
+    "direct_resume_write_and_shell_denied": true,
+    "child_tools_by_phase": [
+      {
+        "phase": "dispatch",
+        "tools": [
+          "Glob",
+          "Grep",
+          "Read",
+          "WebFetch",
+          "RespondToCoordinator"
+        ]
+      },
+      {
+        "phase": "dispatch",
+        "tools": [
+          "Glob",
+          "Grep",
+          "Read",
+          "WebFetch",
+          "RespondToCoordinator"
+        ]
+      },
+      {
+        "phase": "dispatch",
+        "tools": [
+          "Glob",
+          "Grep",
+          "Read",
+          "WebFetch",
+          "RespondToCoordinator"
+        ]
+      },
+      {
+        "phase": "child_compact",
+        "tools": [
+          "Agent",
+          "AskUserQuestion",
+          "Bash",
+          "Edit",
+          "EnterPlanMode",
+          "ExitPlanMode",
+          "Read",
+          "TaskOutput",
+          "TaskStop",
+          "TodoRead",
+          "TodoWrite",
+          "WebFetch",
+          "Write",
+          "SendMessage",
+          "ReadSessionContext",
+          "CreateWorkflow",
+          "AmendWorkflow",
+          "SaveWorkflow",
+          "EvalWorkflowSnippet",
+          "ListWorkflowRuns",
+          "GetWorkflowRun",
+          "ResumeWorkflowRun",
+          "ResolveWorkflowQuestion",
+          "ListSavedWorkflows",
+          "ListModels"
+        ]
+      },
+      {
+        "phase": "child_resume",
+        "tools": [
+          "Agent",
+          "AskUserQuestion",
+          "Bash",
+          "Edit",
+          "EnterPlanMode",
+          "ExitPlanMode",
+          "Read",
+          "TaskOutput",
+          "TaskStop",
+          "TodoRead",
+          "TodoWrite",
+          "WebFetch",
+          "Write",
+          "SendMessage",
+          "ReadSessionContext",
+          "CreateWorkflow",
+          "AmendWorkflow",
+          "SaveWorkflow",
+          "EvalWorkflowSnippet",
+          "ListWorkflowRuns",
+          "GetWorkflowRun",
+          "ResumeWorkflowRun",
+          "ResolveWorkflowQuestion",
+          "ListSavedWorkflows",
+          "ListModels"
+        ]
+      },
+      {
+        "phase": "child_resume",
+        "tools": [
+          "Agent",
+          "AskUserQuestion",
+          "Bash",
+          "Edit",
+          "EnterPlanMode",
+          "ExitPlanMode",
+          "Read",
+          "TaskOutput",
+          "TaskStop",
+          "TodoRead",
+          "TodoWrite",
+          "WebFetch",
+          "Write",
+          "SendMessage",
+          "ReadSessionContext",
+          "CreateWorkflow",
+          "AmendWorkflow",
+          "SaveWorkflow",
+          "EvalWorkflowSnippet",
+          "ListWorkflowRuns",
+          "GetWorkflowRun",
+          "ResumeWorkflowRun",
+          "ResolveWorkflowQuestion",
+          "ListSavedWorkflows",
+          "ListModels"
+        ]
+      },
+      {
+        "phase": "child_resume",
+        "tools": [
+          "Agent",
+          "AskUserQuestion",
+          "Bash",
+          "Edit",
+          "EnterPlanMode",
+          "ExitPlanMode",
+          "Read",
+          "TaskOutput",
+          "TaskStop",
+          "TodoRead",
+          "TodoWrite",
+          "WebFetch",
+          "Write",
+          "SendMessage",
+          "ReadSessionContext",
+          "CreateWorkflow",
+          "AmendWorkflow",
+          "SaveWorkflow",
+          "EvalWorkflowSnippet",
+          "ListWorkflowRuns",
+          "GetWorkflowRun",
+          "ResumeWorkflowRun",
+          "ResolveWorkflowQuestion",
+          "ListSavedWorkflows",
+          "ListModels"
+        ]
+      }
+    ]
+  },
+  "native_evidence_directory": "D:\\Chimera-Maintenance\\Runtime\\zcode-step-readonly-20261018\\native\\native-1792343356153726800",
+  "profiles_checked": [
+    "D:\\Chimera-Maintenance\\PythonChimera\\.zcode\\agents\\chimera-step37.md",
+    "D:\\Chimera-Maintenance\\.zcode\\agents\\chimera-step37.md"
+  ],
+  "model_context_quantization_reasoning_timeouts_unchanged": true,
+  "active_processes_restarted": false,
+  "activation": "Next normal Z Code restart loads the changed profile; existing in-flight children are not forcibly replaced.",
+  "resume_behavior": "Ordinary child dispatch/follow-up expose read-only schema. Direct CLI child resume exposes a broader schema but the hook recovers native Step model identity and denies writes and execution.",
+  "failed_trials_retained": "Earlier isolated runs exposed direct-resume broad tools. A follow-up fixture also lacked required SendMessage.summary; corrected and verified actual child continuation.",
+  "source_sha256": {
+    ".zcode/agents/chimera-step37.md": "e1d5f1543ec2bc931568f795d204a33802e49c2dee4af78d5082efd09f1a1762",
+    "tools/zcode/role_gate.py": "831b87cddb4f7e41e7ea97e5fa93af522e4e4371951a82e9d50a8be2056b7eef",
+    "tools/zcode/GAME_WORKFLOW.md": "1a865b8856dd0a65006193221f3b7bc3b34bab9de084ab040a207616f3a4729e",
+    ".zcode/PROJECT_START.md": "5de5b82ceeb2638392938384894ed96c3a90a15c8f48bb4585f0aaed85c0a150",
+    ".zcode/COMPACT_INSTRUCTIONS.md": "6495626ba96ebf29fc344c4ed5040ecd6935b7763e06d778a4071f1d4bfc966d",
+    "docs/ZCODE_LIEUTENANT_PROMPT.md": "be114c897d39cccbab082c2c785cabf32389c52ed9b10e2703303fdf96efdc28",
+    "docs/ZCODE_CUSTOM_AGENTS.md": "63d4f201d12a9d3c0154a704b4a9ce947c8cf21a27ba7066a91f9d2229411496",
+    "docs/GAME_PLAN_ACTION_RPG.md": "dd0288f13ca0cb63bcf2af58f364f1cb5e62fb880c3226a9867477996f586836",
+    "tools/zcode/test_goal_workflow.py": "f7d777fea69bc0e2fcb766656b78e3c660beb8580b0aff120cee2ed5bf733072",
+    "tools/zcode/test_native_goal_workflow.py": "39fc8f3f383e7045be9568b2eda1ee861d93ce8dc7c24dbf95fee8be9525d318"
+  }
+}

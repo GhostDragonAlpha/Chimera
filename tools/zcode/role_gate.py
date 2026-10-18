@@ -11,7 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 STATE = Path(os.environ.get("CHIMERA_WORKFLOW_STATE_DIR", str(ROOT / "sessions")))
-VERSION = "playable-purpose-20261018-v1"
+VERSION = "playable-purpose-20261018-v3-step-readonly"
 PROFILES = {"chimera-worker", "chimera-maya", "chimera-step37", "chimera-researcher"}
 RESEARCH_TOOLS = {"Read", "Glob", "Grep", "WebSearch", "WebFetch",
                   "ListMcpResourcesTool", "ReadMcpResourceTool",
@@ -64,6 +64,11 @@ def respond(event):
     path, saved = _load(event)
     # Identity comes from the native lifecycle, never tool arguments.
     role = event.get("agent_type") or event.get("agentName") or saved.get("role")
+    # Direct CLI child resume omits agentName but supplies its native model at
+    # SessionStart. Recover Step's restriction there and persist it for later
+    # tool events, which omit both identity fields. Never inspect tool arguments.
+    if event.get("model") == "chimera-step37/step-3.7-flash-iq4_xs":
+        role = "chimera-step37"
     if not role and saved.get("researcher"):
         role = "chimera-researcher"
     elif not role and saved.get("consultant"):
@@ -73,6 +78,7 @@ def respond(event):
     sid = str(event.get("session_id", event.get("sessionId", "")))
     child = bool(role in PROFILES or role == "chimera-consultant"
                  or saved.get("child") or sid.startswith("sess_subagent_"))
+    reviewer = role == "chimera-step37"
     researcher = role in {"chimera-researcher", "chimera-consultant"}
     saved.update(role=role, child=child)
     result = {}
@@ -85,7 +91,9 @@ def respond(event):
     name = event.get("tool_name", event.get("toolName", ""))
     args = event.get("tool_input", event.get("toolInput", {})) or {}
     if kind == "PreToolUse":
-        if researcher and name not in RESEARCH_TOOLS:
+        if reviewer and name not in RESEARCH_TOOLS:
+            result = _deny("Step is a read-only analyst/reviewer. Return findings and requested checks to the lead; the lead assigns implementation to Maya or another implementation agent.")
+        elif researcher and name not in RESEARCH_TOOLS:
             result = _deny("This researcher is read-only; return findings or a suggested implementation to the lead.")
         elif child and name in DELEGATION:
             result = _deny("Return delegation suggestions to the lead; this harness uses one child level.")

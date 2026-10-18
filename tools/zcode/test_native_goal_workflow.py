@@ -16,13 +16,27 @@ PYTHON=r"C:/Python314/python.exe"
 for file in (REPO/".zcode/agents").glob("*.md"):
  shutil.copy2(file,WORK/".zcode/agents"/file.name)
 shutil.copy2(REPO/".zcode/COMPACT_INSTRUCTIONS.md",WORK/".zcode/COMPACT_INSTRUCTIONS.md")
-command=PYTHON+" -B "+HOOK
+# Capture native hook identity for resume diagnostics; pass input through unchanged.
+wrapper=RUN/"capture-hook.py"
+wrapper.write_text("import json,sys,subprocess,time\nfrom pathlib import Path\n"+
+ "raw=sys.stdin.read()\n"+
+ "Path("+repr(str(RUN))+",'hook-event-'+str(time.time_ns())+'.json').write_text(raw,encoding='utf-8')\n"+
+ "p=subprocess.run(["+repr(PYTHON)+",'-B',"+repr(HOOK)+"],input=raw,text=True,capture_output=True)\n"+
+ "sys.stdout.write(p.stdout);sys.stderr.write(p.stderr);sys.exit(p.returncode)\n",encoding="utf-8")
+command=PYTHON+" -B "+str(wrapper)
 hooks={"enabled":True,"events":{kind:[{"hooks":[{"type":"command","command":command}]}]
        for kind in ["SessionStart","UserPromptSubmit","PreToolUse","PostToolUse","Stop"]}}
 (WORK/".zcode/config.json").write_text(json.dumps({"features":{"compact":True,"subagent":True,"memory":False,"skill":False,"mcp":False},
     "memory":{"use":False}}),encoding="utf-8")
 (HOME/".zcode/v2/compression-model.json").write_text('{"enabled":false}')
-faults=[];requests=[];phase="dispatch";calls=0;followup=False;lock=threading.Lock()
+CHILD_PROFILE=os.environ.get("CHIMERA_TEST_CHILD_PROFILE","chimera-maya")
+CHILD_MODEL={"chimera-maya":"glm-5.3-flash","chimera-step37":"step-3.7-flash-iq4_xs"}[CHILD_PROFILE]
+STEP_READONLY=CHILD_PROFILE=="chimera-step37"
+FORBIDDEN={"Write","Edit","Bash","NotebookEdit","TodoWrite","js","js_reset",
+           "js_add_node_module_dir","Agent","Task","CreateWorkflow","AmendWorkflow"}
+fixture=WORK/"review-fixture.txt"
+fixture.write_text("REVIEW_FIXTURE: restore must retain the accepted construction.",encoding="utf-8")
+faults=[];requests=[];phase="dispatch";calls=0;followup=False;child_reads=0;resume_attempts=0;lock=threading.Lock()
 def flatten(value):
  if isinstance(value,str):return value
  if isinstance(value,dict):return "\n".join(flatten(v) for v in value.values())
@@ -42,7 +56,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
  def do_GET(self):
   data=json.dumps({"object":"list","data":[{"id":m,"object":"model"} for m in ["qwen3.8-flash-next-agention-ap-q4_k_m","glm-5.3-flash","step-3.7-flash-iq4_xs"]]}).encode();self.send_response(200);self.send_header("Content-Length",str(len(data)));self.end_headers();self.wfile.write(data)
  def do_POST(self):
-  global calls,followup
+  global calls,followup,child_reads,resume_attempts
   body=json.loads(self.rfile.read(int(self.headers["Content-Length"])))
   if "messages" not in body:
    data=json.dumps({"ok":True,"released":True}).encode();self.send_response(200);self.send_header("Content-Type","application/json");self.send_header("Content-Length",str(len(data)));self.end_headers();self.wfile.write(data);return
@@ -60,11 +74,13 @@ class Handler(http.server.BaseHTTPRequestHandler):
   if iscompact:
    assert "Begin the summary with a compact" in text,"Project compact instructions missing"
    assert "why this particular main/child task matters" in text,"Task rationale missing from compact instructions"
-   chunk({"role":"assistant","content":SUMMARY},"stop")
+   if STEP_READONLY and "Step's explicit read-only analyst/reviewer role" not in text:
+    faults.append({"failure":"missing_readonly_compression_instruction","phase":phase})
+   chunk({"role":"assistant","content":SUMMARY+("\nStep remains read-only; return findings to the lead, who delegates fixes." if STEP_READONLY else "")},"stop")
   elif phase=="dispatch" and "Agent" in tools and calls==0:
    calls+=1
    # Deliberately omit the common goal so the real hook must prepend it.
-   args={"subagent_type":"chimera-maya","description":"Review restore purpose",
+   args={"subagent_type":CHILD_PROFILE,"description":"Review restore purpose",
          "prompt":"Task purpose: make retry safe for the player. Inspect restore, report the decision it enables; do not use tools.",
          "run_in_background":False}
    chunk({"role":"assistant","tool_calls":[{"index":0,"id":"call_purpose_child","type":"function","function":{"name":"Agent","arguments":json.dumps(args)}}]})
@@ -74,10 +90,30 @@ class Handler(http.server.BaseHTTPRequestHandler):
    assert ids,"No actual child identity returned"
    agent=next((x for x in reversed(ids) if len(x)>20),ids[-1])
    calls+=1
-   args={"to":agent,"message":"Keep the same task: explain why restore matters to a playable construction loop. Do not use tools."}
+   args={"to":agent,"summary":"Review the same construction restore task","message":"Keep the same task: explain why restore matters to a playable construction loop. Do not use tools."}
    chunk({"role":"assistant","tool_calls":[{"index":0,"id":"call_purpose_followup","type":"function","function":{"name":"SendMessage","arguments":json.dumps(args)}}]})
    chunk({},"tool_calls")
+  elif STEP_READONLY and body["model"]==CHILD_MODEL and phase=="dispatch" and child_reads==0:
+   forbidden=FORBIDDEN.intersection(tools)
+   if forbidden:faults.append({"failure":"step_write_tools_exposed","phase":phase,"tools":sorted(forbidden)})
+   if "Read" not in tools:faults.append({"failure":"step_read_missing","phase":phase})
+   child_reads+=1
+   chunk({"role":"assistant","tool_calls":[{"index":0,"id":"call_review_read","type":"function","function":{"name":"Read","arguments":json.dumps({"file_path":str(fixture)})}}]})
+   chunk({},"tool_calls")
+  elif STEP_READONLY and body["model"]==CHILD_MODEL and phase=="child_resume" and resume_attempts<2:
+   # Direct CLI resume exposes the root schema. Exercise the real PreToolUse
+   # guard rather than mistaking schema exposure for permission to execute.
+   name="Write" if resume_attempts==0 else "Bash"
+   args={"file_path":str(WORK/"forbidden-write.txt"),"content":"must not be written"} if resume_attempts==0 else {"command":"echo FORBIDDEN_SHELL_EXECUTED","description":"Negative fixture: this must be denied"}
+   resume_attempts+=1
+   chunk({"role":"assistant","tool_calls":[{"index":0,"id":"call_denied_"+str(resume_attempts),"type":"function","function":{"name":name,"arguments":json.dumps(args)}}]})
+   chunk({},"tool_calls")
   else:
+   if STEP_READONLY and body["model"]==CHILD_MODEL:
+    forbidden=FORBIDDEN.intersection(tools)
+    if phase=="dispatch" and forbidden:faults.append({"failure":"step_write_tools_exposed","phase":phase,"tools":sorted(forbidden)})
+    if phase=="dispatch" and "REVIEW_FIXTURE: restore must retain" not in text:
+     faults.append({"failure":"step_did_not_read_fixture","phase":phase})
    if phase=="dispatch" and "Agent" not in tools:
     if "[CHIMERA TASK PURPOSE v1]" not in text: faults.append({"phase":phase,"failure":"missing_child_purpose","request":number})
     content="CHILD_PURPOSE_OK. Game impact: safe retry is the player benefit; restore needs evidence. Decision: inspect the existing restore check. No new experiment."
@@ -122,30 +158,45 @@ def invoke(label,prompt,sid=None):
  assert code==0,(label,(RUN/(label+".stderr.log")).read_text(errors="replace")[-1800:])
  return (RUN/(label+".stdout.log")).read_text(encoding="utf-8",errors="replace")
 try:
- invoke("dispatch","Our game goal is a playable matter workshop. The task is safe construction retry: inspect restore so the player can experiment without losing a build. Use chimera-maya, follow up with the same child, then report. This is a wiring fixture; no filesystem changes or GPU work.")
+ invoke("dispatch","Our game goal is a playable matter workshop. The task is safe construction retry: inspect restore so the player can experiment without losing a build. Use the assigned reviewer/worker, follow up with the same child, then report. This is a wiring fixture; no filesystem changes or GPU work.")
  dbpath=next(HOME.rglob("db.sqlite"))
  with sqlite3.connect(str(dbpath)) as db:
   rows=db.execute("select id,parent_id from session order by time_created").fetchall()
  parent=next(row[0] for row in rows if row[1] is None)
  child=next(row[0] for row in rows if row[1]==parent)
  assert not faults,faults
+ followup_replies=[flatten(m.get("content")) for r in requests for m in r["body"].get("messages",[])
+                   if m.get("role")=="tool" and m.get("tool_call_id")=="call_purpose_followup"]
+ assert followup_replies and not any("tool_use_error" in text or "InputValidationError" in text for text in followup_replies),followup_replies
  assert calls==2,"Parent did not use actual dispatch and follow-up"
  invoke("main_compact","/compact Retain the decision about safe retry.",parent)
  assert "PURPOSE_RESUME_OK" in invoke("main_resume","Explain the preserved task purpose and next decision. Do not use tools.",parent)
  invoke("child_compact","/compact Retain the assigned purpose and uncertainty.",child)
  assert "PURPOSE_RESUME_OK" in invoke("child_resume","Explain the preserved task purpose and next decision. Do not use tools.",child)
+ if STEP_READONLY:
+  assert resume_attempts==2,resume_attempts
+  assert not (WORK/"forbidden-write.txt").exists(),"Step wrote a file on resume"
+  last=next(r["body"] for r in reversed(requests) if r["phase"]=="child_resume")
+  replies={m.get("tool_call_id"):flatten(m.get("content")) for m in last["messages"] if m.get("role")=="tool"}
+  for call in ["call_denied_1","call_denied_2"]:
+   assert "Step is a read-only analyst/reviewer" in replies.get(call,""),(call,replies)
  # Confirm exactly one child was resumed rather than replaced.
  with sqlite3.connect(str(dbpath)) as db:
   count=db.execute("select count(*) from session where parent_id=?",(parent,)).fetchone()[0]
  assert count==1,count
  compact_requests=[r for r in requests if "Your task is to create a detailed summary" in flatten(r["body"].get("messages",[]))]
  assert {r["phase"] for r in compact_requests}>={"main_compact","child_compact"}
- assert next(r["body"]["model"] for r in compact_requests if r["phase"]=="child_compact")=="glm-5.3-flash"
+ assert next(r["body"]["model"] for r in compact_requests if r["phase"]=="child_compact")==CHILD_MODEL
  assert next(r["body"]["model"] for r in compact_requests if r["phase"]=="main_compact")=="qwen3.8-flash-next-agention-ap-q4_k_m"
+ assert not faults,faults
  assert hashlib.sha256(REAL.read_bytes()).hexdigest()==before
  result={"status":"PASS","scope":"Installed Z Code dispatch/follow-up/manual compression/resume with deterministic mock model; no model intelligence or full-context claim",
  "operations":operations,"request_count":len(requests),"same_child_resumed":True,
- "main_and_child_compression_purpose_injected":True,"model_inheritance_preserved":True,"real_provider_unchanged":True}
+ "main_and_child_compression_purpose_injected":True,"model_inheritance_preserved":True,"real_provider_unchanged":True,
+ "child_profile":CHILD_PROFILE,"readonly_step_schema_checked":STEP_READONLY,
+ "step_read_executed":bool(child_reads),"direct_resume_write_and_shell_denied":STEP_READONLY and resume_attempts==2,
+ "child_tools_by_phase":[{"phase":r["phase"],"tools":[t["function"]["name"] for t in r["body"].get("tools",[])]}
+  for r in requests if r["body"]["model"]==CHILD_MODEL]}
 finally:
  server.shutdown()
 (RUN/"result.json").write_text(json.dumps(result,indent=2),encoding="utf-8")
