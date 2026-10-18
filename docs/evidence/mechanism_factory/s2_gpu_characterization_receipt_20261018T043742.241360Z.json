@@ -1,0 +1,150 @@
+{
+ "schema": "chimera-mechanism-factory-s2-gpu-characterization-receipt-v1",
+ "utc": "2026-10-18T04:37:42.241360+00:00",
+ "title": "S2 bounded GPU characterization: qualified constant-gamma surface-energy kernel (membrane.comp.spv) over the 35-case compact reusable dataset",
+ "gate_row": "GAME_PLAN_ACTION_RPG.md 13.1 S2",
+ "kernel_inventory": {
+  "kernel": "tools/membrane_scale_lab/membrane_gpu_probe/membrane.comp -> membrane.comp.spv",
+  "spv_sha256": "a147901f7e22b50c0406674fc0b8ca739dc4889a4ee117924c98a0c5e2d63c20",
+  "executed_by": [
+   "membrane_gpu_probe.exe (certified single-shot gate, b2+fan12, pinned)",
+   "relax_gpu_probe.exe (GLM-RELAX-GPU-01 relaxation gate)",
+   "s2_case_driver.exe (THIS increment: case-set driver on probe_core.hpp + same spv; characterization equipment, NOT a deployed production kernel)"
+  ],
+  "probe_patches_present_not_deployed": [
+   "membrane_tree_reduction.comp",
+   "probe_persistent_buffers.hpp",
+   "relax_fused_trial_eval.cpp"
+  ],
+  "qualification_before_S2": "b2/fan12 force+energy agreement, stale-buffer detection, bounded B2 relaxation (gpu-small-checks.json identities); analytic-fixture scope only",
+  "honest_gap": "no pre-S2 executable could load arbitrary meshes; the S2 driver adds a case loader around the unchanged kernel spv bytes"
+ },
+ "preregistration": {
+  "frozen_utc": "2026-10-18T03:54:05.947595+00:00",
+  "case_set": "docs/evidence/mechanism_factory/s2_case_set (35 cases)",
+  "case_set_sha256": "bf1cfb1fea7c4fe486aea6e8f6bb1e146939a73b66efffc087a3ef1d4c987f76",
+  "u_f32": 5.960464477539063e-08,
+  "bounds": {
+   "area": "32*u*Lmax^2",
+   "normal": "32*u",
+   "corner": "64*u*gamma*Lmax (= frozen B2 corner budget 4.0e-6 N at Lmax=1, scale-relative)",
+   "assembly": "B_vj = eta_(d_v-1)*sum_incident|f32 corner comp| (GLM-FREEZE law)",
+   "complete": "d_v*64*u*gamma*Lmax + B_vj",
+   "energy": "32*u*gamma*sum Lmax_f^2 + (1+u)*(1+gammaHigh(nF))*sum t_f (Higham sequential)"
+  },
+  "justification": "bit-identical binary32 inputs make every difference pure binary32 arithmetic + assembly rounding; engine commit quantum 2^-21 wu = 8u is the accepted absolute f32-level precedent; bounds validated pre-batch by CPU binary32 simulation (cases.json pre_batch_preregistration_validation)",
+  "failed_S2": [
+   "(a) validity flag != 1",
+   "(b) output beyond preregistered bound",
+   "(c) pass1/pass2 byte difference",
+   "(d) anchor gate failure",
+   "(e) driver crash/timeout",
+   "(f) reference regeneration not bitwise"
+  ]
+ },
+ "results": {
+  "anchor_gate_pass": true,
+  "n_cases": 35,
+  "n_cases_all_checks_pass": 35,
+  "repeatability": {
+   "protocol": "same input twice per case, byte-identical outputs required",
+   "n_byte_identical": 35,
+   "driver_repeat_verdicts": {
+    "grid_matched_s0.75_F0.3": "IDENTICAL",
+    "grid_matched_s0.75_F0.6": "IDENTICAL",
+    "grid_matched_s0.75_F0.9": "IDENTICAL",
+    "grid_matched_s0.75_F1.2": "IDENTICAL",
+    "grid_matched_s0.75_F1.5": "IDENTICAL",
+    "grid_matched_s1.5_F0.6": "IDENTICAL",
+    "grid_matched_s1.5_F1.2": "IDENTICAL",
+    "grid_matched_s1.5_F1.8": "IDENTICAL",
+    "grid_matched_s2_F0.8": "IDENTICAL",
+    "grid_matched_s2_F1.6": "IDENTICAL",
+    "grid_unmatched_s0.75_F0.4": "IDENTICAL",
+    "grid_unmatched_s0.75_F0.8": "IDENTICAL",
+    "grid_unmatched_s0.75_F1.2": "IDENTICAL",
+    "grid_unmatched_s0.75_F1.6": "IDENTICAL",
+    "grid_unmatched_s0.75_F2": "IDENTICAL",
+    "grid_unmatched_s1.5_F0.4": "IDENTICAL",
+    "grid_unmatched_s1.5_F0.8": "IDENTICAL",
+    "grid_unmatched_s1.5_F1.2": "IDENTICAL",
+    "grid_unmatched_s1.5_F1.6": "IDENTICAL",
+    "grid_unmatched_s1.5_F2": "IDENTICAL",
+    "grid_unmatched_s2_F0.4": "IDENTICAL",
+    "grid_unmatched_s2_F0.8": "IDENTICAL",
+    "grid_unmatched_s2_F1.2": "IDENTICAL",
+    "grid_unmatched_s2_F1.6": "IDENTICAL",
+    "grid_unmatched_s2_F2": "IDENTICAL",
+    "refrow_s1.0_load0": "IDENTICAL",
+    "refrow_s1.0_load0.4": "IDENTICAL",
+    "refrow_s1.0_load0.8": "IDENTICAL",
+    "refrow_s1.0_load1.2": "IDENTICAL",
+    "refrow_s1.0_load1.6": "IDENTICAL",
+    "refrow_s1.0_load2": "IDENTICAL",
+    "refrow_s1.0_load2.5": "IDENTICAL",
+    "refrow_s1.0_load3": "IDENTICAL",
+    "patch_nrim200": "IDENTICAL",
+    "patch_nrim300": "IDENTICAL"
+   }
+  },
+  "worst_ratios_over_bound": {
+   "area": {
+    "ratio": 0.007797916173033326,
+    "case": "refrow_s1.0_load2.5"
+   },
+   "normal": {
+    "ratio": 0.6512274701026399,
+    "case": "grid_unmatched_s0.75_F1.6"
+   },
+   "corner": {
+    "ratio": 0.111017903858158,
+    "case": "grid_unmatched_s0.75_F2"
+   },
+   "energy": {
+    "ratio": 1.1426915905787547e-05,
+    "case": "grid_unmatched_s0.75_F0.8"
+   },
+   "assembly": {
+    "ratio": 0.11810528064328772,
+    "case": "refrow_s1.0_load3"
+   }
+  },
+  "worst_absolute": {
+   "area": 6.15540426268657e-08,
+   "normal": 1.2421178247502135e-06,
+   "corner": 5.449503051417615e-07,
+   "complete": 1.623629058400411e-05,
+   "assembly": 1.632596831768751e-05,
+   "energy": 0.00016328354108452459
+  },
+  "boundary_note": "binary32 kernel agreement boundary: worst complete vertex-force deviation 1.624e-05 N at refrow_s1.0_load3 (Lmax=1.037 wu) vs the S1 residual gate 1e-6 N; worst bound ratio per quantity in results.worst_ratios_over_bound",
+  "failures": []
+ },
+ "throughput": {
+  "cases_per_s": "314.46",
+  "evals_per_s": "628.92",
+  "total_eval_s": "0.111302",
+  "scope": "driver-measured host wall around VkProbe.run_case, one process, two passes per case; not an isolated kernel benchmark"
+ },
+ "memory": {
+  "peak_process_ram_mib": "98",
+  "vram_sampled": {
+   "vram_sampled_before_init_mib": "963",
+   "vram_sampled_after_init_mib": "977",
+   "vram_sampled_min_mib": "977",
+   "vram_sampled_max_mib": "979",
+   "vram_sampled_end_mib": "979"
+  },
+  "note": "VRAM sampled via nvidia-smi (MiB granularity, machine-wide), not an exact per-process allocation bound"
+ },
+ "storage": {
+  "case_set_bytes": 4395424,
+  "gpu_outputs_bytes": 3447640,
+  "batch_evidence_bytes": 3468701,
+  "receipt_bytes": 6386
+ },
+ "check_script": "math-tools/checks_tmp/s2_gpu_characterization_check.py",
+ "driver_source": "math-tools/checks_tmp/s2_case_driver.cpp",
+ "batch_evidence": "D:\\Chimera-Maintenance\\Runtime\\local-ai\\gpu-batches\\s2_gpu_characterization_20261018T040800Z",
+ "verdict": "PASS"
+}

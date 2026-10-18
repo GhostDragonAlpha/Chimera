@@ -947,3 +947,61 @@ the S1 run) already removed 2.5/3.0 from the record's valid_loads_N
 underlying fact stands for the STUDY receipt
 (load_domain_study_20261017.json), whose 2.5/3.0 N rows are measured at
 s = 1.0 only. No record change; published artifacts left as written.
+
+## S2 bounded GPU characterization (2026-10-18) — gate PASS
+
+- `S2_gpu_characterization.md` +
+  `s2_gpu_characterization_receipt_20261018T044604.123284Z.json` —
+  Maya's characterization of the UNCHANGED kernel of record
+  (`membrane.comp.spv`, sha a147901f…) through a new case driver
+  (`s2_case_driver.exe`, built on the GLM-RELAX-GPU-01 `probe_core.hpp`
+  extraction): characterization equipment, not a deployed production
+  kernel; the three optimization patch candidates were inspected and
+  left un-deployed. Receipt chain: `…T043742…` superseded (written
+  before the erratum), `…T044604…` the record, `…T053901…` step's own
+  reproduction run — byte-identical to the record receipt except the
+  timestamp.
+- Compact reusable dataset: `s2_case_set/` — 35 cases re-solved on CPU
+  from the S1 record and frozen 2026-10-18T03:54:05Z (cases.json sha
+  bf1cfb1f…, pinned in the batch manifest) ~14 min before the single
+  managed gpu_batch; 25 S1 grid solves + 8 s=1.0 load-domain study
+  rows + 2 resolution-contrast patch cells. ERRATUM (honest, disclosed
+  in receipt + report §2): preregistration prose mislabeled the
+  composition "27 + 6 + 2"; the frozen artifact is 25 + 8 + 2 = 35,
+  no case added/removed after freezing. The two >2.0 N study rows are
+  retained measurements, not a domain claim.
+- Results (one exclusive batch, anchor gate PASS inside it): 35/35
+  cases within every preregistered binary32-level bound (area 32u·Lmax²,
+  normal 32u, corner 64u·γ·Lmax = the frozen B2 4.0e-6 N budget made
+  scale-relative, complete d_v·64u·γ·Lmax + B_vj GLM-FREEZE assembly
+  law, energy Higham sequential); worst ratios area 0.0078, normal
+  0.651, corner 0.111, energy 1.1e-5, assembly 0.118; 35/35
+  byte-identical across two passes; zero failures. Bound derivation
+  PASS 6/6 on CPU pre-batch (math-tools
+  results/20261017-235844-38a22dde). Honest boundary retained: worst
+  complete-force deviation 1.62e-5 N at refrow_s1.0_load3 — binary32
+  kernel arithmetic alone is ~16x the packet's 1e-6 N residual gate at
+  the largest scales; sub-1e-5 N force claims need f64/mixed precision,
+  not this kernel as-is. Throughput 314 cases/s (629 evals/s, driver
+  host wall, not a qualified benchmark); peak RAM 98 MiB; VRAM sampled
+  963→979 MiB (machine-wide, MiB granularity).
+- `reviews/step_review_s2_gpu.md` — step PASS on every claim group
+  (reproduction digit-for-digit, preregistration frozen check, bound
+  physics C1–C4, gate ruling, erratum, 1.62e-5 N boundary), scoped
+  exactly as the gate row reads, with named carry-forwards (loader is
+  probe-grade tooling; >2.0 N rows not a domain claim; throughput is
+  characterization not benchmark). CRITICAL DEFECT RETAINED (process,
+  not characterization): the batch's own check job (02) exited 1
+  (KeyError: 1) on a stale version of the check script; Maya fixed and
+  re-ran it manually, step reproduced independently. The manifest
+  pinned kernel/driver/case-set hashes but NOT the check script hash,
+  so the version drift was undetectable from batch evidence.
+- Qwen ruling: PUBLISH. The defect is process-level and honestly
+  retained in the batch result.json and step's review; the GPU outputs
+  are intact (step verified byte-identity) and the full receipt was
+  reproduced digit-for-digit by step's own run. CARRY-FORWARD (binding
+  on future GPU-characterization batches): manifests must hash-pin
+  every script that contributes to a receipt, check scripts included;
+  the fixed check script hash recorded after the fact here:
+  s2_gpu_characterization_check.py sha256
+  259886e882a4b9d002409ecc4e33234ea13149a7dfe47c72ea7daab814820142.
