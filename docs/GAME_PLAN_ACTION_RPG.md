@@ -3143,7 +3143,10 @@ not a new prerequisite for shipping the present workshop controls.
 2. **Normalize a source snapshot.** Pin source bytes and transform geometry,
    frames, units, fields and test histories into existing recipe/material records.
    Preserve specimen variation. Annotate gaps instead of filling them with guessed
-   constants; use declared synthetic parameters only for numerical research.
+   constants. Keep synthetic test parameters or deliberately authored game profiles
+   in separate, explicitly identified records; neither fills a missing measured
+   field or acquires a real-material claim by renaming it. Apply §11.21.8's distinct
+   evidence paths before admitting playable behavior.
 3. **Reuse first; calibrate only a demonstrated gap.** Match the source law,
    domain, units and loading conditions against existing supported responses. Reuse
    an applicable published/qualified response and its evidence under §11.21.8.
@@ -3268,7 +3271,20 @@ is installed by this section.
 Published measurements and precomputed solutions can replace repeating the
 original measurement campaign or entire simulation sweep. An exact applicable
 record should become a reusable reference, not a recurring demand to re-prove it.
-Distinguish experimentally measured, simulated and inferred values in the card.
+Distinguish experimentally measured, simulated, inferred and deliberately authored
+values in the card.
+
+**A playable part need not pretend to reproduce a real specimen.** Consistent
+with §4's synthetic profiles, Qwen may choose a clearly authored game material
+when the player needs a behavior rather than a claim about actual bone, steel or
+skin. Its law, parameters and operating limits still require the applicable
+independent physics and native integration checks. Real-material validation remains
+required when that correspondence is claimed. The existing
+[`units_contract.py`](../tools/elastic_foundation/units_contract.py) separates
+synthetic and sourced provenance for CPU references; that distinction alone grants
+no runtime admission. Keep missing real measurements visible, while continuing
+playable work with an already qualified alternative. Do not require a biological
+dataset to justify every fictional construction choice.
 
 Use three levels of work:
 
