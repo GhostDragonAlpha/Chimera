@@ -3756,11 +3756,39 @@ selection and feedback-driven procedure improvement. Published performance does
 not establish a speedup on this host or this workload.
 
 A function query names a wanted behavior, loading direction, interfaces, space
-and material/runtime budget. Retrieve known candidates, adapt within supported
-conditions, then spend experiments on the remaining uncertainty. Keep ordinary
-recipe saving available even before assembly reduction succeeds. A trained or
-tabulated internal response still needs compatible native exchanges and rendering;
-a reduced piece must not skip physical steps or hide unsupported contacts.
+and material/runtime budget. **Retrieve connectable families before ranking by
+response.** Filter by admitted port geometry/frame, exchanges, assembly operation
+and operating domain, then compare behavior and cost. Reuse the fields already
+owned by [`piece_record.py`](../tools/mechanism_factory/piece_record.py), including
+`ports` and `fabrication_binding`; extend their lookup rather than build another
+catalog. Similar effective stiffness does not establish a compatible boundary.
+For UnitcellDB candidates, inspect the actual adjoining geometry and preserve the
+source's periodic/bulk assumptions; test a new interface without regenerating
+unchanged bulk data.
+
+[Schumacher et al.'s microstructure families](https://la.disneyresearch.com/publication/microstructures/)
+provide an external example of selecting neighboring structures jointly for
+compatibility, rather than independently choosing the closest material properties.
+The newer [boundary-identical dataset method](https://arxiv.org/html/2406.16066v2)
+links code and data for varied elastic responses sharing boundaries, but its
+reported scope is 2-D; extension to 3-D is future work. It is a secondary method
+reference, not a ready-made 3-D library or a reason to install another trainer.
+
+**Proposed first game use:** when the kit needs another useful choice, offer two
+qualified pieces with the same mounting contract and a visible clearance or
+compliance tradeoff, so the player can swap one without rebuilding everything.
+Compare the changed joint/assembly through existing recipe and inspector owners.
+The local [`composed_patch.py`](../tools/mechanism_factory/composed_patch.py) records
+why merely joining at a free or grounded rim can fail to give the intended load
+transfer; the existing [`port_solve.py`](../tools/mechanism_factory/port_solve.py)
+provides a scoped coupled-response example, not general imported-cell admission.
+Reuse those lessons and applicable checks. Known good interfaces remain reusable.
+
+Keep ordinary recipe saving available even before assembly reduction succeeds.
+A trained or tabulated internal response still needs compatible native exchanges
+and rendering; a reduced piece must not skip physical steps or hide unsupported
+contacts. This retrieval refinement supports useful construction variety; it does
+not delay the current controls, recovery or save/reuse work.
 
 For failure explanations, restore the same baseline and vary one selected input
 at a time, retaining objective and observation policy. Show the observed practical
