@@ -2922,9 +2922,11 @@ piece records and composition under `tools/mechanism_factory/`. Native drivers u
 membrane-demo save/restore and a scripted objective/recovery/replay loop. Inspect
 those paths and current identities before calling AP01/AP02-era omissions missing.
 
-The inspected [game-loop receipt](evidence/mechanism_factory/gameloop_run_receipt_20261017T185057.629963Z.json)
-covers a single composed star instance on its pinned 2026-10-17 binary. Objective,
-failure/recovery, reset and replay predicates pass, but `c2_success.pass` is false:
+The latest inspected [game-loop receipt](evidence/mechanism_factory/gameloop_run_receipt_20261018T184338.756806Z.json)
+records a single composed star instance and successful disk save/restore across
+engine boots. Its binary identity matches the [earlier retained run](evidence/mechanism_factory/gameloop_run_receipt_20261017T185057.629963Z.json).
+Objective, failure/recovery, reset, replay and the additive persistence check pass,
+but `c2_success.pass` remains false:
 the CPU position cross-check is about 6.63e-7 world units against its frozen 1e-7
 limit. This is a specific qualification blocker, not a fresh pass or evidence of
 general gameplay readiness. Preserve the failure and diagnose it against the
@@ -3090,10 +3092,18 @@ than bypassing it with raw material scalars. The material path explicitly refuse
 orthotropy. UnitcellDB's directional tensors therefore need an identified mapping
 or extension, not a renamed isotropic parameter. This is a source audit, not fresh
 runtime qualification. Keep this elastic path distinct from the mechanism factory's
-constant-current-area tension law. FEBio's [elementary beam example](https://febio.org/knowledgebase/case-studies/structural-mechanics/elementary-beam-analysis/)
-uses a different finite-strain law; it is a future matched-scope reference, not a
-ready-made pass criterion for either current membrane law. First resolve the
-selected law/observable correspondence; do not rebuild the existing reference.
+constant-current-area tension law. FEBio's [elementary beam tutorial](https://febio.org/knowledgebase/case-studies/structural-mechanics/elementary-beam-analysis/)
+uses a different finite-strain law, but the [2012 paper, §§4.5–4.6](https://febio.org/site/uploads/maas_jbme_2012.pdf)
+provides closer St. Venant-Kirchhoff references: a geometrically nonlinear solid
+cantilever and a twisted shell, with refinement comparisons. Prefer those when a
+player-needed flexible support requires the corresponding bending behavior.
+Sharing a constitutive name does not equate solid, shell and membrane kinematics;
+the current membrane energy alone does not provide shell bending stiffness.
+For in-plane response, first reuse the existing [elastic battery](../tools/elastic_foundation/battery.py)
+(uniform extension/shear and affine-patch checks) and units adapter. Select the
+smallest missing correspondence check, not a new verification harness or an
+unrelated FEBio campaign. The published beam/shell curves are future reference
+targets, not passes already earned by Chimera.
 
 **Proposed route to useful directional sheets:** orientation could let a player
 reuse one pattern for different support directions instead of requiring a new
@@ -3275,8 +3285,11 @@ Use three levels of work:
 Extend the existing function/evidence card with source locator and corrections,
 coverage, transformation identity, reusable verdict and named uncovered behavior.
 Keep raw observations distinct from fitted labels. Published results used to fit
-or choose a candidate are not also unseen evaluation cases. Review or rerun only
-relevant descendants after a source, adapter, law or boundary contract changes.
+or choose a candidate are not also unseen evaluation cases. A digitized published
+plot carries extraction and source uncertainty; it cannot justify a numerical
+tolerance finer than those data support. Prefer available numeric tables or an
+analytic benchmark when that precision matters. Review or rerun only relevant
+descendants after a source, adapter, law or boundary contract changes.
 Qwen can use this compact card in context; full datasets and papers stay linked.
 
 ### 11.22 Peer-agent development: deliver the game, preserve the science
