@@ -1,0 +1,84 @@
+{
+  "scope": "Project instructions, role hook and compact-prompt plumbing; no gameplay or physics qualification",
+  "user_direction": "Purpose in every task/summary; playable impact; lead research, peer choice and recursive process improvement",
+  "tests": {
+    "hook_unit_cases": 8,
+    "compact_helper_checks": 8,
+    "profile_frontmatter_preserved_except_description": 8,
+    "native_integration": {
+      "status": "PASS",
+      "scope": "Installed Z Code dispatch/follow-up/manual compression/resume with deterministic mock model; no model intelligence or full-context claim",
+      "operations": [
+        {
+          "label": "dispatch",
+          "exit_code": 0,
+          "seconds": 4.33
+        },
+        {
+          "label": "main_compact",
+          "exit_code": 0,
+          "seconds": 2.27
+        },
+        {
+          "label": "main_resume",
+          "exit_code": 0,
+          "seconds": 2.85
+        },
+        {
+          "label": "child_compact",
+          "exit_code": 0,
+          "seconds": 2.38
+        },
+        {
+          "label": "child_resume",
+          "exit_code": 0,
+          "seconds": 2.87
+        }
+      ],
+      "request_count": 8,
+      "same_child_resumed": true,
+      "main_and_child_compression_purpose_injected": true,
+      "model_inheritance_preserved": true,
+      "real_provider_unchanged": true
+    }
+  },
+  "deployment": {
+    "project_workspaces": [
+      "D:/Chimera-Maintenance",
+      "D:/Chimera-Maintenance/PythonChimera"
+    ],
+    "runtime": "D:/Chimera-Maintenance/Runtime/zcode-two-agent",
+    "cli": {
+      "processes_restarted": false,
+      "status": "installed",
+      "sha256": "d627bd7cd8061297356ad67796ddd536099836e4b07d8ebb704a7f92fe546236"
+    },
+    "existing_project_hook_registration_preserved": true,
+    "running_processes_restarted": false,
+    "model_context_quantization_reasoning_unchanged": true
+  },
+  "limits": [
+    "Native integration uses deterministic mock responses, not a model intelligence evaluation.",
+    "Compaction tested on short main/child sessions, not a filled context window.",
+    "Isolated CLI fixture used user-level hooks; no live workspace trust was changed.",
+    "Already-running CLI processes load the compact-helper call on normal restart; existing hooks read new script on invocation."
+  ],
+  "retained_local_test_artifacts": "D:\\Chimera-Maintenance\\Runtime\\zcode-goal-workflow-20261018",
+  "source_sha256": {
+    "tools/zcode/GAME_WORKFLOW.md": "5f0d5967b14a8017d3d5f2c06c03b95def7258c78b88c025c9e177b85bdf058a",
+    "tools/zcode/role_gate.py": "ce550c7d0d9a2a3c454c7a8a8ddf383bf643d8101a7eb4da7575b92e9144223d",
+    "tools/zcode/compression-goal-helper.cjs": "17ae7c138b50f0b9ba9d43dff2d736dca24489f73f4981914646ea2b7d56c827",
+    "tools/zcode/test_goal_workflow.py": "733ce1e1da3f54ea66dbaf659642085d497d8b9c95d4cd9f8843380ab3cbfaed",
+    "tools/zcode/test_goal_compression.cjs": "764d4c3360e55bc558cbc42d1bedd458813d25de9dc5403978b0a394996f7c5d",
+    "tools/zcode/test_native_goal_workflow.py": "00a4689cfb5614d02ed3968333e97b09af504b1a0e7b0c9fdb1b26586339f003",
+    ".zcode/PROJECT_START.md": "57f03e32432fd3f10f10fa01c0f4cbf1be40475aeff76ddd94614a2889a91dbd",
+    ".zcode/COMPACT_INSTRUCTIONS.md": "eef2ae935b53eb8727297a7126ec0c36c9418c8a2c0c93e4cd1eaed4ae5a2bd3",
+    "docs/ZCODE_CUSTOM_AGENTS.md": "262d52457cb82c1e866c8f64305365ee830936b8f6fbaef24f50483d7fd007bc",
+    "docs/ZCODE_LIEUTENANT_PROMPT.md": "ea5e31636bbb85faffea1e2fc3bc68f57e171d841df8f3cfde55c0cace968578",
+    "docs/GAME_PLAN_ACTION_RPG.md": "a10a4be1b6a87805d75e8006c7e9022d30339523b373d670def14dd15700c248",
+    ".zcode/agents/chimera-maya.md": "4968e43d7d8cbf7cad3c8f168ed379e7fbf5f898fbb84cab09e36d6172193b6b",
+    ".zcode/agents/chimera-researcher.md": "0409e71cf9a1f86278c1f80e75d2a108eb7b443086355a6e613bc76356401c10",
+    ".zcode/agents/chimera-step37.md": "10faa19f4b357edf63c0fd17ea51d48a41e351bb1c87bf00da729c8b9b0f58b5",
+    ".zcode/agents/chimera-worker.md": "1baef2d1b98ea90982b86e7ce9ace2608db7b73a596bb19041a88d50391ea93b"
+  }
+}

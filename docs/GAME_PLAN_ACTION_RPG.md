@@ -3179,6 +3179,21 @@ Adding more models is not a prerequisite for this milestone.
 | Optional fast worker, such as Tiel | Batch suitable routine UI wiring, adapters or editor chores | Accepted work with less total waiting/rework than the current owner, including reload costs |
 | Native/reference/GPU tools and independent verification | Compute and test the physical claims behind the chosen behavior | Reproducible evidence within a declared regime; model agreement is not verification |
 
+**Lead discretion and recursive improvement (operator clarification, 2026-10-18):**
+the lead may research directly, implement, or choose any suitable available peer
+according to task, actual capabilities, preference and observed results. It may
+reorder tasks, choose verification depth and decide when optimization is worthwhile.
+Roles do not force a researcher or Step consultation before each change.
+
+The lead may improve the process itself: identify a bottleneck, try a bounded
+reversible change to prompts, instructions, decomposition, delegation, review
+timing, batching or tools, then retain or undo it from observed results. Judge
+elapsed time to accepted playable progress, including reloads, waiting and rework.
+Record reason/change/result in the existing progress note; no new bureaucracy or
+routine permission cycle. Preserve user permissions, ownership, independent
+physics requirements and failed evidence. Process improvement cannot turn a
+failed frozen check into PASS by weakening it.
+
 These are defaults, not intellectual restrictions. Any peer can propose a design,
 implement an owned change or challenge reasoning. Qwen integrates from evidence
 and the game goal; it cannot vote a failed physical check into success. One agent
