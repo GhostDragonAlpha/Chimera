@@ -449,6 +449,7 @@ runtime qualification or proof that an unfamiliar player can complete the loop.
 | [Construction packet](../tools/construction_packet/) and [cradle recipe](../tools/construction_packet/cradle_recipe.py) | Existing place/connect/load/release/patch/save/restore transactions and small rigid assembly kit | Present understandable player actions, objective and recovery. Preserve part caps/contact limits; connector extension is not membrane strain. |
 | [Objective-loop battery](../tools/construction_packet/test_objective_loop.py) and [retained evidence](evidence/construction_packet_20261012/OBJECTIVE_LOOP_EVIDENCE.md) | Existing payload-clearance objective, successful build, deliberate topple, recovery and operation through frozen routes without an agent | Engineering behavior is already recorded; connect player controls and feedback rather than recreate the objective harness. Human operation and a second structurally different solution remain separate work. |
 | [Bridge control](../tools/construction_packet/test_b5_bridge.py) | Candidate second arrangement using the same part generator and connector | Test it against the selected challenge. Its historical contact model does not establish realistic off-center load sharing. |
+| [Workshop challenge 1](../tools/construction_packet/workshop_challenge1.py), concurrent work observed 2026-10-18 | Scripted welded-span/contact-tower alternatives, objective feedback, recovery and recipe save/restore through existing B2 routes | Source is present; inspect the worker's latest receipts before accepting results. Reuse this owner rather than commission another challenge runner. A scripted walkthrough does not establish player-operated building. |
 | Native B2 routes, Studio inspector, reel, A/B selector and recorder | One physical state, selection, observation and comparison | Connect existing controls and feedback; implement only missing interactions through their current owners. |
 | [Recipe comparisons](../tools/recipe_experiments/README.md) | Baseline restore, soft/stiff comparisons, input identities and receipts | Bounded equilibrium fixture, not a general transient runner; do not create another comparison service. |
 | [Artificial proteins](../tools/artificial_proteins/README.md) and [mechanism factory](../tools/mechanism_factory/README.md) | Research pieces, port composition, detailed references, bounded tables/fits and GPU batches | Reuse supported behavior within current evidence; arbitrary edited meshes and universal material laws are separate claims. |
@@ -496,9 +497,14 @@ Implement one connected sequence:
    objective. Observe whether the player can adapt the construction, explain a
    failure and wants to try another solution.
 
-This is a proposed challenge, not a claim that its controls or solutions already
-work. The membrane loop can supply compliant behavior after its checks pass;
-selecting a load alone does not fulfill the building-and-reuse objective. Keep
+The challenge now has an in-progress scripted owner listed above; its current
+receipts determine which constructions have actually passed. Before declaring it
+playable, a human must be able to choose an arrangement, place/rotate/attach and
+revise the admitted parts, test it, recover and save/reuse without a script making
+those choices. Use the two staged builds as examples and repeatable checks, not
+the entire player interaction. Audit existing native controls and add only their
+missing connection to this scene. The membrane loop can supply compliant behavior
+after its checks pass; selecting a load alone does not fulfill the building-and-reuse objective. Keep
 rigid construction interaction work moving within its qualified scope.
 
 #### Deliver and observe
@@ -3070,7 +3076,7 @@ small relevant subset and preserve its release, corrections and usage terms.
 
 | Priority/source | Existing knowledge to reuse | First useful scope and limit |
 |---|---|---|
-| **1. [UnitcellDB](https://github.com/unitcellhub/unitcelldb)** | Over 13,000 simulated designs across 18 cell types, geometric descriptors and effective stiffness/conduction; repository lists Apache-2.0 | Retrieve candidate repeating structures by directional response and density. Its elastic data assume small-strain homogenization, cell/structure scale separation and base Poisson ratio 0.3; not measured fracture or isolated-cell behavior. |
+| **1. [UnitcellDB](https://github.com/unitcellhub/unitcelldb)** | Over 13,000 simulated designs with geometric descriptors and effective stiffness/conduction; repository lists Apache-2.0. README and saved notebook differ on family count; inspect the selected snapshot below | Retrieve candidate repeating structures by directional response and density. Its elastic data assume small-strain homogenization, cell/structure scale separation and base Poisson ratio 0.3; not measured fracture or isolated-cell behavior. |
 | **2. [FEBio published verification models](https://repo.febio.org/permalink/project/112)** | Existing cases for stretched sheets, twisted shells, nonlinear beams and contact, linked to the original paper | Choose one case matching the next required law. Preserve supports, load protocol, mesh/refinement and documented corrections. A reference model is neither a measured universal material nor a substitute native solver. |
 | [USDA Wood Handbook](https://research.fs.usda.gov/fpl/wood-handbook) | Wood properties, directional/environmental variation, fastenings and structural references | Source a specific building-material response when required by the workshop; carry grain, moisture and specimen/grade conditions. |
 | [DOE/Stony Brook unit-cell collection](https://catalog.data.gov/dataset/metamaterial-unit-cell-database-for-marine-energy-system-design) | Coordinates, connectivity, behavior classifications and original-paper links; CC BY 4.0 | Seed a geometry/function search. Reconstructed geometry can differ from the source publication; classifications alone are not response curves. |
@@ -3113,6 +3119,18 @@ uses `homogenizedConductance` and exposes fewer directional stress-amplification
 fields than the README lists. This is a documentation/exporter mismatch, not a
 verified statement about the uninspected binary. Bind selected fields explicitly;
 missing measurements remain missing, never implicit zeros or guessed aliases.
+The pinned [example notebook](https://github.com/unitcellhub/unitcelldb/blob/af4b7d2ddd287a01d18348b7bf1536fd7f5f90d3/examples/examples.ipynb)
+contains saved output for 13,028 rows and 25 `(form, unitcell)` pairs (18 graph and
+7 walled-TPMS families), while the README advertises 18 types. Its recorded schema
+includes `homogenizedConductance` and all six directional stress-amplification
+fields. This is historical notebook evidence, not a fresh inspection of the HDF5.
+Its BCC example (length 1, width 1, height 1.25, thickness 0.3) reports normalized
+`Exx = 0.0972224101` and `Ezz = 0.1197255502`, about 23.1% greater stiffness along z.
+That is a concrete candidate for orientation-dependent support choices under the
+bulk assumptions, not increased fracture strength or an admitted isolated piece.
+The printed example omits radius and density; recover the complete source row
+before reproducing its geometry. Reuse this published response to choose a useful
+adapter check instead of generating a fresh characterization sweep.
 
 **FEBio adapter:** the published collection includes explicit parameter and axis
 corrections for some compression/relaxation cases. Carry those corrections with
@@ -3125,10 +3143,21 @@ is available when fitting is actually necessary. Its separate [contact examples]
 include friction, self-contact and two-sided shell contact, but also an explicitly
 non-running `sliding_error.fsm` for debugging. Select the needed case and its expected
 outcome; this tutorial pack is not a set of already-passing physical benchmarks.
-The [elementary-beam collection](https://repo.febio.org/permalink/project/127) also
-lists `SimplySupportedBeam.xlsx` with numerical results and figures. Its catalog
-was inspected, not the workbook. When that case matches the needed claim, inspect
-its selected numeric series before digitizing figures or rerunning a solver.
+
+**A numeric reference is available without running FEBio.** The
+[elementary-beam collection](https://repo.febio.org/permalink/project/127) supplies
+[a results workbook](https://repo.febio.org/modelRepo/api/v1.05/files/1/3490), inspected
+on 2026-10-18: 138,909 bytes, SHA-256
+`27a757ed17d3e45e324af9d30c5c5b6576c32d5625581e7a15189b9b1197ed8e`.
+`SolidBeam!A2:E502` holds 501 positions with FEA deflection and analytical shear,
+moment and deflection; `ShellBeam!A2:D402` holds 401 positions with top, bottom and
+mid-plane deflection. At x = 50 mm, `SolidBeam!B252` is -0.0582464 mm,
+`SolidBeam!E252` is -0.05812872023809524 mm and `ShellBeam!D202` is -0.05815805 mm.
+The tutorial specifies a 100 x 4 x 0.5 mm beam, E = 210,000 MPa, Poisson ratio 0
+and uniform line load 0.025 N/mm; carry its supports and law with these values.
+These are inspected external results, not a Chimera test or new material admission.
+For a matching future flexible support, map the needed columns into the existing
+reference/receipt path before generating training labels or repeating the solve.
 Preserve which observable each representation supplies: the [tutorial](https://febio.org/knowledgebase/case-studies/structural-mechanics/elementary-beam-analysis/)
 shows accurate shell deflection alongside thickness-averaged shear stress, which
 is not the pointwise peak. A cheap response adequate for a clearance decision may
