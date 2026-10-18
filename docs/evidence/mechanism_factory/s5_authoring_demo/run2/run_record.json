@@ -1,0 +1,134 @@
+{
+ "run_index": 2,
+ "port": 8872,
+ "states": {
+  "A_build": {
+   "apex_z_wu": 0.300000012,
+   "load_N": 0.0,
+   "centre_force_z_N": 0.682257295,
+   "free_residual_N": 0.11774270500000006,
+   "accepted_state_id": 11407109043414651957,
+   "energy_J": 6.30436897,
+   "project_apex_px": {
+    "sx": 960.0,
+    "sy": 425.369568,
+    "ok": true
+   },
+   "board_spec": "mechanism: assembly.star-k2 (k=2 fan-out star, 601 vertices / 600 faces)\nactive representation: DETAILED SOLVE (fused mesh, patch-equilibrium-solver-v2)\nscale s = 1.0 (record window [0.75, 2.0])\nmeasurements: apex z 0.3000000 wu (uploaded rest), energy 6.3043690 J, accepted_state_id 11407109043414651957, input port = seam apex vertex 200 (0.8 N declared)\npick target: seam apex vertex 200 = record port star-input-seam-apex (the demo's ONLY free DOF)",
+   "frame_sha256": "dc4ff232fd65d0ebe90b16cb9c61a021c2fc87d3cc5bcb727f51583d5d7e5238"
+  },
+  "B_test_08N": {
+   "apex_z_wu": 0.284380317,
+   "load_N": 0.8,
+   "centre_force_z_N": 0.800000012,
+   "free_residual_N": 1.199999999368373e-08,
+   "accepted_state_id": 2290660962858232986,
+   "energy_J": 6.31598186,
+   "quantum_predicate_wu": 1.7003917363034304e-07,
+   "quantum_predicate_pass": true,
+   "project_apex_px": {
+    "sx": 960.0,
+    "sy": 426.945007,
+    "ok": true
+   },
+   "board_spec": "mechanism: assembly.star-k2 (k=2 fan-out star, 601 vertices / 600 faces)\nactive representation: DETAILED SOLVE (fused mesh, patch-equilibrium-solver-v2)\nscale s = 1.0 (record window [0.75, 2.0])\nmeasurements: load 0.8 N at seam apex vertex 200, apex z 0.2843803 wu, free residual 1.200e-08 N, energy 6.3159819 J, accepted_state_id 2290660962858232986 (changed)\npick: engine /project (present-stage world (x, z+lift, -y), lift 0.5) maps the apex -> px (960.0,426.9) on the rendered mesh",
+   "frame_sha256": "45b52ee8f9b8b8ccd982e5f1482a422b302ff4807799ccfebd4895fc2bfdc79e"
+  },
+  "C_test_16N": {
+   "apex_z_wu": 0.172058344,
+   "load_N": 1.6,
+   "centre_force_z_N": 1.60000014,
+   "free_residual_N": 1.3999999981528788e-07,
+   "accepted_state_id": 7177421591213043741,
+   "energy_J": 6.4514966,
+   "quantum_predicate_wu": 7.044060850724954e-07,
+   "quantum_predicate_pass": false,
+   "board_spec": "mechanism: assembly.star-k2 (k=2 fan-out star, 601 vertices / 600 faces)\nactive representation: DETAILED SOLVE (fused mesh, patch-equilibrium-solver-v2)\nscale s = 1.0 (record window [0.75, 2.0])\nmeasurements: load 1.6 N at seam apex vertex 200, apex z 0.1720583 wu (band [0.147, 0.197]), free residual 1.400e-07 N, energy 6.4514966 J, accepted_state_id 7177421591213043741",
+   "frame_sha256": "dd79a78de9144e05fbdf2f541a9c649238cde877dc303c000648d6a163500551"
+  },
+  "D_reuse": {
+   "board_spec": "mechanism: assembly.star-k2 (k=2 fan-out star, 601 vertices / 600 faces)\nactive representation: REDUCED TABLE (S3) - NO solve, table lookup only\nreuse: the SAME queries the detailed solve just answered, from s3_star_eta_pi_table_v1.json (Pi = F/(gamma*s*r0), eta = z_apex/(s*r0), s = 1.0, r0 = 1 wu, gamma = 1.0)\nF=0.8 N: Pi=0.8 eta=0.2843804870391736 z_table=0.2843805 wu | z_engine=0.2843803 wu diff 1.70e-07\nF=1.6 N: Pi=1.6 eta=0.17205904840608507 z_table=0.1720590 wu | z_engine=0.1720583 wu diff 7.04e-07\nbound 1e-6 wu (S4 switching round-trip law): PASS",
+   "z_table_wu": {
+    "0.8": 0.2843804870391736,
+    "1.6": 0.17205904840608507
+   },
+   "engine_vs_table_wu": {
+    "0.8": 1.7003917363034304e-07,
+    "1.6": 7.044060850724954e-07
+   },
+   "bound_wu": 1e-06,
+   "pass": true
+  },
+  "E_refusal": {
+   "board_spec": "mechanism: assembly.star-k2 (k=2 fan-out star, 601 vertices / 600 faces)\nfalsifier (named before the run): load 0.9 N refused at compile: binding_load_out_of_domain\nthe record's measured domain is valid_loads_N = [0.0, 0.4, 0.8, 1.2, 1.6, 2.0] N; 0.9 N is refused by the QUALIFIED RECORD (the engine itself admits it - the refusal is the record's, increment-5 criterion 3)\nscale window [0.75, 2.0]; S4 refused scale 3.0 as unsupported_scale (out-of-domain switching refusal)",
+   "refusal": {
+    "refusal": "binding_load_out_of_domain",
+    "detail": "load 0.9 N is not in assembly.star-k2's MEASURED domain [0.0, 0.4, 0.8, 1.2, 1.6, 2.0]; domain drift is refused, not tuned"
+   }
+  }
+ },
+ "shots": {
+  "a1-frame-build.png": {
+   "sha256": "dc4ff232fd65d0ebe90b16cb9c61a021c2fc87d3cc5bcb727f51583d5d7e5238"
+  },
+  "a2-glass-build.png": {
+   "sha256": "c68d092687e900fb047e6556eab009265a4413fa3c196e91e816ee695b422897"
+  },
+  "b1-frame-test08.png": {
+   "sha256": "45b52ee8f9b8b8ccd982e5f1482a422b302ff4807799ccfebd4895fc2bfdc79e"
+  },
+  "b2-glass-test08.png": {
+   "sha256": "9c467fa938eb3c8c24ea52c22efb886bc859077215fb178661ab8f64969145ba"
+  },
+  "c1-frame-test16.png": {
+   "sha256": "dd79a78de9144e05fbdf2f541a9c649238cde877dc303c000648d6a163500551"
+  },
+  "c2-glass-test16.png": {
+   "sha256": "80d77e960ff3911d97ecf881d15467e9658c3f5dd68d01654d6e218f12fb119d"
+  },
+  "d1-glass-reuse.png": {
+   "sha256": "78852e4636f9f4d663a243f54a120d86870bd7a26eb37ffff58433c88cd0724c"
+  },
+  "e1-glass-refusal.png": {
+   "sha256": "51e935dc141743c39201432d89c1c6826897bd0fe52c8b2bef583a2d43611f6e"
+  }
+ },
+ "present_lift_wu": 0.5,
+ "present_mapping": "render world = (x, z + lift, -y) (membrane_demo.comp stage 5)",
+ "transaction": {
+  "record_id": "assembly.star-k2",
+  "transaction_hash": "80fb3777d071584f",
+  "scale": 1.0,
+  "load_N": 0.8,
+  "seam_vertex": 200,
+  "accepted_hash_wu": 11407109043414651957,
+  "energy_reference_J": 6.304413835446449
+ },
+ "refusal_09N": {
+  "refusal": "binding_load_out_of_domain",
+  "detail": "load 0.9 N is not in assembly.star-k2's MEASURED domain [0.0, 0.4, 0.8, 1.2, 1.6, 2.0]; domain drift is refused, not tuned"
+ },
+ "window": {
+  "w": 1920,
+  "h": 1009
+ },
+ "pick_correspondence": {
+  "picked_entity": "seam apex vertex 200 (record port star-input-seam-apex, the MD01 centre)",
+  "projected_apex_px": {
+   "sx": 960.0,
+   "sy": 426.945007
+  },
+  "diff_bbox_px": {
+   "x0": 862,
+   "x1": 1052,
+   "y0": 405,
+   "y1": 456
+  },
+  "apex_inside_bbox": true,
+  "bbox_cx_px": 957.0,
+  "abs_cx_minus_sx_px": 3.0,
+  "cx_tolerance_px": 12,
+  "changed_px": 1218
+ },
+ "ok": true
+}

@@ -1,0 +1,20 @@
+{
+ "standing": "S5 build-test-reuse - assembly.star-k2 (run 1)",
+ "updated": "S5 demo",
+ "stages": [
+  {
+   "id": "S5",
+   "name": "assembly.star-k2",
+   "status": "green",
+   "law": "constant-gamma-current-area-surface-energy + apex-weld-seam (law_revision ee9effcfbddad8d0...)",
+   "tool": "patch-equilibrium-solver-v2",
+   "artifact": "docs/evidence/mechanism_factory/pieces/assembly.star-k2.json",
+   "falsifier": "load 0.9 N refused: binding_load_out_of_domain",
+   "cell": "FALSIFIER exercised: 0.9 N compile refused",
+   "spec_title": "assembly.star-k2",
+   "spec": "mechanism: assembly.star-k2 (k=2 fan-out star, 601 vertices / 600 faces)\nfalsifier (named before the run): load 0.9 N refused at compile: binding_load_out_of_domain\nthe record's measured domain is valid_loads_N = [0.0, 0.4, 0.8, 1.2, 1.6, 2.0] N; 0.9 N is refused by the QUALIFIED RECORD (the engine itself admits it - the refusal is the record's, increment-5 criterion 3)\nscale window [0.75, 2.0]; S4 refused scale 3.0 as unsupported_scale (out-of-domain switching refusal)",
+   "row_line": -1,
+   "spec_line": -1
+  }
+ ]
+}

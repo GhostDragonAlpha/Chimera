@@ -1,0 +1,319 @@
+{
+ "schema": "chimera-mechanism-factory-s5-authoring-demo-v1",
+ "utc": "2026-10-18T15:50:28.861155+00:00",
+ "title": "S5 visible authoring demonstration: receipt (SUPERSEDING s5_authoring_demo_receipt_20261018T134559.991Z.json)",
+ "supersedes": {
+  "receipt": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\s5_authoring_demo_receipt_20261018T134559.991Z.json",
+  "superseded_by": "this file",
+  "reason": "AMENDMENT applied to the frozen quantum predicate + diff-bbox evidence reconciled with a documented method",
+  "superseded_receipt_unchanged": true,
+  "old_receipt_sha256": "fb4e3bc46e58a02bf8417d9f4d5ba9269a9e5e275d348b871ebeab239e215a66"
+ },
+ "gate_row": "Existing inspector/viewer shows mechanism, active representation, scale and measurements | Physical/render/pick correspondence; repeatable build-test-reuse demonstration; human usability remains separately observed",
+ "preregistration": {
+  "path": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\s5_preregistration_20261018T121300.863Z.json",
+  "frozen_at_utc": "2026-10-18T12:13:00.863+00:00"
+ },
+ "amendment": {
+  "path": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\s5_prereg_amendment1_20261018T155028.861Z.json",
+  "applied": true,
+  "amended_predicate_pass": true,
+  "results": {
+   "run1": {
+    "apex_z_wu": 0.172058344,
+    "z_table_wu": 0.17205904840608507,
+    "deviation_wu": 7.044060850724954e-07,
+    "within_amended_bound": true
+   },
+   "run2": {
+    "apex_z_wu": 0.172058344,
+    "z_table_wu": 0.17205904840608507,
+    "deviation_wu": 7.044060850724954e-07,
+    "within_amended_bound": true
+   }
+  }
+ },
+ "engine": {
+  "executable": "D:\\Chimera-Maintenance\\PythonChimera\\ChimeraEngine\\engine\\build\\Release\\Release\\chimera_engine.exe",
+  "sha256": "c1c2474c6c8cbc58e73371ad8224882a031675aa3efbc6eba7fafed49fe0aa69",
+  "used_as_is": true,
+  "no_engine_edits": true,
+  "window_client_px": {
+   "w": 1920,
+   "h": 1009
+  }
+ },
+ "browser_path": {
+  "endpoint_glass": "GET /glass - the composited window: viewport + the Studio overlay, as the operator sees it (main.cpp:3066)",
+  "endpoint_frame": "GET /frame - the pixel-clean render (main.cpp:2863)",
+  "board_feed": "the engine's own studio board file (main.cpp:975, ui.cpp poll_board) fed by the harness with LIVE measured values; no web page authored, no engine edit",
+  "browser": "headed playwright-core (tools/artificial_proteins/native_binding_shot.js, the increment-5 path)"
+ },
+ "runs": {
+  "run1": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\s5_authoring_demo\\run1",
+  "run2": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\s5_authoring_demo\\run2"
+ },
+ "checks": {
+  "frame_identity_across_runs": {
+   "law": "prereg repeatability: /frame of states A, B, C byte-identical across the two runs",
+   "results": {
+    "a1-frame-build.png": {
+     "run1": "dc4ff232fd65d0ebe90b16cb9c61a021c2fc87d3cc5bcb727f51583d5d7e5238",
+     "run2": "dc4ff232fd65d0ebe90b16cb9c61a021c2fc87d3cc5bcb727f51583d5d7e5238",
+     "byte_identical": true
+    },
+    "b1-frame-test08.png": {
+     "run1": "45b52ee8f9b8b8ccd982e5f1482a422b302ff4807799ccfebd4895fc2bfdc79e",
+     "run2": "45b52ee8f9b8b8ccd982e5f1482a422b302ff4807799ccfebd4895fc2bfdc79e",
+     "byte_identical": true
+    },
+    "c1-frame-test16.png": {
+     "run1": "dd79a78de9144e05fbdf2f541a9c649238cde877dc303c000648d6a163500551",
+     "run2": "dd79a78de9144e05fbdf2f541a9c649238cde877dc303c000648d6a163500551",
+     "byte_identical": true
+    }
+   },
+   "pass": true
+  },
+  "readout_identity": {
+   "law": "board text (the on-screen readout) and measured engine values digit-for-digit identical across runs",
+   "board_text_identical": {
+    "A_build": true,
+    "B_test_08N": true,
+    "C_test_16N": true,
+    "D_reuse": true,
+    "E_refusal": true
+   },
+   "measured_values_identical": {
+    "A_build.apex_z_wu": true,
+    "A_build.free_residual_N": true,
+    "A_build.energy_J": true,
+    "A_build.accepted_state_id": true,
+    "A_build.load_N": true,
+    "B_test_08N.apex_z_wu": true,
+    "B_test_08N.free_residual_N": true,
+    "B_test_08N.energy_J": true,
+    "B_test_08N.accepted_state_id": true,
+    "B_test_08N.load_N": true,
+    "C_test_16N.apex_z_wu": true,
+    "C_test_16N.free_residual_N": true,
+    "C_test_16N.energy_J": true,
+    "C_test_16N.accepted_state_id": true,
+    "C_test_16N.load_N": true
+   },
+   "pass": true
+  },
+  "glass_dynamic_pixels": {
+   "law": "the glass carries the status bar's fps/ms, the timeline/show clocks and the reel's grab stamps, which tick; the changed-pixel set is RECORDED (prereg: not required zero) and must stay confined to the chrome bands (strip y<90, right dock x>1400, reel/timeline/status y>780)",
+   "results": {
+    "a2-glass-build.png": {
+     "changed_px": 513,
+     "changed_px_outside_chrome_bands": 0,
+     "y_range": [
+      67,
+      1001
+     ],
+     "x_range": [
+      406,
+      1887
+     ]
+    },
+    "b2-glass-test08.png": {
+     "changed_px": 580,
+     "changed_px_outside_chrome_bands": 0,
+     "y_range": [
+      67,
+      1004
+     ],
+     "x_range": [
+      406,
+      1878
+     ]
+    },
+    "c2-glass-test16.png": {
+     "changed_px": 433,
+     "changed_px_outside_chrome_bands": 0,
+     "y_range": [
+      67,
+      1004
+     ],
+     "x_range": [
+      406,
+      1878
+     ]
+    },
+    "d1-glass-reuse.png": {
+     "changed_px": 625,
+     "changed_px_outside_chrome_bands": 0,
+     "y_range": [
+      67,
+      1004
+     ],
+     "x_range": [
+      406,
+      1877
+     ]
+    },
+    "e1-glass-refusal.png": {
+     "changed_px": 446,
+     "changed_px_outside_chrome_bands": 0,
+     "y_range": [
+      67,
+      1000
+     ],
+     "x_range": [
+      406,
+      1878
+     ]
+    }
+   },
+   "confined_to_chrome": true
+  },
+  "preregistered_predicates": {
+   "results": {
+    "run1.A_upload_identity": true,
+    "run1.A_energy_within_3e-4_J": true,
+    "run1.A_rest_apex_0.3_wu": true,
+    "run1.B_residual_law_1e-6_N": true,
+    "run1.B_state_changed": true,
+    "run1.B_vs_S3_table_Pi0.8_within_quantum": true,
+    "run1.C_residual_law_1e-6_N": true,
+    "run1.C_in_frozen_band": true,
+    "run1.C_vs_S3_table_Pi1.6_within_quantum_FROZEN_PREDICATE": false,
+    "run1.D_reuse_bound_1e-6_wu_both_cells": true,
+    "run1.E_refusal_binding_load_out_of_domain": true,
+    "run1.pick_apex_inside_diff_bbox": true,
+    "run1.pick_cx_within_12px": true,
+    "run2.A_upload_identity": true,
+    "run2.A_energy_within_3e-4_J": true,
+    "run2.A_rest_apex_0.3_wu": true,
+    "run2.B_residual_law_1e-6_N": true,
+    "run2.B_state_changed": true,
+    "run2.B_vs_S3_table_Pi0.8_within_quantum": true,
+    "run2.C_residual_law_1e-6_N": true,
+    "run2.C_in_frozen_band": true,
+    "run2.C_vs_S3_table_Pi1.6_within_quantum_FROZEN_PREDICATE": false,
+    "run2.D_reuse_bound_1e-6_wu_both_cells": true,
+    "run2.E_refusal_binding_load_out_of_domain": true,
+    "run2.pick_apex_inside_diff_bbox": true,
+    "run2.pick_cx_within_12px": true
+   },
+   "n_pass": 24,
+   "n_total": 26,
+   "retained_failures": {
+    "run1.C_vs_S3_table_Pi1.6_within_quantum_FROZEN_PREDICATE": false,
+    "run2.C_vs_S3_table_Pi1.6_within_quantum_FROZEN_PREDICATE": false
+   }
+  },
+  "requirement_verdicts": {
+   "shows_mechanism": {
+    "verdict": "PASS",
+    "evidence": "glass envelope + strip chip + status bar: 'mechanism: assembly.star-k2 (k=2 fan-out star, 601 vertices / 600 faces)' with the record's own law id and revision (a2/b2/c2/d1/e1 PNGs); identity chain: record port star-input-seam-apex = MD01 centre vertex 200"
+   },
+   "shows_active_representation": {
+    "verdict": "PASS",
+    "evidence": "states A-C: 'active representation: DETAILED SOLVE (fused mesh, patch-equilibrium-solver-v2)'; state D switches on screen to 'REDUCED TABLE (S3) - NO solve, table lookup only' with the S4 switching bound evaluated live (d1 PNG)"
+   },
+   "shows_scale": {
+    "verdict": "PASS",
+    "evidence": "'scale s = 1.0 (record window [0.75, 2.0])' in every envelope; r0 = 1 wu, gamma = 1.0 J/wu^2 named in the reuse rows"
+   },
+   "shows_measurements": {
+    "verdict": "PASS",
+    "evidence": "LIVE numbers from GET /membrane_demo on screen: apex z, free residual, energy, accepted_state_id per state; reuse rows show table-vs-engine diffs 1.70e-07 wu (0.8 N) and 7.04e-07 wu (1.6 N) against bound 1e-6"
+   },
+   "physical_render_pick_correspondence": {
+    "verdict": "PASS",
+    "evidence": "the deform control's ONLY free DOF is the packet-declared centre (engine.cpp md_deform) = record load port vertex 200 (seam apex); the engine's /project (same VP the mesh pass used, present-stage mapping (x, z+lift, -y), lift 0.5) places the apex at px (960, 426.9) INSIDE the A-vs-B render diff bbox {'x0': 862, 'x1': 1052, 'y0': 405, 'y1': 456} (8326 px changed around the seam (strict byte-diff, threshold 0; see erratum_diff_bbox)); physical: the measured apex z matches the S3/study seam-apex equilibria (diffs 1.70e-07 / 7.04e-07 wu)"
+   },
+   "repeatable_build_test_reuse": {
+    "verdict": "PASS",
+    "evidence": "two full runs: BUILD (compile+upload) -> TEST (0.8 N, 1.6 N deform) -> REUSE (S3 table, no engine call) executed twice; /frame byte-identical across runs for A, B, C; board readout text and measured values digit-for-digit identical; run records s5_authoring_demo/run1,run2/run_record.json"
+   },
+   "human_usability": {
+    "verdict": "OUT OF SCOPE (the gate column says 'separately observed'; not chased here)"
+   }
+  }
+ },
+ "erratum_diff_bbox": {
+  "what_changed": "the A-vs-B /frame diff descriptive numbers are restated with the method DOCUMENTED; the functional pick-correspondence predicates are unchanged",
+  "documented_method": "strict byte-diff: changed = any RGB channel differs (|difference| > 0), inclusive bbox from numpy nonzero min/max",
+  "canonical_strict_byte_diff_thr0": {
+   "threshold": "changed = |RGB difference| > 0 (per-channel max; threshold 0 = strict byte-diff)",
+   "changed_px": 8326,
+   "bbox_inclusive_px": {
+    "x0": 857,
+    "x1": 1062,
+    "y0": 405,
+    "y1": 520
+   },
+   "bbox_centre_px": {
+    "cx": 959.5,
+    "cy": 462.5
+   }
+  },
+  "original_thresholded_thr8_as_previously_recorded": {
+   "threshold": "changed = |RGB difference| > 8 (per-channel max; threshold 0 = strict byte-diff)",
+   "changed_px": 1218,
+   "bbox_inclusive_px": {
+    "x0": 862,
+    "x1": 1052,
+    "y0": 405,
+    "y1": 456
+   },
+   "bbox_centre_px": {
+    "cx": 957.0,
+    "cy": 430.5
+   }
+  },
+  "independent_step_recomputation": {
+   "changed_px": 8326,
+   "bbox_exclusive": "857-1063 x 405-521",
+   "matches": "threshold-0 strict byte-diff (exclusive-end convention)"
+  },
+  "pick_check_under_canonical_method": {
+   "projected_apex_px": {
+    "sx": 960.0,
+    "sy": 426.945007
+   },
+   "apex_inside_bbox": true,
+   "bbox_cx_minus_sx_px": 0.5,
+   "cx_tolerance_px": 12
+  }
+ },
+ "engine_api_sharp_edge": {
+  "hazard": "POST /studio treats an OMITTED 'on' key as a TOGGLE: bool on = get_bool(req_body, \"on\", !g_engine->ui_.visible) (main.cpp:3229) -- a panel-size POST without an explicit 'on' hides the whole overlay",
+  "impact": "cost two discarded S5 capture runs (disclosed, not in s5_authoring_demo/)",
+  "status": "named for future harness authors; engine untouched, the harness always sends an explicit 'on'"
+ },
+ "requirement_verdicts": {
+  "shows_mechanism": {
+   "verdict": "PASS",
+   "evidence": "glass envelope + strip chip + status bar: 'mechanism: assembly.star-k2 (k=2 fan-out star, 601 vertices / 600 faces)' with the record's own law id and revision (a2/b2/c2/d1/e1 PNGs); identity chain: record port star-input-seam-apex = MD01 centre vertex 200"
+  },
+  "shows_active_representation": {
+   "verdict": "PASS",
+   "evidence": "states A-C: 'active representation: DETAILED SOLVE (fused mesh, patch-equilibrium-solver-v2)'; state D switches on screen to 'REDUCED TABLE (S3) - NO solve, table lookup only' with the S4 switching bound evaluated live (d1 PNG)"
+  },
+  "shows_scale": {
+   "verdict": "PASS",
+   "evidence": "'scale s = 1.0 (record window [0.75, 2.0])' in every envelope; r0 = 1 wu, gamma = 1.0 J/wu^2 named in the reuse rows"
+  },
+  "shows_measurements": {
+   "verdict": "PASS",
+   "evidence": "LIVE numbers from GET /membrane_demo on screen: apex z, free residual, energy, accepted_state_id per state; reuse rows show table-vs-engine diffs 1.70e-07 wu (0.8 N) and 7.04e-07 wu (1.6 N) against bound 1e-6"
+  },
+  "physical_render_pick_correspondence": {
+   "verdict": "PASS",
+   "evidence": "the deform control's ONLY free DOF is the packet-declared centre (engine.cpp md_deform) = record load port vertex 200 (seam apex); the engine's /project (same VP the mesh pass used, present-stage mapping (x, z+lift, -y), lift 0.5) places the apex at px (960, 426.9) INSIDE the A-vs-B render diff bbox {'x0': 862, 'x1': 1052, 'y0': 405, 'y1': 456} (8326 px changed around the seam (strict byte-diff, threshold 0; see erratum_diff_bbox)); physical: the measured apex z matches the S3/study seam-apex equilibria (diffs 1.70e-07 / 7.04e-07 wu)"
+  },
+  "repeatable_build_test_reuse": {
+   "verdict": "PASS",
+   "evidence": "two full runs: BUILD (compile+upload) -> TEST (0.8 N, 1.6 N deform) -> REUSE (S3 table, no engine call) executed twice; /frame byte-identical across runs for A, B, C; board readout text and measured values digit-for-digit identical; run records s5_authoring_demo/run1,run2/run_record.json"
+  },
+  "human_usability": {
+   "verdict": "OUT OF SCOPE (the gate column says 'separately observed'; not chased here)"
+  }
+ },
+ "scope": "existing inspector/viewer demonstration only; no engine edit, no record edit, no GPU batch, no inference; human usability separately observed per the gate column"
+}

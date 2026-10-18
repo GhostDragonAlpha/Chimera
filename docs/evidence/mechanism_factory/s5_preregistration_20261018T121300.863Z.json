@@ -1,0 +1,158 @@
+{
+ "schema": "chimera-mechanism-factory-s5-preregistration-v1",
+ "utc": "2026-10-18T12:13:00.863423+00:00",
+ "title": "S5 visible authoring demo: preregistration (frozen before any capture)",
+ "gate_row": "Existing inspector/viewer shows mechanism, active representation, scale and measurements | Physical/render/pick correspondence; repeatable build-test-reuse demonstration; human usability remains separately observed",
+ "gate_source": "docs/GAME_PLAN_ACTION_RPG.md section 13.1 (row S5)",
+ "frozen_before_capture": true,
+ "existing_viewer_inventory": {
+  "engine": "chimera_engine.exe sha256 c1c2474c6c8cbc58e73371ad8224882a031675aa3efbc6eba7fafed49fe0aa69 (pinned, used as-is)",
+  "frame": "GET /frame - pixel-clean world render, no UI (engine/main.cpp:2863, engine.cpp:9025 comment law)",
+  "glass": "GET /glass - the COMPOSITED window: viewport + the Studio overlay (docked panels, status bar, HUD), exactly as the operator sees it (main.cpp:3066, engine.cpp:9022-9040)",
+  "board": "THE STUDIO BOARD: a board-file feed (main.cpp:975-981 argv[2], ui.cpp:521 poll_board, mtime re-poll) written by the harness in the engine's own board JSON schema; the strip shows stage chips, the left dock shows the selected stage's task envelope (LAW/FALSIFIER/VERDICT/REFEREE TOOL/ARTIFACT/NEXT ACTION, ui.cpp:1637-1700), verbatim",
+  "selection": "POST /studio {on,mode} + POST /ui_click (B3 synthetic click, main.cpp:3293) select the stage over HTTP",
+  "pick": "POST /project (main.cpp:2425) - world in, screen px out, through the same stashed VP the mesh pass used; the membrane demo's ONLY geometric freedom is the packet's declared centre vertex (engine.cpp md_deform, free DOF = centre), composed to the record's load-port vertex 200 (seam apex) by the increment-5 law",
+  "measurements_source": "GET /membrane_demo state (centre, centre_load_N, centre_force, energy, accepted_state_id, material_snapshot)",
+  "probe_evidence": "math-tools/checks_tmp/s5_probe_r1/ (glass shows the envelope with mechanism/representation/scale/measurements; dynamic pixels = clock/fps rows)",
+  "gap_closed_how": "No engine edit: the engine already displays arbitrary stage text verbatim; the harness feeds the board file with LIVE measured values and captures /glass in the visible browser"
+ },
+ "capture_states": [
+  {
+   "id": "A_build",
+   "name": "BUILD: compile + upload the qualified piece at s=1.0",
+   "action": "nb.compile_transaction('assembly.star-k2', scale=1.0, load_N=0.8) -> MD01 packet (centre = seam apex 200) -> POST /membrane_demo_bin -> pause",
+   "on_screen_board_text": {
+    "mechanism": "assembly.star-k2 (k=2 fan-out star, 601 vertices / 600 faces, law_revision ee9effcf...)",
+    "active_representation": "DETAILED SOLVE (fused mesh, patch-equilibrium-solver-v2)",
+    "scale": "s = 1.0 (record window [0.75, 2.0])",
+    "measurements": "LIVE from GET /membrane_demo: apex z (centre[2]) wu, energy J, accepted_state_id, load port = vertex 200 (0.8 N declared)"
+   },
+   "expected": {
+    "accepted_state_id": "accepted_hash(f32 positions of the compiled rest geometry)",
+    "apex_z_wu": 0.300000012,
+    "apex_z_note": "the UPLOADED REST geometry (f32 of 0.3); equilibria are produced by the deform control below, per the increment-5 law",
+    "energy_tolerance_J": 0.0003
+   },
+   "shots": [
+    "a1-frame-build.png (/frame)",
+    "a2-glass-build.png (/glass, envelope = A text)"
+   ]
+  },
+  {
+   "id": "B_test_08N",
+   "name": "TEST: the record's 0.8 N input at the seam apex",
+   "action": "POST /membrane_demo {op:'deform', load_N:0.8} - the engine re-solves the packet-declared centre (the ONLY free DOF) to equilibrium",
+   "on_screen_board_text": {
+    "active_representation": "DETAILED SOLVE",
+    "measurements": "LIVE: load 0.8 N, apex z wu, free residual N, energy J, accepted_state_id (changed)"
+   },
+   "expected": {
+    "apex_z_wu_study": 0.2843804870391736,
+    "apex_z_source": "S3 table Pi=0.8 cell eta=0.2843804870391736 (z = eta*s*r0, s=1, r0=1 wu); also the record instance_state loaded seam_z 0.28438",
+    "tolerance_wu": 4.7683716e-07,
+    "tolerance_note": "engine deform bisection quantum (4 f32 ULP, increment-5 law)",
+    "free_residual_N_law": 1e-06,
+    "accepted_state_id_changes": true,
+    "pick_check": "POST /project of the apex world position lands INSIDE the A-vs-B /frame pixel-diff bounding box (render correspondence); the diff bbox horizontal centre is within 12 px of the projected apex sx (the star is symmetric about x)"
+   },
+   "shots": [
+    "b1-frame-test08.png (/frame)",
+    "b2-glass-test08.png (/glass)"
+   ]
+  },
+  {
+   "id": "C_test_16N",
+   "name": "TEST: 1.6 N objective (the increment-5 frozen band)",
+   "action": "POST /membrane_demo {op:'deform', load_N:1.6}",
+   "expected": {
+    "apex_z_wu_study": 0.17205904840608507,
+    "apex_z_source": "S3 table Pi=1.6 cell; load-domain study seam-apex equilibrium; increment-5 band [0.147, 0.197] wu",
+    "tolerance_wu": 4.7683716e-07,
+    "free_residual_N_law": 1e-06
+   },
+   "shots": [
+    "c1-frame-test16.png (/frame)",
+    "c2-glass-test16.png (/glass)"
+   ]
+  },
+  {
+   "id": "D_reuse",
+   "name": "REUSE: the S3 reduced table answers the SAME queries",
+   "action": "NO engine call: the S3 table (s3_star_eta_pi_table_v1.json) maps Pi = F/(gamma*s*r0) -> eta -> z = eta*s*r0 for F=0.8 N and F=1.6 N at s=1.0; the board switches to the REDUCED representation and shows BOTH numbers against the engine's measured values from B and C",
+   "on_screen_board_text": {
+    "active_representation": "REDUCED TABLE (S3) - no solve",
+    "reuse_rows": [
+     "F=0.8 N: Pi=0.8 eta=0.2843804870391736 z_table=0.2843804870 wu vs z_engine=<live B> wu",
+     "F=1.6 N: Pi=1.6 eta=0.17205904840608507 z_table=0.1720590484 wu vs z_engine=<live C> wu"
+    ]
+   },
+   "expected": {
+    "abs_diff_wu_bound": 1e-06,
+    "bound_source": "S4 switching round-trip bound (receipt B5_switching.round_trip.bound_wu = 1e-6; measured 1.83e-7)",
+    "eta_digits": "digit-for-digit the S3 table nodes"
+   },
+   "shots": [
+    "d1-glass-reuse.png (/glass, envelope = D text with both rows)"
+   ]
+  },
+  {
+   "id": "E_refusal",
+   "name": "FALSIFIER: out-of-record-domain load refused at compile",
+   "action": "nb.compile_transaction('assembly.star-k2', scale=1.0, load_N=0.9) must be REFUSED by the record (0.9 N not in valid_loads_N)",
+   "expected": {
+    "refusal": "binding_load_out_of_domain",
+    "source": "increment-5 gameloop criterion 3 (record domain law); the engine itself admits 0.9 N - the refusal is the qualified record's"
+   },
+   "on_screen_board_text": {
+    "falsifier_row": "load 0.9 N refused: binding_load_out_of_domain"
+   },
+   "shots": [
+    "e1-glass-refusal.png (/glass, envelope shows the FALSIFIER row + refusal)"
+   ]
+  }
+ ],
+ "pick_targets": {
+  "picked_entity": "seam apex, compiled vertex index 200",
+  "identity_chain": [
+   "record port 'star-input-seam-apex' (the only legal free vertex)",
+   "= transaction compiled loads[0].vertex = 200 (the MD01 packet's declared centre)",
+   "= the membrane demo's ONLY free DOF (engine.cpp md_deform moves the centre; increment-5 CPU mirror: centre-6 profile saturates, seam profile balances)",
+   "= the rendered apex located by POST /project (screen px, same VP the mesh pass used)"
+  ],
+  "measured_check": "the A-vs-B /frame diff bbox contains the projected apex pixel; bbox horizontal centre within 12 px of the projected apex sx"
+ },
+ "build_test_reuse_sequence": [
+  "1 BUILD: compile_transaction (s=1.0) -> MD01 upload -> pause -> /membrane_demo state -> board A text (live numbers) -> /frame + /glass",
+  "2 TEST: deform load_N=0.8 -> state -> board B text -> /frame + /glass; /project apex -> pick check",
+  "3 TEST: deform load_N=1.6 -> state -> board C text -> /frame + /glass",
+  "4 REUSE: S3 table lookup (no engine call) -> board D text with table-vs-engine rows -> /glass",
+  "5 FALSIFIER: compile at 0.9 N refused by the record -> board E text -> /glass",
+  "6 clean shutdown (process handle terminate + wait, never by name)"
+ ],
+ "repeatability_law": {
+  "runs": 2,
+  "per_state_frame_identity": "the /frame PNGs of states A, B, C must be byte-identical across the two runs (sha256 equal; the increment-5 byte-identical precedent)",
+  "readout_identity": "the board JSON spec text (the on-screen readout) must be digit-for-digit identical across runs; the measured engine values (apex z, residual, energy) must be digit-for-digit identical (f32-deterministic engine, paused scene)",
+  "glass_dynamic_pixels": "/glass contains the status bar's fps/ms and the timeline clock, which tick - the glass is compared pixel-wise and the changed-pixel count is RECORDED (not required zero); the dynamic set must stay confined to the known clock/fps rows (measured in the probe)",
+  "eta_digits": "the S3 table digits are fixed constants; both runs print them identically"
+ },
+ "tolerances": {
+  "engine_bisection_quantum_wu": 4.7683716e-07,
+  "energy_J": 0.0003,
+  "residual_law_N": 1e-06,
+  "reuse_bound_wu": 1e-06
+ },
+ "pinned_artifacts": {
+  "record": "docs/evidence/mechanism_factory/pieces/assembly.star-k2.json",
+  "s3_table": "docs/evidence/mechanism_factory/s3_star_eta_pi_table_v1.json",
+  "s4_receipt": "docs/evidence/mechanism_factory/s4_composition_receipt_20261018T105819.354812Z.json",
+  "s3_table_eta_at_Pi_0.8": 0.2843804870391736,
+  "s3_table_eta_at_Pi_1.6": 0.17205904840608507,
+  "engine_sha256": "c1c2474c6c8cbc58e73371ad8224882a031675aa3efbc6eba7fafed49fe0aa69"
+ },
+ "out_of_scope": {
+  "human_usability": "the gate column itself says 'human usability remains separately observed' - NOT chased here",
+  "gpu": "no GPU batch, no inference; engine runs are the established one-at-a-time capture pattern",
+  "engine_edits": "NONE; ChimeraEngine/engine/ui.cpp is pre-existing dirt and is not touched or staged"
+ }
+}

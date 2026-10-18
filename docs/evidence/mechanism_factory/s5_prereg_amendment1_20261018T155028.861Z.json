@@ -1,0 +1,46 @@
+{
+ "schema": "chimera-mechanism-factory-s5-prereg-amendment-v1",
+ "amendment_id": "S5-AMENDMENT-1",
+ "utc": "2026-10-18T15:50:28.861155+00:00",
+ "title": "AMENDMENT (step-endorsed): replace the C-state quantum predicate with the force-allowance-derived z-bound",
+ "amends": {
+  "path": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\s5_preregistration_20261018T121300.863Z.json",
+  "frozen_at_utc": "2026-10-18T12:13:00.863+00:00",
+  "superseded_predicate": "C_vs_S3_table_Pi1.6_within_quantum",
+  "superseded_bound_wu": 4.7683716e-07,
+  "superseded_bound_provenance": "engine deform bisection quantum = 4 f32 ULP (engine.cpp md_deform), a CPU-side bracket width",
+  "original_result": "FAIL both runs, measured 7.044060850724954e-07 wu (1.48x the quantum); retained in history, honestly marked SUPERSEDED-BY-AMENDMENT, never deleted"
+ },
+ "amended_predicate": {
+  "name": "C_vs_S3_table_Pi1.6_within_force_allowance_z_bound",
+  "bound_expression": "z_bound = force_allowance_N / dfz_dz",
+  "force_allowance_N": 0.0001,
+  "force_allowance_provenance": "increment-5 gameloop receipt (gameloop_run_receipt_20261017T185057.629963Z.json, tolerances.force_N = 1e-4 N): the preregistered allowance for CPU-mirror vs engine force comparisons, which already accounts for the f32 kernel's characterized force deviation",
+  "dfz_dz_N_per_wu": 7.12241589616116,
+  "dfz_dz_provenance": "chord slope of the seam-apex vertical-force law between the S3 reduced table's two qualified equilibrium cells: dfz_dz = (1.6 - 0.8) N / |z(0.8) - z(1.6)| wu = 0.8 / (|0.2843804870391736 - 0.1720590484060851|) = 7.122416 N/wu (s3_star_eta_pi_table_v1.json nodes; the law's fz(z) is single-valued and monotone over the measured window per S4 seam-agreement, so the chord bounds the local inverse)",
+  "z_bound_wu": 1.4040179829136068e-05,
+  "measured_deviation_wu": 7.044060850724954e-07,
+  "measured_fraction_of_bound": 0.05017073097672991,
+  "result_under_amended_bound": {
+   "run1": {
+    "apex_z_wu": 0.172058344,
+    "z_table_wu": 0.17205904840608507,
+    "deviation_wu": 7.044060850724954e-07,
+    "within_amended_bound": true
+   },
+   "run2": {
+    "apex_z_wu": 0.172058344,
+    "z_table_wu": 0.17205904840608507,
+    "deviation_wu": 7.044060850724954e-07,
+    "within_amended_bound": true
+   }
+  },
+  "amended_predicate_pass": true
+ },
+ "precedents": [
+  "S2 gpu characterization, section 3 'Boundary': worst complete vertex-force deviation 1.62e-05 N from the f32 kernel -- force-accuracy claims below ~1e-5 N need f64; a CPU bisection quantum is the wrong abstraction layer for an f32-kernel landing",
+  "AMENDMENT 1 precedent: position-domain readings must be consistent with the engine's force-domain allowances",
+  "Step review (independent concurrence): docs/evidence/mechanism_factory/reviews/step_review_s5_authoring.md -- 'mis-specified, not a real defect', AMENDMENT ENDORSED"
+ ],
+ "scope": "replaces exactly one predicate; no other preregistered capture state, tolerance or shot is changed"
+}

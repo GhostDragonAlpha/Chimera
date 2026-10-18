@@ -1108,3 +1108,68 @@ s = 1.0 only. No record change; published artifacts left as written.
   as future measurement territory, NOT attempted (beyond S3's
   published domain); s=1.0 star closure at 73% of the 1e-6 bound is
   the packet law's own seam residual.
+
+## S5 visible authoring demonstration (2026-10-18) — gate PASS; §13.1 chain S0–S5 complete
+
+- `S5_visible_authoring_demo.md` +
+  `s5_authoring_demo_receipt_20261018T155028.861Z.json` (supersedes
+  …T134559…, sha pinned in chain, original unchanged) — the existing
+  viewer (GET /glass composited operator view) shows mechanism
+  identity (assembly.star-k2, 601v/600f + law ids), ACTIVE
+  REPRESENTATION switching on screen (DETAILED SOLVE → REDUCED TABLE
+  (S3) with the S4 1e-6 wu bound evaluated live), scale (s = 1.0,
+  record window), and live measurements (apex z / residual / energy /
+  accepted_state_id) — closed with NO engine edits by feeding the
+  engine's own Studio board file with live values. Pinned exe
+  c1c2474c… verified unchanged.
+- Physical/render/pick correspondence PASS: the membrane demo's only
+  free DOF is the MD01 centre = record load-port vertex 200 (seam
+  apex); /project (present-stage mapping (x, z+lift, −y), lift 0.5)
+  places the apex at px (960.0, 426.9) inside the A-vs-B render-diff
+  bbox (canonical strict byte-diff: 8326 px, bbox 857–1062 × 405–520,
+  centre 959.5/462.5 — Qwen independently recomputed, matches). No
+  HTTP mesh-pick endpoint exists for the membrane demo (engine gap
+  named; tick_b2 only) — correspondence shown via the single-free-DOF
+  deform law instead.
+- Repeatable build–test–reuse PASS: two fresh-boot runs; /frame PNGs
+  of A/B/C byte-identical across runs; board readouts digit-for-digit
+  identical; glass dynamic pixels confined to chrome bands. On-screen
+  reuse numbers: F=0.8 N table-vs-engine 1.70e-07 wu; F=1.6 N
+  7.04e-07 wu (inside S4 bound 1e-6); falsifier 0.9 N refused at
+  compile (binding_load_out_of_domain) shown.
+- S5-AMENDMENT-1 (`s5_prereg_amendment1_20261018T155028.861Z.json`,
+  step-endorsed, Qwen-ruled): the frozen predicate
+  C_vs_S3_table_Pi1.6_within_quantum (CPU bisection quantum 4.77e-7
+  wu) was MIS-SPECIFIED — a CPU convergence criterion applied to an
+  f32-kernel landing (category error; S2 §3 f32 boundary precedent,
+  AMENDMENT 1 precedent). Replaced by the force-allowance z-bound
+  z_bound = force_allowance_N / dfz_dz = 1e-4 N / 7.122416 N/wu =
+  1.40402e-05 wu (chord slope of seam-apex fz(z) between the S3
+  table's 0.8/1.6 N cells; fz single-valued + monotone per S4).
+  Measured deviation 7.044e-07 wu = 0.050× the bound, PASS both runs.
+  The original FAIL is RETAINED, marked superseded, never deleted —
+  the numerics check asserts both (historical + amended), PASS 26/26.
+  The amended bound is the reusable law for future f32-kernel landing
+  bounds.
+- Erratum (step-caught, fixed): the original receipt's diff-bbox
+  numbers (1218 px, 862–1052 × 405–456) used an undocumented
+  per-channel threshold >8; canonical strict byte-diff numbers
+  recorded with both thresholds named; functional correspondence
+  unchanged (apex inside both bboxes; |cx − sx| = 0.5 px canonical).
+- Engine API sharp edge RECORDED (engine untouched): POST /studio
+  with omitted "on" key TOGGLES overlay visibility (main.cpp:3229,
+  get_bool default = !visible) — cost two discarded runs, disclosed;
+  harness now always sends explicit "on": true.
+- `reviews/step_review_s5_authoring.md` — step PASS-with-carry-
+  forwards on the original increment (all six requirements verified,
+  amendment endorsed, bbox discrepancy caught); amendment round
+  verified by Qwen directly (arithmetic, receipt diff — physics values
+  untouched, independent bbox recomputation, numerics 26/26, record/
+  solver/main.cpp bytes unchanged, exe sha match).
+- Qwen ruling: PUBLISH. §13.1 S0–S5 chain COMPLETE: mechanism
+  contract → multiscale reference → GPU characterization → reusable
+  reduced response → composition → visible authoring demo. Carry-
+  forwards: no HTTP mesh-pick for membrane demo (engine gap); γ=1.0
+  only; per-piece reduced response (Maya's proposal) is future
+  measurement territory; human usability remains separately observed
+  per the gate column.

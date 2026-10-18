@@ -1,0 +1,106 @@
+{
+ "schema": "chimera-mechanism-factory-s5-shots-v1",
+ "browser_viewport": {
+  "w": 1920,
+  "h": 1009
+ },
+ "note": "each URL was DISPLAYED by the headed browser; /glass is the engine's own composited-operator-view endpoint",
+ "shots": [
+  {
+   "run": 1,
+   "url_path": "/frame",
+   "out": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\s5_authoring_demo\\run1\\a1-frame-build.png",
+   "sha256": "dc4ff232fd65d0ebe90b16cb9c61a021c2fc87d3cc5bcb727f51583d5d7e5238"
+  },
+  {
+   "run": 1,
+   "url_path": "/glass",
+   "out": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\s5_authoring_demo\\run1\\a2-glass-build.png",
+   "sha256": "742762aef1eac96a1eac292259ea5554b7a048c3e72eeb93f32632302140788e"
+  },
+  {
+   "run": 1,
+   "url_path": "/frame",
+   "out": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\s5_authoring_demo\\run1\\b1-frame-test08.png",
+   "sha256": "45b52ee8f9b8b8ccd982e5f1482a422b302ff4807799ccfebd4895fc2bfdc79e"
+  },
+  {
+   "run": 1,
+   "url_path": "/glass",
+   "out": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\s5_authoring_demo\\run1\\b2-glass-test08.png",
+   "sha256": "3a44cc12853499181e7f095d9e7cca6ab819d0203c37f67fb03c6305ffc821ce"
+  },
+  {
+   "run": 1,
+   "url_path": "/frame",
+   "out": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\s5_authoring_demo\\run1\\c1-frame-test16.png",
+   "sha256": "dd79a78de9144e05fbdf2f541a9c649238cde877dc303c000648d6a163500551"
+  },
+  {
+   "run": 1,
+   "url_path": "/glass",
+   "out": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\s5_authoring_demo\\run1\\c2-glass-test16.png",
+   "sha256": "7ecbf00f7229f2c03a47e6ccba052abd8730d61951d0241fe94ce31bffb6a9ec"
+  },
+  {
+   "run": 1,
+   "url_path": "/glass",
+   "out": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\s5_authoring_demo\\run1\\d1-glass-reuse.png",
+   "sha256": "c3e6a6dd0d61aef91e004c07369c570571b33a57060cff290e504fec4801aefe"
+  },
+  {
+   "run": 1,
+   "url_path": "/glass",
+   "out": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\s5_authoring_demo\\run1\\e1-glass-refusal.png",
+   "sha256": "11e56d80588da19a058965c6827e48bd32788632a93adb66c02ac591c20a687c"
+  },
+  {
+   "run": 2,
+   "url_path": "/frame",
+   "out": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\s5_authoring_demo\\run2\\a1-frame-build.png",
+   "sha256": "dc4ff232fd65d0ebe90b16cb9c61a021c2fc87d3cc5bcb727f51583d5d7e5238"
+  },
+  {
+   "run": 2,
+   "url_path": "/glass",
+   "out": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\s5_authoring_demo\\run2\\a2-glass-build.png",
+   "sha256": "c68d092687e900fb047e6556eab009265a4413fa3c196e91e816ee695b422897"
+  },
+  {
+   "run": 2,
+   "url_path": "/frame",
+   "out": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\s5_authoring_demo\\run2\\b1-frame-test08.png",
+   "sha256": "45b52ee8f9b8b8ccd982e5f1482a422b302ff4807799ccfebd4895fc2bfdc79e"
+  },
+  {
+   "run": 2,
+   "url_path": "/glass",
+   "out": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\s5_authoring_demo\\run2\\b2-glass-test08.png",
+   "sha256": "9c467fa938eb3c8c24ea52c22efb886bc859077215fb178661ab8f64969145ba"
+  },
+  {
+   "run": 2,
+   "url_path": "/frame",
+   "out": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\s5_authoring_demo\\run2\\c1-frame-test16.png",
+   "sha256": "dd79a78de9144e05fbdf2f541a9c649238cde877dc303c000648d6a163500551"
+  },
+  {
+   "run": 2,
+   "url_path": "/glass",
+   "out": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\s5_authoring_demo\\run2\\c2-glass-test16.png",
+   "sha256": "80d77e960ff3911d97ecf881d15467e9658c3f5dd68d01654d6e218f12fb119d"
+  },
+  {
+   "run": 2,
+   "url_path": "/glass",
+   "out": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\s5_authoring_demo\\run2\\d1-glass-reuse.png",
+   "sha256": "78852e4636f9f4d663a243f54a120d86870bd7a26eb37ffff58433c88cd0724c"
+  },
+  {
+   "run": 2,
+   "url_path": "/glass",
+   "out": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\s5_authoring_demo\\run2\\e1-glass-refusal.png",
+   "sha256": "51e935dc141743c39201432d89c1c6826897bd0fe52c8b2bef583a2d43611f6e"
+  }
+ ]
+}
