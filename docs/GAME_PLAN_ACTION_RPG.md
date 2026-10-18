@@ -3107,10 +3107,12 @@ hyperelasticity and periodic homogenization; trajectories stop before contact,
 and their pseudo-time is load progression, not physical dynamics. It does not
 supply a contact, damage or 3-D membrane law. Pin v5: earlier releases had failed
 trajectories, missed contact, step-order and periodicity defects corrected later.
-Only documentation was inspected here; the 46.0 GB archive was not downloaded.
-Before acquiring it, establish access to one relevant geometry's numeric subset
-and its usage terms. Reuse the existing material/receipt path, map the energy and
-response conventions, and check our changed behavior independently. Qwen should
+Only documentation and public metadata were inspected here; the 46.0 GB archive
+was not downloaded. The [record metadata](https://zenodo.org/api/records/18172947)
+identifies CC BY 4.0. Preserve attribution and establish access to one relevant
+geometry's numeric subset before acquiring the archive. Reuse the existing
+material/receipt path, map the energy and response conventions, and check our
+changed behavior independently. Qwen should
 activate this only for a concrete player-needed mechanism; current workshop
 controls and known-response reuse remain ahead of a new training campaign.
 
