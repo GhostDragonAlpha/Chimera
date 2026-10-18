@@ -1,0 +1,65 @@
+{
+  "schema": "chimera-workshop-increment-preregistration-v1",
+  "frozen_utc": "2026-10-18 (before any capture run of this increment)",
+  "increment": "workshop increment 1 -- persistence across sessions (save/reuse)",
+  "plan_anchor": "GAME_PLAN_ACTION_RPG.md section 13.1 worker handoff: select the smallest missing part by launch/controls > readable feedback > recovery > save/reuse > blocking defect; reuse the scripted membrane loop's existing reset/save/deform paths",
+  "map_verdict": {
+    "already_usable": [
+      "launch/controls: published engine c1c2474c boots visibly per run; HTTP controls (MD01 upload, ctl-6 deform, reset, save/restore) -- gameloop_run_receipt_20261017T180310.890170Z.json",
+      "build: record-qualified compile -> upload, accepted hash + energy verified -- same receipt; S5 state A",
+      "test: deform at record loads with terminal telemetry in the frozen band -- c1/c2 (c2 under AMENDMENT 1, force units)",
+      "readable feedback: per-frame telemetry + /frame screenshots (c4); live Studio board readout in /glass -- docs/evidence/mechanism_factory/s5_authoring_demo/ (states A-D)",
+      "failure+recovery: 0.9 N named record refusal binding_load_out_of_domain; engine-admitted OOD state; save->restore bit-exact; reset bit-exact -- c3/c5",
+      "reuse representation: S3 table reuse demonstrated on-screen (REDUCED TABLE (S3) - NO solve, diffs <= 1e-6 wu vs engine) -- S5 state D; S4 proved switching + 1.831e-07 wu round trip + out-of-domain refusals CPU-side"
+    ],
+    "missing": [
+      "persistence across sessions: the loop saves/restores only WITHIN one boot; the replay boot re-solves from the initial packet. No evidence that the player's saved terminal state persists to disk and restores bit-exactly into a LATER engine process."
+    ],
+    "blocked": [
+      "human usability: unobserved until somebody plays (plan-stated, deferred)",
+      "gamma != 1.0 reuse: S0 gap 6, refused by the S3 validity query (code 2)",
+      "second assembly / gamma-axis / new catalogs: explicitly out of scope for this increment"
+    ]
+  },
+  "chosen_smallest_part": {
+    "choice": "cross-session persistence of the saved terminal state",
+    "owner": "tools/artificial_proteins/native_binding_gameloop.py (extended in place) + the engine's existing /membrane_demo_save and /membrane_demo_restore controls (no engine edit, exe stays pinned c1c2474c...)",
+    "why_smallest": "launch/controls, readable feedback and recovery are all qualified; within save/reuse the table-reuse representation is ALREADY demonstrated and qualified (S5 state D + S4 switching), so the only undemonstrated link in the player's save/reuse chain is disk persistence into a later session. It is one additive step through existing controls.",
+    "not_chosen": "wiring the S3 table into the loop's replay: bounded follow-up proposal, would duplicate S5-qualified evidence; the detailed re-solve stays the loop's named fallback, consistent with S4's switching surface"
+  },
+  "frozen_predictions": {
+    "boot_a_terminal": {
+      "accepted_state_id": 7177421591213043741,
+      "apex_z_wu": 0.172058344,
+      "load_N": 1.6,
+      "source": "digit-for-digit from BOTH published increment-5 receipts (180310, 185057); the terminal is deterministic (c6)"
+    },
+    "boot_b_persisted_restore": [
+      "disk doc JSON round-trip identity: disk_doc == boot A's doc",
+      "restore accepted: last_control == 'restored'",
+      "accepted_state_id == 7177421591213043741 (bit-exact vs boot A's terminal)",
+      "apex_z bit-equal to boot A's terminal apex",
+      "load_N == 1.6; |energy diff| <= 3e-4 J",
+      "/frame g-persisted-terminal.png vs f-replay-terminal.png: 0 changed px (deterministic state, same boot)"
+    ],
+    "repeatability_two_runs": [
+      "/frame shots a-f byte-identical across run1/run2 (sha256 equal)",
+      "g-persisted-terminal.png byte-identical across runs",
+      "all state ids equal across runs",
+      "/glass h-glass-persisted.png: changed pixels confined to chrome bands (strip/right dock/bottom rows; the reel stamps tick); board text digit-for-digit identical"
+    ]
+  },
+  "laws": {
+    "frozen_criteria": "the six frozen stage-9 criteria are UNCHANGED and still reported verbatim; persistence is an ADDITIVE workshop check appended after c6, included in the exit code",
+    "engine": "pinned chimera_engine.exe sha256 c1c2474c6c8cbc58..., used as-is, no engine edit, no record edit; one engine at a time, clean shutdown by process handle; no GPU batch, no inference",
+    "studio": "every POST /studio sends explicit 'on': true (S5 sharp edge: an omitted 'on' toggles the overlay off)",
+    "failures": "retained: any failing run keeps its output dir + receipt; nothing is deleted or retried into a clean-looking record",
+    "commit": "nothing committed"
+  },
+  "outputs": {
+    "run1": "docs/evidence/mechanism_factory/workshop_increment1_persistence/run1",
+    "run2": "docs/evidence/mechanism_factory/workshop_increment1_persistence/run2",
+    "receipts": "gameloop_run_receipt_<stamp>.json in docs/evidence/mechanism_factory/ (the loop's own writer)",
+    "comparison": "comparison.json written in this directory after both runs"
+  }
+}

@@ -1,0 +1,336 @@
+{
+ "schema": "chimera-mechanism-factory-gameloop-run-v1",
+ "utc": "20261018T184001.942341Z",
+ "source_commit": "e85baca588f5ea0e12897d113a9193881f0856da",
+ "engine_executable": "D:\\Chimera-Maintenance\\PythonChimera\\ChimeraEngine\\engine\\build\\Release\\Release\\chimera_engine.exe",
+ "engine_sha256": "c1c2474c6c8cbc58e73371ad8224882a031675aa3efbc6eba7fafed49fe0aa69",
+ "engine_visible": true,
+ "port": 8841,
+ "frozen_criteria_source": "docs/evidence/mechanism_factory/reviews/step_review_load_domain_study.md (L4)",
+ "objective_load_N": 1.6,
+ "refused_load_N": 0.9,
+ "band_wu": [
+  0.147,
+  0.197
+ ],
+ "tolerances": {
+  "energy_J": 0.0003,
+  "force_N": 0.0001,
+  "residual_law_N": 1e-06,
+  "cpu_cross_check": 1e-07
+ },
+ "prerun_cpu_verification": {
+  "script": "math-tools/checks_tmp/nb_gameloop_prerun_check.py",
+  "result": "D:/Chimera-Maintenance/Runtime/local-ai/math-tools/results/20261017-124034-977dcdc3/result.json",
+  "verdict": "PASS 13/13",
+  "facts": [
+   "seam_vertex = loads[0].vertex = 200, NOT in pins (the record's own load port); demo-hardcoded centre 6 IS pinned",
+   "centre-6 fz profile saturates at 0.9995 N < 1.2 N: the engine's deform law refuses the 1.6 N objective under centre 6 (deform_REFUSED_no_equilibrium)",
+   "seam deform mirror at 1.6 N: z* = 0.172059006989 wu (study 0.17205904840608507, diff 4.1e-8), fz = 1.60000007 N, in band",
+   "0.9 N at the seam balances (z* = 0.2709 wu): engine-admissible, so the 0.9 N refusal must come from the RECORD domain",
+   "mirror validated against the increment-4 engine receipt (centre 6, 0.8 N): |z - (-0.0435769781)| = 5.0e-8 <= engine quantum"
+  ]
+ },
+ "criterion_3_record_refusal": {
+  "refusal": "binding_load_out_of_domain",
+  "detail": "load 0.9 N is not in assembly.star-k2's MEASURED domain [0.0, 0.4, 0.8, 1.2, 1.6, 2.0]; domain drift is refused, not tuned"
+ },
+ "instance": {
+  "instance_id": "gameloop-star-inc5",
+  "record_id": "assembly.star-k2",
+  "transaction_hash": "9eb3e2b202be1b50",
+  "record_valid_loads_N": [
+   0.0,
+   0.4,
+   0.8,
+   1.2,
+   1.6,
+   2.0
+  ],
+  "centre_binding": {
+   "demo_default_centre_index": 6,
+   "driver_centre_index": 200,
+   "justification": {
+    "script": "math-tools/checks_tmp/nb_gameloop_prerun_check.py",
+    "result": "D:/Chimera-Maintenance/Runtime/local-ai/math-tools/results/20261017-124034-977dcdc3/result.json",
+    "verdict": "PASS 13/13",
+    "facts": [
+     "seam_vertex = loads[0].vertex = 200, NOT in pins (the record's own load port); demo-hardcoded centre 6 IS pinned",
+     "centre-6 fz profile saturates at 0.9995 N < 1.2 N: the engine's deform law refuses the 1.6 N objective under centre 6 (deform_REFUSED_no_equilibrium)",
+     "seam deform mirror at 1.6 N: z* = 0.172059006989 wu (study 0.17205904840608507, diff 4.1e-8), fz = 1.60000007 N, in band",
+     "0.9 N at the seam balances (z* = 0.2709 wu): engine-admissible, so the 0.9 N refusal must come from the RECORD domain",
+     "mirror validated against the increment-4 engine receipt (centre 6, 0.8 N): |z - (-0.0435769781)| = 5.0e-8 <= engine quantum"
+    ]
+   },
+   "md01_parity_at_centre6_asserted": true
+  },
+  "accepted_hash_wu": 11407109043414651957,
+  "energy_reference_J": 6.304413835446449,
+  "sequence": [
+   {
+    "step": "startup",
+    "control": "MD01 upload + pause",
+    "screenshot": "a-startup-baseline.png",
+    "screenshot_sha256": "d96e444017a767e99aef14822d61ec160756cc4a985c1a8163c67b65ae4f3c74",
+    "apex_z_wu": 0.300000012,
+    "load_N": 0.0,
+    "centre_force_z_N": 0.682257295,
+    "free_residual_N": 0.682257295,
+    "accepted_state_id": 11407109043414651957,
+    "energy_J": 6.30436897
+   },
+   {
+    "step": "objective_deform",
+    "control": "deform load_N=1.6 (record domain, ctl kind 6)",
+    "screenshot": "b-terminal-objective.png",
+    "screenshot_sha256": "3bd4e15afa9ed0c8ee28372805a96bf2d24c6db22722cbae7a3f64e8c81f216e",
+    "apex_z_wu": 0.172058344,
+    "load_N": 1.6,
+    "centre_force_z_N": 1.60000014,
+    "free_residual_N": 1.3999999981528788e-07,
+    "accepted_state_id": 7177421591213043741,
+    "energy_J": 6.4514966,
+    "in_band": true
+   },
+   {
+    "step": "save",
+    "control": "GET /membrane_demo_save",
+    "state_id": "7177421591213043741",
+    "disk_sha256": "d048765fe23d2aa9350a75fa60dbc1b03c1e83752b1d375c6cf1064f1d61a0fd"
+   },
+   {
+    "step": "failure_0.9N",
+    "control": "deform load_N=0.9 (out of record domain)",
+    "screenshot": "c-out-of-domain-load.png",
+    "screenshot_sha256": "4139f2fcecd4fb4887d80440e45a8e7f466d786e4cb1bb841c4a4eca567d0b93",
+    "apex_z_wu": 0.27094835,
+    "load_N": 0.9,
+    "centre_force_z_N": 0.900000751,
+    "free_residual_N": 7.509999999655292e-07,
+    "accepted_state_id": 1639599702382106458,
+    "energy_J": 6.32740402
+   },
+   {
+    "step": "restore",
+    "control": "POST /membrane_demo_restore",
+    "screenshot": "d-restored-terminal.png",
+    "screenshot_sha256": "3bd4e15afa9ed0c8ee28372805a96bf2d24c6db22722cbae7a3f64e8c81f216e"
+   },
+   {
+    "step": "restart",
+    "control": "reset (ctl kind 0)",
+    "screenshot": "e-reset-baseline.png",
+    "screenshot_sha256": "d96e444017a767e99aef14822d61ec160756cc4a985c1a8163c67b65ae4f3c74",
+    "apex_z_wu": 0.300000012,
+    "load_N": 0.0,
+    "centre_force_z_N": 0.682257295,
+    "free_residual_N": 0.682257295,
+    "accepted_state_id": 11407109043414651957,
+    "energy_J": 6.30436897
+   },
+   {
+    "step": "restore_after_reset",
+    "control": "reset then restore",
+    "state_id": 7177421591213043741
+   },
+   {
+    "step": "replay",
+    "control": "fresh boot + identical MD01 upload + same deform",
+    "screenshot": "f-replay-terminal.png",
+    "screenshot_sha256": "3bd4e15afa9ed0c8ee28372805a96bf2d24c6db22722cbae7a3f64e8c81f216e",
+    "apex_z_wu": 0.172058344,
+    "load_N": 1.6,
+    "centre_force_z_N": 1.60000014,
+    "free_residual_N": 1.3999999981528788e-07,
+    "accepted_state_id": 7177421591213043741,
+    "energy_J": 6.4514966
+   },
+   {
+    "step": "persisted_restore",
+    "control": "fresh boot: POST /membrane_demo_restore (disk doc from terminated boot A)",
+    "screenshot": "g-persisted-terminal.png",
+    "screenshot_sha256": "3bd4e15afa9ed0c8ee28372805a96bf2d24c6db22722cbae7a3f64e8c81f216e",
+    "apex_z_wu": 0.172058344,
+    "load_N": 1.6,
+    "centre_force_z_N": 1.60000014,
+    "free_residual_N": 1.3999999981528788e-07,
+    "accepted_state_id": 7177421591213043741,
+    "energy_J": 6.4514966
+   },
+   {
+    "step": "glass_readout",
+    "control": "Studio board fed with the live persisted values; /glass captured in the browser",
+    "screenshot": "h-glass-persisted.png",
+    "screenshot_sha256": "c1ba44c95d771466375462d6db9c27797871fd51d808bcc8e796d0d509e858a5"
+   }
+  ],
+  "startup": {
+   "apex_z_wu": 0.300000012,
+   "load_N": 0.0,
+   "centre_force_z_N": 0.682257295,
+   "free_residual_N": 0.682257295,
+   "accepted_state_id": 11407109043414651957,
+   "energy_J": 6.30436897
+  },
+  "c1_objective": {
+   "band_wu": [
+    0.147,
+    0.197
+   ],
+   "objective_load_N": 1.6,
+   "engine_last_control": "deform",
+   "apex_z_wu": 0.172058344,
+   "load_N": 1.6,
+   "centre_force_z_N": 1.60000014,
+   "free_residual_N": 1.3999999981528788e-07,
+   "accepted_state_id": 7177421591213043741,
+   "energy_J": 6.4514966,
+   "in_band": true,
+   "pass": true,
+   "pixel_diff_vs_baseline": {
+    "changed_px": 810,
+    "bbox_h_px": 45,
+    "bbox_w_px": 129
+   }
+  },
+  "c2_success": {
+   "free_residual_N": 1.3999999981528788e-07,
+   "residual_law_N": 1e-06,
+   "residual_pass": true,
+   "cpu_resolve": {
+    "z_resolve_wu": 0.1720590069889836,
+    "balance_N": 6.61889567599161e-08,
+    "z_tolerance_note": "f32-exact: trial z cast to float32, the engine's own probe law"
+   },
+   "cpu_position_cross_check_wu": 6.629889836018421e-07,
+   "cross_check_tol_wu": 1e-07,
+   "cross_check_pass": false,
+   "cpu_force_at_engine_z_N": 1.6000044957441966,
+   "cpu_force_cross_check_N": 4.495744196475471e-06,
+   "engine_bisection_quantum_wu": 4.7683716e-07,
+   "apex_in_band": true,
+   "pass": false
+  },
+  "save": {
+   "accepted_state_id": "7177421591213043741",
+   "centre_load_N": 1.6,
+   "energy_J": 6.451496601104736,
+   "cpu_energy_abs_diff_J": 5.42847664499746e-05,
+   "cpu_force_abs_diff_N": 4.495744196475471e-06,
+   "energy_allowance_J": 0.0003,
+   "force_allowance_N": 0.0001,
+   "disk_path": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\workshop_increment1_persistence\\run1\\membrane_demo_save_terminal.json",
+   "disk_sha256": "d048765fe23d2aa9350a75fa60dbc1b03c1e83752b1d375c6cf1064f1d61a0fd"
+  },
+  "c3_failure": {
+   "refused_load_N": 0.9,
+   "record_refusal": {
+    "refusal": "binding_load_out_of_domain",
+    "detail": "load 0.9 N is not in assembly.star-k2's MEASURED domain [0.0, 0.4, 0.8, 1.2, 1.6, 2.0]; domain drift is refused, not tuned"
+   },
+   "engine_outcome": "admitted (no engine domain law; the load domain lives in the qualified record)",
+   "out_of_domain_state": {
+    "apex_z_wu": 0.27094835,
+    "load_N": 0.9,
+    "centre_force_z_N": 0.900000751,
+    "free_residual_N": 7.509999999655292e-07,
+    "accepted_state_id": 1639599702382106458,
+    "energy_J": 6.32740402
+   },
+   "recovery": "save -> restore below (bit-exact return to the terminal state)",
+   "pass": true
+  },
+  "restore": {
+   "restored_state_id": 7177421591213043741,
+   "bit_exact": true,
+   "pixel_diff_vs_terminal": {
+    "changed_px": 0
+   }
+  },
+  "c5_restart": {
+   "reset_state": {
+    "apex_z_wu": 0.300000012,
+    "load_N": 0.0,
+    "centre_force_z_N": 0.682257295,
+    "free_residual_N": 0.682257295,
+    "accepted_state_id": 11407109043414651957,
+    "energy_J": 6.30436897
+   },
+   "accepted_state_id_matches_upload": true,
+   "material_snapshot_matches": true,
+   "pixel_diff_vs_baseline": {
+    "changed_px": 0
+   },
+   "pass": true
+  },
+  "restore_after_reset_state_id": 7177421591213043741,
+  "c6_replay": {
+   "replay_upload_state_id": 11407109043414651957,
+   "replay_deform_state_id": 7177421591213043741,
+   "terminal_state_id_matches_boot_a": true,
+   "apex_z_bit_equal": true,
+   "replay_apex_z_wu": 0.172058344,
+   "screenshot": "f-replay-terminal.png",
+   "screenshot_sha256": "3bd4e15afa9ed0c8ee28372805a96bf2d24c6db22722cbae7a3f64e8c81f216e",
+   "pass": true
+  },
+  "persistence": {
+   "boot_a_engine_terminated": true,
+   "disk_doc": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\workshop_increment1_persistence\\run1\\membrane_demo_save_terminal.json",
+   "disk_sha256": "d048765fe23d2aa9350a75fa60dbc1b03c1e83752b1d375c6cf1064f1d61a0fd",
+   "disk_roundtrip_identical": true,
+   "restore_wall_ms": 14.65759999700822,
+   "restored_state_id": 7177421591213043741,
+   "state_id_bit_exact_vs_boot_a": true,
+   "apex_z_wu": 0.172058344,
+   "apex_z_bit_equal_boot_a": true,
+   "load_N": 1.6,
+   "energy_J": 6.4514966,
+   "pixel_diff_vs_replay_terminal": {
+    "changed_px": 0
+   },
+   "screenshot": "g-persisted-terminal.png",
+   "screenshot_sha256": "3bd4e15afa9ed0c8ee28372805a96bf2d24c6db22722cbae7a3f64e8c81f216e",
+   "additive_note": "workshop increment 1 (save/reuse): NOT one of the six frozen criteria; those are unchanged and still reported verbatim",
+   "pass": true,
+   "glass_screenshot": "h-glass-persisted.png",
+   "glass_sha256": "c1ba44c95d771466375462d6db9c27797871fd51d808bcc8e796d0d509e858a5"
+  },
+  "verdict": "loop completed: c1=PASS, c2=FAIL, c3=PASS, c5=PASS, c6=PASS, persistence(additive workshop check)=PASS"
+ },
+ "screenshots": {
+  "a-startup-baseline.png": {
+   "path": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\workshop_increment1_persistence\\run1\\a-startup-baseline.png",
+   "sha256": "d96e444017a767e99aef14822d61ec160756cc4a985c1a8163c67b65ae4f3c74"
+  },
+  "b-terminal-objective.png": {
+   "path": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\workshop_increment1_persistence\\run1\\b-terminal-objective.png",
+   "sha256": "3bd4e15afa9ed0c8ee28372805a96bf2d24c6db22722cbae7a3f64e8c81f216e"
+  },
+  "c-out-of-domain-load.png": {
+   "path": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\workshop_increment1_persistence\\run1\\c-out-of-domain-load.png",
+   "sha256": "4139f2fcecd4fb4887d80440e45a8e7f466d786e4cb1bb841c4a4eca567d0b93"
+  },
+  "d-restored-terminal.png": {
+   "path": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\workshop_increment1_persistence\\run1\\d-restored-terminal.png",
+   "sha256": "3bd4e15afa9ed0c8ee28372805a96bf2d24c6db22722cbae7a3f64e8c81f216e"
+  },
+  "e-reset-baseline.png": {
+   "path": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\workshop_increment1_persistence\\run1\\e-reset-baseline.png",
+   "sha256": "d96e444017a767e99aef14822d61ec160756cc4a985c1a8163c67b65ae4f3c74"
+  },
+  "f-replay-terminal.png": {
+   "path": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\workshop_increment1_persistence\\run1\\f-replay-terminal.png",
+   "sha256": "3bd4e15afa9ed0c8ee28372805a96bf2d24c6db22722cbae7a3f64e8c81f216e"
+  },
+  "g-persisted-terminal.png": {
+   "path": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\workshop_increment1_persistence\\run1\\g-persisted-terminal.png",
+   "sha256": "3bd4e15afa9ed0c8ee28372805a96bf2d24c6db22722cbae7a3f64e8c81f216e"
+  },
+  "h-glass-persisted.png": {
+   "path": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\workshop_increment1_persistence\\run1\\h-glass-persisted.png",
+   "sha256": "c1ba44c95d771466375462d6db9c27797871fd51d808bcc8e796d0d509e858a5"
+  }
+ },
+ "scope": "the frozen stage 9 game loop end to end on ONE qualified star instance (1.0x): compile 1.6 N -> visible upload -> ctl-6 deform to the objective load -> terminal telemetry + screenshots -> CPU re-solve cross-check -> 0.9 N record refusal + engine-admitted out-of-domain state + restore -> engine reset bit-exactness -> replay re-upload hash match -> workshop-increment-1 persistence: the save doc written to DISK by the terminated boot-A engine restores bit-exactly in the fresh boot-B engine (additive check; the six frozen criteria are unchanged), with a Studio board /glass readout. The demo centre is bound to the record's load-port vertex (seam 200); see centre_binding justification."
+}

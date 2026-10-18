@@ -39,6 +39,7 @@ from __future__ import annotations
 import argparse
 import itertools
 import json
+import os
 import shutil
 import socket
 import struct
@@ -63,6 +64,7 @@ _REPO = _HERE.parent.parent
 EVID_DIR = _REPO / "docs" / "evidence" / "mechanism_factory"
 
 RECEIPT_SCHEMA = "chimera-mechanism-factory-gameloop-run-v1"
+SAVE_FILENAME = "membrane_demo_save_terminal.json"   # disk-persisted save doc
 ENERGY_TOL = 3e-4              # J; the preregistered f32-exact allowance
 FORCE_TOL = 1e-4               # N; increment-4 force-balance allowance
 RESIDUAL_LAW = 1e-6            # N; the packet's frozen acceptance law
@@ -186,6 +188,45 @@ def _diff_stats(a: Path, b: Path) -> dict:
         out["bbox_h_px"] = int(ys.max() - ys.min() + 1)
         out["bbox_w_px"] = int(xs.max() - xs.min() + 1)
     return out
+
+
+# ── workshop increment 1: Studio board plumbing (S5 demo pattern) ────────────
+
+PERSIST_STAGE_ID = "WS1"
+
+
+def _board_write(path: Path, stage: dict) -> None:
+    """Atomic Studio board write; the overlay re-polls on mtime
+    (main.cpp:975-981 -> ui.cpp poll_board)."""
+    doc = {"standing": stage["standing"], "updated": stage["updated"],
+           "stages": [stage["stage"]]}
+    tmp = path.with_suffix(".tmp")
+    tmp.write_text(json.dumps(doc, indent=1), encoding="utf-8")
+    os.replace(tmp, path)
+
+
+def _persistence_stage(heading: str, updated: str, cell: str) -> dict:
+    """One board stage with the same envelope fields the S5 authoring demo
+    fed (S5 state D is the established on-screen readout pattern)."""
+    return {"standing": heading, "updated": updated,
+            "stage": {"id": PERSIST_STAGE_ID,
+                      "name": "Persistence across sessions",
+                      "status": "green",
+                      "law": "restore law: /membrane_demo_restore is "
+                             "bit-exact by the accepted-state-id law "
+                             "(increment-4 membrane save/restore seam)",
+                      "tool": "/membrane_demo_save | /membrane_demo_restore",
+                      "artifact": SAVE_FILENAME,
+                      "falsifier": "any state-id/apex/load drift on "
+                                   "restore; disk round-trip mismatch",
+                      "cell": cell,
+                      "spec_title": "Persistence across sessions",
+                      "spec": "workshop increment 1 (save/reuse): the save "
+                              "doc the TERMINATED boot-A engine wrote to "
+                              "disk is restored in this fresh boot-B "
+                              "engine; verified bit-exactly against boot "
+                              "A's terminal telemetry and /frame pixels",
+                      "row_line": -1, "spec_line": -1}}
 
 
 # ── the loop, one visible engine boot A + replay boot B ──────────────────────
@@ -340,9 +381,19 @@ def gameloop_session(txn: dict, txn_refused: dict | None, output: Path,
                        "cpu_force_abs_diff_N": d_f,
                        "energy_allowance_J": ENERGY_TOL,
                        "force_allowance_N": FORCE_TOL}
+        # workshop increment 1: the player's work product PERSISTS to DISK
+        # here -- the boot-A engine is terminated below, and boot B (a fresh
+        # process) must restore this exact doc bit-exactly (see the
+        # persistence step in the replay boot).
+        save_path = output / SAVE_FILENAME
+        save_path.write_text(json.dumps(doc, indent=1, sort_keys=True) + "\n",
+                             encoding="utf-8")
+        rec["save"]["disk_path"] = str(save_path)
+        rec["save"]["disk_sha256"] = file_hash(save_path)
         rec["sequence"].append({"step": "save", "control":
                                 "GET /membrane_demo_save",
-                                "state_id": doc["accepted_state_id"]})
+                                "state_id": doc["accepted_state_id"],
+                                "disk_sha256": rec["save"]["disk_sha256"]})
 
         # ── criterion 3: the 0.9 N failure path ──────────────────────────
         # (a) the RECORD domain refuses the 0.9 N compile (named refusal,
@@ -442,9 +493,19 @@ def gameloop_session(txn: dict, txn_refused: dict | None, output: Path,
     with socket.socket() as sock:
         require(sock.connect_ex(("127.0.0.1", port)) != 0,
                 "replay_port_occupied")
+    # workshop increment 1: the replay boot carries a Studio board file so
+    # the persistence restore below is browser-visible in /glass (the S5
+    # authoring-demo pattern); every /studio POST sends explicit "on": true
+    # (the S5 sharp edge: an omitted "on" TOGGLES the overlay off).
+    board_path = output / "studio_board_persistence.json"
+    _board_write(board_path, _persistence_stage(
+        "Workshop increment 1 - persistence (boot B)", "workshop inc 1",
+        "fresh boot: uploading the qualified packet, replaying the "
+        "objective deform, then restoring boot A's DISK save doc"))
     proc = None
     try:
-        proc = _boot(executable, native, port)
+        proc = _boot(executable, native, port, board=board_path,
+                     size=(2560, 1440))
         engine = EngineControl(base, timeout=15)
         for _ in range(100):
             require(proc.poll() is None, "replay_engine_exited")
@@ -487,6 +548,110 @@ def gameloop_session(txn: dict, txn_refused: dict | None, output: Path,
                                 " deform",
                                 "screenshot": f.name,
                                 "screenshot_sha256": file_hash(f), **rp_t})
+
+        # ── workshop increment 1: PERSISTENCE ACROSS SESSIONS ────────────
+        # Boot A's engine is DEAD (terminated in the finally above); boot B
+        # is a fresh engine process that has never seen boot A's state.
+        # The disk save doc must round-trip and restore bit-exactly (the
+        # accepted-state-id law), and the restored /frame must be
+        # pixel-identical to the replay terminal. ADDITIVE workshop check:
+        # the six frozen criteria above are untouched.
+        disk_doc = json.loads((output / SAVE_FILENAME)
+                              .read_text(encoding="utf-8"))
+        require(disk_doc == doc, "disk_roundtrip_mismatch")
+        t_persist = time.perf_counter()
+        persisted = engine.request("POST", "/membrane_demo_restore",
+                                   disk_doc)
+        persist_ms = (time.perf_counter() - t_persist) * 1000.0
+        persisted = persisted.get("status", persisted)
+        require(persisted.get("last_control") == "restored",
+                "persist_restore_refused")
+        require(int(persisted["accepted_state_id"])
+                == int(doc["accepted_state_id"]),
+                "persist_state_id_mismatch")
+        require(int(persisted["accepted_state_id"])
+                == rec["c1_objective"]["accepted_state_id"],
+                "persist_not_boot_a_terminal")
+        p_st = engine.membrane.state()
+        p_st = p_st.get("status", p_st)
+        p_t = telemetry(p_st)
+        require(p_t["apex_z_wu"] == rec["c1_objective"]["apex_z_wu"],
+                "persist_apex_moved")
+        require(p_t["load_N"] == float(doc["centre_load_N"]),
+                "persist_load_changed")
+        require(abs(p_t["energy_J"] - float(doc["energy_J"])) <= ENERGY_TOL,
+                "persist_energy_changed")
+        g = shot("g-persisted-terminal.png")
+        g_stats = _diff_stats(f, g)
+        rec["persistence"] = {
+            "boot_a_engine_terminated": True,
+            "disk_doc": str(output / SAVE_FILENAME),
+            "disk_sha256": rec["save"]["disk_sha256"],
+            "disk_roundtrip_identical": True,
+            "restore_wall_ms": persist_ms,
+            "restored_state_id": int(p_st["accepted_state_id"]),
+            "state_id_bit_exact_vs_boot_a": True,
+            "apex_z_wu": p_t["apex_z_wu"],
+            "apex_z_bit_equal_boot_a": True,
+            "load_N": p_t["load_N"],
+            "energy_J": p_t["energy_J"],
+            "pixel_diff_vs_replay_terminal": g_stats,
+            "screenshot": g.name,
+            "screenshot_sha256": file_hash(g),
+            "additive_note": "workshop increment 1 (save/reuse): NOT one "
+                             "of the six frozen criteria; those are "
+                             "unchanged and still reported verbatim",
+            "pass": bool(g_stats["changed_px"] == 0
+                         and p_t["apex_z_wu"]
+                         == rec["c1_objective"]["apex_z_wu"]
+                         and int(p_st["accepted_state_id"])
+                         == int(doc["accepted_state_id"]))}
+        rec["sequence"].append({"step": "persisted_restore", "control":
+                                "fresh boot: POST /membrane_demo_restore"
+                                " (disk doc from terminated boot A)",
+                                "screenshot": g.name,
+                                "screenshot_sha256": file_hash(g), **p_t})
+
+        # ── browser-visible /glass readout (the S5 pattern) ──────────────
+        engine.request("POST", "/studio", {"on": True, "mode": "board"})
+        info = engine.request("GET", "/studio")
+        lh = float(info["lh"])
+        node_h = 92.0 - 30.0 - lh - 12.0
+        engine.request("POST", "/ui_click",
+                       {"x": int(info["w"]) / 2.0, "y": 30.0 + node_h / 2.0})
+        time.sleep(0.8)
+        sel = engine.request("GET", "/studio")
+        require(sel.get("selected") == PERSIST_STAGE_ID,
+                f"stage_not_selected_{sel.get('selected')}")
+        engine.request("POST", "/studio", {"on": True, "left_size": 500.0})
+        time.sleep(0.5)
+        _board_write(board_path, _persistence_stage(
+            "Workshop increment 1 - persistence (boot B)", "workshop inc 1",
+            f"PERSISTED RESTORE (fresh boot): apex z {p_t['apex_z_wu']:.7f}"
+            f" wu, state id {p_st['accepted_state_id']}, load "
+            f"{p_t['load_N']:.1f} N, energy {p_t['energy_J']:.4f} J -- "
+            f"bit-exact vs terminated boot A ({persist_ms:.1f} ms)"))
+        time.sleep(1.1)
+        _board_write(board_path, _persistence_stage(
+            "Workshop increment 1 - persistence (boot B)", "workshop inc 1",
+            f"PERSISTED RESTORE (fresh boot): apex z {p_t['apex_z_wu']:.7f}"
+            f" wu, state id {p_st['accepted_state_id']}, load "
+            f"{p_t['load_N']:.1f} N, energy {p_t['energy_J']:.4f} J -- "
+            f"bit-exact vs terminated boot A ({persist_ms:.1f} ms)"))
+        time.sleep(0.6)          # fresh mtime: the overlay re-polls (S5)
+        h = output / "h-glass-persisted.png"
+        _shots({"dir": output, "spec": {
+            "width": int(info["w"]), "height": int(info["h"]),
+            "shots": [{"url": base + f"/glass?v={next(_seq)}",
+                       "out": str(h), "wait_ms": 900}]}})
+        require(h.is_file(), "glass_not_visible")
+        rec["persistence"]["glass_screenshot"] = h.name
+        rec["persistence"]["glass_sha256"] = file_hash(h)
+        rec["sequence"].append({"step": "glass_readout", "control":
+                                "Studio board fed with the live persisted "
+                                "values; /glass captured in the browser",
+                                "screenshot": h.name,
+                                "screenshot_sha256": file_hash(h)})
     finally:
         if proc is not None and proc.poll() is None:
             proc.terminate()
@@ -500,7 +665,9 @@ def gameloop_session(txn: dict, txn_refused: dict | None, output: Path,
             f"c{i}={'PASS' if rec[k].get('pass') else 'FAIL'}"
             for i, k in ((1, "c1_objective"), (2, "c2_success"),
                          (3, "c3_failure"), (5, "c5_restart"),
-                         (6, "c6_replay"))))
+                         (6, "c6_replay")))
+        + f", persistence({'additive workshop check'})="
+          f"{'PASS' if rec['persistence']['pass'] else 'FAIL'}")
     return rec
 
 
@@ -599,8 +766,13 @@ def main(argv=None) -> int:
                  "+ screenshots -> CPU re-solve cross-check -> 0.9 N record "
                  "refusal + engine-admitted out-of-domain state + restore "
                  "-> engine reset bit-exactness -> replay re-upload hash "
-                 "match. The demo centre is bound to the record's load-port "
-                 "vertex (seam 200); see centre_binding justification.",
+                 "match -> workshop-increment-1 persistence: the save doc "
+                 "written to DISK by the terminated boot-A engine restores "
+                 "bit-exactly in the fresh boot-B engine (additive check; "
+                 "the six frozen criteria are unchanged), with a Studio "
+                 "board /glass readout. The demo centre is bound to the "
+                 "record's load-port vertex (seam 200); see centre_binding "
+                 "justification.",
     }
     path = EVID_DIR / (f"gameloop_run_receipt_{default_stamp()}.json")
     path.write_text(json.dumps(receipt, indent=1, default=str) + "\n",
@@ -632,10 +804,18 @@ def main(argv=None) -> int:
           f"terminal state id "
           f"{rec['c6_replay']['replay_deform_state_id']} matches boot A, "
           f"apex_z bit-equal {rec['c6_replay']['apex_z_bit_equal']}")
+    pers = rec["persistence"]
+    print(f"[{'PASS' if pers['pass'] else 'FAIL'}] persistence (additive"
+          f" workshop check, not a frozen criterion): boot A's disk save "
+          f"doc restored bit-exactly in fresh boot B"
+          f" (state id {pers['restored_state_id']},"
+          f" {pers['restore_wall_ms']:.1f} ms,"
+          f" {pers['pixel_diff_vs_replay_terminal']['changed_px']} px vs"
+          f" replay terminal)")
     print(f"GAMELOOP RUN COMPLETE {path}")
     return 0 if all(rec[k].get("pass") for k in
                     ("c1_objective", "c2_success", "c3_failure",
-                     "c5_restart", "c6_replay")) else 1
+                     "c5_restart", "c6_replay", "persistence")) else 1
 
 
 if __name__ == "__main__":

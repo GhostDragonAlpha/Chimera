@@ -1173,3 +1173,46 @@ s = 1.0 only. No record change; published artifacts left as written.
   only; per-piece reduced response (Maya's proposal) is future
   measurement territory; human usability remains separately observed
   per the gate column.
+
+## Workshop increment 1 — persistence across sessions (2026-10-18) — PASS
+
+- Player-sequence gap closed (plan §13.1 handoff priority: save/reuse):
+  the loop previously saved/restored only WITHIN one engine boot. Now
+  the save doc written to DISK by the TERMINATED boot-A engine
+  restores bit-exactly in a fresh boot-B process — the player's saved
+  construction survives the session.
+- `workshop_increment1_persistence/` — prereg frozen before capture
+  (predictions pinned digit-for-digit from the published increment-5
+  receipts); two full runs, receipts
+  `gameloop_run_receipt_20261018T184001.972454Z.json` +
+  `…T184338.756806Z.json` at source_commit e85baca5. Persistence PASS
+  both runs: state id 7177421591213043741 bit-exact, apex 0.172058344
+  wu bit-equal, load 1.6 N, energy 6.4514966 J, restore 14.7/13.6 ms,
+  0 changed px vs the replay terminal. Repeatability: all seven
+  /frame shots byte-identical across runs; disk save doc byte-identical
+  (sha d048765f… pinned in receipts); /glass differs only in chrome
+  (the measured wall-time characters — disclosed prereg deviation:
+  board text predicted digit-identical, restore ms varies).
+- Visible readout (h-glass-persisted.png, Qwen inspected the pixels):
+  WS1 "Persistence across sessions" chip green; LAW (restore is
+  bit-exact by accepted-state-id), FALSIFIER (state-id/apex/load drift
+  on restore; disk round-trip mismatch), VERDICT (PERSISTED RESTORE
+  (fresh boot) with live values), REFEREE TOOL
+  (/membrane_demo_save | /membrane_demo_restore), ARTIFACT
+  (membrane_demo_save_terminal.json). 187 fps / 5.35 ms frame — no
+  frame-time cost; one-shot restore cost 13.6–14.7 ms.
+- Code: `native_binding_gameloop.py` additive persistence step +
+  exit-code-law extension; `native_binding_visible.py` `_boot` gains
+  backward-compatible board=/size= kwargs (main.cpp:974-981 argv[2]).
+  Six frozen criteria reported verbatim, unchanged (c2's printed FAIL
+  remains the pre-existing superseded position-units reading — under
+  AMENDMENT 1 the force-units cross-check passes: balance 6.6e-8 ≤
+  1e-7 N, force diff 4.5e-6 ≤ 1e-4 N allowance). §11.20.12 failed
+  cross-check and separate state class untouched, not claimed.
+- Qwen review (author-independent, focused): persistence block
+  verified in both receipts; 7/7 cross-run PNG byte-identity
+  recomputed; save-doc sha matches receipt pin; code diff additive;
+  screenshot inspected. PUBLISH.
+- Next player-visible capability (lead's choice, not yet scoped):
+  rescue/transfer step, or loop-side S3-table instant reuse (Maya's
+  bounded follow-up proposal).

@@ -1,0 +1,20 @@
+{
+ "standing": "Workshop increment 1 - persistence (boot B)",
+ "updated": "workshop inc 1",
+ "stages": [
+  {
+   "id": "WS1",
+   "name": "Persistence across sessions",
+   "status": "green",
+   "law": "restore law: /membrane_demo_restore is bit-exact by the accepted-state-id law (increment-4 membrane save/restore seam)",
+   "tool": "/membrane_demo_save | /membrane_demo_restore",
+   "artifact": "membrane_demo_save_terminal.json",
+   "falsifier": "any state-id/apex/load drift on restore; disk round-trip mismatch",
+   "cell": "PERSISTED RESTORE (fresh boot): apex z 0.1720583 wu, state id 7177421591213043741, load 1.6 N, energy 6.4515 J -- bit-exact vs terminated boot A (14.7 ms)",
+   "spec_title": "Persistence across sessions",
+   "spec": "workshop increment 1 (save/reuse): the save doc the TERMINATED boot-A engine wrote to disk is restored in this fresh boot-B engine; verified bit-exactly against boot A's terminal telemetry and /frame pixels",
+   "row_line": -1,
+   "spec_line": -1
+  }
+ ]
+}

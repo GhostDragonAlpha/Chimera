@@ -103,13 +103,20 @@ def _pixel_diff(a: Path, b: Path) -> int:
     return int((np.abs(ia - ib).max(axis=2) > 8).sum())
 
 
-def _boot(exe: Path, native: Path, port: int):
+def _boot(exe: Path, native: Path, port: int, board: Path | None = None,
+          size: tuple[int, int] = (1280, 720)):
     """One VISIBLE private engine boot: no --hidden flag (main.cpp:845-847
     -- --hidden only retires the developer console; the render window is
     the visible surface either way) and no CREATE_NO_WINDOW. Window size
-    argv[3]/argv[4] = 1280x720 (main.cpp:827-836). Returns the proc."""
+    argv[3]/argv[4] = 1280x720 (main.cpp:827-836). Optional Studio board
+    file at argv[2] (main.cpp:974-981: any argv[2] not starting with "--").
+    Returns the proc."""
+    argv = [str(native / exe.name), str(port)]
+    if board is not None:
+        argv.append(str(board))
+    argv += [str(size[0]), str(size[1]), "--no-restore"]
     proc = subprocess.Popen(
-        [str(native / exe.name), str(port), "1280", "720", "--no-restore"],
+        argv,
         cwd=native, stdout=(native / "stdout.log").open("wb"),
         stderr=(native / "stderr.log").open("wb"))
     return proc
