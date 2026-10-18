@@ -1005,3 +1005,51 @@ s = 1.0 only. No record change; published artifacts left as written.
   the fixed check script hash recorded after the fact here:
   s2_gpu_characterization_check.py sha256
   259886e882a4b9d002409ecc4e33234ea13149a7dfe47c72ea7daab814820142.
+
+## S3 reusable reduced response (2026-10-18, CPU-only) — gate PASS
+
+- `S3_reduced_response.md` + `s3_star_eta_pi_table_v1.json` (sha
+  17b0ce54…) + `s3_reduced_response_receipt_20261018T072919.936426Z.json`
+  — the similarity law made reusable: a 1-D η(Π) table (6 nodes Π ∈
+  {0, 0.4, …, 2.0}, digit-for-digit from the s=1.0 rows of
+  load_domain_study_20261017.json) with Fritsch–Carlson monotone cubic
+  Hermite interpolation, scheme preregistered by leave-one-node-out on
+  the node set only (linear rejected: worst LOO 1.676e-03 vs cubic
+  2.569e-04); dependency-free implementation matches scipy PCHIP to
+  1.11e-16. Π=0 tabulated but valid only at s=1.0 (F=0 dilation
+  argument derived, not measured, off s=1.0).
+- Explicit validity query (pure, no solve): refuses scale ∉ [0.75,
+  2.0], F > 2.0 N packet cap (quoted, never widened — gap 2), Π > 2.0,
+  Π ∈ (0, 0.4), γ ≠ 1.0 (gap 6), Π=0 off s=1.0; accepts with named
+  flags (zero_load_measured_cell, scale_interpolated) and named
+  caveats (no self-intersection refusal — gap 3, mitigated by η ≥
+  0.111 over the valid window; quasistatic only — gap 7). No silent
+  extrapolation.
+- Held-out validation (prereg frozen 2026-10-18T07:04:46Z, sha
+  2ebcdae1…, before any held-out solve): 10 fresh never-solved cells
+  (Π strictly between nodes) + 7 retained S1 cells; worst fresh
+  |Δη| = 2.3673e-05 at (1.0, 1.8 N) ≤ T_S3 = 1e-4 (= S1 TOL_ETA, 545×
+  the stagnation floor); decomposition ≥97.5% interpolation / ≤2.5%
+  stagnation (fresh matched-Π spread 1.554e-07; 2×-step re-solve moved
+  η by exactly 0.0). Passivity N/A (static map, stated); monotonicity
+  recorded as a consistency check, not conservation.
+- Measured benefit, same 10-cell workload: 7.4318e+04× (detailed
+  11.393 s incl. geometry build vs 153 µs reduced). Superseded receipt
+  …T072643… retained: first run mis-implemented the ratio formula
+  (printed 75.8×); corrected run changed no physics number.
+- `reviews/step_review_s3_reduced.md` — step PASS, NO retained
+  defects: prereg sha + import graph verified, nodes reproduced
+  digit-for-digit, LOO selection reproduced, FC verified by hand
+  (exact at nodes, strictly decreasing, C1), 4 held-out cells
+  re-solved digit-for-digit, fresh cells confirmed absent from the S1
+  receipt, all 7 refusal + 2 accept probes + edge cases (Π=2.0, F=2.0,
+  negative F, NaN γ) behave, benefit formula matches prereg P9. Three
+  minor observations (mean-vs-median timing wording; solver imports at
+  check-script top level though validity_query is pure; scipy absent
+  in review venv so PCHIP cross-check verified by hand instead).
+- Qwen ruling: PUBLISH. Qwen spot-check: prereg sha 2ebcdae1…, table
+  sha 17b0ce54…, ratio recomputed 74318.2 from receipt fields, record
+  file and solver bytes untouched (S3 is a new CONSUMER of the record,
+  not an amendment — domain claims unchanged). Carry-forwards: γ=1.0
+  only; node refinement requires new measurements; scale-interpolated
+  predictions flagged, not refused.

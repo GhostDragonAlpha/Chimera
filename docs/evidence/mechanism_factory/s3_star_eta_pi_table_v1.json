@@ -1,0 +1,121 @@
+{
+ "schema": "chimera-mechanism-factory-s3-reduced-response-v1",
+ "created_utc": "2026-10-18T07:29:05.275778+00:00",
+ "title": "Reusable reduced response of assembly.star-k2: the 1-D map eta(Pi), Pi = F/(gamma*s*r0), eta = z_apex/(s*r0), r0 = 1.0 wu",
+ "mechanism": "assembly.star-k2 (composed_chain.build_star, n_rim=200 recipe, gamma=1.0 J/wu^2), solver patch-equilibrium-solver-v2, max_steps=60000",
+ "law_pins": {
+  "law_revision": "ee9effcfbddad8d02e03f71d414b27da177f0656de535eaab0d76ae39796f0b7",
+  "solver_sha256_16": "a0f4b9f9b289ef1e",
+  "composed_chain_sha256_16": "c3c0ae0a40b3ba04",
+  "record": "docs/evidence/mechanism_factory/pieces/assembly.star-k2.json",
+  "packet": "tools/mechanism_factory/example_packet.json",
+  "packet_max_force_N": 2.0,
+  "record_valid_scales": [
+   0.75,
+   1.0,
+   1.5,
+   2.0
+  ],
+  "record_valid_loads_N": [
+   0.0,
+   0.4,
+   0.8,
+   1.2,
+   1.6,
+   2.0
+  ],
+  "packet_note": "the packet cap max_force_N=2.0 is the PREREGISTERED law and is never widened by S3; the record's valid_loads_N rows at 2.5/3.0 N are s=1.0-only measurements above the packet cap (S0 gap 2) and are EXCLUDED from this reduced model",
+  "study_source": {
+   "path": "docs/evidence/mechanism_factory/load_domain_study_20261017.json",
+   "sha256": "da16eccc8ca379574047598003ed896423182955c3fba5490171896e4dc7363b"
+  },
+  "s1_receipt": {
+   "path": "docs/evidence/mechanism_factory/s1_multiscale_receipt_20261018T014859.632468Z.json",
+   "sha256": "232fd2187205aa0cbce29da9a4a52988bc2b7672d19533fb9b05f5d868e2b98f"
+  },
+  "preregistration": {
+   "path": "s3_preregistration_20261018T070446.414763Z.json",
+   "sha256": "2ebcdae17638df9dbbf82d259febd1f4157d238efd953d5278a96b908b7c6c90",
+   "frozen_at_utc": "2026-10-18T07:04:46.414763+00:00"
+  }
+ },
+ "nodes": {
+  "Pi": [
+   0.0,
+   0.4,
+   0.8,
+   1.2,
+   1.6,
+   2.0
+  ],
+  "eta": [
+   0.386956838052729,
+   0.3366523561687648,
+   0.2843804870391736,
+   0.2296675745291137,
+   0.17205904840608507,
+   0.11109764355919904
+  ],
+  "source": "s=1.0 reference rows of load_domain_study_20261017.json (loads 0.0..2.0 N), digit-for-digit; all rows in-gate under the packet 1e-6 N law"
+ },
+ "domain": {
+  "Pi_interval": [
+   0.4,
+   2.0
+  ],
+  "zero_load_point": {
+   "Pi": 0.0,
+   "valid_only_at_scale": 1.0,
+   "why": "the zero-load cell was measured at s=1.0 only; the F=0 dilation argument (S0) is derived, not measured, off s=1.0"
+  },
+  "unmeasured_gap": "(0, 0.4): between the zero-load cell and the measured matched-Pi invariance window; refused",
+  "scale_interval": [
+   0.75,
+   2.0
+  ],
+  "measured_scales": [
+   0.75,
+   1.0,
+   1.5,
+   2.0
+  ],
+  "gamma": 1.0,
+  "max_force_N": 2.0
+ },
+ "interpolation": {
+  "scheme": "Fritsch-Carlson monotone cubic Hermite (PCHIP-equivalent, shape-preserving; overshoot impossible on the strictly monotone node table)",
+  "monotone": true,
+  "endpoint_rule": "scipy-compatible one-sided three-point estimate with monotone trimming (sign/3m0 clamp); interior knots use the FC weighted harmonic mean",
+  "cross_check": "agrees with scipy.interpolate.PchipInterpolator to <= 1e-12 over [0.4, 2.0] (recorded in the S3 receipt)"
+ },
+ "validity_rules": [
+  "1. inputs finite, load_N >= 0, scale > 0, gamma > 0 (else code 1 invalid_input)",
+  "2. gamma == 1.0 exactly (else code 2): S0 gap 6 \u2014 the gamma axis is degenerate; the law maps gamma into Pi = F/(gamma*s*r0) but NO cell off gamma = 1.0 was ever measured, so the query refuses and says so",
+  "3. scale in [0.75, 2.0] (else code 3): the record's measured window; scales in {0.75, 1.0, 1.5, 2.0} are measured nodes, others inside the interval are flagged scale_interpolated",
+  "4. load_N <= 2.0 N (else code 4): packet cap max_force_N=2.0, preregistered, never widened (record rows 2.5/3.0 N excluded, S0 gap 2)",
+  "5. Pi = load_N/(gamma*scale*r0): Pi in [0.4, 2.0] valid (code 0); Pi > 2.0 refused (code 5, outside the measured invariance window); 0 < Pi < 0.4 refused (code 6, unmeasured gap); Pi == 0 valid only at scale == 1.0 (code 7 otherwise)",
+  "6. every VALID answer carries named caveats: no self-intersection/ground-crossing refusal exists (S0 gap 3; within the valid window eta >= 0.111 so the apex stays above the rim plane); dynamics not excluded (S0 gap 7): quasistatic only"
+ ],
+ "caveats": [
+  "S0 gap 3: the law has NO self-intersection/self-contact variable; this query cannot refuse a self-intersecting configuration and the record does not name one",
+  "S0 gap 7: quasistatic only; dynamics/transients are not excluded in the record's excluded_phenomena and are out of scope here",
+  "static response map: passivity/energy-balance is NOT APPLICABLE; if dynamics enter later, energy balance/passivity of the relaxation and an inertia characterization would apply"
+ ],
+ "monotonicity": "eta strictly decreasing in Pi over the node table (measured); used as a STATIC CONSISTENCY check, not a conservation law",
+ "validation_summary": {
+  "fresh_cells": 10,
+  "worst_fresh_abs_delta_eta": 2.367301223638041e-05,
+  "worst_fresh_cell": {
+   "scale": 1.0,
+   "F_N": 1.8,
+   "Pi": 1.8
+  },
+  "threshold_T_S3": 0.0001,
+  "stagnation_floor_S1": 1.8305783322514202e-07,
+  "fresh_matched_pi_max_spread": 1.554384522761687e-07,
+  "retained_cells": 7,
+  "benefit_ratio": 74318.20512335624,
+  "reduced_per_query_s": 1.5330299999914132e-05,
+  "detailed_total_s": 11.393203799962066
+ }
+}

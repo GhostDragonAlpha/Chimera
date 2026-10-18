@@ -1,0 +1,490 @@
+{
+ "schema": "chimera-mechanism-factory-s3-reduced-response-receipt-v1",
+ "utc": "2026-10-18T07:29:19.936426+00:00",
+ "title": "S3 reusable reduced response: star eta(Pi) table + validity query, held-out validation, measured benefit",
+ "preregistration": {
+  "path": "s3_preregistration_20261018T070446.414763Z.json",
+  "sha256": "2ebcdae17638df9dbbf82d259febd1f4157d238efd953d5278a96b908b7c6c90",
+  "frozen_at_utc": "2026-10-18T07:04:46.414763+00:00"
+ },
+ "law_pins": {
+  "law_revision": "ee9effcfbddad8d02e03f71d414b27da177f0656de535eaab0d76ae39796f0b7",
+  "solver_sha256_16": "a0f4b9f9b289ef1e",
+  "composed_chain_sha256_16": "c3c0ae0a40b3ba04",
+  "record": "docs/evidence/mechanism_factory/pieces/assembly.star-k2.json",
+  "packet": "tools/mechanism_factory/example_packet.json",
+  "packet_max_force_N": 2.0,
+  "record_valid_scales": [
+   0.75,
+   1.0,
+   1.5,
+   2.0
+  ],
+  "record_valid_loads_N": [
+   0.0,
+   0.4,
+   0.8,
+   1.2,
+   1.6,
+   2.0
+  ],
+  "packet_note": "the packet cap max_force_N=2.0 is the PREREGISTERED law and is never widened by S3; the record's valid_loads_N rows at 2.5/3.0 N are s=1.0-only measurements above the packet cap (S0 gap 2) and are EXCLUDED from this reduced model",
+  "study_source": {
+   "path": "docs/evidence/mechanism_factory/load_domain_study_20261017.json",
+   "sha256": "da16eccc8ca379574047598003ed896423182955c3fba5490171896e4dc7363b"
+  },
+  "s1_receipt": {
+   "path": "docs/evidence/mechanism_factory/s1_multiscale_receipt_20261018T014859.632468Z.json",
+   "sha256": "232fd2187205aa0cbce29da9a4a52988bc2b7672d19533fb9b05f5d868e2b98f"
+  },
+  "preregistration": {
+   "path": "s3_preregistration_20261018T070446.414763Z.json",
+   "sha256": "2ebcdae17638df9dbbf82d259febd1f4157d238efd953d5278a96b908b7c6c90",
+   "frozen_at_utc": "2026-10-18T07:04:46.414763+00:00"
+  }
+ },
+ "tabulation_file": {
+  "path": "s3_star_eta_pi_table_v1.json",
+  "sha256": "17b0ce5472ffd6d98e85c2b8a4e2e4b35d6cf85dafc14d43a25f52b1d0c16ee2"
+ },
+ "interpolation_cross_check_max_abs_diff": 1.1102230246251565e-16,
+ "probes": [
+  {
+   "scale": 3.0,
+   "load_N": 0.8,
+   "gamma": 1.0,
+   "valid": false,
+   "code": 3,
+   "reason": "scale 3.0 outside the record's measured window [0.75, 2.0]",
+   "Pi": 0.26666666666666666,
+   "flags": []
+  },
+  {
+   "scale": 0.5,
+   "load_N": 0.8,
+   "gamma": 1.0,
+   "valid": false,
+   "code": 3,
+   "reason": "scale 0.5 outside the record's measured window [0.75, 2.0]",
+   "Pi": 1.6,
+   "flags": []
+  },
+  {
+   "scale": 1.0,
+   "load_N": 2.5,
+   "gamma": 1.0,
+   "valid": false,
+   "code": 4,
+   "reason": "load 2.5 N above the packet cap max_force_N = 2.0 N (preregistered law, never widened; record rows 2.5/3.0 N are s=1.0-only and above the cap, S0 gap 2)",
+   "Pi": 2.5,
+   "flags": []
+  },
+  {
+   "scale": 0.75,
+   "load_N": 1.8,
+   "gamma": 1.0,
+   "valid": false,
+   "code": 5,
+   "reason": "Pi = 2.4 outside the tabulated/measured invariance window [0.4, 2.0] (no silent extrapolation)",
+   "Pi": 2.4,
+   "flags": []
+  },
+  {
+   "scale": 1.0,
+   "load_N": 0.8,
+   "gamma": 1.2,
+   "valid": false,
+   "code": 2,
+   "reason": "gamma != 1.0 refused (S0 gap 6: the gamma axis is degenerate; the law maps gamma into Pi but no cell off gamma=1.0 was ever measured)",
+   "Pi": 0.6666666666666667,
+   "flags": []
+  },
+  {
+   "scale": 1.0,
+   "load_N": 0.2,
+   "gamma": 1.0,
+   "valid": false,
+   "code": 6,
+   "reason": "Pi = 0.2 in the unmeasured gap (0, 0.4): between the zero-load cell (s=1.0 only) and the measured invariance window",
+   "Pi": 0.2,
+   "flags": []
+  },
+  {
+   "scale": 0.75,
+   "load_N": 0.0,
+   "gamma": 1.0,
+   "valid": false,
+   "code": 7,
+   "reason": "Pi = 0 measured at scale 1.0 only; scale 0.75 is an unmeasured extrapolation of the zero-load cell",
+   "Pi": 0.0,
+   "flags": []
+  },
+  {
+   "scale": 1.0,
+   "load_N": 0.0,
+   "gamma": 1.0,
+   "valid": true,
+   "code": 0,
+   "reason": "valid",
+   "Pi": 0.0,
+   "flags": [
+    "zero_load_measured_cell",
+    "no self-intersection/ground-crossing refusal exists (S0 gap 3); within the valid window eta >= 0.111 (apex above the rim plane)",
+    "dynamics not excluded (S0 gap 7): quasistatic prediction only"
+   ]
+  },
+  {
+   "scale": 1.1,
+   "load_N": 0.8,
+   "gamma": 1.0,
+   "valid": true,
+   "code": 0,
+   "reason": "valid",
+   "Pi": 0.7272727272727273,
+   "flags": [
+    "scale_interpolated",
+    "no self-intersection/ground-crossing refusal exists (S0 gap 3); within the valid window eta >= 0.111 (apex above the rim plane)",
+    "dynamics not excluded (S0 gap 7): quasistatic prediction only"
+   ]
+  }
+ ],
+ "fresh_held_out": [
+  {
+   "status": "stagnated",
+   "free_residual_N": 6.570693903418245e-07,
+   "apex_z_wu": 0.23309445349916702,
+   "eta": 0.310792604665556,
+   "Pi": 0.6,
+   "solve_wall_s": 0.20023329998366535,
+   "build_wall_s": 0.002276100014569238,
+   "n_accepted": 716,
+   "scale": 0.75,
+   "F_N": 0.45,
+   "validity_flags": [
+    "no self-intersection/ground-crossing refusal exists (S0 gap 3); within the valid window eta >= 0.111 (apex above the rim plane)",
+    "dynamics not excluded (S0 gap 7): quasistatic prediction only"
+   ],
+   "eta_predicted": 0.3107908258510437,
+   "delta_eta": -1.7788145123542876e-06,
+   "in_gate": true,
+   "u_bound_eta": 8.760925731358485e-07
+  },
+  {
+   "status": "stagnated",
+   "free_residual_N": 8.760925196416025e-07,
+   "apex_z_wu": 0.3107926046655559,
+   "eta": 0.3107926046655559,
+   "Pi": 0.6,
+   "solve_wall_s": 0.19668900000397116,
+   "build_wall_s": 0.0028962999931536615,
+   "n_accepted": 716,
+   "scale": 1.0,
+   "F_N": 0.6,
+   "validity_flags": [
+    "no self-intersection/ground-crossing refusal exists (S0 gap 3); within the valid window eta >= 0.111 (apex above the rim plane)",
+    "dynamics not excluded (S0 gap 7): quasistatic prediction only"
+   ],
+   "eta_predicted": 0.3107908258510437,
+   "delta_eta": -1.7788145122432653e-06,
+   "in_gate": true,
+   "u_bound_eta": 8.76092572321685e-07
+  },
+  {
+   "status": "stationary",
+   "free_residual_N": 9.037215420448774e-14,
+   "apex_z_wu": 0.4661887353314778,
+   "eta": 0.3107924902209852,
+   "Pi": 0.6,
+   "solve_wall_s": 0.2028613000002224,
+   "build_wall_s": 0.0018516999843996018,
+   "n_accepted": 717,
+   "scale": 1.5,
+   "F_N": 0.9,
+   "validity_flags": [
+    "no self-intersection/ground-crossing refusal exists (S0 gap 3); within the valid window eta >= 0.111 (apex above the rim plane)",
+    "dynamics not excluded (S0 gap 7): quasistatic prediction only"
+   ],
+   "eta_predicted": 0.3107908258510437,
+   "delta_eta": -1.6643699415341828e-06,
+   "in_gate": true,
+   "u_bound_eta": 1.129281853214555e-13
+  },
+  {
+   "status": "stagnated",
+   "free_residual_N": 4.6631535666197266e-07,
+   "apex_z_wu": 0.19301837310379572,
+   "eta": 0.25735783080506097,
+   "Pi": 1.0,
+   "solve_wall_s": 0.7158827999955975,
+   "build_wall_s": 0.0020268000080250204,
+   "n_accepted": 2728,
+   "scale": 0.75,
+   "F_N": 0.75,
+   "validity_flags": [
+    "no self-intersection/ground-crossing refusal exists (S0 gap 3); within the valid window eta >= 0.111 (apex above the rim plane)",
+    "dynamics not excluded (S0 gap 7): quasistatic prediction only"
+   ],
+   "eta_predicted": 0.25735638738204253,
+   "delta_eta": -1.4434230184434682e-06,
+   "in_gate": true,
+   "u_bound_eta": 1.3539851421162652e-06
+  },
+  {
+   "status": "stagnated",
+   "free_residual_N": 5.150317705648888e-07,
+   "apex_z_wu": 0.2573576753666087,
+   "eta": 0.2573576753666087,
+   "Pi": 1.0,
+   "solve_wall_s": 0.7055020999978296,
+   "build_wall_s": 0.0022071000130381435,
+   "n_accepted": 2729,
+   "scale": 1.0,
+   "F_N": 1.0,
+   "validity_flags": [
+    "no self-intersection/ground-crossing refusal exists (S0 gap 3); within the valid window eta >= 0.111 (apex above the rim plane)",
+    "dynamics not excluded (S0 gap 7): quasistatic prediction only"
+   ],
+   "eta_predicted": 0.25735638738204253,
+   "delta_eta": -1.2879845661672995e-06,
+   "in_gate": true,
+   "u_bound_eta": 1.2472631037985238e-06
+  },
+  {
+   "status": "stagnated",
+   "free_residual_N": 9.326307133239453e-07,
+   "apex_z_wu": 0.38603674620759143,
+   "eta": 0.25735783080506097,
+   "Pi": 1.0,
+   "solve_wall_s": 0.7125625000044238,
+   "build_wall_s": 0.0019114000024273992,
+   "n_accepted": 2728,
+   "scale": 1.5,
+   "F_N": 1.5,
+   "validity_flags": [
+    "no self-intersection/ground-crossing refusal exists (S0 gap 3); within the valid window eta >= 0.111 (apex above the rim plane)",
+    "dynamics not excluded (S0 gap 7): quasistatic prediction only"
+   ],
+   "eta_predicted": 0.25735638738204253,
+   "delta_eta": -1.4434230184434682e-06,
+   "in_gate": true,
+   "u_bound_eta": 1.3539851421162652e-06
+  },
+  {
+   "status": "stagnated",
+   "free_residual_N": 3.292083656791789e-07,
+   "apex_z_wu": 0.15093998013803223,
+   "eta": 0.20125330685070963,
+   "Pi": 1.4000000000000001,
+   "solve_wall_s": 1.6965081000234932,
+   "build_wall_s": 0.002332899981411174,
+   "n_accepted": 6299,
+   "scale": 0.75,
+   "F_N": 1.05,
+   "validity_flags": [
+    "no self-intersection/ground-crossing refusal exists (S0 gap 3); within the valid window eta >= 0.111 (apex above the rim plane)",
+    "dynamics not excluded (S0 gap 7): quasistatic prediction only"
+   ],
+   "eta_predicted": 0.20125258202260612,
+   "delta_eta": -7.248281035099335e-07,
+   "in_gate": true,
+   "u_bound_eta": 7.733681079239811e-07
+  },
+  {
+   "status": "stagnated",
+   "free_residual_N": 4.389444876462534e-07,
+   "apex_z_wu": 0.20125330685070977,
+   "eta": 0.20125330685070977,
+   "Pi": 1.4,
+   "solve_wall_s": 1.657042700011516,
+   "build_wall_s": 0.0024557999859098345,
+   "n_accepted": 6299,
+   "scale": 1.0,
+   "F_N": 1.4,
+   "validity_flags": [
+    "no self-intersection/ground-crossing refusal exists (S0 gap 3); within the valid window eta >= 0.111 (apex above the rim plane)",
+    "dynamics not excluded (S0 gap 7): quasistatic prediction only"
+   ],
+   "eta_predicted": 0.20125258202260612,
+   "delta_eta": -7.248281036487114e-07,
+   "in_gate": true,
+   "u_bound_eta": 8.984781860732483e-07
+  },
+  {
+   "status": "stagnated",
+   "free_residual_N": 1.9376107962543188e-07,
+   "apex_z_wu": 0.10652029091666078,
+   "eta": 0.1420270545555477,
+   "Pi": 1.8,
+   "solve_wall_s": 2.6461638000037055,
+   "build_wall_s": 0.001911799976369366,
+   "n_accepted": 10065,
+   "scale": 0.75,
+   "F_N": 1.35,
+   "validity_flags": [
+    "no self-intersection/ground-crossing refusal exists (S0 gap 3); within the valid window eta >= 0.111 (apex above the rim plane)",
+    "dynamics not excluded (S0 gap 7): quasistatic prediction only"
+   ],
+   "eta_predicted": 0.14200338154331152,
+   "delta_eta": -2.367301223618612e-05,
+   "in_gate": true,
+   "u_bound_eta": 5.927717265189851e-07
+  },
+  {
+   "status": "stagnated",
+   "free_residual_N": 2.583481073514804e-07,
+   "apex_z_wu": 0.1420270545555479,
+   "eta": 0.1420270545555479,
+   "Pi": 1.8,
+   "solve_wall_s": 2.6380323999910615,
+   "build_wall_s": 0.0018558999872766435,
+   "n_accepted": 10065,
+   "scale": 1.0,
+   "F_N": 1.8,
+   "validity_flags": [
+    "no self-intersection/ground-crossing refusal exists (S0 gap 3); within the valid window eta >= 0.111 (apex above the rim plane)",
+    "dynamics not excluded (S0 gap 7): quasistatic prediction only"
+   ],
+   "eta_predicted": 0.14200338154331152,
+   "delta_eta": -2.367301223638041e-05,
+   "in_gate": true,
+   "u_bound_eta": 5.92771727703223e-07
+  }
+ ],
+ "worst_fresh": {
+  "scale": 1.0,
+  "F_N": 1.8,
+  "Pi": 1.8,
+  "abs_delta_eta": 2.367301223638041e-05
+ },
+ "noise_decomposition": {
+  "matched_pi_spreads": [
+   {
+    "Pi": 0.6,
+    "n_scales": 3,
+    "spread_eta": 1.1444457082010473e-07
+   },
+   {
+    "Pi": 1.0,
+    "n_scales": 3,
+    "spread_eta": 1.554384522761687e-07
+   },
+   {
+    "Pi": 1.4,
+    "n_scales": 2,
+    "spread_eta": 1.3877787807814457e-16
+   },
+   {
+    "Pi": 1.8,
+    "n_scales": 2,
+    "spread_eta": 1.942890293094024e-16
+   }
+  ],
+  "max_spread_eta": 1.554384522761687e-07,
+  "S1_floor_eta": 1.8305783322514202e-07,
+  "worst_cell_u_bound_eta": 5.92771727703223e-07,
+  "interp_share_lower_bound": 2.3080240508677186e-05,
+  "max_steps_120000_diagnostic": {
+   "scale": 1.0,
+   "F_N": 1.8,
+   "max_steps": 120000,
+   "status": "stagnated",
+   "free_residual_N": 2.583481073514804e-07,
+   "apex_z_wu": 0.1420270545555479,
+   "eta": 0.1420270545555479,
+   "delta_eta_vs_60k": 0.0
+  }
+ },
+ "retained_cell_validation": [
+  {
+   "scale": 0.75,
+   "F_N": 0.4,
+   "regime": "unmatched_fixed_F",
+   "Pi": 0.5333333333333333,
+   "eta_predicted": 0.3194652734650173,
+   "eta_measured_S1": 0.3194707550931804,
+   "delta_eta": -5.481628163106489e-06
+  },
+  {
+   "scale": 0.75,
+   "F_N": 0.8,
+   "regime": "unmatched_fixed_F",
+   "Pi": 1.0666666666666667,
+   "eta_predicted": 0.2482066442959141,
+   "eta_measured_S1": 0.24820469579084695,
+   "delta_eta": 1.948505067156381e-06
+  },
+  {
+   "scale": 1.5,
+   "F_N": 0.8,
+   "regime": "unmatched_fixed_F",
+   "Pi": 0.5333333333333333,
+   "eta_predicted": 0.3194652734650173,
+   "eta_measured_S1": 0.31947088199650153,
+   "delta_eta": -5.60853148423579e-06
+  },
+  {
+   "scale": 1.5,
+   "F_N": 1.6,
+   "regime": "unmatched_fixed_F",
+   "Pi": 1.0666666666666667,
+   "eta_predicted": 0.2482066442959141,
+   "eta_measured_S1": 0.24820469579084695,
+   "delta_eta": 1.948505067156381e-06
+  },
+  {
+   "scale": 1.5,
+   "F_N": 2.0,
+   "regime": "unmatched_fixed_F",
+   "Pi": 1.3333333333333333,
+   "eta_predicted": 0.2108054210273396,
+   "eta_measured_S1": 0.2108085949803938,
+   "delta_eta": -3.173953054214085e-06
+  },
+  {
+   "scale": 2.0,
+   "F_N": 1.2,
+   "regime": "unmatched_fixed_F",
+   "Pi": 0.6,
+   "eta_predicted": 0.3107908258510437,
+   "eta_measured_S1": 0.31079249022098515,
+   "delta_eta": -1.6643699414786717e-06
+  },
+  {
+   "scale": 2.0,
+   "F_N": 2.0,
+   "regime": "unmatched_fixed_F",
+   "Pi": 1.0,
+   "eta_predicted": 0.25735638738204253,
+   "eta_measured_S1": 0.25735774578951537,
+   "delta_eta": -1.3584074728401063e-06
+  }
+ ],
+ "monotonicity_consistency": "PASS (fresh measured eta strictly between bracketing nodes at every held-out Pi; static consistency check, NOT conservation; passivity N/A for a static map, S0 gap 7)",
+ "benefit": {
+  "reduced_per_query_s": 1.5330299999914132e-05,
+  "reduced_workload_s": 0.00015330299999914132,
+  "reduced_repeats": 1000,
+  "detailed_total_s": 11.393203799962066,
+  "detailed_includes": "build_star geometry build + solve_equilibrium to convergence (max_steps=60000, stagnation exit)",
+  "ratio": 74318.20512335624,
+  "per_cell_walls_s": [
+   0.20250939999823458,
+   0.19958529999712482,
+   0.204712999984622,
+   0.7179096000036225,
+   0.7077092000108678,
+   0.7144739000068512,
+   1.6988410000049043,
+   1.6594984999974258,
+   2.648075599980075,
+   2.639888299978338
+  ]
+ },
+ "thresholds": {
+  "T_S3": 0.0001,
+  "gate_residual_N": 1e-06,
+  "S1_TOL_ETA": 0.0001
+ },
+ "verdict": "PASS",
+ "reproduce": "math_check.py s3_reduced_response_check.py (after s3_preregister_check.py) with the math-tools venv; script paths D:/Chimera-Maintenance/Runtime/local-ai/math-tools/checks_tmp/s3_*.py"
+}

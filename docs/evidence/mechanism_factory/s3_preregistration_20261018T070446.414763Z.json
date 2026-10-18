@@ -1,0 +1,263 @@
+{
+ "schema": "chimera-mechanism-factory-s3-preregistration-v1",
+ "frozen_at_utc": "2026-10-18T07:04:46.414763+00:00",
+ "title": "S3 reusable reduced response (star eta(Pi) map): preregistration, frozen before any held-out solve",
+ "mechanism": "assembly.star-k2 (composed_chain.build_star, n_rim=200 recipe, gamma=1.0 J/wu^2), solver patch-equilibrium-solver-v2",
+ "law_pins": {
+  "law_revision": "ee9effcfbddad8d02e03f71d414b27da177f0656de535eaab0d76ae39796f0b7",
+  "solver": "patch_equilibrium.py::solve_equilibrium (pin a0f4b9f9b289ef1e\u2026)",
+  "record": "docs/evidence/mechanism_factory/pieces/assembly.star-k2.json",
+  "packet": "tools/mechanism_factory/example_packet.json (max_force_N=2.0, preregistered, never widened)",
+  "study_source": {
+   "path": "docs/evidence/mechanism_factory/load_domain_study_20261017.json",
+   "sha256": "da16eccc8ca379574047598003ed896423182955c3fba5490171896e4dc7363b"
+  },
+  "s1_receipt": {
+   "path": "docs/evidence/mechanism_factory/s1_multiscale_receipt_20261018T014859.632468Z.json",
+   "sha256": "232fd2187205aa0cbce29da9a4a52988bc2b7672d19533fb9b05f5d868e2b98f"
+  }
+ },
+ "P1_node_set": {
+  "Pi": [
+   0.0,
+   0.4,
+   0.8,
+   1.2,
+   1.6,
+   2.0
+  ],
+  "eta": [
+   0.386956838052729,
+   0.3366523561687648,
+   0.2843804870391736,
+   0.2296675745291137,
+   0.17205904840608507,
+   0.11109764355919904
+  ],
+  "source": "s=1.0 reference rows of the load-domain study (loads 0.0..2.0 N), all in-gate; matched-Pi S1 cells at other scales are NOT nodes (used as retained cross-checks)"
+ },
+ "P2_scheme": {
+  "selected": "Fritsch-Carlson monotone cubic Hermite (PCHIP-equivalent, shape-preserving; no overshoot possible on the strictly monotone table)",
+  "rejected": "linear interpolation (LOO worst 1.676e-03 > 16x TOL_ETA) and non-monotone splines (overshoot risk, excluded a priori)",
+  "selection_rule": "worst interior-node leave-one-node-out error, node set only",
+  "loo": {
+   "Pi_0.4": {
+    "linear": 0.0009836936228135307,
+    "monotone_cubic": 4.904431553404143e-05
+   },
+   "Pi_0.8": {
+    "linear": 0.001220521690234344,
+    "monotone_cubic": 0.00021292916892307057
+   },
+   "Pi_1.2": {
+    "linear": 0.0014478068064843475,
+    "monotone_cubic": 0.00024818082105459993
+   },
+   "Pi_1.6": {
+    "linear": 0.001676439361928711,
+    "monotone_cubic": 0.0002568854704039225
+   }
+  },
+  "loo_worst_linear": 0.001676439361928711,
+  "loo_worst_monotone_cubic": 0.0002568854704039225
+ },
+ "P3_metric": "max over fresh held-out cells of |eta_pred(Pi) - eta_meas(s,F)|",
+ "P4_threshold": {
+  "T_S3": 0.0001,
+  "justification": "= S1 TOL_ETA; >= 545x the measured stagnation floor 1.831e-07 (never below the noise floor); conservative double-gap LOO stress 2.569e-04 does not apply to the single-gap held-out design (expected order <= 1e-5)"
+ },
+ "P5_held_out": {
+  "fresh_cells": [
+   [
+    0.75,
+    0.45
+   ],
+   [
+    1.0,
+    0.6
+   ],
+   [
+    1.5,
+    0.9
+   ],
+   [
+    0.75,
+    0.75
+   ],
+   [
+    1.0,
+    1.0
+   ],
+   [
+    1.5,
+    1.5
+   ],
+   [
+    0.75,
+    1.05
+   ],
+   [
+    1.0,
+    1.4
+   ],
+   [
+    0.75,
+    1.35
+   ],
+   [
+    1.0,
+    1.8
+   ]
+  ],
+  "fresh_Pi": [
+   0.6,
+   1.0,
+   1.4,
+   1.8
+  ],
+  "cap_truncated_never_solved": [
+   [
+    1.5,
+    2.1
+   ],
+   [
+    2.0,
+    2.8
+   ],
+   [
+    1.5,
+    2.7
+   ],
+   [
+    2.0,
+    3.6
+   ]
+  ],
+  "retained_cells_free_validation": [
+   [
+    0.75,
+    0.4
+   ],
+   [
+    0.75,
+    0.8
+   ],
+   [
+    1.5,
+    0.8
+   ],
+   [
+    1.5,
+    1.6
+   ],
+   [
+    1.5,
+    2.0
+   ],
+   [
+    2.0,
+    1.2
+   ],
+   [
+    2.0,
+    2.0
+   ]
+  ]
+ },
+ "P6_solver": {
+  "max_steps": 60000,
+  "gamma": 1.0,
+  "gate_residual_N": 1e-06,
+  "named_states": [
+   "stationary",
+   "stagnated",
+   "step_limit",
+   "no_descent_step",
+   "invalid_surface"
+  ]
+ },
+ "P7_noise_decomposition": {
+  "empirical": "matched-Pi spread among fresh cells at the same Pi (2-solve solver noise), compared to the S1 floor 1.831e-07",
+  "bound": "per-cell u = res_held/s + res_node/1.0 (P = 1/gamma_max = 1 wu/N)",
+  "diagnostic": "re-solve worst fresh cell with max_steps=120000; report |deta| sensitivity (not gated)"
+ },
+ "P8_probes": {
+  "must_refuse": [
+   {
+    "scale": 3.0,
+    "load_N": 0.8,
+    "gamma": 1.0,
+    "reason": "scale outside [0.75, 2.0]"
+   },
+   {
+    "scale": 0.5,
+    "load_N": 0.8,
+    "gamma": 1.0,
+    "reason": "scale below the measured window"
+   },
+   {
+    "scale": 1.0,
+    "load_N": 2.5,
+    "gamma": 1.0,
+    "reason": "F above packet cap max_force_N=2.0 (S0 gap 2 conflict noted, not resolved)"
+   },
+   {
+    "scale": 0.75,
+    "load_N": 1.8,
+    "gamma": 1.0,
+    "reason": "Pi=2.4 outside tabulated window [0.4, 2.0]"
+   },
+   {
+    "scale": 1.0,
+    "load_N": 0.8,
+    "gamma": 1.2,
+    "reason": "gamma != 1.0 (S0 gap 6: gamma axis degenerate)"
+   },
+   {
+    "scale": 1.0,
+    "load_N": 0.2,
+    "gamma": 1.0,
+    "reason": "Pi=0.2 in the unmeasured gap (0, 0.4)"
+   },
+   {
+    "scale": 0.75,
+    "load_N": 0.0,
+    "gamma": 1.0,
+    "reason": "Pi=0 measured at s=1.0 only"
+   }
+  ],
+  "must_accept": [
+   {
+    "scale": 1.0,
+    "load_N": 0.0,
+    "gamma": 1.0,
+    "flag": "zero-load cell"
+   },
+   {
+    "scale": 1.1,
+    "load_N": 0.8,
+    "gamma": 1.0,
+    "flag": "scale_interpolated"
+   }
+  ],
+  "caveats_on_valid": [
+   "no self-intersection/ground-crossing refusal exists (S0 gap 3); within the valid window eta >= 0.111 so the apex stays above the rim plane",
+   "dynamics not excluded (S0 gap 7): quasistatic only"
+  ]
+ },
+ "P9_benefit": {
+  "detailed": "build_star + solve_equilibrium to convergence (wall clock incl. geometry build)",
+  "reduced": "validity query + table interpolation, >=1000 repeats, median per query",
+  "ratio": "total detailed wall / (median reduced x n_cells); measured, no minimum gate"
+ },
+ "P10_failed_S3": [
+  "(a) any fresh held-out |deta| > 1e-4",
+  "(b) any fresh solve out of the 1e-6 N gate/unnamed state",
+  "(c) any refusal probe accepted or accept probe refused",
+  "(d) tabulation not reproducing pinned source cells",
+  "(e) monotonicity consistency check violated",
+  "(f) timing evidence missing"
+ ],
+ "passivity_note": "static response map: no dynamics, so passivity/energy balance is NOT APPLICABLE (S0 gap 7); if dynamics enter later, energy-balance/passivity of the relaxation and an inertia characterization would apply; the eta(Pi) monotonicity check is a STATIC CONSISTENCY check, not conservation.",
+ "no_solve_declaration": "this preregistration script imports NO solver and runs NO solve; all numbers come from published cells"
+}
