@@ -25,15 +25,35 @@ simulation from one trained table. SEALED and its genre library supply concrete
 worlds and interactions that exercise this foundation. The rescue slice remains
 a bounded game demonstration; it does not define the limit of the matter engine.
 
-**Reading route for the worker:** start with §11.22 for the peer-agent development
-method and evidence checkpoints, §11.23 for nested/repeating geometry families,
-then §11.21 for database-grounded
-structure-to-response training, then §11.20 for the artificial-protein
-making-to-game workflow, §11.19 for creative recursive research, and §11.18 for
-qualification. Use §11.20.11 and §13.1 for the next implementation assignment;
-§11.20.9 retains the original increment contract,
-§11.16 for the multiscale component architecture, §11.17 for membrane learning
-with Noether, and §3 for existing owners.
+**Production measuring stick, clarified by the operator on 2026-10-16:** deliver
+more useful, independently checked physical behavior and meaningful player choices
+within measured frame-time and memory budgets. Reduce the work required per
+simulated second by reusing qualified matter responses, while preserving the
+behavior that makes construction and play meaningful. Arithmetic count alone is
+not performance; include memory traffic, synchronization, contact, state transfer,
+and rendering. Compare alternatives on the same workload and hardware. This is a
+continuous design criterion, not a claim that one scalar score measures physics
+or fun. Apply §11.24 to simulation and §12.1 to game development at every milestone.
+
+**Playable-first direction, clarified by the operator on 2026-10-18:** make a
+valuable game in which players build, test, repair and reuse matter mechanisms.
+Every agent must understand why its assignment matters to that goal. Research
+removes a specific obstacle or explores a named possibility for the game; more
+experiments, smaller residuals and longer reports are not themselves product
+progress. Lead every handoff and report with the effect on the game, the remaining
+obstacle and the decision enabled. Put detailed measurements in linked evidence.
+Preserve independent physical checks and explain which behavior they protect.
+Creative freedom includes proposing a better route to the goal.
+
+**Reading route for the worker:** start with §5.1's matter workshop and §13.1's
+current assignment, then §11.22's purpose-bearing peer workflow. Apply §11.24 and
+§12.1 to physical cost and player value. Consult §3 and §5.1 before creating tools;
+§11.20.12 records newer implementation evidence beyond the original AP01/AP02
+sequence. Use §11.23 for nested/repeating geometry, §11.21 for database sources,
+§11.20 for artificial proteins, §11.19 for bounded creative research and §11.18
+for qualification when the chosen increment needs them. §§11.16–11.17 retain
+multiscale architecture and optional Noether fitting. These are available methods,
+not a mandatory tour through every research section before improving the game.
 **Building-block direction, 2026-10-14:** artificial proteins are the reusable
 matter mechanisms described in §11.20: generated physical arrangements whose
 functions are discovered and independently qualified, composed through their ports,
@@ -398,6 +418,90 @@ before loading**. Afterward, let them point to what actually moved first. Succes
 is transferable understanding: they widen a support or reroute a pull on a new
 object without being told which recipe to use. Faster menu use is a separate
 usability result, not proof that the matter system is understandable.
+
+### 5.1 Matter workshop: the next playable increment
+
+**Purpose:** let a player discover that changing an arrangement changes what it
+can do, then reuse that knowledge and construction. This is the immediate small
+step toward the matter-simulator game and the “Bring Them Home” rescue slice.
+The richer workshop gestures above remain a design library; implement the useful
+subset supported by current physics first.
+
+#### Reuse what is already built
+
+This audit records code and retained evidence inspected on 2026-10-18, not fresh
+runtime qualification or proof that an unfamiliar player can complete the loop.
+
+| Existing owner | Reuse in the workshop | Remaining connection or limit |
+|---|---|---|
+| [Construction packet](../tools/construction_packet/) and [cradle recipe](../tools/construction_packet/cradle_recipe.py) | Existing place/connect/load/release/patch/save/restore transactions and small rigid assembly kit | Present understandable player actions, objective and recovery. Preserve part caps/contact limits; connector extension is not membrane strain. |
+| [Bridge control](../tools/construction_packet/test_b5_bridge.py) | Second arrangement using the same part generator and connector | Test solutions under the selected challenge. Its historical contact model does not establish realistic off-center load sharing. |
+| Native B2 routes, Studio inspector, reel, A/B selector and recorder | One physical state, selection, observation and comparison | Connect existing controls and feedback; implement only missing interactions through their current owners. |
+| [Recipe comparisons](../tools/recipe_experiments/README.md) | Baseline restore, soft/stiff comparisons, input identities and receipts | Bounded equilibrium fixture, not a general transient runner; do not create another comparison service. |
+| [Artificial proteins](../tools/artificial_proteins/README.md) and [mechanism factory](../tools/mechanism_factory/README.md) | Research pieces, port composition, detailed references, bounded tables/fits and GPU batches | Reuse supported behavior within current evidence; arbitrary edited meshes and universal material laws are separate claims. |
+| [Native deformation](../tools/artificial_proteins/native_binding_deform.py) and [game-loop driver](../tools/artificial_proteins/native_binding_gameloop.py) | Visible membrane deformation, membrane-state save/restore, objective, failure/recovery, reset and replay | Latest inspected loop receipt fails an independent cross-check (§11.20.12). Resolve it before physics admission; scripted operation is not human playability. |
+
+B2 construction and the membrane demo have distinct state owners. Their save
+documents/admission rules are not interchangeable. Reuse each existing interface;
+add a narrow adapter only for a demonstrated gap. Do not replace the native
+renderer, create another solver/trainer, or repeat completed construction/AP01/AP02
+work to assemble the workshop.
+
+#### One challenge, a small kit, several constructions
+
+Start with **“keep the salvage load above the marked hazard area.”** Reuse the
+cradle/support fixture and a small kit within current admission limits. The marked
+region defines a visible goal, not an invisible supporting force. A known feasible
+construction is a recovery/example aid, not the only accepted answer. Demonstrate
+two structurally different arrangements against the same objective before claiming
+multiple solutions. The existing cradle and bridge are candidates to adapt, not
+already proven answers to this new challenge.
+
+Implement one connected sequence:
+
+1. **Understand and build.** Show load, target, parts and usable attachments in one
+   scene. Let the player place, rotate, stack, attach and revise through existing
+   transactions. Distinguish a valid preview from an unsupported operation without
+   making the player read a scientific receipt.
+2. **Test and understand.** Apply the declared load and show actual supported
+   movement, deformation or loss of support. Highlight the relevant part/interface
+   with one actionable explanation. Detailed reactions stay in the inspector.
+   Never invent stress, tearing or fracture feedback for an unsupported law.
+3. **Fail and recover.** Expose clear success/failure, reset/restore and a cheap
+   retry. Rejected edits preserve accepted state. The player should know what to
+   try next without an agent explaining terminal logs.
+4. **Keep and reuse the invention.** Save its recipe through existing owners and
+   place a fresh instance in a changed support/clearance layout. Initially this
+   can expand into the same bounded parts/connections; it needs no new composite
+   solver. Preserve internal geometry, ports, inventory and applicable evidence.
+   A saved label cannot bypass qualification or duplicate live state.
+5. **Transfer the lesson.** Vary one supported constraint while retaining the
+   objective. Observe whether the player can adapt the construction, explain a
+   failure and wants to try another solution.
+
+This is a proposed challenge, not a claim that its controls or solutions already
+work. The membrane loop can supply compliant behavior after its checks pass;
+selecting a load alone does not fulfill the building-and-reuse objective. Keep
+rigid construction interaction work moving within its qualified scope.
+
+#### Deliver and observe
+
+Deliver one launchable native scene with the small kit, objective, readable
+feedback, two demonstrated solutions, recovery and saved-recipe transfer. It must
+be operable without terminal commands or an LLM advancing it. Record a repeatable
+walkthrough, relevant physical checks and measured frame-time/memory behavior.
+Fresh human observation separately records control confusion, time to useful
+action, recovery, transfer and willingness to replay; screenshots cannot prove
+those outcomes.
+
+Fix the largest obstacle to that sequence. Picking, camera framing, feedback or
+reset can be more valuable than another reduction or component. Use existing
+comparison/GPU tools when a missing or expensive response blocks a selected action;
+compare the simplest adequate reference, table or learned candidate on that
+workload, keep independent checks, then bring the result back into the scene.
+Stop a research branch when its decision is answered. Interesting unrelated
+findings belong in §11.19's bounded exploration, not an unannounced replacement
+for the workshop milestone.
 
 ## 6. The first vertical slice: “Bring Them Home”
 
@@ -2128,7 +2232,7 @@ a named unsupported result. Never conceal the failure with clipping or attractiv
 ### 11.18 Procedure-driven mechanism factory: the worker follows evidence
 
 **Operator direction, 2026-10-14; peer workflow clarified 2026-10-15:** develop
-with the retained local Qwen/Maya models, the optional DeepSeek peer in §11.22,
+with the retained local Qwen/Maya models, the peer workflow in §11.22,
 and the installed GPU experiment/training system. Full GLM is retired on
 this machine. Progress must depend on executable procedures and measured physics,
 not on a language model improvising a correct mathematical explanation. The agent
@@ -2277,7 +2381,12 @@ whose reusable mechanisms and research methods improve through repeated discover
 experiment and qualification. Agents have creative freedom to invent structures,
 ask unexpected questions, challenge assumptions and propose new research directions.
 The current game slice, task list and component catalog are starting points, not
-permanent boundaries of discovery. A claim of being the world's first requires
+permanent boundaries of discovery. Carry §11.22's goal and purpose through this
+loop: name the possible player capability or development obstacle even when the
+answer is unknown. Preserve explicitly allocated exploration, but do not let an
+unassigned numerical curiosity displace the current playable deliverable. Report
+discoveries as implications and next decisions for the game, with mathematics
+in the evidence. A claim of being the world's first requires
 separate historical evidence; it is not an engineering acceptance criterion.
 
 #### Two connected loops: discover freely, qualify explicitly
@@ -2622,10 +2731,10 @@ with explicit law dependencies, not automatic consequences of this first piece.
 
 #### 11.20.8 Bounded execution and durable knowledge on this computer
 
-Use the existing local agent service under §11.22: Qwen coordinates, Maya
-contributes implementation and visual reasoning, and DeepSeek is an optional
-mathematics/physics peer. Agents plan and interpret reports; native numerical
-tools execute the experiments.
+Use the existing local agent service under §11.22: Qwen owns the playable
+increment and integrates, Maya implements substantial changes, and Step reviews
+consequential changes. All three may contribute design and physics reasoning.
+Agents plan and interpret reports; native numerical tools execute the experiments.
 Prepare the whole finite batch before reserving the GPU: candidate recipes, case
 splits, seeds, references, commands, trial/resource limits and cleanup policy.
 Release the local model once through the existing handoff; run numerical cases,
@@ -2781,15 +2890,47 @@ request failure. That report supplements the executable numerical evidence; it
 does not substitute for independent engine-release/controller admission. This
 plan update preserves all existing S-gate, GPU, native and rendered-state gaps.
 
-**Next engineering assignment:** repair and qualify render-state correspondence
-before live construction admission, and replace the bolted far carrier with a
-second qualified compliant piece. Preserve the native state/port ownership and
+**Next direction as of the AP02 receipt:** repair and qualify render-state
+correspondence before live construction admission, and replace the bolted far
+carrier with a second qualified compliant piece. Read §11.20.12 and §13.1 before
+dispatch: audit later implementation rather than rebuilding from this historical
+next-step description. Preserve the native state/port ownership and
 verify coupled forces, moments, energy and reconstruction in that new arrangement.
 Do not grow a library of finished objects to substitute for these seams. The
 §11.21 database adapter can use AP01/AP02 as clearly labeled synthetic records
 for provenance and reproducibility testing; they establish no real tissue or
 construction-material measurements. GPU multiport characterization, runtime
 save/pick/inspector integration, dynamics and gameplay admission remain open.
+
+#### 11.20.12 Workshop integration audit, 2026-10-18
+
+Newer code includes detailed patch/reference and receipt adapters, bounded fitting,
+piece records and composition under `tools/mechanism_factory/`. Native drivers under
+`tools/artificial_proteins/` extend the earlier snapshots with visible deformation,
+membrane-demo save/restore and a scripted objective/recovery/replay loop. Inspect
+those paths and current identities before calling AP01/AP02-era omissions missing.
+
+The inspected [game-loop receipt](evidence/mechanism_factory/gameloop_run_receipt_20261017T185057.629963Z.json)
+covers a single composed star instance on its pinned 2026-10-17 binary. Objective,
+failure/recovery, reset and replay predicates pass, but `c2_success.pass` is false:
+the CPU position cross-check is about 6.63e-7 world units against its frozen 1e-7
+limit. This is a specific qualification blocker, not a fresh pass or evidence of
+general gameplay readiness. Preserve the failure and diagnose it against the
+independent reference; do not relax the frozen check to declare this run
+successful. A justified replacement numerical contract requires separate review,
+versioning and new evidence.
+
+Record-level refusal does not make the raw demo endpoint enforce the domain:
+the receipt explicitly exercises an engine-admitted out-of-domain load.
+Player-facing use must go through the validated admission path and retain recovery.
+That demonstration is not a general material failure law.
+
+**Game implication:** useful components and an automated native loop exist.
+Connect verified behavior to player-controlled construction, understandable
+consequences and reuse (§5.1). Check current source/receipt freshness and fix
+relevant missing seams. Do not restart the research chain, infer usability from
+a scripted run, or assume general membrane/B2 composition from separate state
+classes. This audit changes no gate status.
 
 ### 11.21 Database-grounded matter: structure snapshots become reusable responses
 
@@ -2942,7 +3083,7 @@ cannot establish permission or evidence for every downstream use.
    training never changes a live world law silently during a tick.
 
 The agent follows this procedure and supplies compact packets. Numerical solvers,
-GPU kernels and qualified response artifacts do the repeated mathematics. DeepSeek
+GPU kernels and qualified response artifacts do the repeated mathematics. Peer
 consultation may suggest a missing assumption or experiment; its prose is neither
 a training label nor an independent physical verdict. No database import removes
 the need to implement and qualify a law that the runtime does not yet support.
@@ -3019,131 +3160,147 @@ This is a plan amendment and worker handoff, not an implemented database pipelin
 or a newly closed release gate. No new large dataset, solver or training service
 is installed by this section.
 
-### 11.22 Peer-agent development: creative discovery, executable evidence
+### 11.22 Peer-agent development: deliver the game, preserve the science
 
-**Operator direction, 2026-10-15:** Qwen Flash Next coordinates a group of peers.
-Maya and DeepSeek may propose designs, disagree, discover unexpected functions
-and help develop the game. Qwen mainly delegates and integrates, and may also
-implement. The coordinator chooses consultations according to the work; DeepSeek
-is available for occasional advanced mathematics, physics and spatial reasoning.
-There is no mandatory DeepSeek sign-off on every increment. A named scientific
-check remains mandatory when its applicable contract requires it, regardless of
-which model does the work.
+**Operator direction, 2026-10-18:** organize retained models around accepted
+playable progress. The operator reports Step reliable after its settings tweak;
+it is a reviewer here, not an uninstalled research candidate. Qwen, Maya and Step
+are peers with useful specialties. DeepSeek remains retired. Prover/OpenMath
+have shown no extra project value to the operator and are not required stages.
+Adding more models is not a prerequisite for this milestone.
 
-#### 11.22.1 Roles and discussion
+#### 11.22.1 Roles, purpose and discussion
 
-| Participant | Useful contribution | Responsibility at handoff |
+| Participant | Default contribution | Useful handoff |
 |---|---|---|
-| Qwen Flash Next | Coordinate work, design experiments, implement when useful, reconcile findings | Select one bounded next question, preserve source ownership and integrate only supported claims |
-| Maya | Implementation, image interpretation, geometry and game/physics discussion | Return changed artifacts or observations, assumptions, checks and unresolved questions |
-| DeepSeek Flash | Optional mathematical derivation, physical assumptions, coupled mechanisms and difficult cross-checks | Explain the reasoning and propose a discriminating check; identify uncertainty and counterexamples |
-| Native solvers, GPU experiments and independent verifier | Execute physical models, characterize responses and evaluate frozen acceptance criteria | Produce reproducible measurements, failures, input identities and scoped verdicts |
+| Qwen Flash Next | Own the playable experience, select the next valuable increment, implement small changes, coordinate and integrate | A working improvement or concrete blocker/decision, explained in terms of the game |
+| Maya | Implement substantial matter, interaction, construction and rendering integrations | A demonstrable change, existing owners, scoped checks and remaining player-facing gaps |
+| Step | Independently challenge consequential physics, composition, persistence and performance changes | Reproducible defects, assumptions, missing checks or exploits; distinguish blockers from optional polish |
+| Optional fast worker, such as Tiel | Batch suitable routine UI wiring, adapters or editor chores | Accepted work with less total waiting/rework than the current owner, including reload costs |
+| Native/reference/GPU tools and independent verification | Compute and test the physical claims behind the chosen behavior | Reproducible evidence within a declared regime; model agreement is not verification |
 
-Use `chimera-deepseek` for a difficult mathematical/physical question or assigned
-coding problem when the reasoning justifies its long prefill, generation and
-switching cost. This is the single DeepSeek agent for questions, review and coding.
-A review-only assignment stays read-only; a coding assignment may edit its owned
-files and run checks. It uses the installed provider without additional weights.
-The active profiles are copied into `D:/Chimera-Maintenance/.zcode/agents` for
-the containing workspace, with matching definitions in the repository workspace.
+These are defaults, not intellectual restrictions. Any peer can propose a design,
+implement an owned change or challenge reasoning. Qwen integrates from evidence
+and the game goal; it cannot vote a failed physical check into success. One agent
+owns an increment. Consult another to resolve a concrete uncertainty rather than
+stage a compulsory all-model debate over every small change.
 
-These are strengths, not exclusive intellectual territories. Any peer can propose
-an alternative mechanism, question the goal of an experiment, or challenge another
-peer's result. Coordination does not make Qwen's interpretation true, and agreement
-among three models is not physical evidence. Preserve unresolved disagreements
-until a derivation, source measurement or experiment distinguishes them.
+**Every assignment carries its reason.** Give a child enough of the whole project
+to prioritize correctly without sending the whole conversation. Start each task
+with this compact purpose block:
 
-Use Z Code's existing native Agent, SendMessage and TaskOutput path. Resume the
-same child for follow-up where supported; pass its identity and artifact references
-through compression rather than replacing its work with a fresh, uninformed child.
-On this computer, run one foreground expert at a time and broker discussion through
-the coordinator. This gives peers freedom to discuss without requiring simultaneous
-model residency or concurrent writes to a shared source scope.
+- **Main goal:** a playable matter-building game with reusable, physically
+  meaningful constructions.
+- **Milestone and player benefit:** the specific action or experience being built.
+- **Why this task now:** the obstacle, dependency or bounded discovery opportunity;
+  what would remain impossible, unreliable or wasteful without it.
+- **Decision and deliverable:** what the result lets us keep, change, reject or
+  implement, with a demonstrable acceptance condition.
+- **Reuse, scope and stopping point:** existing code/evidence owners, assigned
+  files, necessary independent checks, time/resource budget and when to return.
 
-A useful consultation packet contains the question, relevant geometry/diagram,
-equations with units and conventions, exact source/receipt identities, the competing
-hypotheses, and the requested deliverable. Supply relevant excerpts and evidence
-links rather than a whole conversation. DeepSeek's installed path is text-only;
-Maya can inspect images and supply explicit coordinates or observations for a
-mathematical discussion. Distinguish observed image content from inferred geometry.
+The first four items can be four sentences; link technical detail. Every child
+delegation, follow-up, review request, compression summary and resumed task inherits
+the main goal and milestone, plus its own immediate purpose. Preserve this block
+with task identity, decisions and evidence references. “Improve the residual” or
+“try more geometries” alone is an incomplete assignment. Agents may question
+usefulness and propose a better route rather than optimize the wrong quantity.
+
+Use Z Code's existing Agent, SendMessage and TaskOutput path and installed project
+profiles, including `chimera-step37` for assigned review. Verify actual routing at
+dispatch; a profile name alone does not establish provisioning. Resume the same
+child where supported. Broker discussion through one foreground expert at a time,
+with exclusive source ownership. Batch coherent assignments to reduce reloads.
+Optional workers earn their place through accepted throughput including rework;
+do not add a new model dependency merely to fill a role.
 
 #### 11.22.2 One connected development loop
 
-Apply this loop to the existing artificial-protein factory, not a second framework:
+1. **Select a playable improvement.** Name the player action and its largest
+   obstacle. Inspect §5.1's tools and current receipts. Prefer connecting supported
+   behavior to constructing a parallel system.
+2. **Give one owner purpose and scope.** Small control/feedback/recovery changes
+   can go directly to implementation; substantial work goes to the appropriate
+   peer with exact dependencies and owned files.
+3. **Investigate the uncertainty that matters.** If physics blocks the action,
+   state the decision the experiment will settle. Freeze the relevant prediction,
+   independent reference/falsifier and acceptance limits; reuse §11.18. Use
+   database grounding or geometry exploration where needed. Ordinary UI work does
+   not require another material qualification program.
+4. **Implement and exercise the connected result.** Reuse native state/render
+   owners, recipes, inspector, restore and comparison paths. For needed
+   characterization, prepare one finite GPU batch, checkpoint and release the
+   reservation. Compare analytic/table/learned candidates only where accuracy or
+   total cost changes the selected player capability.
+5. **Review consequences.** Retain independent references and applicable gates for
+   new laws, reductions, coupled exchanges and scientific claims. Ask Step for
+   focused review of consequential changes. Use proportionate functional checks
+   for routine UI work; repeat broad suites or multi-model review only for a
+   relevant change, failure or unresolved concern.
+6. **Accept through the scene.** Demonstrate the action, visible consequence,
+   failure/recovery and relevant save/reuse. Check comparable frame-time/memory
+   behavior. Record actual human observations separately; a bot walkthrough does
+   not prove comprehension or enjoyment.
+7. **Decide and move forward.** Keep, revise, reject or defer. Return to the
+   workshop after the decision rather than extending calculations indefinitely.
+   Keep unexpected discoveries in existing evidence/backlog and allocate bounded
+   §11.19 exploration when worthwhile.
 
-1. **Choose a useful function and an open question.** Start from a construction or
-   player possibility, an unexplained residual, or a peer's discovery. Inspect
-   existing recipes, assembly inspector, laws and current AP01/AP02 evidence before
-   adding anything. The next increment still follows §11.20.11 and §13.1.
-2. **Ground the candidate.** Retrieve a pinned database snapshot or explicitly
-   synthetic record through §11.21. Describe reusable geometry, asymmetric membrane
-   layers, material/state and typed ports. Declare units, missing knowledge and
-   the physical regime; resemblance to a natural structure supplies a hypothesis.
-3. **Freeze the question before tuning.** Record the prediction, independent
-   reference, falsifier, split, error/resource budget and supported domain. Invite
-   peer criticism when it can expose a real ambiguity; consult DeepSeek when a
-   difficult derivation, scaling argument or coupled load path warrants the cost.
-4. **Let numerical tools do the repeated mathematics.** Prepare a finite batch of
-   candidate states, loads and histories. Use the existing GPU reservation once,
-   run detailed experiments and optional calibration/fitting, checkpoint results,
-   then release the reservation. Preserve failed and interrupted trials. Small
-   checks may coexist with a loaded model only inside their measured GPU budget.
-5. **Qualify the reusable response independently.** Compare the simplest adequate
-   analytic/table/learned representation against independent references and held-out
-   cases. Verify force/moment exchange, work/energy, constraints, stability and cost
-   within the claimed regime. A learned response cannot validate itself, and a
-   simulator-generated dataset alone does not establish real-material accuracy.
-6. **Compose and observe.** Admit a function card with its envelope and named
-   refusal or qualified fallback. Solve connected port compatibility and exchanges
-   in the native owner, then verify renderer/inspector correspondence to accepted
-   physical state. Test a new arrangement before calling it a transferable piece.
-7. **Feed discovery back into research.** Record the result, uncertainty, failed
-   domains and next discriminating experiment in the existing evidence index.
-   Unexpected useful behavior may seed another artificial protein, a larger
-   assembly or a game mechanic. Explore it freely while preserving the original
-   frozen test and keeping new claims separate from already qualified scope.
+Track elapsed time to an **accepted playable improvement**, including model
+loading, inference, experiments, waiting, review and correction. Pair it with
+player comprehension, useful construction choices, defects and frame-time/memory
+cost. Reuse §12.1's feature/evidence record instead of creating a productivity
+database. Tokens per second, experiment counts and tiny residuals are supporting
+measurements, not substitutes for product value.
 
-The durable product is a reusable physical function and its evidence, not a chat
-consensus or a larger object catalog. Characterize pieces, interfaces and their
-assemblies so the same mechanism can become a limb, support, tool or building
-component where its declared scale and regime permit. Agents invent and organize;
-the solver and trained representations carry the repeated computational burden.
+#### 11.22.3 Reports and research stop rules
 
-#### 11.22.3 Checkpoints, recovery and actual installation scope
+Every agent, including researchers and reviewers, reports in goal order:
 
-At each increment, keep a compact continuation record: task/child identity, base
-revision, owned files, input hashes, completed cases, receipt paths, outstanding
-checks and next command. Recover from compression or a reload using these artifacts;
-an empty response or model request failure is an interrupted task, not a verdict.
-Do not restart unchanged models between ordinary requests. Compression, explicit
-GPU reservations, actual model switches and fault recovery retain their existing
-safe release boundaries. Bound caches and verify reclamation at the declared
-process/pool lifetime; a prose workflow does not guarantee absence of memory leaks.
+1. **Game impact:** what the player can now do, what became reliable/faster, or
+   which obstacle was resolved. Say when nothing playable changed yet.
+2. **Evidence and limits:** the minimum evidence supporting that statement, with
+   links to numerical detail and retained failures/unknowns.
+3. **Decision:** adopt, revise, stop, defer or request one discriminating check,
+   explained in terms of the current milestone.
+4. **Next useful action:** the smallest step toward the playable result, its owner
+   and any actual blocker.
 
-The installed peer setup uses 262,144-token configured context and a matching
-262,144-token output ceiling (operator update, 2026-10-15), with thinking enabled
-and each model's existing quantization. Input, thinking and answer share that
-context window: Z Code budgets the remaining space, and Strata/Maya use their
-built-in `fit_max_tokens` option to fit output to the fully tokenized prompt,
-including tools and images. The ceiling does not promise 262K output after a
-populated prompt. Context compression inherits the active conversation model
-and reasoning settings, including each subagent's own model; there is no fixed
-Maya override. Compression uses the same 262,144-token local output ceiling,
-fitted to the remaining window, with the separate 20K summary cap removed for
-these local providers. Preserve the assignment, child identity, decisions,
-unresolved questions and source/receipt paths in the handoff; larger artifacts
-remain available for retrieval. The ceiling permits completion and does not
-require a full-window summary. Keep native tuning specific to its runtime. DeepSeek uses the H: weights and is a costly
-optional consultation: the verified tiny Qwen-to-DeepSeek-to-Qwen round trip took
-about 14.6 minutes including prefill and switching. Prefer focused packets and
-retain Maya/Qwen for ordinary work. A short successful handoff proves wiring;
-it does not qualify a fully populated 262K conversation, mathematical superiority,
-or the proposed GPU/database training pipeline.
+Example: “Restore works, so a player can preserve a construction while trying an
+alternative once it is connected to the workshop controls. The deformation path
+still fails an independent check and is not admitted. Fix that discrepancy before
+exposing it as a qualified building piece.” Detailed numbers belong in the
+receipt; the headline explains why the result matters.
 
-This amendment records the worker method in the requested plan. Existing peer
-wiring and numerical receipts keep their individual evidence scopes. New physics,
-trained representations and live construction behavior still need their applicable
-independent checks and graph admission; this section closes no scientific gate.
+Before extending an experiment, ask whether its result can still change the
+declared development decision. If not, stop and integrate/report. When the budget
+expires, preserve results and name the exact blocker instead of silently broadening
+scope or repeating unchanged trials. Retain a currently qualified simpler solution
+while an ambitious candidate remains in research. Creative exploration is welcome
+with a possible game benefit, explicit budget and decision point; it cannot
+silently replace the playable milestone.
+
+#### 11.22.4 Checkpoints, compression and runtime scope
+
+Keep the purpose block, task/child identity, base revision, owned files, input and
+receipt paths, completed work, failed checks and next action in the continuation
+record. Compression preserves **why the work matters and what decision remains**,
+not just equations and commands. Empty/model-error responses are interruptions,
+not verdicts; preserve the conversation and resume from artifacts.
+
+Existing runtime profiles remain the authority for each model's context,
+quantization and reasoning budget; this plan changes none of them or imposes one
+blanket context size. Compression inherits its conversation's model and applicable
+settings, including for subagents. Output must fit remaining tokenized context,
+including tools/images and reasoning. A ceiling does not require a full-window
+summary; keep purpose/decisions concise and retrieve larger artifacts by reference.
+
+Do not reload unchanged models between ordinary requests. Preserve safe boundaries
+for compression cleanup, explicit GPU reservations, actual model changes and fault
+recovery. Prose neither verifies provider wiring nor guarantees memory reclamation.
+Runtime health, scientific qualification and observed playability retain their
+own evidence. This plan installs no model and advances no live controller or
+scientific gate.
 
 ### 11.23 Structure as nested membranes and repeating physical arrangements
 
@@ -3266,6 +3423,146 @@ and native/inspector correspondence evidence. Reuse the existing owners; no new
 catalog, training service or inspector is implied. This is a planned increment,
 not evidence that a nested-membrane GPU training pipeline is already implemented
 or that a new scientific gate has passed.
+
+### 11.24 Production principle: more physical capability for less runtime work
+
+**Operator direction, 2026-10-16. Status: proposed implementation guidance.**
+Extend the current membrane/CA, artificial-protein and GPU-characterization work;
+keep its physical owners and independent checks. This section adds a recurring
+comparison discipline to S0–S5 and B7, not another qualification ladder, a new
+solver, or a restart of completed work. Exploration remains open under §11.19:
+an experiment may fail, and an enabling reference may cost more before a cheaper
+representation becomes possible. Label that investment and the capability it
+unblocks instead of presenting it as a runtime optimization.
+
+#### One evolving structure, with explicit ownership
+
+Treat a matter piece as connected geometry plus material state and history. A
+reusable update has the conceptual form `next_state = F(state, boundary_inputs,
+dt, material_and_geometry_parameters)`. That notation does not prescribe a neural
+network or establish numerical stability. Equal coordinates with different seams,
+materials, supports or histories are different physical problems. Time advancement
+must follow the selected physical clock; batching computes all required steps or
+a separately qualified equivalent evolution, never silently discards steps.
+
+Reuse the irregular CA neighborhoods from §11.4. Shared mechanical vertices own
+position and momentum/velocity; cells own their material response and history;
+interfaces own paired exchanges. Cells contribute forces to shared vertices,
+then the selected coupled solver advances each owned degree of freedom once.
+Use consistent state reads and qualified gathering/iteration rather than letting
+each triangle overwrite a common point. Volume cells, surface triangles, contact
+neighbors and attachment ports retain their distinct meanings. Rendering consumes
+the accepted geometry generation, including its existing bindings and topology.
+
+A common energy/exchange contract connects supported laws. Conservative forces
+may be derived from stored energy; constraints, friction, damage, heat, supplied
+work and transport retain explicit compatible accounts. Maxwell equations are an
+optional electromagnetic field law, not a universal vertex-motion rule. Triangles
+or tetrahedra are discretizations, not evidence that one equation supplies every
+material law. If an electrical mechanism is selected later, qualify field/material
+coupling, field storage and time scales separately, and avoid counting cohesion
+already represented in an effective material twice. No electromagnetic solver is
+a prerequisite for the first existing mechanical response comparison.
+
+#### Reduce internal work while preserving external behavior
+
+The first reduction target is a connected patch/mechanism, not an independently
+launched neural network per triangle. Preserve its relevant port displacements,
+velocities, forces, moments, work and internal history under the declared law.
+Internal degrees of freedom can be condensed, tabulated or learned only across a
+measured domain. First compare an analytical reduction/table and the detailed
+reference; train a response only where it offers a useful tradeoff. Prefer an
+energy/reaction or constitutive response within the existing solver before trying
+a learned whole-state time step. Learned forces still need derivatives or solver
+compatibility where required; do not assume inference alone replaces a solve.
+
+Many pieces share immutable recipe/model data while each instance keeps its own
+state. Batch compatible evaluations with the existing GPU owner, keep useful
+state resident, and count gather/scatter, variable-size padding, contacts and
+CPU/GPU transfers. A small number of external ports can make an elaborate interior
+cheap only if those ports carry the behavior the surrounding assembly actually
+needs. Internal modes, impact location, new contact, cuts and damage can invalidate
+that reduction. A large assembly is not automatically cheap because it has few
+attachment labels; contact discovery and a coupled solve still have costs.
+
+Use the cheapest qualified representation for the current physical condition.
+Camera distance may choose visual LOD; physical reduction must also consider load,
+contact, history and model validity. Reduced-to-detailed state transfer needs an
+explicit reconstruction and conservation/error check. Retain required latent
+history; if a removed state cannot be recovered, that transition is unsupported.
+Measure switching spikes and use a tested margin/hysteresis where useful to avoid
+oscillation between representations. Invalid state must invoke the named qualified
+fallback or refusal; a confidence score alone is not proof. Sleep only under the
+existing equilibrium/lazy-advance contract, with correct wake propagation.
+
+#### A common cost, error and capability record
+
+Extend existing experiment receipts/function cards rather than starting a parallel
+database or inspector. Each comparison records the following, with `not measured`
+and its reason where evidence is absent. Unknown is not zero and is not a pass.
+
+| Dimension | Required comparison evidence |
+|---|---|
+| Capability | Named physical function, supported regime and player action it enables; baseline limitations and any new supported behavior |
+| Workload | Same physical duration, initial/boundary inputs and observable outputs; material/recipe, reference/build/model hashes, seeds, mesh and scale, instance/port/contact counts, step policy |
+| Accuracy | Independently checked displacement/reaction/force-and-moment transfer, conserved quantities and energy/work residual as applicable; transient/history error over sustained evolution and connected held-out cases |
+| Runtime | Wall time per simulated second; correctly synchronized GPU timings, CPU time and end-to-end frame p50/p95/p99 or maximum with sample count; loading, first use, warm use, switching and recovery reported separately |
+| Memory | Peak and steady RAM/VRAM, immutable shared bytes versus per-instance state, transfer volume where measurable, allocation growth across repeated construction/destruction and disk footprint |
+| Reuse | Same qualified piece in a second arrangement/task; behavior and costs after composition, not only the isolated training fixture |
+| Offline investment | Reference generation, fitting, validation and storage cost; training failures and the estimated reuse needed to repay that investment |
+| Decision | Keep baseline, adopt within a stated domain, retain as a capability tradeoff, or reject; unresolved gaps and the next discriminating experiment |
+
+Measure the actual target host and resource state; do not extrapolate a published
+GPU number into a local claim. Record resolution/render settings, frame and physics
+step policy, active model residency and background load. Use declared warmup and
+repeated trials; report variability and use enough frames to support tail claims.
+Hold the physical problem and error budget fixed, while allowing methods to use
+different internal resolutions/substeps when equivalence is independently checked.
+Report both isolated physics cost and integrated frame cost: asynchronous GPU work
+must complete before its elapsed time is credited. Do not sum overlapping timings
+as if they were serial or claim a physics speedup is the same as a game FPS gain.
+
+Freeze relevant numeric error limits and target budgets before the comparison.
+Select them from the reference's accuracy and the intended game interaction; no
+universal accuracy percentage is imposed. At unchanged capability/accuracy, prefer
+lower measured total cost. A more expensive candidate can still earn adoption by
+enabling a valued new capability inside the declared budget; record that tradeoff.
+Keep alternatives on a cost/error/capability frontier rather than manufacturing a
+single score whose weights hide failures. In particular, lower mean time cannot
+excuse broken attachments, irreversible drift or unacceptable transition stalls.
+
+For a fixed workload, estimate offline break-even only when runtime savings are
+positive: `reuse_count = extra_offline_cost / saved_cost_per_use`, with compatible
+units and the workload named. Runtime latency can justify an offline investment
+without minimizing total compute; report both. Training is optional, and a simple
+qualified analytical/table response remains a successful outcome.
+
+#### First bounded experiment and propagation through production
+
+Reuse one supported membrane/attachment fixture from §§11.17–11.20 and its existing
+comparison machinery. Audit its current law and evidence first. Do not label a
+quasistatic fixture a transient solver. Pin a detailed baseline, error limits and
+inputs; select one cheaper representation; compare isolated behavior, two coupled
+pieces and a second arrangement. Separate training/tuning cases from final held-out
+loads, geometries and initial states. Add sustained time evolution only after the
+controlled advancement/observation path is qualified; until then mark dynamic
+speed/stability unknown. Measure small and larger supported batches to locate the
+actual crossover where reduction helps. Include a domain-exit/fallback case and
+repeat create/destroy or switch cycles to expose memory growth and tail latency.
+
+Deliver the common record above through existing receipts and the inspector's
+comparison view. Retain a failed optimization and keep the working reference.
+If isolated performance improves, test the integrated construction/rescue workload
+before making a game-performance claim. No new GPU job scheduling, catalogs,
+inspector or renderer is implied; implement only demonstrated missing adapters.
+
+At S0–S1 declare capability, domain, reference accuracy and anticipated costs; at
+S2 record characterization cost; at S3 compare cost/error alternatives; at S4 test
+composition and state transfer; at S5/B7 measure the integrated hardware envelope.
+Apply the same questions during production reviews and when a law, interface,
+model or representative workload changes. Reuse fresh evidence rather than rerun
+an unchanged full suite after every prose/content edit. This is a continuing theme,
+not a requirement that each individual commit immediately improve frame rate.
 
 ### Shared component checks
 
@@ -3436,13 +3733,116 @@ then demonstrate a possible approach. Preserve room for a different valid soluti
 Test the HUD-light experience and the assisted experience with unfamiliar players;
 neither should require a developer to explain what the companion is doing.
 
+### 12.1 The same production principle applied to the playable game
+
+**Operator direction, 2026-10-16.** Optimize for meaningful, understandable player
+agency within the physical and hardware envelope. A numerically impressive scene
+is not automatically a good game, and a fast decorative effect is not evidence of
+physical capability. Keep scientific falsifiers and observed player outcomes as
+separate, linked evidence. Do not collapse fun, fidelity and cost into one invented
+number or let an automated agent stand in for unfamiliar-player observation.
+
+Use the existing construction bench, rescue slice, shared verbs and genre library.
+Choose one player loop: **notice a condition -> form an idea -> construct or act ->
+observe the physical consequence -> revise -> reuse what was learned**. Every new
+mechanism or encounter names the decision it adds to that loop. Reuse a qualified
+piece in a bridge, brace or hoist when its domain permits; do not add a separate
+physics rule just to make the same piece work in another genre. Procedural variety
+must change relevant geometry, loading, resources or choices, not merely produce
+more visually different assets. Alternative solutions should have observable
+tradeoffs rather than a single hidden script that accepts only the designer's build.
+
+#### Feature packet: physical promise, player question, cost and recovery
+
+Extend the existing encounter/experiment packet with these linked entries:
+
+| Entry | What the worker must specify and verify |
+|---|---|
+| Player promise | Concrete action and consequence: e.g. relocate a support to carry a load through a narrow crossing |
+| Physical mechanism | Existing qualified pieces/laws, supported domain and independent falsifier; disclose any missing capability |
+| Decision and transfer | At least the alternatives being tested, their tradeoffs, and a second situation in which the same understanding might help |
+| Information and controls | What the player can perceive before acting, how intent becomes an admissible transaction, immediate input feedback and visible accepted result |
+| Resource envelope | Representative object/contact/edit workload, physics and render frame cost, CPU/GPU/memory limits, measured input-to-feedback and input-to-result latency |
+| Failure and recovery | Understandable cause, opportunity to inspect/revise, valid undo/reset or persistent repair semantics, save/restore and interrupted-action behavior |
+| Observation | Preregistered question and measures for unfamiliar-player sessions; scripted harnesses supply engineering evidence only |
+| Decision | Keep, revise, defer or remove the feature, with scientific and player evidence reported separately |
+
+For the first comparison, reuse the existing cradle/rescue arrangement. Ask whether
+players can anticipate which connection is loaded, change an arrangement, interpret
+failure and transfer the idea to a second task. Observe confusion, mistaken causal
+explanations, attachment effort, feedback latency, useful alternative solutions,
+recovery and willingness to try again. Completion time alone is ambiguous: a slower
+player may be enjoying experimentation. Record participant count, assistance and
+conditions; do not infer general success from one observer or set arbitrary fun
+thresholds. Human sessions remain pending when none are available.
+
+#### Budget the complete experience, including difficult moments
+
+Choose a target hardware/resolution/fidelity profile and explicit frame, response
+and memory budgets before the representative test. For example, 60 displayed fps
+allows about 16.7 ms per frame, but this is an illustrative total-frame budget, not
+a measured target or permission to allocate that much separately to every subsystem.
+Budget the actual CPU/GPU critical path, including physics, render, contacts, input,
+world logic, UI and streaming; preserve measured headroom for worst supported edits.
+A display frame may contain several physical steps. Preserve the declared physical
+clock and account for catch-up; reducing physics steps is a model change requiring
+qualification, not a free optimization.
+
+Test ordinary building and demanding supported moments: many active contacts,
+cut/attach/release transactions, representation wakeups, damage when supported,
+save/reload and repeated construction. Report tail latency and dropped/late frames
+alongside averages. Keep continuous camera/UI feedback responsive while expensive
+work is pending; a preview is explicitly provisional and cannot become a collision
+or physical success before the transaction commits. Batch GPU work only where it
+helps both throughput and the interaction deadline. Do not postpone all feedback
+until a large training/inference batch finishes.
+
+Spend simulation detail where a player's action or a coupled physical dependency
+requires it; spend visual detail where it helps perception and the chosen art
+experience. Off-screen structures still carrying a bridge load or transmitting a
+signal cannot be frozen merely because the camera turned away. Use qualified
+reduction/sleep and rendering LOD independently, with one accepted physical state
+feeding visual, picking and contact consumers. In overload, reduce optional visual
+work or bound newly requested complexity through an understandable construction
+limit before silently weakening forces or losing simulated time. Any alternate
+physical fidelity/slow-time profile must be declared and tested.
+
+Controls and assists should reduce tedious selection and make consequences readable.
+They must preserve the underlying distinction between what the player requested,
+what the solver accepted and what happened. Accessibility cues, camera comfort and
+clear repair paths belong in the first slice. Difficulty can vary layout, resources,
+information and opponents while preserving consistent laws; any changed physical
+inputs are an explicit profile. Check that numerical model errors do not become an
+unlimited-energy exploit or an unexplained punishment in repeated play.
+
+#### One production loop for science, engineering and game design
+
+For each bounded increment: state a player hypothesis and physical prediction;
+reuse or extend an existing qualified mechanism; compare reference and candidate
+cost/error; exercise the integrated scene; observe players when available; then
+keep, revise or reject it. Feed real misunderstandings, bottlenecks and surprising
+valid constructions into the next experiment. Preserve creative discovery and
+unexpected solutions inside the supported physical domain; a successful reduction
+should expand what players can build, not narrow them to a prerecorded animation.
+
+At M1 verify mechanisms and feedback correspondence; at M2 observe the construction
+and rescue loop; at M3 test transfer and composition; at M4 verify a complete chapter's
+performance, recovery and accessibility; at M5 add breadth only where it earns its
+cost. Automated science/performance evidence can advance its own scoped work while
+player evidence is pending, but cannot close the player-observation requirement.
+Share fresh receipts with §11.24 and existing milestone gates rather than adding
+another approval service. A feature that consumes more resources may be worthwhile
+when it enables a valued experience within budget; unnecessary detail, workflow
+complexity and maintenance burden should be removed when they buy neither useful
+physical behavior nor a better player experience.
+
 ## 13. Roadmap and release gates
 
 | Milestone | Deliverable | Exit evidence | Defer until later |
 |---|---|---|---|
 | M0 — preserve the baseline | Pinned playable demo; existing camera/lighting and tendon behavior recoverable | Known build, scoped historical receipts, explicit current limitations | Repeating already completed camera work |
 | M1 — matter that composes | One owned physical state, irregular part compilation, contact and finite-area coupling; complete the body force/support path needed to carry the result | Construction gates B1–B3; passive drop, off-center reaction, sever and display-rate controls; measured mass/inertia | Parkour, large populations, unqualified arbitrary geometry |
-| M2 — build, then Bring Them Home | The compact assembly bench and rescue slice with two arrangements/solutions, failure/recovery and a persistent repair | Construction gate B4 plus physical controls and observed fresh-player sessions from §6 | Predators if they delay construction/rescue; growth and large zones |
+| M2 — workshop, then Bring Them Home | First deliver §5.1's construction challenge, two demonstrated solutions, recovery and saved-recipe transfer; extend the same verbs into §6's rescue | Current scoped physical checks, player-operated loop and observed understanding/reuse; rescue retains its §6 evidence | Predators, broad catalogs and new laws unrelated to the chosen action; growth and large zones |
 | M3 — combinations | One opponent, reusable rigging parts, a working lair and one selected additional encounter using the same parts; a second only after useful transfer is demonstrated | Parts work outside their introductory puzzle; distinct viable solutions; bounded memory across repeated sessions | Broad crafting catalog, detailed metabolism; the rest of the genre library |
 | M4 — one finished chapter | Reliable onboarding, save/recovery, presentation, accessibility/settings and a coherent expedition arc; test the pacing proposal in §10 | Declared hardware/fidelity envelope; offline install/start; user-confirmed game loop and meaningful return | Mandatory co-op or a promised campaign duration |
 | M5 — expand only what worked | Further regions, selected thermal/growth/ecology interactions | Each new mechanism has a physical falsifier and a new player decision | Cosmic simulation and full molecular chemistry unless a later game specifically needs them |
@@ -3452,31 +3852,54 @@ the graph requires. That release freezes interfaces, evidence scope and compatib
 it does not declare all future science finished. Do not turn this design document
 into an automatic controller queue or begin implementing all rows at once.
 
-**Immediate next engineering assignment:** follow §11.20.9 and §13.1 to establish the first
-scale-aware mechanism and its characterization path from existing code. The
-construction packet described below is the retained foundation, not a request
-to rebuild completed B0–B8 work. The worker must verify its reported commit and
-receipts before treating it as the current baseline.
+Every milestone carries the cost/error/capability record from §11.24 and the
+linked player-facing evidence from §12.1. These refine its existing exit evidence;
+they do not reset completed gates or assert unobserved gameplay results.
 
-### 13.1 Worker handoff: reusable mechanisms across scales
+**Immediate next engineering assignment:** deliver the next missing interaction
+in §5.1's workshop using §13.1 and §11.22. Audit current controls and evidence before
+choosing the gap. AP01/AP02, the mechanism factory and construction packet are
+foundations, not instructions to start over. Fix a scientific blocker when it
+prevents the selected behavior; otherwise prioritize the player-operated
+build–test–recover–reuse loop.
 
-**Objective:** demonstrate one physical mechanism reused across declared scales
-and composed into a second configuration, with measured error, conservation and
-cost. This is the first artificial-protein family in §11.20 and a bounded increment
-toward the operator's holodeck matter simulator. Carry its recipe through the
-making, characterization, qualification, composition and visible-use chain in
-§11.20.9. Do not replace it with more finished-object variants alone.
+### 13.1 Worker handoff: make the matter workshop playable
 
-**Development method:** use §11.22 for Qwen-led peer discussion, optional DeepSeek
-consultation, compact resumable handoffs and evidence checkpoints. Follow the
-source-to-GPU-experiment-to-qualified-piece loop, using §11.23's nested/repeating
-geometry families when relevant; preserve AP02's next-step order
-and the independent acceptance checks.
+**Purpose:** give a player a small kit whose arrangements have understandable
+physical consequences and whose inventions can be reused. §5.1's workshop leads
+into the rescue game. The broader multiscale/artificial-protein ambition remains;
+the workshop makes the next useful capability concrete.
 
-**Database-grounded extension:** §11.21 supplies the source-snapshot, calibration,
-training and composition workflow. Audit current AP01/AP02 scope before adding
-the first adapter; reuse supported laws and existing data owners. This amendment
-does not claim those tissue or construction families are already qualified.
+**First assignment:** inspect current controls and newest scoped receipts, select
+the smallest missing part of the player sequence and implement it through its
+existing owner. Keep a compact “already usable / missing / blocked” map with
+source/evidence links in the work record. Another inventory or blanket research
+campaign is not the deliverable. Reuse the scripted membrane loop's existing
+reset/save/deform paths, respecting its failed independent cross-check (§11.20.12)
+and separate state class. Rigid construction can support interaction work within
+its own qualified scope.
+
+Use §11.22's purpose block for every child and review. Qwen owns the playable
+result, Maya can implement substantial integration, and Step reviews consequential
+changes. Lead completion reports with the player benefit or remaining game
+blocker, the decision and next action. Link detailed numbers. An isolated
+experiment is not a substitute for the chosen deliverable.
+
+**Select and accept:** prioritize launch/controls, readable feedback, recovery,
+save/reuse or a directly blocking physical defect. Exercise the resulting action
+in the native scene. Keep applicable independent physics, state correspondence
+and persistence checks and measured frame-time/memory cost. Human usability
+remains unobserved until somebody plays. If characterization is needed, reuse
+existing finite GPU batches and the simplest adequate representation; no new
+training is required when a qualified detailed/tabulated path already suffices.
+
+**Historical foundation below:** preserve construction and S0–S5 contracts and
+their original evidence. Check completed work against current receipts before
+dispatching a row. The older “first mechanism” and Noether sequences are
+conditional research dependencies, not instructions to repeat them before workshop
+integration. §11.20.12 supersedes historical next-step assumptions without closing
+all gates. New database/tissue/material work follows §11.21 when a selected
+capability or bounded exploration needs it.
 
 **Existing assets to inspect and reuse:**
 
@@ -3523,8 +3946,8 @@ current pin, not `def4d82d`.
 | S4 — composition and state transfer | Two coupled pieces and a second assembly using the same mechanism | Coupled response versus detailed reference, two-sided exchanges, no duplicated inventory/DOFs, stable switching where implemented |
 | S5 — visible authoring demonstration | Existing inspector/viewer shows mechanism, active representation, scale and measurements | Physical/render/pick correspondence; repeatable build–test–reuse demonstration; human usability remains separately observed |
 
-**Noether work sequence added 2026-10-13:** preserve the existing S0–S5 gates.
-The next worker should (a) pin the current membrane law and missing boundary inputs,
+**Historical Noether work sequence added 2026-10-13:** preserve the S0–S5 gates.
+If a chosen capability requires this still-uncompleted research, its worker should (a) pin the current membrane law and missing boundary inputs,
 (b) extend existing fixtures/receipts with a small case-family split and three-scale
 reference suite, (c) verify GPU/native parity and data freshness, then (d) train a
 small offline candidate in the separate Noether environment and compare it with the
@@ -3547,7 +3970,7 @@ do not label it general elasticity, tissue or fracture. Use an existing elastic
 or attachment reference instead only when it provides the better verified path,
 and explain the choice. Keep the B4 cradle as an integration regression/control.
 
-The first worker packet covers S0 and S1 plus a minimal S2 feasibility measurement
+The original first mechanism packet covers S0 and S1 plus a minimal S2 feasibility measurement
 when the existing GPU path supports it. Choose at least three physical scales
 inside a justified domain, include a held-out scale, and separate the effect of
 physical resizing from mesh refinement. Freeze numeric tolerances before the
@@ -3737,6 +4160,7 @@ stay in the library until both an engineering gate and a player need justify the
 | Rewards collapse into one dominant build | Every useful objective favors the same part or stat | Compare tradeoffs across load, clearance, reliability and repair; keep multiple outcome metrics |
 | Variation produces unfair scenarios | A random layout has no feasible return or hides a mandatory warning | Validate a baseline solution, preserve recovery resources and retain failed seeds for diagnosis |
 | Infrastructure replaces game development | Workflows and catalogs grow while the rescue remains unplayable | Judge the next task by the player action it enables or the demonstrated blocker it removes |
+| Research loses its purpose | Agents report residuals and spawn experiments without a development decision | Restore the inherited purpose block; stop or redirect the branch and explain its effect on the playable milestone (§11.22) |
 | Multiplayer swallows the first release | Work begins on lockstep before saves and single-player recovery work | Ship the single-player contract first; choose replication after determinism and bandwidth tests |
 
 The concept is successful when a player applies something learned in one context to
