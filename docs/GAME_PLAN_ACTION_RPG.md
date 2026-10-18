@@ -3193,9 +3193,14 @@ not a new prerequisite for shipping the present workshop controls.
 3. **Reuse first; calibrate only a demonstrated gap.** Match the source law,
    domain, units and loading conditions against existing supported responses. Reuse
    an applicable published/qualified response and its evidence under §11.21.8.
-   If fitting is needed, preserve uncertainty and independent observations; one
-   matching curve need not identify a unique law. Missing constraints narrow the
-   claim or identify the next useful observation, rather than invent constants.
+   For a new calibration, use the existing reference to check that the selected
+   observable responds to the parameter before launching a fit. [FEBio's example](https://febio.org/knowledgebase/tutorials/parameter_optimization/parameter-optimization-with-febio-studio/)
+   explains why matching reaction force to an imposed force cannot identify Young's
+   modulus: measure independent deflection, or prescribe displacement and compare
+   reaction instead. Preserve uncertainty; indistinguishable parameter choices
+   justify a bounded response or parameter range, not a uniquely identified material.
+   Seek another observation only when that distinction changes the game decision;
+   do not turn this check into a separate research campaign.
 4. **Generate a bounded family.** Vary legal geometry, layer spacing, fiber/port
    orientation, material parameters and boundary conditions within their declared
    ranges. The structure database seeds the grammar; players need not reproduce
