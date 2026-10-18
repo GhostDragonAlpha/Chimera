@@ -3091,6 +3091,22 @@ not to install a replacement runtime or regenerate the whole database. Its curre
 identifies a 2,101,546,900-byte database (about 2.10 GB); the pointer alone is not
 the data. For a later authorized import, retain a compact selection of records
 and provenance for the game rather than ship the entire research database.
+
+**Smaller first retrieval:** [UnitcellApp's cache builder](https://github.com/unitcellhub/unitcellapp/blob/b83e2b361d7a412c28e44cec2e752b4c5160519e/src/unitcellapp/cache.py)
+separates numeric records, images and fitted models by cell family. The pinned
+[Octet numeric-cache pointer](https://github.com/unitcellhub/unitcellapp/blob/b83e2b361d7a412c28e44cec2e752b4c5160519e/src/unitcellapp/cache/data_graph_Octet.pkl)
+identifies just **150,336 bytes**, versus about 12.0 MB of separate thumbnails and
+13.5 MB of fitted models for that family. Only source and pointers were inspected;
+the binary cache was not downloaded. For candidate ranking, investigate a selected
+family's numeric export before acquiring the full database or generating new GPU
+samples. These are Blosc/Dill caches of derived columns, not full stiffness tensors
+or engine-ready pieces; translate the needed values into existing numeric records.
+The pinned [column mapping](https://github.com/unitcellhub/unitcellapp/blob/b83e2b361d7a412c28e44cec2e752b4c5160519e/src/unitcellapp/options.py)
+currently reads `thickness` for the field labeled `radius`, so verify that specific
+mapping against the selected source before reconstructing geometry. Published
+per-property Gaussian-process fits can suggest candidates; they do not supply a
+qualified coupled energy law. Reuse rows where adequate rather than refit them.
+
 Inspect the pinned HDF5 columns before writing the adapter: the README's thermal
 field is `homogenizedConduction`, while the current [exporter](https://github.com/unitcellhub/unitcellengine/blob/main/src/unitcellengine/design.py)
 uses `homogenizedConductance` and exposes fewer directional stress-amplification
