@@ -3838,6 +3838,20 @@ links code and data for varied elastic responses sharing boundaries, but its
 reported scope is 2-D; extension to 3-D is future work. It is a secondary method
 reference, not a ready-made 3-D library or a reason to install another trainer.
 
+**A functional part also needs room to move.**
+[Metamaterial Mechanisms (UIST 2016)](https://hpi.de/fileadmin/user_upload/fachgebiete/baudisch/projects/metamaterial/metamaterial-mechanisms/2016UIST_Metamaterial_Mechanisms__authors_copy_.pdf)
+demonstrates shear-cell arrangements forming latches, pliers and linked motion;
+its embedded latch needs surrounding cells that accommodate motion while providing
+support. This is a design precedent, not a calibrated response database or evidence
+that our membrane solver already supports those flexures. For a later qualified
+moving part, include needed travel clearance and support conditions in the existing
+recipe/preview path, alongside mounting ports. Proposed focused comparison: retain
+the same part and load, change one surrounding brace, and show whether it permits
+or obstructs the intended motion. That gives a player a concrete repair decision
+instead of another abstract stiffness score. Reuse the inspector and baseline
+comparison; a transient clearance claim additionally needs synchronized observation.
+Do not turn this future mechanism family into a prerequisite for the current kit.
+
 **Proposed first game use:** when the kit needs another useful choice, offer two
 qualified pieces with the same mounting contract and a visible clearance or
 compliance tradeoff, so the player can swap one without rebuilding everything.
