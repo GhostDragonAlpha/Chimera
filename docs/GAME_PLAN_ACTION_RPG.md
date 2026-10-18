@@ -51,8 +51,10 @@ current assignment, then §11.22's purpose-bearing peer workflow. Apply §11.24 
 §11.20.12 records newer implementation evidence beyond the original AP01/AP02
 sequence. Use §11.23 for nested/repeating geometry, §11.21 for database sources,
 §11.20 for artificial proteins, §11.19 for bounded creative research and §11.18
-for qualification when the chosen increment needs them. §§11.16–11.17 retain
-multiscale architecture and optional Noether fitting. These are available methods,
+for qualification when the chosen increment needs them. §11.25 ranks research by
+its next workshop decision; §11.21.3 prioritizes UnitcellDB and FEBio and §11.21.8
+explains how to reuse established results without repeating their original work.
+§§11.16–11.17 retain multiscale architecture and optional Noether fitting. These are available methods,
 not a mandatory tour through every research section before improving the game.
 **Building-block direction, 2026-10-14:** artificial proteins are the reusable
 matter mechanisms described in §11.20: generated physical arrangements whose
@@ -2942,6 +2944,12 @@ model to derive every force law and assembly response again. The database suppli
 evidence and starting structures; bounded numerical experiments characterize the
 pieces; qualified representations supply repeatable computation during use.
 
+**Research direction, 2026-10-18:** prioritize UnitcellDB for known relationships
+between repeating geometry and response, and FEBio for independent reference
+problems. Reuse applicable published results before generating new labels. Extend
+the current adapters and workshop; a catalog import is useful only insofar as it
+helps a selected player capability or answers a bounded development question.
+
 This extends the artificial-protein factory in §11.20. A snapshot describes one
 specimen or state. The reusable object is a parameterized mechanism family with
 explicit interfaces, conditions, history and a measured domain. Copying a finished
@@ -2982,10 +2990,11 @@ flowchart LR
   D[External structure and measurement records] --> P[Pinned source snapshot]
   P --> N[Normalize units frames topology and provenance]
   N --> R[Existing recipe and material records]
-  R --> C[Calibrate and check detailed physics]
-  C --> G[GPU experiments over a declared family]
-  G --> T[Analytical table or learned response]
-  T --> V[Independent held-out qualification]
+  R --> T[Reuse an applicable published or qualified response]
+  R --> C[Calibrate or extend only the missing response]
+  C --> G[Targeted experiments where coverage is missing]
+  G --> T
+  T --> V[Check mapping implementation and changed behavior]
   V --> L[Qualified mechanism library]
   L --> A[New port-connected construction]
   A --> S[Native coupled solve and renderer]
@@ -3023,22 +3032,54 @@ received from a dataset. Refuse missing units, malformed topology and unsupporte
 laws explicitly. A source record may be usable for geometry while still lacking
 mechanical evidence; preserve that partial usefulness and the named gap.
 
-#### 11.21.3 Candidate sources and what to extract first
+#### 11.21.3 Priority sources and useful subsets
 
-These are source candidates checked for this plan, not newly downloaded,
-license-cleared or calibrated corpora:
+Primary sources inspected on 2026-10-18. These are research candidates, not newly
+installed datasets or admitted native laws. Start with the first two; select a
+small relevant subset and preserve its release, corrections and usage terms.
 
-| Source candidate | Initial use | Admission work still required |
+| Priority/source | Existing knowledge to reuse | First useful scope and limit |
 |---|---|---|
-| [NLM Visible Human](https://www.nlm.nih.gov/research/visible/visible_human.html) | Anatomical imaging and aligned structural observations for tissue regions | Resolve the actual dataset release, access terms, image spacing, segmentation and specimen conditions; obtain separate mechanical measurements |
-| [FEBio material calibration tutorial](https://febio.org/knowledgebase/tutorials/parameter_optimization/parameter-optimization-with-febio-studio/) and [model repository](https://febio.org/knowledgebase/) | Examples of fitting a declared material model to target measurements and reference biomechanical problems | Audit each model's law, parameter source, numerical settings and rights; an example model is not a universal tissue database or a replacement native solver |
-| [NIST Materials Data Repository](https://materialsdata.nist.gov/) | Search for traceable material measurement records and their schemas | Select and inspect a concrete dataset before promising any bone, steel or concrete property coverage |
-| [buildingSMART IFC material layers](https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcMaterialLayer.htm) | Structural layer identities and thickness/layout relationships in building records | Pin schema and file revision; check that the particular file contains the required geometry, materials and interfaces; add separately sourced constitutive and bond measurements |
+| **1. [UnitcellDB](https://github.com/unitcellhub/unitcelldb)** | Over 13,000 simulated designs across 18 cell types, geometric descriptors and effective stiffness/conduction; repository lists Apache-2.0 | Retrieve candidate repeating structures by directional response and density. Its elastic data assume small-strain homogenization, cell/structure scale separation and base Poisson ratio 0.3; not measured fracture or isolated-cell behavior. |
+| **2. [FEBio published verification models](https://repo.febio.org/permalink/project/112)** | Existing cases for stretched sheets, twisted shells, nonlinear beams and contact, linked to the original paper | Choose one case matching the next required law. Preserve supports, load protocol, mesh/refinement and documented corrections. A reference model is neither a measured universal material nor a substitute native solver. |
+| [USDA Wood Handbook](https://research.fs.usda.gov/fpl/wood-handbook) | Wood properties, directional/environmental variation, fastenings and structural references | Source a specific building-material response when required by the workshop; carry grain, moisture and specimen/grade conditions. |
+| [DOE/Stony Brook unit-cell collection](https://catalog.data.gov/dataset/metamaterial-unit-cell-database-for-marine-energy-system-design) | Coordinates, connectivity, behavior classifications and original-paper links; CC BY 4.0 | Seed a geometry/function search. Reconstructed geometry can differ from the source publication; classifications alone are not response curves. |
+| [Mechanical MNIST](https://github.com/Lejeune-Lab/Mechanical-MNIST) | Precomputed 2-D heterogeneous Neo-Hookean examples with energy, reaction and displacement outputs | Compare learning methods on an existing benchmark before generating a large local corpus. It does not qualify our 3-D membrane law; retain the selected release's attribution/share-alike terms. |
+| [Open Knee](https://pmc.ncbi.nlm.nih.gov/articles/PMC4876308/) | Anatomical geometry, nonlinear tissue models and joint interactions | Later tissue/assembly work; distinguish measured, assumed and simulated inputs and preserve model-specific conditions. |
+| [NIST Materials Data Repository](https://materialsdata.nist.gov/), [NLM Visible Human](https://www.nlm.nih.gov/research/visible/visible_human.html), [IFC material layers](https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcMaterialLayer.htm) | Further material records, anatomical observations or construction layout schemas | Deferred until a concrete missing quantity or geometry justifies a specific record; imaging/layout alone cannot supply constitutive behavior. |
 
-Use a small, relevant subset before acquiring large anatomical or construction
-archives. Maintain the distinction between a database schema and an actual usable
-dataset. Inspect sampling coverage and rights per record; a downloadable mesh
-cannot establish permission or evidence for every downstream use.
+**UnitcellDB adapter:** retain its normalization, material axes and tensor convention
+(`xx, yy, zz, xy, yz, xz`, tensorial rather than engineering shear strain). Map
+energy/work consistently before using directional properties. Start with a small
+comparison of geometry candidates. Bulk stiffness cannot simply become the current
+surface-tension coefficient; inspect existing elastic references and name the
+missing volume/shell/port mapping. A geometry-only import can still guide design.
+[UnitcellEngine](https://github.com/unitcellhub/unitcellengine) supplies source
+geometry/simulation definitions; its alpha status is a reason to pin the source,
+not to install a replacement runtime or regenerate the whole database.
+
+**FEBio adapter:** the published collection includes explicit parameter and axis
+corrections for some compression/relaxation cases. Carry those corrections with
+the reference. Prefer a case whose equations, conditions and expected observables
+are sufficiently specified to check our implementation. Use the existing
+material/receipt/reference owners; installing FEBio is a separate, justified
+choice only if accessing an essential result requires it. The [calibration
+tutorial](https://febio.org/knowledgebase/tutorials/parameter_optimization/parameter-optimization-with-febio-studio/)
+is available when fitting is actually necessary.
+
+**Existing implementation seam, inspected 2026-10-18:**
+[`tools/elastic_foundation/law.py`](../tools/elastic_foundation/law.py) already
+implements an isotropic St. Venant-Kirchhoff membrane reference. Its
+[`units_contract.py`](../tools/elastic_foundation/units_contract.py) distinguishes
+volume modulus plus thickness from surface modulus; use that boundary rather
+than bypassing it with raw material scalars. The material path explicitly refuses
+orthotropy. UnitcellDB's directional tensors therefore need an identified mapping
+or extension, not a renamed isotropic parameter. This is a source audit, not fresh
+runtime qualification. Keep this elastic path distinct from the mechanism factory's
+constant-current-area tension law. FEBio's [elementary beam example](https://febio.org/knowledgebase/case-studies/structural-mechanics/elementary-beam-analysis/)
+uses a different finite-strain law; it is a future matched-scope reference, not a
+ready-made pass criterion for either current membrane law. First resolve the
+selected law/observable correspondence; do not rebuild the existing reference.
 
 #### 11.21.4 The procedural training workflow
 
@@ -3050,19 +3091,22 @@ cannot establish permission or evidence for every downstream use.
    frames, units, fields and test histories into existing recipe/material records.
    Preserve specimen variation. Annotate gaps instead of filling them with guessed
    constants; use declared synthetic parameters only for numerical research.
-3. **Select and calibrate the detailed model.** Use qualified laws already present
-   where possible. Fit parameters against the measured protocol, retaining units,
-   uncertainty and independent measurements. Check identifiability: several models
-   can fit one curve and predict different assemblies. Missing constraints trigger
-   a new measurement requirement or a narrowed claim, not a falsely precise fit.
+3. **Reuse first; calibrate only a demonstrated gap.** Match the source law,
+   domain, units and loading conditions against existing supported responses. Reuse
+   an applicable published/qualified response and its evidence under §11.21.8.
+   If fitting is needed, preserve uncertainty and independent observations; one
+   matching curve need not identify a unique law. Missing constraints narrow the
+   claim or identify the next useful observation, rather than invent constants.
 4. **Generate a bounded family.** Vary legal geometry, layer spacing, fiber/port
    orientation, material parameters and boundary conditions within their declared
    ranges. The structure database seeds the grammar; players need not reproduce
    the original specimen. Preserve negative controls and failed candidates.
-5. **Run numerical experiments in one managed GPU batch.** Reuse the existing
-   reservation, native kernels and receipt path. Sample independent port motions,
-   loads and relevant histories. Use controlled physical advancement for transient
-   laws; a collection of final snapshots cannot teach hysteresis or dynamics.
+5. **Generate only missing numerical evidence.** Existing source responses can
+   skip new sampling when their scope covers the selected need. Otherwise use one
+   finite managed GPU batch with the existing reservation, kernels and receipts.
+   Sample independent port motions, loads and histories where they can change the
+   decision; protect final holdouts before adaptive selection. Transient laws need
+   controlled physical advancement, not final snapshots presented as dynamics.
 6. **Build the cheapest adequate response.** Try the analytic and interpolation
    baselines before a Noether/operator fit. Learn a family-conditioned response
    only when the data cover the geometry/material descriptors being conditioned
@@ -3135,19 +3179,25 @@ not erase size effects, instability, rate changes or a change of physical regime
 
 #### 11.21.7 First database-to-response implementation seam
 
-Preserve AP01 as the scalar numerical regression and inspect the current AP02
-multiport work before assigning implementation. Start with one source adapter and
-one parameterized, independently testable family on an already supported law.
+Inspect current mechanism-factory, composition and native-loop receipts as well
+as AP01/AP02 before assigning implementation. Start with UnitcellDB's compact
+geometry/response subset and a FEBio reference candidate for the next needed law;
+advance only the adapter that removes the selected workshop obstacle. Keep the
+other as a sourced next option. Do not hold controls, recovery or reuse work until
+both datasets are integrated. Select one family on a supported law, or name the
+specific missing mapping before promising native physical behavior.
 A synthetic database made from existing recipes can first validate ingestion,
 splitting, provenance and round-trip reproducibility; label it synthetic and make
 no real-bone, skin or building-material claim from that exercise.
 
-Deliver, in order: one pinned source manifest; deterministic normalized records;
-a recipe/material adapter; specimen/family-separated split manifest; a bounded
-GPU experiment manifest; analytical/table baseline; a separate numerical verdict;
-and a function card referenced by the existing evidence index. Retain the law and
-schema dependencies so a source, segmentation, calibration or solver change marks
-all affected descendants stale without erasing earlier trials.
+Deliver a pinned source manifest, deterministic normalized records, a narrow
+recipe/material adapter and a function card linked through the existing evidence
+index. Add split/GPU manifests, fitting and the relevant independent numerical
+verdict only when new characterization is required; otherwise link the applicable
+existing response and scoped checks. Retain law/schema dependencies so a source,
+segmentation, calibration or solver change marks affected descendants stale without
+erasing earlier trials. An import-only seam does not claim a trained response or
+completed physics admission.
 
 Acceptance requires reproduction from the pinned snapshot, refusal of missing
 units/provenance and unsupported laws, exclusion of held-out specimens during
@@ -3159,6 +3209,32 @@ fit only when its benefit is demonstrated against the baseline.
 This is a plan amendment and worker handoff, not an implemented database pipeline
 or a newly closed release gate. No new large dataset, solver or training service
 is installed by this section.
+
+#### 11.21.8 Reuse established results; check the new translation and behavior
+
+Published measurements and precomputed solutions can replace repeating the
+original measurement campaign or entire simulation sweep. An exact applicable
+record should become a reusable reference, not a recurring demand to re-prove it.
+Distinguish experimentally measured, simulated and inferred values in the card.
+
+Use three levels of work:
+
+- **Unchanged accepted input and implementation:** retrieve the existing scoped
+  evidence by source/adapter/law identities. Do not rerun unchanged suites for a
+  prose edit, a new conversation or another instance inside the accepted domain.
+- **New import or mapping:** check units, frames, strain/stress/work conventions,
+  normalization, conditions and a small discriminating reference case. This checks
+  our use of the source, not the original researchers' entire experiment.
+- **New law, reduction, regime or coupling:** check the changed claims independently
+  under the existing gates. A correct imported material does not establish a new
+  interface, nonlinear extrapolation or unfamiliar assembly automatically.
+
+Extend the existing function/evidence card with source locator and corrections,
+coverage, transformation identity, reusable verdict and named uncovered behavior.
+Keep raw observations distinct from fitted labels. Published results used to fit
+or choose a candidate are not also unseen evaluation cases. Review or rerun only
+relevant descendants after a source, adapter, law or boundary contract changes.
+Qwen can use this compact card in context; full datasets and papers stay linked.
 
 ### 11.22 Peer-agent development: deliver the game, preserve the science
 
@@ -3596,6 +3672,69 @@ model or representative workload changes. Reuse fresh evidence rather than rerun
 an unchanged full suite after every prose/content edit. This is a continuing theme,
 not a requirement that each individual commit immediately improve frame rate.
 
+### 11.25 Research that produces a playable matter workshop
+
+**Operator priority, 2026-10-18:** research should supply useful parts, understandable
+construction, cheaper reuse or faster delivery. This applies the existing §11.19
+loop and §11.22 peer workflow; it introduces no new service or mandatory review
+stage. Audit present implementations before assigning any proposed increment.
+
+| Research question, in current priority order | Reuse and proposed next decision | Evidence of value |
+|---|---|---|
+| Can known data remove the next physics/content obstacle? | UnitcellDB candidates and one relevant FEBio reference through §11.21's existing record/adapter owners; retrieve before generating labels | A specific supported workshop part/response or a precise missing-law decision, with avoided work named |
+| Which small kit supports genuinely different solutions? | Existing recipes, legal construction grammar, comparisons and §11.20.4's archive; retain alternatives by clearance, compliance, load range and cost | At least two structurally different successful arrangements for §5.1, followed by player reuse in a changed layout; diversity is not proof of fun |
+| Can a useful assembly become a cheap reusable part? | Current S3/S4, piece records and port solver; extend beyond the supported response where it matters | One component reused under different surrounding conditions, with coupled error, reconstruction and total runtime cost measured |
+| Can a failure explain a useful next move? | Existing baseline restore, equilibrium A/B and inspector; compare a few permitted support/attachment/geometry changes | A measured intervention changes the challenge outcome and the player understands how to recover; no invented fracture or causal claim beyond the comparison |
+| Where should the next expensive sample go? | Existing batches, bounded fits and research-cycle records; target uncovered conditions that change a decision | More useful supported coverage per fixed resource budget than a simple sampling baseline, with separate held-out evaluation |
+| Which workflow change saves development time? | Existing task receipts and lead decision records; compare one instruction/routing change on representative completed tasks | Less elapsed time/rework per accepted playable improvement without more consequential escaped defects or unnecessary blockers |
+
+**Methods to investigate, not dependencies to install:** [QDax](https://qdax.readthedocs.io/en/latest/overview/)
+provides diverse solution archives, while [RoboGrammar](https://people.csail.mit.edu/jiex/papers/robogrammar/)
+shows grammar-constrained assembly search. Adapt those ideas to admitted parts;
+do not replace the current recipe system. [Static condensation](https://docs.mfem.org/3.1/classmfem_1_1StaticCondensation.html)
+provides an interface-reduction baseline; [compositional energy-based dynamics](https://proceedings.mlr.press/v211/neary23a.html)
+is a later candidate for appropriate dynamic laws, not proof of our contact or
+membrane behavior. [Cost-aware selection](https://botorch.org/docs/v0.17.0/tutorials/cost_aware_bayesian_optimization)
+and [GEPA](https://github.com/gepa-ai/gepa) offer concrete approaches to experiment
+selection and feedback-driven procedure improvement. Published performance does
+not establish a speedup on this host or this workload.
+
+A function query names a wanted behavior, loading direction, interfaces, space
+and material/runtime budget. Retrieve known candidates, adapt within supported
+conditions, then spend experiments on the remaining uncertainty. Keep ordinary
+recipe saving available even before assembly reduction succeeds. A trained or
+tabulated internal response still needs compatible native exchanges and rendering;
+a reduced piece must not skip physical steps or hide unsupported contacts.
+
+For failure explanations, restore the same baseline and vary one selected input
+at a time, retaining objective and observation policy. Show the observed practical
+change in the scene; numerical detail remains in the inspector. The current
+recipe comparator is equilibrium-only. Do not infer transient causality from
+equal wall-time sleeps, and do not run an LLM inside the normal gameplay loop.
+
+For workflow improvement, retain compact examples of useful review, deferred or
+rejected criticism, effective fixes and time lost without a product decision.
+Qwen chooses the next question, can investigate directly, selects peers and judges
+which findings merit implementation. Step remains a read-only adviser; Maya gets
+accepted fixes with their player purpose. Review agreement and finding counts are
+not success metrics. Change one process element at a time, retain a rollback and
+independent physical standards, and compare on cases not used to tune the change.
+This improves the existing workflow rather than introducing another gatekeeper.
+
+**Research pass:** inspect current progress, choose one decision, consult primary
+sources and existing code/evidence, compare alternatives, then update the relevant
+plan paragraph with the useful result, its limits and smallest next action.
+Record unresolved leads compactly; merge superseded recommendations rather than
+append repetitive essays. A pass may honestly conclude that no change is warranted.
+Respect the operator's time/resource boundary and preserve concurrent edits.
+Research never silently changes gate status, model settings or active workloads.
+
+**First connected outcome:** one launchable §5.1 challenge with its current small
+kit, readable consequences, recovery, two demonstrated constructions and recipe
+reuse in a changed layout. External data or reduction work earns its place by
+improving that outcome. Stop each branch when its decision is answered and return
+the result to the workshop; creative discovery retains a named, bounded allocation.
+
 ### Shared component checks
 
 Every admitted component declares its geometry, material profile, state, typed
@@ -3931,7 +4070,10 @@ dispatching a row. The older “first mechanism” and Noether sequences are
 conditional research dependencies, not instructions to repeat them before workshop
 integration. §11.20.12 supersedes historical next-step assumptions without closing
 all gates. New database/tissue/material work follows §11.21 when a selected
-capability or bounded exploration needs it.
+capability or bounded exploration needs it. Prioritize UnitcellDB and FEBio under
+§11.21.3; use §11.21.8 to reuse established results and §11.25 to choose the next
+research decision. Keep the existing playable route moving while a new material
+or representation remains a proposal.
 
 **Existing assets to inspect and reuse:**
 
