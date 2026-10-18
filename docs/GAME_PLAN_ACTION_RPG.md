@@ -339,9 +339,10 @@ persistent attachment and containment differently. A rigid panel resting on a so
 pad may slide, tip or press into it; bonding changes that behavior. A loose object
 inside a container keeps its own motion and pushes back on the walls.
 
-For the first playable build, offer a **rescue cradle**: two unequal rails, an oblique
-cross-brace, a compliant contact pad and two straps. Let the player alter rail spacing,
-strap positions and layer coverage within a qualified range. One arrangement fits
+For the later rescue construction, develop a **rescue cradle**: two unequal rails,
+an oblique cross-brace, a compliant contact pad and two straps, as their physical
+paths become available. §5.1's smaller admitted salvage kit comes first. Let the
+player alter rail spacing, strap positions and layer coverage within a qualified range. One arrangement fits
 the narrow passage; another carries the load more stably. The cradle can later become
 a hauling frame, a bridge support or part of a small cart. That transfer of useful
 functionality is the LEGO-like reward.
@@ -508,6 +509,17 @@ after its checks pass; selecting a load alone does not fulfill the building-and-
 rigid construction interaction work moving within its qualified scope.
 
 #### Deliver and observe
+
+**Make the first useful action small.** Nintendo's [developer account of building
+in Tears of the Kingdom](https://www.nintendo.com/sg/interview/totk/04.html) describes
+prototyping combinations from existing parts and serving both elaborate builders
+and players who want a minimal solution. Proposed application here: offer a clearly
+identified incomplete example from the existing staged builds, so one supported
+placement or attachment can produce an understandable success; retain an empty-kit
+start for independent construction. The player chooses and performs the repair.
+A starter is optional assistance, not a hidden solved replacement. Record which
+assistance was used, then observe transfer to a changed layout. Judge success by
+the player's useful action and understanding, not the complexity of their machine.
 
 Deliver one launchable native scene with the small kit, objective, readable
 feedback, two demonstrated solutions, recovery and saved-recipe transfer. It must
@@ -3083,6 +3095,24 @@ small relevant subset and preserve its release, corrections and usage terms.
 | [Mechanical MNIST](https://github.com/Lejeune-Lab/Mechanical-MNIST) | Precomputed 2-D heterogeneous Neo-Hookean examples with energy, reaction and displacement outputs | Compare learning methods on an existing benchmark before generating a large local corpus. It does not qualify our 3-D membrane law; retain the selected release's attribution/share-alike terms. |
 | [Open Knee](https://pmc.ncbi.nlm.nih.gov/articles/PMC4876308/) | Anatomical geometry, nonlinear tissue models and joint interactions | Later tissue/assembly work; distinguish measured, assumed and simulated inputs and preserve model-specific conditions. |
 | [NIST Materials Data Repository](https://materialsdata.nist.gov/), [NLM Visible Human](https://www.nlm.nih.gov/research/visible/visible_human.html), [IFC material layers](https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcMaterialLayer.htm) | Further material records, anatomical observations or construction layout schemas | Deferred until a concrete missing quantity or geometry justifies a specific record; imaging/layout alone cannot supply constitutive behavior. |
+
+**Later, when a useful part must change shape under load:** the
+[Wallpaper Group metamaterials dataset, v5](https://zenodo.org/records/18172947)
+provides 1,020 geometries and 12,240 computed loading trajectories. The
+[paper](https://arxiv.org/html/2507.11195v2) describes geometry, deformation gradient,
+energy density, first-Piola stress and tangent stiffness together. This offers a
+future reference for a transforming support or deployable structure, beyond
+UnitcellDB's small-strain ranking. It assumes 2-D plane-strain Bertoldi-Boyce
+hyperelasticity and periodic homogenization; trajectories stop before contact,
+and their pseudo-time is load progression, not physical dynamics. It does not
+supply a contact, damage or 3-D membrane law. Pin v5: earlier releases had failed
+trajectories, missed contact, step-order and periodicity defects corrected later.
+Only documentation was inspected here; the 46.0 GB archive was not downloaded.
+Before acquiring it, establish access to one relevant geometry's numeric subset
+and its usage terms. Reuse the existing material/receipt path, map the energy and
+response conventions, and check our changed behavior independently. Qwen should
+activate this only for a concrete player-needed mechanism; current workshop
+controls and known-response reuse remain ahead of a new training campaign.
 
 **UnitcellDB adapter:** retain its normalization, material axes and tensor convention
 (`xx, yy, zz, xy, yz, xz`, tensorial rather than engineering shear strain). Map
