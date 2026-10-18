@@ -3125,6 +3125,14 @@ is available when fitting is actually necessary. Its separate [contact examples]
 include friction, self-contact and two-sided shell contact, but also an explicitly
 non-running `sliding_error.fsm` for debugging. Select the needed case and its expected
 outcome; this tutorial pack is not a set of already-passing physical benchmarks.
+The [elementary-beam collection](https://repo.febio.org/permalink/project/127) also
+lists `SimplySupportedBeam.xlsx` with numerical results and figures. Its catalog
+was inspected, not the workbook. When that case matches the needed claim, inspect
+its selected numeric series before digitizing figures or rerunning a solver.
+Preserve which observable each representation supplies: the [tutorial](https://febio.org/knowledgebase/case-studies/structural-mechanics/elementary-beam-analysis/)
+shows accurate shell deflection alongside thickness-averaged shear stress, which
+is not the pointwise peak. A cheap response adequate for a clearance decision may
+therefore need a different reconstruction before it can support a failure decision.
 
 **Existing implementation seam, inspected 2026-10-18:**
 [`tools/elastic_foundation/law.py`](../tools/elastic_foundation/law.py) already
