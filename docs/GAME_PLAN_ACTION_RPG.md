@@ -1,16 +1,23 @@
-# SEALED — multiscale matter mechanisms for living worlds
+# SEALED — a game built from simulated matter
 
 Working title: **SEALED** (alternates: *Tension*, *The Sump*, *Vivarium*).
 Original concept: Qwen, 2026-10-11. Design, engineering, genre and matter-construction
 revision: Codex, 2026-10-11. Keep this plan in `GAME_PLAN_ACTION_RPG.md`.
 
 **Confirmed direction:** grow ChimeraEngine itself. The user chose Option B on
-2026-10-11; no Godot or Unreal host. **This document is a matter-simulator architecture and game-design proposal**
-and an implementation sequence, not a claim that its proposed systems work today.
+2026-10-11; no Godot or Unreal host. **This document proposes a game and the
+simulated-matter technology that supports it**, with an implementation sequence;
+it does not claim that its proposed systems work today.
 The selected project graph still governs scientific requirements and release gates.
 
-**Central direction, clarified by the operator on 2026-10-13:** build a
-composable multiscale matter simulator for a holodeck-like world. A LEGO piece
+**Product goal, clarified by the operator on 2026-10-18:** create a compelling game
+that uses simulated matter. Exploration, construction, combat, companionship and
+meaningful choices are the experience; physical behavior makes those interactions
+coherent and opens new possibilities. Judge progress by what players can do and
+enjoy. The matter workshop is the first playable milestone within the larger game.
+
+**Supporting technology direction, 2026-10-13:** build a composable multiscale
+matter simulator for a holodeck-like world. A LEGO piece
 is a reusable physical mechanism: geometry, material/state, boundary exchanges,
 scale relationships and measured response. Mechanisms recur in nature and can
 be composed into larger mechanisms. GPU experiments do the expensive mathematical
@@ -20,10 +27,11 @@ reuse practical. An assembly recipe is one expression of this architecture.
 The system must carry a mechanism across the scales and physical regimes where
 its model applies, recognize regime changes, and preserve exchanges when pieces
 are connected. Geometric resemblance alone does not establish physical similarity.
-The goal is progressively broader physical coverage, not a claim of universal
-simulation from one trained table. SEALED and its genre library supply concrete
-worlds and interactions that exercise this foundation. The rescue slice remains
-a bounded game demonstration; it does not define the limit of the matter engine.
+Broader physical coverage should expand useful player interactions; one trained
+table cannot establish universal simulation. SEALED's encounters and player choices
+direct which capabilities matter next. The rescue slice is an early game experience;
+the longer-term engine ambition supports a richer game without making exhaustive
+physical coverage a prerequisite for play.
 
 **Production measuring stick, clarified by the operator on 2026-10-16:** deliver
 more useful, independently checked physical behavior and meaningful player choices
@@ -36,7 +44,8 @@ continuous design criterion, not a claim that one scalar score measures physics
 or fun. Apply §11.24 to simulation and §12.1 to game development at every milestone.
 
 **Playable-first direction, clarified by the operator on 2026-10-18:** make a
-valuable game in which players build, test, repair and reuse matter mechanisms.
+valuable game that uses simulated matter for exploration, construction, combat
+and care. Build, test, repair and reuse are the immediate workshop verbs.
 Every agent must understand why its assignment matters to that goal. Research
 removes a specific obstacle or explores a named possibility for the game; more
 experiments, smaller residuals and longer reports are not themselves product
@@ -425,7 +434,8 @@ usability result, not proof that the matter system is understandable.
 
 **Purpose:** let a player discover that changing an arrangement changes what it
 can do, then reuse that knowledge and construction. This is the immediate small
-step toward the matter-simulator game and the “Bring Them Home” rescue slice.
+step toward the game that uses simulated matter and the “Bring Them Home” rescue
+slice. The workshop develops transferable player skills for the larger adventure.
 The richer workshop gestures above remain a design library; implement the useful
 subset supported by current physics first.
 
@@ -3297,8 +3307,8 @@ appropriate, but never relabel its failed acceptance check as PASS.
 to prioritize correctly without sending the whole conversation. Start each task
 with this compact purpose block:
 
-- **Main goal:** a playable matter-building game with reusable, physically
-  meaningful constructions.
+- **Main goal:** a compelling playable game that uses simulated matter; connect
+  this task to its player actions, choices and experience.
 - **Milestone and player benefit:** the specific action or experience being built.
 - **Why this task now:** the obstacle, dependency or bounded discovery opportunity;
   what would remain impossible, unreliable or wasteful without it.
@@ -3712,6 +3722,17 @@ change in the scene; numerical detail remains in the inspector. The current
 recipe comparator is equilibrium-only. Do not infer transient causality from
 equal wall-time sleeps, and do not run an LLM inside the normal gameplay loop.
 
+A useful reliability extension is to reduce a failed player action sequence to a
+small reproducible example. [Hypothesis stateful testing](https://hypothesis.readthedocs.io/en/latest/stateful.html)
+can generate interacting action sequences and report compact failures. Investigate
+an adapter over existing construction transactions, `test_objective_loop.py` and
+membrane replay owners; do not create a replacement harness. Check accepted-state
+preservation after refused edits, save/restore, inventory ownership and recovery.
+Keep a fixed initial state and explicit physical advancement; preserve the original
+failure while reducing only the replay input sequence. This is a proposed debugging
+aid for interrupted play, not a physics proof or a required dependency for every
+change. Give Maya a minimal replay when it materially shortens an accepted fix.
+
 For workflow improvement, retain compact examples of useful review, deferred or
 rejected criticism, effective fixes and time lost without a product decision.
 Qwen chooses the next question, can investigate directly, selects peers and judges
@@ -4038,8 +4059,25 @@ build–test–recover–reuse loop.
 
 **Purpose:** give a player a small kit whose arrangements have understandable
 physical consequences and whose inventions can be reused. §5.1's workshop leads
-into the rescue game. The broader multiscale/artificial-protein ambition remains;
-the workshop makes the next useful capability concrete.
+into the rescue adventure and the wider game. The simulated-matter engine and
+artificial proteins support that experience; the workshop makes the next useful
+player capability concrete.
+
+**Stable goal text for Z Code:** keep the objective below while this plan evolves;
+current priorities and methods are read from the file, not frozen into the goal.
+
+```text
+Implement D:/Chimera-Maintenance/PythonChimera/docs/GAME_PLAN_ACTION_RPG.md to create
+a compelling, playable game that uses simulated matter. Follow the plan's current
+priorities and workflow. Resume existing progress and reuse completed work. Read
+the latest relevant plan sections before selecting work and after compression;
+incorporate updates without restarting the project. Give every subagent the game
+goal, its task's player benefit and a completion condition. Preserve purpose,
+progress, decisions and next action through compression. Choose the highest-value
+next step, use proportionate tests and independent physics checks, and improve the
+process when evidence supports it. Continue autonomously; report progress in terms
+of the game, remaining obstacles and the next useful action.
+```
 
 **First assignment:** inspect current controls and newest scoped receipts, select
 the smallest missing part of the player sequence and implement it through its
