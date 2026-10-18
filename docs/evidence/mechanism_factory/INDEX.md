@@ -1216,3 +1216,51 @@ s = 1.0 only. No record change; published artifacts left as written.
 - Next player-visible capability (lead's choice, not yet scoped):
   rescue/transfer step, or loop-side S3-table instant reuse (Maya's
   bounded follow-up proposal).
+
+## Workshop increment 2 — instant reuse via the qualified S3 table (2026-10-18) — PASS
+
+- The loop's REUSE step now answers instantly from the qualified S3
+  table (sha 17b0ce54… pinned) with the validity query gating, the
+  detailed engine deform as the named fallback, and measured latency:
+  table query median 2.2 µs (1000 repeats) vs live deform wall 64.9 ms
+  → 29502× (run2: 4.9 µs vs 76.1 ms → 15540×), cross-referenced to the
+  S3 receipt's measured benefit.
+- `workshop_increment2_instant_reuse/` — prereg frozen
+  2026-10-18T19:34:52Z before capture (table sha, node digits, refusal
+  code, bound 1.40402e-05 wu in the S5-AMENDMENT-1 form, latency shape
+  only); receipts `gameloop_run_receipt_20261018T201528.830420Z.json`
+  + `…T201735.511376Z.json` at source_commit b4dbf464. Per-cell
+  table-vs-engine (both runs, digit-for-digit): 1.6 N node delta
+  7.044e-07 wu; 0.8 N node (live deform after fresh reset) delta
+  1.700e-07 wu — both 20× inside the bound. Refusal probe: 0.2 N →
+  code 6 "unmeasured gap (0, 0.4)", engine fallback admitted (apex
+  0.362019569 wu). Repeatability: all 9 /frame shots byte-identical
+  across runs; /glass delta 1006 px confined to chrome (union of the
+  increment-1 bands and the S5-qualified mask, both counts recorded;
+  timeline-clock pixels preserved as crops).
+- Layering honesty (design correction by Maya, accepted): 0.9 N is
+  table-VALID (Π=0.9 ∈ [0.4, 2.0]) — the 0.9 N refusal is the RECORD's
+  (compile-time binding_load_out_of_domain, frozen c3 verbatim); the
+  table's named refusal is demonstrated at 0.2 N instead, and a
+  layering probe records query(1.0, 0.9, 1.0) = VALID code 0 beside
+  the record refusal. Table validity (continuous Π window) and record
+  domain (measured load list) are different layers — both kept exact.
+- Implementation honesty: the published S3 check file cannot be
+  imported (module-level prereg asserts + solves), so the four pure
+  functions are copied verbatim with a run-start assertion that each
+  function's source appears byte-for-byte in the published file
+  (source_identity_vs_published: true); constants bound from the
+  sha-pinned table file.
+- Six frozen criteria reported verbatim, unchanged (c2's printed FAIL
+  is the retained f32-landing reading, same as published increment-1
+  runs); instant_reuse is additive and joins the exit-code law. WS2
+  "Instant reuse (S3 table)" chip green on screen with LAW/FALSIFIER/
+  VERDICT envelope (Qwen inspected the pixels).
+- Qwen review (author-independent, focused): receipt blocks verified;
+  9/9 cross-run /frame byte-identity recomputed; WS2 readout viewed;
+  frozen constants identical to HEAD; CRLF line-ending drift in the
+  working file normalized back to LF before commit (the whole-file
+  git diff was an artifact — semantic diff is 498/12 additive).
+  PUBLISH.
+- Decision: instant reuse is now the loop's demonstrated reuse path
+  (detailed re-solve remains the named fallback for refused cells).

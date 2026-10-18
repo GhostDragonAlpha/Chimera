@@ -1,0 +1,34 @@
+{
+ "standing": "Workshop increment 1 - persistence (boot B)",
+ "updated": "workshop inc 1",
+ "stages": [
+  {
+   "id": "WS1",
+   "name": "Persistence across sessions",
+   "status": "green",
+   "law": "restore law: /membrane_demo_restore is bit-exact by the accepted-state-id law (increment-4 membrane save/restore seam)",
+   "tool": "/membrane_demo_save | /membrane_demo_restore",
+   "artifact": "membrane_demo_save_terminal.json",
+   "falsifier": "any state-id/apex/load drift on restore; disk round-trip mismatch",
+   "cell": "PERSISTED RESTORE (fresh boot): apex z 0.1720583 wu, state id 7177421591213043741, load 1.6 N, energy 6.4515 J -- bit-exact vs terminated boot A (17.8 ms)",
+   "spec_title": "Persistence across sessions",
+   "spec": "workshop increment 1 (save/reuse): the save doc the TERMINATED boot-A engine wrote to disk is restored in this fresh boot-B engine; verified bit-exactly against boot A's terminal telemetry and /frame pixels",
+   "row_line": -1,
+   "spec_line": -1
+  },
+  {
+   "id": "WS2",
+   "name": "Instant reuse (S3 table)",
+   "status": "green",
+   "law": "validity_query(scale, load_N, gamma) -> named code; z_pred = eta_FC(Pi) * s * r0, r0 = 1.0 wu (qualified reduced response, NO solve)",
+   "tool": "s3_star_eta_pi_table_v1.json (sha-pinned) + published Fritsch-Carlson implementation",
+   "artifact": "s3_star_eta_pi_table_v1.json",
+   "falsifier": "predicted z drifts from the engine apex beyond the S5 force-allowance z-bound 1.40402e-05 wu; an unnamed refusal code; the table path not faster than the detailed deform wall on the same cell",
+   "cell": "INSTANT REUSE (no solve on the predict path): 1.6 N -> z_pred 0.17205904840608507 wu vs engine apex 0.172058344 wu (delta 7.04e-07 wu, bound 1.40402e-05); 0.8 N -> z_pred 0.2843804870391736 wu vs engine apex 0.284380317 wu (delta 1.70e-07 wu); 0.2 N -> REFUSED code 6 (unmeasured gap), engine fallback apex 0.362019569 wu; table query median 2.2 us vs deform wall 64.9 ms (29502x)",
+   "spec_title": "Instant reuse (S3 table)",
+   "spec": "workshop increment 2 (instant reuse): the loop's REUSE step answers the objective load and one more in-domain cell from the qualified table, refuses 0.2 N by NAME (code 6, unmeasured gap) with the detailed engine deform as the named fallback, and reports the measured table-vs-solve latency on screen",
+   "row_line": -1,
+   "spec_line": -1
+  }
+ ]
+}

@@ -1,0 +1,76 @@
+{
+ "schema": "chimera-workshop-increment-preregistration-v1",
+ "frozen_utc": "2026-10-18T19:34:52.164483+00:00",
+ "increment": "workshop increment 2 -- instant reuse in the live loop via the qualified S3 table",
+ "plan_anchor": "GAME_PLAN section 11.22 purpose block: the loop's REUSE step answers instantly from the qualified reduced response instead of only re-solving, with the validity query teaching the domain through named refusals; no new training when a qualified tabulated path already suffices",
+ "owner": "tools/artificial_proteins/native_binding_gameloop.py (additive block; the six frozen criteria code untouched; no engine edit, exe stays pinned c1c2474c...)",
+ "stopping_point": "the reuse step only: no rescue/transfer encounter, no gamma work, no table refinement",
+ "table_pin": {
+  "path": "docs/evidence/mechanism_factory/s3_star_eta_pi_table_v1.json",
+  "sha256": "17b0ce5472ffd6d98e85c2b8a4e2e4b35d6cf85dafc14d43a25f52b1d0c16ee2",
+  "qualified_by": "s3_reduced_response_receipt_20261018T072919.936426Z.json (tabulation_file sha match, verdict PASS)",
+  "law_pins_in_table": {
+   "law_revision": "ee9effcfbddad8d02e03f71d414b27da177f0656de535eaab0d76ae39796f0b7",
+   "solver_sha256_16": "a0f4b9f9b289ef1e"
+  },
+  "implementation_source": "D:/Chimera-Maintenance/Runtime/local-ai/math-tools/checks_tmp/s3_reduced_response_check.py (published fc_slopes/fc_eval/validity_query/predict_eta); the loop copies them verbatim and asserts at run start that each function's source appears byte-for-byte in the published file (import would execute the full S3 solve suite, so verbatim-copy + source-identity assertion is the reuse route)"
+ },
+ "frozen_predictions": {
+  "objective_cell_1.6N": {
+   "scale": 1.0,
+   "load_N": 1.6,
+   "gamma": 1.0,
+   "Pi": 1.6,
+   "cell_type": "table node (digit-for-digit)",
+   "eta": 0.17205904840608507,
+   "z_pred_wu": 0.17205904840608507,
+   "engine_measured_basis": "c1_objective apex of the same run (fresh-geometry deform at the objective load)"
+  },
+  "reuse_cell_0.8N": {
+   "scale": 1.0,
+   "load_N": 0.8,
+   "gamma": 1.0,
+   "Pi": 0.8,
+   "cell_type": "table node (digit-for-digit)",
+   "eta": 0.2843804870391736,
+   "z_pred_wu": 0.2843804870391736,
+   "engine_measured_basis": "live deform in this run's reuse step, taken AFTER a fresh engine reset (fresh-geometry basis, same as the table's s=1.0 node cells)"
+  },
+  "table_refused_cell_0.2N": {
+   "scale": 1.0,
+   "load_N": 0.2,
+   "gamma": 1.0,
+   "Pi": 0.2,
+   "predicted_code": 6,
+   "predicted_reason_prefix": "unmeasured gap",
+   "named_fallback": "the detailed engine deform path (engine-side admissible; the engine has no domain law)",
+   "note": "0.9 N at s=1.0 is table-VALID (Pi=0.9 in [0.4,2.0], code 0); its refusal is the RECORD's (compile-time binding_load_out_of_domain), demonstrated verbatim in frozen criterion 3 -- the two layers are probed separately and both framings are kept exact"
+  },
+  "layering_probe_0.9N": {
+   "query": "validity_query(scale=1.0, load_N=0.9, gamma=1.0)",
+   "predicted_code": 0,
+   "predicted_valid": true,
+   "framing": "table validity (continuous Pi window) is a different layer from the record's measured load list; the record refusal stays in c3 verbatim"
+  }
+ },
+ "frozen_predicates": {
+  "reuse_bound_wu": 1.40402e-05,
+  "reuse_bound_source": "S5 step-review ENDORSED amendment form: force allowance 1e-4 N / measured dfz/dz 7.122416 N/wu at the objective apex (reviews/step_review_s5_authoring.md); AMENDMENT 1 precedent: position readings must be consistent with the engine's force-domain allowances, not the CPU bisection quantum",
+  "predicate_reuse": "|z_pred_table - z_engine_measured| <= 1.40402e-05 wu for BOTH valid cells (1.6 N and 0.8 N)",
+  "predicate_refusal": "validity_query(1.0, 0.2, 1.0) returns code 6 with the unmeasured-gap reason; engine deform at 0.2 N is admitted (named fallback demonstrated)",
+  "predicate_layering": "validity_query(1.0, 0.9, 1.0) returns valid code 0 (recorded next to c3's record refusal)",
+  "predicate_latency_shape": "SHAPE claims only (exact ms recorded post hoc, named as wall-time characters where they appear on screen): table-query median over >=1000 repeats <= 1e-3 s/query (S3 measured 1.533e-05); engine deform wall >= 1 ms; table path faster than the detailed deform wall by >= 10x on the same cell",
+  "predicate_frames": "/frame shots byte-identical across run1 and run2 (sha256)",
+  "predicate_glass": "/glass deltas confined to the increment-1 chrome bands (strip top y<40, bottom rows y>969, left dock x<520, right dock x>1360 at the capture resolution); wall-time characters in board cell text allowed and named"
+ },
+ "criteria_relation": "six frozen criteria reported verbatim, unchanged (including c2's retained f32-landing cross-check failure, honestly reported); the additive instant-reuse check joins the exit-code law",
+ "board": {
+  "chips": [
+   "WS1 Persistence across sessions (increment 1, unchanged text)",
+   "WS2 Instant reuse (S3 table)"
+  ],
+  "capture": "/glass with WS2 selected; explicit \"on\": true on every /studio POST; board file at boot argv[2]"
+ },
+ "evidence_dir": "docs/evidence/mechanism_factory/workshop_increment2_instant_reuse/",
+ "runs_planned": 2
+}

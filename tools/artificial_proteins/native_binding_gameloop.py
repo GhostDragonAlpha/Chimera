@@ -33,12 +33,26 @@ Run INSIDE a managed GPU reservation (one gpu_batch manifest job):
       --exe <chimera_engine.exe> --out <fresh dir> [--port 8841]
 Prints "GAMELOOP RUN COMPLETE <receipt path>"; exits 1 when any frozen
 criterion FAILED (verdicts + numbers recorded in the receipt).
+
+Workshop increment 2 (ADDITIVE block, frozen criteria code untouched): the
+loop's REUSE step answers instantly from the qualified S3 reduced-response
+table (docs/evidence/mechanism_factory/s3_star_eta_pi_table_v1.json,
+sha-pinned) instead of only re-solving: two in-domain cells get table
+predictions vs the engine's measured apex (S5 state-D comparison, now
+inside the loop), one cell is refused by the table's validity query with
+its NAMED code (0.2 N -> code 6, unmeasured gap; the detailed engine deform
+is the named fallback), and the table-query latency is measured against the
+live detailed deform wall on the same cells. The published Fritsch-Carlson
+implementation is copied verbatim and its source identity against the
+published check file is asserted at run start.
 """
 from __future__ import annotations
 
 import argparse
+import inspect
 import itertools
 import json
+import statistics
 import os
 import shutil
 import socket
@@ -195,11 +209,12 @@ def _diff_stats(a: Path, b: Path) -> dict:
 PERSIST_STAGE_ID = "WS1"
 
 
-def _board_write(path: Path, stage: dict) -> None:
+def _board_write(path: Path, stage: dict, extra_stages: tuple = ()) -> None:
     """Atomic Studio board write; the overlay re-polls on mtime
-    (main.cpp:975-981 -> ui.cpp poll_board)."""
+    (main.cpp:975-981 -> ui.cpp poll_board). Increment 2: the board may
+    carry MORE than one stage (WS1 persistence + WS2 instant reuse)."""
     doc = {"standing": stage["standing"], "updated": stage["updated"],
-           "stages": [stage["stage"]]}
+           "stages": [stage["stage"], *(s["stage"] for s in extra_stages)]}
     tmp = path.with_suffix(".tmp")
     tmp.write_text(json.dumps(doc, indent=1), encoding="utf-8")
     os.replace(tmp, path)
@@ -229,7 +244,212 @@ def _persistence_stage(heading: str, updated: str, cell: str) -> dict:
                       "row_line": -1, "spec_line": -1}}
 
 
-# ── the loop, one visible engine boot A + replay boot B ──────────────────────
+# ── workshop increment 2: INSTANT REUSE via the qualified S3 table ──────────
+# ADDITIVE: the six frozen criteria above and the increment-1 persistence
+# block are untouched. The table is loaded sha-pinned; the query constants
+# are asserted against it; the interpolation/validity implementation is the
+# PUBLISHED one (math-tools checks_tmp/s3_reduced_response_check.py) copied
+# verbatim below -- importing that module would execute its full prereg +
+# fresh-solve suite, so the loop instead asserts at run start that each
+# function's source appears byte-for-byte in the published file.
+
+S3_TABLE_RELPATH = "s3_star_eta_pi_table_v1.json"
+S3_TABLE_SHA = "17b0ce5472ffd6d98e85c2b8a4e2e4b35d6cf85dafc14d43a25f52b1d0c16ee2"
+S3_CHECK_SOURCE = Path("D:/Chimera-Maintenance/Runtime/local-ai/"
+                       "math-tools/checks_tmp/s3_reduced_response_check.py")
+REUSE_CELL_LOAD = 0.8          # N; second in-domain cell (table node Pi=0.8)
+TABLE_REFUSED_LOAD = 0.2       # N; s=1.0 -> Pi=0.2, the table's named code-6
+                               # refusal (unmeasured gap (0, 0.4)); NOTE: the
+                               # loop's 0.9 N falsifier is table-VALID (Pi=0.9
+                               # in the window) -- its refusal is the RECORD's
+                               # and stays verbatim in frozen criterion 3
+TABLE_REFUSED_CODE = 6
+LATENCY_REPEATS = 1000         # median over >= 1000 repeats (prereg)
+Z_REUSE_BOUND = 1.40402e-05    # wu; S5-ENDORSED amendment form: force
+                               # allowance 1e-4 N / dfz/dz 7.122416 N/wu
+REUSE_STAGE_ID = "WS2"
+INC2_EVID_DIR = EVID_DIR / "workshop_increment2_instant_reuse"
+
+# query constants (published values; NODE_* are bound from the sha-pinned
+# table at load, the rest asserted digit-for-digit against it)
+NODE_PI = None                 # bound from the table's nodes.Pi
+NODE_ETA = None                # bound from the table's nodes.eta
+R0 = 1.0                       # wu; the table title pins r0 = 1.0 wu
+PI_LO, PI_HI = 0.4, 2.0        # table domain.Pi_interval
+S_LO, S_HI = 0.75, 2.0         # table domain.scale_interval
+MEASURED_SCALES = (0.75, 1.0, 1.5, 2.0)   # table domain.measured_scales
+F_CAP = 2.0                    # table domain.max_force_N (preregistered cap)
+CAVEATS = ["no self-intersection/ground-crossing refusal exists (S0 gap 3); "
+           "within the valid window eta >= 0.111 (apex above the rim plane)",
+           "dynamics not excluded (S0 gap 7): quasistatic prediction only"]
+
+
+def _s3_load_table() -> dict:
+    """Load the sha-pinned qualified table and bind NODE_PI/NODE_ETA from it;
+    assert the hard-coded query constants against the table's domain."""
+    tbl_path = EVID_DIR / S3_TABLE_RELPATH
+    require(file_hash(tbl_path) == S3_TABLE_SHA, "s3_table_sha_mismatch")
+    tbl = json.loads(tbl_path.read_text(encoding="utf-8"))
+    global NODE_PI, NODE_ETA
+    NODE_PI = [float(p) for p in tbl["nodes"]["Pi"]]
+    NODE_ETA = [float(e) for e in tbl["nodes"]["eta"]]
+    dom = tbl["domain"]
+    require(dom["Pi_interval"] == [PI_LO, PI_HI], "s3_table_pi_interval")
+    require(dom["scale_interval"] == [S_LO, S_HI], "s3_table_scale_interval")
+    require([float(x) for x in dom["measured_scales"]]
+            == [float(x) for x in MEASURED_SCALES], "s3_table_scales")
+    require(float(dom["max_force_N"]) == F_CAP, "s3_table_force_cap")
+    require(float(dom["gamma"]) == 1.0, "s3_table_gamma")
+    return tbl
+
+
+def _s3_source_identity() -> None:
+    """The four pure functions below must appear BYTE-FOR-BYTE in the
+    published S3 check file (reuse, not re-derivation)."""
+    pub = S3_CHECK_SOURCE.read_text(encoding="utf-8")
+    for fn in (fc_slopes, fc_eval, validity_query, predict_eta):
+        require(inspect.getsource(fn) in pub,
+                f"s3_impl_source_mismatch_{fn.__name__}")
+
+
+def _strip_node_x(win_w: int, n: int, i: int) -> float:
+    """The board strip's node-i centre (ui.cpp strip layout: pad 30, gap 6,
+    equal widths). For n == 1 this equals the increment-1 click x (w/2)."""
+    pad, gap = 30.0, 6.0
+    bw = (float(win_w) - 2 * pad - (n - 1) * gap) / float(n)
+    return pad + i * (bw + gap) + bw / 2.0
+
+
+def _reuse_stage(heading: str, updated: str, cell: str) -> dict:
+    """The WS2 board stage: same envelope pattern as the WS1 persistence
+    stage (S5 state-D readout pattern)."""
+    return {"standing": heading, "updated": updated,
+            "stage": {"id": REUSE_STAGE_ID,
+                      "name": "Instant reuse (S3 table)",
+                      "status": "green",
+                      "law": "validity_query(scale, load_N, gamma) -> named "
+                             "code; z_pred = eta_FC(Pi) * s * r0, r0 = 1.0 wu "
+                             "(qualified reduced response, NO solve)",
+                      "tool": "s3_star_eta_pi_table_v1.json (sha-pinned) + "
+                              "published Fritsch-Carlson implementation",
+                      "artifact": S3_TABLE_RELPATH,
+                      "falsifier": "predicted z drifts from the engine apex "
+                                   "beyond the S5 force-allowance z-bound "
+                                   "1.40402e-05 wu; an unnamed refusal code; "
+                                   "the table path not faster than the "
+                                   "detailed deform wall on the same cell",
+                      "cell": cell,
+                      "spec_title": "Instant reuse (S3 table)",
+                      "spec": "workshop increment 2 (instant reuse): the "
+                              "loop's REUSE step answers the objective load "
+                              "and one more in-domain cell from the "
+                              "qualified table, refuses 0.2 N by NAME "
+                              "(code 6, unmeasured gap) with the detailed "
+                              "engine deform as the named fallback, and "
+                              "reports the measured table-vs-solve latency "
+                              "on screen",
+                      "row_line": -1, "spec_line": -1}}
+
+
+def fc_slopes(x, y):
+    """Fritsch-Carlson tangents, scipy-_pchip_derivatives-compatible."""
+    h = np.diff(x)
+    delta = np.diff(y) / h
+    m = np.empty(len(y), dtype=float)
+    # endpoints: one-sided three-point estimate with monotone trimming
+    def edge(h0, h1, m0, m1):
+        d = ((2 * h0 + h1) * m0 - h0 * m1) / (h0 + h1)
+        if np.sign(d) != np.sign(m0):
+            d = 0.0
+        elif (np.sign(m0) != np.sign(m1)) and (abs(d) > abs(3 * m0)):
+            d = 3 * m0
+        return d
+    m[0] = edge(h[0], h[1], delta[0], delta[1])
+    m[-1] = edge(h[-1], h[-2], delta[-1], delta[-2])
+    for k in range(1, len(y) - 1):
+        if delta[k - 1] * delta[k] <= 0:
+            m[k] = 0.0
+        else:
+            w1 = 2 * h[k] + h[k - 1]
+            w2 = h[k] + 2 * h[k - 1]
+            m[k] = (w1 + w2) / (w1 / delta[k - 1] + w2 / delta[k])
+    return m
+
+def fc_eval(x, y, q):
+    """Monotone cubic Hermite evaluation (scalar or array)."""
+    x = np.asarray(x, float); y = np.asarray(y, float)
+    m = fc_slopes(x, y)
+    q = np.atleast_1d(np.asarray(q, float))
+    out = np.empty(q.shape)
+    for i, qq in enumerate(q):
+        j = int(np.searchsorted(x, qq, side="right") - 1)
+        j = min(max(j, 0), len(x) - 2)
+        hj = x[j + 1] - x[j]
+        t = (qq - x[j]) / hj
+        out[i] = ((1 + 2 * t) * (1 - t) ** 2 * y[j]
+                  + t * (1 - t) ** 2 * hj * m[j]
+                  + t ** 2 * (3 - 2 * t) * y[j + 1]
+                  + t ** 2 * (t - 1) * hj * m[j + 1])
+    return out if out.size > 1 else float(out[0])
+
+
+def validity_query(scale, load_N, gamma):
+    """Pure function: (valid, code, reason, Pi, flags). NO solve, no I/O."""
+    Pi = load_N / (gamma * scale * R0)
+    flags = []
+    if not (np.isfinite(scale) and np.isfinite(load_N)
+            and np.isfinite(gamma) and load_N >= 0.0 and scale > 0.0
+            and gamma > 0.0):
+        return (False, 1, "invalid_input: non-finite or negative inputs", Pi, flags)
+    if gamma != 1.0:
+        return (False, 2,
+                "gamma != 1.0 refused (S0 gap 6: the gamma axis is degenerate; "
+                "the law maps gamma into Pi but no cell off gamma=1.0 was ever "
+                "measured)", Pi, flags)
+    if not (S_LO <= scale <= S_HI):
+        return (False, 3,
+                f"scale {scale} outside the record's measured window "
+                f"[{S_LO}, {S_HI}]", Pi, flags)
+    if load_N > F_CAP:
+        return (False, 4,
+                f"load {load_N} N above the packet cap max_force_N = 2.0 N "
+                "(preregistered law, never widened; record rows 2.5/3.0 N are "
+                "s=1.0-only and above the cap, S0 gap 2)", Pi, flags)
+    if Pi > PI_HI:
+        return (False, 5,
+                f"Pi = {Pi} outside the tabulated/measured invariance window "
+                f"[{PI_LO}, {PI_HI}] (no silent extrapolation)", Pi, flags)
+    if 0.0 < Pi < PI_LO:
+        return (False, 6,
+                f"Pi = {Pi} in the unmeasured gap (0, {PI_LO}): between the "
+                "zero-load cell (s=1.0 only) and the measured invariance "
+                "window", Pi, flags)
+    if Pi == 0.0:
+        if scale == 1.0:
+            flags.append("zero_load_measured_cell")
+        else:
+            return (False, 7,
+                    f"Pi = 0 measured at scale 1.0 only; scale {scale} is an "
+                    "unmeasured extrapolation of the zero-load cell", Pi, flags)
+    if scale not in MEASURED_SCALES:
+        flags.append("scale_interpolated")
+    flags.extend(CAVEATS)
+    return (True, 0, "valid", Pi, flags)
+
+def predict_eta(scale, load_N, gamma):
+    """Reduced prediction: validity query FIRST, then table interpolation.
+    Raises Refusal (with the query's reason) on any invalid input."""
+    valid, code, reason, Pi, flags = validity_query(scale, load_N, gamma)
+    if not valid:
+        raise ValueError(f"REFUSED(code {code}): {reason}")
+    if any(abs(Pi - p) < 1e-12 for p in NODE_PI):
+        hit = [p for p in NODE_PI if abs(Pi - p) < 1e-12][0]
+        return NODE_ETA[NODE_PI.index(hit)], Pi, flags
+    return float(fc_eval(NODE_PI, NODE_ETA, Pi)), Pi, flags
+
+
+# ── the loop, one visible engine boot A + replay boot B ─────────────────────────────
+
 
 def gameloop_session(txn: dict, txn_refused: dict | None, output: Path,
                      executable: Path, port: int) -> dict:
@@ -479,6 +699,185 @@ def gameloop_session(txn: dict, txn_refused: dict | None, output: Path,
         rec["sequence"].append({"step": "restore_after_reset", "control":
                                 "reset then restore",
                                 "state_id": restored2["accepted_state_id"]})
+
+        # ── workshop increment 2: INSTANT REUSE (qualified S3 table) ─────
+        # ADDITIVE check, not one of the six frozen criteria: the REUSE step
+        # answers from the sha-pinned reduced-response table instead of only
+        # re-solving. Two in-domain cells: table prediction vs the engine's
+        # measured apex (S5 state-D comparison, now inside the loop). One
+        # table-REFUSED cell: the validity query's NAMED code, with the
+        # detailed engine deform as the named fallback. Latency: table query
+        # (median over >= 1000 repeats) vs the LIVE detailed deform wall on
+        # the same cells. The loop's 0.9 N record refusal (frozen criterion
+        # 3) is a different layer and is probed next to it, framing intact.
+        tbl = _s3_load_table()
+        _s3_source_identity()
+        reuse: dict = {"table_path": S3_TABLE_RELPATH,
+                       "table_sha256": S3_TABLE_SHA,
+                       "table_qualified_by":
+                           "s3_reduced_response_receipt_20261018T072919."
+                           "936426Z.json (verdict PASS)",
+                       "implementation_source": str(S3_CHECK_SOURCE),
+                       "source_identity_vs_published": True,
+                       "scale": 1.0, "gamma": 1.0, "r0_wu": R0,
+                       "z_bound_wu": Z_REUSE_BOUND,
+                       "z_bound_source": "S5-ENDORSED amendment form: force "
+                                         "allowance 1e-4 N / dfz_dz "
+                                         "7.122416 N/wu (AMENDMENT 1 "
+                                         "precedent: position readings "
+                                         "consistent with the engine's "
+                                         "force-domain allowances)",
+                       "cells": []}
+        # fresh-geometry basis: the table's node cells were solved from the
+        # upload baseline, so the reuse deform follows a fresh reset (the
+        # objective cell's engine apex is already in this receipt as c1)
+        engine.membrane.reset()
+        rst2 = engine.membrane.state()
+        rst2 = rst2.get("status", rst2)
+        require(rst2["accepted_state_id"] == expect_id,
+                "reuse_reset_not_baseline")
+
+        def _valid_cell(load_N: float, engine_apex: float | None,
+                        cell_type: str, engine_basis: str) -> dict:
+            valid, code, reason, Pi, flags = validity_query(1.0, load_N, 1.0)
+            require(valid and code == 0, f"reuse_cell_{load_N}_refused")
+            eta_pred, _, _ = predict_eta(1.0, load_N, 1.0)
+            z_pred = eta_pred * 1.0 * R0
+            node_hit = any(abs(Pi - p) < 1e-12 for p in NODE_PI)
+            row = {"load_N": load_N, "Pi": Pi, "cell_type": cell_type,
+                   "table_node_hit": node_hit,
+                   "eta_predicted": eta_pred, "z_pred_wu": z_pred,
+                   "engine_basis": engine_basis}
+            if engine_apex is not None:
+                row["engine_apex_z_wu"] = engine_apex
+                row["abs_delta_wu"] = abs(z_pred - engine_apex)
+            return row
+
+        # valid cell 1: the objective load -- table node digit vs c1's apex
+        c_obj = _valid_cell(OBJECTIVE_LOAD, rec["c1_objective"]["apex_z_wu"],
+                            "table node (digit-for-digit)",
+                            "c1_objective terminal apex (fresh-geometry "
+                            "deform, this receipt)")
+        reuse["cells"].append(c_obj)
+
+        # valid cell 2: 0.8 N -- live timed deform after the fresh reset
+        c08 = _valid_cell(REUSE_CELL_LOAD, None,
+                          "table node (digit-for-digit)",
+                          "live deform in this reuse step, AFTER a fresh "
+                          "engine reset (fresh-geometry basis)")
+        t0 = time.perf_counter()
+        d08 = engine.request("POST", "/membrane_demo",
+                             {"op": "deform", "load_N": REUSE_CELL_LOAD})
+        deform_wall_s = time.perf_counter() - t0
+        d08 = d08.get("status", d08)
+        require(d08.get("last_control") == "deform",
+                "reuse_cell2_deform_refused")
+        t08 = telemetry(d08)
+        c08["engine_apex_z_wu"] = t08["apex_z_wu"]
+        c08["abs_delta_wu"] = abs(c08["z_pred_wu"] - t08["apex_z_wu"])
+        c08["deform_wall_ms"] = deform_wall_s * 1000.0
+        i2 = shot("i2-reuse-08N.png")
+        c08["screenshot"] = i2.name
+        c08["screenshot_sha256"] = file_hash(i2)
+        reuse["cells"].append(c08)
+        rec["sequence"].append({"step": "reuse_0.8N", "control":
+                                f"deform load_N={REUSE_CELL_LOAD}; table "
+                                "prediction vs engine apex (no solve on the "
+                                "predict path)",
+                                "screenshot": i2.name,
+                                "screenshot_sha256": file_hash(i2),
+                                **t08})
+
+        # table-REFUSED cell: 0.2 N -> the validity query's NAMED code 6
+        rv, rcode, rreason, rPi, rflags = validity_query(1.0,
+                                                         TABLE_REFUSED_LOAD,
+                                                         1.0)
+        require((not rv) and rcode == TABLE_REFUSED_CODE
+                and "unmeasured gap" in rreason,
+                "reuse_refusal_not_named_code6")
+        # layering probe (framing kept exact): the loop's 0.9 N falsifier is
+        # VALID under the table query (Pi = 0.9 in the window); its refusal
+        # is the RECORD's, demonstrated verbatim in frozen criterion 3
+        lv, lcode, lreason, lPi, lflags = validity_query(1.0, REFUSED_LOAD,
+                                                         1.0)
+        require(lv and lcode == 0, "layering_probe_0.9N_unexpected")
+        t0 = time.perf_counter()
+        d02 = engine.request("POST", "/membrane_demo",
+                             {"op": "deform", "load_N": TABLE_REFUSED_LOAD})
+        refused_wall_s = time.perf_counter() - t0
+        d02 = d02.get("status", d02)
+        require(d02.get("last_control") == "deform",
+                "table_refusal_fallback_refused")
+        t02 = telemetry(d02)
+        j2 = shot("j2-reuse-02N-refused.png")
+        reuse["refused_cell"] = {
+            "load_N": TABLE_REFUSED_LOAD, "Pi": rPi, "code": rcode,
+            "valid": rv, "reason": rreason,
+            "named_fallback": "the detailed engine deform path (engine "
+                              "side has no domain law; the load domain "
+                              "lives in the qualified record and the "
+                              "table's validity query)",
+            "fallback_admitted": True,
+            "fallback_apex_z_wu": t02["apex_z_wu"],
+            "fallback_deform_wall_ms": refused_wall_s * 1000.0,
+            "screenshot": j2.name, "screenshot_sha256": file_hash(j2)}
+        reuse["layering_probe_0.9N"] = {
+            "query": "validity_query(scale=1.0, load_N=0.9, gamma=1.0)",
+            "valid": lv, "code": lcode, "Pi": lPi,
+            "framing": "table validity (continuous Pi window) is a "
+                       "different layer from the record's measured load "
+                       "list; the 0.9 N refusal stays verbatim in frozen "
+                       "criterion 3 (binding_load_out_of_domain)"}
+        rec["sequence"].append({"step": "reuse_refused_0.2N", "control":
+                                f"validity query REFUSES load_N="
+                                f"{TABLE_REFUSED_LOAD} (code {rcode}, "
+                                "unmeasured gap); detailed engine deform "
+                                "runs as the named fallback",
+                                "screenshot": j2.name,
+                                "screenshot_sha256": file_hash(j2), **t02})
+
+        # latency: table query median over >= 1000 repeats vs the LIVE
+        # detailed deform wall on the same cells (the increment-5 receipts
+        # carry no wall-time fields, so the solve wall is measured here,
+        # through the loop's own deform seam)
+        lat, rlat = [], []
+        for _ in range(LATENCY_REPEATS):
+            t0 = time.perf_counter()
+            predict_eta(1.0, OBJECTIVE_LOAD, 1.0)
+            lat.append(time.perf_counter() - t0)
+        for _ in range(LATENCY_REPEATS):
+            t0 = time.perf_counter()
+            validity_query(1.0, TABLE_REFUSED_LOAD, 1.0)
+            rlat.append(time.perf_counter() - t0)
+        table_median_s = statistics.median(lat)
+        refusal_median_s = statistics.median(rlat)
+        reuse["latency"] = {
+            "table_query_median_s": table_median_s,
+            "table_query_repeats": LATENCY_REPEATS,
+            "refusal_query_median_s": refusal_median_s,
+            "deform_wall_ms": deform_wall_s * 1000.0,
+            "deform_cell_load_N": REUSE_CELL_LOAD,
+            "deform_wall_basis": "live POST /membrane_demo deform wall "
+                                 "(engine detailed solve through the "
+                                 "loop's own seam), same run",
+            "ratio_deform_over_table": deform_wall_s / table_median_s,
+            "s3_receipt_cross_reference": {
+                "reduced_per_query_s": tbl["validation_summary"]
+                ["reduced_per_query_s"],
+                "detailed_total_s": tbl["validation_summary"]
+                ["detailed_total_s"],
+                "benefit_ratio": tbl["validation_summary"]["benefit_ratio"]}}
+
+        reuse["pass"] = bool(
+            all(c["abs_delta_wu"] <= Z_REUSE_BOUND for c in reuse["cells"])
+            and rcode == TABLE_REFUSED_CODE and lcode == 0
+            and d02.get("last_control") == "deform"
+            and table_median_s <= 1e-3 and deform_wall_s >= 1e-3
+            and deform_wall_s / table_median_s >= 10.0)
+        rec["instant_reuse"] = reuse
+        rec["sequence"].append({"step": "instant_reuse_summary", "control":
+                                "S3 table reuse step complete (additive "
+                                "workshop check)"})
     finally:
         if proc is not None and proc.poll() is None:
             proc.terminate()
@@ -498,10 +897,23 @@ def gameloop_session(txn: dict, txn_refused: dict | None, output: Path,
     # authoring-demo pattern); every /studio POST sends explicit "on": true
     # (the S5 sharp edge: an omitted "on" TOGGLES the overlay off).
     board_path = output / "studio_board_persistence.json"
+    # workshop increment 2: the board carries BOTH chips -- WS1 (persistence,
+    # increment 1, unchanged text) and WS2 (instant reuse). The boot-time WS2
+    # cell carries the PREREG-pinned table digits (deterministic across
+    # runs); the measured values are fed below, before the /glass capture.
     _board_write(board_path, _persistence_stage(
         "Workshop increment 1 - persistence (boot B)", "workshop inc 1",
         "fresh boot: uploading the qualified packet, replaying the "
-        "objective deform, then restoring boot A's DISK save doc"))
+        "objective deform, then restoring boot A's DISK save doc"),
+        (_reuse_stage(
+            "Workshop increment 2 - instant reuse (boot B)", "workshop inc 2",
+            "TABLE ANSWERS BEFORE THE SOLVE: 1.6 N -> z_pred "
+            f"{repr(NODE_ETA[NODE_PI.index(1.6)])} wu (table node, "
+            "digit-for-digit); 0.8 N -> z_pred "
+            f"{repr(NODE_ETA[NODE_PI.index(0.8)])} wu (table node); "
+            "0.2 N -> REFUSED by the validity query, code 6 (unmeasured "
+            "gap (0, 0.4)); the detailed engine deform stays the named "
+            "fallback"),))
     proc = None
     try:
         proc = _boot(executable, native, port, board=board_path,
@@ -618,26 +1030,58 @@ def gameloop_session(txn: dict, txn_refused: dict | None, output: Path,
         lh = float(info["lh"])
         node_h = 92.0 - 30.0 - lh - 12.0
         engine.request("POST", "/ui_click",
-                       {"x": int(info["w"]) / 2.0, "y": 30.0 + node_h / 2.0})
+                       {"x": _strip_node_x(int(info["w"]), 2, 0),
+                        "y": 30.0 + node_h / 2.0})
         time.sleep(0.8)
         sel = engine.request("GET", "/studio")
         require(sel.get("selected") == PERSIST_STAGE_ID,
                 f"stage_not_selected_{sel.get('selected')}")
+        # workshop increment 2: select the WS2 chip for the glass readout
+        engine.request("POST", "/ui_click",
+                       {"x": _strip_node_x(int(info["w"]), 2, 1),
+                        "y": 30.0 + node_h / 2.0})
+        time.sleep(0.8)
+        sel2 = engine.request("GET", "/studio")
+        require(sel2.get("selected") == REUSE_STAGE_ID,
+                f"ws2_not_selected_{sel2.get('selected')}")
         engine.request("POST", "/studio", {"on": True, "left_size": 500.0})
         time.sleep(0.5)
+        ir = rec["instant_reuse"]
+        z16 = repr(NODE_ETA[NODE_PI.index(1.6)])
+        z08 = repr(NODE_ETA[NODE_PI.index(0.8)])
+        lat_us = ir["latency"]["table_query_median_s"] * 1e6
+        wall_ms = ir["latency"]["deform_wall_ms"]
+        ratio = ir["latency"]["ratio_deform_over_table"]
+        fb_apex = ir["refused_cell"]["fallback_apex_z_wu"]
+        ws2_cell = (
+            f"INSTANT REUSE (no solve on the predict path): "
+            f"1.6 N -> z_pred {z16} wu vs engine apex "
+            f"{rec['c1_objective']['apex_z_wu']:.9f} wu (delta "
+            f"{ir['cells'][0]['abs_delta_wu']:.2e} wu, bound "
+            f"{Z_REUSE_BOUND:.5e}); 0.8 N -> z_pred {z08} wu vs engine "
+            f"apex {ir['cells'][1]['engine_apex_z_wu']:.9f} wu (delta "
+            f"{ir['cells'][1]['abs_delta_wu']:.2e} wu); 0.2 N -> REFUSED "
+            f"code 6 (unmeasured gap), engine fallback apex {fb_apex:.9f}"
+            f" wu; table query median {lat_us:.1f} us vs deform wall "
+            f"{wall_ms:.1f} ms ({ratio:.0f}x)")
+        ws2 = _reuse_stage(
+            "Workshop increment 2 - instant reuse (boot B)", "workshop inc 2",
+            ws2_cell)
         _board_write(board_path, _persistence_stage(
             "Workshop increment 1 - persistence (boot B)", "workshop inc 1",
             f"PERSISTED RESTORE (fresh boot): apex z {p_t['apex_z_wu']:.7f}"
             f" wu, state id {p_st['accepted_state_id']}, load "
             f"{p_t['load_N']:.1f} N, energy {p_t['energy_J']:.4f} J -- "
-            f"bit-exact vs terminated boot A ({persist_ms:.1f} ms)"))
+            f"bit-exact vs terminated boot A ({persist_ms:.1f} ms)"),
+            (ws2,))
         time.sleep(1.1)
         _board_write(board_path, _persistence_stage(
             "Workshop increment 1 - persistence (boot B)", "workshop inc 1",
             f"PERSISTED RESTORE (fresh boot): apex z {p_t['apex_z_wu']:.7f}"
             f" wu, state id {p_st['accepted_state_id']}, load "
             f"{p_t['load_N']:.1f} N, energy {p_t['energy_J']:.4f} J -- "
-            f"bit-exact vs terminated boot A ({persist_ms:.1f} ms)"))
+            f"bit-exact vs terminated boot A ({persist_ms:.1f} ms)"),
+            (ws2,))
         time.sleep(0.6)          # fresh mtime: the overlay re-polls (S5)
         h = output / "h-glass-persisted.png"
         _shots({"dir": output, "spec": {
@@ -667,7 +1111,9 @@ def gameloop_session(txn: dict, txn_refused: dict | None, output: Path,
                          (3, "c3_failure"), (5, "c5_restart"),
                          (6, "c6_replay")))
         + f", persistence({'additive workshop check'})="
-          f"{'PASS' if rec['persistence']['pass'] else 'FAIL'}")
+          f"{'PASS' if rec['persistence']['pass'] else 'FAIL'}"
+        + f", instant_reuse({'additive workshop check'})="
+          f"{'PASS' if rec['instant_reuse']['pass'] else 'FAIL'}")
     return rec
 
 
@@ -716,6 +1162,9 @@ def main(argv=None) -> int:
     ap.add_argument("--exe", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--port", type=int, default=8841)
+    ap.add_argument("--receipt-dir", default=str(INC2_EVID_DIR),
+                    help="where the gameloop_run_receipt_<utc>.json is "
+                         "written (increment-2 evidence dir by default)")
     args = ap.parse_args(argv)
 
     exe = Path(args.exe)
@@ -755,6 +1204,16 @@ def main(argv=None) -> int:
                        "residual_law_N": RESIDUAL_LAW,
                        "cpu_cross_check": CROSSCHECK_TOL},
         "prerun_cpu_verification": PRERUN_CPU_CHECK,
+        "workshop_increment2": {
+            "preregistration": "docs/evidence/mechanism_factory/"
+                               "workshop_increment2_instant_reuse/"
+                               "PREREGISTRATION.json",
+            "table": S3_TABLE_RELPATH, "table_sha256": S3_TABLE_SHA,
+            "implementation_source": str(S3_CHECK_SOURCE),
+            "additive_note": "instant reuse is NOT one of the six frozen "
+                             "criteria; those are unchanged and reported "
+                             "verbatim; the instant-reuse check joins the "
+                             "exit-code law"},
         "criterion_3_record_refusal": refused,
         "instance": rec,
         "screenshots": {p.name: {"path": str(p.resolve()),
@@ -772,9 +1231,23 @@ def main(argv=None) -> int:
                  "the six frozen criteria are unchanged), with a Studio "
                  "board /glass readout. The demo centre is bound to the "
                  "record's load-port vertex (seam 200); see centre_binding "
-                 "justification.",
+                 "justification. Workshop increment 2 (ADDITIVE): the "
+                 "REUSE step answers from the qualified S3 reduced-response "
+                 "table (sha-pinned s3_star_eta_pi_table_v1.json; published "
+                 "Fritsch-Carlson implementation, source identity "
+                 "asserted): table prediction vs engine apex on the "
+                 "objective (1.6 N) and one more in-domain cell (0.8 N), "
+                 "the validity query's NAMED refusal (0.2 N -> code 6, "
+                 "unmeasured gap) with the detailed engine deform as the "
+                 "named fallback, the 0.9 N layering probe (table-VALID; "
+                 "record refusal stays verbatim in c3), and the measured "
+                 "table-query latency vs the live detailed deform wall on "
+                 "the same cells; the instant-reuse check joins the "
+                 "exit-code law.",
     }
-    path = EVID_DIR / (f"gameloop_run_receipt_{default_stamp()}.json")
+    path = Path(args.receipt_dir) / (
+        f"gameloop_run_receipt_{default_stamp()}.json")
+    path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(receipt, indent=1, default=str) + "\n",
                     encoding="utf-8")
     for step in rec["sequence"]:
@@ -812,10 +1285,23 @@ def main(argv=None) -> int:
           f" {pers['restore_wall_ms']:.1f} ms,"
           f" {pers['pixel_diff_vs_replay_terminal']['changed_px']} px vs"
           f" replay terminal)")
+    re_ = rec["instant_reuse"]
+    print(f"[{'PASS' if re_['pass'] else 'FAIL'}] instant reuse (additive"
+          f" workshop check, not a frozen criterion): S3 table z_pred vs"
+          f" engine apex deltas "
+          f"{re_['cells'][0]['abs_delta_wu']:.2e} / "
+          f"{re_['cells'][1]['abs_delta_wu']:.2e} wu (bound "
+          f"{Z_REUSE_BOUND:.4e}); {TABLE_REFUSED_LOAD} N refused code "
+          f"{re_['refused_cell']['code']} (unmeasured gap), engine fallback"
+          f" admitted; table query median "
+          f"{re_['latency']['table_query_median_s'] * 1e6:.1f} us vs deform"
+          f" wall {re_['latency']['deform_wall_ms']:.1f} ms "
+          f"({re_['latency']['ratio_deform_over_table']:.0f}x)")
     print(f"GAMELOOP RUN COMPLETE {path}")
     return 0 if all(rec[k].get("pass") for k in
                     ("c1_objective", "c2_success", "c3_failure",
-                     "c5_restart", "c6_replay", "persistence")) else 1
+                     "c5_restart", "c6_replay", "persistence",
+                     "instant_reuse")) else 1
 
 
 if __name__ == "__main__":

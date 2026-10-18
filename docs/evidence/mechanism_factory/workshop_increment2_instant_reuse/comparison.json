@@ -1,0 +1,172 @@
+{
+ "frame_byte_identity": {
+  "law": "prereg: /frame shots byte-identical across run1 and run2",
+  "results": {
+   "a-startup-baseline.png": {
+    "run1": "d96e444017a767e99aef14822d61ec160756cc4a985c1a8163c67b65ae4f3c74",
+    "run2": "d96e444017a767e99aef14822d61ec160756cc4a985c1a8163c67b65ae4f3c74",
+    "byte_identical": true
+   },
+   "b-terminal-objective.png": {
+    "run1": "3bd4e15afa9ed0c8ee28372805a96bf2d24c6db22722cbae7a3f64e8c81f216e",
+    "run2": "3bd4e15afa9ed0c8ee28372805a96bf2d24c6db22722cbae7a3f64e8c81f216e",
+    "byte_identical": true
+   },
+   "c-out-of-domain-load.png": {
+    "run1": "4139f2fcecd4fb4887d80440e45a8e7f466d786e4cb1bb841c4a4eca567d0b93",
+    "run2": "4139f2fcecd4fb4887d80440e45a8e7f466d786e4cb1bb841c4a4eca567d0b93",
+    "byte_identical": true
+   },
+   "d-restored-terminal.png": {
+    "run1": "3bd4e15afa9ed0c8ee28372805a96bf2d24c6db22722cbae7a3f64e8c81f216e",
+    "run2": "3bd4e15afa9ed0c8ee28372805a96bf2d24c6db22722cbae7a3f64e8c81f216e",
+    "byte_identical": true
+   },
+   "e-reset-baseline.png": {
+    "run1": "d96e444017a767e99aef14822d61ec160756cc4a985c1a8163c67b65ae4f3c74",
+    "run2": "d96e444017a767e99aef14822d61ec160756cc4a985c1a8163c67b65ae4f3c74",
+    "byte_identical": true
+   },
+   "f-replay-terminal.png": {
+    "run1": "3bd4e15afa9ed0c8ee28372805a96bf2d24c6db22722cbae7a3f64e8c81f216e",
+    "run2": "3bd4e15afa9ed0c8ee28372805a96bf2d24c6db22722cbae7a3f64e8c81f216e",
+    "byte_identical": true
+   },
+   "g-persisted-terminal.png": {
+    "run1": "3bd4e15afa9ed0c8ee28372805a96bf2d24c6db22722cbae7a3f64e8c81f216e",
+    "run2": "3bd4e15afa9ed0c8ee28372805a96bf2d24c6db22722cbae7a3f64e8c81f216e",
+    "byte_identical": true
+   },
+   "i2-reuse-08N.png": {
+    "run1": "ecdd097b6e77b6ea338bf0055040a074c561ebd26db595581deb83c112e20525",
+    "run2": "ecdd097b6e77b6ea338bf0055040a074c561ebd26db595581deb83c112e20525",
+    "byte_identical": true
+   },
+   "j2-reuse-02N-refused.png": {
+    "run1": "213a4f4b5fbcad87ad4e154ec97559b73d6d315de9522bf05e4b94bb7a92df6a",
+    "run2": "213a4f4b5fbcad87ad4e154ec97559b73d6d315de9522bf05e4b94bb7a92df6a",
+    "byte_identical": true
+   }
+  },
+  "all_frames_byte_identical": true
+ },
+ "board_files": {
+  "law": "prereg: every deterministic value digit-for-digit identical; ONLY the named wall-time characters may differ (WS1 restore ms, WS2 table-median us / deform-wall ms / ratio)",
+  "identical_fields": {
+   "standing": true,
+   "updated": true,
+   "WS1.id": true,
+   "WS1.name": true,
+   "WS1.status": true,
+   "WS1.law": true,
+   "WS1.tool": true,
+   "WS1.artifact": true,
+   "WS1.falsifier": true,
+   "WS1.spec_title": true,
+   "WS1.spec": true,
+   "WS1.row_line": true,
+   "WS1.spec_line": true,
+   "WS2.id": true,
+   "WS2.name": true,
+   "WS2.status": true,
+   "WS2.law": true,
+   "WS2.tool": true,
+   "WS2.artifact": true,
+   "WS2.falsifier": true,
+   "WS2.spec_title": true,
+   "WS2.spec": true,
+   "WS2.row_line": true,
+   "WS2.spec_line": true,
+   "WS1.cell_stripped": true,
+   "WS2.cell_stripped": true
+  },
+  "field_names_not_identical": [],
+  "ws1_cell_run1": "PERSISTED RESTORE (fresh boot): apex z 0.1720583 wu, state id 7177421591213043741, load 1.6 N, energy 6.4515 J -- bit-exact vs terminated boot A (17.8 ms)",
+  "ws1_cell_run2": "PERSISTED RESTORE (fresh boot): apex z 0.1720583 wu, state id 7177421591213043741, load 1.6 N, energy 6.4515 J -- bit-exact vs terminated boot A (20.5 ms)",
+  "ws2_cell_run1": "INSTANT REUSE (no solve on the predict path): 1.6 N -> z_pred 0.17205904840608507 wu vs engine apex 0.172058344 wu (delta 7.04e-07 wu, bound 1.40402e-05); 0.8 N -> z_pred 0.2843804870391736 wu vs engine apex 0.284380317 wu (delta 1.70e-07 wu); 0.2 N -> REFUSED code 6 (unmeasured gap), engine fallback apex 0.362019569 wu; table query median 2.2 us vs deform wall 64.9 ms (29502x)",
+  "ws2_cell_run2": "INSTANT REUSE (no solve on the predict path): 1.6 N -> z_pred 0.17205904840608507 wu vs engine apex 0.172058344 wu (delta 7.04e-07 wu, bound 1.40402e-05); 0.8 N -> z_pred 0.2843804870391736 wu vs engine apex 0.284380317 wu (delta 1.70e-07 wu); 0.2 N -> REFUSED code 6 (unmeasured gap), engine fallback apex 0.362019569 wu; table query median 4.9 us vs deform wall 76.1 ms (15540x)",
+  "ws1_cell_pass": true,
+  "ws2_cell_pass": true
+ },
+ "glass": {
+  "law": "prereg: /glass deltas confined to the chrome bands; wall-time characters in board cell text allowed and named. Chrome = the UNION of the two qualified definitions (below); the pixels outside the increment-1 bands alone are the timeline/show-clock digits (named chrome in the S5 demo, which ticks), preserved as crops inc2_glass_diff_crop_run*.png",
+  "resolution": [
+   1920,
+   1009
+  ],
+  "changed_px": 1006,
+  "changed_px_outside_increment1_bands": 229,
+  "offending_bbox_increment1_bands": {
+   "x0": 538,
+   "x1": 926,
+   "y0": 794,
+   "y1": 909,
+   "content": "timeline reel row: show clock t1.08 vs t1.03, 15:15 vs 15:17, t = 9.668 vs 9.559"
+  },
+  "changed_px_outside_s5_chrome_only": 274,
+  "note_s5_only": "the S5 mask has no left-dock band, so the live board cell text (named wall-time characters) counts outside it; that text is chrome by the increment-1 bands",
+  "changed_px_outside_union_chrome": 0,
+  "s5_chrome_mask": {
+   "strip_y_lt": 100,
+   "right_dock_x_gt": 1400,
+   "reel_timeline_status_y_gt": 780,
+   "source": "math-tools/checks_tmp/s5_compare.py chrome_mask (S5-qualified)"
+  },
+  "bands_increment1": {
+   "strip_top_y": 40,
+   "bottom_rows_y": 969,
+   "left_dock_x": 520,
+   "right_dock_x": 1360
+  },
+  "bbox": {
+   "x0": 19,
+   "x1": 1887,
+   "y0": 129,
+   "y1": 1005
+  },
+  "pass": true
+ },
+ "prereg_predicates": {
+  "law": "prereg predicates re-checked against BOTH run receipts; the six frozen criteria are reported verbatim (c2's retained f32 landing failure included)",
+  "results": {
+   "run1": {
+    "reuse_bound_1.6N": true,
+    "reuse_bound_0.8N": true,
+    "refusal_code6_named": true,
+    "fallback_admitted": true,
+    "layering_0.9N_table_valid": true,
+    "latency_shape_table_us": true,
+    "latency_shape_deform_ms": true,
+    "latency_shape_ratio_10x": true,
+    "table_sha_pinned": true,
+    "instant_reuse_pass": true,
+    "frozen_criteria_verbatim": "loop completed: c1=PASS, c2=FAIL, c3=PASS, c5=PASS, c6=PASS, persistence(additive workshop check)=PASS, instant_reuse(additive workshop check)=PASS"
+   },
+   "run2": {
+    "reuse_bound_1.6N": true,
+    "reuse_bound_0.8N": true,
+    "refusal_code6_named": true,
+    "fallback_admitted": true,
+    "layering_0.9N_table_valid": true,
+    "latency_shape_table_us": true,
+    "latency_shape_deform_ms": true,
+    "latency_shape_ratio_10x": true,
+    "table_sha_pinned": true,
+    "instant_reuse_pass": true,
+    "frozen_criteria_verbatim": "loop completed: c1=PASS, c2=FAIL, c3=PASS, c5=PASS, c6=PASS, persistence(additive workshop check)=PASS, instant_reuse(additive workshop check)=PASS"
+   }
+  },
+  "pass": true
+ },
+ "schema": "chimera-workshop-increment-comparison-v1",
+ "runs": [
+  "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\workshop_increment2_instant_reuse\\run1",
+  "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\workshop_increment2_instant_reuse\\run2"
+ ],
+ "receipt_paths": {
+  "run1": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\workshop_increment2_instant_reuse\\gameloop_run_receipt_20261018T201528.830420Z.json",
+  "run2": "D:\\Chimera-Maintenance\\PythonChimera\\docs\\evidence\\mechanism_factory\\workshop_increment2_instant_reuse\\gameloop_run_receipt_20261018T201735.511376Z.json",
+  "note": "receipts paired to runs by the run-dir string inside"
+ },
+ "all_predicates_pass": true
+}
