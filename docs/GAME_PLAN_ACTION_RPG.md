@@ -451,7 +451,7 @@ runtime qualification or proof that an unfamiliar player can complete the loop.
 | Native B2 routes, Studio inspector, reel, A/B selector and recorder | One physical state, selection, observation and comparison | Connect existing controls and feedback; implement only missing interactions through their current owners. |
 | [Recipe comparisons](../tools/recipe_experiments/README.md) | Baseline restore, soft/stiff comparisons, input identities and receipts | Bounded equilibrium fixture, not a general transient runner; do not create another comparison service. |
 | [Artificial proteins](../tools/artificial_proteins/README.md) and [mechanism factory](../tools/mechanism_factory/README.md) | Research pieces, port composition, detailed references, bounded tables/fits and GPU batches | Reuse supported behavior within current evidence; arbitrary edited meshes and universal material laws are separate claims. |
-| [Native deformation](../tools/artificial_proteins/native_binding_deform.py) and [game-loop driver](../tools/artificial_proteins/native_binding_gameloop.py) | Visible membrane deformation, membrane-state save/restore, objective, failure/recovery, reset and replay | Latest inspected loop receipt fails an independent cross-check (§11.20.12). Resolve it before physics admission; scripted operation is not human playability. |
+| [Native deformation](../tools/artificial_proteins/native_binding_deform.py) and [game-loop driver](../tools/artificial_proteins/native_binding_gameloop.py) | Visible membrane deformation, membrane-state save/restore, objective, failure/recovery, reset and replay | Reuse the S3 prediction/readout and cross-session persistence already demonstrated. Retained position-check failure and reviewed amendment are distinguished in §11.20.12; scripted operation is not human playability. |
 
 B2 construction and the membrane demo have distinct state owners. Their save
 documents/admission rules are not interchangeable. Reuse each existing interface;
@@ -2922,22 +2922,35 @@ piece records and composition under `tools/mechanism_factory/`. Native drivers u
 membrane-demo save/restore and a scripted objective/recovery/replay loop. Inspect
 those paths and current identities before calling AP01/AP02-era omissions missing.
 
-The latest inspected [game-loop receipt](evidence/mechanism_factory/gameloop_run_receipt_20261018T184338.756806Z.json)
-records a single composed star instance and successful disk save/restore across
-engine boots. Its binary identity matches the [earlier retained run](evidence/mechanism_factory/gameloop_run_receipt_20261017T185057.629963Z.json).
-Objective, failure/recovery, reset, replay and the additive persistence check pass,
-but `c2_success.pass` remains false:
-the CPU position cross-check is about 6.63e-7 world units against its frozen 1e-7
-limit. This is a specific qualification blocker, not a fresh pass or evidence of
-general gameplay readiness. Preserve the failure and diagnose it against the
-independent reference; do not relax the frozen check to declare this run
-successful. A justified replacement numerical contract requires separate review,
-versioning and new evidence.
+The latest inspected [workshop increment 2 receipts and comparison](evidence/mechanism_factory/workshop_increment2_instant_reuse/comparison.json)
+add S3-table prediction/readout reuse to the existing loop and retain successful
+disk save/restore across engine boots. Both recorded runs report `instant_reuse`
+and `persistence` passing. Table predictions at the 0.8 N and 1.6 N nodes are
+compared with native deformation; the table and its function-source identities
+are pinned. Reuse this implementation rather than assign another table integration.
+Recorded median lookup time is 2.2–4.9 microseconds, versus 64.9–76.1 milliseconds
+for the native deform request. These measure different scopes: a prediction query
+and a request including a detailed solve. They do not establish a game-frame
+speedup or replacement of the native state update/render path.
 
-Record-level refusal does not make the raw demo endpoint enforce the domain:
-the receipt explicitly exercises an engine-admitted out-of-domain load.
-Player-facing use must go through the validated admission path and retain recovery.
-That demonstration is not a general material failure law.
+**Retained failure and reviewed interpretation:** `c2_success.pass` remains false
+under the original position reading: about 6.63e-7 world units against 1e-7.
+The [independent increment-5 review](evidence/mechanism_factory/reviews/step_review_gameloop_increment5.md)
+and [evidence index](evidence/mechanism_factory/INDEX.md) also record a numbered
+force/residual-units amendment and its acceptance. Preserve both the original
+measurement/verdict and that scoped decision. The driver still uses the historical
+position predicate for its exit code; a nonzero exit alone does not negate the
+additive persistence/reuse results. Consult the applicable versioned contract and
+current source pins before admission, rather than restart completed work from an
+old boolean. This plan audit neither silently relaxes a check nor grants new gates.
+
+**Distinct validity layers matter to the player path:** the table permits 0.9 N
+where the record refuses it, while a 0.2 N table query is refused and the raw engine
+still deforms. The latter is a demonstrated diagnostic fallback, not proof of a
+qualified player fallback. A live action must satisfy its record, representation
+and native contracts; choose an already admitted detailed path when available,
+otherwise preserve the accepted state and explain the unsupported action. A
+numerical domain refusal must not be presented as physical material breakage.
 
 **Game implication:** useful components and an automated native loop exist.
 Connect verified behavior to player-controlled construction, understandable
@@ -3073,6 +3086,12 @@ not to install a replacement runtime or regenerate the whole database. Its curre
 identifies a 2,101,546,900-byte database (about 2.10 GB); the pointer alone is not
 the data. For a later authorized import, retain a compact selection of records
 and provenance for the game rather than ship the entire research database.
+Inspect the pinned HDF5 columns before writing the adapter: the README's thermal
+field is `homogenizedConduction`, while the current [exporter](https://github.com/unitcellhub/unitcellengine/blob/main/src/unitcellengine/design.py)
+uses `homogenizedConductance` and exposes fewer directional stress-amplification
+fields than the README lists. This is a documentation/exporter mismatch, not a
+verified statement about the uninspected binary. Bind selected fields explicitly;
+missing measurements remain missing, never implicit zeros or guessed aliases.
 
 **FEBio adapter:** the published collection includes explicit parameter and axis
 corrections for some compression/relaxation cases. Carry those corrections with
@@ -4174,9 +4193,9 @@ the smallest missing part of the player sequence and implement it through its
 existing owner. Keep a compact “already usable / missing / blocked” map with
 source/evidence links in the work record. Another inventory or blanket research
 campaign is not the deliverable. Reuse the scripted membrane loop's existing
-reset/save/deform paths, respecting its failed independent cross-check (§11.20.12)
-and separate state class. Rigid construction can support interaction work within
-its own qualified scope.
+reset/save/deform and S3-reuse paths, respecting the versioned cross-check decision
+and distinct validity layers in §11.20.12, plus its separate state class. Rigid
+construction can support interaction work within its own qualified scope.
 
 Use §11.22's purpose block for every child and review. Qwen owns the playable
 result, Maya can implement substantial integration, and Step reviews consequential
