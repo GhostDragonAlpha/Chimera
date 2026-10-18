@@ -936,3 +936,14 @@ touches no non-membrane route line.
   (and for the 2.5/3.0 N rows, s=1.0 only). The similarity law
   Pi = F/(gamma*s*r0), eta = z/(s*r0) is now a MEASURED invariance of
   the star over Pi in [0.4, 2.0], not just a derivation.
+
+## Correction to the S1 domain-read prose (2026-10-17)
+
+The S1 report and step's review both say "the record's own
+valid_loads_N rows at 2.5/3.0 N are still measured at s = 1.0 ONLY."
+Stale attribution: the S0 gap-2 retraction (39b304d7, published before
+the S1 run) already removed 2.5/3.0 from the record's valid_loads_N
+(current claims: loads [0.0..2.0], scales [0.75,1.0,1.5,2.0]). The
+underlying fact stands for the STUDY receipt
+(load_domain_study_20261017.json), whose 2.5/3.0 N rows are measured at
+s = 1.0 only. No record change; published artifacts left as written.
