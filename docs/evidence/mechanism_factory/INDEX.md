@@ -910,3 +910,29 @@ touches no non-membrane route line.
   parameter so retractions record honest history. piece_record_checks
   6/6, native_binding_checks 5/5; probe: 1.6/2.0 compile, 0.9/2.5/3.0
   refused binding_load_out_of_domain.
+
+## S1 detailed multiscale reference (2026-10-17, CPU-only) — gate PASS
+
+- `S1_multiscale_reference.md` +
+  `s1_multiscale_receipt_20261017T231542.626384Z.json` — Maya's
+  preregistered scale-transfer suite (S0 gap 1): matched-Pi rays
+  F = s*F_ref across scales {0.75, 1.5, 2.0} collapse to
+  |delta eta| <= 1.831e-07 (stagnation-noise floor, 547x inside the
+  preregistered TOL_ETA = 1e-4); 15/15 deliberately-unmatched fixed-F
+  controls do NOT collapse (min 1.696e-02, >169x the 1e-3 floor);
+  reference cell (1.0, 0.8 N) reproduced to 0.0. Cap truncation
+  recorded, never solved: (1.5, >2.0 N), (2.0, >2.0 N). Scale transfer
+  is structurally distinct from remeshing (recipe pins n_rim=200;
+  byte-identical topology); the resolution axis is one reported
+  contrast point (patch 200 vs 300, |delta eta| 1.158e-05), honestly
+  deferred, no convergence claim.
+- `reviews/step_review_s1_multiscale.md` — step reproduced all 27
+  in-grid solves digit-for-digit, CONFIRMED all seven claims, ruled the
+  S1 gate PASS and the resolution-axis deferral honest. One prose
+  correction applied at his note: the unmeasured matched-ray region at
+  s=2.0 starts above 1.6 N (1.6 N is measured), not 1.0 N.
+- Domain consequence: the record's Cartesian (scale x load) claim is
+  measured within the packet's 2.0 N cap and overclaimed only above it
+  (and for the 2.5/3.0 N rows, s=1.0 only). The similarity law
+  Pi = F/(gamma*s*r0), eta = z/(s*r0) is now a MEASURED invariance of
+  the star over Pi in [0.4, 2.0], not just a derivation.

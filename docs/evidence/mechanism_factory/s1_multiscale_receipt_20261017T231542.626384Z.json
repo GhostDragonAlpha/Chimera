@@ -1,0 +1,498 @@
+{
+ "schema": "chimera-mechanism-factory-s1-multiscale-receipt-v1",
+ "utc": "2026-10-17T23:15:42.626407+00:00",
+ "title": "S1 detailed multiscale reference: star eta(Pi) collapse at matched Pi, fixed-F unmatched controls, one-point remeshing contrast",
+ "mechanism": "assembly.star-k2 (composed_chain.build_star, n_rim=200 recipe, gamma=1.0 J/wu^2), solver patch-equilibrium-solver-v2, max_steps=60000",
+ "reference_row_source": {
+  "path": "docs/evidence/mechanism_factory/load_domain_study_20261017.json",
+  "sha256": "da16eccc8ca379574047598003ed896423182955c3fba5490171896e4dc7363b",
+  "loads_N": [
+   0.0,
+   0.4,
+   0.8,
+   1.2,
+   1.6,
+   2.0
+  ]
+ },
+ "preregistration": {
+  "TOL_ETA": 0.0001,
+  "unmatched_floor": 0.001,
+  "gate_residual_N": 1e-06,
+  "determinism_tol_wu": 1e-09,
+  "tol_justification": "per-solve displacement bound 1e-6 N * P=1/gamma_max=1 wu/N = 1e-6 wu; eta scale factor <= 1/0.75; two solves <= ~2.7e-6 eta-units; TOL_ETA = 1e-4 >= 37x margin",
+  "failed_S1": [
+   "T1 any in-grid solve out of the 1e-6 N gate",
+   "T2 any matched-Pi |delta eta| > 1e-4",
+   "T3 any unmatched fixed-F deviation <= 1e-3",
+   "T4/T6 reference or retained-study determinism broken",
+   "T5 any solve above the 2.0 N packet port cap"
+  ]
+ },
+ "grid": [
+  {
+   "status": "stationary",
+   "free_residual_N": 8.743006318923108e-14,
+   "apex_z_wu": 0.2524892671265797,
+   "eta": 0.3366523561687729,
+   "Pi": 0.4000000000000001,
+   "n_accepted": 2363,
+   "wall_time_s": 0.6042323112487793,
+   "scale": 0.75,
+   "F_ref_N": 0.4,
+   "F_s_N": 0.30000000000000004,
+   "regime": "matched_Pi",
+   "delta_eta_vs_ref": 8.104628079763643e-15,
+   "in_gate": true
+  },
+  {
+   "status": "stagnated",
+   "free_residual_N": 4.789419851825016e-07,
+   "apex_z_wu": 0.2132852279860053,
+   "eta": 0.2843803039813404,
+   "Pi": 0.8000000000000002,
+   "n_accepted": 1015,
+   "wall_time_s": 0.26107144355773926,
+   "scale": 0.75,
+   "F_ref_N": 0.8,
+   "F_s_N": 0.6000000000000001,
+   "regime": "matched_Pi",
+   "delta_eta_vs_ref": 1.8305783322514202e-07,
+   "in_gate": true
+  },
+  {
+   "status": "stagnated",
+   "free_residual_N": 3.446502743198465e-07,
+   "apex_z_wu": 0.17225068089683535,
+   "eta": 0.2296675745291138,
+   "Pi": 1.2,
+   "n_accepted": 4491,
+   "wall_time_s": 1.1273906230926514,
+   "scale": 0.75,
+   "F_ref_N": 1.2,
+   "F_s_N": 0.8999999999999999,
+   "regime": "matched_Pi",
+   "delta_eta_vs_ref": 8.326672684688674e-17,
+   "in_gate": true
+  },
+  {
+   "status": "stagnated",
+   "free_residual_N": 2.508177148197177e-07,
+   "apex_z_wu": 0.12904428630456372,
+   "eta": 0.17205904840608496,
+   "Pi": 1.6000000000000003,
+   "n_accepted": 8155,
+   "wall_time_s": 2.0214595794677734,
+   "scale": 0.75,
+   "F_ref_N": 1.6,
+   "F_s_N": 1.2000000000000002,
+   "regime": "matched_Pi",
+   "delta_eta_vs_ref": 1.1102230246251565e-16,
+   "in_gate": true
+  },
+  {
+   "status": "stagnated",
+   "free_residual_N": 2.0218842333719067e-07,
+   "apex_z_wu": 0.08332323266939935,
+   "eta": 0.11109764355919914,
+   "Pi": 2.0,
+   "n_accepted": 12034,
+   "wall_time_s": 2.984768867492676,
+   "scale": 0.75,
+   "F_ref_N": 2.0,
+   "F_s_N": 1.5,
+   "regime": "matched_Pi",
+   "delta_eta_vs_ref": 9.71445146547012e-17,
+   "in_gate": true
+  },
+  {
+   "status": "stationary",
+   "free_residual_N": 1.7486012637846216e-13,
+   "apex_z_wu": 0.5049785342531594,
+   "eta": 0.3366523561687729,
+   "Pi": 0.4000000000000001,
+   "n_accepted": 2363,
+   "wall_time_s": 0.6015007495880127,
+   "scale": 1.5,
+   "F_ref_N": 0.4,
+   "F_s_N": 0.6000000000000001,
+   "regime": "matched_Pi",
+   "delta_eta_vs_ref": 8.104628079763643e-15,
+   "in_gate": true
+  },
+  {
+   "status": "stagnated",
+   "free_residual_N": 9.578839703650033e-07,
+   "apex_z_wu": 0.4265704559720106,
+   "eta": 0.2843803039813404,
+   "Pi": 0.8000000000000002,
+   "n_accepted": 1015,
+   "wall_time_s": 0.26377010345458984,
+   "scale": 1.5,
+   "F_ref_N": 0.8,
+   "F_s_N": 1.2000000000000002,
+   "regime": "matched_Pi",
+   "delta_eta_vs_ref": 1.8305783322514202e-07,
+   "in_gate": true
+  },
+  {
+   "status": "stagnated",
+   "free_residual_N": 6.89300548639693e-07,
+   "apex_z_wu": 0.3445013617936707,
+   "eta": 0.2296675745291138,
+   "Pi": 1.2,
+   "n_accepted": 4491,
+   "wall_time_s": 1.1128721237182617,
+   "scale": 1.5,
+   "F_ref_N": 1.2,
+   "F_s_N": 1.7999999999999998,
+   "regime": "matched_Pi",
+   "delta_eta_vs_ref": 8.326672684688674e-17,
+   "in_gate": true
+  },
+  {
+   "status": "stationary",
+   "free_residual_N": 1.0536016503692736e-13,
+   "apex_z_wu": 0.6733047123375296,
+   "eta": 0.3366523561687648,
+   "Pi": 0.4,
+   "n_accepted": 2364,
+   "wall_time_s": 0.6010639667510986,
+   "scale": 2.0,
+   "F_ref_N": 0.4,
+   "F_s_N": 0.8,
+   "regime": "matched_Pi",
+   "delta_eta_vs_ref": 0.0,
+   "in_gate": true
+  },
+  {
+   "status": "stationary",
+   "free_residual_N": 9.57012247226885e-14,
+   "apex_z_wu": 0.568760778515685,
+   "eta": 0.2843803892578425,
+   "Pi": 0.8,
+   "n_accepted": 1015,
+   "wall_time_s": 0.26173996925354004,
+   "scale": 2.0,
+   "F_ref_N": 0.8,
+   "F_s_N": 1.6,
+   "regime": "matched_Pi",
+   "delta_eta_vs_ref": 9.778133114313192e-08,
+   "in_gate": true
+  }
+ ],
+ "truncated_cells": [
+  {
+   "scale": 1.5,
+   "F_ref_N": 1.6,
+   "F_s_N": 2.4000000000000004,
+   "why": "F(s) > packet port cap 2.0 N; excluded, not solved"
+  },
+  {
+   "scale": 1.5,
+   "F_ref_N": 2.0,
+   "F_s_N": 3.0,
+   "why": "F(s) > packet port cap 2.0 N; excluded, not solved"
+  },
+  {
+   "scale": 2.0,
+   "F_ref_N": 1.2,
+   "F_s_N": 2.4,
+   "why": "F(s) > packet port cap 2.0 N; excluded, not solved"
+  },
+  {
+   "scale": 2.0,
+   "F_ref_N": 1.6,
+   "F_s_N": 3.2,
+   "why": "F(s) > packet port cap 2.0 N; excluded, not solved"
+  },
+  {
+   "scale": 2.0,
+   "F_ref_N": 2.0,
+   "F_s_N": 4.0,
+   "why": "F(s) > packet port cap 2.0 N; excluded, not solved"
+  }
+ ],
+ "unmatched_controls": [
+  {
+   "status": "stagnated",
+   "free_residual_N": 7.336778066746596e-07,
+   "apex_z_wu": 0.23960306631988532,
+   "eta": 0.3194707550931804,
+   "Pi": 0.5333333333333333,
+   "n_accepted": 1275,
+   "wall_time_s": 0.3301351070404053,
+   "scale": 0.75,
+   "F_ref_N": 0.4,
+   "F_N": 0.4,
+   "regime": "unmatched_fixed_F",
+   "delta_eta_vs_ref": 0.01718160107558442,
+   "in_gate": true
+  },
+  {
+   "status": "stagnated",
+   "free_residual_N": 3.359111495626621e-07,
+   "apex_z_wu": 0.18615352184313522,
+   "eta": 0.24820469579084695,
+   "Pi": 1.0666666666666667,
+   "n_accepted": 3309,
+   "wall_time_s": 0.8253772258758545,
+   "scale": 0.75,
+   "F_ref_N": 0.8,
+   "F_N": 0.8,
+   "regime": "unmatched_fixed_F",
+   "delta_eta_vs_ref": 0.03617579124832668,
+   "in_gate": true
+  },
+  {
+   "status": "stagnated",
+   "free_residual_N": 2.508177150417623e-07,
+   "apex_z_wu": 0.12904428630456377,
+   "eta": 0.17205904840608502,
+   "Pi": 1.5999999999999999,
+   "n_accepted": 8155,
+   "wall_time_s": 2.031280279159546,
+   "scale": 0.75,
+   "F_ref_N": 1.2,
+   "F_N": 1.2,
+   "regime": "unmatched_fixed_F",
+   "delta_eta_vs_ref": 0.05760852612302869,
+   "in_gate": true
+  },
+  {
+   "status": "stagnated",
+   "free_residual_N": 1.6068306396554988e-07,
+   "apex_z_wu": 0.06746105425521823,
+   "eta": 0.08994807234029097,
+   "Pi": 2.1333333333333333,
+   "n_accepted": 13380,
+   "wall_time_s": 3.307974338531494,
+   "scale": 0.75,
+   "F_ref_N": 1.6,
+   "F_N": 1.6,
+   "regime": "unmatched_fixed_F",
+   "delta_eta_vs_ref": 0.08211097606579411,
+   "in_gate": true
+  },
+  {
+   "status": "stagnated",
+   "free_residual_N": 1.1025461099656297e-07,
+   "apex_z_wu": 0.0004818361789557814,
+   "eta": 0.0006424482386077086,
+   "Pi": 2.6666666666666665,
+   "n_accepted": 19062,
+   "wall_time_s": 4.76010799407959,
+   "scale": 0.75,
+   "F_ref_N": 2.0,
+   "F_N": 2.0,
+   "regime": "unmatched_fixed_F",
+   "delta_eta_vs_ref": 0.11045519532059134,
+   "in_gate": true
+  },
+  {
+   "status": "stationary",
+   "free_residual_N": 1.8213208718975693e-13,
+   "apex_z_wu": 0.5304224722349066,
+   "eta": 0.3536149814899377,
+   "Pi": 0.26666666666666666,
+   "n_accepted": 3506,
+   "wall_time_s": 0.9144303798675537,
+   "scale": 1.5,
+   "F_ref_N": 0.4,
+   "F_N": 0.4,
+   "regime": "unmatched_fixed_F",
+   "delta_eta_vs_ref": 0.016962625321172875,
+   "in_gate": true
+  },
+  {
+   "status": "stationary",
+   "free_residual_N": 4.2299497238218464e-14,
+   "apex_z_wu": 0.4792063229947523,
+   "eta": 0.31947088199650153,
+   "Pi": 0.5333333333333333,
+   "n_accepted": 1276,
+   "wall_time_s": 0.334334135055542,
+   "scale": 1.5,
+   "F_ref_N": 0.8,
+   "F_N": 0.8,
+   "regime": "unmatched_fixed_F",
+   "delta_eta_vs_ref": 0.03509039495732791,
+   "in_gate": true
+  },
+  {
+   "status": "stagnated",
+   "free_residual_N": 9.578839701429587e-07,
+   "apex_z_wu": 0.42657045597201065,
+   "eta": 0.28438030398134045,
+   "Pi": 0.7999999999999999,
+   "n_accepted": 1015,
+   "wall_time_s": 0.26348233222961426,
+   "scale": 1.5,
+   "F_ref_N": 1.2,
+   "F_N": 1.2,
+   "regime": "unmatched_fixed_F",
+   "delta_eta_vs_ref": 0.054712729452226744,
+   "in_gate": true
+  },
+  {
+   "status": "stagnated",
+   "free_residual_N": 6.718222991253242e-07,
+   "apex_z_wu": 0.37230704368627043,
+   "eta": 0.24820469579084695,
+   "Pi": 1.0666666666666667,
+   "n_accepted": 3309,
+   "wall_time_s": 0.8395543098449707,
+   "scale": 1.5,
+   "F_ref_N": 1.6,
+   "F_N": 1.6,
+   "regime": "unmatched_fixed_F",
+   "delta_eta_vs_ref": 0.07614564738476187,
+   "in_gate": true
+  },
+  {
+   "status": "stagnated",
+   "free_residual_N": 5.833892235962423e-07,
+   "apex_z_wu": 0.3162128924705907,
+   "eta": 0.2108085949803938,
+   "Pi": 1.3333333333333333,
+   "n_accepted": 5691,
+   "wall_time_s": 1.437743902206421,
+   "scale": 1.5,
+   "F_ref_N": 2.0,
+   "F_N": 2.0,
+   "regime": "unmatched_fixed_F",
+   "delta_eta_vs_ref": 0.09971095142119477,
+   "in_gate": true
+  },
+  {
+   "status": "stationary",
+   "free_residual_N": 7.898126597183364e-13,
+   "apex_z_wu": 0.7240397943155906,
+   "eta": 0.3620198971577953,
+   "Pi": 0.2,
+   "n_accepted": 3970,
+   "wall_time_s": 1.0036842823028564,
+   "scale": 2.0,
+   "F_ref_N": 0.4,
+   "F_N": 0.4,
+   "regime": "unmatched_fixed_F",
+   "delta_eta_vs_ref": 0.02536754098903049,
+   "in_gate": true
+  },
+  {
+   "status": "stationary",
+   "free_residual_N": 1.0536016503692736e-13,
+   "apex_z_wu": 0.6733047123375296,
+   "eta": 0.3366523561687648,
+   "Pi": 0.4,
+   "n_accepted": 2364,
+   "wall_time_s": 0.6228749752044678,
+   "scale": 2.0,
+   "F_ref_N": 0.8,
+   "F_N": 0.8,
+   "regime": "unmatched_fixed_F",
+   "delta_eta_vs_ref": 0.0522718691295912,
+   "in_gate": true
+  },
+  {
+   "status": "stationary",
+   "free_residual_N": 1.2012613126444194e-13,
+   "apex_z_wu": 0.6215849804419703,
+   "eta": 0.31079249022098515,
+   "Pi": 0.6,
+   "n_accepted": 717,
+   "wall_time_s": 0.1898479461669922,
+   "scale": 2.0,
+   "F_ref_N": 1.2,
+   "F_N": 1.2,
+   "regime": "unmatched_fixed_F",
+   "delta_eta_vs_ref": 0.08112491569187144,
+   "in_gate": true
+  },
+  {
+   "status": "stationary",
+   "free_residual_N": 9.57012247226885e-14,
+   "apex_z_wu": 0.568760778515685,
+   "eta": 0.2843803892578425,
+   "Pi": 0.8,
+   "n_accepted": 1015,
+   "wall_time_s": 0.2627277374267578,
+   "scale": 2.0,
+   "F_ref_N": 1.6,
+   "F_N": 1.6,
+   "regime": "unmatched_fixed_F",
+   "delta_eta_vs_ref": 0.1123213408517574,
+   "in_gate": true
+  },
+  {
+   "status": "stationary",
+   "free_residual_N": 5.995204332975845e-15,
+   "apex_z_wu": 0.5147154915790307,
+   "eta": 0.25735774578951537,
+   "Pi": 1.0,
+   "n_accepted": 2730,
+   "wall_time_s": 0.6957108974456787,
+   "scale": 2.0,
+   "F_ref_N": 2.0,
+   "F_N": 2.0,
+   "regime": "unmatched_fixed_F",
+   "delta_eta_vs_ref": 0.14626010223031632,
+   "in_gate": true
+  }
+ ],
+ "verdicts": {
+  "per_scale": {
+   "scale_0.75": {
+    "max_delta_eta": 1.8305783322514202e-07,
+    "n_points": 5,
+    "collapse_within_TOL_ETA": true
+   },
+   "scale_1.5": {
+    "max_delta_eta": 1.8305783322514202e-07,
+    "n_points": 3,
+    "collapse_within_TOL_ETA": true
+   },
+   "scale_2.0": {
+    "max_delta_eta": 9.778133114313192e-08,
+    "n_points": 2,
+    "collapse_within_TOL_ETA": true
+   }
+  },
+  "worst_matched_point": {
+   "scale": 0.75,
+   "F_s_N": 0.6000000000000001,
+   "F_ref_N": 0.8,
+   "delta_eta": 1.8305783322514202e-07
+  },
+  "min_unmatched_dev": 0.016962625321172875,
+  "matched_collapse": true,
+  "unmatched_not_collapsed": true,
+  "overall": "PASS"
+ },
+ "resolution_contrast": {
+  "Pi_point": 0.8,
+  "patch_cells": {
+   "n_rim_200": {
+    "status": "stagnated",
+    "free_residual_N": 5.628603916285613e-08,
+    "apex_z_wu": -0.2633079630900263,
+    "eta": -0.2633079630900263
+   },
+   "n_rim_300": {
+    "status": "stagnated",
+    "free_residual_N": 3.589328223529975e-08,
+    "apex_z_wu": -0.26331954596416196,
+    "eta": -0.26331954596416196
+   }
+  },
+  "remeshing_offset_eta": 1.1582874135662724e-05,
+  "retained_study": {
+   "path": "docs/evidence/mechanism_factory/scale_resolution_study_20261016T142810.182Z.json",
+   "sha256": "d7ea0faf49edad7d10f4acd5c5802c883c29e4aa6340fbda49f85eeac951c8ac"
+  },
+  "claim": "reported remeshing magnitude only; no resolution-convergence claim; scale transfer measured at fixed n_rim=200 (dilation, faces byte-identical across scales)"
+ },
+ "coverage_note": "full 3-scale matched claim at Pi in {0.4, 0.8}; 2-scale at Pi = 1.2; Pi in {1.6, 2.0} vs the single scale 0.75 (others truncated by the 2.0 N cap)",
+ "law_revision": "ee9effcfbddad8d02e03f71d414b27da177f0656de535eaab0d76ae39796f0b7",
+ "reproduce": "math_check.py s1_multiscale_reference_check.py with PYTHONPATH=\".;tools;tools/mechanism_factory;tools/membrane_scale_lab\" from the repo root"
+}
