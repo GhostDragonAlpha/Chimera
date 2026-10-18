@@ -1,4 +1,13 @@
 # Chimera compression instructions
+The saved Z Code goal is to implement
+D:/Chimera-Maintenance/PythonChimera/docs/GAME_PLAN_ACTION_RPG.md toward a playable
+matter-simulator game. Carry that exact plan path and the current goal identity
+into the summary. Continue the existing progress, milestone, tasks, children and
+evidence; do not recreate/reset the goal or restart completed work after compression.
+Keep the saved goal status and budgets; compression is not authorization to resume
+a paused goal. The persistent goal remains authoritative alongside the latest
+user steering; a condensed summary must not replace it with a narrower experiment.
+
 Preserve purpose before technical detail. Begin the summary with a compact
 Goal and purpose block: overarching game goal; current milestone/player benefit;
 why this particular main/child task matters; requested deliverable and decision

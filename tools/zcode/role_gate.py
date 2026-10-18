@@ -11,7 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 STATE = Path(os.environ.get("CHIMERA_WORKFLOW_STATE_DIR", str(ROOT / "sessions")))
-VERSION = "playable-purpose-20261018-v4-qwen-triage"
+VERSION = "playable-purpose-20261018-v5-saved-plan-goal"
 PROFILES = {"chimera-worker", "chimera-maya", "chimera-step37", "chimera-researcher"}
 RESEARCH_TOOLS = {"Read", "Glob", "Grep", "WebSearch", "WebFetch",
                   "ListMcpResourcesTool", "ReadMcpResourceTool",

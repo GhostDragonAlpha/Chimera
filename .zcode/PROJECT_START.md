@@ -9,7 +9,11 @@ tools/zcode/GAME_WORKFLOW.md for this operator-authorized workflow.
 The plan is docs/GAME_PLAN_ACTION_RPG.md: §5.1 workshop, §11.22 peer method,
 §13.1 next useful increment. Preserve any narrower current user assignment.
 
-Main goal: deliver a playable matter-building game. Every assignment needs the
+Saved goal: implement
+D:/Chimera-Maintenance/PythonChimera/docs/GAME_PLAN_ACTION_RPG.md toward a playable
+matter-building game. Continue its existing progress, goal identity, current
+milestone, pending tasks and child conversations. Do not reset the saved goal or
+repeat completed work when starting or resuming. Every assignment needs the
 player benefit, why it matters now, and the decision/deliverable it enables.
 Retain that purpose through compression, child follow-up and recovery.
 Report game impact, evidence/limits, decision and next action.

@@ -2,8 +2,11 @@
 Operator direction, 2026-10-18. This replaces older planner-only roles, compulsory
 research/reviewer sequences and retired model rosters.
 
-The main goal is a playable matter-simulator game: players build, test, repair and
-reuse physically meaningful constructions. The current plan is
+The saved Z Code goal is to implement GAME_PLAN_ACTION_RPG.md toward a playable
+matter-simulator game: players build, test, repair and reuse physically meaningful
+constructions. Continue the existing goal's progress, current milestone, tasks,
+child conversations and evidence through compression/resume; do not recreate the
+goal or restart completed work. The current plan is
 D:/Chimera-Maintenance/PythonChimera/docs/GAME_PLAN_ACTION_RPG.md (§5.1, §11.22,
 §13.1). Follow the current user assignment and milestone; this orientation does
 not replace a narrower active task with a new workshop task.

@@ -16,6 +16,15 @@ choices and brief reasons through compression so rejected/deferred items do not
 silently return as implementation work. Independent failed checks retain their
 meaning even if the affected capability is deferred.
 
+The saved goal is to implement
+D:/Chimera-Maintenance/PythonChimera/docs/GAME_PLAN_ACTION_RPG.md toward a playable
+matter-simulator game using this workflow. Its existing identity, usage history,
+status, todos, messages and child sessions are retained. Compression instructions
+carry the exact plan path, current milestone and decisions forward; the native
+runtime also reads goal state from persistent storage. Updating this goal does
+not launch work or resume a paused session. Reopen the existing conversation if
+an already-open goal card still shows its earlier wording.
+
 Give every child the game goal, current milestone/player benefit, task purpose
 and decision/deliverable. Preserve these through compression, follow-up and resume.
 Report game impact, evidence/limits, decision and next useful action. The lead
