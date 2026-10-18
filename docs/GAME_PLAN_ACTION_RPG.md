@@ -447,7 +447,8 @@ runtime qualification or proof that an unfamiliar player can complete the loop.
 | Existing owner | Reuse in the workshop | Remaining connection or limit |
 |---|---|---|
 | [Construction packet](../tools/construction_packet/) and [cradle recipe](../tools/construction_packet/cradle_recipe.py) | Existing place/connect/load/release/patch/save/restore transactions and small rigid assembly kit | Present understandable player actions, objective and recovery. Preserve part caps/contact limits; connector extension is not membrane strain. |
-| [Bridge control](../tools/construction_packet/test_b5_bridge.py) | Second arrangement using the same part generator and connector | Test solutions under the selected challenge. Its historical contact model does not establish realistic off-center load sharing. |
+| [Objective-loop battery](../tools/construction_packet/test_objective_loop.py) and [retained evidence](evidence/construction_packet_20261012/OBJECTIVE_LOOP_EVIDENCE.md) | Existing payload-clearance objective, successful build, deliberate topple, recovery and operation through frozen routes without an agent | Engineering behavior is already recorded; connect player controls and feedback rather than recreate the objective harness. Human operation and a second structurally different solution remain separate work. |
+| [Bridge control](../tools/construction_packet/test_b5_bridge.py) | Candidate second arrangement using the same part generator and connector | Test it against the selected challenge. Its historical contact model does not establish realistic off-center load sharing. |
 | Native B2 routes, Studio inspector, reel, A/B selector and recorder | One physical state, selection, observation and comparison | Connect existing controls and feedback; implement only missing interactions through their current owners. |
 | [Recipe comparisons](../tools/recipe_experiments/README.md) | Baseline restore, soft/stiff comparisons, input identities and receipts | Bounded equilibrium fixture, not a general transient runner; do not create another comparison service. |
 | [Artificial proteins](../tools/artificial_proteins/README.md) and [mechanism factory](../tools/mechanism_factory/README.md) | Research pieces, port composition, detailed references, bounded tables/fits and GPU batches | Reuse supported behavior within current evidence; arbitrary edited meshes and universal material laws are separate claims. |
@@ -462,12 +463,16 @@ work to assemble the workshop.
 #### One challenge, a small kit, several constructions
 
 Start with **“keep the salvage load above the marked hazard area.”** Reuse the
-cradle/support fixture and a small kit within current admission limits. The marked
-region defines a visible goal, not an invisible supporting force. A known feasible
-construction is a recovery/example aid, not the only accepted answer. Demonstrate
-two structurally different arrangements against the same objective before claiming
-multiple solutions. The existing cradle and bridge are candidates to adapt, not
-already proven answers to this new challenge.
+existing objective-loop's payload-clearance challenge: its retained rc.1 evidence
+already covers a 0.6 kg payload, a centered pillar/weld success, an off-center
+topple and reconstruction through existing verbs. Preserve that fixture's measured
+settling/contact assumptions and physical-time predicate when adapting it; its
+calibrated height is not a universal collision-clearance guarantee. The immediate
+gap is presenting and controlling this behavior, not inventing another numerical
+objective. A marked region supplies a visible goal, never a supporting force.
+The known feasible build is a recovery/example aid, not the only accepted answer.
+Demonstrate a second structurally different arrangement under the same objective;
+the cradle and bridge are candidates to adapt, not already proven alternatives.
 
 Implement one connected sequence:
 
@@ -3100,7 +3105,10 @@ are sufficiently specified to check our implementation. Use the existing
 material/receipt/reference owners; installing FEBio is a separate, justified
 choice only if accessing an essential result requires it. The [calibration
 tutorial](https://febio.org/knowledgebase/tutorials/parameter_optimization/parameter-optimization-with-febio-studio/)
-is available when fitting is actually necessary.
+is available when fitting is actually necessary. Its separate [contact examples](https://repo.febio.org/permalink/project/63)
+include friction, self-contact and two-sided shell contact, but also an explicitly
+non-running `sliding_error.fsm` for debugging. Select the needed case and its expected
+outcome; this tutorial pack is not a set of already-passing physical benchmarks.
 
 **Existing implementation seam, inspected 2026-10-18:**
 [`tools/elastic_foundation/law.py`](../tools/elastic_foundation/law.py) already
