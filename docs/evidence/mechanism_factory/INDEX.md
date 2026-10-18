@@ -1053,3 +1053,58 @@ s = 1.0 only. No record change; published artifacts left as written.
   not an amendment — domain claims unchanged). Carry-forwards: γ=1.0
   only; node refinement requires new measurements; scale-interpolated
   predictions flagged, not refused.
+
+## S4 composition and state transfer (2026-10-18, CPU-only) — gate PASS
+
+- `S4_composition_state_transfer.md` +
+  `s4_composition_receipt_20261018T100039.322493Z.json` — all five
+  gate columns PASS (prereg frozen 2026-10-18T09:30:46Z, sha
+  2ca2a808…; three earlier prereg attempts crashed on harness
+  mechanics, froze nothing, retained).
+- Col1 second assembly: 19/19 battery checks (composed_patch,
+  composed_chain, port_solve) re-derived FRESH at bedadbd3 via check
+  functions only (mains not run — no record amendment possible);
+  pieces A/B byte-identical to assembly 1 (shas 5bb740cc…, 7857974b…),
+  C new. The untracked 2026-10-17 composed_* receipts provenanced
+  honestly: source_commit eaf6a9e9 (post solver-v2 adoption), hashed
+  sources byte-identical to HEAD — incorporated as corroborating
+  evidence, not ignored.
+- Col2 coupled vs detailed: port-based piece solve vs fused reference
+  3.17e-08 N / 1.04e-08 wu / 8.33e-09 J against port_solve's OWN
+  frozen bounds (1e-6 N / 1e-5 wu — verified preregistered, not
+  invented); S3 reduced composition vs fresh detailed solves at 4
+  measured scales: worst |Δη| = 5.609e-06, 56× under T_S4 = 1e-4
+  (quoted from S3), node cells digit-for-digit. No silent
+  extrapolation through composition: refused cells route per-cell
+  through the S3 validity query (codes 4, 6, 3) with in-domain named
+  fallbacks; s=3.0 refused by BOTH reduced and detailed paths.
+- Col3 two-sided: hourglass closure 3.45e-12 N, net joint work
+  5.4e-13 J; star welds on independently-computed films: closure
+  7.32e-07 N at s=1.0 — verified to EQUAL the fused solve's own
+  seam-vertex residual (the packet law's own quantity, not a new
+  error) — and 1.06e-13 N at s=2.0; transfer real (|F_B| 0.922/1.572
+  N, |F_C| 0.737/1.233 N).
+- Col4 ownership: exact vertex/face partition (601v/600f star,
+  401v/400f hourglass), unique pins, free-DOF count exactly 3 (the
+  single seam vertex), duplicate probe fires loudly.
+- Col5 switching IMPLEMENTED (not vacuous) for the named star-apex
+  surface only: idempotent 100 repeats, reduced→detailed round trip
+  |Δz| = 1.831e-07 wu = exactly the S1/S3 noise floor (bound 1e-6),
+  out-of-domain switch refused by name; hourglass has no reduced
+  representation (stated).
+- `reviews/step_review_s4_composition.md` — step PASS, NO retained
+  defects: full 48/48 re-run, worst + node cells re-solved
+  digit-for-digit, port bounds verified preregistered, closure
+  identity verified, duplicate probe verified loud, crashed preregs
+  verified froze-nothing, provenance verified. Step's own re-run
+  receipt …T105819… retained (differs from the record receipt only in
+  timestamp and battery wall-clock). Note: step's review file was
+  initially written to a typo'd directory (PythonChimara/); Qwen moved
+  it to the correct tree and removed the stray directory.
+- Qwen ruling: PUBLISH. Record file and solver bytes untouched; S4
+  claims live in composition receipts only. Carry-forwards: reduced
+  response is assembly-level (star apex) and γ=1.0-only — Maya
+  proposes a per-piece reduced response (single-film η(Π) per piece)
+  as future measurement territory, NOT attempted (beyond S3's
+  published domain); s=1.0 star closure at 73% of the 1e-6 bound is
+  the packet law's own seam residual.

@@ -1,0 +1,150 @@
+{
+ "schema": "chimera-mechanism-factory-s4-preregistration-v1",
+ "frozen_at_utc": "2026-10-18T09:30:46.383865+00:00",
+ "title": "S4 composition and state transfer: preregistration, frozen before any S4 validation solve",
+ "gate_row": "GAME_PLAN_ACTION_RPG.md \u00a713.1 S4: two coupled pieces and a second assembly using the same mechanism | coupled response versus detailed reference, two-sided exchanges, no duplicated inventory/DOFs, stable switching where implemented",
+ "mechanism": "assembly 1 = composed-apex-weld-hourglass (A+B); assembly 2 = assembly.star-k2 fan-out star (A+B reused byte-identically + new C); S3 reduced response = s3_star_eta_pi_table_v1.json (assembly.star-k2 only)",
+ "law_pins": {
+  "s3_table": {
+   "path": "docs/evidence/mechanism_factory/s3_star_eta_pi_table_v1.json",
+   "sha256": "17b0ce5472ffd6d98e85c2b8a4e2e4b35d6cf85dafc14d43a25f52b1d0c16ee2"
+  },
+  "s3_receipt": {
+   "path": "docs/evidence/mechanism_factory/s3_reduced_response_receipt_20261018T072919.936426Z.json"
+  },
+  "packet": {
+   "path": "tools/mechanism_factory/example_packet.json",
+   "max_force_N": 2.0,
+   "max_free_residual_N": 1e-06
+  },
+  "machinery_sha256": {
+   "tools/mechanism_factory/composed_patch.py": "12d4c08b9fcc1b7b294b1cfd2c522af27b664e486e42c91e28f2e97b9d37d662",
+   "tools/mechanism_factory/composed_patch_checks.py": "569a447de2d9370c0418d5ebf19da8370f61460fc71df790080969fd5b562a3b",
+   "tools/mechanism_factory/composed_chain.py": "c3c0ae0a40b3ba0480ea0466e4fda34193871966e08d394b0e2f8c4839cea084",
+   "tools/mechanism_factory/composed_chain_checks.py": "0d28b3a781346a756bd2e828068877863275ed141bc1d5c3aeef1cd39a3af38e",
+   "tools/mechanism_factory/port_solve.py": "736c9f15ed1ef21ce6fa604dee085887df6344305adbb681cad845b80bb3b9b2",
+   "tools/mechanism_factory/port_solve_checks.py": "019fa7a0f63a063fc47de4f347e9127f9021ac24633ea8cbc421f06f4dc12e94",
+   "tools/mechanism_factory/native_binding.py": "b2cfe406088beda07c43c9d8b07016d8a696e890e68bb84ee2c8e4c3e0f49b7a",
+   "tools/mechanism_factory/piece_record.py": "9ab0e170ddd8e1265b8b1d92a16733886fe2df125bb8eda862151e81efdf1437",
+   "tools/mechanism_factory/patch_equilibrium.py": "a0f4b9f9b289ef1eb76d1c903fd1e458979d7da2f8dcd5ef7683efe5898db99c"
+  },
+  "s3_threshold_T_S3": 0.0001
+ },
+ "A_existing_batteries_rerun": {
+  "composed_patch_checks": 7,
+  "composed_chain_checks": 6,
+  "port_solve_checks": 6,
+  "mode": "check functions only; battery mains NOT run; no record amendment, no receipt overwrite of the historical runs"
+ },
+ "B_bounds": {
+  "B1_reuse_byte_identity": "exact sha256 equality of A and B vertex+face blocks between assembly 1 and 2",
+  "B2a_port_agreement": {
+   "rim_net_N": 1e-06,
+   "seam_pos_wu": 1e-05,
+   "stored_energy_J": 1e-06,
+   "interface_gate_N": 1e-10,
+   "source": "port_solve.py frozen prereg, quoted, never widened"
+  },
+  "B2b_reduced_vs_detailed": {
+   "T_S4": 0.0001,
+   "source": "= S3 T_S3, quoted, never widened",
+   "validity_code_required": 0,
+   "predictor_pin_abs_diff": 1e-15
+  },
+  "B3_two_sided": {
+   "star_closure_N": 1e-06,
+   "star_closure_justification": "packet law; fused seam force already <= 1e-6 N by the same law; pinned-response film-force precedent ~3e-8 N (>= 10x margin)",
+   "transfer_margin": 0.1,
+   "transfer_margin_source": "C4 precedent, quoted",
+   "hourglass": "port_solve_checks (d) fresh"
+  },
+  "B4_ownership": "structural: exact vertex/face partition, unique pins, free-DOF count == 3 per assembly, min coordinate distance > 1e-9 wu, duplicate probe must fire; fails loudly, no numeric tolerance",
+  "B5_switching": {
+   "idempotence": "bit-identical over 100 repeats",
+   "detail_to_reduced": "|eta_pred - eta_state| <= 1e-4 per cell (all four scales)",
+   "round_trip_wu": 1e-06,
+   "round_trip_justification": "S1/S3 solver noise floor 1.831e-07 in eta (~1.8e-7 wu at s=1); >= 5x margin, 4 orders under the packet's displacement law",
+   "out_of_domain": "validity code 3 refusal named; named detailed fallback"
+  }
+ },
+ "B2b_cells": [
+  [
+   0.75,
+   0.8
+  ],
+  [
+   1.0,
+   0.8
+  ],
+  [
+   1.5,
+   0.8
+  ],
+  [
+   2.0,
+   0.8
+  ]
+ ],
+ "B2b_cells_Pi": [
+  1.0666666666666667,
+  0.8,
+  0.5333333333333333,
+  0.4
+ ],
+ "B2b_refusal_cells": [
+  [
+   1.0,
+   2.5,
+   4
+  ],
+  [
+   1.0,
+   0.2,
+   6
+  ],
+  [
+   3.0,
+   0.8,
+   3
+  ]
+ ],
+ "B3_star_cells": [
+  [
+   1.0,
+   0.8
+  ],
+  [
+   2.0,
+   0.8
+  ]
+ ],
+ "B5_round_trip_cell": [
+  1.0,
+  0.8
+ ],
+ "s3_predictor_pin": {
+  "0.6": 0.3107908258510437,
+  "1.0": 0.25735638738204253,
+  "1.4": 0.20125258202260612,
+  "1.8": 0.14200338154331152
+ },
+ "C_failure_retention": "any FAIL retained in the S4 receipt with its measured value; no tolerance widened post hoc",
+ "D_no_record_amendment": "S4 amends NO piece-record file; claims live in the S4 composition receipt only",
+ "E_solve_budget": "~45 full CPU solves (batteries ~35, reduced cells 4, refusal fallbacks 2, round trip 1); no GPU, no engine",
+ "F_untracked_receipt_provenance": {
+  "files": [
+   "composed_patch_receipt_20261017T034553.644975Z.json",
+   "composed_qualification_receipt_20261017T034617.464061Z.json",
+   "composed_chain_checks_20261017T034632.719571Z.json",
+   "composed_chain_qualification_receipt_20261017T034648.160329Z.json",
+   "composed_patch_receipt_20261017T035430.568916Z.json",
+   "composed_qualification_receipt_20261017T035454.531184Z.json",
+   "composed_chain_checks_20261017T035454.782232Z.json",
+   "composed_chain_qualification_receipt_20261017T035510.221427Z.json"
+  ],
+  "source_commit": "eaf6a9e9 (post solver-v2 adoption 7d99bdeb, pre S3 publication bedadbd3)",
+  "verdict": "valid current-machinery evidence; all hashed composition sources byte-identical to the current tree (verified 2026-10-16); all checks PASS, adapter PASS; incorporated as corroborating evidence; S4 re-derives fresh at HEAD"
+ },
+ "column5_disposition_if_unimplemented": "NOT APPLICABLE: switching IS implemented for the named star-apex surface; the hourglass has no reduced representation (stated)",
+ "no_solve_declaration": "this preregistration script imports NO solver and runs NO solve; all numbers come from published artifacts and frozen preregistrations"
+}
