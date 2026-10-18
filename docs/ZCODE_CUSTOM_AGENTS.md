@@ -8,6 +8,14 @@ returns an analysis/review report to the lead, who decides what to address and
 assigns fixes to Maya or another implementation-capable agent. Step cannot edit
 files, run shell/JavaScript code, or save its own report files.
 
+Qwen has final triage authority: it may disagree with Step, accept useful findings,
+defer work to a later milestone or reject unsupported/low-value criticism. Judge
+evidence, playable impact, risk and cost. Only accepted scoped fixes reach Maya;
+Step's agreement is not a prerequisite to progress. Preserve consequential
+choices and brief reasons through compression so rejected/deferred items do not
+silently return as implementation work. Independent failed checks retain their
+meaning even if the affected capability is deferred.
+
 Give every child the game goal, current milestone/player benefit, task purpose
 and decision/deliverable. Preserve these through compression, follow-up and resume.
 Report game impact, evidence/limits, decision and next useful action. The lead

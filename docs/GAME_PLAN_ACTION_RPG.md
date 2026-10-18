@@ -3204,6 +3204,19 @@ vote a failed physical check into success. One agent
 owns an increment. Consult another to resolve a concrete uncertainty rather than
 stage a compulsory all-model debate over every small change.
 
+**Review triage belongs to Qwen.**
+Qwen has final authority to accept, defer or reject Step's findings and may
+explicitly disagree with their reasoning or priority. Judge evidence, the current
+playable milestone, player impact, risk, and implementation/review cost. Step's
+report is advisory; it does not create automatic work or require agreement before
+moving on. Send Maya only the accepted, scoped fixes with their player benefit
+and completion check. Briefly retain reasons for consequential disagreements or
+deferrals in the existing progress note; group minor remarks, without creating
+busywork. Revisit settled findings only when new evidence or the milestone changes.
+Resolve material factual uncertainty with a focused check when needed. Preserve
+actual failed physics evidence: defer or exclude an affected capability when
+appropriate, but never relabel its failed acceptance check as PASS.
+
 **Every assignment carries its reason.** Give a child enough of the whole project
 to prioritize correctly without sending the whole conversation. Start each task
 with this compact purpose block:

@@ -12,6 +12,11 @@ retaining or reverting it. Most specialties are defaults, not compulsory routing
 Preserve Step's explicit read-only analyst/reviewer role: return findings to the
 lead; the lead assigns accepted fixes to an implementation agent. Step cannot
 write files or execute code, including to save reports or reproduce a finding.
+Preserve Qwen's authority to disagree with Step and accept, defer or reject
+findings for playable value, evidence, risk and cost. Retain consequential triage
+choices, brief reasons and revisit triggers; do not convert rejected/deferred
+criticisms back into Maya assignments. Only accepted scoped fixes are delegated.
+Actual failed checks stay failed; a deferred capability is not declared qualified.
 
 Retain current task/child/model identities, ownership, accepted decisions, exact
 code/evidence references, failed and unknown checks, independent-physics duties,

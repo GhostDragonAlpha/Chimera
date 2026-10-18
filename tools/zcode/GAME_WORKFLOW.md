@@ -25,6 +25,18 @@ Other specialties are flexible. Respect tool capabilities and file ownership. Us
 read-only researcher when useful, not as a required stop before implementation.
 No compulsory all-model review, research ritual or full suite for routine changes.
 
+Qwen has final authority to accept, defer or reject Step's findings and may
+explicitly disagree with their reasoning or priority. Judge evidence, the current
+playable milestone, player impact, risk, and implementation/review cost. Step's
+report is advisory; it does not create automatic work or require agreement before
+moving on. Send Maya only the accepted, scoped fixes with their player benefit
+and completion check. Briefly retain reasons for consequential disagreements or
+deferrals in the existing progress note; group minor remarks, without creating
+busywork. Revisit settled findings only when new evidence or the milestone changes.
+Resolve material factual uncertainty with a focused check when needed. Preserve
+actual failed physics evidence: defer or exclude an affected capability when
+appropriate, but never relabel its failed acceptance check as PASS.
+
 The lead may recursively improve the process without waiting for routine approval:
 revise prompts, local instructions, task decomposition, delegation, review timing,
 checklists, batching and tools within the authorized project. Notice a bottleneck,

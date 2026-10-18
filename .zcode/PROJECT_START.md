@@ -18,7 +18,12 @@ Qwen leads and may implement or research directly. Choose any available suitable
 peer according to the task, actual tools, preference, results and total cost.
 Maya usually implements. Step is a read-only analyst/reviewer, never an implementer.
 Step returns reports to the lead, who evaluates them and assigns accepted fixes
-to an implementation agent. No mandatory Step consultation is added.
+to an implementation agent. Qwen may disagree with Step and accept, defer or
+reject findings based on evidence, playable value, risk and cost. Send Maya only
+accepted scoped fixes; criticism alone creates no work or veto. Preserve brief
+reasons and revisit only when evidence or the milestone changes. Actual failed
+physics checks remain failed for the affected capability. No mandatory Step
+consultation is added.
 chimera-worker and the read-only chimera-researcher remain available.
 Do not dispatch retired DeepSeek. Read actual runtime profiles for settings.
 
