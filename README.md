@@ -41,7 +41,7 @@ The source build keeps Blender modeling, editing and the workbench viewport. Cyc
 
 ## Rebuild and checks
 
-From this directory, `./tools/Build-Native.ps1` builds the private DLL. `./tools/Test-Studio.ps1` runs actual Blender-background integration and application-template tests. `./tools/Build-Fork.ps1` configures/builds the already cloned Blender fork with two compiler jobs. Visual interaction testing is recorded separately; a headless pass is not a GUI performance claim.
+From this directory, `./tools/Build-Native.ps1` builds the private DLL. `./tools/Test-Studio.ps1` runs actual Blender-background integration and application-template tests. `./tools/Build-Fork.ps1` configures/builds the already cloned Blender fork with two compiler jobs. `./tools/Test-Studio.ps1 -Gui` also opens a small visible viewport test and closes it automatically. Visual interaction testing is recorded separately; a headless pass is not a GUI performance claim.
 
 `SOURCE_LOCK.json` pins actual source bytes copied from the agents' dirty checkout; `source_head` alone is not sufficient to reproduce them. Do not overwrite `vendor/chimera` from a moving checkout automatically. A future engine update must intentionally refresh the snapshot and rerun the boundary checks. `evidence/headless_integration.json` contains results, including native timing on the small fixture. `evidence/first-run-input-precision.json` retains the initial failure which exposed float32 transform precision loss; the adapter now transforms in float64.
 

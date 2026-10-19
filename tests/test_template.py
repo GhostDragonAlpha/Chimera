@@ -2,6 +2,7 @@
 import bpy,json,os,sys
 from pathlib import Path
 root=Path(os.environ['CHIMERA_STUDIO_ROOT'])
+assert Path(bpy.utils.user_resource('CONFIG')).resolve()==Path(os.environ['BLENDER_USER_CONFIG']).resolve(), 'Configuration isolation failed'
 assert hasattr(bpy.types.Object,'chimera'), 'Template did not register Chimera'
 assert bpy.context.scene.unit_settings.system=='METRIC'
 assert bpy.context.scene.unit_settings.scale_length==1
