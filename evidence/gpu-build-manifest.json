@@ -2,14 +2,14 @@
   "schema": "chimera.studio.gpu-build.v2",
   "date": "2026-10-19",
   "blender_fork_commit": "68c79f03362ebc6e41d16a10b77c8f794097e644",
-  "gpu_lock_sha256": "7b3f0ac4186a5478af2b9287f4051384347c00b2e87c6483bfbe67557ed732e2",
+  "gpu_lock_sha256": "3956ccb64d784a7eb01681fef27ef1d053f27f0fc8e62bb3a03a6f2a1655db4e",
   "baseline_source_commit": "9a72573",
-  "native_executable_sha256": "1a16ad0be506d6b83d670f3485b48620372e30af82a109c7c9fd594f27be51ce",
+  "native_executable_sha256": "e3d39bf633da9ff6cd347cd77e645ca2ad67c9272f2e785d5175d4a04fa6dc7a",
   "files": {
     "python/chimera_studio/gpu_native.py": "c62c7355cb4f0e3a8c6696f6d38f0de202f818af4d120ca4a9c17941bcdc259e",
     "python/chimera_studio/gpu_workspace.py": "b926a8780f7896e68eef967e322a4a5c24cafbb0cbf3eaaa43abf5fbeb6f4309",
     "python/chimera_studio/owned_job.py": "877dc809fe7f6b7523e08a5bab7e0a657b0a6f63ac8827c02f1038946af5c601",
-    "tests/test_gpu_blender.py": "9a10f8fe5c02245b81300aecbf0d7336c6793eda360d543e7407fc445763f5b8",
+    "tests/test_gpu_blender.py": "07c09987425f9d12f80e75c7847f8d5bd3602aa7c998ef2c2f6aa7142c28e662",
     "tests/test_ca_checkpoint_offline.py": "168e6bc1d309a6c8e492cb82ff286c2639c615c40857385bfe02d344136822c1",
     "tools/Test-Studio.ps1": "5427b8dcab0d23da684c038e61dd20d9648510a03e70a44286c271c6169eb519",
     "tools/Build-Gpu.ps1": "b0cb4aac2eac2e90762351d979559fff20ef7a7e878b3edd1b90308b421e59c7",
@@ -22,8 +22,9 @@
     "template": 1,
     "offline_full_checkpoint": 4
   },
-  "gpu_validation": "pending at user request; see ca-continuation-status.json",
+  "gpu_validation": "6/6 actual Blender GPU integration scenarios passed; see gpu-integration.json",
   "historical_gpu_results": "pre-ca-continuation/gpu-build-manifest.json",
   "live_agents_interrupted": false,
-  "live_model_services_restarted": false
+  "live_model_services_restarted": false,
+  "product_status": "Water is advanced and deferred at the user's direction; prioritize membrane building blocks and playable construction."
 }

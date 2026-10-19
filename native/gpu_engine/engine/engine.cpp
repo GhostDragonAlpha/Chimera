@@ -8185,7 +8185,10 @@ bool Engine::frame() {
     }
     // B3: the overlay slot carries the B2/B3 scene meshes; with it loaded the
     // 3D pass must run even with no creature mesh, or the scene is invisible.
-    if (n_ == 0 && !has_mesh_ && !md_active_ && !has_overlay_) {
+    // A CA-only Studio helper has no native display mesh: Blender owns the
+    // presentation. Its active water clock must still record compute work.
+    if (n_ == 0 && !has_mesh_ && !md_active_ && !has_overlay_ &&
+        !(water_loaded_ && water_clock_on_.load(std::memory_order_relaxed))) {
         // THE STUDIO: with nothing loaded the 3D paths all idle — but the board
         // is exactly what an incoming agent needs to see, so the overlay still
         // presents (clear + UI pass only).

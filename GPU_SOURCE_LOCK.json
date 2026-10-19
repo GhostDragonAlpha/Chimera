@@ -390,7 +390,7 @@
     {
       "source": "build/gpu-engine/Release/chimera_engine.exe",
       "copy": "runtime/gpu/chimera_engine.exe",
-      "sha256": "1a16ad0be506d6b83d670f3485b48620372e30af82a109c7c9fd594f27be51ce",
+      "sha256": "e3d39bf633da9ff6cd347cd77e645ca2ad67c9272f2e785d5175d4a04fa6dc7a",
       "bytes": 2919424
     },
     {
@@ -588,8 +588,8 @@
     {
       "source": "native/gpu_engine/engine/engine.cpp",
       "copy": "native/gpu_engine/engine/engine.cpp",
-      "sha256": "e41c673a2430cf747b1a4b237c359c4b5b9ba29948d5c91e9415be90cfce4e34",
-      "bytes": 559431
+      "sha256": "186e62c999aba9e651d2774bc13f67753080ab39b66d91f22f311d780a633ed3",
+      "bytes": 559665
     },
     {
       "source": "native/gpu_engine/engine/engine.hpp",

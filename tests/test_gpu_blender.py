@@ -153,12 +153,17 @@ def scheduled_flow():
         r.engine.request('POST','/water_restore',before);run(80);assert save()==future
         # A history ring wrap must not recycle the scheduled injection cursor.
         r.engine.request('POST','/water_clock',{'on':True,'steps':1,'dt':.01})
+        deadline=time.monotonic()+3
+        clock=r.engine.request('GET','/water_clock')
+        while clock['steps_total']==0 and time.monotonic()<deadline:
+            time.sleep(.01);clock=r.engine.request('GET','/water_clock')
+        assert clock['steps_total']>0,'CA-only helper clock stalled without a display mesh'
         refused(lambda:r.engine.request('POST','/water_step',{'n_macro':1,'dt_macro':.01}))
         blocked=r.engine.request('GET','/water_save',binary=True)
         assert json.loads(blocked)['error']=='pause_water_clock_before_checkpoint'
         r.engine.request('POST','/water_clock',{'on':False,'steps':1,'dt':.01})
         paused=save();auto=struct.unpack_from('<Q',paused,32)[0];total=struct.unpack_from('<Q',paused,24)[0]
-        assert auto>0 and total==150+auto
+        assert auto>0 and total==150+auto,(auto,total)
         run(3);after=save();r.engine.request('POST','/water_restore',paused);run(3);assert save()==after
         # Same dimensions, different immutable substrate/injection schedule: refused.
         r.engine.request('POST','/water_bin',packet)

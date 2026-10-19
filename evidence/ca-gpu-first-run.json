@@ -1,0 +1,90 @@
+{
+  "tests": [
+    {
+      "name": "Blender-authored membrane through native GPU; loaded geometry and exact replay",
+      "pass": true,
+      "details": {
+        "initial_energy_J": 2.625,
+        "reference_J": 2.6249999533666486,
+        "loaded_state_id": "16434149458499191539",
+        "native_vertices": 7,
+        "center_displacement_m": -0.27138499915599823
+      }
+    },
+    {
+      "name": ".blend and separate GPU trial survive native process teardown",
+      "pass": true,
+      "details": {
+        "blend": "D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\evidence\\gpu-matter.blend",
+        "trial": "D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\evidence\\gpu-membrane.matter.json",
+        "fresh_process_restore": true,
+        "automatic_gpu_start_on_open": false
+      }
+    },
+    {
+      "name": "Blender CA water: native redistribution, conservation, branch and fresh-process replay",
+      "pass": true,
+      "details": {
+        "initial": [
+          100000,
+          0,
+          0,
+          0
+        ],
+        "after_six": [
+          90288,
+          0,
+          2813,
+          6899
+        ],
+        "sum_quanta": 100000,
+        "step_wall_ms": [
+          24.492900003679097,
+          37.23899996839464,
+          41.40210000332445,
+          43.97150001022965,
+          53.43870003707707,
+          35.87020002305508
+        ],
+        "replayed_hidden_flux": true
+      }
+    },
+    {
+      "name": "Blender beyond 64: full-flow .blend/trial restore, batching and bounded native history",
+      "pass": true,
+      "details": {
+        "saved_step": 262,
+        "final_step": 2310,
+        "seconds": 23.10000000000081,
+        "native_history_states": 65,
+        "full_checkpoint_bytes": 160,
+        "nonzero_flow_sensitive": true,
+        "fresh_process_next_64_bit_exact": true,
+        "batch_partition_bit_exact": true,
+        "extra_2048_steps_wall_seconds": 1.6267631000373513,
+        "blend": "D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\evidence\\gpu-ca-continuation.blend",
+        "trial": "D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\evidence\\gpu-ca-continuation.matter.json"
+      }
+    },
+    {
+      "name": "Native scheduled injections and paused automatic clock survive full-state replay",
+      "pass": false,
+      "error": "",
+      "traceback": "Traceback (most recent call last):\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\tests\\test_gpu_blender.py\", line 12, in check\n    details=fn();results.append({'name':name,'pass':True,'details':details});print('PASS',name,flush=True)\n            ^^^^\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\tests\\test_gpu_blender.py\", line 161, in scheduled_flow\n    assert auto>0 and total==150+auto\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "name": "Refusal boundaries and checkpoint survival after owned GPU process exit",
+      "pass": true,
+      "details": {
+        "forged_state_refused": true,
+        "runtime_mismatch_refused": true,
+        "no_silent_step_loss": true,
+        "checkpoint_saved_after_child_exit": true
+      }
+    }
+  ],
+  "passed": 5,
+  "total": 6,
+  "runtime_identity": "7b3f0ac4186a5478af2b9287f4051384347c00b2e87c6483bfbe67557ed732e2",
+  "scope": "Existing one-center membrane and closed CA water field; not coupled multiphysics"
+}

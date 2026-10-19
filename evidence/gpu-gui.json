@@ -1,5 +1,6 @@
 {
-  "status": "pending_user_deferred",
-  "runtime_identity": "7b3f0ac4186a5478af2b9287f4051384347c00b2e87c6483bfbe67557ed732e2",
+  "status": "not_run_for_current_runtime",
+  "runtime_identity": "3956ccb64d784a7eb01681fef27ef1d053f27f0fc8e62bb3a03a6f2a1655db4e",
+  "reason": "Scoped Blender background/operator GPU tests are complete; further water work deferred by user. No additional GUI test started.",
   "prior_runtime_results": "pre-ca-continuation/gpu-gui.json"
 }

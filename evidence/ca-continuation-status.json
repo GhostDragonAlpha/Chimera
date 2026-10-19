@@ -1,19 +1,17 @@
 {
   "schema": "chimera.studio.ca-continuation-status.v1",
-  "runtime_identity": "7b3f0ac4186a5478af2b9287f4051384347c00b2e87c6483bfbe67557ed732e2",
+  "runtime_identity": "3956ccb64d784a7eb01681fef27ef1d053f27f0fc8e62bb3a03a6f2a1655db4e",
   "build": "Release x64 succeeded",
-  "gpu_tests": "pending_user_deferred",
-  "gpu_tests_executed": false,
-  "reason": "User requested leaving GPU testing pending; observed free VRAM about 365 MiB, below unchanged 384 MiB launch guard. No agents stopped or models unloaded.",
+  "gpu_tests": "passed",
+  "gpu_tests_executed": true,
+  "gpu_scenarios_passed": 6,
+  "gpu_scenarios_total": 6,
+  "results": "gpu-integration.json",
+  "first_run": "ca-gpu-first-run.json",
+  "fix": "CA-only automatic clock must not take the no-display-mesh idle path",
+  "scope": "Existing one-center membrane and experimental closed water CA; not general solid matter or product-ready fluid simulation",
+  "product_status": "Water is advanced and deferred at the user's direction; prioritize membrane building blocks and playable construction.",
   "cpu_checks": "ca-checkpoint-offline.json (4/4); headless_integration.json (10/10); template-startup.json",
-  "pending_command": "./tools/Test-Studio.ps1 -Gpu",
-  "pending_tests": [
-    "nonzero edge-flow sensitivity and batch partition equivalence",
-    "Blender save beyond 64 and exact fresh-process continuation",
-    "2310 actual steps and bounded 65-state native history",
-    "scheduled injection cursor across ring wrap",
-    "paused automatic-clock state restoration",
-    "malformed native restore refuses without mutation"
-  ],
-  "exact_replay_claim": "Not GPU-verified on this new runtime yet"
+  "local_agents_interrupted": false,
+  "model_services_restarted": false
 }

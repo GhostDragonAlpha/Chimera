@@ -1,6 +1,6 @@
 {
-  "schema": "chimera.studio.gpu-trial.v1",
-  "source_lock": "e2278d2ff6e9ed8b0d01ca51cd679699defcd422bbd040dcc84ce3af60d60286",
+  "schema": "chimera.studio.gpu-trial.v2",
+  "source_lock": "3956ccb64d784a7eb01681fef27ef1d053f27f0fc8e62bb3a03a6f2a1655db4e",
   "spec": {
     "mode": "membrane",
     "positions": [
