@@ -1,0 +1,161 @@
+{
+  "steps": [],
+  "shots": {
+    "5-hover-ghost-over-b": {
+      "file": "5-hover-ghost-over-b.png",
+      "sha256": "c042d21a05452207695ac87135f141ccff14d6953b92a04f03cd59591b641cda",
+      "bytes": 7750787
+    },
+    "6-welded": {
+      "file": "6-welded.png",
+      "sha256": "1b662c7741bd2cf08d23e4e1cbf914bf6f63669501ffdb0e38cb1a7b02b06788",
+      "bytes": 7750787
+    },
+    "7-removed": {
+      "file": "7-removed.png",
+      "sha256": "cc62bd7dc6c25c6483a7829efddaae7f6f3461cd10dc68d6abbfd93737aeddd7",
+      "bytes": 7750787
+    }
+  },
+  "asserts": [
+    {
+      "name": "admit ok",
+      "ok": true,
+      "detail": "{'ok': True, 'schema': 'chimera.b2_scene.v1'}"
+    },
+    {
+      "name": "pause ok",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "scene has 2 parts",
+      "ok": true,
+      "detail": "n=2"
+    },
+    {
+      "name": "interactive arm ok",
+      "ok": true,
+      "detail": "{'ok': True, 'interactive': True}"
+    },
+    {
+      "name": "arm state: off/none/null incl. hovered",
+      "ok": true,
+      "detail": "{\"interactive\": true, \"mode\": \"off\", \"selected\": null, \"anchor\": null, \"hovered\": null}"
+    },
+    {
+      "name": "hover A: hovered == block_a, NO selection, no click posted",
+      "ok": true,
+      "detail": "{\"interactive\": true, \"mode\": \"off\", \"selected\": null, \"anchor\": [0.0, 0.05149, -0.150002], \"hovered\": \"block_a\"}"
+    },
+    {
+      "name": "hover A: anchor == the pick hit on A's surface",
+      "ok": true,
+      "detail": "anchor=[0.0, 0.05149, -0.150002] hit=[0.0, 0.05149, -0.150002]"
+    },
+    {
+      "name": "hover B: hovered == block_b, still no click posted",
+      "ok": true,
+      "detail": "{\"interactive\": true, \"mode\": \"off\", \"selected\": null, \"anchor\": [0.37108, 0.036045, -0.1], \"hovered\": \"block_b\"}"
+    },
+    {
+      "name": "hover B: anchor MOVED off A onto B's surface",
+      "ok": true,
+      "detail": "anchor=[0.37108, 0.036045, -0.1] hit_b=[0.37108, 0.036045, -0.1]"
+    },
+    {
+      "name": "parts and welds untouched by hover",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "F no selection: refusal logged by name",
+      "ok": true,
+      "detail": "[{\"seq\": 1, \"t\": \"2026-10-19T05:12:31.876\", \"kind\": \"b2i\", \"detail\": \"weld refused: interactive: select a part first (click it)\"}]"
+    },
+    {
+      "name": "F no selection: no weld added, scene untouched",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "mode place_1",
+      "ok": true,
+      "detail": "{\"interactive\": true, \"mode\": \"place_1\", \"selected\": null, \"anchor\": [0.37108, 0.036045, -0.1], \"hovered\": \"block_b\"}"
+    },
+    {
+      "name": "ghost follows: mode armed + hovered B + anchor on B",
+      "ok": true,
+      "detail": "{\"interactive\": true, \"mode\": \"place_1\", \"selected\": null, \"anchor\": [0.37108, 0.036045, -0.1], \"hovered\": \"block_b\"}"
+    },
+    {
+      "name": "click A selects it (click path unchanged)",
+      "ok": true,
+      "detail": "{\"interactive\": true, \"mode\": \"place_1\", \"selected\": \"block_a\", \"anchor\": [0.0, 0.05149, -0.150002], \"hovered\": \"block_b\"}"
+    },
+    {
+      "name": "selected A + hovered B coexist in state",
+      "ok": true,
+      "detail": "{\"interactive\": true, \"mode\": \"place_1\", \"selected\": \"block_a\", \"anchor\": [0.37108, 0.036045, -0.1], \"hovered\": \"block_b\"}"
+    },
+    {
+      "name": "F weld: one connector in /tick_b2_state",
+      "ok": true,
+      "detail": "[{\"a\": \"block_a\", \"b\": \"block_b\", \"n_anchors\": 3, \"k_n_per_m\": 10000, \"c_n_s_per_m\": 0, \"force_n\": 0}]"
+    },
+    {
+      "name": "F weld: block_a -> block_b, 3 anchors, k 10000",
+      "ok": true,
+      "detail": "{\"a\": \"block_a\", \"b\": \"block_b\", \"n_anchors\": 3, \"k_n_per_m\": 10000, \"c_n_s_per_m\": 0, \"force_n\": 0}"
+    },
+    {
+      "name": "F weld: selection KEPT, state route shows the pair",
+      "ok": true,
+      "detail": "{\"interactive\": true, \"mode\": \"place_1\", \"selected\": \"block_a\", \"anchor\": [0.37108, 0.036045, -0.1], \"hovered\": \"block_b\"}"
+    },
+    {
+      "name": "F weld: success logged with real names",
+      "ok": true,
+      "detail": "[{\"seq\": 1, \"t\": \"2026-10-19T05:12:31.876\", \"kind\": \"b2i\", \"detail\": \"weld refused: interactive: select a part first (click it)\"}, {\"seq\": 2, \"t\": \"2026-10-19T05:12:32.344\", \"kind\": \"b2i\", \"detail\": \"place mode: place_1\"}, {\"seq\": 3, \"t\": \"2026-10-19T05:12:34.515\", \"kind\": \"b2i\", \"detail\": \"welded block_a to block_b\"}]"
+    },
+    {
+      "name": "hover A again: hovered == selected == block_a",
+      "ok": true,
+      "detail": "{\"interactive\": true, \"mode\": \"place_1\", \"selected\": \"block_a\", \"anchor\": [0.0, 0.05149, -0.150002], \"hovered\": \"block_a\"}"
+    },
+    {
+      "name": "F self-weld: refusal logged by name",
+      "ok": true,
+      "detail": "[{\"seq\": 1, \"t\": \"2026-10-19T05:12:31.876\", \"kind\": \"b2i\", \"detail\": \"weld refused: interactive: select a part first (click it)\"}, {\"seq\": 2, \"t\": \"2026-10-19T05:12:32.344\", \"kind\": \"b2i\", \"detail\": \"place mode: place_1\"}, {\"seq\": 3, \"t\": \"2026-10-19T05:12:34.515\", \"kind\": \"b2i\", \"detail\": \"welded block_a to block_b\"}, {\"seq\": 4, \"t\": \"2026-10-19T05:12:35.783\", \"kind\": \"b2i\", \"detail\": \"weld refused: weld: a part cannot weld to itself\"}]"
+    },
+    {
+      "name": "F self-weld: the existing weld is unchanged",
+      "ok": true,
+      "detail": "[{\"a\": \"block_a\", \"b\": \"block_b\", \"n_anchors\": 3, \"k_n_per_m\": 10000, \"c_n_s_per_m\": 0, \"force_n\": 0}]"
+    },
+    {
+      "name": "esc: mode off, selection cleared, parts unchanged",
+      "ok": true,
+      "detail": "{\"interactive\": true, \"mode\": \"off\", \"selected\": null, \"anchor\": [0.0, 0.05149, -0.150002], \"hovered\": \"block_a\"}"
+    },
+    {
+      "name": "X removed the welded block_b; its weld dropped with it",
+      "ok": true,
+      "detail": "{\"interactive\": true, \"mode\": \"off\", \"selected\": null, \"anchor\": [0.37108, 0.036045, -0.1], \"hovered\": \"block_a\"} welds=[]"
+    },
+    {
+      "name": "disable resets state incl. hovered",
+      "ok": true,
+      "detail": "{\"interactive\": false, \"mode\": \"off\", \"selected\": null, \"anchor\": null, \"hovered\": null}"
+    }
+  ],
+  "exe_sha256": "80d265f5b4c3f8f6358802b31c95b43628dac76f46fc7c80911797fdb5134075",
+  "exe": "D:\\Chimera-Maintenance\\PythonChimera\\.tmp\\body-engine\\Release\\chimera_engine.exe",
+  "pid": 141884,
+  "client": [
+    1920,
+    1009
+  ],
+  "clicks_posted": 2,
+  "verdict": "PASS"
+}

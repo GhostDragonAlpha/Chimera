@@ -248,11 +248,29 @@ public:
     void b2i_set_enabled(bool on);
     bool b2i_enabled() const { return b2i_on_.load(std::memory_order_acquire); }
     void b2i_click(const float eye[3], const float dir[3]);   // pick at the click ray
+    // Mouse-MOVE pick: the same camera ray as b2i_click, but it moves only
+    // the HOVER state (below) -- the ghost preview follows the cursor
+    // ("preview where you look, not where you last clicked"); the click keeps
+    // owning selection AND anchor.
+    void b2i_hover(const float eye[3], const float dir[3]);
     void b2i_cycle_mode();                                    // Tab: off -> kit 1 -> ...
     std::string b2i_commit();                                 // Enter: place at the anchor
     void b2i_cancel();                                        // Esc: mode + selection off
     std::string b2i_remove_selected();                        // X: remove the selection
+    // F verb: a finite-area weld between the selected part (A) and the
+    // hovered part (B) at the current anchor -- three anchor pairs around the
+    // pick point through the SAME B2Scene::set_weld transaction the
+    // /tick_b2_weld route runs (re-set replaces the pair's connector; the
+    // pool cap refuses by name; both inherited). Returns "" on success, else
+    // the refusal text; ok_msg (when non-null) receives "welded <a> to <b>"
+    // for the engine log (the b2_inspect out-param convention).
+    std::string b2i_weld(std::string *ok_msg = nullptr);
     std::string b2i_mode_name() const;                        // "off" | "place_N"
+    // One STATUS-panel line for main.cpp's 1 Hz composer (set_status_lines is
+    // a public inline setter -- the build-mode readout needs no ui.cpp edit).
+    // Composes under b2i_mtx_ directly: that mutex is NOT recursive, so this
+    // must never call b2i_mode_name() (which takes the same lock).
+    std::string b2i_status_line() const;
     std::string b2i_state_json();                             // GET /tick_b2_interactive
     // Ghost preview for the render lane (main.cpp): true while a place mode
     // is armed AND a pick anchor exists; out = box center, half = half
@@ -671,6 +689,9 @@ private:
     std::atomic<bool> b2i_on_{false};
     int b2i_mode_ = -1;              // -1 = off, else the kit table index
     std::string b2i_selected_;       // picked part id ("" = none)
+    std::string b2i_hovered_;        // part under the cursor ("" = none); hover
+                                     // input state like the anchor -- the weld
+                                     // F verb reads it, the click never moves it
     bool b2i_anchor_valid_ = false;  // true once a click's ray hit a part
     float b2i_anchor_[3] = {0, 0, 0};
     uint64_t b2i_seq_ = 0;           // unique placed-part id suffix

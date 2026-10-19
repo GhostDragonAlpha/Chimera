@@ -1388,3 +1388,41 @@ s = 1.0 only. No record change; published artifacts left as written.
 - Process: Maya one dispatch ~2.1 h under the revised brief (implement +
   smoke, baseline-first, no capture/commit); lead reviewed + re-ran +
   published.
+
+## WC-INTERACT-2 — ghost follows the cursor, F welds, STATUS panel shows the mode (2026-10-19) — PASS (§5.1 row 1 phase 2)
+
+- Engine change 150+/5- across four CLEAN files (engine.cpp, main.cpp,
+  membrane_tick.{cpp,hpp}); ui.cpp untouched. Report + smoke + status
+  captures: `docs/evidence/mechanism_factory/wc_interact2/`.
+- Hover: uncaptured WM_MOUSEMOVE re-picks through the SAME camera_ray +
+  B2Scene::pick and moves ONLY hover state + ghost anchor (miss keeps last
+  anchor, no flicker; click still owns selection). Panels skipped via the
+  public ui_.wants_mouse (Blender law). F verb: weld selected->hovered at
+  the anchor through the UNCHANGED B2Scene::set_weld (3 anchor pairs,
+  k = 10000 N/m documented default between the drivers' 2000/20000;
+  re-set-replaces + pool cap inherited; named refusals).
+- Status readout WITHOUT ui.cpp: main.cpp's 1 Hz composer appends
+  b2i_status_line() ("build: place_N | sel X | hov Y" / "build: off") and
+  pushes through the public inline set_status_lines (ui.hpp:129) — the
+  lead's open question from WC-INTERACT-1, resolved and shipped.
+- Evidence: baseline (source == 0d105e42) 88 passed (exe 9cb45190); Maya's
+  build 88 passed (exe 80d265f5, lead re-ran 189.12 s); final with status
+  line 88 passed (exe 757f280a, 187.25 s). Two intermediate runs each had
+  one different wall-clock-sensitive failure under parallel load (frame
+  envelope; B6 valve flux — unreachable from b2i code); quiet re-runs
+  green; no test weakened. Smoke 26/26 asserts with real PostMessageW
+  input: hover-follow proven (anchor moves with NO click), weld visible in
+  /tick_b2_state (3 anchors, k 10000), self-weld + no-selection refusals,
+  X drops part + connector, disable resets hover. Status PNGs show
+  "build: off" disarmed and "build: place off | sel - | hov block_b" after
+  a real hover (lead viewed pixels).
+- Lead review: full diff read — hover gated !captured && enabled; lock
+  order b2_mtx_ then b2i_mtx_ never reversed; b2i_status_line composes
+  under b2i_mtx_ directly (non-recursive, commented); weld doc verified
+  against set_weld's real validation (no proximity check).
+- Limits stated: connector has no render mesh (state route + log prove
+  welds); hover updates under open console; fixed k; human playability
+  unobserved.
+- Process: Maya ~1.6 h one dispatch (baseline-first, no capture/commit);
+  lead added the status line (Maya's verdict task: clean-file path found),
+  re-ran regression twice, captured status evidence, reviewed full diff.

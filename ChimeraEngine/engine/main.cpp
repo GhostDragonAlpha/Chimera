@@ -5009,6 +5009,11 @@ int main(int argc, char** argv) {
                          g_engine->frost_on_.load() ? "ON" : "off",
                          (unsigned long long)g_engine->frost_frame_.load());
                 lines.push_back(lb);
+                // B-INTERACTIVE build-mode readout (WC-INTERACT-2): the
+                // player's on-screen mode/selection/hover line, composed by
+                // the tick and pushed through the public setter -- no ui.cpp
+                // edit (the panel is fed, never patched).
+                lines.push_back(g_tick.b2i_status_line());
                 g_engine->ui_.set_status_lines(lines);
             }
 

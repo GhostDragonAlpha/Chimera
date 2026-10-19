@@ -3822,6 +3822,7 @@ void MembraneTick::b2i_set_enabled(bool on) {
     if (!on) {   // deterministic off (the loco-spike law): mode + selection reset
         b2i_mode_ = -1;
         b2i_selected_.clear();
+        b2i_hovered_.clear();   // hover is input state too: reset with the rest
         b2i_anchor_valid_ = false;
     }
 }
@@ -3844,6 +3845,29 @@ void MembraneTick::b2i_click(const float eye[3], const float dir[3]) {
     b2i_anchor_valid_ = true;
 }
 
+// HOVER (WC-INTERACT-2): the mouse-MOVE twin of b2i_click. Same camera ray
+// (Engine::camera_ray + B2Scene::pick) and the SAME meshes the renderer
+// draws; on a hit it moves ONLY the hover state -- b2i_hovered_ and the
+// ghost anchor -- so the place-mode ghost follows the cursor. The click path
+// (b2i_click) is untouched: it still owns the selection and re-sets the
+// anchor. A miss keeps everything (no flicker when the ray grazes off a part
+// edge between frames), and a hover never moves the white selection
+// highlight -- the highlight stays with the click.
+void MembraneTick::b2i_hover(const float eye[3], const float dir[3]) {
+    std::string id;
+    float hit[3];
+    bool got;
+    {
+        std::lock_guard<std::mutex> lk(b2_mtx_);
+        got = b2_.pick(eye, dir, id, hit);
+    }
+    std::lock_guard<std::mutex> lk(b2i_mtx_);
+    if (!got) return;
+    b2i_hovered_ = id;
+    for (int k = 0; k < 3; ++k) b2i_anchor_[k] = hit[k];
+    b2i_anchor_valid_ = true;
+}
+
 void MembraneTick::b2i_cycle_mode() {
     std::lock_guard<std::mutex> lk(b2i_mtx_);
     b2i_mode_ = (b2i_mode_ + 1 >= kInteractiveKitN) ? -1 : b2i_mode_ + 1;
@@ -3853,6 +3877,23 @@ std::string MembraneTick::b2i_mode_name() const {
     std::lock_guard<std::mutex> lk(b2i_mtx_);
     if (b2i_mode_ < 0) return "off";
     return std::string("place_") + std::to_string(b2i_mode_ + 1);
+}
+
+// STATUS line for the Studio panel (main.cpp's 1 Hz composer): the player's
+// build-mode readout without touching ui.cpp (set_status_lines is a public
+// inline setter). "build: off" when disarmed; while armed, the place mode
+// plus the two weld inputs, so the eye can tell what F will connect before
+// pressing it. Composed under b2i_mtx_ directly -- b2i_mtx_ is NOT recursive,
+// so b2i_mode_name() (same lock) must not be called from here.
+std::string MembraneTick::b2i_status_line() const {
+    if (!b2i_enabled()) return "build: off";
+    std::lock_guard<std::mutex> lk(b2i_mtx_);
+    std::string s = b2i_mode_ < 0
+        ? std::string("build: place off")
+        : "build: place_" + std::to_string(b2i_mode_ + 1);
+    s += " | sel " + (b2i_selected_.empty() ? std::string("-") : b2i_selected_);
+    s += " | hov " + (b2i_hovered_.empty() ? std::string("-") : b2i_hovered_);
+    return s;
 }
 
 std::string MembraneTick::b2i_commit() {
@@ -3914,6 +3955,67 @@ std::string MembraneTick::b2i_remove_selected() {
     return why;
 }
 
+// F VERB (WC-INTERACT-2): weld the selected part (A) to the hovered part (B)
+// at the current anchor -- the player's one-key "these two are now one
+// structure" (the welded-span solution of workshop challenge 1). The weld
+// document goes through the SAME B2Scene::set_weld transaction the
+// /tick_b2_weld route runs: re-setting a pair's weld replaces its connector
+// and the bounded pool cap refuses by name (both inherited, b2_scene.cpp
+// set_weld). Three anchor pairs around the pick point make the connector a
+// finite AREA, not a pin; each pair carries the SAME world point on both
+// sides (set_weld captures local axes and has no proximity check, verified
+// b2_scene.cpp anchors loop), arranged as a small triangle 2 mm above the
+// surface so the connector patch sits between stacked boxes. k = 10000 N/m
+// is the documented interactive default -- between the challenge drivers'
+// K_SOFT 2000 and K_STIFF 20000 (workshop_challenge1.py). Refusals name the
+// missing input; the selection survives either way.
+std::string MembraneTick::b2i_weld(std::string *ok_msg) {
+    std::string sel, hov;
+    bool valid;
+    float a[3] = {0, 0, 0};
+    {
+        std::lock_guard<std::mutex> lk(b2i_mtx_);
+        sel = b2i_selected_;
+        hov = b2i_hovered_;
+        valid = b2i_anchor_valid_;
+        for (int k = 0; k < 3; ++k) a[k] = b2i_anchor_[k];
+    }
+    if (sel.empty())
+        return std::string("interactive: select a part first (click it)");
+    if (hov.empty() || !valid)   // a hover always carries a fresh anchor
+        return std::string("interactive: hover the second part");
+    if (hov == sel)
+        return std::string("weld: a part cannot weld to itself");
+    // anchor triangle: x/z offsets around the pick point, y just above the
+    // surface (the patch must not start inside the part it welds)
+    static const float OFF[3][2] = {
+        { 0.02f,  0.000f},
+        {-0.01f,  0.017f},
+        {-0.01f, -0.017f}};
+    const float ay = a[1] + 0.002f;
+    char buf[1024];
+    std::snprintf(buf, sizeof buf,
+        "{\"a\":\"%s\",\"b\":\"%s\",\"k\":10000.0,\"c_damp\":0.0,"
+        "\"anchors_world\":["
+        "[%.*g,%.*g,%.*g,%.*g,%.*g,%.*g],"
+        "[%.*g,%.*g,%.*g,%.*g,%.*g,%.*g],"
+        "[%.*g,%.*g,%.*g,%.*g,%.*g,%.*g]]}",
+        sel.c_str(), hov.c_str(),
+        9, a[0] + OFF[0][0], 9, ay, 9, a[2] + OFF[0][1],
+        9, a[0] + OFF[0][0], 9, ay, 9, a[2] + OFF[0][1],
+        9, a[0] + OFF[1][0], 9, ay, 9, a[2] + OFF[1][1],
+        9, a[0] + OFF[1][0], 9, ay, 9, a[2] + OFF[1][1],
+        9, a[0] + OFF[2][0], 9, ay, 9, a[2] + OFF[2][1],
+        9, a[0] + OFF[2][0], 9, ay, 9, a[2] + OFF[2][1]);
+    std::string why;
+    {
+        std::lock_guard<std::mutex> lk(b2_mtx_);
+        why = b2_.set_weld(buf);
+    }
+    if (why.empty() && ok_msg) *ok_msg = "welded " + sel + " to " + hov;
+    return why;
+}
+
 bool MembraneTick::b2i_ghost(float out[3], float half[3]) const {
     std::lock_guard<std::mutex> lk(b2i_mtx_);
     if (b2i_mode_ < 0 || !b2i_anchor_valid_) return false;
@@ -3930,13 +4032,14 @@ bool MembraneTick::b2i_ghost(float out[3], float half[3]) const {
 std::string MembraneTick::b2i_state_json() {
     bool on, anchor_valid;
     int mode;
-    std::string sel;
+    std::string sel, hov;
     float a[3] = {0, 0, 0};
     {
         std::lock_guard<std::mutex> lk(b2i_mtx_);
         on = b2i_on_.load(std::memory_order_acquire);
         mode = b2i_mode_;
         sel = b2i_selected_;
+        hov = b2i_hovered_;
         anchor_valid = b2i_anchor_valid_;
         for (int k = 0; k < 3; ++k) a[k] = b2i_anchor_[k];
     }
@@ -3953,6 +4056,11 @@ std::string MembraneTick::b2i_state_json() {
     } else {
         s += "null";
     }
+    // WC-INTERACT-2: the hover twin of "selected" -- the part under the
+    // cursor (null = none). The weld F verb's second input, visible to the
+    // probes; existing fields unchanged (smoke asserts on them).
+    s += ",\"hovered\":";
+    s += hov.empty() ? "null" : ("\"" + hov + "\"");
     s += "}";
     return s;
 }

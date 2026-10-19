@@ -60,6 +60,27 @@ static void b2i_fire_click(HWND hwnd, int mx, int my) {
     if (!g_key_engine->camera_ray(u, v, eye, dir)) return;   // no camera yet
     g_interactive_tick->b2i_click(eye, dir);
 }
+// B-INTERACTIVE hover (WC-INTERACT-2): the mouse-MOVE twin of the click --
+// the SAME camera ray (Engine::camera_ray + B2Scene::pick) fed to b2i_hover,
+// which moves only the hover state, so the place-mode ghost follows the
+// cursor ("preview where you look, not where you last clicked"). Reached
+// only when the mode is armed AND the move is not captured (a captured move
+// is an orbit/pan drag, never a hover). Panels are not transparent to input
+// (the Blender law): ui_.wants_mouse -- the SAME public cursor-over-panel
+// test the wheel route uses -- skips the hover under a Studio panel, so the
+// ghost never updates underneath one; a pick MISS keeps the previous anchor
+// (no flicker). The click path below is untouched.
+static void b2i_hover_move(HWND hwnd, int mx, int my) {
+    if (!g_key_engine || !g_interactive_tick) return;
+    if (g_key_engine->ui_.wants_mouse(mx, my)) return;
+    RECT rc;
+    if (!GetClientRect(hwnd, &rc) || rc.right < 2 || rc.bottom < 2) return;
+    float u = (float)mx / (float)rc.right;
+    float v = (float)my / (float)rc.bottom;
+    float eye[3], dir[3];
+    if (!g_key_engine->camera_ray(u, v, eye, dir)) return;   // no camera yet
+    g_interactive_tick->b2i_hover(eye, dir);
+}
 // B-INTERACTIVE keyboard (Tab cycle / Enter commit / Esc cancel / X remove).
 // Returns true when the key was consumed. Reached only after the console gate
 // in WndProc -- a typed command can never place a part. Refusals and results
@@ -86,6 +107,16 @@ static bool b2i_key(unsigned char vk, Engine* eng) {
         std::string why = g_interactive_tick->b2i_remove_selected();
         eng->log_event("b2i", why.empty() ? "selected part removed"
                                           : "remove refused: " + why);
+        return true;
+    }
+    // F verb (WC-INTERACT-2): weld selected -> hovered at the anchor. Same
+    // refusal-to-log convention as the other verbs; a success log carries
+    // the real part names ("welded A to B"), a refusal names the missing
+    // input and the scene is untouched (transaction law).
+    if (vk == 'F') {
+        std::string ok;
+        std::string why = g_interactive_tick->b2i_weld(&ok);
+        eng->log_event("b2i", why.empty() ? ok : "weld refused: " + why);
         return true;
     }
     return false;
@@ -266,7 +297,8 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
         }
         // B-INTERACTIVE construction keys (default OFF; /tick_b2_interactive
         // arms): Tab cycles the place mode, Enter commits, Esc cancels, X
-        // removes the selection. Edge-triggered (no autorepeat) and reached
+        // removes the selection, F welds selected -> hovered (WC-INTERACT-2).
+        // Edge-triggered (no autorepeat) and reached
         // only when the console is CLOSED -- the console gate above returns
         // every keydown while it is open, so a typed command can never place
         // a part. With interactive off this block is skipped entirely.
@@ -291,6 +323,15 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
     if (msg == WM_MOUSEMOVE && g_key_engine && g_key_engine->ui_.visible) {
         g_key_engine->ui_.on_mouse_move((int)(short)LOWORD(lp), (int)(short)HIWORD(lp));
     }
+    // B-INTERACTIVE hover (WC-INTERACT-2): an UNCAPTURED move re-picks under
+    // the cursor so the place-mode ghost FOLLOWS the cursor (preview where
+    // you look, not where you last clicked); captured moves are orbit/pan
+    // drags and fall through to the branches below untouched. b2i_hover_move
+    // itself skips the Studio panels (wants_mouse) and the mode keeps this a
+    // no-op while OFF.
+    if (msg == WM_MOUSEMOVE && !g_mouse_captured && g_interactive_tick
+        && g_interactive_tick->b2i_enabled())
+        b2i_hover_move(hwnd, (int)(short)LOWORD(lp), (int)(short)HIWORD(lp));
     if (msg == WM_LBUTTONDOWN && g_key_engine && g_key_engine->ui_.visible) {
         int mx = (int)(short)LOWORD(lp), my = (int)(short)HIWORD(lp);
         if (g_key_engine->ui_.on_lbutton(mx, my, true)) {
