@@ -79,6 +79,16 @@ change graph admission, a released interface, or an existing result's validity.
 
 ## 1. The game we are making
 
+**Operator design clarification, 2026-10-18:** player invention should be enabled
+by a material-aware CAD/3D-printing workshop. Choose an editable assembly or import
+a design, assign materials to its parts and layers, fabricate the resulting matter,
+then use and modify it in the game. Spaceships, cars, houses and machinery are
+important target creations. A space RPG built around those inventions is part of
+the product ambition; the current Warden/Sump rescue setting is the working early
+experience, not a restriction to biological parts or a closed prefab catalog.
+Engineering understanding should emerge through play, with accessible templates
+for newcomers and deeper geometry/material control for experienced makers.
+
 You are a Warden bonded to a creature in the Sump, a world of living shelters,
 strained bridges and animals whose bodies bear the history of their lives.
 You explore, fight, rescue and build by redirecting force and resources through
@@ -358,6 +368,45 @@ parts freely and undo uncommitted edits. In the live world, the tool supplies it
 declared forces/work and the player supplies material; releasing a loaded connector
 can recoil. Sandbox resource settings are explicit scenario settings. Neither an
 undo nor a blueprint is an unlimited source of matter or stored energy.
+
+### Design, assign materials, fabricate, use
+
+The player's main creative instrument is a **virtual fabrication workshop**.
+Ready-made ships, vehicles, buildings and machines should be editable assemblies
+of reusable parts. Players can start from one, mix components from several, or
+bring their own geometry. Preserve a simple template route alongside deeper CAD
+control; neither hand-authoring every triangle nor solving equations is required.
+
+1. **Choose the design.** Load a template, an assembly or a supported imported
+   shape; show its size, separate parts, cavities and what can be edited.
+2. **Assign the matter.** Select a part, enclosed region or thickness-bearing
+   layer; choose wood, a specified steel, stone, cloth, skin or a fictional material
+   profile. Offer region fill, layer assignment and a brush with an explicit depth.
+3. **Inspect the inside.** A slice slider, cutaway and material legend reveal wall
+   thickness, infill, seams and voids. Material colors are a useful authoring view;
+   normal appearance remains available. Labels/patterns make the view usable without
+   relying on color alone.
+4. **Connect its function.** Keep or edit the template's joints, supports and
+   functional ports. Geometry provides shape; materials and connections determine
+   response. A moving or powered module also needs its supported drive and supply.
+5. **Fabricate and try it.** Preview required material quantities and supported
+   behavior, instantiate through the existing construction owners, then test/use it.
+6. **Keep the invention.** Save geometry, material layout, interfaces and exposed
+   parameters as a reusable recipe; instances retain their own physical history.
+
+For example, retain the same hull-panel shape and change its material or layer
+layout. Recompute mass and the applicable mechanical response; compare carrying
+cost, deformation and any supported failure behavior under the same load. Steel,
+wood and stone should differ through their declared properties, orientation and
+interfaces. Hull capacity also depends on geometry and loading, so a material's
+single "strength" number cannot stand in for the assembly response. A fictional
+alloy can have explicitly authored properties and consistent tradeoffs within the
+same laws. It need not pretend to be a measured terrestrial substance.
+
+This turns the artificial-protein library into the internal implementation of
+player-designed matter. Its qualified mechanisms and reduced responses supply
+behavior for cells, layers and interfaces; the player works with recognizable
+parts and materials. §11.2.1 specifies the import-to-function connection.
 
 ### Make the workshop a game of hypotheses
 
@@ -1286,6 +1335,74 @@ nodes can represent a qualified continuous/perfectly bonded region. A sliding or
 separable interface needs distinct sides and an explicit coupling. Nonmatching
 meshes require conservative patch interpolation/integration rather than equal vertex
 counts. The weights must reproduce the declared force and moment transfer.
+
+### 11.2.1 Bring CAD and 3D-printing designs into functional matter
+
+**Planned adapter over existing owners; no importer installed by this revision.**
+The imported document supplies authored geometry and available assembly/material
+metadata. Translate it into §11.2's region-and-interface description and existing
+part/piece records, then into the native state and render bindings. Preserve
+source part identity, units, transforms and the user's edits. Keep separate parts
+separate until the player or recipe specifies their physical connection.
+
+**Format research and intended subset:** [3MF Core](https://github.com/3MFConsortium/spec_core/blob/master/3MF%20Core%20Specification.md)
+represents units, mesh objects, component transforms and base-material labels.
+Its base-material assignments describe surfaces; the interior distribution is
+left to the consumer. Its overlapping-component manufacturing semantics can unite
+shapes, so importing an assembly must not silently weld moving parts. Start with
+separate closed, nonoverlapping parts with explicit region mappings.
+[Materials and Properties](https://github.com/3MFConsortium/spec_materials/blob/master/3MF%20Materials%20Extension.md)
+adds color and multi-material properties. Pin a compatible specification/extension
+set and report unsupported required features. [lib3mf](https://github.com/3MFConsortium/lib3mf)
+is the candidate reader/validator to evaluate before writing a parser.
+For a later STEP/CAD path, [Open CASCADE XDE](https://occt3d.com/dev/doc/overview/html/occt_user_guides__xde.html)
+preserves assembly structure by separating shape definitions from placed instances.
+Neither exchange format supplies Chimera's complete mechanical behavior automatically.
+A geometry-only import can remain editable while its missing functional bindings
+are completed; it does not need to be thrown away.
+
+**Color selects a material ID; it is not the material law.** An import palette can
+map named colors/groups to selected profiles with an explicit preview. Store that
+mapping independently of RGB, lighting, texture and display theme. Filling an
+interior or painting a coating needs an explicit region/depth rule; a differently
+colored exterior face does not establish the composition of the whole solid.
+Distinguish physical laminations from printer deposition slices and simulation
+cells. Preserve the layers the player intends, while choosing mechanical/render
+resolution independently. Simulating every microscopic printer layer is unnecessary
+when a qualified equivalent response preserves the relevant behavior.
+
+Extend existing definitions only for missing fields:
+
+| Authored information | Reuse and functional mapping |
+|---|---|
+| Solid, hollow or layered shape; thickness; infill; material orientation | §11.2 geometry compiler; `tools/material_volume.py` for validated volume ownership, mass, COM and inertia. This module consumes a supplied tetrahedral complex and is not a general mesher or constitutive solver. |
+| Grade/species or fictional profile; units and conditions; supported response laws | `tools/material_contract.py` and the existing material catalog. Current provenance types are researched/parent/derived; fictional parameters need an explicit authored-scenario provenance path, not forged research sources. |
+| Part boundaries, bonded/sliding/contact interfaces, ports and powered functions | Existing recipes, assembly contracts and mechanism-factory piece records. Preserve voids and moving clearances; naming a mesh "engine" does not create thrust, power or fuel flow. |
+| Reusable response for a region or subassembly | Existing mechanism factory, recipe comparisons and GPU batches. Retrieve applicable measured/tabulated behavior before generating new labels; compose through supported ports. |
+| Visible surface, interior slice and selectable layer | Existing native renderer/inspector with persistent physical region IDs. A decorative repaint changes appearance; replacing material changes the physical definition and resource account. |
+
+A material replacement keeps the design but selects/recomputes the necessary
+response and inventory. Reuse cached results only within their geometry, material,
+scale, interface and operating-domain conditions. Train missing reusable response
+families offline; ordinary instantiation and color selection should not launch a
+new training campaign. UnitcellDB can supply candidate infill geometries and
+applicable effective elastic data; FEBio references can inform relevant compliant
+layers/interfaces under §11.21's mapping rules. Evaluate changed assemblies and
+new mappings without repeating the unchanged source measurement campaign.
+
+**First material-aware increment:** an editable panel or bracket from the current
+construction kit, plus one small supported external design, with material-region
+selection, a slice view, required quantities and saved-recipe reuse. Demonstrate
+one useful change in mass and one supported mechanical response between two
+profiles at the same geometry/load. The current rigid kit's density/friction
+settings alone do not establish material-specific bending or fracture; select the
+small missing response binding if needed and state the behavior actually shown.
+Keep current workshop controls/recovery progressing. A complete spaceship,
+propulsion, heat protection and pressure vessel are later combinations of admitted
+functions, not prerequisites to this first visible import/material/use loop.
+The educational outcome is a player's successful prediction or revision based on
+material, geometry or layering, observed in the game rather than inferred from
+the number of properties in a catalog.
 
 ### 11.3 How pieces stack, join and separate
 
@@ -3924,6 +4041,7 @@ stage. Audit present implementations before assigning any proposed increment.
 |---|---|---|
 | Which existing interaction prevents the player from building independently? | §5.1's walkthrough-to-controls audit, native picking and accepted transactions | One player-chosen edit, readable result and recovery without a script choosing the construction |
 | Is a measurement-only rendering path wasting the frame budget? | Inspect the B2 overlay upload described below before adding physics reductions; profile the current scene first | Less input-to-feedback delay or better p95 frame time at unchanged physical steps and visible geometry |
+| Can a maker turn a familiar design into useful simulated matter? | §5's fabrication interaction and §11.2.1's small import/material adapter; reuse existing region, recipe and response owners | One external part with inspectable material layout, a meaningful material-dependent outcome and saved reuse in the workshop |
 | Can known data remove the next physics/content obstacle? | UnitcellDB candidates and one relevant FEBio reference through §11.21's existing record/adapter owners; retrieve before generating labels | A specific supported workshop part/response or a precise missing-law decision, with avoided work named |
 | Which small kit supports genuinely different solutions? | Existing recipes, legal construction grammar, comparisons and §11.20.4's archive; retain alternatives by clearance, compliance, load range and cost | At least two structurally different successful arrangements for §5.1, followed by player reuse in a changed layout; diversity is not proof of fun |
 | Can a useful assembly become a cheap reusable part? | Current S3/S4, piece records and port solver; extend beyond the supported response where it matters | One component reused under different surrounding conditions, with coupled error, reconstruction and total runtime cost measured |
