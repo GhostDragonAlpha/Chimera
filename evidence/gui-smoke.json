@@ -2,7 +2,9 @@
   "pass": true,
   "scope": "Real UI, solid viewport, two native rigid regions; not production frame-rate qualification",
   "blender": "5.0.1",
-  "native_steps": 3629,
-  "native_batch_ms": 0.25939999613910913,
+  "binary": "D:\\Chimera-Maintenance\\ChimeraStudio\\build-blender\\bin\\Release\\blender.exe",
+  "build_hash": "68c79f03362e",
+  "native_steps": 3628,
+  "native_batch_ms": 0.2565000322647393,
   "sidebar_visible": true
 }

@@ -1,5 +1,15 @@
 {
   "blender": "5.0.1",
+  "blender_build_hash": "68c79f03362e",
+  "binary": "D:\\Chimera-Maintenance\\ChimeraStudio\\build-blender\\bin\\Release\\blender.exe",
+  "source_hashes": {
+    "python\\chimera_studio\\__init__.py": "5c35228987a575436c7ee5926ae22dd1dceaacffa3b990ed79867dce83fdb02a",
+    "python\\chimera_studio\\geometry.py": "b9cb43110ce4519359f6c1ff6863de7151445e1ea702ebb065c6b145db17c3e8",
+    "python\\chimera_studio\\native.py": "47c1895143c57b250e9e383e401e4b9641df42a2f57c14171b30ad680c963ca3",
+    "python\\chimera_studio\\workspace.py": "88f4efc7d59b4c4b4583d3eb19b2f9e3cd1be4acfaa3882648b603ebd64ef305",
+    "native\\bridge.cpp": "a7e16431403b668a8bad2d7881d653caa5b48ef9d3291cc6d0578c4e349c8282",
+    "build\\native\\Release\\chimera_studio_bridge.dll": "2cef3a601a480bece1a32ed7b9266ed8071fae5bce9305efdecf00b0a2b905cf"
+  },
   "engine_source_lock": "77cfea240c8f1b8dbafdccdbdfcedba1949206a0b7d47d9c0c5f11788f22fd03",
   "tests": [
     {
@@ -33,7 +43,7 @@
       "name": "Save and open physical trial preserves native state",
       "pass": true,
       "details": {
-        "state_hash": "1a008bc0e45468d1"
+        "state_hash": "6f3852fb545f4347"
       }
     },
     {
@@ -56,8 +66,8 @@
       "details": {
         "batch_substeps": 80,
         "simulated_ms": 20,
-        "native_batch_median_ms": 0.21740002557635307,
-        "native_batch_p95_ms": 0.3446000046096742,
+        "native_batch_median_ms": 0.21249998826533556,
+        "native_batch_p95_ms": 0.2258999738842249,
         "scope": "2 parts, CPU native solver only, not GUI frame rate"
       }
     },

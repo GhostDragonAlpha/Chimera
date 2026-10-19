@@ -1,0 +1,28 @@
+{
+  "schema": "chimera.studio.build.v1",
+  "created_utc": "2026-10-19T02:34:44.262430+00:00",
+  "blender_source_commit": "68c79f03362ebc6e41d16a10b77c8f794097e644",
+  "integration_source_commit": "09471402e501619a923c7d516af1d54234897a8a",
+  "engine_source_lock_sha256": "77cfea240c8f1b8dbafdccdbdfcedba1949206a0b7d47d9c0c5f11788f22fd03",
+  "executable": "D:\\Chimera-Maintenance\\ChimeraStudio\\build-blender\\bin\\Release\\blender.exe",
+  "executable_sha256": "cbddeffa7c9732a9eb258b6f31d7547ceee837f91f8a7330f7cb228235d8da4b",
+  "native_bridge_sha256": "2cef3a601a480bece1a32ed7b9266ed8071fae5bce9305efdecf00b0a2b905cf",
+  "compiler": "MSVC 19.44, Visual Studio 2022 Build Tools, x64 Release",
+  "upstream_tag": "v5.0.1",
+  "disabled_build_features": [
+    "Cycles",
+    "OpenImageDenoise",
+    "USD",
+    "Hydra",
+    "OpenVDB",
+    "Fluid",
+    "NanoVDB",
+    "GTests"
+  ],
+  "checks": {
+    "headless": true,
+    "application_template": true,
+    "viewport": true
+  },
+  "qualification_scope": "Private two-region CPU-native rigid construction, native finite-area connection, physical save/replay and Blender pose display. Not full membrane/CA/GPU or game qualification."
+}

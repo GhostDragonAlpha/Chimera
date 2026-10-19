@@ -1,6 +1,8 @@
 {
   "pass": true,
   "blender": "5.0.1",
+  "binary": "D:\\Chimera-Maintenance\\ChimeraStudio\\build-blender\\bin\\Release\\blender.exe",
+  "build_hash": "68c79f03362e",
   "template": "ChimeraStudio",
   "registered": true,
   "native_steps": 80

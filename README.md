@@ -50,3 +50,7 @@ From this directory, `./tools/Build-Native.ps1` builds the private DLL. `./tools
 Blender fork: `../blender`, branch `chimera/studio-v5.0.1`, upstream tag `v5.0.1` (a3db93c5b2595a79f65f304114c23aeef8c2139f). Source edits are window branding and a Chimera application template. Integration: this directory. Build output: `../build-blender`; no shared engine build directory is used. No public fork/release is implied by these local repositories.
 
 `LICENSE` preserves the source project's AGPL-3.0 license. Original Blender license files remain in its fork. `vendor/chimera` is an unchanged attributed snapshot; see `SOURCE_LOCK.json`. Integration source is AGPL-3.0-or-later. Application template and Blender edits retain Blender-compatible GPL-3.0-or-later headers. Keep these notices and source available with any later distribution.
+
+## Installed build result
+
+The custom executable was built and tested from Blender fork commit `68c79f03362ebc6e41d16a10b77c8f794097e644` and integration source commit `09471402e501619a923c7d516af1d54234897a8a`. Ten background integration checks, the installed application-template check (including configuration isolation), and a short real-window viewport/native-play check passed. See `evidence/build-manifest.json` for exact executable/DLL identities and `evidence/viewport.png` for the actual view. Full scene throughput and human usability remain unmeasured.
