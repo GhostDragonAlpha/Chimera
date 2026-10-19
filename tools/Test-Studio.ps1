@@ -27,6 +27,9 @@ if ($Gui) {
     $report | ConvertTo-Json
 }
 
+& $Blender --background --factory-startup --python-exit-code 7 --python (Join-Path $root 'tests/test_ca_checkpoint_offline.py')
+if ($LASTEXITCODE -ne 0) { throw 'Offline CA checkpoint tests failed' }
+
 if ($Gpu) {
     & $Blender --background --factory-startup --python-exit-code 7 --python (Join-Path $root 'tests/test_gpu_blender.py')
     if ($LASTEXITCODE -ne 0) { throw 'GPU matter integration tests failed' }

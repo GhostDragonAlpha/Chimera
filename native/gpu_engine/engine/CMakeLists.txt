@@ -150,6 +150,7 @@ endif()
 add_executable(chimera_engine
     main.cpp
     engine.cpp
+    water_checkpoint.cpp
     physics.cpp
     http_server.cpp
     membrane_tick.cpp
@@ -158,6 +159,10 @@ add_executable(chimera_engine
     ui.cpp
     ${CHIMERA_PLATFORM_SRCS}
 )
+
+if(TARGET all_shaders)
+    add_dependencies(chimera_engine all_shaders)
+endif()
 
 target_include_directories(chimera_engine PRIVATE
     "${VULKAN_SDK}/Include"

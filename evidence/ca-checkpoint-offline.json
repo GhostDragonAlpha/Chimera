@@ -1,0 +1,24 @@
+{
+  "scope": "Synthetic format/persistence only, no GPU execution or physical replay claim",
+  "runtime_identity": "7b3f0ac4186a5478af2b9287f4051384347c00b2e87c6483bfbe67557ed732e2",
+  "passed": 4,
+  "total": 4,
+  "tests": [
+    {
+      "name": "64-bit counter and raw float64 flow bits survive JSON",
+      "pass": true
+    },
+    {
+      "name": "Damaged, mismatched and nonfinite checkpoint data refused offline",
+      "pass": true
+    },
+    {
+      "name": "Actual .blend save/reopen retains full checkpoint without GPU allocation",
+      "pass": true
+    },
+    {
+      "name": "Matter-trial exchange and failed load preserve accepted offline document",
+      "pass": true
+    }
+  ]
+}

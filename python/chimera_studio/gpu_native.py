@@ -25,7 +25,7 @@ def digest(data): return hashlib.sha256(data).hexdigest()
 def number(x,name,low,high): return _control.number(x,name,low,high)
 def verify_runtime():
     for f in json.loads((ROOT/'GPU_SOURCE_LOCK.json').read_text())['files']:
-        if f['copy'].replace('\\','/').startswith('vendor/gpu/runtime/') or f['copy'].endswith('control_client.py'):
+        if f['copy'].replace('\\','/').startswith('runtime/gpu/') or f['copy'].endswith('control_client.py'):
             if digest((ROOT/f['copy']).read_bytes())!=f['sha256']:raise ValueError('Pinned GPU runtime changed: '+f['copy'])
 
 def geometry(positions,triangles):
@@ -117,15 +117,46 @@ def water_packet(s,volumes):
                     np.asarray(s['conductance'],dtype='<f8').tobytes(),np.asarray(s['lengths'],dtype='<f8').tobytes(),
                     np.ones(ne,dtype='<u4').tobytes(),np.asarray(s['colors'],dtype='<u4').tobytes()])
 
+def fnv64(data):
+    h=14695981039346656037
+    for b in data:h=((h^b)*1099511628211)&0xffffffffffffffff
+    return h
+
+def water_state(raw,spec):
+    # The native payload preserves raw float64 flow/depth bits, not decimal approximations.
+    n=len(spec['triangles']);e=len(spec['eij'])
+    if len(raw)!=88+12*n+8*e:raise ValueError('CA full checkpoint length mismatch')
+    magic,version,nc,ne,substrate,steps,automatic,seconds,dt,csteps,target,count,flags,cdt=struct.unpack_from('<4I3Q2dIiiId',raw)
+    if (magic,version,nc,ne)!=(0x31534357,1,n,e):raise ValueError('Unsupported CA full checkpoint')
+    if substrate!=fnv64(water_packet(spec,spec['volumes'])):raise ValueError('CA checkpoint substrate mismatch')
+    if struct.unpack_from('<Q',raw,len(raw)-8)[0]!=fnv64(raw[:-8]):raise ValueError('CA native checksum mismatch')
+    if (automatic>steps or not math.isfinite(seconds) or seconds<0 or not math.isfinite(dt) or not 0<=dt<=1
+        or (steps and (dt<=0 or seconds<=0)) or (not steps and (dt!=0 or seconds!=0))
+        or not 1<=csteps<=4096 or not -1<=target<n or count<0 or flags!=0
+        or not math.isfinite(cdt) or not 0<cdt<=1):raise ValueError('Invalid CA physical clock')
+    v=np.frombuffer(raw,dtype='<i4',count=n,offset=80)
+    flow=np.frombuffer(raw,dtype='<f8',count=e,offset=80+4*n)
+    depth=np.frombuffer(raw,dtype='<f8',count=n,offset=80+4*n+8*e)
+    if ((v<0).any() or int(v.sum())!=sum(spec['volumes']) or not np.isfinite(flow).all()
+        or not np.isfinite(depth).all() or (depth<0).any()):raise ValueError('Invalid CA flow/depth or volume conservation')
+    return {'format':'WCS1','volumes':v.tolist(),'steps':steps,'simulated_seconds':seconds,
+            'full_state':base64.b64encode(raw).decode('ascii'),'sha256':digest(raw)}
+
+def validate_water_state(state,spec):
+    if not isinstance(state,dict) or not isinstance(state.get('full_state'),str):raise ValueError('Full native CA checkpoint required')
+    try:raw=base64.b64decode(state['full_state'],validate=True)
+    except Exception as exc:raise ValueError('Invalid CA checkpoint encoding') from exc
+    expected=water_state(raw,spec)
+    if state!=expected:raise ValueError('CA checkpoint fields/hash mismatch')
+    return raw
+
 def validate_document(doc):
-    if not isinstance(doc,dict) or doc.get('schema')!='chimera.studio.gpu-trial.v1' or doc.get('source_lock')!=identity():raise ValueError('GPU trial runtime identity mismatch')
+    if not isinstance(doc,dict) or doc.get('schema')!='chimera.studio.gpu-trial.v2' or doc.get('source_lock')!=identity():raise ValueError('GPU trial runtime identity mismatch')
     if len(json.dumps(doc,allow_nan=False))>MAX_DOC:raise ValueError('GPU trial exceeds size limit')
     spec=validate_spec(doc['spec']);state=doc.get('state')
     if not isinstance(state,dict):raise ValueError('Missing native checkpoint')
     if spec['mode']=='water':
-        water_packet(spec,state['volumes'])
-        if type(state.get('steps'))!=int or not 0<=state['steps']<=64:raise ValueError('Invalid CA step count')
-        if sum(state['volumes'])!=sum(spec['volumes']) or digest(np.asarray(state['volumes'],dtype='<i4').tobytes())!=state.get('sha256'):raise ValueError('CA checkpoint identity/conservation mismatch')
+        validate_water_state(state,spec)
     else:
         if state.get('schema')!='chimera.membrane_demo_state.v1' or state.get('n_verts')!=len(spec['positions']) or state.get('n_faces')!=len(spec['triangles']) or state.get('centre_index')!=spec['centre']:raise ValueError('Membrane checkpoint geometry mismatch')
         points=np.asarray(state['positions_f32'],dtype=float)
@@ -153,8 +184,8 @@ class PrivateEngine:
             startup=subprocess.STARTUPINFO();startup.dwFlags|=subprocess.STARTF_USESHOWWINDOW;startup.wShowWindow=0
         # Working directory must contain the pinned shaders; state writes are confined to a per-run directory.
         import shutil
-        shutil.copytree(ROOT/'vendor/gpu/runtime/shaders',self.folder/'shaders')
-        self.proc=subprocess.Popen([str(ROOT/'vendor/gpu/runtime/chimera_engine.exe'),str(port),'--no-board','384','256','--no-restore','--hidden'],cwd=self.folder,stdout=self.logs[0],stderr=self.logs[1],creationflags=flags,startupinfo=startup)
+        shutil.copytree(ROOT/'runtime/gpu/shaders',self.folder/'shaders')
+        self.proc=subprocess.Popen([str(ROOT/'runtime/gpu/chimera_engine.exe'),str(port),'--no-board','384','256','--no-restore','--hidden'],cwd=self.folder,stdout=self.logs[0],stderr=self.logs[1],creationflags=flags,startupinfo=startup)
         from .owned_job import OwnedJob
         try:self.job=OwnedJob(self.proc)
         except BaseException:self.close();raise
@@ -204,13 +235,9 @@ class GpuSession:
             state=self.engine.request('GET','/membrane_demo_save')
             if state.get('schema')!='chimera.membrane_demo_state.v1':raise RuntimeError('Native membrane save API unavailable')
         else:
-            raw=self.engine.request('GET','/water_state',binary=True)
-            if len(raw)<8:raise RuntimeError('Truncated CA state')
-            ns,nc=struct.unpack('<2I',raw[:8])
-            if nc!=len(self.spec['triangles']) or not 1<=ns<=65 or len(raw)!=8+ns*nc*4:raise RuntimeError('CA readback shape mismatch')
-            v=np.frombuffer(raw,dtype='<i4',offset=8).reshape(ns,nc)[-1].copy()
-            if (v<0).any() or int(v.sum())!=sum(self.spec['volumes']):raise RuntimeError('CA conservation/positivity failed')
-            state={'volumes':v.tolist(),'steps':self.elapsed_steps,'sha256':digest(v.tobytes())}
+            raw=self.engine.request('GET','/water_save',binary=True)
+            state=water_state(raw,self.spec)
+            self.elapsed_steps=state['steps'];self.batch_steps=self.elapsed_steps
         self.state=state;return state
     def record(self):
         raw=json.dumps(self.state,allow_nan=False,separators=(',',':'))
@@ -218,17 +245,15 @@ class GpuSession:
         while len(self.history)>240 or sum(map(len,self.history))>MAX_DOC:self.history.pop(0)
         self.cursor=len(self.history)-1
     def advance(self,count=1):
-        if type(count)!=int or not 1<=count<=8:raise ValueError('Advance 1–8 explicit GPU iterations')
+        limit=64 if self.spec['mode']=='water' else 8
+        if type(count)!=int or not 1<=count<=limit:raise ValueError(f'Advance 1–{limit} explicit GPU iterations')
         t=time.perf_counter()
         if self.spec['mode']=='membrane':
             self.engine.request('POST','/membrane_demo',{'op':'step' if count==1 else 'run','n_steps':count})
         else:
-            if self.elapsed_steps+count>64:raise ValueError('Native CA trial limit is 64 steps; save or reset the trial')
-            # Preserve the existing flux memory and exact dispatch sequence. Never reset V to extend a run.
-            for _ in range(count):
-                self.engine.request('POST','/water_step',{'n_macro':1,'dt_macro':self.spec['dt']})
-                self.elapsed_steps+=1
-            self.batch_steps=self.elapsed_steps
+            # Native ring storage is bounded; the physical clock and q_e continue.
+            # One batch executes EVERY requested step, in the same color order.
+            self.engine.request('POST','/water_step',{'n_macro':count,'dt_macro':self.spec['dt']})
         self.snapshot();self.record();self.last_ms=(time.perf_counter()-t)*1000
     def deform(self,load):
         if self.spec['mode']!='membrane':raise ValueError('Load applies to the membrane only')
@@ -240,15 +265,8 @@ class GpuSession:
         if self.spec['mode']=='membrane':
             self.engine.request('POST','/membrane_demo_restore',state)
         else:
-            if type(state.get('steps'))!=int or not 0<=state['steps']<=64:raise ValueError('Invalid CA step count')
-            raw=np.asarray(state['volumes'],dtype='<i4').tobytes()
-            if digest(raw)!=state.get('sha256') or sum(state['volumes'])!=sum(self.spec['volumes']):raise ValueError('CA checkpoint identity/conservation mismatch')
-            water_packet(self.spec,state['volumes'])  # Validate before any mutation.
-            # The native field also carries q_e flux memory, which /water_state does not export.
-            # Reproduce every original native step from the saved substrate; do NOT restore V alone.
-            self.engine.request('POST','/water_bin',water_packet(self.spec,self.spec['volumes']))
-            for _ in range(state['steps']):self.engine.request('POST','/water_step',{'n_macro':1,'dt_macro':self.spec['dt']})
-            self.elapsed_steps=state['steps'];self.batch_steps=self.elapsed_steps
+            raw=validate_water_state(state,self.spec)  # All checks before any mutation.
+            self.engine.request('POST','/water_restore',raw)
         restored=self.snapshot()
         # Native restore adds descriptive hex-placeholder fields to material_snapshot.
         # Compare every physical value/hash; descriptive enrichment is not physical state drift.
@@ -261,7 +279,7 @@ class GpuSession:
         self.restore_state(json.loads(self.history[index]));self.cursor=index
     def document(self):
         # Last confirmed checkpoint; safe to save even after native timeout.
-        return {'schema':'chimera.studio.gpu-trial.v1','source_lock':identity(),'spec':self.spec,'state':self.state}
+        return {'schema':'chimera.studio.gpu-trial.v2','source_lock':identity(),'spec':self.spec,'state':self.state}
     @classmethod
     def restore(cls,doc):
         validate_document(doc)

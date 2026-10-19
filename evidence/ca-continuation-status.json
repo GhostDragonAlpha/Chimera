@@ -1,0 +1,19 @@
+{
+  "schema": "chimera.studio.ca-continuation-status.v1",
+  "runtime_identity": "7b3f0ac4186a5478af2b9287f4051384347c00b2e87c6483bfbe67557ed732e2",
+  "build": "Release x64 succeeded",
+  "gpu_tests": "pending_user_deferred",
+  "gpu_tests_executed": false,
+  "reason": "User requested leaving GPU testing pending; observed free VRAM about 365 MiB, below unchanged 384 MiB launch guard. No agents stopped or models unloaded.",
+  "cpu_checks": "ca-checkpoint-offline.json (4/4); headless_integration.json (10/10); template-startup.json",
+  "pending_command": "./tools/Test-Studio.ps1 -Gpu",
+  "pending_tests": [
+    "nonzero edge-flow sensitivity and batch partition equivalence",
+    "Blender save beyond 64 and exact fresh-process continuation",
+    "2310 actual steps and bounded 65-state native history",
+    "scheduled injection cursor across ring wrap",
+    "paused automatic-clock state restoration",
+    "malformed native restore refuses without mutation"
+  ],
+  "exact_replay_claim": "Not GPU-verified on this new runtime yet"
+}

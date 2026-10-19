@@ -42,7 +42,7 @@ static GraphThermal g_thermal;
 static GraphEarth g_earth;
 static std::mutex g_thermal_frame_mutex;
 static std::map<uint64_t,GraphThermal::J> g_thermal_frames;
-static SharedRing g_ring("ChimeraPhysicsRing");
+static SharedRing g_ring("ChimeraStudioPrivatePhysicsRing"); // isolated from live agents
 
 // ── Pending membrane request (Vulkan work must stay on the main/render thread) ───────
 struct MembraneRequest {
@@ -353,6 +353,7 @@ static bool g_hinge_pending = false, g_hinge_applied = false;
 
 // ── Pending water request (the CA-field solver; same handoff) ───────────────
 struct WaterReq { Engine::WaterUpload up; int kind = 1; uint32_t n_macro = 1; double dt = 0.01;
+                  std::vector<uint8_t> checkpoint; std::string error; bool clock_on = false; int32_t target = -1, count = 0;
                   int64_t sum = 0, mn = 0; std::vector<int32_t> states; uint32_t ns = 0, nc = 0; bool ok = false; };
 static WaterReq g_water_req;
 static std::mutex g_water_mutex;
@@ -684,6 +685,45 @@ void handleSignal(int) {
 // (C1061 guard). Each performs the same render-thread handoff as the
 // inline routes; restore parses at the HTTP layer (the /membrane_demo_bin
 // pattern) and the engine validates against its live state.
+// Studio CA controls: parse outside the giant routing lambda; execution is
+// serialized with save/restore on the Vulkan owner thread.
+static std::string water_control_route(int kind, const std::string& payload, std::string& type) {
+    type = "application/json";
+    WaterReq request{}; request.kind = kind;
+    try {
+        if(kind == 2 || kind == 7) {
+            auto j=nlohmann::json::parse(payload);
+            if(!j.is_object()) throw std::runtime_error("object required");
+            const char* nk=kind==2 ? "n_macro" : "steps";
+            const char* dk=kind==2 ? "dt_macro" : "dt";
+            if(j.contains(nk) && !j[nk].is_number_integer()) throw std::runtime_error("integer step count required");
+            int64_t n=j.value(nk,int64_t(1)); request.dt=j.value(dk,0.01);
+            if(n<1 || n>4096 || !std::isfinite(request.dt) || request.dt<=0 || request.dt>1)
+                throw std::runtime_error("step request outside bounds");
+            request.n_macro=uint32_t(n);
+            if(kind==7) {
+                request.clock_on=j.value("on",false);
+                request.target=j.value("inj_target",int32_t(-1)); request.count=j.value("inj_count",int32_t(0));
+                if(request.target < -1 || request.count<0) throw std::runtime_error("invalid clock injection");
+            }
+        } else if(kind==6) {
+            if(payload.size()>16*1024*1024) return "{\"ok\":false,\"error\":\"checkpoint_too_large\"}";
+            request.checkpoint.assign(payload.begin(),payload.end());
+        }
+    } catch(...) { return "{\"ok\":false,\"error\":\"invalid_water_control\"}"; }
+    std::unique_lock<std::mutex> lk(g_water_mutex);
+    if(g_water_pending) return "{\"ok\":false,\"error\":\"water_request_pending\"}";
+    g_water_req=std::move(request); g_water_pending=true; g_water_applied=false;
+    bool waited=wait_for_shutdown(g_water_cv,lk,std::chrono::seconds(60),[]{return g_water_applied;});
+    if(!waited) { g_water_pending=false; return "{\"ok\":false,\"error\":\"water_control_timeout\"}"; }
+    if(!g_water_req.ok) return nlohmann::json({{"ok",false},{"error",g_water_req.error.empty()?"water_control_refused":g_water_req.error}}).dump();
+    if(kind==5) {
+        type="application/octet-stream";
+        return std::string(g_water_req.checkpoint.begin(),g_water_req.checkpoint.end());
+    }
+    return nlohmann::json({{"ok",true},{"sum",g_water_req.sum},{"min",g_water_req.mn}}).dump();
+}
+
 static std::string membrane_demo_save_route() {
     {
         std::lock_guard<std::mutex> lk(g_md_mutex);
@@ -1044,6 +1084,10 @@ int main(int argc, char** argv) {
         // strip query string
         size_t q = path.find('?');
         std::string p = (q == std::string::npos) ? path : path.substr(0, q);
+
+        if ((p=="/water_save" && method=="GET") || (p=="/water_restore" && method=="POST")) {
+            body=water_control_route(p=="/water_save" ? 5 : 6,req_body,content_type); return;
+        }
 
         // The selected membrane body has one pose owner. A full mesh load starts
         // a new body; independent editors and animation uploads cannot bypass it.
@@ -2103,6 +2147,11 @@ int main(int argc, char** argv) {
                 up.n_colors = rd_u32(8);
                 uint32_t n_inj = rd_u32(12);
                 up.Q = rd_f64(16); up.G = rd_f64(24); up.c_local = rd_f64(32);
+                if (!up.n_cells || up.n_cells > 262144 || !ne || ne > 786432 ||
+                    !up.n_colors || up.n_colors > 64 || n_inj > 1000000) {
+                    body="{\"ok\":false,\"error\":\"water_upload_bounds\"}";
+                    content_type="application/json"; return;
+                }
                 size_t off = 40;
                 size_t n = up.n_cells;
                 size_t expect = off + n * 8 * 2 + n * 4 * 2 + static_cast<size_t>(ne) * 4 * 2
@@ -2135,46 +2184,12 @@ int main(int argc, char** argv) {
                     }
                     std::unique_lock<std::mutex> lk(g_water_mutex);
                     bool ok = wait_for_shutdown(g_water_cv, lk, std::chrono::seconds(60), []{ return g_water_applied; });
-                    body = ok ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"timeout\"}";
+                    body = (ok && g_water_req.ok) ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"water_upload_refused_or_timeout\"}";
                 }
             }
             content_type = "application/json";
         } else if (p == "/water_step" && method == "POST") {
-            // JSON {"n_macro":N, "dt_macro":D} -> runs on the render thread
-            uint32_t n_macro = 1; double dt = 0.01;
-            {
-                auto find_num = [&](const char* key, std::string& out) {
-                    size_t pos = req_body.find(key);
-                    if (pos == std::string::npos) return false;
-                    pos = req_body.find(':', pos);
-                    if (pos == std::string::npos) return false;
-                    size_t a = req_body.find_first_of("-0123456789.", pos);
-                    size_t b = req_body.find_first_not_of("-0123456789.eE+", a);
-                    out = req_body.substr(a, b - a);
-                    return true;
-                };
-                std::string v;
-                if (find_num("n_macro", v)) n_macro = static_cast<uint32_t>(std::stoul(v));
-                if (find_num("dt_macro", v)) dt = std::stod(v);
-            }
-                    {
-                        std::lock_guard<std::mutex> lk(g_water_mutex);
-                        g_water_req = WaterReq{};
-                        g_water_req.kind = 2;
-                        g_water_req.n_macro = n_macro;
-                        g_water_req.dt = dt;
-                        g_water_pending = true; g_water_applied = false;
-                    }
-                    bool ok;
-                    int64_t sum, mn;
-                    {
-                        std::unique_lock<std::mutex> lk(g_water_mutex);
-                        wait_for_shutdown(g_water_cv, lk, std::chrono::seconds(120), []{ return g_water_applied; });
-                        ok = g_water_req.ok; sum = g_water_req.sum; mn = g_water_req.mn;
-                    }
-            body = std::string("{\"ok\":") + (ok ? "true" : "false")
-                 + ",\"sum\":" + std::to_string(sum) + ",\"min\":" + std::to_string(mn) + "}";
-            content_type = "application/json";
+            body=water_control_route(2,req_body,content_type);
         } else if (p == "/water_state" && method == "GET") {
             {
                 std::lock_guard<std::mutex> lk(g_water_mutex);
@@ -2202,34 +2217,7 @@ int main(int argc, char** argv) {
                 content_type = "application/json";
             }
         } else if (p == "/water_clock" && method == "POST") {
-            // JSON {"on":bool, "steps":N, "dt":D, "inj_target":T, "inj_count":C} —
-            // flags only (atomics); the stepping itself happens on the render
-            // thread inside frame() (H4: the CA field runs on the engine's clock).
-            auto find_bool = [&](const char* key, bool def) {
-                size_t pos = find_colon_after(req_body, key);
-                if (pos == std::string::npos) return def;
-                while (pos < req_body.size() && (req_body[pos] == ' ' || req_body[pos] == '\t')) ++pos;
-                if (req_body.compare(pos, 4, "true") == 0) return true;
-                if (req_body.compare(pos, 5, "false") == 0) return false;
-                return def;
-            };
-            bool on = find_bool("on", false);
-            uint32_t steps = get_uint(req_body, "steps", 1);
-            double dt = static_cast<double>(get_float(req_body, "dt", 0.01f));
-            int32_t inj_target = static_cast<int32_t>(get_float(req_body, "inj_target", -1.0f));
-            int32_t inj_count  = static_cast<int32_t>(get_float(req_body, "inj_count", 0.0f));
-            if (g_engine) {
-                bool was = g_engine->water_clock_on_.load();
-                g_engine->water_clock_steps_per_frame_.store(steps ? steps : 1);
-                g_engine->water_clock_dt_.store(dt);
-                g_engine->water_clock_inj_target_.store(inj_target);
-                g_engine->water_clock_inj_count_.store(inj_count);
-                if (on && !was) g_engine->water_clock_steps_total_.store(0);  // a fresh run
-                g_engine->water_clock_on_.store(on);
-            }
-            body = std::string("{\"ok\":true,\"steps_total\":")
-                 + std::to_string(g_engine ? g_engine->water_clock_steps_total_.load() : 0) + "}";
-            content_type = "application/json";
+            body=water_control_route(7,req_body,content_type);
         } else if (p == "/water_clock" && method == "GET") {
             if (g_engine) {
                 body = std::string("{\"on\":") + (g_engine->water_clock_on_.load() ? "true" : "false")
@@ -4703,6 +4691,13 @@ int main(int argc, char** argv) {
                 } else if (g_water_req.kind == 2) {
                     g_water_req.ok = engine.water_run(g_water_req.n_macro, g_water_req.dt,
                                                       g_water_req.sum, g_water_req.mn);
+                } else if (g_water_req.kind == 5) {
+                    g_water_req.ok = engine.water_save(g_water_req.checkpoint,g_water_req.error);
+                } else if (g_water_req.kind == 6) {
+                    g_water_req.ok = engine.water_restore(g_water_req.checkpoint,g_water_req.error);
+                } else if (g_water_req.kind == 7) {
+                    g_water_req.ok = engine.water_clock_config(g_water_req.clock_on,
+                        g_water_req.n_macro,g_water_req.dt,g_water_req.target,g_water_req.count);
                 } else if (g_water_req.kind == 4) {
                     g_water_req.ok = engine.water_vis_debug(g_water_req.states, 512);
                 } else {

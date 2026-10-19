@@ -52,7 +52,7 @@ def poll():
             _saved=document();sync_preview(_saved)
             state=_saved['state'];mode=_saved['spec']['mode']
             if mode=='membrane':message(f"GPU membrane | {state['energy_J']:.6g} J | center load {state['centre_load_N']:.4g} N")
-            else:message(f"GPU CA | {state['steps']}/64 steps | {sum(state['volumes'])} volume quanta")
+            else:message(f"GPU CA | {state['steps']} steps | {state['simulated_seconds']:.3f} s | {sum(state['volumes'])} volume quanta")
         except Exception as exc:message('GPU call failed: '+str(exc))
         for screen in bpy.data.screens:
             for area in screen.areas:
@@ -122,6 +122,7 @@ class Settings(bpy.types.PropertyGroup):
     load:FloatProperty(name='Center load N',default=.5,min=0,max=10)
     volume:FloatProperty(name='Water m³',default=.0001,min=1e-10,max=1,precision=6)
     pipe:FloatProperty(name='CA pipe height m',default=.01,min=.000001,max=1,precision=5)
+    ca_steps:IntProperty(name='CA steps per advance',default=1,min=1,max=64)
     replay:IntProperty(name='Checkpoint',default=0,min=0)
 
 class Demo(bpy.types.Operator):
@@ -166,7 +167,9 @@ class BuildWater(bpy.types.Operator):
 class Advance(bpy.types.Operator):
     bl_idname='chimera.gpu_step';bl_label='Advance Native GPU Step'
     def execute(self,context):
-        try:r=current();submit(lambda:r.advance())
+        try:
+            r=current();count=context.scene.chimera_gpu.ca_steps if r.spec['mode']=='water' else 1
+            submit(lambda:r.advance(count))
         except Exception as exc:self.report({'ERROR'},str(exc));return {'CANCELLED'}
         return {'FINISHED'}
 class Deform(bpy.types.Operator):
@@ -246,12 +249,12 @@ class Panel(bpy.types.Panel):
         l.label(text='Existing Chimera Vulkan solver');l.operator('chimera.gpu_demo')
         box=l.box();box.enabled=not busy();box.prop(s,'tension');box.operator('chimera.gpu_membrane');box.prop(s,'load');box.operator('chimera.gpu_load')
         box=l.box();box.enabled=not busy();box.prop(s,'volume');box.prop(s,'pipe');box.operator('chimera.gpu_water')
-        row=l.column();row.enabled=not busy();row.operator('chimera.gpu_step');row.operator('chimera.gpu_resume')
+        row=l.column();row.enabled=not busy();row.prop(s,'ca_steps');row.operator('chimera.gpu_step');row.operator('chimera.gpu_resume')
         if _session:
             l.label(text=f'{len(_session.history)} confirmed checkpoints');row=l.column();row.enabled=not busy();row.prop(s,'replay');row.operator('chimera.gpu_seek')
         l.operator('chimera.gpu_save');l.operator('chimera.gpu_open');l.operator('chimera.gpu_release');l.operator('chimera.gpu_authoring')
         l.label(text=_message[:65]);l.label(text=_message[65:130])
-        l.label(text='Fan: one free center, pinned rim');l.label(text='CA: closed boundary; 64 native steps')
+        l.label(text='Fan: one free center, pinned rim');l.label(text='CA: closed boundary; full-flow replay')
 
 @persistent
 def save_pre(_):

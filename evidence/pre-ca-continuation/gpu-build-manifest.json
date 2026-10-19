@@ -1,0 +1,25 @@
+{
+  "schema": "chimera.studio.gpu-build.v1",
+  "date": "2026-10-19",
+  "blender_fork_commit": "68c79f03362ebc6e41d16a10b77c8f794097e644",
+  "gpu_lock_sha256": "e2278d2ff6e9ed8b0d01ca51cd679699defcd422bbd040dcc84ce3af60d60286",
+  "files": {
+    "python/chimera_studio/gpu_native.py": "b4a5d5c69c89d46bdda648cdaa73597a7962c44fef4c987ccb504133aa7e42ae",
+    "python/chimera_studio/gpu_workspace.py": "346a45ad57a2379f9b8472fd7f5d44326aec3dfb4953a06e5bd3ef5e7e3e8b86",
+    "python/chimera_studio/owned_job.py": "877dc809fe7f6b7523e08a5bab7e0a657b0a6f63ac8827c02f1038946af5c601",
+    "python/chimera_studio/workspace.py": "be66c9c42336d08b344908aa8801ab5ad54651bebef37536b9dacd9c8941e7ff",
+    "python/chimera_studio/__init__.py": "6f3a6e405a7c7812a402685c514894500f5196c0bde81c90c55092e0d0a66025",
+    "tests/test_gpu_blender.py": "c6922f7cb2d0f511c0bcd4167e47e6e1a48f56b0d7ac3bf2a8fda62438da7c12",
+    "tests/test_gpu_gui.py": "6d15ea52aea2566b40d45230f0a26cc1c1c5a8f0ed7a109b07491af8e8339092",
+    "tests/test_gpu_lifetime.py": "ed4c36bf08fe1b74384991d0502ab0b1660ee1fdaec942cef61f1ee2d19cc558"
+  },
+  "tests": [
+    "gpu-integration.json",
+    "gpu-gui.json",
+    "owned-child-test.json",
+    "headless_integration.json",
+    "template-startup.json"
+  ],
+  "live_model_services_restarted": false,
+  "plan_commit": "01c7dee0501062038cfcbea8b0b7ad4e335bdd1a"
+}

@@ -1,6 +1,5 @@
 {
-  "pass": true,
-  "scope": "Real Blender window displaying saved native GPU membrane, then asynchronous native resume/load",
-  "native_state_id": "15179603180351312220",
-  "load_N": 1
+  "status": "pending_user_deferred",
+  "runtime_identity": "7b3f0ac4186a5478af2b9287f4051384347c00b2e87c6483bfbe67557ed732e2",
+  "prior_runtime_results": "pre-ca-continuation/gpu-gui.json"
 }

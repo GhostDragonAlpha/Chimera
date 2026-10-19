@@ -256,6 +256,12 @@ public:
     // Runs n_macro macro-steps at dt_macro; records V after each step for
     // readback. Returns (final_sum, final_min).
     bool water_run(uint32_t n_macro, double dt_macro, int64_t& sum_out, int64_t& min_out);
+    // WCS1 full-state checkpoints; clock must be paused. Vulkan work stays on owner thread.
+    bool water_clock_config(bool on, uint32_t steps, double dt, int32_t target, int32_t count);
+    bool water_save(std::vector<uint8_t>& out, std::string& error);
+    bool water_restore(const std::vector<uint8_t>& data, std::string& error);
+    bool water_finish_command(VkCommandBuffer cb);
+    bool water_transfer_state(std::vector<uint8_t>& data, bool write);
     bool water_download(std::vector<int32_t>& out_states, uint32_t& n_states, uint32_t& n_cells);
     // ── THE WATER CLOCK (H4: macro steps on the engine's clock, CA-field) ──
     // Set from the HTTP thread, consumed on the render thread inside frame():
@@ -1088,7 +1094,9 @@ private:
     double          w_Q_ = 0, w_G_ = 0, w_c_local_ = 0;
     std::vector<uint32_t> w_color_start_;
     std::vector<uint32_t> w_inj_;              // pairs (cell, count)
-    uint32_t        w_states_cap_ = 0, w_states_n_ = 0;
+    uint32_t        w_states_cap_ = 0, w_states_n_ = 0, w_history_next_ = 0;
+    uint64_t        w_steps_total_ = 0, w_substrate_id_ = 0;
+    double          w_time_ = 0, w_last_dt_ = 0;
     VkBuffer        w_V_buf_ = VK_NULL_HANDLE, w_depth_buf_ = VK_NULL_HANDLE,
                     w_areas_buf_ = VK_NULL_HANDLE, w_bed_buf_ = VK_NULL_HANDLE,
                     w_eij_buf_ = VK_NULL_HANDLE, w_ke_buf_ = VK_NULL_HANDLE,

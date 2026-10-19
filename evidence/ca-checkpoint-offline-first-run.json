@@ -1,0 +1,28 @@
+{
+  "scope": "Synthetic format/persistence only, no GPU execution or physical replay claim",
+  "runtime_identity": "7b3f0ac4186a5478af2b9287f4051384347c00b2e87c6483bfbe67557ed732e2",
+  "passed": 2,
+  "total": 4,
+  "tests": [
+    {
+      "name": "64-bit counter and raw float64 flow bits survive JSON",
+      "pass": true
+    },
+    {
+      "name": "Damaged, mismatched and nonfinite checkpoint data refused offline",
+      "pass": true
+    },
+    {
+      "name": "Actual .blend save/reopen retains full checkpoint without GPU allocation",
+      "pass": false,
+      "error": "",
+      "traceback": "Traceback (most recent call last):\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\tests\\test_ca_checkpoint_offline.py\", line 21, in check\n    try:fn();results.append({'name':name,'pass':True});print('PASS',name,flush=True)\n        ^^^^\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\tests\\test_ca_checkpoint_offline.py\", line 47, in file_save\n    w.load_document(doc);assert w._session is None and w.document()==doc\n                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "name": "Matter-trial exchange and failed load preserve accepted offline document",
+      "pass": false,
+      "error": "",
+      "traceback": "Traceback (most recent call last):\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\tests\\test_ca_checkpoint_offline.py\", line 21, in check\n    try:fn();results.append({'name':name,'pass':True});print('PASS',name,flush=True)\n        ^^^^\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\tests\\test_ca_checkpoint_offline.py\", line 61, in exchange\n    assert w._session is None and w.document()==doc\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    }
+  ]
+}

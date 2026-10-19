@@ -1,3 +1,4 @@
+#include "water_checkpoint.hpp"
 #include "engine.hpp"
 #include "membrane_tick.hpp"
 #include "joint_binding.hpp"
@@ -4033,6 +4034,8 @@ static bool w_make_pipeline(VkDevice device, const char* spv_path, uint32_t n_bi
 }
 
 bool Engine::load_water(const WaterUpload& up) {
+    if (!water_checkpoint::valid_upload(up)) return false;
+    water_clock_on_.store(false);
     vkDeviceWaitIdle(device_);
     w_n_cells_ = up.n_cells; w_n_edges_ = up.n_edges; w_n_colors_ = up.n_colors;
     w_Q_ = up.Q; w_G_ = up.G; w_c_local_ = up.c_local;
@@ -4056,14 +4059,14 @@ bool Engine::load_water(const WaterUpload& up) {
                   VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, w_eactive_buf_, w_eactive_mem_);
     std::vector<double> zeros_d(up.n_edges, 0.0);
     upload_buffer(zeros_d.data(), zeros_d.size() * sizeof(double),
-                  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, w_qe_buf_, w_qe_mem_);
+                  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, w_qe_buf_, w_qe_mem_);
     std::vector<double> zeros_c(up.n_cells, 0.0);
     upload_buffer(zeros_c.data(), zeros_c.size() * sizeof(double),
-                  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, w_depth_buf_, w_depth_mem_);
+                  VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT, w_depth_buf_, w_depth_mem_);
     upload_buffer(up.occ.data(), up.occ.size() * sizeof(uint32_t),
                   VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, w_occ_buf_, w_occ_mem_);
 
-    // states buffer (cap 64 macro steps + the initial state) + host readback
+    // Bounded ring: last 65 recorded states. Physical lifetime is independent.
     w_states_cap_ = 65;
     VkDeviceSize states_sz = static_cast<VkDeviceSize>(w_states_cap_) * up.n_cells * sizeof(int32_t);
     {
@@ -4182,7 +4185,12 @@ bool Engine::load_water(const WaterUpload& up) {
         vkCmdCopyBuffer(cb, w_V_buf_, w_states_buf_, 1, &bc);
         end_single_time_cmd(cb);
     }
-    w_states_n_ = 1;
+    w_states_n_ = 1; w_history_next_ = 1;
+    w_steps_total_ = 0; w_time_ = 0; w_last_dt_ = 0;
+    w_substrate_id_ = water_checkpoint::substrate_id(up);
+    water_clock_steps_total_.store(0);
+    water_clock_steps_per_frame_.store(1); water_clock_dt_.store(0.01);
+    water_clock_inj_target_.store(-1); water_clock_inj_count_.store(0);
     water_loaded_ = true;
     printf("Water loaded: %u cells, %u edges, %u colors, %zu injections\n",
            w_n_cells_, w_n_edges_, w_n_colors_, w_inj_.size() / 2);
@@ -4234,83 +4242,65 @@ void Engine::water_record_macro_step(VkCommandBuffer cb, double dt_macro,
 }
 
 bool Engine::water_run(uint32_t n_macro, double dt_macro, int64_t& sum_out, int64_t& min_out) {
-    if (!water_loaded_) return false;
-    if (w_states_n_ + n_macro > w_states_cap_) n_macro = w_states_cap_ - w_states_n_;
-    if (n_macro == 0) return false;
-
-    VkCommandBufferAllocateInfo cbai{};
-    cbai.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    cbai.commandPool = cmd_pool_;
-    cbai.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    cbai.commandBufferCount = 1;
-    VkCommandBuffer cb;
-    vkAllocateCommandBuffers(device_, &cbai, &cb);
-    VkCommandBufferBeginInfo bbi{};
-    bbi.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-    vkBeginCommandBuffer(cb, &bbi);
-
+    // A request is bounded; the number of consecutive requests is not capped at 64.
+    // Refuse, never silently truncate a requested count.
+    if (!water_loaded_ || water_clock_on_.load() || !n_macro || n_macro > 4096 ||
+        !std::isfinite(dt_macro) || dt_macro <= 0 || dt_macro > 1 ||
+        w_steps_total_ > UINT64_MAX - n_macro ||
+        !std::isfinite(w_time_ + n_macro * dt_macro)) return false;
+    VkCommandBuffer cb = begin_single_time_cmd();
+    water_checkpoint::barrier(cb);  // previous frame/upload/restore -> compute/transfer
+    uint32_t next = w_history_next_;
     for (uint32_t step = 0; step < n_macro; ++step) {
-        // injection from the recorded upload table, indexed by absolute step
         int32_t inj_target = -1, inj_count = 0;
-        uint32_t inj_idx = (w_states_n_ - 1 + step);
-        if (inj_idx * 2 + 1 < w_inj_.size()) {
-            inj_target = static_cast<int32_t>(w_inj_[inj_idx * 2]);
-            inj_count = static_cast<int32_t>(w_inj_[inj_idx * 2 + 1]);
+        const uint64_t idx = w_steps_total_ + step;
+        if (idx < w_inj_.size() / 2) {
+            inj_target = static_cast<int32_t>(w_inj_[size_t(idx) * 2]);
+            inj_count = static_cast<int32_t>(w_inj_[size_t(idx) * 2 + 1]);
         }
         water_record_macro_step(cb, dt_macro, inj_target, inj_count);
-
-        // record the state (batch verification path only)
+        // Shader writes must be visible BEFORE copying V, and the copy must
+        // finish BEFORE the next step overwrites V or wraps the ring slot.
+        water_checkpoint::barrier(cb);
         VkBufferCopy bc{};
-        bc.srcOffset = 0;
-        bc.dstOffset = static_cast<VkDeviceSize>(w_states_n_ + step) * w_n_cells_ * sizeof(int32_t);
-        bc.size = static_cast<VkDeviceSize>(w_n_cells_) * sizeof(int32_t);
+        bc.dstOffset = VkDeviceSize(next) * w_n_cells_ * sizeof(int32_t);
+        bc.size = VkDeviceSize(w_n_cells_) * sizeof(int32_t);
         vkCmdCopyBuffer(cb, w_V_buf_, w_states_buf_, 1, &bc);
-        VkMemoryBarrier cmb{};
-        cmb.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
-        cmb.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
-        cmb.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
-        vkCmdPipelineBarrier(cb, VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-                             VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 1, &cmb, 0, nullptr, 0, nullptr);
+        water_checkpoint::barrier(cb);
+        next = (next + 1) % w_states_cap_;
     }
-    vkEndCommandBuffer(cb);
-
-    vkResetFences(device_, 1, &w_fence_);
-    VkSubmitInfo si{};
-    si.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-    si.commandBufferCount = 1;
-    si.pCommandBuffers = &cb;
-    vkQueueSubmit(queue_, 1, &si, w_fence_);
-    vkWaitForFences(device_, 1, &w_fence_, VK_TRUE, UINT64_MAX);
-    vkFreeCommandBuffers(device_, cmd_pool_, 1, &cb);
-    w_states_n_ += n_macro;
-
-    // final sum/min from the last recorded state (host readback)
-    {
-        VkCommandBuffer cb2 = begin_single_time_cmd();
-        VkBufferCopy rc{};
-        rc.size = static_cast<VkDeviceSize>(w_states_n_) * w_n_cells_ * sizeof(int32_t);
-        vkCmdCopyBuffer(cb2, w_states_buf_, w_readback_buf_, 1, &rc);
-        end_single_time_cmd(cb2);
+    if (!water_finish_command(cb)) return false;
+    w_history_next_ = next;
+    w_states_n_ = (std::min)(w_states_cap_, w_states_n_ + n_macro);
+    w_steps_total_ += n_macro;
+    // Identical summation sequence independent of HTTP batch partitioning.
+    for (uint32_t i = 0; i < n_macro; ++i) w_time_ += dt_macro;
+    w_last_dt_ = dt_macro;
+    std::vector<int32_t> states; uint32_t ns, nc;
+    if (!water_download(states, ns, nc)) return false;
+    sum_out = 0; min_out = INT64_MAX;
+    for (size_t i = size_t(ns - 1) * nc; i < states.size(); ++i) {
+        sum_out += states[i]; min_out = (std::min)(min_out, int64_t(states[i]));
     }
-    const int32_t* last = static_cast<const int32_t*>(w_readback_map_) +
-                          static_cast<size_t>(w_states_n_ - 1) * w_n_cells_;
-    int64_t s = 0, mn = INT64_MAX;
-    for (uint32_t i = 0; i < w_n_cells_; ++i) { s += last[i]; if (last[i] < mn) mn = last[i]; }
-    sum_out = s; min_out = mn;
     return true;
 }
 
 bool Engine::water_download(std::vector<int32_t>& out_states, uint32_t& n_states, uint32_t& n_cells) {
     if (!water_loaded_ || w_states_n_ == 0) return false;
     VkCommandBuffer cb = begin_single_time_cmd();
+    water_checkpoint::barrier(cb);
     VkBufferCopy rc{};
-    rc.size = static_cast<VkDeviceSize>(w_states_n_) * w_n_cells_ * sizeof(int32_t);
+    rc.size = VkDeviceSize(w_states_cap_) * w_n_cells_ * sizeof(int32_t);
     vkCmdCopyBuffer(cb, w_states_buf_, w_readback_buf_, 1, &rc);
-    end_single_time_cmd(cb);
+    water_checkpoint::host_read_barrier(cb);
+    if (!water_finish_command(cb)) return false;
     const int32_t* src = static_cast<const int32_t*>(w_readback_map_);
-    out_states.assign(src, src + static_cast<size_t>(w_states_n_) * w_n_cells_);
-    n_states = w_states_n_;
-    n_cells = w_n_cells_;
+    out_states.resize(size_t(w_states_n_) * w_n_cells_);
+    uint32_t first = (w_history_next_ + w_states_cap_ - w_states_n_) % w_states_cap_;
+    for (uint32_t i = 0; i < w_states_n_; ++i)
+        std::memcpy(out_states.data() + size_t(i) * w_n_cells_,
+                    src + size_t((first + i) % w_states_cap_) * w_n_cells_, w_n_cells_ * sizeof(int32_t));
+    n_states = w_states_n_; n_cells = w_n_cells_;
     return true;
 }
 
@@ -8849,9 +8839,17 @@ bool Engine::frame() {
         double cdt = water_clock_dt_.load(std::memory_order_relaxed);
         int32_t it = water_clock_inj_target_.load(std::memory_order_relaxed);
         int32_t ic = water_clock_inj_count_.load(std::memory_order_relaxed);
+        if (w_steps_total_ > UINT64_MAX - nsteps || !std::isfinite(w_time_ + nsteps * cdt)) {
+            water_clock_on_.store(false); nsteps = 0;
+        }
+        water_checkpoint::barrier(cmd_bufs_[img_idx]);
         for (uint32_t s = 0; s < nsteps; ++s)
             water_record_macro_step(cmd_bufs_[img_idx], cdt, it, ic);
         water_clock_steps_total_.fetch_add(nsteps, std::memory_order_relaxed);
+        w_steps_total_ += nsteps;
+        for (uint32_t i = 0; i < nsteps; ++i) w_time_ += cdt;
+        w_last_dt_ = cdt;
+        w_states_n_ = 1; w_history_next_ = 1;
         // copy the latest V into states slot 0 (transfer after the compute writes)
         VkMemoryBarrier wmb{};
         wmb.sType         = VK_STRUCTURE_TYPE_MEMORY_BARRIER;

@@ -12,7 +12,7 @@
     "reason": "Chimera Studio",
     "parts": [
       {
-        "id": "3d0c5b339eb64b5d",
+        "id": "d2eed631b8714fc0",
         "mass_kg": 9.719999911487088,
         "com_local_m": [
           2.7755575615628914e-17,
@@ -143,7 +143,7 @@
         ]
       },
       {
-        "id": "be25367345654c8f",
+        "id": "eeb4e2d3fa1b44b6",
         "mass_kg": 45.781205457544544,
         "com_local_m": [
           0,
@@ -299,7 +299,7 @@
     "reason": "Chimera Studio",
     "parts": [
       {
-        "id": "3d0c5b339eb64b5d",
+        "id": "d2eed631b8714fc0",
         "mass_kg": 9.719999911487088,
         "com_local_m": [
           2.7755575615628914e-17,
@@ -430,7 +430,7 @@
         ]
       },
       {
-        "id": "be25367345654c8f",
+        "id": "eeb4e2d3fa1b44b6",
         "mass_kg": 45.781205457544544,
         "com_local_m": [
           0,
@@ -576,7 +576,7 @@
     }
   },
   "materials": {
-    "3d0c5b339eb64b5d": {
+    "d2eed631b8714fc0": {
       "object": "Chimera Panel",
       "material_id": "timber",
       "density_kg_m3": 600.0,
@@ -589,7 +589,7 @@
       ],
       "volume_m3": 0.016199999852478476
     },
-    "be25367345654c8f": {
+    "eeb4e2d3fa1b44b6": {
       "object": "Chimera Block",
       "material_id": "steel",
       "density_kg_m3": 7850.0,
@@ -604,7 +604,7 @@
     }
   },
   "ports": {
-    "3d0c5b339eb64b5d": [
+    "d2eed631b8714fc0": [
       [
         0.22499999403953552,
         0.26000000163912773,
@@ -626,7 +626,7 @@
         0.15000000596046448
       ]
     ],
-    "be25367345654c8f": [
+    "eeb4e2d3fa1b44b6": [
       [
         -0.09000000357627869,
         0.25999999046325684,
