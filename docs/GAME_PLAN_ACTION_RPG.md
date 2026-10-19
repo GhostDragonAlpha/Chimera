@@ -4673,12 +4673,83 @@ gpu_workspace.py checkpoint lifecycle. Acceptance examples: the same supported
 edit through UI and AI produces equivalent compiled input; wrong context, changed
 selection or a stale source revision leaves confirmed state intact; a failed
 build and an undo/reopen retain a usable construction. This is the integration
-contract to implement, not a claim that the complete AI bridge or all mode
-adapters already exist. Sources: [Blender modes](https://docs.blender.org/manual/en/latest/editors/3dview/modes.html),
+contract. The local Object/Edit command subset below is implemented; broader
+mode adapters and transport remain unfinished. Sources: [Blender modes](https://docs.blender.org/manual/en/latest/editors/3dview/modes.html),
 [workspaces](https://docs.blender.org/manual/en/3.0/interface/window_system/workspaces.html),
 [operators](https://developer.blender.org/docs/features/interface/operators/) and
 [undo](https://developer.blender.org/docs/features/core/undo/). Check the actual
 pinned Blender 5.0.1 API before implementation.
+
+**Shared commands, implemented and checked 2026-10-19.** Studio now registers
+**N > Chimera > Shared Human / AI Operations** and a local main-thread Python API:
+`inspect`, `propose`, `apply`, `status`, `discard`. The panel and AI callers reuse
+the same membrane authoring/compiler/checkpoint operators and optional libuipc
+construction copier. Each proposal has stable part IDs, task purpose, explicit
+parameters and expected source/native revisions; it is visible before application.
+Human edits make old proposals stale. Repeated delivery of an operation ID returns
+its recorded outcome. Object/Edit Mode and incidental selection are preserved.
+Inspect distinguishes edited sources requiring rebuild from the retained accepted
+native assembly; renaming alone does not change physical correspondence.
+
+Actual native jobs expose queued/running/succeeded/failed/interrupted status.
+Ordinary saves retain the last confirmed native checkpoint and bounded operation
+history, including why the task matters. Reopening a pending command marks it
+interrupted without starting a solver or automatically replaying the mutation.
+Existing-trial helper failure returns a clear failure and explicit resume restores
+its exact accepted state. Eleven actual Blender/native checks, a fresh pending-file
+reopen, three installed libuipc/human-authoring checks and a real-window panel draw
+passed; all three original user projects stayed byte-identical. The first selection
+restoration implementation crashed Blender; its BMesh-owned replacement passed the
+Edit Mode check. See `ChimeraStudio/integration/OPERATIONS.md` and
+`evidence/shared-operations/acceptance.json` in that integration for exact evidence.
+This adds no solver, native physics law or model-service change. GPU runtime
+identity remains `7eb2b11543b7138978d6b355671c6b176c51d79d0fb1c7b804c671effe106e44`.
+
+The implemented boundary is in-process Python, not an already-connected Z Code
+transport. Multiscene native worlds, automatic native Undo, all-mode adapters,
+comparison UI and full transactional recovery when replacing an existing build
+remain unfinished. The current explicit authoring/build path can discard the old
+live trial; preserve/export its checkpoint before rebuilding. Native Replay/Resume
+and libuipc cached-animation replay remain distinct. Source hashing currently
+invalidates conservatively across the scene; it is not incremental physical reuse.
+
+**Fifteen agreed techniques: implementation sequence and honest status.** These
+are the full requested scope, not fifteen labels for one demo. Each row must
+produce a useful Blender action, an accepted existing-owner result and evidence
+before its status advances. External references establish a method, not proof of
+our implementation. Keep independent physics checks and the larger goal of a
+compelling game using simulated matter; the editor serves building and inspection.
+
+| # / technique | Reuse and first concrete acceptance | Current status / order |
+|---|---|---|
+| 1. Small reliable construction language | Registered operators, `blocks.compile_parts`, native checkpoint owner. Same input through UI/API; stale and duplicate delivery safe; actual completion visible. | **Implemented subset above.** Finish transactional rebuild recovery, comparison command and chosen transport; Object/Edit only. |
+| 2. Library learning | Mine repeated successful construction sequences into parameterized recipes with ports and provenance through existing mechanism-factory/AP owners. [DreamCoder](https://people.csail.mit.edu/asolar/papers/EllisWNSMHCST21.pdf) motivates reusable program components. Demonstrate one mined recipe reducing authoring effort with identical compiled meaning. | **Planned after trial adapter.** Duplication/starter reuse exists; automated recipe discovery does not. |
+| 3. Quality-diversity / MAP-Elites | Index accepted comparisons by size, mass, compliance, response direction and measured cost; keep useful alternatives rather than a single score winner. Use existing evidence identities. [Method](https://arxiv.org/abs/1504.04909). | **Planned.** First show three meaningfully different admissible designs with the same task constraints, no separate truth catalog. |
+| 4. Inverse design | Desired deflection/load/space becomes a bounded search over supported geometry/materials. Reuse mechanism-factory fits and native evaluation. [Warp](https://github.com/NVIDIA/warp) differentiates its own kernels; our Vulkan/native path needs an explicit derivative adapter. | **Planned.** Start with bounded discrete/parameter search; a gradient claim requires independent derivative checks. |
+| 5. Learned solver warm starts | Predict an initial guess, then let the existing solver enforce its residual/acceptance criteria. Compare against ordinary continuation warm starts including inference/transfer overhead. [NOWS](https://arxiv.org/abs/2511.02481). | **Planned native-owner extension.** No neural predictor is installed in Studio. Keep only a measured total-time improvement at equal tolerances. |
+| 6. Static condensation / component reduction | Eliminate internal degrees of freedom while retaining boundary ports; reuse AP two-port/finite-area concepts. [MFEM](https://docs.mfem.org/3.1/classmfem_1_1StaticCondensation.html) describes linear block elimination. | **Existing research prerequisites; Blender adapter planned.** Verify port reactions and reconstructed internal state against the detailed owner. Nonlinear contact needs its own treatment. |
+| 7. Hyper-reduction / optimized cubature | Reduce element-force evaluations inside a measured deformation/material domain, retaining every requested timestep. [Original work](https://www.cs.cornell.edu/~stevenan/cubature/). | **Planned native-owner extension.** Compare full/reduced forces, energy and total cost; no accepted recipe from sampling alone. |
+| 8. Port-Hamiltonian learned components | Learn bounded energy/dissipation/port response and compose through explicit physical interconnections, building on AP rather than inventing another solver. [Research](https://proceedings.mlr.press/v211/neary23a.html) demonstrates spring-mass-damper compositions. | **Planned.** First compare a two-component response with the detailed solve; integrator, contact and out-of-domain fallback still need independent checks. |
+| 9. Active learning | Reuse UnitcellDB/FEBio data under their conditions, then choose experiments that resolve the selected construction's uncertainty; existing experiment runner owns receipts. [PhysicsNeMo method](https://docs.nvidia.com/physicsnemo/26.05/user-guide/active_learning.html). | **Planned after trial adapter.** Compare cost/error against a simple fixed sampling schedule on held-out cases before expanding. |
+| 10. Adaptive fidelity | Switch a component between qualified reduced and detailed responses near contacts, large deformation or domain boundaries, preserving state/port exchanges. Learned-mesh research is inspiration, not a substitute native owner. | **Planned after 6–8.** Demonstrate an actual state-transfer/fallback case with measured error and latency; no hidden skipped steps. |
+| 11. Dependency-aware physical reuse | Existing recipe/source/runtime hashes identify immutable characterization results; geometry, laws, supports, load and connections invalidate affected dependencies. Separate physical states for instances. | **Partial:** current adapter/cache hashes and copy independence exist; incremental dependency reuse does not. Next adapter must prove an unrelated edit reuses valid evidence and a relevant edit refuses stale evidence. |
+| 12. Counterfactual failure explanations | Restore a checkpoint, vary one supported parameter, compare the result and show an actionable alternative on the same Blender construction. Reuse `tools.recipe_experiments`, native history and libuipc recorded controls. | **Manual controls measured; UI planned.** Show attached/disconnected/softer behavior with actual outcomes, not an LLM's unmeasured causal claim. |
+| 13. Bounded evolutionary code/workflow optimization | Propose limited implementation variants against a fixed independent evaluator, with correctness and full end-to-end cost. [AlphaEvolve](https://deepmind.google/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/) motivates the loop. | **Planned process support.** Start with one measured editor bottleneck; no automatic solver-policy edits, benchmark weakening or unbounded candidate runs. |
+| 14. Outcome-driven agent procedure optimization | Qwen chooses peers, accepts/defers/rejects Step findings and sends Maya useful fixes. Compare procedure variants on accepted user-visible progress, rework, elapsed time and escaped defects. [GEPA](https://github.com/gepa-ai/gepa) is a reference. | **Manual workflow exists; measured optimizer planned.** One bounded procedure comparison before adoption; model agreement is not the reward. |
+| 15. Retrievable procedural memory | Retrieve purpose, source IDs, commands, accepted evidence and limits from existing recipe/receipt owners. Keep these references through compression and saving. | **Partial:** saved operation purpose/history works. Next connect an accepted trial and failed alternative to existing evidence references; no second SQLite database. |
+
+Implement in this order: **shared operations/recovery (1) → existing-trial/evidence
+adapter (11, 15) and visible counterfactual (12) → recipe discovery and varied
+inverse search (2–4, 9) → measured native acceleration (5–8, 10)**. Process
+improvement (13–14) accompanies those increments when there is a measured cost to
+reduce. Inspect the existing `tools/recipe_experiments`, `tools/artificial_proteins`
+and `tools/mechanism_factory` owners read-only before designing each adapter; their
+current scalar/two-port/reference scopes do not automatically qualify libuipc.
+`workshop_lab.py` is an unregistered draft containing its own SQLite store: do not
+register it wholesale or claim its algorithms as implemented product features.
+Replace duplicate storage with references to the established owners. One working
+construction and its useful visible comparison take priority over installing a
+large research stack. Keep the user's projects and Z Code goal/progress intact.
 
 **Reuse assessment: existing selectable-material physics (researched 2026-10-19).**
 Existing Blender tools already implement substantial parts of the proposed
@@ -4813,7 +4884,8 @@ A currently displayed deformation is not silently treated as a new rest shape.
 Incomplete selections (including disabled external seams), driven rigs and
 active workers refuse; a late validation failure rolls back owned changes.
 The UI and local Python entry point share one main-thread implementation;
-the full revision-aware AI proposal/async-command bridge remains unfinished.
+the implemented local revision-aware proposal/job bridge above now includes this
+action; remote transport remains unfinished.
 
 The original plus translated four-part assembly passed a combined native
 24-stitch, 61-frame/120-step bake in 6.72 s. At 0.6 s their bumper drops were
@@ -4830,8 +4902,8 @@ identity is `chimera-layered-3`; evidence and retained failures are under
 `ChimeraStudio/Libuipc/evidence/construction-copy`.
 
 **Next editor work.** A mounted rod/shell or asymmetric layered example can
-extend the same native connection path when useful. Complete the shared
-inspect/propose/apply workflow through existing compiler/checkpoint APIs. Feed
+extend the same native connection path when useful. Extend the shared local
+workflow's recovery and accepted-trial comparison through existing owners. Feed
 accepted response trials into the existing recipe/mechanism evidence pipeline
 once the mapping is explicit; do not build another catalog. Studio's
 `Libuipc/WORK_LOG.md` preserves decisions, evidence and the next bounded tasks.
@@ -4883,7 +4955,8 @@ where its behavior changes.
    over the same UUIDs, compiler inputs, accepted-state checks and recovery
    commands used by the person. Make proposed geometry/material/connection changes visible
    and recoverable. No parallel hidden scene or second physics path. An AI toolbar
-   or remote command bridge is proposed work, not already implemented.
+   is implemented for the Object/Edit subset above; remote transport and wider
+   mode adapters remain future work.
 4. **More useful constructions from existing engine capabilities.** Inspect
    §11.20.12, the mechanism factory, artificial proteins and material/attachment
    owners before adding a control. Bind already admitted laws and recipes first.
