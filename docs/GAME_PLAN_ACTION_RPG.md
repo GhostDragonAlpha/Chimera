@@ -508,6 +508,58 @@ missing connection to this scene. The membrane loop can supply compliant behavio
 after its checks pass; selecting a load alone does not fulfill the building-and-reuse objective. Keep
 rigid construction interaction work moving within its qualified scope.
 
+#### Close the gaps between a walkthrough and player-directed construction
+
+**Read-only source audit, 2026-10-18; proposed changes, not new test results.**
+The current `workshop_challenge1.py` exposes `run` and `compare`; its walkthrough
+chooses and places the parts. Native `/tick_b2_pick` already returns a part ID
+and world hit point from the camera ray. Reuse that picking, the native view,
+existing transactions and save/restore. Do not commission a second workshop UI
+or evaluator without first checking the worker's latest changes.
+
+| Next connection | Smallest useful change through existing owners | Player-visible result and focused check |
+|---|---|---|
+| Select and revise a construction | Bind native picking to the selected part, placement/rotation preview, attachment and cancel. The existing hit response does not yet identify a finite surface patch; use admitted template anchors until that richer binding exists. | A player can make a different arrangement without typing coordinates; preview, accepted attachment and mere contact look different. Cancel/refusal preserves the last accepted state. |
+| Make the objective match elapsed physical time | `measure()` currently polls after wall-time sleeps and judges the last eight observations. Use the existing native clock/state owner for the declared stability interval; pause does not accrue success. If continuous clearance is promised, accumulate its violation state at physical updates rather than infer continuity between sparse polls. | A slow or paused engine cannot award success from repeated snapshots. One short replay checks pause, resumed advancement and a failure between display samples; a wall-time deadline reports an incomplete test, not a physics verdict. |
+| Make clearance match the visible construction | `check()` currently uses COM height minus half the original crate height, then rejects tilt beyond about 10 degrees. This is an upright-fixture approximation. For the admitted box, evaluate transformed corners against the declared target geometry, or expose the upright restriction explicitly until that path exists. | A tilted corner touching the target cannot count as clear. The objective names any upright requirement; a valid unconventional arrangement is not refused merely because it differs from the example. |
+| Explain what can support what | The source's `hazard_pad` is a colliding granite part and the contact-tower example rests on it. Distinguish that physical platform from its objective marking. State whether only cargo must avoid it or supports must also avoid it. | The player knows whether standing a support on the marked platform is legal. A decorative goal outline supplies no force, and the scene does not imply unimplemented heat or damage. |
+
+These are connections and narrowly scoped corrections to existing work, not new
+construction gates. Retain historical receipts with their original predicates;
+label any revised objective and its fresh result explicitly. Qwen can defer a
+correction irrelevant to the chosen playable scope, but the on-screen promise
+must match the implemented rule. Step reviews consequential discrepancies; Maya
+receives only the accepted changes and their player purpose.
+
+**Make attaching feel dependable.** Nintendo's [construction design account](https://www.nintendo.com/sg/interview/totk/04.html)
+explains its conspicuous attachment visual and consistent attachment sound.
+Apply that principle here with distinct ready, committed and refused cues driven
+by the actual transaction outcome. A preview never plays the success cue. Keep
+an equally clear visual/text alternative and let numerical details stay optional.
+Nintendo's [account of readable interaction rules](https://www.nintendo.com/sg/interview/totk/05.html)
+also supports consistent visual treatment of movable and unavailable objects.
+Our application is to make eligible anchors, movable kit parts and fixed fixtures
+recognizable, while accepting every construction that meets the declared outcome.
+These are external design precedents; their effectiveness here needs player use.
+
+**Repair, repurpose, then see a consequence.** Use the existing challenge as a
+small rehearsal for E01/E05 rather than add another disconnected experiment:
+repair an optional incomplete example, save the player's construction, then offer
+one changed layout where its old arrangement needs adaptation. For example,
+change available support space while keeping the kit, laws and cargo fixed; offer
+a compact contact support and a spanning attachment arrangement only after the
+current owner confirms both are viable in their stated layouts. Let the player
+keep a useful structure in place or reclaim its finite parts for the next job.
+Leaving it preserves a visible supported load; reclaiming it removes that support.
+The player can shore up the load, move it or accept the physical consequence. This is an authored resource choice using
+existing physical state, not a new economy or companion simulation. Later rescue
+content can give that choice personal stakes. The immediate deliverable remains
+one challenge plus one useful transfer, with a free-build option and no mandatory
+three-stage tutorial. [Teardown's official description](https://teardowngame.com/)
+offers a relevant precedent: physical alterations become preparation for an
+objective. Our proposal tests whether building creates a reason to care about
+the next action, rather than merely producing a successful laboratory readout.
+
 #### Deliver and observe
 
 **Make the first useful action small.** Nintendo's [developer account of building
@@ -3870,6 +3922,8 @@ stage. Audit present implementations before assigning any proposed increment.
 
 | Research question, in current priority order | Reuse and proposed next decision | Evidence of value |
 |---|---|---|
+| Which existing interaction prevents the player from building independently? | §5.1's walkthrough-to-controls audit, native picking and accepted transactions | One player-chosen edit, readable result and recovery without a script choosing the construction |
+| Is a measurement-only rendering path wasting the frame budget? | Inspect the B2 overlay upload described below before adding physics reductions; profile the current scene first | Less input-to-feedback delay or better p95 frame time at unchanged physical steps and visible geometry |
 | Can known data remove the next physics/content obstacle? | UnitcellDB candidates and one relevant FEBio reference through §11.21's existing record/adapter owners; retrieve before generating labels | A specific supported workshop part/response or a precise missing-law decision, with avoided work named |
 | Which small kit supports genuinely different solutions? | Existing recipes, legal construction grammar, comparisons and §11.20.4's archive; retain alternatives by clearance, compliance, load range and cost | At least two structurally different successful arrangements for §5.1, followed by player reuse in a changed layout; diversity is not proof of fun |
 | Can a useful assembly become a cheap reusable part? | Current S3/S4, piece records and port solver; extend beyond the supported response where it matters | One component reused under different surrounding conditions, with coupled error, reconstruction and total runtime cost measured |
@@ -3973,8 +4027,10 @@ Research never silently changes gate status, model settings or active workloads.
 
 **First connected outcome:** one launchable §5.1 challenge with its current small
 kit, readable consequences, recovery, two demonstrated constructions and recipe
-reuse in a changed layout. External data or reduction work earns its place by
-improving that outcome. Stop each branch when its decision is answered and return
+reuse in a changed layout. Judge state of the art by useful combinations the player
+can discover, responsiveness, understandable consequences and reliable persistence;
+research earns its place by improving those outcomes. External data and reduction
+work should supply the behavior or capacity a selected player action needs. Stop each branch when its decision is answered and return
 the result to the workshop; creative discovery retains a named, bounded allocation.
 
 ### Shared component checks
@@ -4088,6 +4144,32 @@ Set a provisional 60 FPS presentation target at a declared resolution. Record me
 and p95 frame time, p99 tick/catch-up behavior, control latency, GPU/host memory and
 bytes read back. The 16.7 ms frame interval is a target, not a current measurement.
 Set content and simulation budgets from those results before increasing creature count.
+
+**First source-backed optimization candidate (2026-10-18, not benchmarked):**
+[`main.cpp`](../ChimeraEngine/engine/main.cpp)'s active B2 display block rebuilds
+world-mesh arrays and calls `load_overlay` every rendered frame, including while
+the scene is paused. In [`engine.cpp`](../ChimeraEngine/engine/engine.cpp),
+`Engine::load_overlay` calls `vkDeviceWaitIdle`; `upload_buffer` destroys and
+reallocates the vertex/index storage and temporary staging buffers. Its comment
+explicitly accepts this stall for a measurement rig. Measure its contribution
+before carrying that path into responsive building.
+
+[Khronos' synchronization sample](https://docs.vulkan.org/samples/latest/samples/performance/wait_idle/README.html)
+explains how whole-device waits drain queued work; its reported mobile-GPU gain
+is not a speed forecast for this 4090. Proposed order: reuse unchanged snapshots,
+retain index storage while topology is unchanged, then update persistent vertex
+storage through the renderer's existing frame/resource ownership where needed.
+[Frames in flight](https://docs.vulkan.org/tutorial/latest/03_Drawing_a_triangle/03_Drawing/03_Frames_in_flight.html)
+explains why in-use resources need separate storage and completion tracking.
+Do not just delete the wait: buffers must remain alive until their last consumer
+finishes, and transfers need the correct visibility dependencies. Bound pending
+snapshots and allocations; renderer updates may coalesce, physical steps may not.
+Keep selection tied to the displayed snapshot and revalidate before editing.
+Compare input-to-feedback, p95 frame time, upload bytes and memory on the same
+scene, including pause/edit/resume and topology changes, with render/pick agreement.
+This targets presentation overhead without changing contact laws, training another
+response model or replacing the renderer; it is optional if profiling finds no
+meaningful player-facing gain.
 
 Bound caches, event journals, transient contact data and inactive objects. Repeatedly
 load, damage, repair, save, unload and revisit the same scene; memory should reach a
