@@ -4734,6 +4734,38 @@ of naturally occurring failures. Original project hashes, runtime identity and
 concurrent camera work are preserved. General native Undo, multiscene ownership
 and broader import transactions remain unqualified.
 
+**Saved native trial comparison, implemented and checked 2026-10-19.**
+Blender now stores two confirmed membrane checkpoints as A/B through visible
+controls or shared `capture_trial` / `compare_trials` commands. It reuses the
+existing native capture reel, A/B selector and experiment log in a separate owned
+helper, preserving the active construction. A deliberately pinned copy of the
+recipe runner's selector retains its source/slice hashes; it imports neither a
+second catalog nor that runner's B4 cradle qualification. Blender's Image Editor
+shows the native images alongside load, surface tension, energy and signed apex
+position changes. Fixed-camera comparison does not replace the other camera work.
+
+Two bounded native documents, purpose/content identities, result bindings and
+packed images survive .blend saves. Completed and pending files reopen offline;
+pending jobs become interrupted and retry explicitly. Replacing a slot removes
+its old comparison; changed physical bytes, measured outcomes and stale caption/
+purpose proposals refuse. A real post-capture fault closes only the comparison
+helper and preserves the prior result and editor checkpoint. Long single-line
+JSON initially stalled Blender's Text.write; readable lines and bounded image
+chunks fixed it. Failed runs and their stacks are retained.
+
+The existing three-film construction at the same 0.8 N load and gamma 1.0/1.5
+J/m2 produced about +0.03509 m difference in apex Z; both states pass the existing
+independent edge-length energy/force checks. Authored shape is not necessarily
+the unloaded equilibrium, so signed displacement from it is not a stiffness fit.
+Seven native/Blender checks, two fresh reopen cases, eleven shared-command
+regressions and an actual panel/image draw pass in
+`ChimeraStudio/integration/evidence/trial-comparison`. Small-scene replay/capture
+measured 1.54 s including helper lifetime; saving measured 0.61 s. These are not
+general solver performance numbers. User projects and native/runtime/model
+settings remain unchanged. Native membrane A/B is implemented; existing-owner
+receipt admission, libuipc attachment-control comparisons, transient comparison
+and automatic design search remain distinct next increments.
+
 **Fifteen agreed techniques: implementation sequence and honest status.** These
 are the full requested scope, not fifteen labels for one demo. Each row must
 produce a useful Blender action, an accepted existing-owner result and evidence
@@ -4743,7 +4775,7 @@ compelling game using simulated matter; the editor serves building and inspectio
 
 | # / technique | Reuse and first concrete acceptance | Current status / order |
 |---|---|---|
-| 1. Small reliable construction language | Registered operators, `blocks.compile_parts`, native checkpoint owner. Same input through UI/API; stale and duplicate delivery safe; actual completion visible. | **Implemented subset above, including rebuild recovery.** Next comparison command and chosen transport; Object/Edit only. |
+| 1. Small reliable construction language | Registered operators, `blocks.compile_parts`, native checkpoint owner. Same input through UI/API; stale and duplicate delivery safe; actual completion visible. | **Implemented subset above, including rebuild recovery and saved native A/B.** Chosen transport and broader owner/mode adapters remain; Object/Edit authoring plus Image Editor observation. |
 | 2. Library learning | Mine repeated successful construction sequences into parameterized recipes with ports and provenance through existing mechanism-factory/AP owners. [DreamCoder](https://people.csail.mit.edu/asolar/papers/EllisWNSMHCST21.pdf) motivates reusable program components. Demonstrate one mined recipe reducing authoring effort with identical compiled meaning. | **Planned after trial adapter.** Duplication/starter reuse exists; automated recipe discovery does not. |
 | 3. Quality-diversity / MAP-Elites | Index accepted comparisons by size, mass, compliance, response direction and measured cost; keep useful alternatives rather than a single score winner. Use existing evidence identities. [Method](https://arxiv.org/abs/1504.04909). | **Planned.** First show three meaningfully different admissible designs with the same task constraints, no separate truth catalog. |
 | 4. Inverse design | Desired deflection/load/space becomes a bounded search over supported geometry/materials. Reuse mechanism-factory fits and native evaluation. [Warp](https://github.com/NVIDIA/warp) differentiates its own kernels; our Vulkan/native path needs an explicit derivative adapter. | **Planned.** Start with bounded discrete/parameter search; a gradient claim requires independent derivative checks. |
@@ -4754,10 +4786,10 @@ compelling game using simulated matter; the editor serves building and inspectio
 | 9. Active learning | Reuse UnitcellDB/FEBio data under their conditions, then choose experiments that resolve the selected construction's uncertainty; existing experiment runner owns receipts. [PhysicsNeMo method](https://docs.nvidia.com/physicsnemo/26.05/user-guide/active_learning.html). | **Planned after trial adapter.** Compare cost/error against a simple fixed sampling schedule on held-out cases before expanding. |
 | 10. Adaptive fidelity | Switch a component between qualified reduced and detailed responses near contacts, large deformation or domain boundaries, preserving state/port exchanges. Learned-mesh research is inspiration, not a substitute native owner. | **Planned after 6–8.** Demonstrate an actual state-transfer/fallback case with measured error and latency; no hidden skipped steps. |
 | 11. Dependency-aware physical reuse | Existing recipe/source/runtime hashes identify immutable characterization results; geometry, laws, supports, load and connections invalidate affected dependencies. Separate physical states for instances. | **Partial:** current adapter/cache hashes and copy independence exist; incremental dependency reuse does not. Next adapter must prove an unrelated edit reuses valid evidence and a relevant edit refuses stale evidence. |
-| 12. Counterfactual failure explanations | Restore a checkpoint, vary one supported parameter, compare the result and show an actionable alternative on the same Blender construction. Reuse `tools.recipe_experiments`, native history and libuipc recorded controls. | **Manual controls measured; UI planned.** Show attached/disconnected/softer behavior with actual outcomes, not an LLM's unmeasured causal claim. |
+| 12. Counterfactual failure explanations | Restore a checkpoint, vary one supported parameter, compare the result and show an actionable alternative on the same Blender construction. Reuse `tools.recipe_experiments`, native history and libuipc recorded controls. | **Native membrane A/B UI implemented above.** libuipc attached/disconnected/softer controls are measured separately; connect their existing receipts next. No unmeasured causal explanation or general material qualification. |
 | 13. Bounded evolutionary code/workflow optimization | Propose limited implementation variants against a fixed independent evaluator, with correctness and full end-to-end cost. [AlphaEvolve](https://deepmind.google/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/) motivates the loop. | **Planned process support.** Start with one measured editor bottleneck; no automatic solver-policy edits, benchmark weakening or unbounded candidate runs. |
 | 14. Outcome-driven agent procedure optimization | Qwen chooses peers, accepts/defers/rejects Step findings and sends Maya useful fixes. Compare procedure variants on accepted user-visible progress, rework, elapsed time and escaped defects. [GEPA](https://github.com/gepa-ai/gepa) is a reference. | **Manual workflow exists; measured optimizer planned.** One bounded procedure comparison before adoption; model agreement is not the reward. |
-| 15. Retrievable procedural memory | Retrieve purpose, source IDs, commands, accepted evidence and limits from existing recipe/receipt owners. Keep these references through compression and saving. | **Partial:** saved operation purpose/history works. Next connect an accepted trial and failed alternative to existing evidence references; no second SQLite database. |
+| 15. Retrievable procedural memory | Retrieve purpose, source IDs, commands, accepted evidence and limits from existing recipe/receipt owners. Keep these references through compression and saving. | **Partial:** saved operation purpose/history and A/B checkpoint/capture identities now work. Existing owner-specific receipt retrieval/admission is next; no second SQLite database. |
 
 Implement in this order: **shared operations/recovery (1) → existing-trial/evidence
 adapter (11, 15) and visible counterfactual (12) → recipe discovery and varied
