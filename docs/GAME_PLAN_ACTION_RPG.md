@@ -5094,9 +5094,31 @@ projects and the prior sixteen-hash layered replay remain intact. Installed
 identity is `chimera-layered-3`; evidence and retained failures are under
 `ChimeraStudio/Libuipc/evidence/construction-copy`.
 
-**Next editor work.** A mounted rod/shell or asymmetric layered example can
-extend the same native connection path when useful. Extend the shared local
-workflow with accepted-trial comparisons and evidence references through existing owners. Feed
+**Mounted rod/shell construction implemented (October 19).** The human button
+and shared `create_mounted_panel` action add two eight-node bending rods and a
+40-node shell with sixteen native elastic stitches. Four root nodes are fixed
+world supports; shell and rod values remain editable through the installed
+libuipc tools. Existing models, solver laws, user projects and runtime settings
+are unchanged. This is an illustrative construction, not certified materials.
+All 120 native steps converged. At 0.6 s, cover drop is 0.067206 m attached,
+1.793764 m detached and 0.103825 m with softer ribs. Loading the ribs through the
+shell adds 0.041954 m tip drop versus the detached control. The three 61-frame
+bakes took 5.82/4.14/6.92 s on the 4090. Existing shared A/B measures the same
+physical times; no new solver or evidence catalog was introduced.
+
+Twelve cached geometry hashes reproduce in fresh Blender without a solve;
+materials, seam endpoints and operation purpose persist. Existing endpoint
+selection enters Edit Mode; physical changes mark playback stale. Restoring the
+old values and using **Validate Cache** reactivates checked playback. Failed
+starter creation rolls back new data and restores existing playback visibility.
+The actual Blender panel was drawn and inspected. Evidence is
+`ChimeraStudio/integration/evidence/mounted-panel/acceptance.json`; open its
+`Mounted flexible panel.blend` through the GPU Materials profile. Preserve its
+adjacent cache directory. Mesh replay is not arbitrary-time solver continuation.
+
+**Next editor work.** Improve recoverable authoring actions on these useful
+constructions: make stale results, material edits and attachment repair clear
+through the shared workflow. Extend accepted-trial references through existing owners. Feed
 accepted response trials into the existing recipe/mechanism evidence pipeline
 once the mapping is explicit; do not build another catalog. Studio's
 `Libuipc/WORK_LOG.md` preserves decisions, evidence and the next bounded tasks.
@@ -5133,11 +5155,12 @@ for arbitrary imported machinery.
 at a time; reuse the implementation above and expand the existing checks only
 where its behavior changes.
 
-1. **Extend useful construction variety.** Qualify one mounted rod/shell or
-   asymmetric construction using the installed native attachments and existing
-   comparison/save tools. Supported orbit/native rendering is now implemented
-   above; preserve its explicit fixed-FOV/no-roll limits and independent checks.
-   Broader camera types and large-scene streaming follow a concrete user need.
+1. **Use the qualified construction paths.** The mounted rod/shell starter now
+   joins the layered panel and native membrane examples with measured load
+   transfer, editable assignments, shared controls and save/replay. Prioritize
+   the next missing authoring action over additional demonstrations. Preserve
+   each owner's limits and independent checks. Broader camera types, arbitrary
+   geometry and large-scene streaming follow a concrete user need.
 2. **Understandable authoring and failure feedback.** Make editable sources,
    computed results and changes awaiting rebuild obvious. Organize the existing
    actions into author → build → inspect → save/resume. Name the offending piece
