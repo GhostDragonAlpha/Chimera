@@ -4766,6 +4766,27 @@ settings remain unchanged. Native membrane A/B is implemented; existing-owner
 receipt admission, libuipc attachment-control comparisons, transient comparison
 and automatic design search remain distinct next increments.
 
+**Existing recipe evidence links, implemented and checked 2026-10-19.**
+The Blender Recipe Evidence panels and shared `link_evidence` command now bind
+Current/A/B checkpoints and their purposes to the existing mechanism-factory
+records. A deliberate 27-file snapshot runs the original record validator and
+receipt verifier, preserving measurement ranges, source identities and failed
+reductions. Relevant-byte checks permit reuse after unrelated scene/dependency
+changes; changed target or cited bytes require explicit review. No second catalog
+or solver-response cache was introduced.
+
+The star record validates, while its three supported qualification receipts are
+historical because source hashes changed; their recomputed numerical verdicts
+pass. These are distinct facts. Ordinary construction work continues with its
+existing native checks. The CPU reference's free 3-D seam differs from Blender's
+Z-rail apex, so even matching geometry/materials does not grant native admission.
+The current mapping covers the exact 1x starter; broader mappings remain work.
+Seven actual Blender checks, fresh offline reopening and four real panel bodies
+pass in `ChimeraStudio/integration/evidence/recipe-evidence`. Repeated reference
+reads measured about 45 ms; no solver ran. Testing repaired a registered-panel
+inheritance bug that hid the main A/B/evidence controls. Purposes, original projects,
+upstream source, physical checkpoints and independent checks remain preserved.
+
 **Fifteen agreed techniques: implementation sequence and honest status.** These
 are the full requested scope, not fifteen labels for one demo. Each row must
 produce a useful Blender action, an accepted existing-owner result and evidence
@@ -4785,11 +4806,11 @@ compelling game using simulated matter; the editor serves building and inspectio
 | 8. Port-Hamiltonian learned components | Learn bounded energy/dissipation/port response and compose through explicit physical interconnections, building on AP rather than inventing another solver. [Research](https://proceedings.mlr.press/v211/neary23a.html) demonstrates spring-mass-damper compositions. | **Planned.** First compare a two-component response with the detailed solve; integrator, contact and out-of-domain fallback still need independent checks. |
 | 9. Active learning | Reuse UnitcellDB/FEBio data under their conditions, then choose experiments that resolve the selected construction's uncertainty; existing experiment runner owns receipts. [PhysicsNeMo method](https://docs.nvidia.com/physicsnemo/26.05/user-guide/active_learning.html). | **Planned after trial adapter.** Compare cost/error against a simple fixed sampling schedule on held-out cases before expanding. |
 | 10. Adaptive fidelity | Switch a component between qualified reduced and detailed responses near contacts, large deformation or domain boundaries, preserving state/port exchanges. Learned-mesh research is inspiration, not a substitute native owner. | **Planned after 6–8.** Demonstrate an actual state-transfer/fallback case with measured error and latency; no hidden skipped steps. |
-| 11. Dependency-aware physical reuse | Existing recipe/source/runtime hashes identify immutable characterization results; geometry, laws, supports, load and connections invalidate affected dependencies. Separate physical states for instances. | **Partial:** current adapter/cache hashes and copy independence exist; incremental dependency reuse does not. Next adapter must prove an unrelated edit reuses valid evidence and a relevant edit refuses stale evidence. |
+| 11. Dependency-aware physical reuse | Existing recipe/source/runtime hashes identify immutable characterization results; geometry, laws, supports, load and connections invalidate affected dependencies. Separate physical states for instances. | **Partial, tested evidence reuse:** existing-owner references now survive unrelated edits and refuse relevant stale dependencies. Physical solver-response reuse and general geometry mappings remain planned; this adapter does not skip a solve. |
 | 12. Counterfactual failure explanations | Restore a checkpoint, vary one supported parameter, compare the result and show an actionable alternative on the same Blender construction. Reuse `tools.recipe_experiments`, native history and libuipc recorded controls. | **Native membrane A/B UI implemented above.** libuipc attached/disconnected/softer controls are measured separately; connect their existing receipts next. No unmeasured causal explanation or general material qualification. |
 | 13. Bounded evolutionary code/workflow optimization | Propose limited implementation variants against a fixed independent evaluator, with correctness and full end-to-end cost. [AlphaEvolve](https://deepmind.google/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/) motivates the loop. | **Planned process support.** Start with one measured editor bottleneck; no automatic solver-policy edits, benchmark weakening or unbounded candidate runs. |
 | 14. Outcome-driven agent procedure optimization | Qwen chooses peers, accepts/defers/rejects Step findings and sends Maya useful fixes. Compare procedure variants on accepted user-visible progress, rework, elapsed time and escaped defects. [GEPA](https://github.com/gepa-ai/gepa) is a reference. | **Manual workflow exists; measured optimizer planned.** One bounded procedure comparison before adoption; model agreement is not the reward. |
-| 15. Retrievable procedural memory | Retrieve purpose, source IDs, commands, accepted evidence and limits from existing recipe/receipt owners. Keep these references through compression and saving. | **Partial:** saved operation purpose/history and A/B checkpoint/capture identities now work. Existing owner-specific receipt retrieval/admission is next; no second SQLite database. |
+| 15. Retrievable procedural memory | Retrieve purpose, source IDs, commands, accepted evidence and limits from existing recipe/receipt owners. Keep these references through compression and saving. | **Partial, tested owner retrieval:** saved purpose/history and A/B identities now link to existing records, receipts, measured scope and rejected reductions. Freshness is explicit; native admission is separate. General procedural retrieval/mining remains planned; no second SQLite database. |
 
 Implement in this order: **shared operations/recovery (1) → existing-trial/evidence
 adapter (11, 15) and visible counterfactual (12) → recipe discovery and varied
