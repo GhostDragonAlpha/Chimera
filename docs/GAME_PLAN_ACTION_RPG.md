@@ -4798,11 +4798,33 @@ to mutate Blender IDs while drawing. Panels now read cached status; timers accep
 results. Evidence: `ChimeraStudio/integration/evidence/persistent-owner/acceptance.json`.
 Original user projects, native physics and model services remain unchanged.
 
-This checks the fixed native camera. The separate concurrent Match Blender View
-adapter failed before submission on unavailable `SpaceView3D.sensor_width`;
-its source remains preserved and its compatibility/projection test is the next
-repair. Do not infer full camera correspondence or arbitrary Blender concurrency
-from this small-scene acceptance.
+That acceptance uses the fixed native camera. The viewport adapter's initial
+API failure is retained; its repaired, separate qualification follows.
+
+**Viewport/native camera correspondence, checked 2026-10-19.** The existing
+adapter now reads Blender's projection matrix and transforms camera orientation,
+pivot and actual matter probes through the kernel's `(x,y,z) -> (x,z,-y)` mapping.
+Fixed the unavailable properties, a transposed projection matrix and rejection
+of legitimate repeated captures. Fixed-camera fallback resets the complete pose.
+The shared `render_native` command exposes VIEWPORT/FIXED through the same human
+operator; moving the orbit invalidates a reviewed request. Rendering preserves
+Edit Mode, visible source meshes, unfinished edits and confirmed physical state.
+
+Seven UI checks, fresh GUI save/reopen/explicit resume and the ten persistent-owner
+recovery regressions pass. Five physical vertices projected by Blender agree with
+the native mapped vertices after normalizing only the declared FOV/aspect difference
+(maximum below 0.00004 px in the no-roll case; the 1.5 px acceptance limit is unchanged).
+Camera readback remains within 2e-4. Repeated views and physical replay reproduce
+exact PNG bytes. The packed image retains checked camera/state/render metadata;
+forged receipts refuse without altering physics. Native-only projections had passed
+before visual inspection exposed the missing axis transform; those earlier images
+are retained. Evidence: `ChimeraStudio/integration/evidence/viewport-camera/acceptance.json`.
+
+The native raster is still 384x256, fixed 45-degree vertical FOV and no roll;
+framing differences are explained in the panel. Orthographic/camera-object views
+and too-close orbits refuse. Shading differs from Blender's part colors. Arbitrary
+cameras, continuous streaming and general scene-scale qualification remain open;
+no shader, solver, user project or model-service change was needed.
 
 **Existing recipe evidence links, implemented and checked 2026-10-19.**
 The Blender Recipe Evidence panels and shared `link_evidence` command now bind
@@ -4875,10 +4897,11 @@ checkpoints survive saving; canceled/failed workers retain the last result.
 A real viewport crash exposed Python-thread concurrency in Blender. The search
 now reuses the installed libuipc external-Python launch/file helpers and existing
 owned-process cleanup; twelve viewport navigation calls passed during a search.
-**Remaining stability increment:** native A/B has now migrated, as recorded
-above. Move the live native workspace to a persistent external worker; its older
-Python thread means general editor concurrency is not yet qualified. [Blender's documented limitation](https://docs.blender.org/api/main/info_gotchas_threading.html)
-explains this boundary. Preserve the crash and earlier numerical-test failures;
+Native A/B and the live native workspace now both run outside Blender, with
+separate persistent-owner and viewport/recovery evidence above. This addresses
+[Blender's documented threading limitation](https://docs.blender.org/api/main/info_gotchas_threading.html)
+for the tested workflows; arbitrary editor concurrency remains unqualified.
+Preserve the crash and earlier numerical-test failures;
 no dependency update, native law, original project or model service was changed.
 
 **Fifteen agreed techniques: implementation sequence and honest status.** These
@@ -4890,7 +4913,7 @@ compelling game using simulated matter; the editor serves building and inspectio
 
 | # / technique | Reuse and first concrete acceptance | Current status / order |
 |---|---|---|
-| 1. Small reliable construction language | Registered operators, `blocks.compile_parts`, native checkpoint owner. Same input through UI/API; stale and duplicate delivery safe; actual completion visible. | **Implemented subset above, including rebuild recovery, native A/B and shared libuipc cache comparisons.** Chosen transport and broader owner/mode adapters remain; Object/Edit authoring plus Image Editor observation. |
+| 1. Small reliable construction language | Registered operators, `blocks.compile_parts`, native checkpoint owner. Same input through UI/API; stale and duplicate delivery safe; actual completion visible. | **Implemented subset above, including rebuild recovery, native A/B, shared libuipc cache comparisons and revision-bound native rendering.** Chosen transport and broader owner/mode adapters remain; Object/Edit authoring plus Image Editor observation. |
 | 2. Library learning | Mine repeated successful construction sequences into parameterized recipes with ports and provenance through existing mechanism-factory/AP owners. [DreamCoder](https://people.csail.mit.edu/asolar/papers/EllisWNSMHCST21.pdf) motivates reusable program components. Demonstrate one mined recipe reducing authoring effort with identical compiled meaning. | **Partial, tested parameter abstraction above.** Two confirmed native trials produce one reusable construction with provenance and fewer authoring commands at identical compiled meaning. General sequence mining, function discovery and broader owner mappings remain planned. |
 | 3. Quality-diversity / MAP-Elites | Index accepted comparisons by size, mass, compliance, response direction and measured cost; keep useful alternatives rather than a single score winner. Use existing evidence identities. [Method](https://arxiv.org/abs/1504.04909). | **Planned.** First show three meaningfully different admissible designs with the same task constraints, no separate truth catalog. |
 | 4. Inverse design | Desired deflection/load/space becomes a bounded search over supported geometry/materials. Reuse mechanism-factory fits and native evaluation. [Warp](https://github.com/NVIDIA/warp) differentiates its own kernels; our Vulkan/native path needs an explicit derivative adapter. | **Bounded native material search implemented above.** Desired movement/load chooses among measured tensions with saved native checkpoints, independent checks and explicit no-match. Geometry search and derivative adapters remain planned; no gradient claim. |
@@ -5110,11 +5133,11 @@ for arbitrary imported machinery.
 at a time; reuse the implementation above and expand the existing checks only
 where its behavior changes.
 
-1. **Dependable native view correspondence.** Connect Blender camera/view changes
-   to the existing native render handoff. Check accepted-state identity, object
-   transforms, projection and clipping together; identify unsupported camera
-   modes clearly. Preserve the working image and geometry snapshots while adding
-   this missing seam.
+1. **Extend useful construction variety.** Qualify one mounted rod/shell or
+   asymmetric construction using the installed native attachments and existing
+   comparison/save tools. Supported orbit/native rendering is now implemented
+   above; preserve its explicit fixed-FOV/no-roll limits and independent checks.
+   Broader camera types and large-scene streaming follow a concrete user need.
 2. **Understandable authoring and failure feedback.** Make editable sources,
    computed results and changes awaiting rebuild obvious. Organize the existing
    actions into author → build → inspect → save/resume. Name the offending piece
