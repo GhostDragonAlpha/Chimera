@@ -4818,6 +4818,31 @@ Creation measured about 0.20 s versus 0.19 s for the two-command baseline: fewer
 interactions, no demonstrated CPU/solver speedup. This is one template per file,
 not general program synthesis, libuipc/AP recipe admission or new material physics.
 
+**Native material-choice search, implemented and checked 2026-10-19.**
+A learned film assembly now supports two to eight native material alternatives
+for a requested load and movement. Each solves its own unloaded equilibrium
+before loading; authored geometry is not the measurement baseline. For 0.8 N,
+five choices gave 0.138752/0.102577/0.067485/0.050306/0.033342 m movement. Gamma
+2 J/m2 met the 0.05 m target within 0.000306 m. Independent energy/force limits
+remain unchanged; failed candidates and no-match results stay explicit. The
+1.76 s worker measurement excludes final cleanup/Blender validation and does not
+establish end-to-end speedup. This is fixed-rim, world-Z apex material selection,
+not geometry optimization, gradients, active learning or new qualification.
+Human/shared commands preserve the working construction, then explicitly send
+a chosen unloaded/loaded checkpoint pair to the existing A/B viewer. Ten Blender
+integration checks, complete/pending fresh reopening, live file replacement,
+controlled deadline expiry and actual controls pass in
+`ChimeraStudio/integration/evidence/material-search`. Purpose and full native
+checkpoints survive saving; canceled/failed workers retain the last result.
+A real viewport crash exposed Python-thread concurrency in Blender. The search
+now reuses the installed libuipc external-Python launch/file helpers and existing
+owned-process cleanup; twelve viewport navigation calls passed during a search.
+**Next stability increment:** migrate the older native workspace and native A/B
+workers too; they still use Python threads, so general editor concurrency is not
+yet qualified. [Blender's documented limitation](https://docs.blender.org/api/main/info_gotchas_threading.html)
+explains this boundary. Preserve the crash and earlier numerical-test failures;
+no dependency update, native law, original project or model service was changed.
+
 **Fifteen agreed techniques: implementation sequence and honest status.** These
 are the full requested scope, not fifteen labels for one demo. Each row must
 produce a useful Blender action, an accepted existing-owner result and evidence
@@ -4830,7 +4855,7 @@ compelling game using simulated matter; the editor serves building and inspectio
 | 1. Small reliable construction language | Registered operators, `blocks.compile_parts`, native checkpoint owner. Same input through UI/API; stale and duplicate delivery safe; actual completion visible. | **Implemented subset above, including rebuild recovery, native A/B and shared libuipc cache comparisons.** Chosen transport and broader owner/mode adapters remain; Object/Edit authoring plus Image Editor observation. |
 | 2. Library learning | Mine repeated successful construction sequences into parameterized recipes with ports and provenance through existing mechanism-factory/AP owners. [DreamCoder](https://people.csail.mit.edu/asolar/papers/EllisWNSMHCST21.pdf) motivates reusable program components. Demonstrate one mined recipe reducing authoring effort with identical compiled meaning. | **Partial, tested parameter abstraction above.** Two confirmed native trials produce one reusable construction with provenance and fewer authoring commands at identical compiled meaning. General sequence mining, function discovery and broader owner mappings remain planned. |
 | 3. Quality-diversity / MAP-Elites | Index accepted comparisons by size, mass, compliance, response direction and measured cost; keep useful alternatives rather than a single score winner. Use existing evidence identities. [Method](https://arxiv.org/abs/1504.04909). | **Planned.** First show three meaningfully different admissible designs with the same task constraints, no separate truth catalog. |
-| 4. Inverse design | Desired deflection/load/space becomes a bounded search over supported geometry/materials. Reuse mechanism-factory fits and native evaluation. [Warp](https://github.com/NVIDIA/warp) differentiates its own kernels; our Vulkan/native path needs an explicit derivative adapter. | **Planned.** Start with bounded discrete/parameter search; a gradient claim requires independent derivative checks. |
+| 4. Inverse design | Desired deflection/load/space becomes a bounded search over supported geometry/materials. Reuse mechanism-factory fits and native evaluation. [Warp](https://github.com/NVIDIA/warp) differentiates its own kernels; our Vulkan/native path needs an explicit derivative adapter. | **Bounded native material search implemented above.** Desired movement/load chooses among measured tensions with saved native checkpoints, independent checks and explicit no-match. Geometry search and derivative adapters remain planned; no gradient claim. |
 | 5. Learned solver warm starts | Predict an initial guess, then let the existing solver enforce its residual/acceptance criteria. Compare against ordinary continuation warm starts including inference/transfer overhead. [NOWS](https://arxiv.org/abs/2511.02481). | **Planned native-owner extension.** No neural predictor is installed in Studio. Keep only a measured total-time improvement at equal tolerances. |
 | 6. Static condensation / component reduction | Eliminate internal degrees of freedom while retaining boundary ports; reuse AP two-port/finite-area concepts. [MFEM](https://docs.mfem.org/3.1/classmfem_1_1StaticCondensation.html) describes linear block elimination. | **Existing research prerequisites; Blender adapter planned.** Verify port reactions and reconstructed internal state against the detailed owner. Nonlinear contact needs its own treatment. |
 | 7. Hyper-reduction / optimized cubature | Reduce element-force evaluations inside a measured deformation/material domain, retaining every requested timestep. [Original work](https://www.cs.cornell.edu/~stevenan/cubature/). | **Planned native-owner extension.** Compare full/reduced forces, energy and total cost; no accepted recipe from sampling alone. |
@@ -4838,7 +4863,7 @@ compelling game using simulated matter; the editor serves building and inspectio
 | 9. Active learning | Reuse UnitcellDB/FEBio data under their conditions, then choose experiments that resolve the selected construction's uncertainty; existing experiment runner owns receipts. [PhysicsNeMo method](https://docs.nvidia.com/physicsnemo/26.05/user-guide/active_learning.html). | **Planned after trial adapter.** Compare cost/error against a simple fixed sampling schedule on held-out cases before expanding. |
 | 10. Adaptive fidelity | Switch a component between qualified reduced and detailed responses near contacts, large deformation or domain boundaries, preserving state/port exchanges. Learned-mesh research is inspiration, not a substitute native owner. | **Planned after 6–8.** Demonstrate an actual state-transfer/fallback case with measured error and latency; no hidden skipped steps. |
 | 11. Dependency-aware physical reuse | Existing recipe/source/runtime hashes identify immutable characterization results; geometry, laws, supports, load and connections invalidate affected dependencies. Separate physical states for instances. | **Partial, tested evidence reuse:** existing-owner references now survive unrelated edits and refuse relevant stale dependencies. Physical solver-response reuse and general geometry mappings remain planned; this adapter does not skip a solve. |
-| 12. Counterfactual failure explanations | Restore a checkpoint, vary one supported parameter, compare the result and show an actionable alternative on the same Blender construction. Reuse `tools.recipe_experiments`, native history and libuipc recorded controls. | **Native membrane and libuipc A/B UIs implemented above.** Existing attachment controls are reusable at equal simulated time, with visible changed inputs and saved native-cache references. Automatic explanations/search and general material qualification remain unfinished. |
+| 12. Counterfactual failure explanations | Restore a checkpoint, vary one supported parameter, compare the result and show an actionable alternative on the same Blender construction. Reuse `tools.recipe_experiments`, native history and libuipc recorded controls. | **Native membrane and libuipc A/B UIs implemented above.** Existing attachment controls are reusable at equal simulated time, with visible changed inputs and saved native-cache references. Bounded native material-choice search is now implemented; automatic causal explanations and general material qualification remain unfinished. |
 | 13. Bounded evolutionary code/workflow optimization | Propose limited implementation variants against a fixed independent evaluator, with correctness and full end-to-end cost. [AlphaEvolve](https://deepmind.google/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/) motivates the loop. | **Planned process support.** Start with one measured editor bottleneck; no automatic solver-policy edits, benchmark weakening or unbounded candidate runs. |
 | 14. Outcome-driven agent procedure optimization | Qwen chooses peers, accepts/defers/rejects Step findings and sends Maya useful fixes. Compare procedure variants on accepted user-visible progress, rework, elapsed time and escaped defects. [GEPA](https://github.com/gepa-ai/gepa) is a reference. | **Manual workflow exists; measured optimizer planned.** One bounded procedure comparison before adoption; model agreement is not the reward. |
 | 15. Retrievable procedural memory | Retrieve purpose, source IDs, commands, accepted evidence and limits from existing recipe/receipt owners. Keep these references through compression and saving. | **Partial, tested owner retrieval:** saved purpose/history and A/B identities now link to existing records, receipts, measured scope and rejected reductions. Freshness is explicit; native admission is separate. The native-trial template also preserves purpose, source identities and the inferred material parameter; general procedural retrieval/mining remains planned, with no second SQLite database. |
@@ -4851,8 +4876,9 @@ reduce. Inspect the existing `tools/recipe_experiments`, `tools/artificial_prote
 and `tools/mechanism_factory` owners read-only before designing each adapter; their
 current scalar/two-port/reference scopes do not automatically qualify libuipc.
 `workshop_lab.py` remains an unregistered draft containing its own SQLite store.
-Only its pure canonical-recipe helper has been extracted and tested in the adapter
-above; do not register it wholesale or claim its other algorithms as product features.
+Its pure canonical-recipe and bounded inverse-search helpers have been extracted
+unchanged and tested in the adapters above; do not register it wholesale or claim
+its other algorithms as product features.
 Replace duplicate storage with references to the established owners. One working
 construction and its useful visible comparison take priority over installing a
 large research stack. Keep the user's projects and Z Code goal/progress intact.
