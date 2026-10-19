@@ -4970,6 +4970,52 @@ Evidence: `ChimeraStudio/integration/evidence/design-search/acceptance.json`.
 Broad topology, additional behavioral descriptors, AP/libuipc mapping and learned
 acceleration remain open. Original projects, models and native laws are preserved.
 
+**Target-directed native material sampling, implemented and checked 2026-10-19.**
+The existing learned assembly now supports **N > Chimera > Adaptive Material
+Sampling**: choose tension bounds, load, desired travel, tolerance and a native
+observation budget. A small Gaussian-process response learner uses preceding
+measurements to choose the next tension; every usable result still comes from
+the existing solver and independent checks. Predictions are never material
+admission or selectable physical results. Inspect A/B and Create editable reuse
+the existing checkpoint renderer and transactional recipe importer. The shared
+commands and external local client expose the same operations and compact
+purpose/outcome/cost report; current source edits and native state are preserved.
+
+The preregistered comparison used the three-film construction, 0.8 N, tensions
+0.75–3 J/m2 and seven observations for each policy. For target travel 45, 65 and
+95 mm at 2 mm tolerance, adaptive sampling matched 3/3 versus fixed sampling 0/3.
+Best errors were 0.338/0.444/0.663 mm versus 2.556/2.485/8.758 mm. Full request times including startup,
+validation and transport were 3.48/3.74/3.90 s versus 3.58/3.66/3.70 s. Five held-out tensions, acquired
+afterward and never used to train/select queries, gave adaptive mean errors
+0.061/0.189/0.105 mm versus fixed 0.064 mm. This supports better target finding
+in this scene; whole-curve prediction lost twice, and neither fewer trials nor
+a solver speedup is claimed. [GP regression](https://gaussianprocess.org/gpml/chapters/RW2.pdf)
+supplies the predictor; its standard deviation is an uncalibrated query heuristic.
+The [learn/query/label method](https://docs.nvidia.com/physicsnemo/26.05/user-guide/active_learning.html)
+does not require installing PhysicsNeMo or replacing the native evaluator.
+
+A real Blender-window run produced the result in 3.85 s, retained a human edit
+through 29 viewport navigations, used the actual search/select/create buttons
+and returned a report to a separate Python CLI. Completed and pending saves
+reopen offline; interrupted work requires explicit retry. Native refusals cannot
+win. Forged measurements, fitted coefficients and query decisions refuse even
+when their outer hashes are recomputed. Cancellation/owned-worker loss preserve
+the previous completed result. Existing independent limits remain 3e-4 J / 1e-4 N.
+
+Replay exposed and repaired two representation defects: shared numeric inputs
+were rounded through Blender float32 properties, and the pinned native writer's
+nine-digit material decimal did not satisfy its restore endpoint's exact double
+comparison. Exact JSON parameters now reach the same operators; a wire codec
+checks matching float32 bits and expands only that restore field. Saved source
+documents, admitted material and native runtime/physics remain unchanged. The
+chosen 1.5664106736411207 J/m2 construction passes exact physical/render replay
+and fresh-process continuation, and three older design choices still render.
+Known descriptive metadata enrichment is checked separately. Evidence:
+`ChimeraStudio/integration/evidence/active-search/acceptance.json`, including
+original failures and full measured receipts. The fixed-rim/world-Z apex law
+remains the scope; UnitcellDB/FEBio, AP/libuipc mappings and broader shape search
+still need their existing owners. No original project or model service changed.
+
 **Fifteen agreed techniques: implementation sequence and honest status.** These
 are the full requested scope, not fifteen labels for one demo. Each row must
 produce a useful Blender action, an accepted existing-owner result and evidence
@@ -4982,12 +5028,12 @@ compelling game using simulated matter; the editor serves building and inspectio
 | 1. Small reliable construction language | Registered operators, `blocks.compile_parts`, native checkpoint owner. Same input through UI/API; stale and duplicate delivery safe; actual completion visible. | **Implemented subset above, including tested external local terminal transport, rebuild recovery, native A/B, shared libuipc cache comparisons and revision-bound native rendering.** Broader owner/mode adapters remain; Object/Edit authoring plus Image Editor observation. |
 | 2. Library learning | Mine repeated successful construction sequences into parameterized recipes with ports and provenance through existing mechanism-factory/AP owners. [DreamCoder](https://people.csail.mit.edu/asolar/papers/EllisWNSMHCST21.pdf) motivates reusable program components. Demonstrate one mined recipe reducing authoring effort with identical compiled meaning. | **Partial, tested parameter abstraction above.** Two confirmed native trials produce one reusable construction with provenance and fewer authoring commands at identical compiled meaning. General sequence mining, function discovery and broader owner mappings remain planned. |
 | 3. Quality-diversity / MAP-Elites | Index accepted comparisons by size, mass, compliance, response direction and measured cost; keep useful alternatives rather than a single score winner. Use existing evidence identities. [Method](https://arxiv.org/abs/1504.04909). | **Bounded native MAP-Elites implemented above.** Three response bands retain independently checked material/XY-scale alternatives under the same load and maximum footprint; native A/B, editable recreation and saved lineage pass. General size/mass/direction descriptors and broader owner mappings remain planned. |
-| 4. Inverse design | Desired deflection/load/space becomes a bounded search over supported geometry/materials. Reuse mechanism-factory fits and native evaluation. [Warp](https://github.com/NVIDIA/warp) differentiates its own kernels; our Vulkan/native path needs an explicit derivative adapter. | **Bounded native material search implemented above.** Desired movement/load chooses among measured tensions with saved native checkpoints, independent checks and explicit no-match. Bounded XY-scale geometry exploration now works through the quality-diversity adapter. Target-directed general geometry search and derivative adapters remain planned; no gradient claim. |
+| 4. Inverse design | Desired deflection/load/space becomes a bounded search over supported geometry/materials. Reuse mechanism-factory fits and native evaluation. [Warp](https://github.com/NVIDIA/warp) differentiates its own kernels; our Vulkan/native path needs an explicit derivative adapter. | **Bounded native material search and target-directed sampling implemented above.** Desired movement/load chooses among measured tensions with saved native checkpoints, independent checks and explicit no-match; the equal-budget comparison records both target gains and held-out losses. Bounded XY-scale geometry exploration now works through the quality-diversity adapter. Target-directed general geometry search and derivative adapters remain planned; no gradient claim. |
 | 5. Learned solver warm starts | Predict an initial guess, then let the existing solver enforce its residual/acceptance criteria. Compare against ordinary continuation warm starts including inference/transfer overhead. [NOWS](https://arxiv.org/abs/2511.02481). | **Planned native-owner extension.** No neural predictor is installed in Studio. Keep only a measured total-time improvement at equal tolerances. |
 | 6. Static condensation / component reduction | Eliminate internal degrees of freedom while retaining boundary ports; reuse AP two-port/finite-area concepts. [MFEM](https://docs.mfem.org/3.1/classmfem_1_1StaticCondensation.html) describes linear block elimination. | **Existing research prerequisites; Blender adapter planned.** Verify port reactions and reconstructed internal state against the detailed owner. Nonlinear contact needs its own treatment. |
 | 7. Hyper-reduction / optimized cubature | Reduce element-force evaluations inside a measured deformation/material domain, retaining every requested timestep. [Original work](https://www.cs.cornell.edu/~stevenan/cubature/). | **Planned native-owner extension.** Compare full/reduced forces, energy and total cost; no accepted recipe from sampling alone. |
 | 8. Port-Hamiltonian learned components | Learn bounded energy/dissipation/port response and compose through explicit physical interconnections, building on AP rather than inventing another solver. [Research](https://proceedings.mlr.press/v211/neary23a.html) demonstrates spring-mass-damper compositions. | **Planned.** First compare a two-component response with the detailed solve; integrator, contact and out-of-domain fallback still need independent checks. |
-| 9. Active learning | Reuse UnitcellDB/FEBio data under their conditions, then choose experiments that resolve the selected construction's uncertainty; existing experiment runner owns receipts. [PhysicsNeMo method](https://docs.nvidia.com/physicsnemo/26.05/user-guide/active_learning.html). | **Planned after trial adapter.** Compare cost/error against a simple fixed sampling schedule on held-out cases before expanding. |
+| 9. Active learning | Reuse UnitcellDB/FEBio data under their conditions, then choose experiments that resolve the selected construction's uncertainty; existing experiment runner owns receipts. [PhysicsNeMo method](https://docs.nvidia.com/physicsnemo/26.05/user-guide/active_learning.html). | **Bounded native active sampling implemented above.** Equal-budget target finding, held-out prediction errors, full cost, actual UI and saved/replayed observations are measured. UnitcellDB/FEBio mapping and broader AP/libuipc construction domains remain planned; no universal sample-efficiency or surrogate-runtime claim. |
 | 10. Adaptive fidelity | Switch a component between qualified reduced and detailed responses near contacts, large deformation or domain boundaries, preserving state/port exchanges. Learned-mesh research is inspiration, not a substitute native owner. | **Planned after 6–8.** Demonstrate an actual state-transfer/fallback case with measured error and latency; no hidden skipped steps. |
 | 11. Dependency-aware physical reuse | Existing recipe/source/runtime hashes identify immutable characterization results; geometry, laws, supports, load and connections invalidate affected dependencies. Separate physical states for instances. | **Partial, tested evidence reuse:** existing-owner references now survive unrelated edits and refuse relevant stale dependencies. Physical solver-response reuse and general geometry mappings remain planned; this adapter does not skip a solve. |
 | 12. Counterfactual failure explanations | Restore a checkpoint, vary one supported parameter, compare the result and show an actionable alternative on the same Blender construction. Reuse `tools.recipe_experiments`, native history and libuipc recorded controls. | **Native membrane and libuipc A/B UIs implemented above.** Existing attachment controls are reusable at equal simulated time, with visible changed inputs and saved native-cache references. Bounded native material-choice search is now implemented; automatic causal explanations and general material qualification remain unfinished. |
@@ -5003,8 +5049,8 @@ reduce. Inspect the existing `tools/recipe_experiments`, `tools/artificial_prote
 and `tools/mechanism_factory` owners read-only before designing each adapter; their
 current scalar/two-port/reference scopes do not automatically qualify libuipc.
 `workshop_lab.py` remains an unregistered draft containing its own SQLite store.
-Its pure canonical-recipe and bounded inverse-search helpers were extracted
-unchanged; the pure archive now has tested JSON-integer normalization. These
+Its pure canonical-recipe, bounded inverse-search and coverage-sampling helpers
+were extracted unchanged; the pure archive has tested JSON-integer normalization. These
 adapters reuse existing native owners; do not register it wholesale or claim
 its other algorithms as product features.
 Replace duplicate storage with references to the established owners. One working
