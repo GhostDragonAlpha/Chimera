@@ -4674,7 +4674,7 @@ edit through UI and AI produces equivalent compiled input; wrong context, change
 selection or a stale source revision leaves confirmed state intact; a failed
 build and an undo/reopen retain a usable construction. This is the integration
 contract. The local Object/Edit command subset below is implemented; broader
-mode adapters and transport remain unfinished. Sources: [Blender modes](https://docs.blender.org/manual/en/latest/editors/3dview/modes.html),
+mode adapters remain unfinished; the local Z Code transport below is now tested. Sources: [Blender modes](https://docs.blender.org/manual/en/latest/editors/3dview/modes.html),
 [workspaces](https://docs.blender.org/manual/en/3.0/interface/window_system/workspaces.html),
 [operators](https://developer.blender.org/docs/features/interface/operators/) and
 [undo](https://developer.blender.org/docs/features/core/undo/). Check the actual
@@ -4705,12 +4705,47 @@ Edit Mode check. See `ChimeraStudio/integration/OPERATIONS.md` and
 This adds no solver, native physics law or model-service change. GPU runtime
 identity remains `7eb2b11543b7138978d6b355671c6b176c51d79d0fb1c7b804c671effe106e44`.
 
-The implemented boundary is in-process Python, not an already-connected Z Code
-transport. Multiscene native worlds, automatic native Undo, all-mode adapters,
-comparison UI and transactional imports remain unfinished. Rebuild recovery is now
-implemented as described below. Native Replay/Resume and libuipc cached-animation
-replay remain distinct. Source hashing currently
-invalidates conservatively across the scene; it is not incremental physical reuse.
+The typed local client below now carries these operations from an external
+terminal process. Multiscene native worlds, automatic native Undo and all-mode
+adapters remain unfinished. Native comparisons, scoped transactional recipe imports
+and rebuild recovery are implemented below. Native Replay/Resume and libuipc
+cached-animation replay remain distinct. Source hashing invalidates conservatively
+across the scene; it is not incremental physical reuse.
+
+**External local client, implemented and checked 2026-10-19.** Enable **N > Chimera
+> Local Z Code Connection** in the intended Blender window. In
+`D:/Chimera-Maintenance/ChimeraStudio/integration`, run
+`../Libuipc/.venv/Scripts/python.exe -B tools/studio_client.py sessions` through
+Z Code's existing terminal. Choose the session matching the current project/scene.
+`request --session ID --file request.json` accepts a typed `method`/`args` JSON
+message; use inspect → propose → apply, then `wait --session ID --operation ID`
+until the operation is terminal. `OPERATIONS.md` gives exact requests. Authoring,
+materials, connections, native replay/render and saved design choices reuse the
+same visible operators; no model settings or saved Z Code goal change is needed.
+
+The timer processes local JSON files on Blender's main thread. Source revisions,
+part IDs, purpose, explicit parameters and existing native admission checks are
+unchanged. An authorized agent may apply its proposal directly; it need not ask
+the human again. Missing replies return a request ID and unknown outcome; never
+silently resubmit. Use `response` within the 60-second reply retention window,
+then saved operation history/status for recovery. Observation timeout is not
+native failure. Unstarted requests expire after at most 30 seconds; repeated
+requests/operation IDs do not duplicate edits. Changing the scene/file closes
+the session, and disabling the connection leaves native jobs intact. The trust
+boundary is local OS-account filesystem access, not hostile same-account code.
+No network listener, arbitrary Python execution or remote project-file writer.
+
+A separate external Python client and real CLI passed material assignment while
+preserving human Edit Mode geometry/selection, stale-proposal refusal, actual GPU
+resume/load/render/exact checkpoint replay and compact saved design reports.
+Fresh reopen retained source, checkpoint and operation purposes offline. Real
+scene switch/file reload closed the connection. The 28 sampled round trips had
+0.204 s median / 0.409 s maximum including polling; no agent, generation or solver
+speed claim. This tests the terminal integration available to Z Code, not a live
+Z Code model's decision quality. Evidence:
+`ChimeraStudio/integration/evidence/local-client/acceptance.json`. Wider modes,
+owners and interface optimization remain; native checks, original projects and
+working model services were preserved.
 
 **Rebuild recovery, implemented and checked 2026-10-19.** Return to Matter
 Authoring now reveals sources and releases its helper while retaining the last
@@ -4944,7 +4979,7 @@ compelling game using simulated matter; the editor serves building and inspectio
 
 | # / technique | Reuse and first concrete acceptance | Current status / order |
 |---|---|---|
-| 1. Small reliable construction language | Registered operators, `blocks.compile_parts`, native checkpoint owner. Same input through UI/API; stale and duplicate delivery safe; actual completion visible. | **Implemented subset above, including rebuild recovery, native A/B, shared libuipc cache comparisons and revision-bound native rendering.** Chosen transport and broader owner/mode adapters remain; Object/Edit authoring plus Image Editor observation. |
+| 1. Small reliable construction language | Registered operators, `blocks.compile_parts`, native checkpoint owner. Same input through UI/API; stale and duplicate delivery safe; actual completion visible. | **Implemented subset above, including tested external local terminal transport, rebuild recovery, native A/B, shared libuipc cache comparisons and revision-bound native rendering.** Broader owner/mode adapters remain; Object/Edit authoring plus Image Editor observation. |
 | 2. Library learning | Mine repeated successful construction sequences into parameterized recipes with ports and provenance through existing mechanism-factory/AP owners. [DreamCoder](https://people.csail.mit.edu/asolar/papers/EllisWNSMHCST21.pdf) motivates reusable program components. Demonstrate one mined recipe reducing authoring effort with identical compiled meaning. | **Partial, tested parameter abstraction above.** Two confirmed native trials produce one reusable construction with provenance and fewer authoring commands at identical compiled meaning. General sequence mining, function discovery and broader owner mappings remain planned. |
 | 3. Quality-diversity / MAP-Elites | Index accepted comparisons by size, mass, compliance, response direction and measured cost; keep useful alternatives rather than a single score winner. Use existing evidence identities. [Method](https://arxiv.org/abs/1504.04909). | **Bounded native MAP-Elites implemented above.** Three response bands retain independently checked material/XY-scale alternatives under the same load and maximum footprint; native A/B, editable recreation and saved lineage pass. General size/mass/direction descriptors and broader owner mappings remain planned. |
 | 4. Inverse design | Desired deflection/load/space becomes a bounded search over supported geometry/materials. Reuse mechanism-factory fits and native evaluation. [Warp](https://github.com/NVIDIA/warp) differentiates its own kernels; our Vulkan/native path needs an explicit derivative adapter. | **Bounded native material search implemented above.** Desired movement/load chooses among measured tensions with saved native checkpoints, independent checks and explicit no-match. Bounded XY-scale geometry exploration now works through the quality-diversity adapter. Target-directed general geometry search and derivative adapters remain planned; no gradient claim. |
@@ -5110,7 +5145,7 @@ Incomplete selections (including disabled external seams), driven rigs and
 active workers refuse; a late validation failure rolls back owned changes.
 The UI and local Python entry point share one main-thread implementation;
 the implemented local revision-aware proposal/job bridge above now includes this
-action; remote transport remains unfinished.
+action; the local terminal client above now exposes that shared path.
 
 The original plus translated four-part assembly passed a combined native
 24-stitch, 61-frame/120-step bake in 6.72 s. At 0.6 s their bumper drops were
@@ -5203,8 +5238,8 @@ where its behavior changes.
    over the same UUIDs, compiler inputs, accepted-state checks and recovery
    commands used by the person. Make proposed geometry/material/connection changes visible
    and recoverable. No parallel hidden scene or second physics path. An AI toolbar
-   is implemented for the Object/Edit subset above; remote transport and wider
-   mode adapters remain future work.
+   and tested external local client are implemented for the Object/Edit subset
+   above. Wider mode/owner adapters remain future work.
 4. **More useful constructions from existing engine capabilities.** Inspect
    §11.20.12, the mechanism factory, artificial proteins and material/attachment
    owners before adding a control. Bind already admitted laws and recipes first.
