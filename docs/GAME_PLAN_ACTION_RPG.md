@@ -4801,6 +4801,23 @@ Edit Mode/selection, failed-result recovery, source parts, active bake and origi
 projects are preserved. References/purpose survive saves at absolute cache paths;
 automatic relocation/packing and full physical continuation remain unfinished.
 
+**Reusable assembly adapter, implemented and checked 2026-10-19.**
+Native A/B trials with identical geometry/apex connections and different admitted
+surface tensions now yield one reusable data template in Blender. Human/shared
+commands infer it, then recreate independent editable parts at a chosen tension
+through the existing compiler and authoring importer. Purpose, source hashes,
+observed values and compiler identity survive saving; unavailable historical
+trials are explicit. A pure canonicalization helper was extracted unchanged from
+the existing unregistered draft; no second catalog/database or generated code runs.
+Eleven Blender checks, fresh offline reopening and visible human creation pass in
+`ChimeraStudio/integration/evidence/reusable-assembly`. Both observed materials
+compile to the same physical arrays; a native rebuild/load reproduces the source
+state/render exactly with independent energy/force checks retained. Reuse changes
+two authoring commands into one, after one inference, with the same build/load.
+Creation measured about 0.20 s versus 0.19 s for the two-command baseline: fewer
+interactions, no demonstrated CPU/solver speedup. This is one template per file,
+not general program synthesis, libuipc/AP recipe admission or new material physics.
+
 **Fifteen agreed techniques: implementation sequence and honest status.** These
 are the full requested scope, not fifteen labels for one demo. Each row must
 produce a useful Blender action, an accepted existing-owner result and evidence
@@ -4811,7 +4828,7 @@ compelling game using simulated matter; the editor serves building and inspectio
 | # / technique | Reuse and first concrete acceptance | Current status / order |
 |---|---|---|
 | 1. Small reliable construction language | Registered operators, `blocks.compile_parts`, native checkpoint owner. Same input through UI/API; stale and duplicate delivery safe; actual completion visible. | **Implemented subset above, including rebuild recovery, native A/B and shared libuipc cache comparisons.** Chosen transport and broader owner/mode adapters remain; Object/Edit authoring plus Image Editor observation. |
-| 2. Library learning | Mine repeated successful construction sequences into parameterized recipes with ports and provenance through existing mechanism-factory/AP owners. [DreamCoder](https://people.csail.mit.edu/asolar/papers/EllisWNSMHCST21.pdf) motivates reusable program components. Demonstrate one mined recipe reducing authoring effort with identical compiled meaning. | **Planned after trial adapter.** Duplication/starter reuse exists; automated recipe discovery does not. |
+| 2. Library learning | Mine repeated successful construction sequences into parameterized recipes with ports and provenance through existing mechanism-factory/AP owners. [DreamCoder](https://people.csail.mit.edu/asolar/papers/EllisWNSMHCST21.pdf) motivates reusable program components. Demonstrate one mined recipe reducing authoring effort with identical compiled meaning. | **Partial, tested parameter abstraction above.** Two confirmed native trials produce one reusable construction with provenance and fewer authoring commands at identical compiled meaning. General sequence mining, function discovery and broader owner mappings remain planned. |
 | 3. Quality-diversity / MAP-Elites | Index accepted comparisons by size, mass, compliance, response direction and measured cost; keep useful alternatives rather than a single score winner. Use existing evidence identities. [Method](https://arxiv.org/abs/1504.04909). | **Planned.** First show three meaningfully different admissible designs with the same task constraints, no separate truth catalog. |
 | 4. Inverse design | Desired deflection/load/space becomes a bounded search over supported geometry/materials. Reuse mechanism-factory fits and native evaluation. [Warp](https://github.com/NVIDIA/warp) differentiates its own kernels; our Vulkan/native path needs an explicit derivative adapter. | **Planned.** Start with bounded discrete/parameter search; a gradient claim requires independent derivative checks. |
 | 5. Learned solver warm starts | Predict an initial guess, then let the existing solver enforce its residual/acceptance criteria. Compare against ordinary continuation warm starts including inference/transfer overhead. [NOWS](https://arxiv.org/abs/2511.02481). | **Planned native-owner extension.** No neural predictor is installed in Studio. Keep only a measured total-time improvement at equal tolerances. |
@@ -4824,7 +4841,7 @@ compelling game using simulated matter; the editor serves building and inspectio
 | 12. Counterfactual failure explanations | Restore a checkpoint, vary one supported parameter, compare the result and show an actionable alternative on the same Blender construction. Reuse `tools.recipe_experiments`, native history and libuipc recorded controls. | **Native membrane and libuipc A/B UIs implemented above.** Existing attachment controls are reusable at equal simulated time, with visible changed inputs and saved native-cache references. Automatic explanations/search and general material qualification remain unfinished. |
 | 13. Bounded evolutionary code/workflow optimization | Propose limited implementation variants against a fixed independent evaluator, with correctness and full end-to-end cost. [AlphaEvolve](https://deepmind.google/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/) motivates the loop. | **Planned process support.** Start with one measured editor bottleneck; no automatic solver-policy edits, benchmark weakening or unbounded candidate runs. |
 | 14. Outcome-driven agent procedure optimization | Qwen chooses peers, accepts/defers/rejects Step findings and sends Maya useful fixes. Compare procedure variants on accepted user-visible progress, rework, elapsed time and escaped defects. [GEPA](https://github.com/gepa-ai/gepa) is a reference. | **Manual workflow exists; measured optimizer planned.** One bounded procedure comparison before adoption; model agreement is not the reward. |
-| 15. Retrievable procedural memory | Retrieve purpose, source IDs, commands, accepted evidence and limits from existing recipe/receipt owners. Keep these references through compression and saving. | **Partial, tested owner retrieval:** saved purpose/history and A/B identities now link to existing records, receipts, measured scope and rejected reductions. Freshness is explicit; native admission is separate. General procedural retrieval/mining remains planned; no second SQLite database. |
+| 15. Retrievable procedural memory | Retrieve purpose, source IDs, commands, accepted evidence and limits from existing recipe/receipt owners. Keep these references through compression and saving. | **Partial, tested owner retrieval:** saved purpose/history and A/B identities now link to existing records, receipts, measured scope and rejected reductions. Freshness is explicit; native admission is separate. The native-trial template also preserves purpose, source identities and the inferred material parameter; general procedural retrieval/mining remains planned, with no second SQLite database. |
 
 Implement in this order: **shared operations/recovery (1) → existing-trial/evidence
 adapter (11, 15) and visible counterfactual (12) → recipe discovery and varied
@@ -4833,8 +4850,9 @@ improvement (13–14) accompanies those increments when there is a measured cost
 reduce. Inspect the existing `tools/recipe_experiments`, `tools/artificial_proteins`
 and `tools/mechanism_factory` owners read-only before designing each adapter; their
 current scalar/two-port/reference scopes do not automatically qualify libuipc.
-`workshop_lab.py` is an unregistered draft containing its own SQLite store: do not
-register it wholesale or claim its algorithms as implemented product features.
+`workshop_lab.py` remains an unregistered draft containing its own SQLite store.
+Only its pure canonical-recipe helper has been extracted and tested in the adapter
+above; do not register it wholesale or claim its other algorithms as product features.
 Replace duplicate storage with references to the established owners. One working
 construction and its useful visible comparison take priority over installing a
 large research stack. Keep the user's projects and Z Code goal/progress intact.
