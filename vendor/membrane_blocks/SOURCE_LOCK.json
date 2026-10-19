@@ -1,0 +1,42 @@
+{
+  "schema": "chimera.studio.block-sources.v1",
+  "note": "Explicit read-only compile using existing validated record and compiler. Frozen starter; no live agents checkout dependency. Native rail constraint remains explicit.",
+  "files": [
+    {
+      "source": "tools/mechanism_factory/native_binding.py",
+      "copy": "vendor/membrane_blocks/native_binding.py",
+      "sha256": "b2cfe406088beda07c43c9d8b07016d8a696e890e68bb84ee2c8e4c3e0f49b7a"
+    },
+    {
+      "source": "tools/mechanism_factory/composed_chain.py",
+      "copy": "vendor/membrane_blocks/composed_chain.py",
+      "sha256": "c3c0ae0a40b3ba0480ea0466e4fda34193871966e08d394b0e2f8c4839cea084"
+    },
+    {
+      "source": "tools/mechanism_factory/composed_patch.py",
+      "copy": "vendor/membrane_blocks/composed_patch.py",
+      "sha256": "12d4c08b9fcc1b7b294b1cfd2c522af27b664e486e42c91e28f2e97b9d37d662"
+    },
+    {
+      "source": "tools/mechanism_factory/piece_record.py",
+      "copy": "vendor/membrane_blocks/piece_record.py",
+      "sha256": "9ab0e170ddd8e1265b8b1d92a16733886fe2df125bb8eda862151e81efdf1437"
+    },
+    {
+      "source": "tools/membrane_scale_lab/fixture_generator.py",
+      "copy": "vendor/membrane_blocks/fixture_generator.py",
+      "sha256": "1ebd13b9a659fd85d3ca1dacd29ee8f879636a8863ae836db1756b573ea5b260"
+    },
+    {
+      "source": "tools/membrane_scale_lab/surface_energy_reference.py",
+      "copy": "vendor/membrane_blocks/surface_energy_reference.py",
+      "sha256": "ee9effcfbddad8d02e03f71d414b27da177f0656de535eaab0d76ae39796f0b7"
+    },
+    {
+      "source": "docs/evidence/mechanism_factory/pieces/assembly.star-k2.json",
+      "copy": "vendor/membrane_blocks/assembly.star-k2.json",
+      "sha256": "83ed7113a57470afa7e7258889b5b80a633977691b2f45363b744f1b133e937f"
+    }
+  ],
+  "transaction_sha256": "4355187ed729786f16c09869397275f2a3a17723097f31394609c6607b667379"
+}

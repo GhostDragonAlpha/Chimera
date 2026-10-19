@@ -3,10 +3,12 @@
   "blender_build_hash": "68c79f03362e",
   "binary": "D:\\Chimera-Maintenance\\ChimeraStudio\\build-blender\\bin\\Release\\blender.exe",
   "source_hashes": {
-    "python\\chimera_studio\\__init__.py": "6f3a6e405a7c7812a402685c514894500f5196c0bde81c90c55092e0d0a66025",
+    "python\\chimera_studio\\__init__.py": "91ce3a9ce98279f92fb179ba22b4eea0314697d43e110b413c65df1d5d27662e",
+    "python\\chimera_studio\\blocks.py": "67c531de674d8c0617c86ace418cc9dac4466c01faca16b33008ed41877d6c81",
+    "python\\chimera_studio\\blocks_ui.py": "3d3a27b05fe5ffa5bd4e0e8279e077a0e1f50bc7f3ff2ca09a4dd636c226f8d4",
     "python\\chimera_studio\\geometry.py": "b9cb43110ce4519359f6c1ff6863de7151445e1ea702ebb065c6b145db17c3e8",
-    "python\\chimera_studio\\gpu_native.py": "c62c7355cb4f0e3a8c6696f6d38f0de202f818af4d120ca4a9c17941bcdc259e",
-    "python\\chimera_studio\\gpu_workspace.py": "b926a8780f7896e68eef967e322a4a5c24cafbb0cbf3eaaa43abf5fbeb6f4309",
+    "python\\chimera_studio\\gpu_native.py": "4c9c8fc386bd60ad1581735d61c15adfe670f9303c14a39d53caaeed6c8a5954",
+    "python\\chimera_studio\\gpu_workspace.py": "7dcf55fc631ae22fc5157bae741d94d1ce3b34af2baa0965904dd6c3087b18fd",
     "python\\chimera_studio\\native.py": "47c1895143c57b250e9e383e401e4b9641df42a2f57c14171b30ad680c963ca3",
     "python\\chimera_studio\\owned_job.py": "877dc809fe7f6b7523e08a5bab7e0a657b0a6f63ac8827c02f1038946af5c601",
     "python\\chimera_studio\\workspace.py": "be66c9c42336d08b344908aa8801ab5ad54651bebef37536b9dacd9c8941e7ff",
@@ -46,7 +48,7 @@
       "name": "Save and open physical trial preserves native state",
       "pass": true,
       "details": {
-        "state_hash": "44bed93d4d7267b0"
+        "state_hash": "5bf2f57af5ecbf45"
       }
     },
     {
@@ -69,8 +71,8 @@
       "details": {
         "batch_substeps": 80,
         "simulated_ms": 20,
-        "native_batch_median_ms": 0.2175000263378024,
-        "native_batch_p95_ms": 0.24779996601864696,
+        "native_batch_median_ms": 0.2132499939762056,
+        "native_batch_p95_ms": 0.23110001347959042,
         "scope": "2 parts, CPU native solver only, not GUI frame rate"
       }
     },

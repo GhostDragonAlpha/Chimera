@@ -1,0 +1,38 @@
+{
+  "scope": "Blender authoring and rendering of existing apex-weld films; one world-Z rail, fixed rims, uniform gamma. No water, game or general solid-material qualification.",
+  "checks": [
+    {
+      "name": "Existing three-film construction, material assignment, native load",
+      "pass": false,
+      "error": "",
+      "traceback": "Traceback (most recent call last):\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\tests\\test_membrane_assembly.py\", line 14, in check\n    details=fn();report['checks'].append({'name':name,'pass':True,'details':details});print('PASS',name,flush=True)\n            ^^^^\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\tests\\test_membrane_assembly.py\", line 46, in construct\n    assert float(r.state['centre_load_N'])==.8\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "name": "Kernel output, actual Blender vertices/normals, independent equilibrium",
+      "pass": false,
+      "error": "",
+      "traceback": "Traceback (most recent call last):\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\tests\\test_membrane_assembly.py\", line 14, in check\n    details=fn();report['checks'].append({'name':name,'pass':True,'details':details});print('PASS',name,flush=True)\n            ^^^^\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\tests\\test_membrane_assembly.py\", line 53, in physical_render\n    assert np.array_equal(p,actual)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "name": "Native raster kernel image in Blender follows physical deformation",
+      "pass": false,
+      "error": "",
+      "traceback": "Traceback (most recent call last):\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\tests\\test_membrane_assembly.py\", line 14, in check\n    details=fn();report['checks'].append({'name':name,'pass':True,'details':details});print('PASS',name,flush=True)\n            ^^^^\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\tests\\test_membrane_assembly.py\", line 83, in native_image\n    assert im.size[:]==(384,256) and np.ptp(pixels[:,:3],axis=0).max()>.1\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "name": "Invalid topology/material/attachment/render data preserve current work",
+      "pass": true,
+      "details": {
+        "disconnected_mixed_material_misaligned_forged_render": "refused with previous state preserved"
+      }
+    },
+    {
+      "name": "Save/reopen .blend and trial; fresh process exact physical/render continuation",
+      "pass": false,
+      "error": "",
+      "traceback": "Traceback (most recent call last):\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\tests\\test_membrane_assembly.py\", line 14, in check\n    details=fn();report['checks'].append({'name':name,'pass':True,'details':details});print('PASS',name,flush=True)\n            ^^^^\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\tests\\test_membrane_assembly.py\", line 122, in save_replay\n    assert r.state==expected and r.render==expected_render\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    }
+  ],
+  "runtime": "9e2a08d88cff731700fac24256071180a2a21bf0bf38bb8b21c0b05922d75a4b",
+  "pass": false
+}

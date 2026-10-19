@@ -6,8 +6,12 @@ def register():
     workspace.register()
     from . import gpu_workspace
     gpu_workspace.register()
+    from . import blocks_ui
+    blocks_ui.register()
 def unregister():
     from . import workspace
     from . import gpu_workspace
+    from . import blocks_ui
+    blocks_ui.unregister()
     gpu_workspace.unregister()
     workspace.unregister()

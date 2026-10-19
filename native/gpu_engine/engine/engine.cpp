@@ -18,6 +18,8 @@
 #include <atomic>
 #include <ctime>
 #include <bitset>
+#include <sstream>
+#include <iomanip>
 #include <cstring>
 
 // ── Minimal GLFW-free Win32 window helpers ─────────────────────────────────────────────
@@ -504,7 +506,7 @@ static HWND create_window(uint32_t w, uint32_t h) {
     // opens filling the screen — never a small offset window. SW_MAXIMIZE
     // sizes to the work area by construction (the bar-off-screen clamp above
     // remains for any later restore).
-    ShowWindow(hwnd, SW_MAXIMIZE);
+    ShowWindow(hwnd, std::getenv("CHIMERA_STUDIO_OFFSCREEN") ? SW_HIDE : SW_MAXIMIZE);
     UpdateWindow(hwnd);
     g_hwnd = hwnd;
     return hwnd;
@@ -4631,7 +4633,7 @@ void Engine::membrane_demo_frame(VkCommandBuffer cb) {
              float alpha, lift_m, scale; uint32_t present_vcount; } pc{};
     pc.stage = 5u; pc.vertex_count = md_nv_; pc.face_count = md_nf_;
     pc.corner_count = md_nf_ * 3u;
-    pc.alpha = 0.0f; pc.lift_m = md_lift_; pc.scale = 1.0f;
+    pc.alpha = float(md_centre_); pc.lift_m = md_lift_; pc.scale = 1.0f;
     pc.present_vcount = md_nv_;
     md_dispatch(cb, 5u, 1, &pc, sizeof(pc), /*to_vertex_input=*/true);
     // The present output is completed by the same submitted frame command
@@ -4641,12 +4643,54 @@ void Engine::membrane_demo_frame(VkCommandBuffer cb) {
     md_present_dirty_ = false;
 }
 
+// Snapshot the SAME accepted-state presentation buffer used by the native draw.
+// Owner thread only. One bounded fence covers physics-derived face normals and
+// stage 5; no rejected trial buffer or CPU substitute geometry can enter it.
+bool Engine::membrane_demo_render_snapshot(std::string& out) {
+    if (!md_active_ || !md_vmap_ || md_nv_ > 1024 || md_nf_ > 2048) return false;
+    VkCommandBuffer cb=begin_single_time_cmd();
+    VkMemoryBarrier mb{}; mb.sType=VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+    mb.srcAccessMask=VK_ACCESS_MEMORY_WRITE_BIT|VK_ACCESS_MEMORY_READ_BIT;
+    mb.dstAccessMask=VK_ACCESS_SHADER_READ_BIT|VK_ACCESS_SHADER_WRITE_BIT;
+    vkCmdPipelineBarrier(cb,VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,0,1,&mb,0,nullptr,0,nullptr);
+    struct { uint32_t stage, vertex_count, face_count, corner_count;
+             float alpha, lift_m, scale; uint32_t present_vcount; } pc{};
+    pc.vertex_count=md_nv_; pc.face_count=md_nf_; pc.corner_count=md_nf_*3;
+    pc.alpha=float(md_centre_); pc.lift_m=md_lift_; pc.scale=1; pc.present_vcount=md_nv_;
+    for(uint32_t stage: {0u,1u,2u,5u}) { pc.stage=stage; md_dispatch(cb,stage,1,&pc,sizeof(pc),stage==5); }
+    mb.srcAccessMask=VK_ACCESS_SHADER_WRITE_BIT; mb.dstAccessMask=VK_ACCESS_HOST_READ_BIT;
+    vkCmdPipelineBarrier(cb,VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,VK_PIPELINE_STAGE_HOST_BIT,0,1,&mb,0,nullptr,0,nullptr);
+    VkFence fence=VK_NULL_HANDLE; VkFenceCreateInfo fi{}; fi.sType=VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+    if(vkCreateFence(device_,&fi,nullptr,&fence)!=VK_SUCCESS) { vkFreeCommandBuffers(device_,cmd_pool_,1,&cb); return false; }
+    VkSubmitInfo si{}; si.sType=VK_STRUCTURE_TYPE_SUBMIT_INFO; si.commandBufferCount=1; si.pCommandBuffers=&cb;
+    if(vkEndCommandBuffer(cb)!=VK_SUCCESS || vkQueueSubmit(queue_,1,&si,fence)!=VK_SUCCESS ||
+       vkWaitForFences(device_,1,&fence,VK_TRUE,5000000000ull)!=VK_SUCCESS) {
+        // Never free a command still in flight. This is Studio's private helper;
+        // its client keeps the last confirmed document for explicit retry.
+        fprintf(stderr,"Studio membrane render snapshot failed or exceeded 5 seconds\n"); fflush(stderr); std::exit(3);
+    }
+    vkDestroyFence(device_,fence,nullptr); vkFreeCommandBuffers(device_,cmd_pool_,1,&cb);
+    if(!md_valid_all()) return false;
+    const float* v=static_cast<const float*>(md_vmap_);
+    for(size_t i=0;i<size_t(md_nv_)*9;++i) if(!std::isfinite(v[i])) return false;
+    md_render_id_=md_fnv1a(v,size_t(md_nv_)*9*sizeof(float));
+    md_render_ready_=true; md_render_pending_=false; md_present_dirty_=false;
+    std::ostringstream o; o<<std::setprecision(9);
+    o<<"{\"schema\":\"chimera.studio.membrane-render.v1\",\"accepted_state_id\":\""<<md_accepted_id_
+     <<"\",\"render_state_id\":\""<<md_render_id_<<"\",\"lift_m\":"<<md_lift_<<",\"vertices9_f32_hex\":\"";
+    const auto* bytes=reinterpret_cast<const uint8_t*>(v); const char* hex="0123456789abcdef";
+    for(size_t i=0;i<size_t(md_nv_)*9*sizeof(float);++i) o<<hex[bytes[i]>>4]<<hex[bytes[i]&15];
+    o<<"\",\"indices\":[";
+    for(size_t i=0;i<md_idx_host_.size();++i) { if(i) o<<','; o<<md_idx_host_[i]; }
+    o<<"]}"; out=o.str(); return true;
+}
+
 bool Engine::membrane_demo_status(MembraneDemoStatus& out) {
     if (!md_active_) return false;
     out.active = true;
     out.iteration = md_iteration_; out.n_accepted = md_accepted_; out.n_trials = md_trials_;
     out.terminal_state = md_terminal_;
-    out.accepted_state_id = md_accepted_id_; out.render_state_id = md_render_id_;
+    out.accepted_state_id = md_accepted_id_; out.render_state_id = (!md_present_dirty_ && md_render_ready_) ? md_render_id_ : 0;
     out.material_snapshot = md_material_snapshot_;
     out.last_control = md_last_control_;
     out.centre[0] = (double)md_pos_host_[size_t(md_centre_) * 3 + 0];

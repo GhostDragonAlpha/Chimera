@@ -28,6 +28,12 @@ def document():
     if doc is not None:doc['authoring_visibility']=dict(_visibility)
     return doc
 
+def source_object(key):
+    if key.startswith('block:'):
+        return next((o for o in bpy.data.objects if o.get('chimera_block_id')==key[6:]),None)
+    return bpy.data.objects.get(key)  # Legacy single-membrane documents.
+
+
 def busy():return _future is not None
 
 def submit(fn):
@@ -38,18 +44,27 @@ def submit(fn):
     _future=(_executor.submit(fn),generation);message('Waiting for native GPU result…')
 
 def poll():
-    global _future,_session,_saved
+    global _future,_session,_saved,_visibility
     if _future and _future[0].done():
         future,generation=_future;_future=None
         try:
             result=future.result()
             if generation!=_generation:
+                if isinstance(result,tuple):result=result[0]
                 if isinstance(result,g.GpuSession):result.close()
                 return .1
+            if isinstance(result,tuple) and isinstance(result[0],g.GpuSession):
+                for name,hidden in _visibility.items():
+                    source=source_object(name)
+                    if source:source.hide_set(hidden)
+                result,_visibility=result
             if isinstance(result,g.GpuSession):
                 if _session and _session is not result:_session.close()
                 _session=result
             _saved=document();sync_preview(_saved)
+            if isinstance(result,bytes):
+                from .blocks_ui import show_frame
+                show_frame(result)
             state=_saved['state'];mode=_saved['spec']['mode']
             if mode=='membrane':message(f"GPU membrane | {state['energy_J']:.6g} J | center load {state['centre_load_N']:.4g} N")
             else:message(f"GPU CA | {state['steps']} steps | {state['simulated_seconds']:.3f} s | {sum(state['volumes'])} volume quanta")
@@ -68,6 +83,7 @@ def close_session():
         def cleanup(f):
             try:
                 result=f.result()
+                if isinstance(result,tuple):result=result[0]
                 if isinstance(result,g.GpuSession):result.close()
             except Exception:pass
             if session:session.close()
@@ -80,9 +96,14 @@ def sync_preview(doc):
     if not doc:return
     spec=doc['spec'];state=doc['state']
     for name in _visibility:
-        source=bpy.data.objects.get(name)
+        source=source_object(name)
         if source:source.hide_set(True)
+    if 'assembly' in spec:
+        from .blocks_ui import sync_preview as sync_assembly
+        sync_assembly(doc);return
     positions=state['positions_f32'] if spec['mode']=='membrane' else spec['positions']
+    if spec['mode']=='membrane' and 'render' in doc:
+        _,positions=g.validate_render(doc['render'],spec,state)
     points=np.asarray(positions,dtype=float).reshape(-1,3);faces=spec['triangles']
     col=bpy.data.collections.get(COLLECTION)
     if col is None:col=bpy.data.collections.new(COLLECTION);bpy.context.scene.collection.children.link(col)
@@ -204,7 +225,7 @@ def return_to_authoring():
     global _saved,_visibility
     close_session()
     for name,hidden in _visibility.items():
-        obj=bpy.data.objects.get(name)
+        obj=source_object(name)
         if obj:obj.hide_set(hidden)
     _visibility={};_saved=None
     col=bpy.data.collections.get(COLLECTION)
@@ -231,7 +252,15 @@ def load_document(doc):
     g.validate_document(doc)
     visibility=doc.get('authoring_visibility',{})
     if not isinstance(visibility,dict) or len(visibility)>32 or any(not isinstance(k,str) or type(v)!=bool for k,v in visibility.items()):raise ValueError('Invalid authoring visibility metadata')
-    return_to_authoring();_visibility=dict(visibility);_saved=copy.deepcopy(doc);sync_preview(_saved);message('Saved native checkpoint displayed. Resume explicitly to use GPU.')
+    if 'assembly' in doc['spec']:
+        # Preflight duplicate ids before replacing the accepted trial.
+        for p in doc['spec']['assembly']['parts']:
+            if sum(o.get('chimera_block_id')==p['id'] for o in bpy.data.objects)>1:raise ValueError('Duplicate source block identity')
+    return_to_authoring()
+    if 'assembly' in doc['spec']:
+        from .blocks_ui import ensure_authoring
+        visibility=ensure_authoring(doc)
+    _visibility=dict(visibility);_saved=copy.deepcopy(doc);sync_preview(_saved);message('Saved native checkpoint displayed. Resume explicitly to use GPU.')
 class Load(bpy.types.Operator,ImportHelper):
     bl_idname='chimera.gpu_open';bl_label='Open GPU Matter Trial'
     filter_glob:StringProperty(default='*.matter.json',options={'HIDDEN'})
@@ -243,12 +272,13 @@ class Load(bpy.types.Operator,ImportHelper):
         except Exception as exc:self.report({'ERROR'},str(exc));return {'CANCELLED'}
         return {'FINISHED'}
 class Panel(bpy.types.Panel):
-    bl_label='GPU Matter';bl_idname='CHIMERA_PT_gpu';bl_space_type='VIEW_3D';bl_region_type='UI';bl_category='Chimera'
+    bl_options={'DEFAULT_CLOSED'}
+    bl_label='Single Membrane / Experimental Fields';bl_idname='CHIMERA_PT_gpu';bl_space_type='VIEW_3D';bl_region_type='UI';bl_category='Chimera'
     def draw(self,context):
         l=self.layout;s=context.scene.chimera_gpu
         l.label(text='Existing Chimera Vulkan solver');l.operator('chimera.gpu_demo')
         box=l.box();box.enabled=not busy();box.prop(s,'tension');box.operator('chimera.gpu_membrane');box.prop(s,'load');box.operator('chimera.gpu_load')
-        box=l.box();box.enabled=not busy();box.prop(s,'volume');box.prop(s,'pipe');box.operator('chimera.gpu_water')
+        l.label(text='Water deferred; no water workflow enabled here')
         row=l.column();row.enabled=not busy();row.prop(s,'ca_steps');row.operator('chimera.gpu_step');row.operator('chimera.gpu_resume')
         if _session:
             l.label(text=f'{len(_session.history)} confirmed checkpoints');row=l.column();row.enabled=not busy();row.prop(s,'replay');row.operator('chimera.gpu_seek')

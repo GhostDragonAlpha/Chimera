@@ -244,6 +244,7 @@ public:
     bool membrane_demo_save(std::string& doc_out);
     bool membrane_demo_restore(const MembraneDemoRestoreDoc& doc,
                                MembraneDemoStatus& out);
+    bool membrane_demo_render_snapshot(std::string& out);
     void membrane_demo_frame(VkCommandBuffer cb);   // per-frame present dispatch
     void md_dispatch(VkCommandBuffer cb, uint32_t stage, uint32_t sets,
                      const void* pc, size_t pc_size, bool to_vertex_input);

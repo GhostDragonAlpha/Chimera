@@ -58,7 +58,7 @@ def membrane_spec(positions,triangles,centre,gamma=1.):
     return {'mode':'membrane','positions':p.tolist(),'triangles':t.tolist(),'centre':centre,'gamma':float(gamma)}
 
 def membrane_packet(spec):
-    spec=membrane_spec(spec['positions'],spec['triangles'],spec['centre'],spec['gamma'])
+    spec=validate_spec(spec)
     p=np.asarray(spec['positions'],dtype='<f4');t=np.asarray(spec['triangles'],dtype='<u4');flat=t.ravel()
     corners=np.argsort(flat,kind='stable').astype('<u4');offsets=np.concatenate(([0],np.cumsum(np.bincount(flat,minlength=len(p))))).astype('<u4')
     return struct.pack('<IIIIdfI',0x3130444D,len(p),len(t),spec['centre'],spec['gamma'],0.,0)+p.tobytes()+t.tobytes()+offsets.tobytes()+corners.tobytes()+np.full(len(t),spec['gamma'],dtype='<f4').tobytes()
@@ -99,7 +99,11 @@ def water_spec(positions,triangles,seed=0,volume=0.0001,pipe_height=.01):
 
 def validate_spec(s):
     if not isinstance(s,dict):raise ValueError('Expected GPU trial geometry')
-    if s.get('mode')=='membrane':return membrane_spec(s['positions'],s['triangles'],s['centre'],s['gamma'])
+    if s.get('mode')=='membrane':
+        if 'assembly' in s:
+            from .blocks import validate
+            return validate(s)
+        return membrane_spec(s['positions'],s['triangles'],s['centre'],s['gamma'])
     if s.get('mode')=='water':
         expected=water_spec(s['positions'],s['triangles'],s['seed'],s['initial_volume'],s['pipe_height'])
         if s!=expected:raise ValueError('CA geometry/coefficients differ from the declared substrate')
@@ -150,6 +154,28 @@ def validate_water_state(state,spec):
     if state!=expected:raise ValueError('CA checkpoint fields/hash mismatch')
     return raw
 
+def render_hash(data):
+    h=1469598103934665603
+    for b in data:h=((h^b)*1099511628211)&0xffffffffffffffff
+    return str(h)
+
+
+def validate_render(view,spec,state):
+    if view.get('schema')!='chimera.studio.membrane-render.v1' or view.get('accepted_state_id')!=state['accepted_state_id']:
+        raise ValueError('Render output belongs to a different physical state')
+    a=np.frombuffer(bytes.fromhex(view['vertices9_f32_hex']),dtype='<f4')
+    if a.shape!=(len(spec['positions'])*9,) or not np.isfinite(a).all():raise ValueError('Invalid native render vertex stream')
+    if render_hash(a.tobytes())!=view['render_state_id']:raise ValueError('Render vertex hash mismatch')
+    if view['indices']!=np.asarray(spec['triangles']).ravel().tolist():raise ValueError('Render topology mismatch')
+    if view['lift_m']!=0:raise ValueError('Unexpected presentation lift')
+    a=a.reshape(-1,9)
+    # Exact inverse of the kernel's rigid axis mapping. No simulated motion here.
+    physical=a[:,[0,2,1]].copy();physical[:,1]*=-1
+    expected=np.asarray(state['positions_f32'],dtype='<f4').reshape(-1,3)
+    if not np.array_equal(physical,expected):raise ValueError('Kernel render positions differ from accepted physics')
+    return a,physical
+
+
 def validate_document(doc):
     if not isinstance(doc,dict) or doc.get('schema')!='chimera.studio.gpu-trial.v2' or doc.get('source_lock')!=identity():raise ValueError('GPU trial runtime identity mismatch')
     if len(json.dumps(doc,allow_nan=False))>MAX_DOC:raise ValueError('GPU trial exceeds size limit')
@@ -167,6 +193,8 @@ def validate_document(doc):
         for key in ('gamma_admitted_f64','gamma_uploaded_f32','centre_load_N','energy_J','energy_initial_J'):number(state.get(key),key,0,1e12)
         for key in ('iteration','n_accepted','n_trials'):
             if type(state.get(key))!=int or not 0<=state[key]<=0xffffffff:raise ValueError('Invalid native counter')
+    if 'assembly' in spec and 'render' not in doc:raise ValueError('Assembly requires a confirmed native render snapshot')
+    if spec['mode']=='membrane' and 'render' in doc:validate_render(doc['render'],spec,state)
     return doc
 
 class PrivateEngine:
@@ -185,7 +213,7 @@ class PrivateEngine:
         # Working directory must contain the pinned shaders; state writes are confined to a per-run directory.
         import shutil
         shutil.copytree(ROOT/'runtime/gpu/shaders',self.folder/'shaders')
-        self.proc=subprocess.Popen([str(ROOT/'runtime/gpu/chimera_engine.exe'),str(port),'--no-board','384','256','--no-restore','--hidden'],cwd=self.folder,stdout=self.logs[0],stderr=self.logs[1],creationflags=flags,startupinfo=startup)
+        self.proc=subprocess.Popen([str(ROOT/'runtime/gpu/chimera_engine.exe'),str(port),'--no-board','384','256','--no-restore','--hidden'],cwd=self.folder,stdout=self.logs[0],stderr=self.logs[1],creationflags=flags,startupinfo=startup,env={**os.environ,'CHIMERA_STUDIO_OFFSCREEN':'1'})
         from .owned_job import OwnedJob
         try:self.job=OwnedJob(self.proc)
         except BaseException:self.close();raise
@@ -223,7 +251,7 @@ class PrivateEngine:
 
 class GpuSession:
     def __init__(self,spec):
-        self.spec=validate_spec(spec);self.engine=PrivateEngine();self.state=None;self.history=[];self.cursor=-1;self.elapsed_steps=0;self.batch_steps=0;self.last_ms=0
+        self.spec=validate_spec(spec);self.engine=PrivateEngine();self.state=None;self.render=None;self.history=[];self.cursor=-1;self.elapsed_steps=0;self.batch_steps=0;self.last_ms=0
         try:
             if self.spec['mode']=='membrane':self.engine.request('POST','/membrane_demo_bin',membrane_packet(self.spec))
             else:self.engine.request('POST','/water_bin',water_packet(self.spec,self.spec['volumes']))
@@ -238,7 +266,11 @@ class GpuSession:
             raw=self.engine.request('GET','/water_save',binary=True)
             state=water_state(raw,self.spec)
             self.elapsed_steps=state['steps'];self.batch_steps=self.elapsed_steps
-        self.state=state;return state
+        render=None
+        if self.spec['mode']=='membrane':
+            render=self.engine.request('GET','/membrane_demo_render')
+            validate_render(render,self.spec,state)
+        self.state=state;self.render=render;return state
     def record(self):
         raw=json.dumps(self.state,allow_nan=False,separators=(',',':'))
         self.history=self.history[:self.cursor+1];self.history.append(raw)
@@ -279,7 +311,9 @@ class GpuSession:
         self.restore_state(json.loads(self.history[index]));self.cursor=index
     def document(self):
         # Last confirmed checkpoint; safe to save even after native timeout.
-        return {'schema':'chimera.studio.gpu-trial.v2','source_lock':identity(),'spec':self.spec,'state':self.state}
+        doc={'schema':'chimera.studio.gpu-trial.v2','source_lock':identity(),'spec':self.spec,'state':self.state}
+        if self.render is not None:doc['render']=self.render
+        return doc
     @classmethod
     def restore(cls,doc):
         validate_document(doc)

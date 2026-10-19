@@ -1,4 +1,4 @@
-param([string]$Blender, [switch]$Gui, [switch]$Gpu)
+param([string]$Blender, [switch]$Gui, [switch]$Gpu, [switch]$Membranes)
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
 $studio = Split-Path -Parent $root
@@ -33,4 +33,9 @@ if ($LASTEXITCODE -ne 0) { throw 'Offline CA checkpoint tests failed' }
 if ($Gpu) {
     & $Blender --background --factory-startup --python-exit-code 7 --python (Join-Path $root 'tests/test_gpu_blender.py')
     if ($LASTEXITCODE -ne 0) { throw 'GPU matter integration tests failed' }
+}
+
+if ($Membranes) {
+    & $Blender --background --factory-startup --python-exit-code 7 --python (Join-Path $root 'tests/test_membrane_assembly.py')
+    if ($LASTEXITCODE -ne 0) { throw 'Membrane assembly/render checks failed' }
 }

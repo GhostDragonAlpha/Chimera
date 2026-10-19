@@ -1,0 +1,73 @@
+{
+  "scope": "Blender authoring and rendering of existing apex-weld films; one world-Z rail, fixed rims, uniform gamma. No water, game or general solid-material qualification.",
+  "checks": [
+    {
+      "name": "Existing three-film construction, material assignment, native load",
+      "pass": true,
+      "details": {
+        "pieces": 3,
+        "connections": 2,
+        "vertices": 601,
+        "triangles": 600,
+        "energy_J": 6.316013813018799,
+        "loaded_apex_m": [
+          0.0,
+          0.0,
+          0.28437885642051697
+        ]
+      }
+    },
+    {
+      "name": "Kernel output, actual Blender vertices/normals, independent equilibrium",
+      "pass": true,
+      "details": {
+        "force_N": 0.8000115645501181,
+        "energy_residual_J": 2.059617908756195e-05,
+        "render_hash": "12562639779766004315",
+        "native_CSR_normals_checked": 601,
+        "computed_piece_views": 3
+      }
+    },
+    {
+      "name": "Native raster kernel image in Blender follows physical deformation",
+      "pass": true,
+      "details": {
+        "image_size": [
+          384,
+          256
+        ],
+        "native_image_loaded_in_Blender": true,
+        "changed_after_load": true,
+        "identical_on_return": true
+      }
+    },
+    {
+      "name": "Invalid topology/material/attachment/render data preserve current work",
+      "pass": true,
+      "details": {
+        "disconnected_mixed_material_misaligned_forged_render": "refused with previous state preserved"
+      }
+    },
+    {
+      "name": "Save/reopen .blend and trial; fresh process exact physical/render continuation",
+      "pass": true,
+      "details": {
+        "fresh_process": true,
+        "blend": "D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\evidence\\membrane-assembly.blend",
+        "trial": "D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\evidence\\membrane-assembly.matter.json",
+        "continued_state_and_render_exact": true
+      }
+    },
+    {
+      "name": "Changing surface assignment changes native response; saved material restores",
+      "pass": true,
+      "details": {
+        "old_gamma": 1.0,
+        "new_gamma": 2.0,
+        "different_native_state": true
+      }
+    }
+  ],
+  "runtime": "7eb2b11543b7138978d6b355671c6b176c51d79d0fb1c7b804c671effe106e44",
+  "pass": true
+}

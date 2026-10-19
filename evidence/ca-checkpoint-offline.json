@@ -1,6 +1,6 @@
 {
   "scope": "Synthetic format/persistence only, no GPU execution or physical replay claim",
-  "runtime_identity": "3956ccb64d784a7eb01681fef27ef1d053f27f0fc8e62bb3a03a6f2a1655db4e",
+  "runtime_identity": "7eb2b11543b7138978d6b355671c6b176c51d79d0fb1c7b804c671effe106e44",
   "passed": 4,
   "total": 4,
   "tests": [

@@ -724,11 +724,11 @@ static std::string water_control_route(int kind, const std::string& payload, std
     return nlohmann::json({{"ok",true},{"sum",g_water_req.sum},{"min",g_water_req.mn}}).dump();
 }
 
-static std::string membrane_demo_save_route() {
+static std::string membrane_demo_save_route(int kind = 4) {
     {
         std::lock_guard<std::mutex> lk(g_md_mutex);
         g_md_req = MembraneDemoRequest{};
-        g_md_req.kind = 4; g_md_pending = true; g_md_applied = false;
+        g_md_req.kind = kind; g_md_pending = true; g_md_applied = false;
     }
     std::unique_lock<std::mutex> lk(g_md_mutex);
     bool waited = wait_for_shutdown(g_md_cv, lk, std::chrono::seconds(10), []{ return g_md_applied; });
@@ -951,7 +951,7 @@ int main(int argc, char** argv) {
     cfg.n_particles = 1200;
     cfg.G      = 1.0f;
     cfg.dt     = 0.02f;
-    if (argc > 3) {
+    if (argc > 4) {
         int w = atoi(argv[3]), h = atoi(argv[4]);
         if (w > 0 && h > 0) { cfg.width = (uint32_t)w; cfg.height = (uint32_t)h; }
     }
@@ -4223,6 +4223,8 @@ int main(int argc, char** argv) {
             std::string mdb;
             if (p == "/membrane_demo_save" && method == "GET")
                 mdb = membrane_demo_save_route();
+            else if (p == "/membrane_demo_render" && method == "GET")
+                mdb = membrane_demo_save_route(6);
             else if (p == "/membrane_demo_restore" && method == "POST")
                 mdb = membrane_demo_restore_route(req_body);
             if (!mdb.empty()) { body = mdb; content_type = "application/json"; }
@@ -4551,6 +4553,8 @@ int main(int argc, char** argv) {
                                                   g_md_req.status);
                 } else if (g_md_req.kind == 4) {
                     ok = engine.membrane_demo_save(g_md_req.blob);
+                } else if (g_md_req.kind == 6) {
+                    ok = engine.membrane_demo_render_snapshot(g_md_req.blob);
                 } else if (g_md_req.kind == 5) {
                     ok = engine.membrane_demo_restore(g_md_req.restore, g_md_req.status);
                 } else {

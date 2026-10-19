@@ -1,6 +1,6 @@
 {
   "schema": "chimera.studio.gpu-lock.v2",
-  "note": "Built in isolated Studio lane from the included native/gpu_engine sources; original vendor snapshot retained. Shader laws unchanged. See tools/Build-Gpu.ps1.",
+  "note": "Built in isolated Studio lane from the included native/gpu_engine sources; original vendor snapshot retained. Physics shader stages unchanged; presentation CSR/center mapping repaired for Blender. See tools/Build-Gpu.ps1.",
   "base_lock_sha256": "7a3b61102fe139f469f4a9bee9ef68a6458b48da43267e2d4cd2a2ac017c33ea",
   "build": {
     "generator": "Visual Studio 17 2022",
@@ -390,8 +390,8 @@
     {
       "source": "build/gpu-engine/Release/chimera_engine.exe",
       "copy": "runtime/gpu/chimera_engine.exe",
-      "sha256": "e3d39bf633da9ff6cd347cd77e645ca2ad67c9272f2e785d5175d4a04fa6dc7a",
-      "bytes": 2919424
+      "sha256": "b385535126bdd3ad36fa3ab3177474f53ae19a3f6021a4ceb06f65e088c9a572",
+      "bytes": 2922496
     },
     {
       "source": "build/gpu-engine/Release/shaders/compute.spv",
@@ -438,8 +438,8 @@
     {
       "source": "build/gpu-engine/Release/shaders/membrane_demo.spv",
       "copy": "runtime/gpu/shaders/membrane_demo.spv",
-      "sha256": "71b5f8d37acff921ea249c74ade6d4074d79ea80d39bf03d66488f1c47c3898f",
-      "bytes": 16464
+      "sha256": "438e1c3b61732a9b53e011ded24526767a3132f8b2292cc45d8b4cce7ef10f57",
+      "bytes": 16120
     },
     {
       "source": "build/gpu-engine/Release/shaders/render.frag.spv",
@@ -588,14 +588,14 @@
     {
       "source": "native/gpu_engine/engine/engine.cpp",
       "copy": "native/gpu_engine/engine/engine.cpp",
-      "sha256": "186e62c999aba9e651d2774bc13f67753080ab39b66d91f22f311d780a633ed3",
-      "bytes": 559665
+      "sha256": "c26b5b9eee0fb1185c25b3d0f96c9e0ebac9cb45eca8c1b8cf100134744e489a",
+      "bytes": 563079
     },
     {
       "source": "native/gpu_engine/engine/engine.hpp",
       "copy": "native/gpu_engine/engine/engine.hpp",
-      "sha256": "fb936740046b1eb2409d70837c41aed31b58cf6b34882991ddd6a601fc06ba9f",
-      "bytes": 87742
+      "sha256": "7b1adee1a1305664c57d8bdfb1a714f9e799a617159ed1d0012e43080f68e7f2",
+      "bytes": 87801
     },
     {
       "source": "native/gpu_engine/engine/force_models.hpp",
@@ -666,8 +666,8 @@
     {
       "source": "native/gpu_engine/engine/main.cpp",
       "copy": "native/gpu_engine/engine/main.cpp",
-      "sha256": "c361a31f8915d8a0243b133b0e68f7f1ac0940f2a6b8ed67a18b14fbce7b456c",
-      "bytes": 295506
+      "sha256": "0c0e1b7a6ac7978998ee070a585201fb2a8e30f9bda99e459919aeb5837304cf",
+      "bytes": 295773
     },
     {
       "source": "native/gpu_engine/engine/membrane_tick.cpp",
@@ -798,8 +798,8 @@
     {
       "source": "native/gpu_engine/engine/shaders/membrane_demo.comp",
       "copy": "native/gpu_engine/engine/shaders/membrane_demo.comp",
-      "sha256": "45e7e679c0acbd388c8608b5a443d0297799aa292f10d0510b4073a5b125e72f",
-      "bytes": 6872
+      "sha256": "411e62b6a43a36590b09edbfd81a25df3e7c1a0938ac263b6abbe1a45d7a381a",
+      "bytes": 6614
     },
     {
       "source": "native/gpu_engine/engine/shaders/render.frag",

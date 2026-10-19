@@ -1,0 +1,37 @@
+{
+  "scope": "Blender authoring and rendering of existing apex-weld films; one world-Z rail, fixed rims, uniform gamma. No water, game or general solid-material qualification.",
+  "checks": [
+    {
+      "name": "Existing three-film construction, material assignment, native load",
+      "pass": false,
+      "error": "GPU call failed: Render vertex hash mismatch",
+      "traceback": "Traceback (most recent call last):\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\tests\\test_membrane_assembly.py\", line 14, in check\n    details=fn();report['checks'].append({'name':name,'pass':True,'details':details});print('PASS',name,flush=True)\n            ^^^^\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\tests\\test_membrane_assembly.py\", line 42, in construct\n    assert bpy.ops.chimera.build_membrane_assembly()=={'FINISHED'};pump()\n                                                                   ^^^^^^\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\tests\\test_membrane_assembly.py\", line 22, in pump\n    assert not w._message.startswith('GPU call failed'),w._message\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: GPU call failed: Render vertex hash mismatch\n"
+    },
+    {
+      "name": "Kernel output, actual Blender vertices/normals, independent equilibrium",
+      "pass": false,
+      "error": "Load or resume a GPU matter trial first",
+      "traceback": "Traceback (most recent call last):\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\tests\\test_membrane_assembly.py\", line 14, in check\n    details=fn();report['checks'].append({'name':name,'pass':True,'details':details});print('PASS',name,flush=True)\n            ^^^^\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\tests\\test_membrane_assembly.py\", line 51, in physical_render\n    r=w.current();a,p=g.validate_render(r.render,r.spec,r.state);faces=np.asarray(r.spec['triangles'])\n      ^^^^^^^^^^^\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\python\\chimera_studio\\gpu_workspace.py\", line 23, in current\n    if not _session:raise RuntimeError('Load or resume a GPU matter trial first')\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: Load or resume a GPU matter trial first\n"
+    },
+    {
+      "name": "Native raster kernel image in Blender follows physical deformation",
+      "pass": false,
+      "error": "Error: Load or resume a GPU matter trial first\n",
+      "traceback": "Traceback (most recent call last):\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\tests\\test_membrane_assembly.py\", line 14, in check\n    details=fn();report['checks'].append({'name':name,'pass':True,'details':details});print('PASS',name,flush=True)\n            ^^^^\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\tests\\test_membrane_assembly.py\", line 81, in native_image\n    assert bpy.ops.chimera.native_render_frame()=={'FINISHED'};pump()\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\build-blender\\bin\\Release\\5.0\\scripts\\modules\\bpy\\ops.py\", line 109, in __call__\n    ret = _op_call(self.idname_py(), kw)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: Error: Load or resume a GPU matter trial first\n\n"
+    },
+    {
+      "name": "Invalid topology/material/attachment/render data preserve current work",
+      "pass": false,
+      "error": "'NoneType' object is not subscriptable",
+      "traceback": "Traceback (most recent call last):\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\tests\\test_membrane_assembly.py\", line 14, in check\n    details=fn();report['checks'].append({'name':name,'pass':True,'details':details});print('PASS',name,flush=True)\n            ^^^^\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\tests\\test_membrane_assembly.py\", line 94, in failures\n    before=copy.deepcopy(w.document());s=before['spec'];a=s['assembly']\n                                         ~~~~~~^^^^^^^^\nTypeError: 'NoneType' object is not subscriptable\n"
+    },
+    {
+      "name": "Save/reopen .blend and trial; fresh process exact physical/render continuation",
+      "pass": false,
+      "error": "Load or resume a GPU matter trial first",
+      "traceback": "Traceback (most recent call last):\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\tests\\test_membrane_assembly.py\", line 14, in check\n    details=fn();report['checks'].append({'name':name,'pass':True,'details':details});print('PASS',name,flush=True)\n            ^^^^\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\tests\\test_membrane_assembly.py\", line 107, in save_replay\n    r=w.current();saved=copy.deepcopy(w.document());pid=r.engine.proc.pid\n      ^^^^^^^^^^^\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\python\\chimera_studio\\gpu_workspace.py\", line 23, in current\n    if not _session:raise RuntimeError('Load or resume a GPU matter trial first')\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: Load or resume a GPU matter trial first\n"
+    }
+  ],
+  "runtime": "fb7b6063e85ed44b65eff8dfe74cf733e423b4f3defbea82bda05962c65a7429",
+  "pass": false
+}

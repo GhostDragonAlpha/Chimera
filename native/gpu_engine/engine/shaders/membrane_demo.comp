@@ -148,17 +148,12 @@ void present_vertex(uint v) {
     if (v >= params.present_vcount) return;
     vec3 p = positions[v].xyz;
     vec3 mapped = vec3(p.x, p.z + params.lift_m, -p.y);
-    // per-vertex render normal comes from the face record of the FIRST
-    // adjacent face (B2 hexagonal fan -- adequate for this demo; a general
-    // mesh would average by CSR range). First-touch search over the CSR
-    // corner list (B2 scale: trivial cost).
-    uint first_face = 0u;
-    for (uint i = 0u; i < params.corner_count; ++i) {
-        if (corner_indices[i] == v) { first_face = i / 3u; break; }
-    }
+    // First adjacent FACE from this vertex's CSR slice, not a search for a
+    // vertex id in a list of face-corner ids. Geometry ownership stays native.
+    uint first_face = corner_indices[offsets[v]] / 3u;
     vec3 n = faces[first_face].normal_area.xyz;
     vec3 n_mapped = vec3(n.x, n.z, -n.y);
-    float is_centre = (v + 1u == params.vertex_count) ? 1.0f : 0.0f; // centre is the LAST vertex (B2 law)
+    float is_centre = (v == uint(params.alpha)) ? 1.0f : 0.0f;
     float base = is_centre > 0.5f ? 0.95f : 0.60f;
     vec3 col = vec3(base * (n_mapped.z * 0.25f + 0.75f), base * (n_mapped.z * 0.25f + 0.75f),
                     base * (n_mapped.z * 0.25f + 0.75f) + (is_centre > 0.5f ? 0.0f : 0.05f));
