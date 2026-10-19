@@ -4628,6 +4628,58 @@ Trial schema v2 and old v1 trials remain explicitly distinct. Preserve this
 completed work and its evidence; do not repeat it as the next assignment or
 resume water development ahead of the requested membrane interface.
 
+**Use Blender's own modes and workspaces (operator clarification, 2026-10-19).**
+Integrate Chimera tools into the editor contexts that already fit the task.
+Modeling is a workspace layout; Object/Edit/Sculpt/Paint/Pose are interaction
+modes, and the 3D Viewport, Properties, node editors and Image Editor are editors
+within a workspace. Switching workspace or mode does not create a new physical
+world, compile a construction or advance native time. Reuse the available
+workspaces in our template and the installed build's capabilities.
+
+| Blender system | Chimera integration direction | First useful application |
+|---|---|---|
+| Layout / Object Mode / Outliner | Select, arrange and instance source parts; inspect stable identities and explicit connections | Select two films, connect supported apices and see the same pieces in the native result |
+| Modeling / Edit Mode | Use ordinary vertex/edge/face tools and selection for membrane geometry, supported boundaries and ports | Select an apex, reshape a supported fan, rebuild and inspect the changed response |
+| Properties / Shading / paint tools | Bind explicit material IDs and supported physical parameters to objects or regions; use colors as a visible legend | Surface-tension assignment first; face/layer painting requires a native region/law mapping before it changes physics |
+| Geometry Nodes / modifiers | Generate repeatable geometry and named attributes, then compile an explicit evaluated result with stable region/port mapping | Parameterized repeated parts using admitted recipes; retain the editable source graph |
+| Sculpting / Sculpt Mode | Author organic source shapes through Blender tools, then check whether the physical compiler supports the resulting geometry | Later authoring adapter; topology changes require rebuilding/rebinding affected ports and material regions |
+| Animation / Pose Mode / Timeline | Author camera motion and, when supported, prescribed motion or actuator targets through explicit native contracts | Presentation now; physical replay/time and force-driven motion need their existing native owners |
+| Rendering / Image Editor / 3D Viewport | Inspect the native image and computed geometry with matching state, transforms and view | Continue the current native-render handoff; shader appearance remains distinct from physical material behavior |
+
+**Mode-aware AI operations.** Extend the registered Chimera operators and their
+shared implementation; use Blender's data API where appropriate. The human
+button and AI command must produce the same scene edit and native transaction.
+For each operation, resolve the target UUIDs and inspect active object, selection,
+mode, workspace/editor and the current source/native revision. Check operator
+availability with its poll/context requirements; deliberately switch context
+when needed, synchronize edit data and verify the result. Preserve the user's
+selection/view when incidental to the task; show a requested mode change rather
+than silently switching back. Avoid blind keyboard sequences and implicit active-
+object assumptions. The bridge must schedule Blender data mutations on its main
+thread and detect intervening user edits before applying a stale proposal.
+
+Blender undo restores Blender data; it does not automatically undo the external
+native process. Pair relevant native mutations with the existing checkpoint
+restore/branch operation, or mark edited sources as needing rebuild while keeping
+the accepted result. Expose queued/running/succeeded/failed operation status and
+a recoverable error; an asynchronous operator returning FINISHED only means the
+submission succeeded until its native result is confirmed. Do not automatically
+repeat an uncertain mutation.
+
+Start with Object/Edit Mode, current material assignment and image inspection.
+Extend other modes when a selected user action requires them. Reuse the existing
+apex selection/update-from-editmode path in blocks_ui.py, authoring operators and
+gpu_workspace.py checkpoint lifecycle. Acceptance examples: the same supported
+edit through UI and AI produces equivalent compiled input; wrong context, changed
+selection or a stale source revision leaves confirmed state intact; a failed
+build and an undo/reopen retain a usable construction. This is the integration
+contract to implement, not a claim that the complete AI bridge or all mode
+adapters already exist. Sources: [Blender modes](https://docs.blender.org/manual/en/latest/editors/3dview/modes.html),
+[workspaces](https://docs.blender.org/manual/en/3.0/interface/window_system/workspaces.html),
+[operators](https://developer.blender.org/docs/features/interface/operators/) and
+[undo](https://developer.blender.org/docs/features/core/undo/). Check the actual
+pinned Blender 5.0.1 API before implementation.
+
 **Next Blender increments, in value order.** Choose one observable user action
 at a time; reuse the implementation above and expand the existing checks only
 where its behavior changes.
@@ -4642,9 +4694,10 @@ where its behavior changes.
    actions into author → build → inspect → save/resume. Name the offending piece
    or connection and a usable correction; retain the accepted construction on
    refusal. Reuse Blender selection, panels and undo boundaries where appropriate.
-3. **A shared human/AI interface.** Expose inspect/propose/apply operations over
-   the same UUIDs, compiler inputs, accepted-state checks and recovery commands
-   used by the person. Make proposed geometry/material/connection changes visible
+3. **A shared human/AI interface.** Implement the mode-aware operations above
+   through Blender's existing systems. Expose inspect/propose/apply operations
+   over the same UUIDs, compiler inputs, accepted-state checks and recovery
+   commands used by the person. Make proposed geometry/material/connection changes visible
    and recoverable. No parallel hidden scene or second physics path. An AI toolbar
    or remote command bridge is proposed work, not already implemented.
 4. **More useful constructions from existing engine capabilities.** Inspect
