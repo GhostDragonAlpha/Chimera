@@ -16,6 +16,18 @@ meaningful choices are the experience; physical behavior makes those interaction
 coherent and opens new possibilities. Judge progress by what players can do and
 enjoy. The matter workshop is the first playable milestone within the larger game.
 
+**Current delivery focus, operator clarification 2026-10-19:** Chimera is now
+being delivered through a Blender plugin/application template, supported by the
+isolated Blender fork. Make the user's existing editor a working interface to
+Chimera's actual membrane building blocks and native render kernel: construct,
+assign supported materials, connect, inspect, save and resume. Human and AI work
+should meet in the same visible construction and commands. The larger game remains
+the destination; the immediate Blender assignment does not start another game
+loop, editor or physics implementation. Use the interface to discover concrete
+missing engine capabilities. Water stays deferred. Preserve the local agents'
+ongoing engine work and completed evidence; §12.2 and §13.1 define the integration
+boundary, current verified capabilities and next priorities.
+
 **Supporting technology direction, 2026-10-13:** build a composable multiscale
 matter simulator for a holodeck-like world. A LEGO piece
 is a reusable physical mechanism: geometry, material/state, boundary exchanges,
@@ -54,8 +66,9 @@ obstacle and the decision enabled. Put detailed measurements in linked evidence.
 Preserve independent physical checks and explain which behavior they protect.
 Creative freedom includes proposing a better route to the goal.
 
-**Reading route for the worker:** start with §5.1's matter workshop and §13.1's
-current assignment, then §11.22's purpose-bearing peer workflow. Apply §11.24 and
+**Reading route for the worker:** start with §12.2's current Blender delivery
+focus and §13.1's ownership-aware assignment, then §11.22's purpose-bearing peer
+workflow. Use §5.1 for the workshop's eventual player purpose. Apply §11.24 and
 §12.1 to physical cost and player value. Consult §3 and §5.1 before creating tools;
 §11.20.12 records newer implementation evidence beyond the original AP01/AP02
 sequence. Use §11.23 for nested/repeating geometry, §11.21 for database sources,
@@ -4524,108 +4537,151 @@ when it enables a valued experience within budget; unnecessary detail, workflow
 complexity and maintenance burden should be removed when they buy neither useful
 physical behavior nor a better player experience.
 
-### 12.2 Chimera Studio: a professional authoring workspace around our engine
+### 12.2 Chimera Studio: Blender as the current Chimera interface
 
-**Operator-selected implementation lane:** customize a Blender fork specifically
-for Chimera, separately from the local agents' ongoing engine work. Blender
-provides mature modeling, selection, transforms, material/region editing,
-collections, cameras, animation and asset tools. Chimera remains the owner of
-physical state and its scientific laws. The editor integration is not a change
-to Godot/Unreal/Bullet, and creating this tool lane does not declare the separate
-game repository or a named engine release complete.
+**Operator-selected product form, updated 2026-10-19:** develop Chimera as a
+Blender plugin/application template with the existing isolated Blender fork for
+necessary native integration. Blender supplies modeling, selection, transforms,
+collections, material editing, cameras, animation tools and image viewing.
+Chimera owns physical state, admitted material/connection laws and native kernel
+output. Extend this working interface before building another editor or game
+shell. The longer-term product is still a compelling game that uses simulated
+matter. This editor milestone makes its construction technology usable and reveals
+what is missing; it does not itself qualify gameplay or a separate game release.
 
-Connect three views of the same product:
+**Workspace and user entry point.** Studio lives at
+`D:/Chimera-Maintenance/ChimeraStudio`, separate from the active engine checkout.
+The desktop shortcut **Chimera Blender** runs
+`D:/Chimera-Maintenance/ChimeraStudio/Start Chimera Studio.cmd` and opens
+`D:/Chimera-Maintenance/ChimeraStudio/Projects/Membrane Workshop/Chimera Membrane Workshop.blend`.
+This is a protected working copy, separate from evidence fixtures; reinstalling
+the launcher does not overwrite it. Use Blender's Save As for another design.
+The launcher also supports an explicit project or an empty workspace.
+[BLENDER_WORKFLOW.md](../../ChimeraStudio/integration/BLENDER_WORKFLOW.md) gives
+the click-by-click workflow; [README.md](../../ChimeraStudio/integration/README.md)
+and the source locks identify implementation and evidence. The custom Blender
+5.0.1 executable comes from fork commit `68c79f03362e`; integration commit
+`02bcb1a` records the connected membrane/render work and `f36f2a8` the project
+entry/workflow. These are local Studio identities, not an engine release or
+a claim that a public Blender fork has been published.
 
-- **Build:** Blender geometry plus a material/layer inspector and functional
-  ports. The existing material-volume compiler and recipe records supply physical
-  meaning; preserve region IDs through import/edit/duplicate, with explicit new
-  identities for independent copies. Full painting, layer-stack and CAD semantic
-  tools are subsequent UI work, not implemented merely by naming Blender.
-- **Play / inspect:** explicit admission into a private or leased native scene;
-  native physics produces poses/deformation and the view displays that state.
-  Pause, step, reset and failure feedback share the existing solver contracts.
-  Blender modifiers and its physics system must not independently animate the
-  same physical DOFs. The full game can later hide authoring UI or run separately.
-- **Replay / compare:** restore exact native checkpoints and branch a new trial;
-  reuse existing inspectors, recorder and experiment comparisons. Camera cuts,
-  scrubbing a movie and offline rendering are presentation; changing a Blender
-  animation frame alone does not advance or rewind native physical time.
+**Verified integration to reuse, with its actual limits:**
 
-**Initial local implementation, 2026-10-18:** the isolated workspace is
-`D:/Chimera-Maintenance/ChimeraStudio`; `integration/README.md` documents its
-launcher, source pins and checks. The Blender fork is based on 5.0.1, with a
-Chimera application template and branding. A private C ABI bridge compiles
-unchanged, hash-pinned copies of the existing `B2Scene` and uses the original
-material-volume compiler. The first interface accepts 2–6 closed convex rigid
-material regions (4–128 boundary triangles each), authored density/friction,
-native contact and a two-mount finite-area connection. Blender displays native
-part poses; Python performs authoring and orchestration, not a replacement force
-solve. Physical trials and ordinary `.blend` files retain the native snapshot;
-reopening restores paused, and returning to authoring restores editable objects.
+| User capability | Existing implementation and evidence | Present boundary |
+|---|---|---|
+| Open, edit and identify pieces | Blender source objects with stable UUIDs; separate computed previews; explicit new identities for duplicates | Importing geometry alone supplies neither a material law nor a functioning machine |
+| Assign membrane material and connect pieces | Pinned mechanism-factory `compile_transaction("assembly.star-k2", ...)`; starter has three films, two explicit apex connections, 601 native vertices and 600 triangles | 2–6 closed triangle fans; connected tree of coincident apices; one shared world-Z rail apex, fixed rims, uniform surface tension |
+| Apply a load and inspect the actual answer | Existing native constant-current-area surface-energy solver; material tension changes its response | This is the admitted membrane law, not general cloth, wood, steel, fracture or arbitrary moving joints; mixed-tension joined films are refused |
+| See what the native render kernel produces | Owner-thread `/membrane_demo_render` snapshot of the GPU presentation buffer used by the renderer; accepted-state identity, exact float32 positions/normals/colors, topology and render-byte hash; Blender preview and native image | Fixed native camera and 384×256 raster; operation-driven snapshots, not continuous viewport streaming or full-resolution shared GPU buffers |
+| Save, reopen, release GPU memory and continue | Confirmed physical/render state and construction in `.blend` and `.matter.json`; exact fresh-process continuation and source reconstruction | Current pinned runtime/schema; finite session checkpoint history, not a persisted whole animation or automatic sidecar synchronization |
+| Work with rigid material regions | Existing material-volume compiler, pinned B2Scene bridge, density/friction and finite-area connection tools | Separate physical owner; no implied membrane/rigid/contact coupling |
+| Retain experimental CA research | Native flow-state checkpoint/restore and continuation beyond the former 64-step cap | Water is deferred; this flow-specific API is not a general membrane/solid CA interface |
 
-Ten automated checks in real Blender-background execution cover mass compilation,
-native freefall and displayed poses, exact restore/branching, physical-trial
-exchange, invalid-input preservation, native connection force/moment transfer,
-`.blend` reopen and teardown. A separate application-template check covers
-startup and native advancement. These are local integration results, not human
-usability, full-game performance or live-controller admission. The custom executable built from Blender fork commit
-`68c79f03362e` and integration source commit `0947140` passed those checks plus a
-short real-window viewport/play test. Its actual binary/DLL hashes and result
-scope are recorded in `ChimeraStudio/integration/evidence/build-manifest.json`;
-`evidence/viewport.png` records the displayed native scene. These results do not
-establish large-scene frame rate or full membrane/GPU integration.
+The six recorded membrane/GPU scenarios in
+[membrane-assembly-checks.json](../../ChimeraStudio/integration/evidence/membrane-assembly-checks.json)
+cover material/load response, all 601 kernel normals and independent edge-length
+energy/force checks, image changes under load, rejected-input nonmutation,
+standalone construction recovery and exact fresh-process physical/render
+continuation. [membrane-ui-checks.json](../../ChimeraStudio/integration/evidence/membrane-ui-checks.json)
+records the Blender panels, picking and native image. The separate
+[project-entry.json](../../ChimeraStudio/integration/evidence/project-entry.json)
+checks the real Blender executable, application template, working-file open and
+offline save/reopen while preserving source IDs, confirmed state and the original
+project file. Ten rigid checks, the application-template check and four offline
+checkpoint regressions remain scoped supporting evidence. These reports establish
+the actions they exercised; human usability, arbitrary constructions and
+large-scene performance remain to be measured. Inspect the source locks and
+receipt runtime identities before reusing a result.
 
-**GPU matter bridge, 2026-10-19 (isolated local evidence):** the same editor now
-uses the existing Vulkan membrane upload/deformation/save/restore APIs and the
-native CA water kernels on triangle cells. The helper executable, shaders,
-protocol client and frozen B2 fixture are pinned in
-`ChimeraStudio/integration/GPU_SOURCE_LOCK.json`; the agents' checkout, running
-engine and model services remain separate. The source audit snapshot does not
-attest an exact source-to-prebuilt-binary build correspondence. Blender displays
-accepted native vertices or CA cell volumes after explicit commands. GPU calls
-run off the UI thread; snapshots are not copied on every viewport frame. A
-Windows job ties only this private helper to the editor's lifetime.
+**Working construction loop.** Open the saved project and use the sidebar
+**Chimera > Membrane Assembly**. Inspect the confirmed state, explicitly
+**Resume Saved GPU Matter**, apply a supported load, and **Show Native Render in
+Image Editor**. Use **Return to Matter Authoring** before changing films,
+surface tension or connections, then **Build Connected Films**. Source geometry
+and computed geometry remain visibly distinct. Rejected builds retain the last
+confirmed state. **Replay Native Checkpoint** restores a confirmed sample;
+continuing creates a branch from it. Save the `.blend`, or exchange construction
+and state with **Save/Open GPU Matter Trial**. **Release Studio GPU Memory**
+closes only Studio's private helper and retains the confirmed checkpoint.
+Opening the project stays offline until explicit resume; Blender's viewport
+still uses ordinary graphics memory.
 
-Four real-Blender integration scenarios passed: membrane energy against the
-existing independent fixture reference and visible state correspondence under
-load; exact checkpoint replay/branching; `.blend` and `.matter.json` reopening
-through a fresh private process; and CA conservation/continuation after replay,
-with malformed-state refusal and confirmed-state recovery after child exit.
-The original ten rigid-workshop checks and application-template check remain
-green. A separate real-window check displays native deformation, and a parent
-termination check verifies private GPU-child cleanup. Exact evidence is in
-`ChimeraStudio/integration/evidence/gpu-integration.json`, `gpu-gui.json`, and
-`owned-child-test.json`. These small checks ran alongside the working models;
-there is no production-throughput or large-scene qualification claim.
+The saved file contains the confirmed sample and construction, not the whole
+session's slider history. Blender animation frames are presentation until an
+explicit native-time adapter is implemented. A movie or a smooth viewport is not
+proof that native physical steps occurred. The supplied starter `.matter.json`
+is a recovery example, not a sidecar that automatically tracks later `.blend` edits.
 
-**Current law/UX limits:** the membrane path is one free world-Z center on a
-triangular fan with the other vertices pinned. The CA path is a closed-boundary
-water field with authored demonstration coefficients, not pressure-coupled
-membrane/fluid dynamics. Its native recorded trial admits 64 steps (0.64 s).
-Saving current water volumes alone is insufficient: edge-flow memory affects
-the next step. The editor therefore saves the initial substrate, exact native
-step count and final-state hash, then reproduces every original step on replay;
-it refuses to extend past the native cap rather than resetting flow or dropping
-steps. Reopening a file displays its saved checkpoint without allocating GPU
-memory; an explicit Resume restores the private native trial. Release Studio
-GPU Memory retains that checkpoint. Editable geometry remains distinct from
-accepted physical geometry.
+**Completed CA continuation; further water work deferred.** The former 64-step
+total trial limit has been removed in the isolated native owner. A 64-bit physical
+counter and accumulated time are independent of its bounded 65-state history.
+`WCS1` checkpoints retain integer volumes, persistent float64 edge flows,
+depth, step/injection cursor, time, last timestep and paused clock configuration.
+Restore writes validated native state directly; it does not reconstruct flow by
+replaying the entire past or skip requested steps. The six prior CA integration
+scenarios include 2,310 native steps and bit-exact fresh-process continuation,
+with nonzero-flow sensitivity and history-wrap checks. See
+[gpu-integration.json](../../ChimeraStudio/integration/evidence/gpu-integration.json)
+and [ca-continuation-status.json](../../ChimeraStudio/integration/evidence/ca-continuation-status.json)
+for that tested runtime, which predates the newer membrane render handoff.
+Trial schema v2 and old v1 trials remain explicitly distinct. Preserve this
+completed work and its evidence; do not repeat it as the next assignment or
+resume water development ahead of the requested membrane interface.
 
-**Next useful editor seam:** extend the existing native CA owner with complete
-field checkpoint/restore (including edge flow and its clock) and bounded explicit
-advancement beyond the recording cap. Reuse the admitted AP/S3 recipe/compiler
-interface (§11.20.12) for a saved workshop mechanism with an actual player purpose;
-do not infer arbitrary-material qualification from a fan test. Any membrane/CA
-coupling must pass through the existing physical owner and its independent
-checks. Preserve the working rigid authoring path. Evaluate shared native/GPU
-buffers only when measured snapshot cost obstructs that playable increment;
-shared buffers and full multiphysics coupling are not implemented by this bridge.
+**Next Blender increments, in value order.** Choose one observable user action
+at a time; reuse the implementation above and expand the existing checks only
+where its behavior changes.
 
-The first authoring handoff is a saved layered construction that another person
-can open, inspect, connect, run and repair without an agent. Follow it with one
-selected workshop objective and an expedition use. A polished editor remains a
-tool for making a compelling game that uses simulated matter; it is not itself
-proof that the game is enjoyable.
+1. **Dependable native view correspondence.** Connect Blender camera/view changes
+   to the existing native render handoff. Check accepted-state identity, object
+   transforms, projection and clipping together; identify unsupported camera
+   modes clearly. Preserve the working image and geometry snapshots while adding
+   this missing seam.
+2. **Understandable authoring and failure feedback.** Make editable sources,
+   computed results and changes awaiting rebuild obvious. Organize the existing
+   actions into author → build → inspect → save/resume. Name the offending piece
+   or connection and a usable correction; retain the accepted construction on
+   refusal. Reuse Blender selection, panels and undo boundaries where appropriate.
+3. **A shared human/AI interface.** Expose inspect/propose/apply operations over
+   the same UUIDs, compiler inputs, accepted-state checks and recovery commands
+   used by the person. Make proposed geometry/material/connection changes visible
+   and recoverable. No parallel hidden scene or second physics path. An AI toolbar
+   or remote command bridge is proposed work, not already implemented.
+4. **More useful constructions from existing engine capabilities.** Inspect
+   §11.20.12, the mechanism factory, artificial proteins and material/attachment
+   owners before adding a control. Bind already admitted laws and recipes first.
+   For a missing capability, record the precise user action, native inputs/output,
+   owner and required evidence for the engine lane. CAD/3D-printing imports,
+   colored material regions and layer stacks should compile through these same
+   contracts; appearance does not establish strength or machine functionality.
+5. **Time, larger scenes and performance.** Define timeline-to-native-time
+   mapping and persistent replay history when the selected workflow needs them.
+   Measure editor response, snapshot transfer, frame time and memory on that
+   construction before choosing streaming, shared buffers or a larger catalog.
+
+**Work ownership and acceptance.** This editor lane uses private pinned native
+builds, its own helper lifetime/IPC and the existing GPU launch guard. Do not
+restart, unload or retune working local agents or models to run it. If graphics
+memory is unavailable, retain the current checkpoint and leave the GPU check
+pending. Repin upstream/native sources deliberately; no automatic vendor updates
+or copying a changing agents' binary. Protect user projects from tests and
+installation. The editor agent owns Blender integration; engine agents keep
+their current work and provide explicit capability handoffs without creating a
+second fork or substitute Python solver.
+
+Each task carries the long-term game purpose and its immediate Blender benefit:
+what the user can construct or inspect, which existing owner is reused, the
+completion condition and how to recover. Preserve these, progress, decisions and
+next action through compression. Qwen chooses the next valuable seam and may
+accept, defer or reject Step's read-only criticism; Maya implements selected
+changes. Review consequential physics/mapping changes independently. A launcher
+or documentation change does not require unrelated GPU experiments.
+
+The near-term handoff is a working construction another person can open, edit,
+assign a supported material, connect, load, view through the native renderer,
+save and resume in Blender. Report those demonstrated actions and the missing
+seams plainly. Keep the broader game, layered construction and expedition ideas
+in this plan without turning this Blender assignment into new gameplay work.
 
 ## 13. Roadmap and release gates
 
@@ -4633,7 +4689,7 @@ proof that the game is enjoyable.
 |---|---|---|---|
 | M0 — preserve the baseline | Pinned playable demo; existing camera/lighting and tendon behavior recoverable | Known build, scoped historical receipts, explicit current limitations | Repeating already completed camera work |
 | M1 — matter that composes | One owned physical state, irregular part compilation, contact and finite-area coupling; complete the body force/support path needed to carry the result | Construction gates B1–B3; passive drop, off-center reaction, sever and display-rate controls; measured mass/inertia | Parkour, large populations, unqualified arbitrary geometry |
-| M2 — workshop, then Bring Them Home | First deliver §5.1's construction challenge, two demonstrated solutions, recovery and saved-recipe transfer; extend the same verbs into §6's rescue | Current scoped physical checks, player-operated loop and observed understanding/reuse; rescue retains its §6 evidence | Predators, broad catalogs and new laws unrelated to the chosen action; growth and large zones |
+| M2 — Blender construction interface, then workshop and Bring Them Home | Current delivery: §12.2's editable membrane construction, native render correspondence and saved-state recovery in Blender; use those capabilities for §5.1's construction challenge, two demonstrated solutions and saved-recipe transfer, then §6's rescue | Current scoped physical checks, player-operated loop and observed understanding/reuse; rescue retains its §6 evidence | Predators, broad catalogs and new laws unrelated to the chosen action; growth and large zones |
 | M3 — combinations | One opponent, reusable rigging parts, a working lair and one selected additional encounter using the same parts; a second only after useful transfer is demonstrated | Parts work outside their introductory puzzle; distinct viable solutions; bounded memory across repeated sessions | Broad crafting catalog, detailed metabolism; the rest of the genre library |
 | M4 — one finished chapter | Reliable onboarding, save/recovery, presentation, accessibility/settings and a coherent expedition arc; test the pacing proposal in §10 | Declared hardware/fidelity envelope; offline install/start; user-confirmed game loop and meaningful return | Mandatory co-op or a promised campaign duration |
 | M5 — expand only what worked | Further regions, selected thermal/growth/ecology interactions | Each new mechanism has a physical falsifier and a new player decision | Cosmic simulation and full molecular chemistry unless a later game specifically needs them |
@@ -4647,20 +4703,24 @@ Every milestone carries the cost/error/capability record from §11.24 and the
 linked player-facing evidence from §12.1. These refine its existing exit evidence;
 they do not reset completed gates or assert unobserved gameplay results.
 
-**Immediate next engineering assignment:** deliver the next missing interaction
-in §5.1's workshop using §13.1 and §11.22. Audit current controls and evidence before
-choosing the gap. AP01/AP02, the mechanism factory and construction packet are
-foundations, not instructions to start over. Fix a scientific blocker when it
-prevents the selected behavior; otherwise prioritize the player-operated
-build–test–recover–reuse loop.
+**Immediate integration assignment:** improve the next missing user action in
+§12.2's Blender construction loop using §13.1 and §11.22. Native render/view
+correspondence and clear editable/confirmed state are the first priorities.
+Inspect current controls and receipts before selecting a gap. AP01/AP02, the
+mechanism factory, construction packet and completed Studio integration are
+foundations to reuse. Fix a scientific blocker through its engine owner when it
+prevents that action. Preserve local agents' in-progress engine work; this update
+does not dispatch another game loop or restart completed milestones.
 
-### 13.1 Worker handoff: make the matter workshop playable
+### 13.1 Worker handoff: deliver usable matter through Blender
 
-**Purpose:** give a player a small kit whose arrangements have understandable
-physical consequences and whose inventions can be reused. §5.1's workshop leads
-into the rescue adventure and the wider game. The simulated-matter engine and
-artificial proteins support that experience; the workshop makes the next useful
-player capability concrete.
+**Purpose:** give the user a small kit whose arrangements have understandable
+physical consequences and whose inventions can be saved and reused. The immediate
+delivery is Chimera's Blender interface (§12.2): make the existing matter visible,
+editable and recoverable through a professional human interface. §5.1's workshop,
+the rescue adventure and wider game remain the subsequent player experience.
+Preserve the engine agents' ongoing assignments and completed progress; the
+editor lane implements the missing connections to their supported capabilities.
 
 **Stable goal text for Z Code:** keep the objective below while this plan evolves;
 current priorities and methods are read from the file, not frozen into the goal.
@@ -4678,9 +4738,11 @@ process when evidence supports it. Continue autonomously; report progress in ter
 of the game, remaining obstacles and the next useful action.
 ```
 
-**First assignment:** inspect current controls and newest scoped receipts, select
-the smallest missing part of the player sequence and implement it through its
-existing owner. Keep a compact “already usable / missing / blocked” map with
+**First assignment:** read §12.2 and Studio's BLENDER_WORKFLOW.md, inspect
+current controls and newest scoped receipts, then select the smallest missing
+Blender user action and implement it through its existing owner. Work on the
+editor seam in the Studio lane; an engine agent already working on an owned
+increment continues it and records the interface needed for integration. Keep a compact “already usable / missing / blocked” map with
 source/evidence links in the work record. Another inventory or blanket research
 campaign is not the deliverable. Reuse the scripted membrane loop's existing
 reset/save/deform and S3-reuse paths, respecting the versioned cross-check decision
@@ -4689,13 +4751,15 @@ construction can support interaction work within its own qualified scope.
 
 Use §11.22's purpose block for every child and review. Qwen owns the playable
 result, Maya can implement substantial integration, and Step reviews consequential
-changes. Lead completion reports with the player benefit or remaining game
-blocker, the decision and next action. Link detailed numbers. An isolated
+changes. Lead completion reports with the user-visible Blender action or
+remaining integration blocker, its eventual player benefit, the decision and
+next action. Link detailed numbers. An isolated
 experiment is not a substitute for the chosen deliverable.
 
-**Select and accept:** prioritize launch/controls, readable feedback, recovery,
-save/reuse or a directly blocking physical defect. Exercise the resulting action
-in the native scene. Keep applicable independent physics, state correspondence
+**Select and accept:** prioritize §12.2's render/view correspondence, clear
+authoring state, readable feedback, recovery, save/reuse or a directly blocking
+physical defect. Exercise a changed integration action in Blender against the
+native state, keeping a documentation-only update separate from runtime testing. Keep applicable independent physics, state correspondence
 and persistence checks and measured frame-time/memory cost. Human usability
 remains unobserved until somebody plays. If characterization is needed, reuse
 existing finite GPU batches and the simplest adequate representation; no new
@@ -4712,11 +4776,15 @@ capability or bounded exploration needs it. Prioritize UnitcellDB and FEBio unde
 research decision. Keep the existing playable route moving while a new material
 or representation remains a proposal.
 
-**Separate editor lane:** Chimera Studio (§12.2) is being developed outside this
-checkout. Continue the selected engine/workshop increment without waiting for its
-full feature catalog. Reuse its documented source boundary when integration is
-needed; do not launch a second Blender fork, overwrite its private build, or treat
-its rigid-scene tests as membrane/render qualification.
+**Separate ownership, one delivery path:** Chimera Studio (§12.2) is the current
+user-facing delivery lane and lives outside this checkout. Engine workers
+continue their selected increments without waiting for its full feature catalog.
+Hand off usable contracts, source identities and evidence through its documented
+boundary. Do not launch a second Blender fork, overwrite its private build or
+user projects, or treat one physical owner's tests as another's qualification.
+The explicit operator request authorizes this main-plan update; routine editor
+changes still stay in Studio. This document does not rewrite Z Code's saved goal
+or admit a live controller change.
 
 **Existing assets to inspect and reuse:**
 
