@@ -263,8 +263,15 @@ def restore_trial(doc,context,from_blend=False):
         if arr.ndim!=2 or arr.shape[1]!=3 or len(arr)<3 or not np.isfinite(arr).all():raise ValueError('Malformed mount geometry')
     candidate=Session()
     try:
-        candidate.native.call('restore',doc['baseline']);candidate.native.call('restore',doc['state']);candidate.native.call('pause',True)
-        ids={p['id'] for p in candidate.native.call('parts')['parts']}
+        candidate.native.call('restore',doc['baseline'])
+        baseline_parts={p['id']:p for p in candidate.native.call('save')['parts']}
+        candidate.native.call('restore',doc['state']);candidate.native.call('pause',True)
+        current_parts={p['id']:p for p in candidate.native.call('save')['parts']}
+        if baseline_parts.keys()!=current_parts.keys():raise ValueError('Baseline and trial have different part identities')
+        for pid,part in current_parts.items():
+            for field in ('vertices_local_m','boundary_triangles','com_local_m'):
+                if part[field]!=baseline_parts[pid][field]:raise ValueError('Baseline and trial have different rest geometry')
+        ids=set(current_parts)
         if set(metadata)!=ids or not set(ports)<=ids:raise ValueError('Material/mount identities do not match native parts')
         candidate.baseline=doc['baseline'];candidate.materials=metadata;candidate.ports=ports
     except Exception:candidate.close();raise

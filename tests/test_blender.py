@@ -103,6 +103,17 @@ def mounts():
     rotation=np.linalg.norm(np.asarray(coupled[b]['pose_q_wxyz'])[1:])
     assert movement>1e-5,(free,coupled)
     assert rotation>1e-5,(free,coupled)
+    # Compare a rotated native vertex with the actual Blender object's world vertex.
+    from mathutils import Quaternion
+    saved={p['id']:p for p in r.native.call('save')['parts']}
+    for pid,part in saved.items():
+        shape=np.array(part['vertices_local_m']).reshape(-1,3);com=np.array(part['com_local_m'])
+        rot=np.array(Quaternion(coupled[pid]['pose_q_wxyz']).to_matrix(),dtype=float)
+        expected=(shape[0]-com)@rot.T+np.array(coupled[pid]['pose_c_m'])
+        expected=expected@np.array(w._TO_BLENDER,dtype=float).T
+        obj=r.preview[pid];displayed=np.array(obj.matrix_world@obj.data.vertices[0].co)
+        assert np.linalg.norm(displayed-expected)<1e-6,(displayed,expected)
+
     # A mismatched face gap refuses before mutating the accepted native scene.
     before=r.native.call('hash')['hash']
     from chimera_studio.geometry import attachment_between
