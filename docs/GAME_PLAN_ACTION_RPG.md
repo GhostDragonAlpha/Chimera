@@ -4707,11 +4707,32 @@ identity remains `7eb2b11543b7138978d6b355671c6b176c51d79d0fb1c7b804c671effe106e
 
 The implemented boundary is in-process Python, not an already-connected Z Code
 transport. Multiscene native worlds, automatic native Undo, all-mode adapters,
-comparison UI and full transactional recovery when replacing an existing build
-remain unfinished. The current explicit authoring/build path can discard the old
-live trial; preserve/export its checkpoint before rebuilding. Native Replay/Resume
-and libuipc cached-animation replay remain distinct. Source hashing currently
+comparison UI and transactional imports remain unfinished. Rebuild recovery is now
+implemented as described below. Native Replay/Resume and libuipc cached-animation
+replay remain distinct. Source hashing currently
 invalidates conservatively across the scene; it is not incremental physical reuse.
+
+**Rebuild recovery, implemented and checked 2026-10-19.** Return to Matter
+Authoring now reveals sources and releases its helper while retaining the last
+confirmed physical checkpoint. The shared API exposes this as `authoring`.
+Ordinary saves retain the edited-source view and the old accepted result as
+separate states. Fresh reopening preserves geometry, material edits and deleted
+connections instead of silently rebuilding authoring connections from the old
+trial. It starts no solver.
+
+New builds are accepted after their native document validates and computed
+geometry displays successfully. Candidate launch or partial-preview failure
+closes that candidate and restores the old accepted result without undoing source
+edits. A lost response after an in-place native mutation closes the uncertain
+owner and preserves its earlier checkpoint for explicit Resume. No automatic
+retry or replacement physics is introduced. The connected-film and single-fixture
+builders share this mechanism. Seven actual Blender/native recovery checks,
+fresh-file reopening, the eleven-command regression and four legacy offline
+format checks pass in `ChimeraStudio/integration/evidence/rebuild-recovery`.
+Faults were deliberately injected around real owned helpers; they are not claims
+of naturally occurring failures. Original project hashes, runtime identity and
+concurrent camera work are preserved. General native Undo, multiscene ownership
+and broader import transactions remain unqualified.
 
 **Fifteen agreed techniques: implementation sequence and honest status.** These
 are the full requested scope, not fifteen labels for one demo. Each row must
@@ -4722,7 +4743,7 @@ compelling game using simulated matter; the editor serves building and inspectio
 
 | # / technique | Reuse and first concrete acceptance | Current status / order |
 |---|---|---|
-| 1. Small reliable construction language | Registered operators, `blocks.compile_parts`, native checkpoint owner. Same input through UI/API; stale and duplicate delivery safe; actual completion visible. | **Implemented subset above.** Finish transactional rebuild recovery, comparison command and chosen transport; Object/Edit only. |
+| 1. Small reliable construction language | Registered operators, `blocks.compile_parts`, native checkpoint owner. Same input through UI/API; stale and duplicate delivery safe; actual completion visible. | **Implemented subset above, including rebuild recovery.** Next comparison command and chosen transport; Object/Edit only. |
 | 2. Library learning | Mine repeated successful construction sequences into parameterized recipes with ports and provenance through existing mechanism-factory/AP owners. [DreamCoder](https://people.csail.mit.edu/asolar/papers/EllisWNSMHCST21.pdf) motivates reusable program components. Demonstrate one mined recipe reducing authoring effort with identical compiled meaning. | **Planned after trial adapter.** Duplication/starter reuse exists; automated recipe discovery does not. |
 | 3. Quality-diversity / MAP-Elites | Index accepted comparisons by size, mass, compliance, response direction and measured cost; keep useful alternatives rather than a single score winner. Use existing evidence identities. [Method](https://arxiv.org/abs/1504.04909). | **Planned.** First show three meaningfully different admissible designs with the same task constraints, no separate truth catalog. |
 | 4. Inverse design | Desired deflection/load/space becomes a bounded search over supported geometry/materials. Reuse mechanism-factory fits and native evaluation. [Warp](https://github.com/NVIDIA/warp) differentiates its own kernels; our Vulkan/native path needs an explicit derivative adapter. | **Planned.** Start with bounded discrete/parameter search; a gradient claim requires independent derivative checks. |
@@ -4903,7 +4924,7 @@ identity is `chimera-layered-3`; evidence and retained failures are under
 
 **Next editor work.** A mounted rod/shell or asymmetric layered example can
 extend the same native connection path when useful. Extend the shared local
-workflow's recovery and accepted-trial comparison through existing owners. Feed
+workflow with accepted-trial comparisons and evidence references through existing owners. Feed
 accepted response trials into the existing recipe/mechanism evidence pipeline
 once the mapping is explicit; do not build another catalog. Studio's
 `Libuipc/WORK_LOG.md` preserves decisions, evidence and the next bounded tasks.
