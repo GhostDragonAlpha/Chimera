@@ -1,0 +1,67 @@
+{
+  "tests": [
+    {
+      "name": "Blender-authored membrane through native GPU; loaded geometry and exact replay",
+      "pass": true,
+      "details": {
+        "initial_energy_J": 2.625,
+        "reference_J": 2.6249999533666486,
+        "loaded_state_id": "16434149458499191539",
+        "native_vertices": 7,
+        "center_displacement_m": -0.27138499915599823
+      }
+    },
+    {
+      "name": ".blend and separate GPU trial survive native process teardown",
+      "pass": true,
+      "details": {
+        "blend": "D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\evidence\\gpu-matter.blend",
+        "trial": "D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\evidence\\gpu-membrane.matter.json",
+        "fresh_process_restore": true,
+        "automatic_gpu_start_on_open": false
+      }
+    },
+    {
+      "name": "Blender CA water: native redistribution, conservation, branch and fresh-process replay",
+      "pass": true,
+      "details": {
+        "initial": [
+          100000,
+          0,
+          0,
+          0
+        ],
+        "after_six": [
+          90288,
+          0,
+          2813,
+          6899
+        ],
+        "sum_quanta": 100000,
+        "step_wall_ms": [
+          35.36050004186109,
+          61.082900036126375,
+          44.9889000155963,
+          37.514900031965226,
+          43.733200000133365,
+          53.92650002613664
+        ],
+        "replayed_hidden_flux": true
+      }
+    },
+    {
+      "name": "Refusal boundaries and checkpoint survival after owned GPU process exit",
+      "pass": true,
+      "details": {
+        "forged_state_refused": true,
+        "runtime_mismatch_refused": true,
+        "no_silent_step_loss": true,
+        "checkpoint_saved_after_child_exit": true
+      }
+    }
+  ],
+  "passed": 4,
+  "total": 4,
+  "runtime_identity": "e2278d2ff6e9ed8b0d01ca51cd679699defcd422bbd040dcc84ce3af60d60286",
+  "scope": "Existing one-center membrane and closed CA water field; not coupled multiphysics"
+}

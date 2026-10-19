@@ -1,0 +1,127 @@
+{
+  "schema": "chimera.studio.gpu-trial.v1",
+  "source_lock": "e2278d2ff6e9ed8b0d01ca51cd679699defcd422bbd040dcc84ce3af60d60286",
+  "spec": {
+    "mode": "membrane",
+    "positions": [
+      [
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.5,
+        0.8660253882408142,
+        0.0
+      ],
+      [
+        -0.5,
+        0.8660253882408142,
+        0.0
+      ],
+      [
+        -1.0,
+        1.2246468525851679e-16,
+        0.0
+      ],
+      [
+        -0.5,
+        -0.8660253882408142,
+        0.0
+      ],
+      [
+        0.5,
+        -0.8660253882408142,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.125
+      ]
+    ],
+    "triangles": [
+      [
+        6,
+        0,
+        1
+      ],
+      [
+        6,
+        1,
+        2
+      ],
+      [
+        6,
+        2,
+        3
+      ],
+      [
+        6,
+        3,
+        4
+      ],
+      [
+        6,
+        4,
+        5
+      ],
+      [
+        6,
+        5,
+        0
+      ]
+    ],
+    "centre": 6,
+    "gamma": 1.0
+  },
+  "state": {
+    "schema": "chimera.membrane_demo_state.v1",
+    "n_verts": 7,
+    "n_faces": 6,
+    "centre_index": 6,
+    "gamma_admitted_f64": 1,
+    "gamma_uploaded_f32": 1,
+    "centre_load_N": 0.5,
+    "energy_J": 2.63493013381958,
+    "energy_initial_J": 2.625,
+    "iteration": 1,
+    "n_accepted": 1,
+    "n_trials": 31,
+    "accepted_state_id": "16434149458499191539",
+    "material_snapshot": {
+      "gamma_admitted_f64": 1,
+      "gamma_admitted_f64_hex": "see_admission_input",
+      "gamma_uploaded_f32": 1,
+      "gamma_uploaded_f32_hex": "see_float32_input",
+      "unit": "J/m^2",
+      "wu_to_m": 1.0
+    },
+    "positions_f32": [
+      1,
+      0,
+      0,
+      0.5,
+      0.866025388,
+      0,
+      -0.5,
+      0.866025388,
+      0,
+      -1,
+      1.22464685e-16,
+      0,
+      -0.5,
+      -0.866025388,
+      0,
+      0.5,
+      -0.866025388,
+      0,
+      0,
+      0,
+      -0.146384999
+    ]
+  },
+  "authoring_visibility": {
+    "Matter membrane fan": false
+  }
+}

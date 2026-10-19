@@ -311,7 +311,7 @@ class Demo(bpy.types.Operator):
         status('Aligned starter regions added. Build, then optionally Join Two Marked Mounts before Play.');return {'FINISHED'}
 
 class Panel(bpy.types.Panel):
-    bl_label='Chimera Studio';bl_idname='CHIMERA_PT_workshop';bl_space_type='VIEW_3D';bl_region_type='UI';bl_category='Chimera'
+    bl_options={'DEFAULT_CLOSED'};bl_label='Rigid Construction';bl_idname='CHIMERA_PT_workshop';bl_space_type='VIEW_3D';bl_region_type='UI';bl_category='Chimera'
     def draw(self,context):
         l=self.layout;l.label(text='Native construction engine');l.operator('chimera.demo',icon='CUBE')
         o=context.object

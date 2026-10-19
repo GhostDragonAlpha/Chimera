@@ -8,3 +8,5 @@ evidence/*.blend
 
 evidence/*stdout.log
 evidence/*stderr.log
+
+evidence/*-output.log

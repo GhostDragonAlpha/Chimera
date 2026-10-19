@@ -1,4 +1,4 @@
-param([string]$Blender, [switch]$Gui)
+param([string]$Blender, [switch]$Gui, [switch]$Gpu)
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
 $studio = Split-Path -Parent $root
@@ -25,4 +25,9 @@ if ($Gui) {
     $report = Get-Content -LiteralPath (Join-Path $root 'evidence/gui-smoke.json') -Raw | ConvertFrom-Json
     if (-not $report.pass) { throw 'Blender GUI checks failed' }
     $report | ConvertTo-Json
+}
+
+if ($Gpu) {
+    & $Blender --background --factory-startup --python-exit-code 7 --python (Join-Path $root 'tests/test_gpu_blender.py')
+    if ($LASTEXITCODE -ne 0) { throw 'GPU matter integration tests failed' }
 }

@@ -4,6 +4,10 @@ bl_info={'name':'Chimera Studio','author':'Chimera','version':(0,1,0),'blender':
 def register():
     from . import workspace
     workspace.register()
+    from . import gpu_workspace
+    gpu_workspace.register()
 def unregister():
     from . import workspace
+    from . import gpu_workspace
+    gpu_workspace.unregister()
     workspace.unregister()

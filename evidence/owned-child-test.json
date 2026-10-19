@@ -1,0 +1,6 @@
+{
+  "parent": 161104,
+  "child": 160196,
+  "pass": true,
+  "scope": "Only this test parent and its owned GPU child were terminated"
+}

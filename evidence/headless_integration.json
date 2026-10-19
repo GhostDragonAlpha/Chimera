@@ -3,10 +3,13 @@
   "blender_build_hash": "68c79f03362e",
   "binary": "D:\\Chimera-Maintenance\\ChimeraStudio\\build-blender\\bin\\Release\\blender.exe",
   "source_hashes": {
-    "python\\chimera_studio\\__init__.py": "5c35228987a575436c7ee5926ae22dd1dceaacffa3b990ed79867dce83fdb02a",
+    "python\\chimera_studio\\__init__.py": "6f3a6e405a7c7812a402685c514894500f5196c0bde81c90c55092e0d0a66025",
     "python\\chimera_studio\\geometry.py": "b9cb43110ce4519359f6c1ff6863de7151445e1ea702ebb065c6b145db17c3e8",
+    "python\\chimera_studio\\gpu_native.py": "0b71e64e883c4b53a0d0ef33f5e39a382524d2b0fd028bb2bcb4273b30e842b0",
+    "python\\chimera_studio\\gpu_workspace.py": "99caf9dfafa1540d5a3d92c31b64ca4d8e4a03b3fe306478a548b36ca3fd0992",
     "python\\chimera_studio\\native.py": "47c1895143c57b250e9e383e401e4b9641df42a2f57c14171b30ad680c963ca3",
-    "python\\chimera_studio\\workspace.py": "88f4efc7d59b4c4b4583d3eb19b2f9e3cd1be4acfaa3882648b603ebd64ef305",
+    "python\\chimera_studio\\owned_job.py": "877dc809fe7f6b7523e08a5bab7e0a657b0a6f63ac8827c02f1038946af5c601",
+    "python\\chimera_studio\\workspace.py": "be66c9c42336d08b344908aa8801ab5ad54651bebef37536b9dacd9c8941e7ff",
     "native\\bridge.cpp": "a7e16431403b668a8bad2d7881d653caa5b48ef9d3291cc6d0578c4e349c8282",
     "build\\native\\Release\\chimera_studio_bridge.dll": "2cef3a601a480bece1a32ed7b9266ed8071fae5bce9305efdecf00b0a2b905cf"
   },
@@ -43,7 +46,7 @@
       "name": "Save and open physical trial preserves native state",
       "pass": true,
       "details": {
-        "state_hash": "6f3852fb545f4347"
+        "state_hash": "ffcea314ec3cd366"
       }
     },
     {
@@ -66,8 +69,8 @@
       "details": {
         "batch_substeps": 80,
         "simulated_ms": 20,
-        "native_batch_median_ms": 0.21249998826533556,
-        "native_batch_p95_ms": 0.2258999738842249,
+        "native_batch_median_ms": 0.2165500191040337,
+        "native_batch_p95_ms": 0.22059999173507094,
         "scope": "2 parts, CPU native solver only, not GUI frame rate"
       }
     },

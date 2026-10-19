@@ -1,0 +1,82 @@
+#version 450
+// GPU LBS skinning for 3DGS splats — port of native/skin.py apply_pose (lines 289-318).
+// Per splat: p_new = sum_i w_i * (qrot(q_i, rest_pos) + t_i)   (terms with bone<0 or w==0 skipped)
+// rotation   : qd = normalize(w0*q0 + s*w1*q1), s = sign(dot(q0,q1)) (s=1 if 0);
+//              out_rot = qmul(qd, rest_rot). Color/alpha/scale pass through unchanged.
+// If BOTH influences are absent the splat passes through unchanged.
+// Runs once per pose_apply (dirty-flag gated in the engine); the posed buffer persists
+// while the camera orbits.
+layout(local_size_x = 256) in;
+
+layout(std430, binding = 0) buffer RestB { float rest[]; };  // N*14 floats (rest splat)
+layout(std430, binding = 1) buffer WtsB  { float wts[];  };  // N*4: [bone0, w0, bone1, w1]
+layout(std430, binding = 2) buffer PoseB { float pose[]; };  // B*7: [qw,qx,qy,qz, tx,ty,tz]
+layout(std430, binding = 3) buffer OutB  { float outp[]; };  // N*14 floats (posed splat = pos_buf_)
+
+layout(push_constant) uniform PC {
+    uint count;     // N splats
+    uint n_bones;   // B
+};
+
+// NOTE: the splat/pose data is quat (w,x,y,z) scalar-FIRST, but qrot/qmul below treat the
+// GLSL vec4 as (x,y,z,w) scalar-last (.w = scalar part). Swizzle on load and on store.
+vec3 qrot(vec4 q, vec3 v) { vec3 u = q.xyz; return v + 2.0 * cross(u, cross(u, v) + q.w * v); }
+vec4 qmul(vec4 a, vec4 b) { return vec4(a.w * b.xyz + b.w * a.xyz + cross(a.xyz, b.xyz),
+                                        a.w * b.w - dot(a.xyz, b.xyz)); }
+
+void main() {
+    uint i = gl_GlobalInvocationID.x;
+    if (i >= count) return;
+
+    uint rb = i * 14u;
+    uint wb = i * 4u;
+
+    // Passthrough first: color/alpha/scale/rot always copied; pos/rot overwritten below if posed.
+    for (uint k = 0u; k < 14u; ++k) outp[rb + k] = rest[rb + k];
+
+    int   b0 = int(wts[wb + 0u]);
+    float w0 =     wts[wb + 1u];
+    int   b1 = int(wts[wb + 2u]);
+    float w1 =     wts[wb + 3u];
+
+    bool has0 = (b0 >= 0) && (w0 != 0.0);
+    bool has1 = (b1 >= 0) && (w1 != 0.0);
+    if (!has0 && !has1) return;   // no influence -> unchanged
+
+    vec3 p = vec3(rest[rb + 0u], rest[rb + 1u], rest[rb + 2u]);
+
+    vec3 pacc = vec3(0.0);
+    vec4 qd   = vec4(0.0);
+    vec4 q0   = vec4(0.0, 0.0, 0.0, 1.0);   // (x,y,z,w): identity
+
+    if (has0) {
+        uint pb = uint(b0) * 7u;   // pose data is (qw,qx,qy,qz, ...) -> swizzle to (x,y,z,w)
+        q0 = vec4(pose[pb + 1u], pose[pb + 2u], pose[pb + 3u], pose[pb + 0u]);
+        vec3 t0 = vec3(pose[pb + 4u], pose[pb + 5u], pose[pb + 6u]);
+        pacc += w0 * (qrot(q0, p) + t0);
+        qd   += w0 * q0;
+    }
+    if (has1) {
+        uint pb = uint(b1) * 7u;
+        vec4 q1 = vec4(pose[pb + 1u], pose[pb + 2u], pose[pb + 3u], pose[pb + 0u]);
+        vec3 t1 = vec3(pose[pb + 4u], pose[pb + 5u], pose[pb + 6u]);
+        float s = has0 ? sign(dot(q0, q1)) : 1.0;
+        if (s == 0.0) s = 1.0;
+        pacc += w1 * (qrot(q1, p) + t1);
+        qd   += s * w1 * q1;
+    }
+
+    qd = normalize(qd);
+
+    outp[rb + 0u] = pacc.x;
+    outp[rb + 1u] = pacc.y;
+    outp[rb + 2u] = pacc.z;
+
+    // rest rot is (qw,qx,qy,qz) -> (x,y,z,w); result stored back scalar-first
+    vec4 rr = vec4(rest[rb + 11u], rest[rb + 12u], rest[rb + 13u], rest[rb + 10u]);
+    vec4 nr = qmul(qd, rr);
+    outp[rb + 10u] = nr.w;
+    outp[rb + 11u] = nr.x;
+    outp[rb + 12u] = nr.y;
+    outp[rb + 13u] = nr.z;
+}
