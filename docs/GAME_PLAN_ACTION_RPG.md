@@ -4804,9 +4804,34 @@ initial test-harness failure are in `ChimeraStudio/Libuipc/evidence/layered-work
 installed adapter. Opening remains offline. This is small-construction evidence,
 not a real-time, large-scene or manufactured-material qualification.
 
-**Next editor work.** Improve reusing/duplicating a saved construction with clear
-identity and connection ownership before inventing more physical laws. A mounted rod/shell or asymmetric
-layered example can extend the same native connection path when useful. Feed
+**Construction reuse and Save As, implemented 2026-10-19.** The installed
+**Duplicate Construction** action copies a complete connected selection from
+its authored rest geometry, with an explicit offset, independent meshes/FEM
+surface backups, fresh part/seam UUIDs and copied material/pin assignments.
+Seams point to the copied parts; physical results are obtained by a new bake.
+A currently displayed deformation is not silently treated as a new rest shape.
+Incomplete selections (including disabled external seams), driven rigs and
+active workers refuse; a late validation failure rolls back owned changes.
+The UI and local Python entry point share one main-thread implementation;
+the full revision-aware AI proposal/async-command bridge remains unfinished.
+
+The original plus translated four-part assembly passed a combined native
+24-stitch, 61-frame/120-step bake in 6.72 s. At 0.6 s their bumper drops were
+0.110781103 and 0.110781126 m. Copying took 0.016 s on this host; these are
+small-scene observations, not large-scene throughput claims. Tests exposed and
+repaired a Save As cache-path defect. Addon paths now rebase alongside Blender's
+native modifier paths; Save Copy preserves the live working paths and failed
+saves restore them. All 32 checked geometry hashes match after fresh reopening,
+Save As, Save Copy, a failed-save attempt and relocating a complete evidence
+bundle. Moving a project still requires its cache files; no physical continuation
+from arbitrary frames is implied. Original affine helpers, all three user
+projects and the prior sixteen-hash layered replay remain intact. Installed
+identity is `chimera-layered-3`; evidence and retained failures are under
+`ChimeraStudio/Libuipc/evidence/construction-copy`.
+
+**Next editor work.** A mounted rod/shell or asymmetric layered example can
+extend the same native connection path when useful. Complete the shared
+inspect/propose/apply workflow through existing compiler/checkpoint APIs. Feed
 accepted response trials into the existing recipe/mechanism evidence pipeline
 once the mapping is explicit; do not build another catalog. Studio's
 `Libuipc/WORK_LOG.md` preserves decisions, evidence and the next bounded tasks.
