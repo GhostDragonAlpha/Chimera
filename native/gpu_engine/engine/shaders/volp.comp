@@ -1,0 +1,412 @@
+// volp.comp — H13: the volp-ARAP knee kernel (the blend's successor).
+// The SHIP-path law (H11 stage 2, agent_logs/kimi/volp_arap_01.md), ported to
+// one compute dispatch per frame:
+//   E = (1-lam) E_ARAP + lam E_smooth (bi-Laplacian, uniform/conductance
+//   Laplacian — cotan is dead on this recon), lam = 0.05 (derived),
+//   + in-solve Lagrange multiplier on Sigma V = V_rest (the Schur row INSIDE
+//   the solve — never a post-pass), clamped-PSD edge-only rotation fitting
+//   (Davenport K + fixed-sweep Jacobi eigensolve: power iteration FALSIFIED
+//   on near-degenerate fold spectra — .tmp/volp_twin32.py, 3e-8 vs SVD),
+//   rings posed rigidly by R(theta) as Dirichlet by substitution,
+//   theta from the gait CPG (or the manual verification override).
+// Unified two-knee solve: the bands overlap (77 shared free nodes, ~115 of
+// each band's free nodes are the other knee's ring — measured, volp_uni.py),
+// so ONE system, free = union(bands) \ union(rings), ONE global volume row.
+// Inner solve: precomputed dense inverse (A_ff is theta-independent —
+// measured cond 1.6e3, f32 inverse solve err 1.4e-7): x = AINV (rhs - mu g),
+// mu = (g^T AINV rhs - c)/(g^T AINV g). Outer: M=8 fixed iterations (derived
+// from the tracking sim, volp_track.json: median err 9e-5 @ 2 deg/frame),
+// damped update omega = 0.5 (derived from the measured 130 deg flip
+// eigenvalue lam = -1.0, volp_cycle.json — the cycle is dead).
+// Determinism: Tier-1b. Single workgroup, barrier-synchronized stages, fixed
+// loop order, fixed-order pairwise tree reductions, NO atomics in the value
+// path. f32 throughout (the named boundary vs the f64 CPU golden; the f32
+// twin measured max|dX| vs golden, volp_twin32.json). Not bit-exact vs CPU;
+// same input series -> same output series on a given build/driver.
+#version 460
+layout(local_size_x = 512) in;
+
+layout(push_constant) uniform PC {
+    float thetaL;       // degrees
+    float thetaR;       // degrees
+    uint  flags;        // bit0: cold start (blend pose), set by host on engage/jump
+    uint  M;            // outer iterations (derived default 8)
+} pc;
+
+layout(std430, binding = 0) readonly  buffer Hdr  { uint  hd[]; };  // directory
+layout(std430, binding = 1) readonly  buffer U    { uint  ub[]; };
+layout(std430, binding = 2) readonly  buffer F    { float fb[]; };
+layout(std430, binding = 3)           buffer Xb   { float X[];  };  // NC*3 state
+layout(std430, binding = 4)           buffer Sc   { float sc[]; };  // scratch
+layout(std430, binding = 5)           buffer St   { float st[]; };  // stats mirror
+layout(std430, binding = 6)           buffer Vout { float vout[]; };
+
+// directory slots
+uint NF()   { return hd[0]; }
+uint NC()   { return hd[1]; }
+uint NBT()  { return hd[2]; }
+uint NPT()  { return hd[3]; }
+uint NOUT() { return hd[4]; }
+uint NW()   { return hd[5]; }
+// f32 offsets
+uint F_CONSTS() { return 0; }        // JL(3) JR(3) axis(3) V_REST lam omega
+uint F_RESTC()  { return hd[8]; }
+uint F_AINV()   { return hd[9]; }
+uint F_AFCVAL() { return hd[10]; }
+uint F_ACTW()   { return hd[11]; }
+uint F_ACTE0()  { return hd[12]; }
+uint F_RHSW()   { return hd[13]; }
+uint F_RHSE0()  { return hd[14]; }
+uint F_LFDEG()  { return hd[15]; }
+uint F_L0()     { return hd[16]; }
+uint F_WELDR()  { return hd[17]; }
+uint F_OUTPOS() { return hd[18]; }
+uint F_OUTNRM() { return hd[19]; }
+uint F_COLDWL() { return hd[20]; }
+uint F_COLDWR() { return hd[21]; }
+// u32 offsets
+uint U_AFCPTR()  { return hd[24]; }
+uint U_AFCCOL()  { return hd[25]; }
+uint U_ACTPTR()  { return hd[26]; }
+uint U_ACTNBR()  { return hd[27]; }
+uint U_RHSPTR()  { return hd[28]; }
+uint U_RHSNBR()  { return hd[29]; }
+uint U_LFPTR()   { return hd[30]; }
+uint U_LFNBR()   { return hd[31]; }
+uint U_BANDTRI() { return hd[32]; }
+uint U_GRADPTR() { return hd[33]; }
+uint U_GRADJ()   { return hd[34]; }
+uint U_GRADK()   { return hd[35]; }
+uint U_PINTRI()  { return hd[36]; }
+uint U_RINGW()   { return hd[37]; }
+uint U_RINGC()   { return hd[38]; }
+uint U_OUTRAW()  { return hd[39]; }
+uint U_OUTMODE() { return hd[40]; }
+uint U_OUTSRC()  { return hd[41]; }
+uint U_TRIPTR()  { return hd[42]; }
+uint U_TRII()    { return hd[43]; }
+
+// scratch layout (floats): R(9*NC) r(3*NC) base(3NF) rhs(3NF) g(3NF) p1(3NF) Y(3NF) xnew(3NF)
+uint S_R()    { return 0; }
+uint S_RV()   { return 9 * NC(); }
+uint S_BASE() { return 12 * NC(); }
+uint S_RHS()  { return 12 * NC() + 3 * NF(); }
+uint S_G()    { return 12 * NC() + 6 * NF(); }
+uint S_P1()   { return 12 * NC() + 9 * NF(); }
+uint S_Y()    { return 12 * NC() + 12 * NF(); }
+uint S_XNEW() { return 12 * NC() + 15 * NF(); }
+
+vec3 JL()    { return vec3(fb[0], fb[1], fb[2]); }
+vec3 JR()    { return vec3(fb[3], fb[4], fb[5]); }
+vec3 AXIS()  { return vec3(fb[6], fb[7], fb[8]); }
+float VREST(){ return fb[9]; }
+float LAM()  { return fb[10]; }
+float OMEGA(){ return fb[11]; }
+
+vec3 xat(uint n) { return vec3(X[n * 3], X[n * 3 + 1], X[n * 3 + 2]); }
+void xput(uint n, vec3 p) { X[n * 3] = p.x; X[n * 3 + 1] = p.y; X[n * 3 + 2] = p.z; }
+
+vec3 rodrigues(vec3 v, vec3 n, float th_rad) {
+    float c = cos(th_rad), s = sin(th_rad);
+    return v * c + cross(n, v) * s + n * dot(n, v) * (1.0 - c);
+}
+
+vec3 pose_ring(vec3 p, uint flag, float thL, float thR) {
+    if (flag == 1u) return rodrigues(p - JL(), AXIS(), thL * 0.01745329251) + JL();
+    if (flag == 2u) return rodrigues(p - JR(), AXIS(), thR * 0.01745329251) + JR();
+    return p;
+}
+
+// ---- Davenport K + fixed-sweep cyclic Jacobi -> the nearest rotation -------
+mat3 polar_rotation(mat3 S) {
+    // K from S (GLSL mat3 is column-major: S[c][r])
+    float m00 = S[0][0], m10 = S[0][1], m20 = S[0][2];
+    float m01 = S[1][0], m11 = S[1][1], m21 = S[1][2];
+    float m02 = S[2][0], m12 = S[2][1], m22 = S[2][2];
+    mat4 K;
+    K[0] = vec4(m00 + m11 + m22, m21 - m12, m02 - m20, m10 - m01);
+    K[1] = vec4(m21 - m12, m00 - m11 - m22, m10 + m01, m20 + m02);
+    K[2] = vec4(m02 - m20, m10 + m01, -m00 + m11 - m22, m21 + m12);
+    K[3] = vec4(m10 - m01, m20 + m02, m21 + m12, -m00 - m11 + m22);
+    // cyclic Jacobi, 5 fixed sweeps (derived: worst 3e-8 vs SVD on real fold
+    // covariances incl. all det<0 cases; largest ALGEBRAIC eigenvalue's
+    // eigenvector is the nearest rotation in both det signs — measured)
+    mat4 Q = mat4(1.0);
+    for (int sw = 0; sw < 5; ++sw) {
+        for (int p = 0; p < 3; ++p) {
+            for (int q = p + 1; q < 4; ++q) {
+                float apq = K[p][q];
+                if (abs(apq) < 1e-20) continue;
+                float theta = 0.5 * (K[q][q] - K[p][p]) / apq;
+                float t = (theta >= 0.0 ? 1.0 : -1.0) / (abs(theta) + sqrt(theta * theta + 1.0));
+                float c = inversesqrt(t * t + 1.0), s = t * c;
+                for (int k = 0; k < 4; ++k) {
+                    float akp = K[k][p], akq = K[k][q];
+                    K[k][p] = c * akp - s * akq; K[k][q] = s * akp + c * akq;
+                }
+                for (int k = 0; k < 4; ++k) {
+                    float apk = K[p][k], aqk = K[q][k];
+                    K[p][k] = c * apk - s * aqk; K[q][k] = s * apk + c * aqk;
+                }
+                for (int k = 0; k < 4; ++k) {
+                    float qkp = Q[k][p], qkq = Q[k][q];
+                    Q[k][p] = c * qkp - s * qkq; Q[k][q] = s * qkp + c * qkq;
+                }
+            }
+        }
+    }
+    int bi = 0;
+    float bv = K[0][0];
+    for (int i = 1; i < 4; ++i) if (K[i][i] > bv) { bv = K[i][i]; bi = i; }
+    vec4 q = normalize(Q[bi] + vec4(1e-30));   // guard: never zero-length
+    float w = q.x, x = q.y, y = q.z, z = q.w;
+    mat3 Rq;
+    Rq[0] = vec3(1.0 - 2.0 * (y * y + z * z), 2.0 * (x * y + w * z), 2.0 * (x * z - w * y));
+    Rq[1] = vec3(2.0 * (x * y - w * z), 1.0 - 2.0 * (x * x + z * z), 2.0 * (y * z + w * x));
+    Rq[2] = vec3(2.0 * (x * z + w * y), 2.0 * (y * z - w * x), 1.0 - 2.0 * (x * x + y * y));
+    return Rq;   // = R(q)^T of the numpy convention (validated 3e-8 vs SVD)
+}
+
+shared float red[512];
+float reduce_sum(float v) {
+    red[gl_LocalInvocationIndex] = v;
+    barrier();
+    for (uint s = 256u; s > 0u; s >>= 1u) {
+        if (gl_LocalInvocationIndex < s) red[gl_LocalInvocationIndex] += red[gl_LocalInvocationIndex + s];
+        barrier();
+    }
+    float r = red[0];
+    barrier();
+    return r;
+}
+float reduce_max(float v) {
+    red[gl_LocalInvocationIndex] = v;
+    barrier();
+    for (uint s = 256u; s > 0u; s >>= 1u) {
+        if (gl_LocalInvocationIndex < s)
+            red[gl_LocalInvocationIndex] = max(red[gl_LocalInvocationIndex], red[gl_LocalInvocationIndex + s]);
+        barrier();
+    }
+    float r = red[0];
+    barrier();
+    return r;
+}
+
+void main() {
+    uint tid = gl_LocalInvocationIndex;
+    uint nf = NF(), nc = NC();
+    float thL = pc.thetaL, thR = pc.thetaR;
+
+    // 1. pose pinned rows of X (rings by theta, far field = rest); cold start
+    for (uint n = nf + tid; n < nc; n += 512u) {
+        uint flag = ub[U_RINGC() + n];
+        vec3 p0 = vec3(fb[F_RESTC() + n * 3], fb[F_RESTC() + n * 3 + 1], fb[F_RESTC() + n * 3 + 2]);
+        xput(n, pose_ring(p0, flag, thL, thR));
+    }
+    if ((pc.flags & 1u) != 0u) {
+        for (uint i = tid; i < nf; i += 512u) {
+            float a = fb[F_COLDWL() + i], b = fb[F_COLDWR() + i];
+            float th = (thL * a + thR * b) * 0.01745329251;
+            vec3 J = (a >= b) ? JL() : JR();
+            vec3 p0 = vec3(fb[F_RESTC() + i * 3], fb[F_RESTC() + i * 3 + 1], fb[F_RESTC() + i * 3 + 2]);
+            xput(i, rodrigues(p0 - J, AXIS(), th) + J);
+        }
+    }
+    barrier();
+
+    // 2. base = -A_fc * pin_pos (once per dispatch)
+    for (uint i = tid; i < nf; i += 512u) {
+        vec3 acc = vec3(0.0);
+        for (uint p = ub[U_AFCPTR() + i]; p < ub[U_AFCPTR() + i + 1]; ++p) {
+            acc -= fb[F_AFCVAL() + p] * xat(uint(ub[U_AFCCOL() + p]));
+        }
+        sc[S_BASE() + i * 3] = acc.x; sc[S_BASE() + i * 3 + 1] = acc.y; sc[S_BASE() + i * 3 + 2] = acc.z;
+    }
+    barrier();
+
+    // 3. v_pinned: volume of tris NOT touching free nodes (welded space)
+    {
+        float part = 0.0;
+        for (uint t = tid; t < NPT(); t += 512u) {
+            uint a = ub[U_PINTRI() + t * 3], b = ub[U_PINTRI() + t * 3 + 1], c = ub[U_PINTRI() + t * 3 + 2];
+            vec3 pa = vec3(fb[F_WELDR() + a * 3], fb[F_WELDR() + a * 3 + 1], fb[F_WELDR() + a * 3 + 2]);
+            vec3 pb = vec3(fb[F_WELDR() + b * 3], fb[F_WELDR() + b * 3 + 1], fb[F_WELDR() + b * 3 + 2]);
+            vec3 pc_ = vec3(fb[F_WELDR() + c * 3], fb[F_WELDR() + c * 3 + 1], fb[F_WELDR() + c * 3 + 2]);
+            pa = pose_ring(pa, ub[U_RINGW() + a], thL, thR);
+            pb = pose_ring(pb, ub[U_RINGW() + b], thL, thR);
+            pc_ = pose_ring(pc_, ub[U_RINGW() + c], thL, thR);
+            part += dot(pa, cross(pb, pc_)) * (1.0 / 6.0);
+        }
+        float v_pinned = reduce_sum(part);
+        if (tid == 0u) st[4] = v_pinned;
+    }
+
+    float mu = 0.0, resid = 0.0, v_cur = VREST();
+
+    // 4. M fixed outer iterations (local-global + re-linearized Schur row)
+    for (uint m = 0u; m < pc.M; ++m) {
+        // local step: S_i from incident act edges (orientation-invariant form),
+        // polar rotation via Davenport+Jacobi; r_i = R_i * l0_i
+        for (uint n = tid; n < nc; n += 512u) {
+            uint p0 = ub[U_ACTPTR() + n], p1_ = ub[U_ACTPTR() + n + 1];
+            mat3 R = mat3(1.0);
+            vec3 ri = vec3(fb[F_L0() + n * 3], fb[F_L0() + n * 3 + 1], fb[F_L0() + n * 3 + 2]);
+            if (p1_ > p0) {
+                vec3 pn = xat(n);
+                mat3 S = mat3(0.0);
+                for (uint p = p0; p < p1_; ++p) {
+                    uint j = ub[U_ACTNBR() + p];
+                    float w = fb[F_ACTW() + p];
+                    vec3 d = xat(j) - pn;
+                    vec3 d0 = vec3(fb[F_ACTE0() + p * 3], fb[F_ACTE0() + p * 3 + 1], fb[F_ACTE0() + p * 3 + 2]);
+                    // S += w * outer(d, d0)
+                    S[0] += w * (d * d0.x); S[1] += w * (d * d0.y); S[2] += w * (d * d0.z);
+                }
+                R = polar_rotation(S);
+                ri = R * ri;
+            }
+            sc[S_R() + n * 9 + 0] = R[0][0]; sc[S_R() + n * 9 + 1] = R[0][1]; sc[S_R() + n * 9 + 2] = R[0][2];
+            sc[S_R() + n * 9 + 3] = R[1][0]; sc[S_R() + n * 9 + 4] = R[1][1]; sc[S_R() + n * 9 + 5] = R[1][2];
+            sc[S_R() + n * 9 + 6] = R[2][0]; sc[S_R() + n * 9 + 7] = R[2][1]; sc[S_R() + n * 9 + 8] = R[2][2];
+            sc[S_RV() + n * 3] = ri.x; sc[S_RV() + n * 3 + 1] = ri.y; sc[S_RV() + n * 3 + 2] = ri.z;
+        }
+        barrier();
+
+        // rhs per free node: b_i = sum w R_avg (p0_i - p0_j); smooth: deg r_i - sum r_j
+        for (uint i = tid; i < nf; i += 512u) {
+            mat3 Ri;
+            Ri[0] = vec3(sc[S_R() + i * 9 + 0], sc[S_R() + i * 9 + 1], sc[S_R() + i * 9 + 2]);
+            Ri[1] = vec3(sc[S_R() + i * 9 + 3], sc[S_R() + i * 9 + 4], sc[S_R() + i * 9 + 5]);
+            Ri[2] = vec3(sc[S_R() + i * 9 + 6], sc[S_R() + i * 9 + 7], sc[S_R() + i * 9 + 8]);
+            vec3 b = vec3(0.0);
+            for (uint p = ub[U_RHSPTR() + i]; p < ub[U_RHSPTR() + i + 1]; ++p) {
+                uint j = ub[U_RHSNBR() + p];
+                mat3 Rj;
+                Rj[0] = vec3(sc[S_R() + j * 9 + 0], sc[S_R() + j * 9 + 1], sc[S_R() + j * 9 + 2]);
+                Rj[1] = vec3(sc[S_R() + j * 9 + 3], sc[S_R() + j * 9 + 4], sc[S_R() + j * 9 + 5]);
+                Rj[2] = vec3(sc[S_R() + j * 9 + 6], sc[S_R() + j * 9 + 7], sc[S_R() + j * 9 + 8]);
+                vec3 e0 = vec3(fb[F_RHSE0() + p * 3], fb[F_RHSE0() + p * 3 + 1], fb[F_RHSE0() + p * 3 + 2]);
+                b += fb[F_RHSW() + p] * ((0.5 * (Ri + Rj)) * e0);
+            }
+            vec3 sm = fb[F_LFDEG() + i] * vec3(sc[S_RV() + i * 3], sc[S_RV() + i * 3 + 1], sc[S_RV() + i * 3 + 2]);
+            for (uint p = ub[U_LFPTR() + i]; p < ub[U_LFPTR() + i + 1]; ++p) {
+                uint j = ub[U_LFNBR() + p];
+                sm -= vec3(sc[S_RV() + j * 3], sc[S_RV() + j * 3 + 1], sc[S_RV() + j * 3 + 2]);
+            }
+            vec3 rhs = LAM() * sm + (1.0 - LAM()) * b
+                     + vec3(sc[S_BASE() + i * 3], sc[S_BASE() + i * 3 + 1], sc[S_BASE() + i * 3 + 2]);
+            sc[S_RHS() + i * 3] = rhs.x; sc[S_RHS() + i * 3 + 1] = rhs.y; sc[S_RHS() + i * 3 + 2] = rhs.z;
+        }
+        barrier();
+
+        // g (volume gradient at free nodes) + v_band + g.x
+        float vpart = 0.0, gxpart = 0.0;
+        for (uint t = tid; t < NBT(); t += 512u) {
+            vec3 pa = xat(uint(ub[U_BANDTRI() + t * 3]));
+            vec3 pb = xat(uint(ub[U_BANDTRI() + t * 3 + 1]));
+            vec3 pc_ = xat(uint(ub[U_BANDTRI() + t * 3 + 2]));
+            vpart += dot(pa, cross(pb, pc_)) * (1.0 / 6.0);
+        }
+        for (uint i = tid; i < nf; i += 512u) {
+            vec3 g = vec3(0.0);
+            for (uint p = ub[U_GRADPTR() + i]; p < ub[U_GRADPTR() + i + 1]; ++p) {
+                g += cross(xat(uint(ub[U_GRADJ() + p])), xat(uint(ub[U_GRADK() + p])));
+            }
+            g *= (1.0 / 6.0);
+            sc[S_G() + i * 3] = g.x; sc[S_G() + i * 3 + 1] = g.y; sc[S_G() + i * 3 + 2] = g.z;
+            gxpart = dot(g, xat(i));   // valid only on the i==tid lane; summed below per-lane
+        }
+        float v_band = reduce_sum(vpart);
+        // g.x over free: recompute as a proper per-lane partial (stride lanes)
+        float gx2 = 0.0;
+        for (uint i = tid; i < nf; i += 512u)
+            gx2 += dot(vec3(sc[S_G() + i * 3], sc[S_G() + i * 3 + 1], sc[S_G() + i * 3 + 2]), xat(i));
+        float gx = reduce_sum(gx2);
+        v_cur = st[4] + v_band;
+        float c_lin = VREST() - v_cur + gx;
+
+        // p1 = AINV * rhs, Y = AINV * g (dense matvecs; A_ff is theta-independent)
+        for (uint i = tid; i < nf; i += 512u) {
+            vec3 a1 = vec3(0.0), a2 = vec3(0.0);
+            for (uint j = 0u; j < nf; ++j) {
+                float av = fb[F_AINV() + i * nf + j];
+                a1 += av * vec3(sc[S_RHS() + j * 3], sc[S_RHS() + j * 3 + 1], sc[S_RHS() + j * 3 + 2]);
+                a2 += av * vec3(sc[S_G() + j * 3], sc[S_G() + j * 3 + 1], sc[S_G() + j * 3 + 2]);
+            }
+            sc[S_P1() + i * 3] = a1.x; sc[S_P1() + i * 3 + 1] = a1.y; sc[S_P1() + i * 3 + 2] = a1.z;
+            sc[S_Y() + i * 3] = a2.x; sc[S_Y() + i * 3 + 1] = a2.y; sc[S_Y() + i * 3 + 2] = a2.z;
+        }
+        barrier();
+
+        // mu = (g.p1 - c_lin) / (g.Y); x_new = p1 - mu*Y; damped update
+        float d1 = 0.0, d2 = 0.0;
+        for (uint i = tid; i < nf; i += 512u) {
+            vec3 g = vec3(sc[S_G() + i * 3], sc[S_G() + i * 3 + 1], sc[S_G() + i * 3 + 2]);
+            d1 += dot(g, vec3(sc[S_P1() + i * 3], sc[S_P1() + i * 3 + 1], sc[S_P1() + i * 3 + 2]));
+            d2 += dot(g, vec3(sc[S_Y() + i * 3], sc[S_Y() + i * 3 + 1], sc[S_Y() + i * 3 + 2]));
+        }
+        float s1 = reduce_sum(d1);
+        float s2 = reduce_sum(d2);
+        mu = (s1 - c_lin) / s2;
+        float rpart = 0.0;
+        for (uint i = tid; i < nf; i += 512u) {
+            vec3 xn = vec3(sc[S_P1() + i * 3], sc[S_P1() + i * 3 + 1], sc[S_P1() + i * 3 + 2])
+                    - mu * vec3(sc[S_Y() + i * 3], sc[S_Y() + i * 3 + 1], sc[S_Y() + i * 3 + 2]);
+            vec3 xo = xat(i);
+            vec3 dx = xn - xo;
+            xput(i, xo + OMEGA() * dx);
+            rpart = max(rpart, max(abs(dx.x), max(abs(dx.y), abs(dx.z))));
+        }
+        resid = reduce_max(rpart);
+        barrier();
+    }
+
+    // 5. output: free nodes solved (+ normals by R_i), rings posed rigidly
+    for (uint o = tid; o < NOUT(); o += 512u) {
+        uint raw = ub[U_OUTRAW() + o], mode = ub[U_OUTMODE() + o], src = ub[U_OUTSRC() + o];
+        vec3 p0 = vec3(fb[F_OUTPOS() + o * 3], fb[F_OUTPOS() + o * 3 + 1], fb[F_OUTPOS() + o * 3 + 2]);
+        vec3 n0 = vec3(fb[F_OUTNRM() + o * 3], fb[F_OUTNRM() + o * 3 + 1], fb[F_OUTNRM() + o * 3 + 2]);
+        vec3 p, n;
+        if (mode == 0u) {
+            p = xat(src);
+            // H13 normals fix: GEOMETRIC normals from incident band tris (the
+            // R_i * n0 normals were up to 177 deg off at the fold — measured —
+            // and flat shading turned that into jagged facets the live dyad
+            // flagged 3/3 as "spikes"). n_i = normalize(sum cross(pb-pa,pc-pa)).
+            vec3 nacc = vec3(0.0);
+            uint t0 = ub[U_TRIPTR() + src], t1 = ub[U_TRIPTR() + src + 1u];
+            for (uint t = t0; t < t1; ++t) {
+                uint ti = ub[U_TRII() + t];
+                vec3 pa = xat(ub[U_BANDTRI() + ti * 3u + 0u]);
+                vec3 pb = xat(ub[U_BANDTRI() + ti * 3u + 1u]);
+                vec3 pc = xat(ub[U_BANDTRI() + ti * 3u + 2u]);
+                nacc += cross(pb - pa, pc - pa);
+            }
+            if (dot(nacc, nacc) > 1e-20) {
+                n = normalize(nacc);
+            } else {
+                mat3 R;
+                R[0] = vec3(sc[S_R() + src * 9 + 0], sc[S_R() + src * 9 + 1], sc[S_R() + src * 9 + 2]);
+                R[1] = vec3(sc[S_R() + src * 9 + 3], sc[S_R() + src * 9 + 4], sc[S_R() + src * 9 + 5]);
+                R[2] = vec3(sc[S_R() + src * 9 + 6], sc[S_R() + src * 9 + 7], sc[S_R() + src * 9 + 8]);
+                n = R * n0;   // fallback: a free node with no band tri (none exist)
+            }
+        } else {
+            p = pose_ring(p0, mode, thL, thR);
+            vec3 nn = rodrigues(n0, AXIS(), (mode == 1u ? thL : thR) * 0.01745329251);
+            n = nn;
+        }
+        vout[raw * 9 + 0] = p.x; vout[raw * 9 + 1] = p.y; vout[raw * 9 + 2] = p.z;
+        vout[raw * 9 + 3] = n.x; vout[raw * 9 + 4] = n.y; vout[raw * 9 + 5] = n.z;
+    }
+
+    // 6. stats mirror
+    if (tid == 0u) {
+        st[0] = (v_cur - VREST()) / abs(VREST());
+        st[1] = mu;
+        st[2] = resid;
+        st[3] = v_cur;
+        st[5] = st[5] + 1.0;
+        st[6] = thL; st[7] = thR;
+    }
+}
