@@ -4763,8 +4763,23 @@ regressions and an actual panel/image draw pass in
 measured 1.54 s including helper lifetime; saving measured 0.61 s. These are not
 general solver performance numbers. User projects and native/runtime/model
 settings remain unchanged. Native membrane A/B is implemented; existing-owner
-receipt admission, libuipc attachment-control comparisons, transient comparison
-and automatic design search remain distinct next increments.
+receipt admission and transient comparison remain distinct work. Layered-trial
+comparison and bounded native material search are implemented below.
+
+**Native A/B process isolation, checked 2026-10-19.** Comparison now runs in
+the installed external Python using the same owned-process path as material
+search. Eleven integration checks retain independent energy/force checks and
+reproduce the old native raster bytes, measurements and capture identities.
+Completed/pending reopen, actual worker loss, file replacement and controlled
+deadline expiry preserve previous evidence. Cancellation proposals bind one job;
+stale requests cannot stop a successor or the other task kind. View A/B now
+respects the chosen editor. The live UI passed 17 viewport navigations and two
+Object/Edit transitions during comparison, preserving a human source edit and
+showing distinct A/B images. Evidence is in
+`ChimeraStudio/integration/evidence/external-comparison`. The live native workspace
+still uses its older Python worker; the next increment must retain one persistent
+external native owner across commands, with exact replay and failure recovery.
+This does not change a physics law or qualify full editor concurrency yet.
 
 **Existing recipe evidence links, implemented and checked 2026-10-19.**
 The Blender Recipe Evidence panels and shared `link_evidence` command now bind
@@ -4837,9 +4852,9 @@ checkpoints survive saving; canceled/failed workers retain the last result.
 A real viewport crash exposed Python-thread concurrency in Blender. The search
 now reuses the installed libuipc external-Python launch/file helpers and existing
 owned-process cleanup; twelve viewport navigation calls passed during a search.
-**Next stability increment:** migrate the older native workspace and native A/B
-workers too; they still use Python threads, so general editor concurrency is not
-yet qualified. [Blender's documented limitation](https://docs.blender.org/api/main/info_gotchas_threading.html)
+**Remaining stability increment:** native A/B has now migrated, as recorded
+above. Move the live native workspace to a persistent external worker; its older
+Python thread means general editor concurrency is not yet qualified. [Blender's documented limitation](https://docs.blender.org/api/main/info_gotchas_threading.html)
 explains this boundary. Preserve the crash and earlier numerical-test failures;
 no dependency update, native law, original project or model service was changed.
 
