@@ -3748,6 +3748,214 @@ std::string MembraneTick::b2_state_hash() {
     std::lock_guard<std::mutex> lk(b2_mtx_);
     return b2_.state_hash();
 }
+
+// ─── B-INTERACTIVE: player-directed construction mode (membrane_tick.hpp) ───
+// The kit mirrors the workshop challenge drivers' admitted template parts
+// (workshop_challenge1.py kit geometry, all b2_scene_gen.box_document
+// rectangles): axis-aligned boxes, identity pose, ground-rung constants from
+// the same rest-sink (1 cm) + damping-ratio (0.7) law at 4 bottom-face sites.
+namespace {
+struct B2iKitPart {
+    const char* name;
+    float dx, dy, dz;   // metres, authored axes (y vertical)
+    float rho;          // kg/m^3
+    float mu;           // Coulomb ratio
+};
+const B2iKitPart kInteractiveKit[] = {
+    {"pier",   0.10f, 0.30f, 0.18f, 2700.f, 0.6f},
+    {"pillar", 0.12f, 0.10f, 0.12f, 2700.f, 0.6f},
+    {"deck",   0.62f, 0.06f, 0.14f,  600.f, 0.3f},
+    {"crate",  0.10f, 0.05f, 0.05f, 7850.f, 0.4f},
+};
+const int kInteractiveKitN =
+    (int)(sizeof(kInteractiveKit) / sizeof(kInteractiveKit[0]));
+// Boundary triangles of the centered box (b2_scene_gen.BOX_FACES, proven
+// outward winding -- the contact law's containment assumes it).
+const int kBoxTris[36] = {
+    0,2,1, 0,3,2, 4,5,6, 4,6,7, 0,1,5, 0,5,4,
+    2,6,7, 2,7,3, 0,4,7, 0,7,3, 1,2,6, 1,6,5,
+};
+// One chimera.b2_scene.v1 place document for a kit part spawned so its
+// BOTTOM FACE rests on the pick anchor (the part spawns at its document
+// pose, at rest). Returns the document and the generated unique id.
+void b2i_kit_doc_(const B2iKitPart &k, const float anchor[3], uint64_t seq,
+                  std::string &id_out, std::string &doc_out) {
+    double dx = k.dx, dy = k.dy, dz = k.dz;
+    double mass = (double)k.rho * dx * dy * dz;
+    double ixx = mass / 12.0 * (dy * dy + dz * dz);
+    double iyy = mass / 12.0 * (dx * dx + dz * dz);
+    double izz = mass / 12.0 * (dx * dx + dy * dy);
+    // rung constants (b2_scene_gen.rung_constants): s* = 1 cm, zeta = 0.7,
+    // 4 ground sites (only the bottom face can penetrate y = 0 at rest)
+    double k_total = mass * 9.81 / 0.01;
+    double c_total = 2.0 * 0.7 * std::sqrt(k_total * mass);
+    id_out = std::string(k.name) + "_" + std::to_string(seq);
+    char buf[1024];
+    std::snprintf(buf, sizeof buf,
+        "{\"id\":\"%s\",\"mass_kg\":%.9g,\"com_local_m\":[0,0,0],"
+        "\"inertia_com_local_kg_m2\":[%.9g,0,0,0,%.9g,0,0,0,%.9g],"
+        "\"vertices_local_m\":"
+        "[-%.9g,-%.9g,-%.9g,%.9g,-%.9g,-%.9g,%.9g,%.9g,-%.9g,-%.9g,%.9g,-%.9g,"
+        "-%.9g,-%.9g,%.9g,%.9g,-%.9g,%.9g,%.9g,%.9g,%.9g,-%.9g,%.9g,%.9g],"
+        "\"boundary_triangles\":[%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,"
+        "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d],"
+        "\"pose_c_m\":[%.9g,%.9g,%.9g],\"pose_q_wxyz\":[1.0,0.0,0.0,0.0],"
+        "\"ground\":{\"k_n_per_m\":%.9g,\"c_n_s_per_m\":%.9g},\"mu\":%.3g}",
+        id_out.c_str(), mass, ixx, iyy, izz,
+        dx/2, dy/2, dz/2,  dx/2, dy/2, dz/2,  dx/2, dy/2, dz/2,  dx/2, dy/2, dz/2,
+        dx/2, dy/2, dz/2,  dx/2, dy/2, dz/2,  dx/2, dy/2, dz/2,  dx/2, dy/2, dz/2,
+        kBoxTris[0], kBoxTris[1], kBoxTris[2], kBoxTris[3], kBoxTris[4], kBoxTris[5],
+        kBoxTris[6], kBoxTris[7], kBoxTris[8], kBoxTris[9], kBoxTris[10], kBoxTris[11],
+        kBoxTris[12], kBoxTris[13], kBoxTris[14], kBoxTris[15], kBoxTris[16], kBoxTris[17],
+        kBoxTris[18], kBoxTris[19], kBoxTris[20], kBoxTris[21], kBoxTris[22], kBoxTris[23],
+        kBoxTris[24], kBoxTris[25], kBoxTris[26], kBoxTris[27], kBoxTris[28], kBoxTris[29],
+        kBoxTris[30], kBoxTris[31], kBoxTris[32], kBoxTris[33], kBoxTris[34], kBoxTris[35],
+        anchor[0], anchor[1] + (float)dy * 0.5, anchor[2],
+        k_total / 4.0, c_total / 4.0, (double)k.mu);
+    doc_out = buf;
+}
+}   // namespace
+
+void MembraneTick::b2i_set_enabled(bool on) {
+    std::lock_guard<std::mutex> lk(b2i_mtx_);
+    b2i_on_.store(on, std::memory_order_release);
+    if (!on) {   // deterministic off (the loco-spike law): mode + selection reset
+        b2i_mode_ = -1;
+        b2i_selected_.clear();
+        b2i_anchor_valid_ = false;
+    }
+}
+
+void MembraneTick::b2i_click(const float eye[3], const float dir[3]) {
+    std::string id;
+    float hit[3];
+    bool got;
+    {
+        std::lock_guard<std::mutex> lk(b2_mtx_);
+        got = b2_.pick(eye, dir, id, hit);   // SAME meshes the renderer draws
+        if (got) b2_.set_highlight(id);
+    }
+    // A miss keeps the last selection (the design's own law); only a hit
+    // moves the selection and the ghost anchor.
+    std::lock_guard<std::mutex> lk(b2i_mtx_);
+    if (!got) return;
+    b2i_selected_ = id;
+    for (int k = 0; k < 3; ++k) b2i_anchor_[k] = hit[k];
+    b2i_anchor_valid_ = true;
+}
+
+void MembraneTick::b2i_cycle_mode() {
+    std::lock_guard<std::mutex> lk(b2i_mtx_);
+    b2i_mode_ = (b2i_mode_ + 1 >= kInteractiveKitN) ? -1 : b2i_mode_ + 1;
+}
+
+std::string MembraneTick::b2i_mode_name() const {
+    std::lock_guard<std::mutex> lk(b2i_mtx_);
+    if (b2i_mode_ < 0) return "off";
+    return std::string("place_") + std::to_string(b2i_mode_ + 1);
+}
+
+std::string MembraneTick::b2i_commit() {
+    std::string doc, id;
+    {
+        std::lock_guard<std::mutex> lk(b2i_mtx_);
+        if (b2i_mode_ < 0)
+            return std::string("interactive: place mode is off");
+        if (!b2i_anchor_valid_)
+            return std::string("interactive: no pick point yet (click a part first)");
+        b2i_kit_doc_(kInteractiveKit[b2i_mode_], b2i_anchor_, b2i_seq_, id, doc);
+    }
+    std::string why;
+    {
+        std::lock_guard<std::mutex> lk(b2_mtx_);
+        why = b2_.place(doc);   // the SAME transaction the /tick_b2_place route runs
+        if (why.empty())
+            b2_.set_highlight(id);   // the visual highlight follows the selection
+    }
+    if (!why.empty()) return why;   // refusal: scene untouched (transaction law)
+    std::lock_guard<std::mutex> lk(b2i_mtx_);
+    ++b2i_seq_;                     // the id is burned only on success
+    b2i_selected_ = id;             // selection moves to the placed part
+    return std::string();
+}
+
+void MembraneTick::b2i_cancel() {
+    {
+        std::lock_guard<std::mutex> lk(b2_mtx_);
+        b2_.set_highlight(std::string());
+    }
+    std::lock_guard<std::mutex> lk(b2i_mtx_);
+    b2i_mode_ = -1;
+    b2i_selected_.clear();
+}
+
+std::string MembraneTick::b2i_remove_selected() {
+    std::string doc, id;
+    {
+        std::lock_guard<std::mutex> lk(b2i_mtx_);
+        if (b2i_selected_.empty())
+            return std::string("interactive: no selected part");
+        id = b2i_selected_;         // kit ids are alphanumeric+underscore: JSON-safe
+        doc = "{\"id\":\"" + id + "\"}";
+    }
+    std::string why;
+    {
+        std::lock_guard<std::mutex> lk(b2_mtx_);
+        why = b2_.remove_part(doc);
+    }
+    if (why.empty()) {
+        std::lock_guard<std::mutex> lk(b2i_mtx_);
+        b2i_selected_.clear();
+        {
+            std::lock_guard<std::mutex> lk2(b2_mtx_);
+            b2_.set_highlight(std::string());
+        }
+    }
+    return why;
+}
+
+bool MembraneTick::b2i_ghost(float out[3], float half[3]) const {
+    std::lock_guard<std::mutex> lk(b2i_mtx_);
+    if (b2i_mode_ < 0 || !b2i_anchor_valid_) return false;
+    const B2iKitPart &k = kInteractiveKit[b2i_mode_];
+    out[0] = b2i_anchor_[0];
+    out[1] = b2i_anchor_[1] + k.dy * 0.5f;
+    out[2] = b2i_anchor_[2];
+    half[0] = k.dx * 0.5f;
+    half[1] = k.dy * 0.5f;
+    half[2] = k.dz * 0.5f;
+    return true;
+}
+
+std::string MembraneTick::b2i_state_json() {
+    bool on, anchor_valid;
+    int mode;
+    std::string sel;
+    float a[3] = {0, 0, 0};
+    {
+        std::lock_guard<std::mutex> lk(b2i_mtx_);
+        on = b2i_on_.load(std::memory_order_acquire);
+        mode = b2i_mode_;
+        sel = b2i_selected_;
+        anchor_valid = b2i_anchor_valid_;
+        for (int k = 0; k < 3; ++k) a[k] = b2i_anchor_[k];
+    }
+    std::string s = "{\"interactive\":";
+    s += on ? "true" : "false";
+    s += ",\"mode\":\"";
+    s += (mode < 0 ? "off" : std::string("place_") + std::to_string(mode + 1));
+    s += "\",\"selected\":";
+    s += sel.empty() ? "null" : ("\"" + sel + "\"");
+    s += ",\"anchor\":";
+    if (anchor_valid) {
+        s += "[" + std::to_string(a[0]) + "," + std::to_string(a[1]) + ","
+           + std::to_string(a[2]) + "]";
+    } else {
+        s += "null";
+    }
+    s += "}";
+    return s;
+}
 // B6 working processes: same lane, same lock, same refusal convention.
 std::string MembraneTick::b2_add_chamber(const std::string &json) {
     std::lock_guard<std::mutex> lk(b2_mtx_);

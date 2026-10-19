@@ -54,6 +54,11 @@ public:
     // contact agree by construction. Returns false when the ray hits nothing.
     bool pick(const float eye[3], const float dir[3],
               std::string &id_out, float point_out[3]) const;
+    // B-INTERACTIVE selection highlight (display only, never serialized --
+    // save_doc_/state_hash never see it): the part id whose render pass uses
+    // kHighlightRgb instead of its palette color; empty = none. A removed id
+    // simply matches nothing (the palette shows through).
+    void set_highlight(const std::string &id) { highlight_id_ = id; }
 
     // Controls (B2 gate right column). Empty string on success, refusal
     // otherwise. set_load: persistent force at a world point on one part
@@ -291,6 +296,7 @@ private:
     double stored_penalty_j_() const;
 
     std::vector<Part> parts_;
+    std::string highlight_id_;                   // B-INTERACTIVE selection (display only)
     std::vector<Weld> welds_;                    // finite-area connectors
     std::vector<Chamber> chambers_;              // B6 pressure/flux inventories
     std::vector<Valve> valves_;                  // B6 paired transport paths

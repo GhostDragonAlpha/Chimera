@@ -1,4 +1,5 @@
 #include "engine.hpp"
+#include "membrane_tick.hpp"
 #include "joint_binding.hpp"
 #include "platform/vulkan_surface.h"
 #include <windows.h>
@@ -37,6 +38,58 @@ static bool       g_mouse_captured = false;
 static int        g_last_mx = 0, g_last_my = 0;
 static bool       g_keys[256] = {};     // current frame key state
 static Engine*    g_key_engine = nullptr;  // set in Engine::init so WndProc can reach pose toggles
+// B-INTERACTIVE click/drag split (armed ONLY while interactive mode is ON,
+// default OFF -- without it every variable below stays untouched and the
+// shipped orbit path is byte-identical). The press records its point, the
+// orbit move branch accumulates travel, and the UP fires a pick CLICK only
+// under the same law as the right-click context menu (StudioUI::on_rbutton_up:
+// travel under 4 px is a click) -- a drag orbits, a click selects.
+static bool       g_b2i_click_pending = false;
+static int        g_b2i_press_mx = 0, g_b2i_press_my = 0;
+static float      g_b2i_travel = 0.f;
+// B-INTERACTIVE: a confirmed left-click picks through the SAME camera ray the
+// /tick_b2_pick route uses (Engine::camera_ray + B2Scene::pick). u,v are pixel
+// fractions with v measured from the TOP (screen y grows downward).
+static void b2i_fire_click(HWND hwnd, int mx, int my) {
+    if (!g_key_engine || !g_interactive_tick) return;
+    RECT rc;
+    if (!GetClientRect(hwnd, &rc) || rc.right < 2 || rc.bottom < 2) return;
+    float u = (float)mx / (float)rc.right;
+    float v = (float)my / (float)rc.bottom;
+    float eye[3], dir[3];
+    if (!g_key_engine->camera_ray(u, v, eye, dir)) return;   // no camera yet
+    g_interactive_tick->b2i_click(eye, dir);
+}
+// B-INTERACTIVE keyboard (Tab cycle / Enter commit / Esc cancel / X remove).
+// Returns true when the key was consumed. Reached only after the console gate
+// in WndProc -- a typed command can never place a part. Refusals and results
+// land in the engine log so they reach the console scrollback.
+static bool b2i_key(unsigned char vk, Engine* eng) {
+    if (!g_interactive_tick) return false;
+    if (vk == VK_TAB) {
+        g_interactive_tick->b2i_cycle_mode();
+        eng->log_event("b2i", "place mode: " + g_interactive_tick->b2i_mode_name());
+        return true;
+    }
+    if (vk == VK_RETURN) {
+        std::string why = g_interactive_tick->b2i_commit();
+        eng->log_event("b2i", why.empty() ? "part placed at the pick point"
+                                          : "place refused: " + why);
+        return true;
+    }
+    if (vk == VK_ESCAPE) {
+        g_interactive_tick->b2i_cancel();   // idempotent: nothing to cancel = no-op
+        eng->log_event("b2i", "place mode + selection cancelled");
+        return true;
+    }
+    if (vk == 'X') {
+        std::string why = g_interactive_tick->b2i_remove_selected();
+        eng->log_event("b2i", why.empty() ? "selected part removed"
+                                          : "remove refused: " + why);
+        return true;
+    }
+    return false;
+}
 // THE ENGINE STUDIO: ui.cpp's one-shot font upload needs the engine's queue + a
 // command pool; init() publishes them here before ui_.init runs.
 VkQueue       g_ui_queue    = VK_NULL_HANDLE;
@@ -211,6 +264,17 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
             if ((wp & 0xFF) == VK_F8) wk = 5;   // CAPTURE
             if (wk >= 0) g_key_engine->ui_.set_left_mode(wk);
         }
+        // B-INTERACTIVE construction keys (default OFF; /tick_b2_interactive
+        // arms): Tab cycles the place mode, Enter commits, Esc cancels, X
+        // removes the selection. Edge-triggered (no autorepeat) and reached
+        // only when the console is CLOSED -- the console gate above returns
+        // every keydown while it is open, so a typed command can never place
+        // a part. With interactive off this block is skipped entirely.
+        if (g_key_engine && g_interactive_tick && g_interactive_tick->b2i_enabled()
+            && !(lp & 0x40000000)
+            && b2i_key((unsigned char)(wp & 0xFF), g_key_engine)) {
+            return 0;
+        }
     } else if (msg == WM_KEYUP || msg == WM_SYSKEYUP) {
         g_keys[wp & 0xFF] = false;
     }
@@ -244,14 +308,37 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
         g_mouse_captured = true;
         g_last_mx = (int)(short)LOWORD(lp);
         g_last_my = (int)(short)HIWORD(lp);
+        // B-INTERACTIVE: arm the click/drag split (a no-op while the mode is
+        // off). Panel presses never reach here -- consumed upstream.
+        if (g_interactive_tick && g_interactive_tick->b2i_enabled()) {
+            g_b2i_press_mx  = g_last_mx;
+            g_b2i_press_my  = g_last_my;
+            g_b2i_travel    = 0.f;
+            g_b2i_click_pending = true;
+        }
         return 0;
     }
     if (msg == WM_LBUTTONUP) {
         if (g_mouse_captured) { ReleaseCapture(); g_mouse_captured = false; }
+        // B-INTERACTIVE: the click/drag split fires the pick only under the
+        // 4 px travel law -- a drag orbits, a click selects (the right-click
+        // context-menu law, StudioUI::on_rbutton_up).
+        if (g_b2i_click_pending) {
+            g_b2i_click_pending = false;
+            if (g_interactive_tick && g_interactive_tick->b2i_enabled()
+                && g_b2i_travel < 4.f)
+                b2i_fire_click(hwnd, g_b2i_press_mx, g_b2i_press_my);
+        }
         return 0;
     }
     if (msg == WM_MOUSEMOVE && g_mouse_captured) {
         int mx = (int)(short)LOWORD(lp), my = (int)(short)HIWORD(lp);
+        // B-INTERACTIVE: accumulate the drag's travel BEFORE the orbit step
+        // consumes the delta (the 4 px click law's measurement).
+        if (g_b2i_click_pending) {
+            float ddx = (float)(mx - g_last_mx), ddy = (float)(my - g_last_my);
+            g_b2i_travel += sqrtf(ddx * ddx + ddy * ddy);
+        }
         float dm = static_cast<float>(mx - g_last_mx);
         float  dm_y = static_cast<float>(my - g_last_my);
         g_cam.theta -= dm * 0.005f;

@@ -1352,3 +1352,39 @@ s = 1.0 only. No record change; published artifacts left as written.
   green / variation red with ACTION / recovery green). PUBLISH.
 - Not shown: human playability; rotated-surface defect documented, not
   fixed.
+
+## WC-INTERACT-1 — player-directed construction: the workshop answers to the mouse (2026-10-19) — PASS (§5.1 row 1, phase 1)
+
+- Engine change 422+/1- across six CLEAN files (engine.cpp, main.cpp,
+  b2_scene.{cpp,hpp}, membrane_tick.{cpp,hpp}); ui.cpp untouched (mtime
+  2026-10-12 proves the pre-existing dirt was not disturbed). Report +
+  smoke: `docs/evidence/mechanism_factory/wc_interact1/`.
+- Opt-in `POST /tick_b2_interactive {"on":true}` / `--interactive`,
+  DEFAULT OFF (disabling resets state — deterministic off). With it off
+  every shipped input path is byte-identical. Click/drag split follows the
+  right-click 4 px law; pick reuses camera_ray + B2Scene::pick (B3 render/
+  pick/contact agreement by construction). Keys Tab/Enter/Esc/X edge-
+  triggered behind the console gate (a typed command can never place).
+  Commit/remove call the UNCHANGED B2Scene transactions — same validation,
+  refusal text and state hash; selection/anchor/mode are input state only.
+- Visual language: selected part renders WHITE (outside palette), place
+  preview CYAN (outside palette + highlight) — preview vs committed vs
+  contact distinguishable by color; highlight never serialized.
+- Evidence: baseline rebuild of UNMODIFIED source → pytest
+  tools/construction_packet 88 passed (exe fee97b37...); after edits 88
+  passed (lead re-ran independently: 88 passed in 188.35 s; final exe
+  9cb45190...). Smoke drives the window with REAL Win32 PostMessageW
+  mouse/key events: 15/15 asserts incl. negatives (Esc count unchanged,
+  disable resets, click-with-mode-off changes nothing); screenshots show
+  white highlight + cyan ghost (lead viewed).
+- Lead review (author-independent, focused): full diff read — all paths
+  gated on b2i_enabled(); b2i/b2 mutexes never nested in reverse order;
+  ghost uses proven-outward BOX_FACES winding (naive winding measured as
+  culled slivers — fixed + commented). Maya found and fixed two real bugs
+  during verification (ghost culling; highlight not following commit).
+- Phase-1 limits stated: opaque ghost, click-anchor (no hover-follow), no
+  weld binding yet, no on-screen mode readout (would need dirty ui.cpp —
+  lead decision), human playability unobserved.
+- Process: Maya one dispatch ~2.1 h under the revised brief (implement +
+  smoke, baseline-first, no capture/commit); lead reviewed + re-ran +
+  published.

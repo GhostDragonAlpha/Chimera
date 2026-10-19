@@ -2453,6 +2453,11 @@ static const double kLayerRgb[4][3] = {
     {0.85, 0.75, 0.20},   // layer 3 (placed part)
 };
 
+// B-INTERACTIVE selection highlight: white -- outside the admission palette
+// (red/green/blue/yellow) and outside the cyan place-mode ghost, so a frame
+// capture can name the selected layer by color alone.
+static const double kHighlightRgb[3] = {1.0, 1.0, 1.0};
+
 // ─── B7 display LOD ──────────────────────────────────────────────────────────
 // LOD 0 renders/picks the physical boundary triangles (the B3 agreement:
 // render, pick and contact walk the same mesh). LOD 1 is a DISPLAY-only
@@ -2524,7 +2529,11 @@ void B2Scene::render_mesh(std::vector<float> &verts9,
     if (!active_) return;
     for (size_t pi = 0; pi < parts_.size(); ++pi) {
         const Part &p = parts_[pi];
-        const double *rgb = kLayerRgb[pi % 4];
+        // B-INTERACTIVE selection highlight: the picked part renders white
+        // instead of its palette color (display only; pick and physics are
+        // unaffected).
+        const double *rgb = (!highlight_id_.empty() && p.id == highlight_id_)
+                                ? kHighlightRgb : kLayerRgb[pi % 4];
         if (lod_ == 1) {
             double box[8][3];
             bbox_corners_(p, box);

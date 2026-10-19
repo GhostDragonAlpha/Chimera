@@ -15,6 +15,12 @@
 #include <thread>
 #include <vector>
 
+// The resident tick instance lives in main.cpp (file-static g_tick); this
+// pointer is bound at boot so the window thread's input handlers (engine.cpp
+// WndProc) reach the SAME instance the HTTP routes use. Null-checked at use.
+class MembraneTick;                     // forward: declared below
+extern MembraneTick* g_interactive_tick;
+
 class MembraneTick {
 public:
     void init(uint32_t tris, const std::vector<uint32_t>& indices,
@@ -229,6 +235,29 @@ public:
     // save document and the state hash never see it; pick resolves the same
     // part ids at either level.
     std::string b2_set_display_lod(const std::string &json);
+    // ─── B-INTERACTIVE: player-directed construction mode (GAME_PLAN §5.1,
+    // "Close the gaps between a walkthrough and player-directed construction")
+    // ─── DEFAULT OFF: /tick_b2_interactive {"on":true} (or --interactive at
+    // boot) arms it; with it off every input path (orbit, pan, console)
+    // behaves exactly as shipped. The window thread's WndProc (engine.cpp)
+    // drives the mutators below; the HTTP routes flip the switch and read
+    // the state. Selection/anchor/mode are INPUT state (never scene state):
+    // place and remove go through the SAME B2Scene transactions the HTTP
+    // routes use, so validation, refusal text and the state hash are
+    // unchanged; the refusal text returns to the caller for engine.log_event.
+    void b2i_set_enabled(bool on);
+    bool b2i_enabled() const { return b2i_on_.load(std::memory_order_acquire); }
+    void b2i_click(const float eye[3], const float dir[3]);   // pick at the click ray
+    void b2i_cycle_mode();                                    // Tab: off -> kit 1 -> ...
+    std::string b2i_commit();                                 // Enter: place at the anchor
+    void b2i_cancel();                                        // Esc: mode + selection off
+    std::string b2i_remove_selected();                        // X: remove the selection
+    std::string b2i_mode_name() const;                        // "off" | "place_N"
+    std::string b2i_state_json();                             // GET /tick_b2_interactive
+    // Ghost preview for the render lane (main.cpp): true while a place mode
+    // is armed AND a pick anchor exists; out = box center, half = half
+    // extents of the current kit part (display only, never scene state).
+    bool b2i_ghost(float out[3], float half[3]) const;
     ~MembraneTick();   // B7: joins the physical-clock thread if still running
 
     // F1 STANCE (the balance rung; prereg appended to
@@ -636,6 +665,15 @@ private:
     long b2_clock_clamps_ = 0;               // catch-up bounds applied
     long b2_clock_slow_ = 0;                 // wakes over 2x the 2 ms budget
     double b2_clock_max_gap_ms_ = 0.0;       // worst observed wake gap
+    // B-INTERACTIVE state (b2i_mtx_; b2i_on_ is atomic because the window
+    // thread reads it on every click and keypress with no lock taken).
+    mutable std::mutex b2i_mtx_;
+    std::atomic<bool> b2i_on_{false};
+    int b2i_mode_ = -1;              // -1 = off, else the kit table index
+    std::string b2i_selected_;       // picked part id ("" = none)
+    bool b2i_anchor_valid_ = false;  // true once a click's ray hit a part
+    float b2i_anchor_[3] = {0, 0, 0};
+    uint64_t b2i_seq_ = 0;           // unique placed-part id suffix
     // F1 STANCE state (see set_stance above). Default OFF; the lead owns
     // the policy flip after the bars pass (the gravity precedent).
     static constexpr uint8_t ANKLE_PIN_L = 17, ANKLE_PIN_R = 18;

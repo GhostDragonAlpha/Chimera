@@ -96,6 +96,9 @@ static bool g_md_pending = false, g_md_applied = false;
 struct MeshReq { std::vector<float> verts; std::vector<uint32_t> indices; uint32_t N=0, idxCount=0; float cam_radius=12.f, cam_theta=0.f, cam_phi=0.3f; uint32_t slot=0, mode=0; bool update_only=false; bool valid=false; };
 static MeshReq g_mesh_req;
 static MembraneTick g_tick;                    // THE MEMBRANE TICK (Appliance 1)
+// B-INTERACTIVE: bind the resident tick for the window thread's input
+// handlers (engine.cpp WndProc) -- the SAME instance the HTTP routes use.
+MembraneTick* g_interactive_tick = &g_tick;
 
 // ─── B2 SCENE ROUTES (GAME_PLAN_ACTION_RPG.md §13 B2; b2_scene.hpp) ──────
 // Admit a strict chimera.b2_scene.v1 document — two independent rigid
@@ -134,6 +137,19 @@ static std::string route_b2(const std::string &p, const std::string &method,
     }
     if (p == "/tick_b2_clear" && method == "POST") { g_tick.b2_clear(); return "{\"ok\":true}"; }
     if (p == "/tick_b2_state" && method == "GET") return g_tick.b2_telemetry_json();
+    // B-INTERACTIVE (GAME_PLAN §5.1 player-directed construction): the arm
+    // switch + state read. DEFAULT OFF -- with it off every input path
+    // (orbit, pan, console) behaves exactly as shipped. Disabling resets the
+    // place mode and the selection (deterministic off, the loco-spike law).
+    if (p == "/tick_b2_interactive" && method == "GET")
+        return g_tick.b2i_state_json();
+    if (p == "/tick_b2_interactive" && method == "POST") {
+        bool on = false;
+        if (!b2_parse_on_(req_body, on))
+            return b2_refused_("body must be {\"on\":true|false}");
+        g_tick.b2i_set_enabled(on);
+        return std::string("{\"ok\":true,\"interactive\":") + (on ? "true" : "false") + "}";
+    }
     if (p == "/tick_b2_parts" && method == "GET") return g_tick.b2_parts_json();
     if (p == "/tick_b2_inspect" && method == "POST") {
         std::string why, rec = g_tick.b2_inspect(req_body, why);
@@ -919,6 +935,11 @@ int main(int argc, char** argv) {
             fprintf(stderr, "LOCO SPIKE: scratch multi-drive bank enabled "
                             "(default-off; --loco-spike was passed)\n");
         }
+    // B-INTERACTIVE: optional boot arm (--interactive); /tick_b2_interactive
+    // remains the runtime switch. DEFAULT OFF -- without it the shipped
+    // input paths are untouched.
+    for (int i = 1; i < argc; ++i)
+        if (std::string(argv[i]) == "--interactive") g_tick.b2i_set_enabled(true);
 
     // Physics init (passes cfg so it can set physical params)
     g_physics.init(cfg.n_particles, cfg);
@@ -4859,6 +4880,58 @@ int main(int argc, char** argv) {
                 std::vector<float> ov;
                 std::vector<uint32_t> oi;
                 g_tick.b2_render_mesh(ov, oi);
+                // B-INTERACTIVE ghost: while a place mode is armed AND a
+                // pick anchor exists, append the kit part's preview box in
+                // CYAN -- outside the admission palette and the white
+                // selection highlight -- so the eye sees what Enter will
+                // commit. Display only: pick, physics and the state hash
+                // never see it; the opaque ghost is an accepted limitation
+                // (the overlay format has no alpha).
+                {
+                    float gc[3], gh[3];
+                    if (g_tick.b2i_ghost(gc, gh)) {
+                        static const float GHOST_RGB[3] = {0.15f, 0.9f, 1.0f};
+                        // corner i: bit0 x+, bit1 y+, bit2 z+ (b2_scene box law)
+                        static const int C[8][3] = {
+                            {-1,-1,-1},{1,-1,-1},{1,1,-1},{-1,1,-1},
+                            {-1,-1, 1},{1,-1, 1},{1,1, 1},{-1,1, 1}};
+                        // The 12 boundary triangles in the PROVEN-OUTWARD B2
+                        // winding (b2_scene_gen.BOX_FACES): the overlay draws
+                        // through tri_pipeline_ (cull BACK, front CCW), so a
+                        // differently-wound face is culled -- measured: a
+                        // naive quad loop showed the ghost as two slivers.
+                        // 3 verts per triangle, re-outwarded flat normals.
+                        static const int T[12][3] = {
+                            {0,2,1},{0,3,2},{4,5,6},{4,6,7},{0,1,5},{0,5,4},
+                            {2,6,7},{2,7,3},{0,4,7},{0,7,3},{1,2,6},{1,6,5}};
+                        const uint32_t base = (uint32_t)(ov.size() / 9);
+                        for (int t = 0; t < 12; ++t) {
+                            float p[3][3];
+                            for (int k = 0; k < 3; ++k)
+                                for (int a = 0; a < 3; ++a)
+                                    p[k][a] = gc[a] + (float)C[T[t][k]][a] * gh[a];
+                            float e1[3] = {p[1][0]-p[0][0], p[1][1]-p[0][1], p[1][2]-p[0][2]};
+                            float e2[3] = {p[2][0]-p[0][0], p[2][1]-p[0][1], p[2][2]-p[0][2]};
+                            float n[3] = {e1[1]*e2[2]-e1[2]*e2[1],
+                                          e1[2]*e2[0]-e1[0]*e2[2],
+                                          e1[0]*e2[1]-e1[1]*e2[0]};
+                            float nl = sqrtf(n[0]*n[0] + n[1]*n[1] + n[2]*n[2]);
+                            if (nl < 1e-9f) continue;
+                            float tc[3] = {(p[0][0]+p[1][0]+p[2][0])/3.f - gc[0],
+                                           (p[0][1]+p[1][1]+p[2][1])/3.f - gc[1],
+                                           (p[0][2]+p[1][2]+p[2][2])/3.f - gc[2]};
+                            if (n[0]*tc[0] + n[1]*tc[1] + n[2]*tc[2] < 0.f)
+                                for (int a = 0; a < 3; ++a) n[a] = -n[a];
+                            n[0] /= nl; n[1] /= nl; n[2] /= nl;
+                            for (int k = 0; k < 3; ++k) {
+                                for (int a = 0; a < 3; ++a) ov.push_back(p[k][a]);
+                                for (int a = 0; a < 3; ++a) ov.push_back(n[a]);
+                                for (int a = 0; a < 3; ++a) ov.push_back(GHOST_RGB[a]);
+                                oi.push_back(base + (uint32_t)(3*t + k));
+                            }
+                        }
+                    }
+                }
                 // icount is the INDEX count (vkCmdDrawIndexed's indexCount),
                 // not the triangle count: 3 indices per boundary triangle.
                 if (!ov.empty() && !oi.empty())

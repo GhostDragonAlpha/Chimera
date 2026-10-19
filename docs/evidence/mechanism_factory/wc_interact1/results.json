@@ -1,0 +1,110 @@
+{
+  "steps": [],
+  "shots": {
+    "1-selected-highlight": {
+      "file": "1-selected-highlight.png",
+      "sha256": "a659376d740a4189e909994a7bce355230f1fc1675257f01ecf67a16281538e4",
+      "bytes": 7750787
+    },
+    "2-ghost-preview": {
+      "file": "2-ghost-preview.png",
+      "sha256": "38ab0e4fb66e8587a4f50dedbb6defe97ece5d348db8024f082028b13c424671",
+      "bytes": 7750787
+    },
+    "3-placed": {
+      "file": "3-placed.png",
+      "sha256": "05c64cce331e7b84c0ca0a8f7b06f2d913ef7c8392d240fd1c33dff66899bd2d",
+      "bytes": 7750787
+    },
+    "4-removed": {
+      "file": "4-removed.png",
+      "sha256": "662957cb4f52c416da4b80d1fe84de960825fa088051853a77c8cc735bee6358",
+      "bytes": 7750787
+    }
+  },
+  "asserts": [
+    {
+      "name": "admit ok",
+      "ok": true,
+      "detail": "{'ok': True, 'schema': 'chimera.b2_scene.v1'}"
+    },
+    {
+      "name": "pause ok",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "scene has 2 parts",
+      "ok": true,
+      "detail": "n=2"
+    },
+    {
+      "name": "interactive arm ok",
+      "ok": true,
+      "detail": "{'ok': True, 'interactive': True}"
+    },
+    {
+      "name": "interactive:true, mode off",
+      "ok": true,
+      "detail": "{\"interactive\": true, \"mode\": \"off\", \"selected\": null, \"anchor\": null}"
+    },
+    {
+      "name": "select block_a",
+      "ok": true,
+      "detail": "{\"interactive\": true, \"mode\": \"off\", \"selected\": \"block_a\", \"anchor\": [0.0, 0.05149, -0.150002]}"
+    },
+    {
+      "name": "mode place_1",
+      "ok": true,
+      "detail": "{\"interactive\": true, \"mode\": \"place_1\", \"selected\": \"block_a\", \"anchor\": [0.0, 0.05149, -0.150002]}"
+    },
+    {
+      "name": "anchor set on block_b pick",
+      "ok": true,
+      "detail": "{\"interactive\": true, \"mode\": \"place_1\", \"selected\": \"block_b\", \"anchor\": [0.37108, 0.036045, -0.100001]}"
+    },
+    {
+      "name": "part count +1",
+      "ok": true,
+      "detail": "2 -> 3"
+    },
+    {
+      "name": "placed part exists + selected",
+      "ok": true,
+      "detail": "{\"interactive\": true, \"mode\": \"place_1\", \"selected\": \"pier_0\", \"anchor\": [0.37108, 0.036045, -0.100001]}"
+    },
+    {
+      "name": "esc: mode off, selection cleared, count unchanged",
+      "ok": true,
+      "detail": "{\"interactive\": true, \"mode\": \"off\", \"selected\": null, \"anchor\": [0.37108, 0.036045, -0.100001]} n=3"
+    },
+    {
+      "name": "re-select block_a",
+      "ok": true,
+      "detail": "{\"interactive\": true, \"mode\": \"off\", \"selected\": \"block_a\", \"anchor\": [0.0, 0.05149, -0.150002]}"
+    },
+    {
+      "name": "X removed block_a",
+      "ok": true,
+      "detail": "{\"interactive\": true, \"mode\": \"off\", \"selected\": null, \"anchor\": [0.0, 0.05149, -0.150002]} n=2"
+    },
+    {
+      "name": "disable resets state",
+      "ok": true,
+      "detail": "{\"interactive\": false, \"mode\": \"off\", \"selected\": null, \"anchor\": null}"
+    },
+    {
+      "name": "click with mode OFF changes nothing",
+      "ok": true,
+      "detail": "{\"interactive\": false, \"mode\": \"off\", \"selected\": null, \"anchor\": null}"
+    }
+  ],
+  "exe_sha256": "9cb45190428c4043a374aca9e83b4ca6dae8554a1056240be1ada6ba56e68cbb",
+  "exe": "D:\\Chimera-Maintenance\\PythonChimera\\.tmp\\body-engine\\Release\\chimera_engine.exe",
+  "pid": 153616,
+  "client": [
+    1920,
+    1009
+  ],
+  "verdict": "PASS"
+}
