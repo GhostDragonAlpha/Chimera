@@ -4763,18 +4763,59 @@ source/wheel hashes and exact patches live in
 `RUNTIME_LOCK.json` and `COMPATIBILITY_PATCHES.json`; the local README supplies the
 editing loop. The original failed material/Blender-compatibility checks remain.
 
-**What this unlocks next.** Reuse this coupled open-source solver for cloth/shells,
-compliant solids, rigid loads and rods instead of rebuilding those foundations.
-Inspect upstream attachments/joints, then qualify one useful layered or mounted
-construction and feed response trials into the existing recipe/mechanism evidence
-pipeline. Preserve explicit ownership of forces and state: libuipc is not yet
-coupled to Chimera's CA, native membrane solver or native render kernel. Its
-Blender playback is cached geometry; full-state arbitrary-time continuation,
-layer bonding, rod torsion, fracture/plasticity and large-scene budgets remain
-separate gaps. Match units, laws, supports and observables before cross-engine
-comparisons; Chimera's constant-tension coupon is not an elastic-cloth reference.
-The user's workers were stopped by the user for these GPU tests; model settings
-were unchanged. Water remains deferred.
+**Layered construction and attachment increment (2026-10-19; tested).** The
+new **Chimera Layered Materials** desktop shortcut opens
+`ChimeraStudio/Projects/Layered Materials Workshop/Chimera Layered Materials.blend`.
+It preserves both previous user projects. A rigid backing, stiffer shell, softer
+liner and deformable bumper use four saved physical presets. Three authored seams
+contain twelve native [SoftVertexStitch](https://github.com/spiriMirror/libuipc/blob/719f6caaa958963df31bb9c0c5ed49a21fbe08a8/docs/specification/constitutions/soft_vertex_stitch.md)
+connections. The adapter reuses the native law and existing CUDA material/contact
+owners; it adds no Python solver. These are finite-gap elastic links with recorded
+rest lengths and per-stitch stiffness in N/m, not adhesive laminate certification.
+
+In **N > libuipc > Layer Attachments**, choose two parts and equal-size vertex
+groups, bind their nearest unmatched endpoints, change stiffness or disable a
+seam, then bake. Native-backed yellow endpoint guides follow saved motion in the
+viewport. Model normally in Object/Edit Mode; generate a solid's volume before
+binding. Changes to geometry, spacing or endpoint groups require rebinding, and
+physical/material changes invalidate the old bake while retaining its files.
+Colors identify the assignments; presets/constitutions supply actual behavior.
+
+The same scene at 0.6 seconds produced bumper drops of **0.111 m attached**, **1.198 m
+disconnected**, and **0.703 m with tenfold softer seams**. These measured controls
+show load transfer and a useful stiffness adjustment. The attached bake used
+61 frames / 120 native steps in 6.38 seconds on the 4090. Fifteen input-validation
+checks and four stale-cache checks passed. Fresh-process playback reproduced all
+16 checked object/frame hashes exactly; material values, presets and twelve
+stitches survived saving. An actual Blender window drew the panel and attachment
+guides. Both old user files are hash-identical, and the earlier mixed-material
+project still passes its own sixteen-hash replay check. Evidence and the retained
+initial test-harness failure are in `ChimeraStudio/Libuipc/evidence/layered-workshop`;
+`RUNTIME_LOCK.json`, `COMPATIBILITY_PATCHES.json` and the acceptance index pin the
+installed adapter. Opening remains offline. This is small-construction evidence,
+not a real-time, large-scene or manufactured-material qualification.
+
+**Next editor work.** Improve endpoint pairing/inspection and reusing a saved
+construction before inventing more physical laws. A mounted rod/shell or asymmetric
+layered example can extend the same native connection path when useful. Feed
+accepted response trials into the existing recipe/mechanism evidence pipeline
+once the mapping is explicit; do not build another catalog. Studio's
+`Libuipc/WORK_LOG.md` preserves decisions, evidence and the next bounded tasks.
+The user authorized continued Blender work through **2026-10-20 18:13:28 UTC**
+(1:13 p.m. Central), with the deadline enforced by the attached follow-up schedule.
+Preserve Z Code's saved goal and completed progress; this paragraph updates its
+shared work plan, not its runtime goal state.
+
+**Ownership and remaining gaps.** libuipc is not yet force/state coupled to
+Chimera's CA, native membrane solver or native render kernel; preserve those
+owners. Cached Blender animation is distinct from full physical checkpoints.
+Arbitrary-time solver continuation, adhesive layer bonding, rod torsion,
+fracture/plasticity and large-scene budgets remain separate work. Match units,
+laws, supports and observables before cross-engine comparisons: Chimera's
+constant-tension coupon is not an elastic-cloth reference. Model settings were
+unchanged; the user had stopped their workers for the GPU tests. Water stays
+deferred. These results belong to the isolated Studio lane, not a claim of
+admission to a deployed engine/controller.
 
 **Other Blender reuse.** [Tissue](https://github.com/alessandro-zomparelli/tissue)
 provides computational design and repeated cellular surfaces, not biomechanical
