@@ -4,17 +4,19 @@ This is an isolated, working authoring bridge and Blender source fork. The main 
 
 ## Start
 
-Double-click **D:/Chimera-Maintenance/ChimeraStudio/Start Chimera Studio.cmd**.
+Double-click **Chimera Blender** on the Windows desktop, or **D:/Chimera-Maintenance/ChimeraStudio/Start Chimera Studio.cmd**.
+
+This opens **D:/Chimera-Maintenance/ChimeraStudio/Projects/Membrane Workshop/Chimera Membrane Workshop.blend**, your working copy of the tested construction. The launcher never replaces your edits. See [BLENDER_WORKFLOW.md](BLENDER_WORKFLOW.md) for the editing loop and integration plan. Use -ProjectFile with a quoted path for another file, or -Empty for a blank workspace.
 The launcher uses the completed custom build when available, otherwise the existing Blender 5.0.1 executable with the same integration. It uses private configuration under `integration/.user`; normal Blender preferences are untouched.
 
 1. Open **Chimera → Membrane Assembly** in Blender's viewport sidebar (N).
-2. Choose **Add Existing Three-Film Assembly**. These are the existing mechanism-factory A/B/C films, with their two explicit apex connections. Choose **Build Connected Films**.
+2. The default project already contains the assembly; choose **Resume Saved GPU Matter** to calculate. In an empty workspace, choose **Add Existing Three-Film Assembly**. These are the existing mechanism-factory A/B/C films, with their two explicit apex connections. Build explicitly after authoring changes; the saved project can resume directly.
 3. Set **Center load N** (start with 0.8) and **Apply Center Load**. Select any computed film to inspect its identity and surface tension. Its vertices and custom normals come from the native GPU presentation buffer, checked against the accepted physical state.
 4. **Show Native Render in Image Editor** displays the native engine's own raster image in Blender. Shift-F5 returns that area to the 3D editor. This uses a fixed inspection camera; synchronizing Blender's arbitrary cameras is still open.
 5. **Replay Native Checkpoint** restores a confirmed physical sample. Continuing branches from that sample. Save normally as `.blend`, or exchange **Save/Open GPU Matter Trial** (`.matter.json`). Reopening shows the confirmed state offline; **Resume Saved GPU Matter** starts only Studio's private helper.
 6. **Return to Matter Authoring** reveals the editable source films. Select films and **Assign Surface Material** to change surface tension; select exactly two films to connect/disconnect their marked apices. Rebuild explicitly after changes. Mark a single selected vertex as the apex when preparing another supported fan.
 
-A tested example is `evidence/membrane-assembly.blend`; the exchange document is `evidence/membrane-assembly.matter.json`. Open the `.blend` through Chimera Studio so its integration is registered. Native state survives helper shutdown; no GPU allocation occurs merely from opening the file.
+A tested example is `evidence/membrane-assembly.blend`; the exchange document is `evidence/membrane-assembly.matter.json`. Open the `.blend` through Chimera Studio so its integration is registered. Native state survives helper shutdown. Opening a save does not start the native simulation helper; Blender itself uses normal viewport graphics memory.
 
 **Scope:** this is the Blender interface to Chimera's existing matter systems. No game-plan or game-loop changes are part of this work. Blender supplies editing, selection, materials UI, image viewing and persistence; Chimera owns physical evolution and kernel output. Water remains deferred. The integration exposes missing engine capabilities instead of assigning them invented behavior.
 
@@ -105,3 +107,7 @@ Blender fork: `../blender`, branch `chimera/studio-v5.0.1`, upstream tag `v5.0.1
 ## Installed build result
 
 The custom executable was built and tested from Blender fork commit `68c79f03362ebc6e41d16a10b77c8f794097e644` and integration source commit `09471402e501619a923c7d516af1d54234897a8a`. Ten background integration checks, the installed application-template check (including configuration isolation), and a short real-window viewport/native-play check passed. See `evidence/build-manifest.json` for exact executable/DLL identities and `evidence/viewport.png` for the actual view. Full scene throughput and human usability remain unmeasured.
+
+## Working-project entry check
+
+Run ./tools/Test-Studio.ps1 -ProjectEntry after installing the launcher. It opens the actual working file through the Chimera application template, checks the three source identities/two connections, then saves and reopens a separate test copy. The native physical/render document must stay identical and the working project must remain byte-identical. No GPU helper or model server starts. Evidence: evidence/project-entry.json.

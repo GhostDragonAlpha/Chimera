@@ -1,4 +1,4 @@
-param([string]$Blender, [switch]$Gui, [switch]$Gpu, [switch]$Membranes)
+param([string]$Blender, [switch]$Gui, [switch]$Gpu, [switch]$Membranes, [switch]$ProjectEntry)
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
 $studio = Split-Path -Parent $root
@@ -10,6 +10,16 @@ $env:CHIMERA_STUDIO_ROOT = $root
 $env:BLENDER_USER_CONFIG = Join-Path $root '.user/test-config'
 $env:BLENDER_USER_SCRIPTS = Join-Path $root '.user/test-scripts'
 New-Item -ItemType Directory -Force -Path $env:BLENDER_USER_CONFIG,$env:BLENDER_USER_SCRIPTS | Out-Null
+if ($ProjectEntry) {
+    $plan = (& (Join-Path $root 'launch/Start-ChimeraStudio.ps1') -Describe | ConvertFrom-Json)
+    $env:BLENDER_USER_CONFIG = Join-Path $root '.user/test-config'
+    $env:BLENDER_USER_SCRIPTS = Join-Path $root '.user/test-scripts'
+    $entryArgs = @('--background') + @($plan.arguments) + @('--python-exit-code','7','--python',(Join-Path $root 'tests/test_project_entry.py'))
+    & $plan.executable @entryArgs
+    if ($LASTEXITCODE -ne 0) { throw 'Working-project entry/save/reopen check failed' }
+    return
+}
+
 & $Blender --background --factory-startup --python-exit-code 7 --python (Join-Path $root 'tests/test_blender.py')
 if ($LASTEXITCODE -ne 0) { throw 'Native integration tests failed' }
 if ($Blender -eq (Join-Path $studio 'build-blender/bin/Release/blender.exe')) {

@@ -1,0 +1,13 @@
+{
+  "pass": true,
+  "project": "D:\\Chimera-Maintenance\\ChimeraStudio\\Projects\\Membrane Workshop\\Chimera Membrane Workshop.blend",
+  "binary": "D:\\Chimera-Maintenance\\ChimeraStudio\\build-blender\\bin\\Release\\blender.exe",
+  "app_template": "ChimeraStudio",
+  "source_films": 3,
+  "connections": 2,
+  "opened_offline": true,
+  "native_state_and_render_preserved": true,
+  "working_project_unchanged": true,
+  "source_ids_preserved": true,
+  "scope": "Real Blender project/template launch plus offline save/reopen; no GPU inference or simulation."
+}
