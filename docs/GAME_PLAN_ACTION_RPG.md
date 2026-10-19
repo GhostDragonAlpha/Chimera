@@ -4685,12 +4685,13 @@ Existing Blender tools already implement substantial parts of the proposed
 material workshop. Before writing another cloth/solid solver, mesher, material
 preset library or bake manager, compare these candidates against the exact
 missing user action. Prefer a usable upstream component or small adapter when
-it removes work. This is a researched integration proposal; none has been
-installed or tested in our custom Blender 5.0.1 build.
+it removes work. The operator subsequently authorized libuipc installation and
+freed the GPU. The bounded local qualification below is now complete; the other
+candidates remain researched alternatives rather than installed backends.
 
 | Candidate and primary source | Existing capability worth reusing | Decision and boundary |
 |---|---|---|
-| [libuipc Physics extension](https://spirimirror.github.io/libuipc-doc/build_install/blender/) | CUDA cloth/shells, deformable FEM solids, affine rigid bodies and rods with shared contact/friction; physical presets saved in .blend. Windows/Linux; separate Python worker. Blender adapter GPL-3.0-or-later, core/worker Apache-2.0 | **First open-source integration candidate.** API target 4.2+, documented Windows testing on Blender 4.5.3. Extension 0.8.0 uses cached playback. Native tetrahedralization needs a current source build beyond wheel 0.0.28. Rods have stretch/bending but no torsion. Its laws differ from Chimera's constant-tension film. |
+| [libuipc Physics extension](https://spirimirror.github.io/libuipc-doc/build_install/blender/) | CUDA cloth/shells, deformable FEM solids, affine rigid bodies and rods with shared contact/friction; physical presets saved in .blend. Windows/Linux; separate Python worker. Blender adapter GPL-3.0-or-later, core/worker Apache-2.0 | **Installed and locally tested in custom Blender 5.0.1 / RTX 4090.** Extension 0.8.0 plus pinned pyuipc 0.0.29 supports native tetrahedralization in the released wheel. Blender 5 and upstream material-conversion compatibility patches are recorded below. Cached playback; rod stretch/bending, no qualified torsion. Its laws differ from Chimera's constant-tension film. |
 | [PPF Contact Solver](https://github.com/st-tech/ppf-contact-solver) and [Cloth NeXt](https://github.com/polyworks-art/Cloth_neXT) | External solver plus Blender controls for cloth, cables and soft bodies; material zones, diagnostics and cache recovery. PPF is Apache-2.0; frontend GPL-3.0-or-later | **Second open-source candidate, especially fabrics.** [Backend checks](https://github.com/polyworks-art/Cloth_neXT/blob/main/docs/SOLVER_BACKEND_CERTIFICATION.md) name Windows, RTX 4070 SUPER and Blender 5.2.2, not our machine. [Product page](https://polyworks-art.github.io/Cloth_neXT/) and README disagree on preset counts and release details; pin a matching addon/solver pair instead of combining claims. |
 | [HiPhyEngine](https://hiphyengine.github.io/) | Commercial Blender workflow for coupled rigid bodies, rods, cloth/membranes and deformable solids; documented parallel CPU execution | **Ready-made workflow comparator.** [Requirements](https://hiphyengine.github.io/quick-start/quick-start-blender/): Windows/Linux x64 AVX2, Blender 4.5+; first enable automatically installs MKL/PyBind11 into Blender Python. [Trial](https://hiphyengine.github.io/get-hiphy/download/) excludes commercial use and disables cache I/O/resume, so it cannot establish our save/replay requirement. No 4090 speed claim. |
 | [VoxelSim FEA](https://github.com/RandomLambda/VoxelSim-FEA) | Select steel, aluminum, ABS, PP or custom values; assign supports/loads; inspect displacement, von Mises stress and yield-based safety factor | **Narrow static engineering comparator.** Linear-elastic voxel analysis with CPU options; not dynamic joints, tearing, plastic collapse or CA. Yield-based coloring is not a post-yield material law. Accuracy and compatibility remain unmeasured here. |
@@ -4725,22 +4726,55 @@ distinguishes density-normalized stiffness from Young's modulus in Pa.
 UnitcellDB and FEBio remain the established cellular/reference priorities.
 
 **Version and recovery details matter.** libuipc documents a [Stable Neo-Hookean calibration correction](https://spirimirror.github.io/libuipc-doc/specification/constitutions/stable_neo_hookean/)
-for the entered E/Poisson small-strain response; its Blender page dates this
-2026-10-19. Pin the corrected runtime before generating labels. A cached mesh
+for the entered E/Poisson small-strain response. Local installation confirmed
+that the 0.0.29 Windows wheel predates this and the shell-bending conversion fix.
+The attested wheel source and corrected source have identical relevant CUDA
+kernels; Studio's tracked adapter supplies the corrected native coefficients
+through existing APIs. The original failing test is retained, and the corrected
+shell attributes and solid small-strain tangent were checked. Pin the complete
+runtime/adapter identity before generating training labels. A cached mesh
 animation does not establish full physical-state continuation.
 [HiPhy's workflow](https://hiphyengine.github.io/overview/how-hiphyengine-blender-addon-works/)
 requires explicit cache saving rather than automatic saving with .blend.
 
-**Bounded comparison to schedule.** Use a copied construction and isolated
-environment. Demonstrate material assignment on a supported object, then a rigid
-load interacting with a deformable patch. Match units, supports, law and observable
-where comparing engines; use an independent beam/patch reference only within its
-assumptions. Our constant-tension coupon is not a tensile-elastic cloth reference.
-Record setup effort, edit-to-result time, memory, failure recovery and offline
-reopen; evaluate fresh-process physical continuation separately. Reuse current
-comparison/evidence owners. Select on useful authoring and development time saved.
-This research does not install dependencies, replace a runtime, start a GPU test
-or interrupt agents.
+**Installed GPU-material workshop (2026-10-19; scoped local evidence).** Open the
+new **Chimera GPU Materials** desktop shortcut or
+`D:/Chimera-Maintenance/ChimeraStudio/Libuipc/Start GPU Materials.cmd`. The separate
+user file is `Projects/GPU Materials Workshop/Chimera GPU Materials.blend` under
+ChimeraStudio. The original membrane project and launcher are preserved. Blender's
+Object/Edit modes, Outliner, libuipc sidebar, physical presets and pin groups
+provide authoring; native tetrahedralization prepares solids and native edge
+centerlines provide rods. Shading colors identify assignments rather than laws.
+The four saved presets are illustrative numeric materials, not certified fabrics,
+metals or biological tissues.
+
+The installed extension and Chimera template coexist. One native CUDA world
+contains a pinned catch sheet, rigid cargo, deformable solid cargo and a flexible
+rod with contact/friction. Tests cover material preset assignment/save/reopen,
+cloth/rigid contact, varying friction, source/cache invalidation, cancellation,
+solid interior/surface pins, mesh generation/restoration, rod stiffness and curve
+import. The combined 81-frame bake used 160 native steps and took 28.52 seconds
+on the RTX 4090 with the Converged preset (1.6 seconds of physical time, 423 output
+vertices). This measures a conservative small scene, not real-time capacity.
+Fresh Blender replay matched all 16 checked object/frame geometry hashes; opening
+starts no solver. An actual-window check exercised the material panel. Evidence,
+source/wheel hashes and exact patches live in
+`ChimeraStudio/Libuipc/evidence/acceptance.json`, `SOURCE_LOCK.json`,
+`RUNTIME_LOCK.json` and `COMPATIBILITY_PATCHES.json`; the local README supplies the
+editing loop. The original failed material/Blender-compatibility checks remain.
+
+**What this unlocks next.** Reuse this coupled open-source solver for cloth/shells,
+compliant solids, rigid loads and rods instead of rebuilding those foundations.
+Inspect upstream attachments/joints, then qualify one useful layered or mounted
+construction and feed response trials into the existing recipe/mechanism evidence
+pipeline. Preserve explicit ownership of forces and state: libuipc is not yet
+coupled to Chimera's CA, native membrane solver or native render kernel. Its
+Blender playback is cached geometry; full-state arbitrary-time continuation,
+layer bonding, rod torsion, fracture/plasticity and large-scene budgets remain
+separate gaps. Match units, laws, supports and observables before cross-engine
+comparisons; Chimera's constant-tension coupon is not an elastic-cloth reference.
+The user's workers were stopped by the user for these GPU tests; model settings
+were unchanged. Water remains deferred.
 
 **Other Blender reuse.** [Tissue](https://github.com/alessandro-zomparelli/tissue)
 provides computational design and repeated cellular surfaces, not biomechanical
