@@ -3151,6 +3151,79 @@ relevant missing seams. Do not restart the research chain, infer usability from
 a scripted run, or assume general membrane/B2 composition from separate state
 classes. This audit changes no gate status.
 
+#### 11.20.13 Functional construction kit, layers and preparation cost
+
+**Product target:** players import or assemble a shape, assign physical regions,
+connect useful functions and try an invention in a game situation. A hull, cart,
+house or companion is a composition of these functions. Material names and render
+colors do not supply missing behavior. This catalog guides reuse and expansion;
+it is not a requirement to implement every row before a playable release.
+
+| Functional family | What a player can make or change | Required physical meaning and existing foothold |
+|---|---|---|
+| Load carrier: block, beam, frame, rib | Braces, chassis, walls, skeletons | Mass, inertia, contact and ports first; B2 rigid construction exists. Bending, buckling and fracture require their own admitted response. |
+| Sheet, skin and tension membrane | Covers, sails, compliant skins, stretched panels | Surface metric, thickness where needed, orientation, pressure/traction and attachment. Reuse native membrane/AP paths and their scoped receipts; a rendered sheet alone has none of these responses. |
+| Cellular infill and compliant core | Lightweight panels, padding, directional flexure | UnitcellDB can seed small-strain effective candidates within its conditions. Boundary effects, collapse and impact absorption need additional evidence; do not infer them from stiffness alone. |
+| Bond, seam and finite-area mount | Laminates, joints, patches | Paired force/moment transfer and interface history. Reuse finite-area attachment references and native connectors. Rigid bonded-layer tests do not establish a general continuum laminate. |
+| Hinge, slide, guide and limit | Doors, folding frames, steering | Declared permitted motion, reaction, friction and stops. Reuse existing constraint owners only within their qualified envelope; an animation hinge is not proof of a physical joint. |
+| Cable, strap and tendon | Suspension, hauling, lashing, limbs | Tension-only response, slack, anchors and optional failure. Reuse existing tendon/connector paths after checking their actual semantics. |
+| Spring, damper and isolator | Suspension, recoil control, vibration protection | Stored energy and dissipated work with response bounds; AP/connector references are footholds. Static stiffness alone does not supply damping or frequency response. |
+| Contact surface and grip | Feet, wheels, clamps, footing | Existing native contact/friction and declared envelopes; rolling, grip controls and soft contact remain separate capabilities. |
+| Barrier, gasket and seal | Airtight compartments, waterproof skins | Which inventory is blocked, allowed leakage and opening state; a mechanical weld is not automatically a fluid seal. |
+| Chamber and reservoir | Tanks, pneumatic cavities, creature compartments | Volume, inventory, pressure/energy closure and wall coupling. B6 has a scoped linear volume-pressure component; it does not establish general gas thermodynamics. |
+| Conduit, valve and filter | Pipes, circulation, vents, selective membranes | Conserved transport, conductance and pressure/chemical conditions. Reuse B6 passive valve scope; species separation and finite storage need their own accounts. |
+| Actuator and contractile element | Winches, muscles, pistons, powered joints | Energy supply, reaction, command and force/speed limits. B6's grounded piston sends its reaction to the world; it cannot silently propel a free vehicle internally. |
+| Transmission, wheel and propulsor | Carts, machinery, rockets | Actual input/output power, torque or expelled momentum. Shape import supplies geometry; gears, aerodynamic lift and exhaust reaction require admitted laws. |
+| Heat store, conductor and exchanger | Insulation, cooling, thermal protection | Heat capacity, paired heat transfer, temperatures and boundary conditions. Reuse B6 lumped thermal scope; radiation, phase change and thermoelastic coupling are additional capabilities. |
+| Power store, conductor and switch | Batteries, wiring, circuit-controlled machinery | Charge/energy ownership, losses and ratings. Begin with a declared circuit abstraction if needed; do not infer electromagnetism from mesh triangles. |
+| Sensor, signal and controller | Instruments, interlocks, companion responses | Observe real owned state, declare delays/ranges, and command existing actuators. A controller cannot create energy or force an unsupported material result. |
+| Damage, release and repair interface | Replaceable plates, breakaway joints, salvage | Persist irreversible history and removed/added inventory. Distinguish a modeled break from a numerical refusal; never label solver failure as damage. |
+| Conversion, growth and remodeling | Manufacturing, healing, living structures | Conserved supplies, energy, time and admitted topology changes. These remain later functional targets until the selected game action needs them. |
+
+A **minimum useful kit** can begin with prepared rigid carriers, two visibly
+contrasting material profiles, a qualified connection and an existing compliant
+piece where its own state/render path is supported. Let the player build a support,
+protect or carry a load, fail readably, repair and reuse it. Adding an unfamiliar
+shape or a new material profile should not require rebuilding the factory.
+
+**Layer contract:** an authored stack records each region's geometry and thickness,
+material/profile revision, local orientation, role, reference state, owned history
+and exposed ports. Every neighboring pair has an explicit interface: loose contact,
+bonded traction, permitted slip, thermal contact, seal or selected transport. A
+shared face has one exchange owner. Coincident visible polygons must not silently
+create duplicate mass, two independent force laws or an unintended gap. Preserve
+asymmetric stacks and curved/nonuniform layers; an ordered flat list is only one
+convenient authoring view of the region/interface graph.
+
+Use material colors as selectable IDs, with names, patterns and an inspector for
+accessibility; keep appearance independent. Printer slices are manufacturing or
+inspection samples, not a requirement to allocate one dynamic solver layer per
+slice. Similarly, a shader coat need not become a physical region, and a physical
+barrier can be thinner than the display mesh if its reduced representation is
+qualified. Adapt layer/model resolution to the interactions that can change play.
+
+**Concrete recipes:** a spacecraft panel can combine an outer impact layer,
+load-bearing cellular core, inner pressure barrier, mounts and a thermal path;
+a cart combines a frame, axle/guide, contact surface, load restraint and power
+source; a house combines foundation, frame, envelope and joints; a companion
+combines carriers, compliant tissue, skin, tendons, actuators and sensors. Start
+with the subset actually simulated and label missing channels. A decorative
+rocket does not become a rocket from its file name. A fictional advanced alloy
+may have an explicit designed property profile and provenance, without being
+presented as measured science.
+
+| Work stage | Expected cost driver | How it reaches the player |
+|---|---|---|
+| Authoring / import | Repair, solid classification, region/interface extraction, convex decomposition or meshing | Prepare once, cache by source/profile/topology identity; show missing semantics before admission. Existing supported meshes can bypass unnecessary preprocessing. |
+| New response preparation | Detailed solves, parameter sweeps, fitting and independent transfer checks | Use the existing finite GPU batches and evidence owners only for missing responses. Reuse a known analytic law/table when adequate. Ship prepared starter parts; never force each player to train every ordinary object. |
+| Interactive assembly | Placement, port compatibility, affected-region validation, mass/inertia updates | Recompute the changed region and relevant interfaces; preserve unchanged prepared data. Complex new imports may prepare in the background while the player uses the ready kit. |
+| Runtime | Active DOFs, contacts, constraints, stiff/coupled transport, damage/topology changes and render synchronization | Measure the complete frame, not table lookup alone. Use admitted reduced responses, sleeping and bounded active detail; preserve impulses, inventories and history through transitions. |
+| Playback / reuse | Checkpoint storage, restore, version checks and selective recomputation | Reuse native save/restore and recorder paths. Replay is physical state at a declared time; camera animation and video are views of it. |
+
+These are workload classes, not measured promises of milliseconds or object
+counts. Apply §11.24's cost/error record to the next useful construction, with
+preparation cost separated from interactive latency and sustained play cost.
+
 ### 11.21 Database-grounded matter: structure snapshots become reusable responses
 
 **Operator direction, 2026-10-14:** use databases as the foundation for learning
@@ -4299,6 +4372,8 @@ Keep the confirmed **Option B: grow the current engine**. Godot and Unreal were
 rejected as hosts. Preserve the ability to test the core headlessly and, after
 qualification, let a separate game repository consume a pinned engine interface.
 The repository split in `req.engine_game_release` does not require an external engine.
+The selected Blender authoring fork (§12.2) hosts our tools and native state;
+it preserves this engine ownership while adding a professional editing surface.
 
 Give each important condition at least two readable cues: shape/posture plus sound,
 motion plus a material change, or an icon plus a visible seam. Color alone is inadequate.
@@ -4449,6 +4524,72 @@ when it enables a valued experience within budget; unnecessary detail, workflow
 complexity and maintenance burden should be removed when they buy neither useful
 physical behavior nor a better player experience.
 
+### 12.2 Chimera Studio: a professional authoring workspace around our engine
+
+**Operator-selected implementation lane:** customize a Blender fork specifically
+for Chimera, separately from the local agents' ongoing engine work. Blender
+provides mature modeling, selection, transforms, material/region editing,
+collections, cameras, animation and asset tools. Chimera remains the owner of
+physical state and its scientific laws. The editor integration is not a change
+to Godot/Unreal/Bullet, and creating this tool lane does not declare the separate
+game repository or a named engine release complete.
+
+Connect three views of the same product:
+
+- **Build:** Blender geometry plus a material/layer inspector and functional
+  ports. The existing material-volume compiler and recipe records supply physical
+  meaning; preserve region IDs through import/edit/duplicate, with explicit new
+  identities for independent copies. Full painting, layer-stack and CAD semantic
+  tools are subsequent UI work, not implemented merely by naming Blender.
+- **Play / inspect:** explicit admission into a private or leased native scene;
+  native physics produces poses/deformation and the view displays that state.
+  Pause, step, reset and failure feedback share the existing solver contracts.
+  Blender modifiers and its physics system must not independently animate the
+  same physical DOFs. The full game can later hide authoring UI or run separately.
+- **Replay / compare:** restore exact native checkpoints and branch a new trial;
+  reuse existing inspectors, recorder and experiment comparisons. Camera cuts,
+  scrubbing a movie and offline rendering are presentation; changing a Blender
+  animation frame alone does not advance or rewind native physical time.
+
+**Initial local implementation, 2026-10-18:** the isolated workspace is
+`D:/Chimera-Maintenance/ChimeraStudio`; `integration/README.md` documents its
+launcher, source pins and checks. The Blender fork is based on 5.0.1, with a
+Chimera application template and branding. A private C ABI bridge compiles
+unchanged, hash-pinned copies of the existing `B2Scene` and uses the original
+material-volume compiler. The first interface accepts 2–6 closed convex rigid
+material regions (4–128 boundary triangles each), authored density/friction,
+native contact and a two-mount finite-area connection. Blender displays native
+part poses; Python performs authoring and orchestration, not a replacement force
+solve. Physical trials and ordinary `.blend` files retain the native snapshot;
+reopening restores paused, and returning to authoring restores editable objects.
+
+Ten automated checks in real Blender-background execution cover mass compilation,
+native freefall and displayed poses, exact restore/branching, physical-trial
+exchange, invalid-input preservation, native connection force/moment transfer,
+`.blend` reopen and teardown. A separate application-template check covers
+startup and native advancement. These are local integration results, not human
+usability, full-game performance or live-controller admission. The custom executable built from Blender fork commit
+`68c79f03362e` and integration source commit `0947140` passed those checks plus a
+short real-window viewport/play test. Its actual binary/DLL hashes and result
+scope are recorded in `ChimeraStudio/integration/evidence/build-manifest.json`;
+`evidence/viewport.png` records the displayed native scene. These results do not
+establish large-scene frame rate or full membrane/GPU integration.
+
+**Next seam:** retain a working rigid authoring path while connecting the already
+implemented membrane/AP/S3 path through its own real state owner and qualified
+save/restore/deformation interface (§11.20.12). Reuse existing native renderer
+interfaces for deformation/overlay state; evaluate a separate shared-memory or
+native buffer bridge when pose synchronization no longer suffices. Do not copy
+all GPU vertices into Python every frame or run Blender's solver as a substitute.
+Measure latency, memory, synchronization and state correspondence before adopting
+shared GPU resources. GPU sharing is a proposal, not a property of this first DLL.
+
+The first authoring handoff is a saved layered construction that another person
+can open, inspect, connect, run and repair without an agent. Follow it with one
+selected workshop objective and an expedition use. A polished editor remains a
+tool for making a compelling game that uses simulated matter; it is not itself
+proof that the game is enjoyable.
+
 ## 13. Roadmap and release gates
 
 | Milestone | Deliverable | Exit evidence | Defer until later |
@@ -4533,6 +4674,12 @@ capability or bounded exploration needs it. Prioritize UnitcellDB and FEBio unde
 §11.21.3; use §11.21.8 to reuse established results and §11.25 to choose the next
 research decision. Keep the existing playable route moving while a new material
 or representation remains a proposal.
+
+**Separate editor lane:** Chimera Studio (§12.2) is being developed outside this
+checkout. Continue the selected engine/workshop increment without waiting for its
+full feature catalog. Reuse its documented source boundary when integration is
+needed; do not launch a second Blender fork, overwrite its private build, or treat
+its rigid-scene tests as membrane/render qualification.
 
 **Existing assets to inspect and reuse:**
 
