@@ -4773,13 +4773,22 @@ connections. The adapter reuses the native law and existing CUDA material/contac
 owners; it adds no Python solver. These are finite-gap elastic links with recorded
 rest lengths and per-stitch stiffness in N/m, not adhesive laminate certification.
 
-In **N > libuipc > Layer Attachments**, choose two parts and equal-size vertex
-groups, bind their nearest unmatched endpoints, change stiffness or disable a
-seam, then bake. Native-backed yellow endpoint guides follow saved motion in the
-viewport. Model normally in Object/Edit Mode; generate a solid's volume before
-binding. Changes to geometry, spacing or endpoint groups require rebinding, and
-physical/material changes invalidate the old bake while retaining its files.
-Colors identify the assignments; presets/constitutions supply actual behavior.
+In **N > libuipc > Layer Attachments**, choose two parts and equal-size endpoint
+groups. **Select A/B** enters Edit Mode with the relevant vertices selected;
+**Group from Selection** creates a separate group without overwriting pins or
+other seams. Pair by **Nearest Unmatched** or explicit **Vertex ID Order**, with
+optional B reversal; vertex order is not click order. Bind, change stiffness or
+disable a seam, then bake. **Check** identifies stale sources; failed bindings
+retain the old record and gap errors name the endpoints and measured limit.
+Yellow viewport guides follow saved endpoints and suppress stale references.
+Generate a solid's volume before binding. Geometry, spacing, groups or pairing
+order changes require rebinding; physical edits invalidate the old bake while
+retaining its files. Colors identify assignments; presets supply actual behavior.
+Twelve actual Blender authoring/persistence/refusal checks and the updated panel
+passed in `Libuipc/evidence/attachment-authoring`; previous saved bindings and
+sixteen replay hashes stay compatible. Matching 4,096 endpoint pairs took 0.287 s
+with 948,760 bytes of traced peak Python allocations after eliminating the dense
+distance matrix. This is an authoring measurement, not simulation speed.
 
 The same scene at 0.6 seconds produced bumper drops of **0.111 m attached**, **1.198 m
 disconnected**, and **0.703 m with tenfold softer seams**. These measured controls
@@ -4795,8 +4804,8 @@ initial test-harness failure are in `ChimeraStudio/Libuipc/evidence/layered-work
 installed adapter. Opening remains offline. This is small-construction evidence,
 not a real-time, large-scene or manufactured-material qualification.
 
-**Next editor work.** Improve endpoint pairing/inspection and reusing a saved
-construction before inventing more physical laws. A mounted rod/shell or asymmetric
+**Next editor work.** Improve reusing/duplicating a saved construction with clear
+identity and connection ownership before inventing more physical laws. A mounted rod/shell or asymmetric
 layered example can extend the same native connection path when useful. Feed
 accepted response trials into the existing recipe/mechanism evidence pipeline
 once the mapping is explicit; do not build another catalog. Studio's
