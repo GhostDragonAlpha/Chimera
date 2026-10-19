@@ -4575,14 +4575,51 @@ scope are recorded in `ChimeraStudio/integration/evidence/build-manifest.json`;
 `evidence/viewport.png` records the displayed native scene. These results do not
 establish large-scene frame rate or full membrane/GPU integration.
 
-**Next seam:** retain a working rigid authoring path while connecting the already
-implemented membrane/AP/S3 path through its own real state owner and qualified
-save/restore/deformation interface (§11.20.12). Reuse existing native renderer
-interfaces for deformation/overlay state; evaluate a separate shared-memory or
-native buffer bridge when pose synchronization no longer suffices. Do not copy
-all GPU vertices into Python every frame or run Blender's solver as a substitute.
-Measure latency, memory, synchronization and state correspondence before adopting
-shared GPU resources. GPU sharing is a proposal, not a property of this first DLL.
+**GPU matter bridge, 2026-10-19 (isolated local evidence):** the same editor now
+uses the existing Vulkan membrane upload/deformation/save/restore APIs and the
+native CA water kernels on triangle cells. The helper executable, shaders,
+protocol client and frozen B2 fixture are pinned in
+`ChimeraStudio/integration/GPU_SOURCE_LOCK.json`; the agents' checkout, running
+engine and model services remain separate. The source audit snapshot does not
+attest an exact source-to-prebuilt-binary build correspondence. Blender displays
+accepted native vertices or CA cell volumes after explicit commands. GPU calls
+run off the UI thread; snapshots are not copied on every viewport frame. A
+Windows job ties only this private helper to the editor's lifetime.
+
+Four real-Blender integration scenarios passed: membrane energy against the
+existing independent fixture reference and visible state correspondence under
+load; exact checkpoint replay/branching; `.blend` and `.matter.json` reopening
+through a fresh private process; and CA conservation/continuation after replay,
+with malformed-state refusal and confirmed-state recovery after child exit.
+The original ten rigid-workshop checks and application-template check remain
+green. A separate real-window check displays native deformation, and a parent
+termination check verifies private GPU-child cleanup. Exact evidence is in
+`ChimeraStudio/integration/evidence/gpu-integration.json`, `gpu-gui.json`, and
+`owned-child-test.json`. These small checks ran alongside the working models;
+there is no production-throughput or large-scene qualification claim.
+
+**Current law/UX limits:** the membrane path is one free world-Z center on a
+triangular fan with the other vertices pinned. The CA path is a closed-boundary
+water field with authored demonstration coefficients, not pressure-coupled
+membrane/fluid dynamics. Its native recorded trial admits 64 steps (0.64 s).
+Saving current water volumes alone is insufficient: edge-flow memory affects
+the next step. The editor therefore saves the initial substrate, exact native
+step count and final-state hash, then reproduces every original step on replay;
+it refuses to extend past the native cap rather than resetting flow or dropping
+steps. Reopening a file displays its saved checkpoint without allocating GPU
+memory; an explicit Resume restores the private native trial. Release Studio
+GPU Memory retains that checkpoint. Editable geometry remains distinct from
+accepted physical geometry.
+
+**Next useful editor seam:** extend the existing native CA owner with complete
+field checkpoint/restore (including edge flow and its clock) and bounded explicit
+advancement beyond the recording cap. Reuse the admitted AP/S3 recipe/compiler
+interface (§11.20.12) for a saved workshop mechanism with an actual player purpose;
+do not infer arbitrary-material qualification from a fan test. Any membrane/CA
+coupling must pass through the existing physical owner and its independent
+checks. Preserve the working rigid authoring path. Evaluate shared native/GPU
+buffers only when measured snapshot cost obstructs that playable increment;
+shared buffers and full multiphysics coupling are not implemented by this bridge.
 
 The first authoring handoff is a saved layered construction that another person
 can open, inspect, connect, run and repair without an agent. Follow it with one
