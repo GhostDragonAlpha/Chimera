@@ -4904,6 +4904,37 @@ for the tested workflows; arbitrary editor concurrency remains unqualified.
 Preserve the crash and earlier numerical-test failures;
 no dependency update, native law, original project or model service was changed.
 
+**Bounded quality-diversity design search, implemented and checked October 19.**
+The Blender panel and shared commands now mutate uniform tension and XY scale
+through the existing native compiler/solver. Three seeds are followed by mutations
+of measured elites; the smallest XY footprint is retained in each requested
+movement band. This adapts [MAP-Elites](https://arxiv.org/abs/1504.04909) to the
+current fixed-rim Z-apex law. The pure archive helper was extracted from the
+unregistered draft, with integer serialization corrected; no SQLite/catalog or
+new solver was introduced. All trials, failures and parent lineage remain visible.
+
+At the same 0.8 N load, nine trials retained 0.033342 / 0.086454 / 0.151054 m
+movements in three 0.06 m bands, with XY footprints 4.000000 / 3.613655 / 2.399463 m2.
+The native worker took 2.29 s on the 4090. A separate live Blender run took
+4.03 s from button press to visible results with navigation/editing (2.38 s in
+its worker); per-candidate observed costs are also recorded. Fitness is compactness, not invented mass/price. No global
+optimum or improvement over a random/grid baseline is claimed. All measured
+states pass the unchanged independent limits; an additional edge-length check
+on all elites gives maximum energy error below 6e-5 J and force residual below
+6e-6 N. Unsupported soft responses refuse and cannot win; empty bands stay empty.
+
+Human/shared selection sends the actual unloaded/loaded checkpoints to native A/B.
+Creating a choice reuses the existing transactional recipe importer with fresh IDs
+and identical compiled physical arrays. Completed and pending saves reopen offline
+with exact evidence/purpose; canceled or lost owned workers retain prior results.
+Rehashed forged measurements, geometry, lineage and archive membership refuse;
+a stale cancellation cannot stop a successor. The actual panel passed 31 viewport
+navigations and a preserved human geometry edit during search, followed by human
+selection/creation. Legacy material-search evidence and recipe creation still pass.
+Evidence: `ChimeraStudio/integration/evidence/design-search/acceptance.json`.
+Broad topology, additional behavioral descriptors, AP/libuipc mapping and learned
+acceleration remain open. Original projects, models and native laws are preserved.
+
 **Fifteen agreed techniques: implementation sequence and honest status.** These
 are the full requested scope, not fifteen labels for one demo. Each row must
 produce a useful Blender action, an accepted existing-owner result and evidence
@@ -4915,8 +4946,8 @@ compelling game using simulated matter; the editor serves building and inspectio
 |---|---|---|
 | 1. Small reliable construction language | Registered operators, `blocks.compile_parts`, native checkpoint owner. Same input through UI/API; stale and duplicate delivery safe; actual completion visible. | **Implemented subset above, including rebuild recovery, native A/B, shared libuipc cache comparisons and revision-bound native rendering.** Chosen transport and broader owner/mode adapters remain; Object/Edit authoring plus Image Editor observation. |
 | 2. Library learning | Mine repeated successful construction sequences into parameterized recipes with ports and provenance through existing mechanism-factory/AP owners. [DreamCoder](https://people.csail.mit.edu/asolar/papers/EllisWNSMHCST21.pdf) motivates reusable program components. Demonstrate one mined recipe reducing authoring effort with identical compiled meaning. | **Partial, tested parameter abstraction above.** Two confirmed native trials produce one reusable construction with provenance and fewer authoring commands at identical compiled meaning. General sequence mining, function discovery and broader owner mappings remain planned. |
-| 3. Quality-diversity / MAP-Elites | Index accepted comparisons by size, mass, compliance, response direction and measured cost; keep useful alternatives rather than a single score winner. Use existing evidence identities. [Method](https://arxiv.org/abs/1504.04909). | **Planned.** First show three meaningfully different admissible designs with the same task constraints, no separate truth catalog. |
-| 4. Inverse design | Desired deflection/load/space becomes a bounded search over supported geometry/materials. Reuse mechanism-factory fits and native evaluation. [Warp](https://github.com/NVIDIA/warp) differentiates its own kernels; our Vulkan/native path needs an explicit derivative adapter. | **Bounded native material search implemented above.** Desired movement/load chooses among measured tensions with saved native checkpoints, independent checks and explicit no-match. Geometry search and derivative adapters remain planned; no gradient claim. |
+| 3. Quality-diversity / MAP-Elites | Index accepted comparisons by size, mass, compliance, response direction and measured cost; keep useful alternatives rather than a single score winner. Use existing evidence identities. [Method](https://arxiv.org/abs/1504.04909). | **Bounded native MAP-Elites implemented above.** Three response bands retain independently checked material/XY-scale alternatives under the same load and maximum footprint; native A/B, editable recreation and saved lineage pass. General size/mass/direction descriptors and broader owner mappings remain planned. |
+| 4. Inverse design | Desired deflection/load/space becomes a bounded search over supported geometry/materials. Reuse mechanism-factory fits and native evaluation. [Warp](https://github.com/NVIDIA/warp) differentiates its own kernels; our Vulkan/native path needs an explicit derivative adapter. | **Bounded native material search implemented above.** Desired movement/load chooses among measured tensions with saved native checkpoints, independent checks and explicit no-match. Bounded XY-scale geometry exploration now works through the quality-diversity adapter. Target-directed general geometry search and derivative adapters remain planned; no gradient claim. |
 | 5. Learned solver warm starts | Predict an initial guess, then let the existing solver enforce its residual/acceptance criteria. Compare against ordinary continuation warm starts including inference/transfer overhead. [NOWS](https://arxiv.org/abs/2511.02481). | **Planned native-owner extension.** No neural predictor is installed in Studio. Keep only a measured total-time improvement at equal tolerances. |
 | 6. Static condensation / component reduction | Eliminate internal degrees of freedom while retaining boundary ports; reuse AP two-port/finite-area concepts. [MFEM](https://docs.mfem.org/3.1/classmfem_1_1StaticCondensation.html) describes linear block elimination. | **Existing research prerequisites; Blender adapter planned.** Verify port reactions and reconstructed internal state against the detailed owner. Nonlinear contact needs its own treatment. |
 | 7. Hyper-reduction / optimized cubature | Reduce element-force evaluations inside a measured deformation/material domain, retaining every requested timestep. [Original work](https://www.cs.cornell.edu/~stevenan/cubature/). | **Planned native-owner extension.** Compare full/reduced forces, energy and total cost; no accepted recipe from sampling alone. |
@@ -4937,8 +4968,9 @@ reduce. Inspect the existing `tools/recipe_experiments`, `tools/artificial_prote
 and `tools/mechanism_factory` owners read-only before designing each adapter; their
 current scalar/two-port/reference scopes do not automatically qualify libuipc.
 `workshop_lab.py` remains an unregistered draft containing its own SQLite store.
-Its pure canonical-recipe and bounded inverse-search helpers have been extracted
-unchanged and tested in the adapters above; do not register it wholesale or claim
+Its pure canonical-recipe and bounded inverse-search helpers were extracted
+unchanged; the pure archive now has tested JSON-integer normalization. These
+adapters reuse existing native owners; do not register it wholesale or claim
 its other algorithms as product features.
 Replace duplicate storage with references to the established owners. One working
 construction and its useful visible comparison take priority over installing a
