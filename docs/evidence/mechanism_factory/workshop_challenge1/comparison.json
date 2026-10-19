@@ -1,0 +1,191 @@
+{
+ "schema": "chimera-workshop-challenge1-comparison-v1",
+ "run1": "docs\\evidence\\mechanism_factory\\workshop_challenge1\\run1",
+ "run2": "docs\\evidence\\mechanism_factory\\workshop_challenge1\\run2",
+ "deterministic_states": {
+  "S1_scene_spawn": {
+   "kind": "analytic",
+   "run1_hash": "187c75b676de8d18",
+   "run2_hash": "a5dbed2f9660df95",
+   "n_violations": 0,
+   "violations": [],
+   "within_band": true
+  },
+  "S2_pillar": {
+   "kind": "analytic",
+   "run1_hash": "c9f9705c699e99a3",
+   "run2_hash": "52a534811b259b4a",
+   "n_violations": 0,
+   "violations": [],
+   "within_band": true
+  },
+  "S3_offcrate": {
+   "kind": "analytic",
+   "run1_hash": "5d6e534406829d9e",
+   "run2_hash": "4785c96cf58a886d",
+   "n_violations": 0,
+   "violations": [],
+   "within_band": true
+  },
+  "S6_scene_respawn": {
+   "kind": "analytic",
+   "run1_hash": "da3692dc1af479b6",
+   "run2_hash": "92dcecfe0bb5caff",
+   "n_violations": 0,
+   "violations": [],
+   "within_band": true
+  },
+  "S7_piers": {
+   "kind": "analytic",
+   "run1_hash": "4e280ba38fe0f91e",
+   "run2_hash": "f3e97dd25992a419",
+   "n_violations": 0,
+   "violations": [],
+   "within_band": true
+  },
+  "S8_span_armed": {
+   "kind": "analytic",
+   "run1_hash": "a00d7ca9b9d6f915",
+   "run2_hash": "d483f80b2fcbc866",
+   "n_violations": 0,
+   "violations": [],
+   "within_band": true
+  }
+ },
+ "all_states_within_band": true,
+ "analytic_states_byte_identical_modulo_steps": true,
+ "frame_shots": {
+  "0-scene-startup": {
+   "run1": "a5286d88844e8da936e56ca4d266bc230a042738c8273ed55a20f812a82b4e61",
+   "run2": "a5286d88844e8da936e56ca4d266bc230a042738c8273ed55a20f812a82b4e61",
+   "byte_identical": true
+  },
+  "1a-tower-pillar": {
+   "run1": "ac8281291aec4cc2a63296c59752162ef1613d47630531befcbc78dbd14d5323",
+   "run2": "ac8281291aec4cc2a63296c59752162ef1613d47630531befcbc78dbd14d5323",
+   "byte_identical": true
+  },
+  "2a-topple-armed": {
+   "run1": "fb8a8d7a6a52800573cf5f9607df0c41f78197031f2ec842318ac78ff0b7e3f9",
+   "run2": "fb8a8d7a6a52800573cf5f9607df0c41f78197031f2ec842318ac78ff0b7e3f9",
+   "byte_identical": true
+  },
+  "3-failure-topple": {
+   "run1": "f7e3e6e598d23b5c6224b21bd7b659afe01adb7ed2c133e7a148eef9c6ed81dc",
+   "run2": "cf8157d2b5da421bedda286c735657ad2e13e9ab925c7de5ca70b716ff12a184",
+   "byte_identical": false
+  },
+  "4-solB-terminal": {
+   "run1": "011fcc30c0c7289c14b58a2d64a48d906060ec3f72ee39322e0d39b20e49f572",
+   "run2": "011fcc30c0c7289c14b58a2d64a48d906060ec3f72ee39322e0d39b20e49f572",
+   "byte_identical": true
+  },
+  "5a-span-armed": {
+   "run1": "0385ac136d1778a6f8a3235894f05fe06a365a5e6dfda91c23c81064cab41672",
+   "run2": "0385ac136d1778a6f8a3235894f05fe06a365a5e6dfda91c23c81064cab41672",
+   "byte_identical": true
+  },
+  "6-solA-terminal": {
+   "run1": "de732aa1e91677256848f05197f3dc76bc932b06b8e066390d647167419c50e7",
+   "run2": "93384ab3274a9fb81e96503698544e83cdab1465c7ef33d1c5461ca51bc09bed",
+   "byte_identical": false
+  },
+  "7-restored": {
+   "run1": "de732aa1e91677256848f05197f3dc76bc932b06b8e066390d647167419c50e7",
+   "run2": "93384ab3274a9fb81e96503698544e83cdab1465c7ef33d1c5461ca51bc09bed",
+   "byte_identical": false
+  }
+ },
+ "all_frame_shots_byte_identical": false,
+ "settled_save_docs": {
+  "solution_B": {
+   "violations": [],
+   "n_violations": 0,
+   "within_band": true
+  },
+  "solution_A": {
+   "violations": [],
+   "n_violations": 0,
+   "within_band": true
+  }
+ },
+ "history_signatures": {
+  "solution_B": {
+   "weld_pairs_ever": [],
+   "weld_force_n_final": [],
+   "crate_com_final": [
+    0.619982872,
+    0.122790628,
+    2.82241461e-18
+   ],
+   "crate_reaction_n_final": 0,
+   "total_reaction_n_final": 115.029117
+  },
+  "solution_A": {
+   "weld_pairs_ever": [
+    [
+     "deck",
+     "pier_a"
+    ],
+    [
+     "deck",
+     "pier_b"
+    ]
+   ],
+   "weld_force_n_final": [
+    20.249,
+    19.388
+   ],
+   "crate_com_final": [
+    0.624771721,
+    0.359829891,
+    4.23175712e-18
+   ],
+   "crate_reaction_n_final": 0,
+   "total_reaction_n_final": 393.601698
+  },
+  "cross_run_B": {
+   "weld_pairs_ever": [],
+   "weld_force_n_final": [],
+   "crate_com_final": [
+    0.619981195,
+    0.122790628,
+    2.54187914e-18
+   ],
+   "crate_reaction_n_final": 0,
+   "total_reaction_n_final": 115.029117
+  },
+  "cross_run_A": {
+   "weld_pairs_ever": [
+    [
+     "deck",
+     "pier_a"
+    ],
+    [
+     "deck",
+     "pier_b"
+    ]
+   ],
+   "weld_force_n_final": [
+    20.266,
+    19.399
+   ],
+   "crate_com_final": [
+    0.624811803,
+    0.359836022,
+    1.6335036e-18
+   ],
+   "crate_reaction_n_final": 0,
+   "total_reaction_n_final": 393.601699
+  }
+ },
+ "gate_two_solutions_different": true,
+ "recovery": {
+  "run1_refusals_preserved": true,
+  "run2_refusals_preserved": true,
+  "run1_named_failure": true,
+  "run2_named_failure": true,
+  "run1_restore_bit_exact": true,
+  "run2_restore_bit_exact": true
+ }
+}

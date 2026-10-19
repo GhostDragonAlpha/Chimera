@@ -1264,3 +1264,46 @@ s = 1.0 only. No record change; published artifacts left as written.
   PUBLISH.
 - Decision: instant reuse is now the loop's demonstrated reuse path
   (detailed re-solve remains the named fallback for refused cells).
+
+## Workshop challenge 1 — keep the salvage load above the marked hazard (2026-10-18) — PASS (§5.1 slice minus transfer)
+
+- First real game decision in the native scene: marked hazard (granite
+  slab), kit (2 piers, deck, pillar, crate), objective law + falsifier on
+  the Studio board, referee = B2 transactions. Driver
+  `tools/construction_packet/workshop_challenge1.py`; runs
+  `docs/evidence/mechanism_factory/workshop_challenge1/run1|run2` +
+  `comparison.json`; full report `workshop_challenge1/WORKSHOP_CHALLENGE1.md`.
+- Runtime: B-suite construction exe
+  `.tmp/body-engine/Release/chimera_engine.exe` sha
+  47bbf42a7437089264a9f830f832f7432dfc2deb48680330ce4478134b278406
+  (the Oct-17 B-suite build B4/B8 already use; not the membrane pin).
+- Failure→named feedback→cheap recovery: off-centre crate topples; verdict
+  "LOST SUPPORT … ACTION: remove the crate and centre it over its support
+  before loading."; remove+re-centre continues the same session.
+- Two structurally different solutions (§6 gate
+  `gate_two_solutions_different: true`): B contact tower — no connectors,
+  115.03 N reaction, 79.9 mm clearance, welds []; A welded span — two piers
+  + deck + live welds, 393.60 N, 304.8 mm, welds 20.25/19.39 N; mid-run
+  20× stiffer re-weld cut sag 10.7→1.0 mm (B4 pattern, board verdict reads
+  it). Save→clear→restore bit-exact both runs; refused edits leave the hash
+  unchanged (2 probes).
+- Determinism scoping (2 runs): analytic states byte-identical modulo step
+  counter; settled save docs within jitter band; 8/11 frame shots
+  byte-identical incl. all 3 glass shots — the 3 differing shots are
+  settled-physics frames inside documented granite jitter.
+- Cost: frame avg 1.142 ms (first-frame max 71.31 ms), sim/wall 1.0, RSS
+  peak 200.0 MB.
+- Disclosed deviation: design frozen in the committed driver before both
+  runs, but no separate UTC-stamped prereg JSON (membrane-loop pattern not
+  followed).
+- Process: Maya authored driver + `cradle_recipe.py` extraction but timed
+  out twice pre-capture; lead executed her driver directly, fixed the
+  board-path bug (engine resolves argv[2] against native/ — now
+  `out.resolve()`), re-captured. `test_b4_assembly.py` re-run after recipe
+  extraction: 6 tests OK.
+- Qwen review (author-independent, focused): receipt/comparison numbers
+  re-read from JSON, glass screenshots inspected (red WS3 failure chip with
+  ACTION line; green WS3 HELD verdict). PUBLISH.
+- Not yet shown: saved-recipe transfer under a varied constraint
+  (workshop challenge 2); human playability unobserved (scripted
+  walkthrough).
