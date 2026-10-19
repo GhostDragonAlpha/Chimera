@@ -1,0 +1,90 @@
+{
+  "blender": "5.0.1",
+  "engine_source_lock": "77cfea240c8f1b8dbafdccdbdfcedba1949206a0b7d47d9c0c5f11788f22fd03",
+  "tests": [
+    {
+      "name": "Blender geometry through original volume compiler and native admission",
+      "pass": true,
+      "details": {
+        "masses_kg": [
+          9.71999991,
+          45.7812055
+        ],
+        "parts": 2
+      }
+    },
+    {
+      "name": "All native steps execute and Blender displays native freefall",
+      "pass": true,
+      "details": {
+        "max_freefall_error_m": 0.0002452500199999685,
+        "render_pose_matches_native": true
+      }
+    },
+    {
+      "name": "Replay restores full state and continuation branches",
+      "pass": true,
+      "details": {
+        "branch_samples": 5,
+        "exact_restore": true
+      }
+    },
+    {
+      "name": "Save and open physical trial preserves native state",
+      "pass": true,
+      "details": {
+        "state_hash": "1a008bc0e45468d1"
+      }
+    },
+    {
+      "name": "Native refusals and invalid step requests preserve state",
+      "pass": true,
+      "details": {
+        "state_preserved": true
+      }
+    },
+    {
+      "name": "Unsupported geometry does not mutate accepted physics",
+      "pass": true,
+      "details": {
+        "open_mesh_refused": true
+      }
+    },
+    {
+      "name": "Native bridge timing and finite repeated advancement",
+      "pass": true,
+      "details": {
+        "batch_substeps": 80,
+        "simulated_ms": 20,
+        "native_batch_median_ms": 0.21740002557635307,
+        "native_batch_p95_ms": 0.3446000046096742,
+        "scope": "2 parts, CPU native solver only, not GUI frame rate"
+      }
+    },
+    {
+      "name": "Authored face mounts transfer force and moment and survive save/load",
+      "pass": true,
+      "details": {
+        "partner_translation_difference_m": 0.006351492,
+        "partner_quaternion_vector_norm": 0.006660229823322798,
+        "native_weld_roundtrip": true,
+        "invalid_gap_preserves_state": true
+      }
+    },
+    {
+      "name": "Blender project save/reopen restores physics and authoring",
+      "pass": true,
+      "details": {
+        "exact_physical_state_in_blend": true,
+        "authoring_visibility_restored": true,
+        "bad_metadata_preserves_state": true
+      }
+    },
+    {
+      "name": "Clean teardown",
+      "pass": true,
+      "details": "Clean registration/unregistration"
+    }
+  ],
+  "pass": true
+}

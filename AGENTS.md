@@ -1,0 +1,3 @@
+# Chimera Studio isolation
+
+This directory is the authorized Blender integration lane. Read README.md and SOURCE_LOCK.json first. Do not edit/restart the agents' PythonChimera engine, GPU jobs, model services or settings. Never refresh vendor source implicitly. Authoring and checkpoints live here; native engine state is authoritative. Do not present rigid region tests as membrane/GPU qualification. New laws belong to the existing physics owner, not parallel Python or Blender Bullet implementations. Keep source changes and actual evidence reproducible. Include Agent: Codex in commits. The user authorized local setup; publication of a new public Blender repository requires separate direction.

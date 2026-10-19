@@ -1,0 +1,10 @@
+{
+  "pass": false,
+  "scope": "Real UI, solid viewport, two native rigid regions; not production frame-rate qualification",
+  "blender": "5.0.1",
+  "native_steps": 3626,
+  "native_batch_ms": 0.264700036495924,
+  "sidebar_visible": false,
+  "error": "",
+  "traceback": "Traceback (most recent call last):\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\tests\\test_gui.py\", line 25, in exercise\n    assert result['sidebar_visible']\n           ~~~~~~^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}

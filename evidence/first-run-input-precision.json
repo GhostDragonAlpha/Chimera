@@ -1,0 +1,66 @@
+{
+  "blender": "5.0.1",
+  "engine_source_lock": "77cfea240c8f1b8dbafdccdbdfcedba1949206a0b7d47d9c0c5f11788f22fd03",
+  "tests": [
+    {
+      "name": "Blender geometry through original volume compiler and native admission",
+      "pass": false,
+      "error": "[9.71999866, 45.7812055]",
+      "traceback": "Traceback (most recent call last):\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\tests\\test_blender.py\", line 12, in check\n    details=fn();results.append({'name':name,'pass':True,'details':details});print('PASS',name)\n            ^^^^\n  File \"D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\tests\\test_blender.py\", line 25, in build\n    assert abs(m[0]-.45*.3*.12*600)<1e-6,m\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: [9.71999866, 45.7812055]\n"
+    },
+    {
+      "name": "All native steps execute and Blender displays native freefall",
+      "pass": true,
+      "details": {
+        "max_freefall_error_m": 0.00024525046999997234,
+        "render_pose_matches_native": true
+      }
+    },
+    {
+      "name": "Replay restores full state and continuation branches",
+      "pass": true,
+      "details": {
+        "branch_samples": 5,
+        "exact_restore": true
+      }
+    },
+    {
+      "name": "Save and open physical trial preserves native state",
+      "pass": true,
+      "details": {
+        "state_hash": "35b0b5b886528d34"
+      }
+    },
+    {
+      "name": "Native refusals and invalid step requests preserve state",
+      "pass": true,
+      "details": {
+        "state_preserved": true
+      }
+    },
+    {
+      "name": "Unsupported geometry does not mutate accepted physics",
+      "pass": true,
+      "details": {
+        "open_mesh_refused": true
+      }
+    },
+    {
+      "name": "Native bridge timing and finite repeated advancement",
+      "pass": true,
+      "details": {
+        "batch_substeps": 80,
+        "simulated_ms": 20,
+        "native_batch_median_ms": 0.20355000742711127,
+        "native_batch_p95_ms": 0.20979996770620346,
+        "scope": "2 parts, CPU native solver only, not GUI frame rate"
+      }
+    },
+    {
+      "name": "Clean teardown",
+      "pass": true,
+      "details": "Clean registration/unregistration"
+    }
+  ],
+  "pass": false
+}

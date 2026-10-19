@@ -1,0 +1,26 @@
+{
+  "schema": "chimera.studio.source-lock.v1",
+  "source_repository": "D:\\Chimera-Maintenance\\PythonChimera",
+  "source_head": "910e0112e6bce987a21c09f64b61c7a652c4b04c",
+  "note": "Pinned working-tree bytes; source checkout is read-only to this integration. Engine algorithms are unmodified.",
+  "files": [
+    {
+      "source": "ChimeraEngine/engine/b2_scene.cpp",
+      "sha256": "ccbd86a4bad78991db0cf4cba97213c50876cf19543cfdd3cf679a11ec94b462",
+      "bytes": 134701,
+      "copy": "vendor\\chimera\\b2_scene.cpp"
+    },
+    {
+      "source": "ChimeraEngine/engine/b2_scene.hpp",
+      "sha256": "74e86532ef81e4cbaf385467cb8a9a9f01408bfa70839366e99dd301ff056af1",
+      "bytes": 20874,
+      "copy": "vendor\\chimera\\b2_scene.hpp"
+    },
+    {
+      "source": "tools/material_volume.py",
+      "sha256": "a4eb96e6d59c51d9c673ad6df8675639cd0b25a1652b0f6f5203de737a4327ec",
+      "bytes": 47382,
+      "copy": "vendor\\chimera\\material_volume.py"
+    }
+  ]
+}

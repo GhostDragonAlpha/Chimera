@@ -1,0 +1,10 @@
+build/
+__pycache__/
+*.pyc
+.user/
+
+*.blend1
+evidence/*.blend
+
+evidence/*stdout.log
+evidence/*stderr.log

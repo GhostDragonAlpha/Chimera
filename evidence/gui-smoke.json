@@ -1,0 +1,8 @@
+{
+  "pass": true,
+  "scope": "Real UI, solid viewport, two native rigid regions; not production frame-rate qualification",
+  "blender": "5.0.1",
+  "native_steps": 3629,
+  "native_batch_ms": 0.25939999613910913,
+  "sidebar_visible": true
+}

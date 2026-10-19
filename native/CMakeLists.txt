@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.20)
+project(chimera_studio_bridge LANGUAGES CXX)
+add_library(chimera_studio_bridge SHARED bridge.cpp ../vendor/chimera/b2_scene.cpp)
+target_compile_features(chimera_studio_bridge PRIVATE cxx_std_17)
+target_include_directories(chimera_studio_bridge PRIVATE ../vendor/chimera)
+if(MSVC)
+  target_compile_options(chimera_studio_bridge PRIVATE /W4 /EHsc)
+endif()
