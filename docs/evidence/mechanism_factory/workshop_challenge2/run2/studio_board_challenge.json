@@ -1,0 +1,16 @@
+{
+ "standing": "Workshop challenge 2 - recovered",
+ "updated": "workshop challenge 2",
+ "stages": [
+  {
+   "id": "WS4",
+   "name": "Salvage recipe, reused",
+   "status": "green",
+   "law": "objective law: the crate's COM stays inside the marked region with its bottom >= 4 mm above the slab top for the whole window; the load path is the admitted contact physics only",
+   "tool": "/tick_b2_place | /tick_b2_remove | /tick_b2_patch | /tick_b2_save | /tick_b2_restore",
+   "artifact": "run receipt + transfer/variation margins",
+   "falsifier": "crate bottom <= slab top + 3 mm at settle (on the hazard) or COM out of the region; the transferred recipe fails its predicate in a fresh world; refused edits moving the hash",
+   "cell": "RECOVERED: the doubled load now rides TWO pillars - crate 79 mm above the hazard (was -9 mm, through the tower). The recipe was reused, the world changed, one edit recovered it."
+  }
+ ]
+}

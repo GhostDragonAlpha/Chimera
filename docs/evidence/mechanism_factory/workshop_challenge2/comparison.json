@@ -1,0 +1,143 @@
+{
+ "schema": "chimera-workshop-challenge2-comparison-v1",
+ "run1": "docs\\evidence\\mechanism_factory\\workshop_challenge2\\run1",
+ "run2": "docs\\evidence\\mechanism_factory\\workshop_challenge2\\run2",
+ "deterministic_states": {
+  "S1_scene_spawn": {
+   "kind": "analytic",
+   "run1_hash": "92dcecfe0bb5caff",
+   "run2_hash": "92dcecfe0bb5caff",
+   "n_violations": 0,
+   "violations": [],
+   "within_band": true
+  },
+  "S2_pillar": {
+   "kind": "analytic",
+   "run1_hash": "596042c341284c5a",
+   "run2_hash": "596042c341284c5a",
+   "n_violations": 0,
+   "violations": [],
+   "within_band": true
+  },
+  "S3_solB_armed": {
+   "kind": "analytic",
+   "run1_hash": "91e9ef9c20154891",
+   "run2_hash": "91e9ef9c20154891",
+   "n_violations": 0,
+   "violations": [],
+   "within_band": true
+  },
+  "S4_solB_settled": {
+   "kind": "settled",
+   "run1_hash": "f0252ece06ca32ee",
+   "run2_hash": "3c43ae703bd7148c",
+   "n_violations": 0,
+   "violations": [],
+   "within_band": true
+  },
+  "S5_restored": {
+   "kind": "settled",
+   "run1_hash": "f0252ece06ca32ee",
+   "run2_hash": "3c43ae703bd7148c",
+   "n_violations": 0,
+   "violations": [],
+   "within_band": true
+  },
+  "S6_recovery_armed": {
+   "kind": "settled",
+   "run1_hash": "7887b504aded3540",
+   "run2_hash": "2deb0f8f93a9251a",
+   "n_violations": 0,
+   "violations": [],
+   "within_band": true
+  }
+ },
+ "analytic_states_byte_identical_modulo_steps": true,
+ "all_states_within_band": true,
+ "frame_shots": {
+  "0-scene-startup": {
+   "run1": "a5286d88844e8da936e56ca4d266bc230a042738c8273ed55a20f812a82b4e61",
+   "run2": "a5286d88844e8da936e56ca4d266bc230a042738c8273ed55a20f812a82b4e61",
+   "byte_identical": true
+  },
+  "1-tower-pillar": {
+   "run1": "ac8281291aec4cc2a63296c59752162ef1613d47630531befcbc78dbd14d5323",
+   "run2": "ac8281291aec4cc2a63296c59752162ef1613d47630531befcbc78dbd14d5323",
+   "byte_identical": true
+  },
+  "2-solB-armed": {
+   "run1": "a7f2d1ee10c7f79568ab442e3a78c0892170670179f6a0967b2622a5b8f37d33",
+   "run2": "a7f2d1ee10c7f79568ab442e3a78c0892170670179f6a0967b2622a5b8f37d33",
+   "byte_identical": true
+  },
+  "6-recovered-terminal": {
+   "run1": "18c40a51d9dcc093cc70d1e22872d5915454e034fd3b3464aa59b887baac8011",
+   "run2": "e65834518c07c299d2b5c0e1e117ce729552e1f6bb2d9ec87203665bc618d8a7",
+   "byte_identical": false
+  },
+  "7-terminal-restored": {
+   "run1": "18c40a51d9dcc093cc70d1e22872d5915454e034fd3b3464aa59b887baac8011",
+   "run2": "e65834518c07c299d2b5c0e1e117ce729552e1f6bb2d9ec87203665bc618d8a7",
+   "byte_identical": false
+  }
+ },
+ "all_frame_shots_byte_identical": false,
+ "glass_shots": {
+  "3-solB-engine1-glass": {
+   "run1": "fdc8578d3e6ecf1c78216774494080334bde81ce6ba51a8ffa130f841593449f",
+   "run2": "9d64f3c6b110010ba232b73934f38384df5fce562a1e5f630a363d96010d183e",
+   "byte_identical": false
+  },
+  "4-transfer-glass": {
+   "run1": "8c3da385370d280d5032e7f5ac333bcbf7e4e3d7f63e4ae1a919de0b8f174062",
+   "run2": "78faf4b10023e3237ebd56046d2d7f63e9fa054d90ef94a4d9f980327f1a1e4d",
+   "byte_identical": false
+  },
+  "5-variation-glass": {
+   "run1": "06072ccdb88805712f4cac2175542d6e21861ec16674d620a02c5aa0c3a96a65",
+   "run2": "14b29980a109b76f6a4a5f759ca88796fee9cc60181db2f5e7e654453b301992",
+   "byte_identical": false
+  },
+  "6-recovered-glass": {
+   "run1": "5c26c0547a93d4f5fd0441f3f53ff61269119731f4125d2d2094be57d3ef3d64",
+   "run2": "de2982609032345ec9d64f9c1a1d552e360165774d95c341b31c7cd383466913",
+   "byte_identical": false
+  }
+ },
+ "all_glass_shots_byte_identical": false,
+ "settled_save_docs": {
+  "solution_B": {
+   "violations": [],
+   "n_violations": 0,
+   "within_band": true
+  },
+  "terminal": {
+   "violations": [],
+   "n_violations": 0,
+   "within_band": true
+  }
+ },
+ "gate_challenge2": {
+  "run1": {
+   "build_passed": true,
+   "transfer_passed": true,
+   "restored_hash_equals_engine1_saved": true,
+   "variation_measured": true,
+   "variation_verdict": "FAIL",
+   "recovery_passed": true,
+   "restore_bit_exact": true,
+   "refusals_preserved": true
+  },
+  "run2": {
+   "build_passed": true,
+   "transfer_passed": true,
+   "restored_hash_equals_engine1_saved": true,
+   "variation_measured": true,
+   "variation_verdict": "FAIL",
+   "recovery_passed": true,
+   "restore_bit_exact": true,
+   "refusals_preserved": true
+  }
+ },
+ "gate_pass": true
+}

@@ -1307,3 +1307,48 @@ s = 1.0 only. No record change; published artifacts left as written.
 - Not yet shown: saved-recipe transfer under a varied constraint
   (workshop challenge 2); human playability unobserved (scripted
   walkthrough).
+
+## Workshop challenge 2 — saved recipe transfers; world varies; one edit recovers (2026-10-18) — PASS (§5.1 reuse promise)
+
+- Driver `tools/construction_packet/workshop_challenge2.py` (imports the
+  published challenge-1 driver); runs
+  `docs/evidence/mechanism_factory/workshop_challenge2/run1|run2` +
+  `comparison.json`; report `workshop_challenge2/WORKSHOP_CHALLENGE2.md`.
+  B-suite exe sha 47bbf42a... (both engines, per-phase in receipts).
+- Arc (both runs, `gate_pass: true`): build contact tower (79.882 mm,
+  115.03 N, chain-law prediction hit to the micron) → clean shutdown →
+  fresh never-admitted engine restores `save_B.json` with **restored hash ==
+  engine-1 saved hash** → transfer PASS unchanged (green board chip "the
+  invention is REUSABLE") → variation `/tick_b2_patch crate mass_kg` x2:
+  settled margin **-8.92 mm FAIL** (doubled step load punches through the
+  pillar — documented tunnel class; deterministic both runs; red chip names
+  it with ACTION line) → recovery = the ACTION (second pillar beside the
+  first, unrotated, crate straddling both, mass patched while paused): PASS
+  79.051 mm → terminal save restore bit-exact; refused edit hash-unchanged.
+- Determinism: analytic anchors byte-identical modulo steps; settled docs
+  in band; frame shots 3/5 byte-identical (2 settled frames jitter-band).
+  Glass shots NOT byte-identical (417-901 px, 0.02-0.04 %): board region
+  incl. every verdict line byte-identical; diffs are viewport specular
+  jitter + live STATUS HUD clock. Falsifier rendered "named before the run".
+- Cost: frame avg 1.19/1.17 ms (first-frame max 47.6 ms), sim/wall 1.0,
+  RSS peak 138 MB, 14 routes.
+- New engine/API findings: patch `mass_kg` rescales mass+inertia+ground
+  k/c (rest sink preserved); restore works on a never-admitted fresh engine
+  (`active_ = true`); **rotated-surface contact finding** — a rotated part
+  as contact surface drops vertex-resting loads (free-fall through 90°-
+  yawed support at 2.4/6.7 mm, exact 1/2gt^2, zero pair force; unrotated
+  control holds; yawed square-pillar control included). Probes preserved in
+  `workshop_challenge2/probes/`. Challenge 1 unaffected (its support faces
+  were unrotated). Workshop rule now: supports placed unrotated; engine
+  ticket is a lead decision for the engine track.
+- Disclosed deviation (same as challenge 1): design frozen in the committed
+  driver, no separate UTC-stamped prereg JSON.
+- Process: Maya authored driver + smoke in one dispatch (~2.4 h) under the
+  revised brief (author + smoke only); lead ran captures + comparison. The
+  post-challenge-1 process change worked.
+- Qwen review (author-independent, focused): receipts/comparison re-read
+  from JSON; glass-shot pixel diff localized (board byte-identical, HUD +
+  viewport only); all three verdict chips read from the pixels (transfer
+  green / variation red with ACTION / recovery green). PUBLISH.
+- Not shown: human playability; rotated-surface defect documented, not
+  fixed.
