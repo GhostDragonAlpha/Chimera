@@ -4680,6 +4680,81 @@ adapters already exist. Sources: [Blender modes](https://docs.blender.org/manual
 [undo](https://developer.blender.org/docs/features/core/undo/). Check the actual
 pinned Blender 5.0.1 API before implementation.
 
+**Reuse assessment: existing selectable-material physics (researched 2026-10-19).**
+Existing Blender tools already implement substantial parts of the proposed
+material workshop. Before writing another cloth/solid solver, mesher, material
+preset library or bake manager, compare these candidates against the exact
+missing user action. Prefer a usable upstream component or small adapter when
+it removes work. This is a researched integration proposal; none has been
+installed or tested in our custom Blender 5.0.1 build.
+
+| Candidate and primary source | Existing capability worth reusing | Decision and boundary |
+|---|---|---|
+| [libuipc Physics extension](https://spirimirror.github.io/libuipc-doc/build_install/blender/) | CUDA cloth/shells, deformable FEM solids, affine rigid bodies and rods with shared contact/friction; physical presets saved in .blend. Windows/Linux; separate Python worker. Blender adapter GPL-3.0-or-later, core/worker Apache-2.0 | **First open-source integration candidate.** API target 4.2+, documented Windows testing on Blender 4.5.3. Extension 0.8.0 uses cached playback. Native tetrahedralization needs a current source build beyond wheel 0.0.28. Rods have stretch/bending but no torsion. Its laws differ from Chimera's constant-tension film. |
+| [PPF Contact Solver](https://github.com/st-tech/ppf-contact-solver) and [Cloth NeXt](https://github.com/polyworks-art/Cloth_neXT) | External solver plus Blender controls for cloth, cables and soft bodies; material zones, diagnostics and cache recovery. PPF is Apache-2.0; frontend GPL-3.0-or-later | **Second open-source candidate, especially fabrics.** [Backend checks](https://github.com/polyworks-art/Cloth_neXT/blob/main/docs/SOLVER_BACKEND_CERTIFICATION.md) name Windows, RTX 4070 SUPER and Blender 5.2.2, not our machine. [Product page](https://polyworks-art.github.io/Cloth_neXT/) and README disagree on preset counts and release details; pin a matching addon/solver pair instead of combining claims. |
+| [HiPhyEngine](https://hiphyengine.github.io/) | Commercial Blender workflow for coupled rigid bodies, rods, cloth/membranes and deformable solids; documented parallel CPU execution | **Ready-made workflow comparator.** [Requirements](https://hiphyengine.github.io/quick-start/quick-start-blender/): Windows/Linux x64 AVX2, Blender 4.5+; first enable automatically installs MKL/PyBind11 into Blender Python. [Trial](https://hiphyengine.github.io/get-hiphy/download/) excludes commercial use and disables cache I/O/resume, so it cannot establish our save/replay requirement. No 4090 speed claim. |
+| [VoxelSim FEA](https://github.com/RandomLambda/VoxelSim-FEA) | Select steel, aluminum, ABS, PP or custom values; assign supports/loads; inspect displacement, von Mises stress and yield-based safety factor | **Narrow static engineering comparator.** Linear-elastic voxel analysis with CPU options; not dynamic joints, tearing, plastic collapse or CA. Yield-based coloring is not a post-yield material law. Accuracy and compatibility remain unmeasured here. |
+| [Blender rigid-body mass presets](https://docs.blender.org/manual/en/3.6/scene_layout/object/editing/rigid_body.html) and [cloth presets](https://docs.blender.org/manual/nb/3.6/physics/cloth/settings/index.html) | Existing density selection and cloth examples, with familiar selection/constraint/cache UI | Reuse editor conventions. Computing mass from density does not supply steel strength, wood grain or a coupled Chimera law. Check the pinned build's API. |
+
+**Build-versus-reuse decision.** Preserve our construction/compiler, identities,
+native render handoff and checkpoints. Evaluate libuipc/PPF as reusable native
+components or offline response generators before commissioning equivalent general
+deformables/contact from scratch. External results enter §11.21's existing
+records and comparison workflow. They do not silently become the live world.
+An adopted backend must explicitly own its coupled scene: running two solvers
+and copying vertices does not establish force, moment or energy transfer.
+Preserve existing CA work and keep water deferred.
+
+The immediate product value is physical meaning inside ordinary Blender:
+choose a part, assign a supported material, define mounts/supports, apply an
+action, see its response and recover the saved construction. Material records
+identify law, units, density, relevant stiffness/damping, thickness or volume,
+directional axes, provenance and supported range. Distinguish measured, fitted,
+illustrative and fictional values; keep visual shaders separate. A steel or
+skin label alone cannot supply all those behaviors.
+
+**Reuse measured data too.** The [MIT Fabric Properties Dataset](https://people.csail.mit.edu/klbouman/pw/projects/materialproperties/dataset.html)
+provides measurements for 30 fabrics, including bending stiffness, area weight
+and density; many reported properties average orthogonal directions. Cloth NeXt
+cites it for preset starting points. Use compact measurement records through
+the existing source/recipe pipeline, retaining attribution and checking
+redistribution terms before packaging. It does not supply every stretch, shear,
+damping, friction or failure parameter. Preserve missing values instead of
+inventing a complete law. PPF's [parameter mapping](https://github.com/polyworks-art/Cloth_neXT/blob/main/docs/PPF_PARAMETER_MAPPING.md)
+distinguishes density-normalized stiffness from Young's modulus in Pa.
+UnitcellDB and FEBio remain the established cellular/reference priorities.
+
+**Version and recovery details matter.** libuipc documents a [Stable Neo-Hookean calibration correction](https://spirimirror.github.io/libuipc-doc/specification/constitutions/stable_neo_hookean/)
+for the entered E/Poisson small-strain response; its Blender page dates this
+2026-10-19. Pin the corrected runtime before generating labels. A cached mesh
+animation does not establish full physical-state continuation.
+[HiPhy's workflow](https://hiphyengine.github.io/overview/how-hiphyengine-blender-addon-works/)
+requires explicit cache saving rather than automatic saving with .blend.
+
+**Bounded comparison to schedule.** Use a copied construction and isolated
+environment. Demonstrate material assignment on a supported object, then a rigid
+load interacting with a deformable patch. Match units, supports, law and observable
+where comparing engines; use an independent beam/patch reference only within its
+assumptions. Our constant-tension coupon is not a tensile-elastic cloth reference.
+Record setup effort, edit-to-result time, memory, failure recovery and offline
+reopen; evaluate fresh-process physical continuation separately. Reuse current
+comparison/evidence owners. Select on useful authoring and development time saved.
+This research does not install dependencies, replace a runtime, start a GPU test
+or interrupt agents.
+
+**Other Blender reuse.** [Tissue](https://github.com/alessandro-zomparelli/tissue)
+provides computational design and repeated cellular surfaces, not biomechanical
+tissue mechanics. [Sverchok](https://github.com/nortikin/sverchok) supplies
+parametric geometry, fields and CAD-oriented construction; try existing Geometry
+Nodes first for simple repetition. Feed evaluated geometry/attributes through
+our compiler instead of rebuilding a modeler.
+[Taichi Elements](https://github.com/taichi-dev/taichi_elements) has a
+multi-material continuum research engine and experimental Blender path;
+[PolyFEM's Blender plugin](https://github.com/ETSim/PolyFEMBlenderPlugin) has an
+experimental FEM preparation path with external dependencies. Keep them secondary
+until a specific need justifies compatibility work. None establishes functionality
+for arbitrary imported machinery.
+
 **Next Blender increments, in value order.** Choose one observable user action
 at a time; reuse the implementation above and expand the existing checks only
 where its behavior changes.
@@ -4703,6 +4778,9 @@ where its behavior changes.
 4. **More useful constructions from existing engine capabilities.** Inspect
    §11.20.12, the mechanism factory, artificial proteins and material/attachment
    owners before adding a control. Bind already admitted laws and recipes first.
+   For missing general-purpose physics, use the assessment above before
+   commissioning a duplicate solver. Retain the native owner until a deliberate
+   integration decision and its boundary checks are complete.
    For a missing capability, record the precise user action, native inputs/output,
    owner and required evidence for the engine lane. CAD/3D-printing imports,
    colored material regions and layer stacks should compile through these same
