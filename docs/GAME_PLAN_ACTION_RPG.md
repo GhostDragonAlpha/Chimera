@@ -4776,10 +4776,33 @@ stale requests cannot stop a successor or the other task kind. View A/B now
 respects the chosen editor. The live UI passed 17 viewport navigations and two
 Object/Edit transitions during comparison, preserving a human source edit and
 showing distinct A/B images. Evidence is in
-`ChimeraStudio/integration/evidence/external-comparison`. The live native workspace
-still uses its older Python worker; the next increment must retain one persistent
-external native owner across commands, with exact replay and failure recovery.
-This does not change a physics law or qualify full editor concurrency yet.
+`ChimeraStudio/integration/evidence/external-comparison`. Live native operations
+now have their own persistent-owner qualification below; no physics law changed.
+
+**Persistent live native owner, checked 2026-10-19.** Build/load/replay/render
+now retain one external Python/native GPU process across normal commands. The
+same existing solver, checkpoint schema, renderer and bounded history are reused.
+A rebuild replaces the old owner only after validation/presentation; failed
+candidates retain the previous construction and authored edits. Lost mutation
+responses, process loss and a 140 s hard deadline report failure and close the
+uncertain owner; explicit Resume restores the accepted physical/render checkpoint.
+Opening completed or pending saves stays offline; pending work becomes interrupted.
+
+Ten integration checks, exact native PNG/physical replay, independent energy/force
+limits, fresh reopen and abrupt owned-Blender-exit cleanup pass. Actual viewport
+work included 60 navigation calls and two Object/Edit transitions during GPU
+commands, retaining the human edit. Initial build was about 1.59 s and load/replay
+about 0.18 s for the small fixture, including IPC/acceptance; no solver speedup or
+large-scene claim. Fixed a Windows request-file access race and a panel that tried
+to mutate Blender IDs while drawing. Panels now read cached status; timers accept
+results. Evidence: `ChimeraStudio/integration/evidence/persistent-owner/acceptance.json`.
+Original user projects, native physics and model services remain unchanged.
+
+This checks the fixed native camera. The separate concurrent Match Blender View
+adapter failed before submission on unavailable `SpaceView3D.sensor_width`;
+its source remains preserved and its compatibility/projection test is the next
+repair. Do not infer full camera correspondence or arbitrary Blender concurrency
+from this small-scene acceptance.
 
 **Existing recipe evidence links, implemented and checked 2026-10-19.**
 The Blender Recipe Evidence panels and shared `link_evidence` command now bind
