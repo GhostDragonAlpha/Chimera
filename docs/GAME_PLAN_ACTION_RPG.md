@@ -5016,6 +5016,40 @@ original failures and full measured receipts. The fixed-rim/world-Z apex law
 remains the scope; UnitcellDB/FEBio, AP/libuipc mappings and broader shape search
 still need their existing owners. No original project or model service changed.
 
+**Typed procedure learning and reuse, implemented and checked 2026-10-19.**
+Blender now mines repeated successful command sequences from the existing saved
+operation history. The human **Learned Construction Procedures** panel and the
+external local CLI can remember a sequence, bind its explicit roles to another
+construction, supply learned numeric parameters and run it through the same
+operators. Input/output source and native identities must remain contiguous;
+failed work, unrecorded edits and overlapping copies cannot supply examples.
+The bounded native adapter supports 2–6 membrane assignment/connection/build/load/
+fixed-render steps, requires build-before-load, and finishes with an independent
+physical check. Observed parameter values are examples, not qualified ranges.
+
+Two actual assign/build/load/render examples produced one reusable four-step
+procedure. On new editable part identities at 1.8 J/m2 and 0.6 N, its compiled
+physical input, accepted state and render bytes exactly matched the individual
+operations. Caller invocations fell 4 to 1; native operations remained 4.
+Elapsed time was 5.81 s versus 3.78 s manually,
+so the demonstrated benefit is reusable authoring, not simulation acceleration.
+Shared-procedure overhead is a measured candidate for technique 13 below.
+
+Purpose, source operation IDs, parameters and progress persist in the existing
+operation records, with eight retained definitions protected from normal history
+trimming. Learning at the 64-record limit, stale removal, duplicate delivery,
+intervening human edits, partial failures and cancellation pass. Each child has
+its own inspectable outcome; interruption preserves completed effects and never
+retries automatically. Completed/pending saves reopen offline, and confirmed
+physical/render state resumes exactly with known descriptive metadata enrichment
+checked separately. The real panel and external CLI both ran the procedure while
+preserving human Edit Mode geometry/selection; the live test counted
+18 viewport navigation updates. This is terminal integration,
+not a model-quality benchmark. Evidence:
+`ChimeraStudio/integration/evidence/learned-procedures/acceptance.json`.
+No new catalog, solver, law, model setting or user-project replacement. General
+function discovery, AP/libuipc mappings and broader modes remain separate work.
+
 **Fifteen agreed techniques: implementation sequence and honest status.** These
 are the full requested scope, not fifteen labels for one demo. Each row must
 produce a useful Blender action, an accepted existing-owner result and evidence
@@ -5026,7 +5060,7 @@ compelling game using simulated matter; the editor serves building and inspectio
 | # / technique | Reuse and first concrete acceptance | Current status / order |
 |---|---|---|
 | 1. Small reliable construction language | Registered operators, `blocks.compile_parts`, native checkpoint owner. Same input through UI/API; stale and duplicate delivery safe; actual completion visible. | **Implemented subset above, including tested external local terminal transport, rebuild recovery, native A/B, shared libuipc cache comparisons and revision-bound native rendering.** Broader owner/mode adapters remain; Object/Edit authoring plus Image Editor observation. |
-| 2. Library learning | Mine repeated successful construction sequences into parameterized recipes with ports and provenance through existing mechanism-factory/AP owners. [DreamCoder](https://people.csail.mit.edu/asolar/papers/EllisWNSMHCST21.pdf) motivates reusable program components. Demonstrate one mined recipe reducing authoring effort with identical compiled meaning. | **Partial, tested parameter abstraction above.** Two confirmed native trials produce one reusable construction with provenance and fewer authoring commands at identical compiled meaning. General sequence mining, function discovery and broader owner mappings remain planned. |
+| 2. Library learning | Mine repeated successful construction sequences into parameterized recipes with ports and provenance through existing mechanism-factory/AP owners. [DreamCoder](https://people.csail.mit.edu/asolar/papers/EllisWNSMHCST21.pdf) motivates reusable program components. Demonstrate one mined recipe reducing authoring effort with identical compiled meaning. | **Bounded parameter abstraction and native sequence mining implemented above.** Confirmed trials yield a reusable geometry template; repeated successful commands now yield typed procedures with new part bindings and observed numeric parameters, preserving compiled meaning. General program/function discovery and broader owner mappings remain planned. |
 | 3. Quality-diversity / MAP-Elites | Index accepted comparisons by size, mass, compliance, response direction and measured cost; keep useful alternatives rather than a single score winner. Use existing evidence identities. [Method](https://arxiv.org/abs/1504.04909). | **Bounded native MAP-Elites implemented above.** Three response bands retain independently checked material/XY-scale alternatives under the same load and maximum footprint; native A/B, editable recreation and saved lineage pass. General size/mass/direction descriptors and broader owner mappings remain planned. |
 | 4. Inverse design | Desired deflection/load/space becomes a bounded search over supported geometry/materials. Reuse mechanism-factory fits and native evaluation. [Warp](https://github.com/NVIDIA/warp) differentiates its own kernels; our Vulkan/native path needs an explicit derivative adapter. | **Bounded native material search and target-directed sampling implemented above.** Desired movement/load chooses among measured tensions with saved native checkpoints, independent checks and explicit no-match; the equal-budget comparison records both target gains and held-out losses. Bounded XY-scale geometry exploration now works through the quality-diversity adapter. Target-directed general geometry search and derivative adapters remain planned; no gradient claim. |
 | 5. Learned solver warm starts | Predict an initial guess, then let the existing solver enforce its residual/acceptance criteria. Compare against ordinary continuation warm starts including inference/transfer overhead. [NOWS](https://arxiv.org/abs/2511.02481). | **Planned native-owner extension.** No neural predictor is installed in Studio. Keep only a measured total-time improvement at equal tolerances. |
@@ -5037,9 +5071,9 @@ compelling game using simulated matter; the editor serves building and inspectio
 | 10. Adaptive fidelity | Switch a component between qualified reduced and detailed responses near contacts, large deformation or domain boundaries, preserving state/port exchanges. Learned-mesh research is inspiration, not a substitute native owner. | **Planned after 6–8.** Demonstrate an actual state-transfer/fallback case with measured error and latency; no hidden skipped steps. |
 | 11. Dependency-aware physical reuse | Existing recipe/source/runtime hashes identify immutable characterization results; geometry, laws, supports, load and connections invalidate affected dependencies. Separate physical states for instances. | **Partial, tested evidence reuse:** existing-owner references now survive unrelated edits and refuse relevant stale dependencies. Physical solver-response reuse and general geometry mappings remain planned; this adapter does not skip a solve. |
 | 12. Counterfactual failure explanations | Restore a checkpoint, vary one supported parameter, compare the result and show an actionable alternative on the same Blender construction. Reuse `tools.recipe_experiments`, native history and libuipc recorded controls. | **Native membrane and libuipc A/B UIs implemented above.** Existing attachment controls are reusable at equal simulated time, with visible changed inputs and saved native-cache references. Bounded native material-choice search is now implemented; automatic causal explanations and general material qualification remain unfinished. |
-| 13. Bounded evolutionary code/workflow optimization | Propose limited implementation variants against a fixed independent evaluator, with correctness and full end-to-end cost. [AlphaEvolve](https://deepmind.google/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/) motivates the loop. | **Planned process support.** Start with one measured editor bottleneck; no automatic solver-policy edits, benchmark weakening or unbounded candidate runs. |
+| 13. Bounded evolutionary code/workflow optimization | Propose limited implementation variants against a fixed independent evaluator, with correctness and full end-to-end cost. [AlphaEvolve](https://deepmind.google/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/) motivates the loop. | **Measured optimization still planned.** The shared-procedure overhead above is a concrete editor bottleneck; compare bounded variants at identical outcomes and full cost. No automatic solver-policy edits, benchmark weakening or unbounded candidate runs. |
 | 14. Outcome-driven agent procedure optimization | Qwen chooses peers, accepts/defers/rejects Step findings and sends Maya useful fixes. Compare procedure variants on accepted user-visible progress, rework, elapsed time and escaped defects. [GEPA](https://github.com/gepa-ai/gepa) is a reference. | **Manual workflow exists; measured optimizer planned.** One bounded procedure comparison before adoption; model agreement is not the reward. |
-| 15. Retrievable procedural memory | Retrieve purpose, source IDs, commands, accepted evidence and limits from existing recipe/receipt owners. Keep these references through compression and saving. | **Partial, tested owner retrieval:** saved purpose/history and A/B identities now link to existing records, receipts, measured scope and rejected reductions. Freshness is explicit; native admission is separate. The native-trial template also preserves purpose, source identities and the inferred material parameter; general procedural retrieval/mining remains planned, with no second SQLite database. |
+| 15. Retrievable procedural memory | Retrieve purpose, source IDs, commands, accepted evidence and limits from existing recipe/receipt owners. Keep these references through compression and saving. | **Partial, tested owner retrieval:** saved purpose/history and A/B identities now link to existing records, receipts, measured scope and rejected reductions. Freshness is explicit; native admission is separate. The native-trial template preserves source identities and its material parameter; mined native procedures now retain purpose, commands, parameter examples and partial progress in existing operation history, with tested human/CLI retrieval and replay. General cross-owner procedural memory remains planned, with no second database. |
 
 Implement in this order: **shared operations/recovery (1) → existing-trial/evidence
 adapter (11, 15) and visible counterfactual (12) → recipe discovery and varied
