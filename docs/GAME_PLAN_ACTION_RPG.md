@@ -5077,7 +5077,7 @@ compelling game using simulated matter; the editor serves building and inspectio
 | 2. Library learning | Mine repeated successful construction sequences into parameterized recipes with ports and provenance through existing mechanism-factory/AP owners. [DreamCoder](https://people.csail.mit.edu/asolar/papers/EllisWNSMHCST21.pdf) motivates reusable program components. Demonstrate one mined recipe reducing authoring effort with identical compiled meaning. | **Bounded parameter abstraction and native/layered sequence mining implemented.** Confirmed trials yield a reusable geometry template; repeated successful commands now yield typed procedures with new part bindings and observed numeric parameters, preserving compiled meaning. Layered material/seam/bake patterns now bind new endpoint parts and named groups, with final native-cache evidence. General program/function discovery and broader owner mappings remain planned. |
 | 3. Quality-diversity / MAP-Elites | Index accepted comparisons by size, mass, compliance, response direction and measured cost; keep useful alternatives rather than a single score winner. Use existing evidence identities. [Method](https://arxiv.org/abs/1504.04909). | **Bounded native MAP-Elites implemented above.** Three response bands retain independently checked material/XY-scale alternatives under the same load and maximum footprint; native A/B, editable recreation and saved lineage pass. General size/mass/direction descriptors and broader owner mappings remain planned. |
 | 4. Inverse design | Desired deflection/load/space becomes a bounded search over supported geometry/materials. Reuse mechanism-factory fits and native evaluation. [Warp](https://github.com/NVIDIA/warp) differentiates its own kernels; our Vulkan/native path needs an explicit derivative adapter. | **Bounded native material search and target-directed sampling implemented above.** Desired movement/load chooses among measured tensions with saved native checkpoints, independent checks and explicit no-match; the equal-budget comparison records both target gains and held-out losses. Bounded XY-scale geometry exploration now works through the quality-diversity adapter. Target-directed general geometry search and derivative adapters remain planned; no gradient claim. |
-| 5. Learned solver warm starts | Predict an initial guess, then let the existing solver enforce its residual/acceptance criteria. Compare against ordinary continuation warm starts including inference/transfer overhead. [NOWS](https://arxiv.org/abs/2511.02481). | **Planned native-owner extension.** No neural predictor is installed in Studio. Keep only a measured total-time improvement at equal tolerances. |
+| 5. Learned solver warm starts | Predict an initial guess, then let the existing solver enforce its residual/acceptance criteria. Compare against ordinary continuation warm starts including inference/transfer overhead. [NOWS](https://arxiv.org/abs/2511.02481). | **Bounded native implementation.** Existing RBF initial guesses now narrow GPU-verified equilibrium brackets for the single-free-Z membrane, with ordinary fallback and unchanged physics. Six loads train from accepted history; actual 20-query Blender pass improved only 1.9%, so keep opt-in. General/neural predictors and libuipc integration remain open. See measured warm-start scope below. |
 | 6. Static condensation / component reduction | Eliminate internal degrees of freedom while retaining boundary ports; reuse AP two-port/finite-area concepts. [MFEM](https://docs.mfem.org/3.1/classmfem_1_1StaticCondensation.html) describes linear block elimination. | **Bounded native affine-body adapter implemented below.** Reversible FEM/affine authoring preserves boundary stitches and the saved detailed mesh; complete trajectory/port-force comparison measures cost and rejects unsuitable reductions. This uses native ABD, not Schur condensation. General AP port reductions, internal deformation reconstruction, nonlinear contacts and state transfer remain planned. |
 | 7. Hyper-reduction / optimized cubature | Reduce element-force evaluations inside a measured deformation/material domain, retaining every requested timestep. [Original work](https://www.cs.cornell.edu/~stevenan/cubature/). | **Planned native-owner extension.** Compare full/reduced forces, energy and total cost; no accepted recipe from sampling alone. |
 | 8. Port-Hamiltonian learned components | Learn bounded energy/dissipation/port response and compose through explicit physical interconnections, building on AP rather than inventing another solver. [Research](https://proceedings.mlr.press/v211/neary23a.html) demonstrates spring-mass-damper compositions. | **Planned.** First compare a two-component response with the detailed solve; integrator, contact and out-of-domain fallback still need independent checks. |
@@ -5370,9 +5370,39 @@ connected-layer copying pass. Evidence:
 editable example is `Compared affine component.blend` beside its caches.
 This advances technique 6 only within its stated scope. Cached mesh replay is
 not physical restart; live state transfer, generic AP/Schur responses, internal
-deformation reconstruction, learned warm starts, cubature and adaptive fidelity
-remain open. Independent physics checks stay authoritative. Native runtime,
+deformation reconstruction, multidimensional learned warm starts, cubature and
+adaptive fidelity remain open. Independent physics checks stay authoritative. Native runtime,
 original projects, model settings and the saved Z Code goal remain unchanged.
+
+**Measured native warm-start scope (October 19).** The Blender panel and shared
+CLI now learn initial guesses from already accepted membrane load checkpoints,
+then explicitly enable a separately pinned native variant. It verifies two GPU
+force probes before narrowing the ordinary equilibrium bracket, falls back on a
+bad guess, and keeps the physics shader, native tolerances and independent checks
+unchanged. It uses the existing RBF predictor; there is no learned replacement law.
+This applies only to the current constant-tension, single-free-Z-apex native
+membrane, not libuipc cloth/FEM. The original default source/runtime remains intact.
+
+Six training loads and five held-out loads reduced force probes from 27–31 to
+13–15. A 100-query native batch took **6.503/5.677 s**, including new training and
+fit (~13%). The more relevant 20-query shared Blender pass took **4.496/4.412 s**,
+including 0.0246 s learning from existing checkpoints (~1.9%, one pass). Keep this
+optional; that small difference does not establish a robust general speedup.
+Short runs did not repay fresh training; enabling mid-session also costs helper
+startup (~1.3 s, separately reported). The first full Blender pass was slower
+(5.060/5.229 s); retained evidence shows the subsequent immutable-model cache
+removed repeated parsing/validation without reusing approval after input changes.
+
+Same force/energy checks and a 2 micrometer comparison budget passed throughout.
+Human controls, actual external CLI, bad-guess fallback, stale/corrupt model
+refusal, ordinary-path exact equality and fresh save/reopen passed. Switching
+preserves accepted physical state, native kernel render and *live* replay history.
+Saving retains the current checkpoint and learned model, not the entire live
+history. Reopen stays offline until Resume. Evidence:
+`ChimeraStudio/integration/evidence/native-warmstart/acceptance.json`; its
+`Learned native load guesses.blend` is the editable example. This advances
+technique 5 within its narrow scope. No model service, installed libuipc solver,
+original project or saved Z Code goal was changed.
 
 **Next editor work.** Use the measured component comparison on another useful
 construction shape/load before widening its envelope; retain detailed FEM when
