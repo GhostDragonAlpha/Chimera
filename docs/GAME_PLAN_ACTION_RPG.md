@@ -5033,7 +5033,21 @@ physical input, accepted state and render bytes exactly matched the individual
 operations. Caller invocations fell 4 to 1; native operations remained 4.
 Elapsed time was 5.81 s versus 3.78 s manually,
 so the demonstrated benefit is reusable authoring, not simulation acceleration.
-Shared-procedure overhead is a measured candidate for technique 13 below.
+A subsequent bounded comparison for technique 13 measured 6.05 s baseline,
+5.40 s after removing duplicate inspection, and **4.58 s with compact fresh
+construction guards** (three repetitions each; 24.3% less elapsed time).
+Full inspections fell 25 to 15, while all eighteen measured manual/procedure
+outputs retained identical physical input, accepted state and render hashes.
+Child commands retain full preflight, inspection and independent acceptance;
+no snapshot survives a polling call. The selected run's separate manual commands
+still took 3.92 s: this improves authoring orchestration, not native physics.
+New geometry/material/attachment/unit/scene/native-state perturbation checks,
+existing interruption/cancellation/capacity checks, fresh saves/reopening and the
+actual human panel/external CLI all passed. Current reusable saves and evidence:
+`ChimeraStudio/integration/evidence/procedure-performance/acceptance.json`.
+Old definitions stay visibly stale across owner changes; original projects are
+untouched. This is measured bounded variant selection, not an installed automatic
+evolutionary search or model-policy optimizer.
 
 Purpose, source operation IDs, parameters and progress persist in the existing
 operation records, with eight retained definitions protected from normal history
@@ -5071,7 +5085,7 @@ compelling game using simulated matter; the editor serves building and inspectio
 | 10. Adaptive fidelity | Switch a component between qualified reduced and detailed responses near contacts, large deformation or domain boundaries, preserving state/port exchanges. Learned-mesh research is inspiration, not a substitute native owner. | **Planned after 6–8.** Demonstrate an actual state-transfer/fallback case with measured error and latency; no hidden skipped steps. |
 | 11. Dependency-aware physical reuse | Existing recipe/source/runtime hashes identify immutable characterization results; geometry, laws, supports, load and connections invalidate affected dependencies. Separate physical states for instances. | **Partial, tested evidence reuse:** existing-owner references now survive unrelated edits and refuse relevant stale dependencies. Physical solver-response reuse and general geometry mappings remain planned; this adapter does not skip a solve. |
 | 12. Counterfactual failure explanations | Restore a checkpoint, vary one supported parameter, compare the result and show an actionable alternative on the same Blender construction. Reuse `tools.recipe_experiments`, native history and libuipc recorded controls. | **Native membrane and libuipc A/B UIs implemented above.** Existing attachment controls are reusable at equal simulated time, with visible changed inputs and saved native-cache references. Bounded native material-choice search is now implemented; automatic causal explanations and general material qualification remain unfinished. |
-| 13. Bounded evolutionary code/workflow optimization | Propose limited implementation variants against a fixed independent evaluator, with correctness and full end-to-end cost. [AlphaEvolve](https://deepmind.google/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/) motivates the loop. | **Measured optimization still planned.** The shared-procedure overhead above is a concrete editor bottleneck; compare bounded variants at identical outcomes and full cost. No automatic solver-policy edits, benchmark weakening or unbounded candidate runs. |
+| 13. Bounded evolutionary code/workflow optimization | Propose limited implementation variants against a fixed independent evaluator, with correctness and full end-to-end cost. [AlphaEvolve](https://deepmind.google/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/) motivates the loop. | **First measured bounded optimization implemented above.** Profiling plus two executor variants reduced small-scene procedure latency by 24.3%, preserving exact outputs and human-edit detection. Automatic variant generation/search remains planned. No automatic solver-policy edits, benchmark weakening or unbounded candidate runs. |
 | 14. Outcome-driven agent procedure optimization | Qwen chooses peers, accepts/defers/rejects Step findings and sends Maya useful fixes. Compare procedure variants on accepted user-visible progress, rework, elapsed time and escaped defects. [GEPA](https://github.com/gepa-ai/gepa) is a reference. | **Manual workflow exists; measured optimizer planned.** One bounded procedure comparison before adoption; model agreement is not the reward. |
 | 15. Retrievable procedural memory | Retrieve purpose, source IDs, commands, accepted evidence and limits from existing recipe/receipt owners. Keep these references through compression and saving. | **Partial, tested owner retrieval:** saved purpose/history and A/B identities now link to existing records, receipts, measured scope and rejected reductions. Freshness is explicit; native admission is separate. The native-trial template preserves source identities and its material parameter; mined native procedures now retain purpose, commands, parameter examples and partial progress in existing operation history, with tested human/CLI retrieval and replay. General cross-owner procedural memory remains planned, with no second database. |
 
