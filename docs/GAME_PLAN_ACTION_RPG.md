@@ -4894,7 +4894,7 @@ Ten actual Blender checks, fresh reopen with eight exact preview meshes and the
 visible controls pass in `ChimeraStudio/integration/evidence/layer-trials`.
 Edit Mode/selection, failed-result recovery, source parts, active bake and original
 projects are preserved. References/purpose survive saves at absolute cache paths;
-automatic relocation/packing and full physical continuation remain unfinished.
+later sections add explicit cache relinking and native end-frame continuation; automatic packing and arbitrary-time continuation remain unfinished.
 
 **Reusable assembly adapter, implemented and checked 2026-10-19.**
 Native A/B trials with identical geometry/apex connections and different admitted
@@ -5073,7 +5073,7 @@ compelling game using simulated matter; the editor serves building and inspectio
 
 | # / technique | Reuse and first concrete acceptance | Current status / order |
 |---|---|---|
-| 1. Small reliable construction language | Registered operators, `blocks.compile_parts`, native checkpoint owner. Same input through UI/API; stale and duplicate delivery safe; actual completion visible. | **Implemented subset above, including tested external local terminal transport, rebuild recovery, native A/B, shared libuipc material/seam edits, bake/recovery, cache comparisons and revision-bound native rendering.** Broader owner/mode adapters remain; Object/Edit authoring plus Image Editor observation. |
+| 1. Small reliable construction language | Registered operators, `blocks.compile_parts`, native checkpoint owner. Same input through UI/API; stale and duplicate delivery safe; actual completion visible. | **Implemented subset above, including tested external local terminal transport, rebuild recovery, native A/B, shared libuipc material/seam edits, bake/recovery, cache comparisons, native end-frame physical continuation and revision-bound native rendering.** Broader owner/mode adapters remain; Object/Edit authoring plus Image Editor observation. |
 | 2. Library learning | Mine repeated successful construction sequences into parameterized recipes with ports and provenance through existing mechanism-factory/AP owners. [DreamCoder](https://people.csail.mit.edu/asolar/papers/EllisWNSMHCST21.pdf) motivates reusable program components. Demonstrate one mined recipe reducing authoring effort with identical compiled meaning. | **Bounded parameter abstraction and native/layered sequence mining implemented.** Confirmed trials yield a reusable geometry template; repeated successful commands now yield typed procedures with new part bindings and observed numeric parameters, preserving compiled meaning. Layered material/seam/bake patterns now bind new endpoint parts and named groups, with final native-cache evidence. General program/function discovery and broader owner mappings remain planned. |
 | 3. Quality-diversity / MAP-Elites | Index accepted comparisons by size, mass, compliance, response direction and measured cost; keep useful alternatives rather than a single score winner. Use existing evidence identities. [Method](https://arxiv.org/abs/1504.04909). | **Bounded native MAP-Elites implemented above.** Three response bands retain independently checked material/XY-scale alternatives under the same load and maximum footprint; native A/B, editable recreation and saved lineage pass. General size/mass/direction descriptors and broader owner mappings remain planned. |
 | 4. Inverse design | Desired deflection/load/space becomes a bounded search over supported geometry/materials. Reuse mechanism-factory fits and native evaluation. [Warp](https://github.com/NVIDIA/warp) differentiates its own kernels; our Vulkan/native path needs an explicit derivative adapter. | **Bounded native material search and target-directed sampling implemented above.** Desired movement/load chooses among measured tensions with saved native checkpoints, independent checks and explicit no-match; the equal-budget comparison records both target gains and held-out losses. Bounded XY-scale geometry exploration now works through the quality-diversity adapter. Target-directed general geometry search and derivative adapters remain planned; no gradient claim. |
@@ -5082,12 +5082,12 @@ compelling game using simulated matter; the editor serves building and inspectio
 | 7. Hyper-reduction / optimized cubature | Reduce element-force evaluations inside a measured deformation/material domain, retaining every requested timestep. [Original work](https://www.cs.cornell.edu/~stevenan/cubature/). | **Planned native-owner extension.** Compare full/reduced forces, energy and total cost; no accepted recipe from sampling alone. |
 | 8. Port-Hamiltonian learned components | Learn bounded energy/dissipation/port response and compose through explicit physical interconnections, building on AP rather than inventing another solver. [Research](https://proceedings.mlr.press/v211/neary23a.html) demonstrates spring-mass-damper compositions. | **Planned.** First compare a two-component response with the detailed solve; integrator, contact and out-of-domain fallback still need independent checks. |
 | 9. Active learning | Reuse UnitcellDB/FEBio data under their conditions, then choose experiments that resolve the selected construction's uncertainty; existing experiment runner owns receipts. [PhysicsNeMo method](https://docs.nvidia.com/physicsnemo/26.05/user-guide/active_learning.html). | **Bounded native active sampling implemented above.** Equal-budget target finding, held-out prediction errors, full cost, actual UI and saved/replayed observations are measured. UnitcellDB/FEBio mapping and broader AP/libuipc construction domains remain planned; no universal sample-efficiency or surrogate-runtime claim. |
-| 10. Adaptive fidelity | Switch a component between qualified reduced and detailed responses near contacts, large deformation or domain boundaries, preserving state/port exchanges. Learned-mesh research is inspiration, not a substitute native owner. | **Planned after 6–8.** Demonstrate an actual state-transfer/fallback case with measured error and latency; no hidden skipped steps. |
-| 11. Dependency-aware physical reuse | Existing recipe/source/runtime hashes identify immutable characterization results; geometry, laws, supports, load and connections invalidate affected dependencies. Separate physical states for instances. | **Partial, tested evidence reuse:** existing-owner references now survive unrelated edits and refuse relevant stale dependencies. Physical solver-response reuse and general geometry mappings remain planned; this adapter does not skip a solve. |
+| 10. Adaptive fidelity | Switch a component between qualified reduced and detailed responses near contacts, large deformation or domain boundaries, preserving state/port exchanges. Learned-mesh research is inspiration, not a substitute native owner. | **Planned after 6–8.** Native same-representation checkpoint continuation is now tested groundwork, not adaptive transfer. Demonstrate an actual representation/state-transfer/fallback case with measured error and latency; no hidden skipped steps. |
+| 11. Dependency-aware physical reuse | Existing recipe/source/runtime hashes identify immutable characterization results; geometry, laws, supports, load and connections invalidate affected dependencies. Separate physical states for instances. | **Partial, tested evidence reuse:** existing-owner references now survive unrelated edits and refuse relevant stale dependencies. Native end-frame checkpoints now reuse saved physical state and prior outputs under unchanged complete dependencies, executing every new step. General response reuse and geometry mappings remain planned. |
 | 12. Counterfactual failure explanations | Restore a checkpoint, vary one supported parameter, compare the result and show an actionable alternative on the same Blender construction. Reuse `tools.recipe_experiments`, native history and libuipc recorded controls. | **Native membrane and libuipc A/B UIs implemented above.** Existing attachment controls are reusable at equal simulated time, with visible changed inputs and saved native-cache references. Bounded native material-choice search and explicit libuipc changed-input/rebinding guidance are implemented; automatic causal explanations and general material qualification remain unfinished. |
 | 13. Bounded evolutionary code/workflow optimization | Propose limited implementation variants against a fixed independent evaluator, with correctness and full end-to-end cost. [AlphaEvolve](https://deepmind.google/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/) motivates the loop. | **First measured bounded optimization implemented above.** Profiling plus two executor variants reduced small-scene procedure latency by 24.3%, preserving exact outputs and human-edit detection. Automatic variant generation/search remains planned. No automatic solver-policy edits, benchmark weakening or unbounded candidate runs. |
 | 14. Outcome-driven agent procedure optimization | Qwen chooses peers, accepts/defers/rejects Step findings and sends Maya useful fixes. Compare procedure variants on accepted user-visible progress, rework, elapsed time and escaped defects. [GEPA](https://github.com/gepa-ai/gepa) is a reference. | **Manual workflow exists; measured optimizer planned.** One bounded procedure comparison before adoption; model agreement is not the reward. |
-| 15. Retrievable procedural memory | Retrieve purpose, source IDs, commands, accepted evidence and limits from existing recipe/receipt owners. Keep these references through compression and saving. | **Partial, tested owner retrieval:** saved purpose/history and A/B identities now link to existing records, receipts, measured scope and rejected reductions. Freshness is explicit; native admission is separate. The native-trial template preserves source identities and its material parameter; mined native procedures now retain purpose, commands, parameter examples and partial progress in existing operation history, with tested human/CLI retrieval and replay. Layered edit/bake purpose, learned nested parameters, explicit part bindings, native-cache evidence and completed/interrupted outcomes now persist through fresh reopening. General cross-owner procedural memory remains planned, with no second database. |
+| 15. Retrievable procedural memory | Retrieve purpose, source IDs, commands, accepted evidence and limits from existing recipe/receipt owners. Keep these references through compression and saving. | **Partial, tested owner retrieval:** saved purpose/history and A/B identities now link to existing records, receipts, measured scope and rejected reductions. Freshness is explicit; native admission is separate. The native-trial template preserves source identities and its material parameter; mined native procedures now retain purpose, commands, parameter examples and partial progress in existing operation history, with tested human/CLI retrieval and replay. Layered edit/bake purpose, learned nested parameters, explicit part bindings, native-cache evidence and completed/interrupted outcomes now persist through fresh reopening. Native layer checkpoint purpose and interrupted continuation also survive saved/reopened operation history. General cross-owner procedural memory remains planned, with no second database. |
 
 Implement in this order: **shared operations/recovery (1) → existing-trial/evidence
 adapter (11, 15) and visible counterfactual (12) → recipe discovery and varied
@@ -5338,7 +5338,7 @@ edits stop successors while preserving work. Pending saves reopen interrupted.
 Native membrane procedure and physical-resume regressions passed. Evidence:
 `ChimeraStudio/integration/evidence/layer-procedures/acceptance.json` and its
 `Reusable layered procedure.blend`. This extends techniques 2/15 without another
-catalog; general AP mappings, synthesis and full physical continuation remain.
+catalog; general AP mappings and synthesis remain. The separate checkpoint adapter below now supplies bounded end-frame physical continuation.
 
 **Measured native component reduction (October 19).** Studio now exposes a
 reversible authored-rest FEM/affine switch through the same human and local CLI
@@ -5404,6 +5404,44 @@ history. Reopen stays offline until Resume. Evidence:
 technique 5 within its narrow scope. No model service, installed libuipc solver,
 original project or saved Z Code goal was changed.
 
+**Native layer checkpoint continuation (October 19).** Human Blender controls
+and the real local CLI now extend an undriven libuipc construction from its saved
+native end state. This reuses the pinned owner's
+[World dump/recover API](https://github.com/spiriMirror/libuipc/blob/ac89e1009c7d8efb72d260790bb5ab31d7460542/src/pybind/pyuipc/core/world.cpp),
+with native positions, velocities, previous-state buffers and unchanged
+geometry/material/seam/support/contact/timestep identities. Installed addon and
+native solver files remain unchanged. Every new step executes; old cached frames
+remain byte exact. Keep the blend and entire cache folder. Ordinary mesh bakes
+contain no physical restart state. Opening remains offline.
+
+The mounted shell/rod trial restored step 60 then ran 60 new steps; the actual
+human/CLI chain also passed 60 -> 90 -> 120. Restored native buffers were byte
+identical, but future motion is tolerance-based. Ordinary Converged settings
+**failed** the frozen 10 micrometer budget at 39.85 micrometers (ordinary repeated
+bakes varied by 0.62 micrometers). An explicit tighter Custom profile in both
+arms reduced discrepancy to **29.8 nanometers**, with **0.001684%** relative seam
+force error against the same 0.1% budget. Same-checkpoint controls support a
+solver-tolerance explanation on this fixture; no universal restart claim or
+automatic retuning follows. Exact Custom values and rejected runs are retained
+in Studio's workflow/evidence. Existing suspended FEM and affine components also
+passed all 41 frames / 80 steps, with 40 recovered and 40 newly executed: affine
+samples/port forces matched exactly in that run; detailed FEM differed by at most
+1.86 nanometers. New physical laws or arbitrary assemblies are not qualified.
+
+Full small-scene wall costs were **8.76 s** for an uninterrupted 120-step bake,
+**6.42 s** to checkpoint its first 60 steps, then **9.64 s** to continue. Startup,
+validation and retained output dominate here: this delivers saved progress and
+extension, **not a demonstrated speedup**. Fifteen fresh-reopen mesh samples,
+corrupt/stale-input refusal, unfinished human Edit Mode, idempotent CLI requests
+and deadline rollback pass. A file saved while running reopens interrupted with
+the prior checkpoint/end frame restored, preserving a later human timeline edit;
+retry is explicit. Evidence:
+`ChimeraStudio/integration/evidence/layer-continuation/acceptance.json`; examples
+include `Physical layer continuation UI.blend` and the FEM/affine component blends.
+This advances 1/11/15; current cap is 601 output frames / 256 MiB. Arbitrary-time
+branching, drives and state transfer between representations (10) remain open.
+No original user project, model setting or saved Z Code goal changed.
+
 **Next editor work.** Use the measured component comparison on another useful
 construction shape/load before widening its envelope; retain detailed FEM when
 port loads fail even if the picture looks close. Continue native acceleration
@@ -5419,7 +5457,7 @@ shared work plan, not its runtime goal state.
 
 **Ownership and remaining gaps.** libuipc is not yet force/state coupled to
 Chimera's CA, native membrane solver or native render kernel; preserve those
-owners. Cached Blender animation is distinct from full physical checkpoints.
+owners. Cached Blender animation is distinct from native physical checkpoints; only the explicit checkpoint path above supports end-frame extension.
 Arbitrary-time solver continuation, adhesive layer bonding, rod torsion,
 fracture/plasticity and large-scene budgets remain separate work. Match units,
 laws, supports and observables before cross-engine comparisons: Chimera's
