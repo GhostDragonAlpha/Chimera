@@ -5079,8 +5079,8 @@ compelling game using simulated matter; the editor serves building and inspectio
 | 4. Inverse design | Desired deflection/load/space becomes a bounded search over supported geometry/materials. Reuse mechanism-factory fits and native evaluation. [Warp](https://github.com/NVIDIA/warp) differentiates its own kernels; our Vulkan/native path needs an explicit derivative adapter. | **Bounded native material search and target-directed sampling implemented above.** Desired movement/load chooses among measured tensions with saved native checkpoints, independent checks and explicit no-match; the equal-budget comparison records both target gains and held-out losses. Bounded XY-scale geometry exploration now works through the quality-diversity adapter. Target-directed general geometry search and derivative adapters remain planned; no gradient claim. |
 | 5. Learned solver warm starts | Predict an initial guess, then let the existing solver enforce its residual/acceptance criteria. Compare against ordinary continuation warm starts including inference/transfer overhead. [NOWS](https://arxiv.org/abs/2511.02481). | **Bounded native implementation.** Existing RBF initial guesses now narrow GPU-verified equilibrium brackets for the single-free-Z membrane, with ordinary fallback and unchanged physics. Six loads train from accepted history; actual 20-query Blender pass improved only 1.9%, so keep opt-in. General/neural predictors and libuipc integration remain open. See measured warm-start scope below. |
 | 6. Static condensation / component reduction | Eliminate internal degrees of freedom while retaining boundary ports; reuse AP two-port/finite-area concepts. [MFEM](https://docs.mfem.org/3.1/classmfem_1_1StaticCondensation.html) describes linear block elimination. | **Bounded native affine-body adapter implemented below.** Reversible FEM/affine authoring preserves boundary stitches and the saved detailed mesh; complete trajectory/port-force comparison measures cost and rejects unsuitable reductions. This uses native ABD, not Schur condensation. General AP port reductions, internal deformation reconstruction and nonlinear contacts remain planned; explicit affine-to-detailed motion transfer is now available through technique 10. |
-| 7. Hyper-reduction / optimized cubature | Reduce element-force evaluations inside a measured deformation/material domain, retaining every requested timestep. [Original work](https://www.cs.cornell.edu/~stevenan/cubature/). | **Planned native-owner extension.** Compare full/reduced forces, energy and total cost; no accepted recipe from sampling alone. |
-| 8. Port-Hamiltonian learned components | Learn bounded energy/dissipation/port response and compose through explicit physical interconnections, building on AP rather than inventing another solver. [Research](https://proceedings.mlr.press/v211/neary23a.html) demonstrates spring-mass-damper compositions. | **Planned.** First compare a two-component response with the detailed solve; integrator, contact and out-of-domain fallback still need independent checks. |
+| 7. Hyper-reduction / optimized cubature | Reduce element-force evaluations inside a measured deformation/material domain, retaining every requested timestep. [Original work](https://www.cs.cornell.edu/~stevenan/cubature/). | **Bounded AP02 native cubature implemented below.** Positive 6/6/5-of-8 triangle rules pass independent unseen energy/reaction and two-piece composition checks; Blender human/CLI controls and saved observation replay pass. Complete batch time was 0.410/0.396 s in one benchmark, so remain optional. General material, dynamic and libuipc domains remain open. |
+| 8. Port-Hamiltonian learned components | Learn bounded energy/dissipation/port response and compose through explicit physical interconnections, building on AP rather than inventing another solver. [Research](https://proceedings.mlr.press/v211/neary23a.html) demonstrates spring-mass-damper compositions. | **Conservative composition foundation tested; full Port-Hamiltonian dynamics still planned.** Two existing AP02 reduced energy/gradient responses agree with detailed quasistatic equilibria to 0.0134 mm and native port balance. Blender inspects individual prescribed-state responses. Time integration, dissipation, contact, dynamic interconnections and automatic fallback remain unimplemented. |
 | 9. Active learning | Reuse UnitcellDB/FEBio data under their conditions, then choose experiments that resolve the selected construction's uncertainty; existing experiment runner owns receipts. [PhysicsNeMo method](https://docs.nvidia.com/physicsnemo/26.05/user-guide/active_learning.html). | **Bounded native active sampling implemented above.** Equal-budget target finding, held-out prediction errors, full cost, actual UI and saved/replayed observations are measured. UnitcellDB/FEBio mapping and broader AP/libuipc construction domains remain planned; no universal sample-efficiency or surrogate-runtime claim. |
 | 10. Adaptive fidelity | Switch a component between qualified reduced and detailed responses near contacts, large deformation or domain boundaries, preserving state/port exchanges. Learned-mesh research is inspiration, not a substitute native owner. | **Explicit native refinement implemented; automatic policy remains planned.** Shared Blender/CLI refinement retains motion, performs energy/momentum admission, rolls back failures and produces a checkpoint that continues after reopening. Loaded coarsening remains refused. Demonstrate useful multi-part coverage and a measured complete-workflow benefit before automatic selection; no hidden skipped steps. |
 | 11. Dependency-aware physical reuse | Existing recipe/source/runtime hashes identify immutable characterization results; geometry, laws, supports, load and connections invalidate affected dependencies. Separate physical states for instances. | **Partial, tested evidence reuse:** existing-owner references now survive unrelated edits and refuse relevant stale dependencies. Native end-frame checkpoints now reuse saved physical state and prior outputs under unchanged complete dependencies, executing every new step. General response reuse and geometry mappings remain planned. |
@@ -5369,8 +5369,9 @@ connected-layer copying pass. Evidence:
 `ChimeraStudio/integration/evidence/component-reduction/acceptance.json`; the
 editable example is `Compared affine component.blend` beside its caches.
 This advances technique 6 only within its stated scope. Cached mesh replay is
-not physical restart; live state transfer, generic AP/Schur responses, internal
-deformation reconstruction, multidimensional learned warm starts, cubature and
+not physical restart. Later increments below add explicit motion-preserving
+refinement and bounded AP02 cubature. Generic Schur responses, internal
+deformation reconstruction, multidimensional learned warm starts and automatic
 adaptive fidelity remain open. Independent physics checks stay authoritative. Native runtime,
 original projects, model settings and the saved Z Code goal remain unchanged.
 
@@ -5403,6 +5404,45 @@ history. Reopen stays offline until Resume. Evidence:
 `Learned native load guesses.blend` is the editable example. This advances
 technique 5 within its narrow scope. No model service, installed libuipc solver,
 original project or saved Z Code goal was changed.
+
+**Learned coupled membrane response scope (October 19).** The shared Blender
+panel and local CLI now learn and inspect positive cubature of the existing AP02
+fixed-rim/two-rail membrane. The geometry, constant-current-area surface-energy
+law, equilibrium solver, independent Heron verifier and Vulkan evaluator are
+pinned unmodified. No new solver, material law or skipped timestep is introduced.
+For three recipes, 49 training states each select 6/6/5 of eight triangles; 810
+unseen states have maximum **0.08366% reaction / 0.02647% strain-energy error**
+against unchanged 0.5% peak-normalized budgets. Energy/gradient, stiffness symmetry,
+rehashed bad-weight rejection and outside-domain refusal pass. Two coupled pieces
+share the existing two rail coordinates at three load pairs, agreeing with the
+detailed equilibrium to **0.0134 mm**, with independent detailed verification
+and native GPU reduced force balance. This is a quasistatic conservative response
+foundation, not completed Port-Hamiltonian dynamics or live libuipc coupling.
+
+The UI offers Learn GPU response, Measure ports and Show saved observation.
+Heights remain within +/-0.34 m with fixed scale and gamma=1 J/m2. Full eight-face
+display meshes retain the authored geometry while cyan marks evaluated triangles;
+labels report measured reactions. Current requests and measured heights are
+explicitly distinguished. Human controls and actual external CLI preserve
+unfinished Edit Mode work. Stale edits, deadlines and cancellation retain prior
+accepted data; pending saves reopen interrupted. Fresh saves replay geometry,
+material indices, energy and reactions exactly **offline**. This is saved
+prescribed-state observation, separate from the libuipc physical continuation
+above. It does not qualify rim forces, inertia, contact, arbitrary pose or
+cloth/solid materials. Existing membrane authoring and libuipc registration pass.
+
+Six alternating 1,024-query batches, discarding the first, measured median full
+Python/process/input/output cost **0.4100 s full / 0.3961 s reduced** on this 4090
+(ratio 1.035). Startup dominates; keep optional and do not infer a universal
+speedup from fewer triangles. Source/recipe/runtime/adapter identities and the
+current response live in existing Text/operation storage, without a second
+catalog. Evidence: `ChimeraStudio/integration/evidence/port-cubature/acceptance.json`.
+Open `blender-02/gui/Port response UI.blend` beneath that evidence directory.
+This advances technique 7 and the conservative foundation of 8; dynamic
+composition remains a separate owner-backed task. Next choose a useful
+construction requiring these coupled responses, or another concrete authoring
+gap, before broadening the method. Original projects, native owners, model
+services and saved Z Code goal remain unchanged.
 
 **Native layer checkpoint continuation (October 19).** Human Blender controls
 and the real local CLI now extend an undriven libuipc construction from its saved
