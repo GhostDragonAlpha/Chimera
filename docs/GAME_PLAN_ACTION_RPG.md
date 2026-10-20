@@ -5255,6 +5255,21 @@ projects and the prior sixteen-hash layered replay remain intact. Installed
 identity is `chimera-layered-3`; evidence and retained failures are under
 `ChimeraStudio/Libuipc/evidence/construction-copy`.
 
+**Moved cache recovery implemented (October 19).** The shared Blender/CLI
+workflow can now remember an active native-cache identity, then relink that cache
+or stored A/B trials after their folders move. Existing archive hashes and native
+attachment rollback remain authoritative; activation additionally requires current
+physical inputs to match. Remember and save before moving an active cache. A/B
+references already retain the needed identities. Save again after explicit relink.
+Twelve evaluated mesh samples and A/B measurements reproduce exactly after fresh
+reopen, including a save made before moving. Human controls and the external CLI
+preserve unfinished Edit Mode geometry/selection. Missing/changed/foreign files,
+changed physics, stale proposals and injected attachment failure retain previous
+results. Small-cache relink/human/CLI times were 0.063/0.139/1.375 s; no solver ran.
+Existing 256 MiB archive limits apply; this is cached geometry recovery, not
+arbitrary-time physical continuation. Original projects/native bakes and solver
+bytes remain unchanged. Evidence: `ChimeraStudio/integration/evidence/cache-relocation/acceptance.json`.
+
 **Mounted rod/shell construction implemented (October 19).** The human button
 and shared `create_mounted_panel` action add two eight-node bending rods and a
 40-node shell with sixteen native elastic stitches. Four root nodes are fixed
