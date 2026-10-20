@@ -5278,6 +5278,54 @@ inventing a complete law. PPF's [parameter mapping](https://github.com/polyworks
 distinguishes density-normalized stiffness from Young's modulus in Pa.
 UnitcellDB and FEBio remain the established cellular/reference priorities.
 
+**Materials Project and one energy framework across scales (researched October 20;
+proposed integration).** The operator's sliding-scale objective is a shared
+energy/force/exchange description for reusable matter at different resolutions.
+[Hohenberg-Kohn DFT](https://doi.org/10.1103/PhysRev.136.B864) provides a ground-state
+electronic energy functional of electron density under its assumptions. Practical
+DFT still solves an expensive, approximate electronic problem; that density is not
+a membrane vertex's mass density, and the theorem does not supply one cheap formula
+for arbitrary macroscopic motion. For supported conservative mechanics, retain
+`force = -gradient(stored energy)` at each resolution. Coarse energy functions,
+retained history, inertia and dissipation must be appropriate to their scale.
+[Learned coarse-graining](https://doi.org/10.1021/acscentsci.8b00913) supports fitting
+such effective descriptions; equilibrium agreement alone does not qualify their
+dynamics. Reuse the existing energy/LOD contracts and technique 8's explicit ports.
+The full dynamic scale hierarchy remains unimplemented.
+
+[Materials Project elasticity](https://docs.materialsproject.org/methodology/materials-methodology/elasticity)
+can supply crystal elastic tensors and aggregate moduli for an upstream material
+record. Its [calculation conditions](https://docs.materialsproject.org/methodology/materials-methodology/calculation-details)
+include ground-state calculations at 0 K/0 atm; stiffness is not yield strength,
+fracture toughness, fabric behavior or a finished alloy's manufacturing history.
+The existing Blender publisher currently exposes only the bounded FEBio and
+UnitcellDB records above. Add MP through that same owner, initially for one useful
+small-strain FEM construction, retaining material/task/database identities,
+functional, crystal phase/orientation, units, source conditions and missing fields.
+Use a declared isotropic aggregate only where justified; preserve anisotropic data
+for a compatible native law instead of silently collapsing its tensor. Reuse
+published calculations and check our conversion, native response and saved replay;
+do not repeat quantum calculations merely to accept the data.
+
+The proposed chain is **published atomic properties -> effective material law ->
+layer/attachment construction -> measured or learned reusable response -> existing
+native runtime and Blender display**. UnitcellDB remains the cellular-geometry
+source and FEBio the continuum/reference source. First compare the same supported
+solid under the same load with a small set of sourced elastic assignments, showing
+mass and deflection; do not claim breaking behavior before a qualified failure law.
+Scale changes must preserve the relevant boundary work, mass/momentum and retained
+history within declared observable error, including interface energy counted once.
+A coarse block hides internal detail while retaining the responses needed by its
+neighbors; shape scaling alone does not establish that equivalence.
+
+For genuinely missing atomistic labels, [CHGNet](https://chgnet.lbl.gov/) demonstrates
+pretrained energy/force/stress prediction and CUDA molecular dynamics from MP data;
+its maintainers now point to MatPES-trained models for improved non-ground-state
+coverage. This is an optional offline source candidate, not an installed runtime
+or a substitute for construction-scale qualification. Prefer existing property
+records first. No new package, dataset, DFT job or molecular solver is required by
+this research increment; preserve the current native owners and playable workflow.
+
 **Published material knowledge in Blender, implemented and checked 2026-10-20.**
 The existing Recipe Evidence panel and task-memory search now expose two bounded
 source records: [FEBio's elementary beam](https://febio.org/knowledgebase/case-studies/structural-mechanics/elementary-beam-analysis/)
