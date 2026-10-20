@@ -5085,10 +5085,10 @@ compelling game using simulated matter; the editor serves building and inspectio
 | 9. Active learning | Reuse UnitcellDB/FEBio data under their conditions, then choose experiments that resolve the selected construction's uncertainty; existing experiment runner owns receipts. [PhysicsNeMo method](https://docs.nvidia.com/physicsnemo/26.05/user-guide/active_learning.html). | **Bounded native active sampling implemented above.** Equal-budget target finding, held-out prediction errors, full cost, actual UI and saved/replayed observations are measured. UnitcellDB/FEBio mapping and broader AP/libuipc construction domains remain planned; no universal sample-efficiency or surrogate-runtime claim. |
 | 10. Adaptive fidelity | Switch a component between qualified reduced and detailed responses near contacts, large deformation or domain boundaries, preserving state/port exchanges. Learned-mesh research is inspiration, not a substitute native owner. | **Explicit native refinement implemented; automatic policy remains planned.** Shared Blender/CLI refinement retains motion, performs energy/momentum admission, rolls back failures and produces a checkpoint that continues after reopening. Loaded coarsening remains refused. Demonstrate useful multi-part coverage and a measured complete-workflow benefit before automatic selection; no hidden skipped steps. |
 | 11. Dependency-aware physical reuse | Existing recipe/source/runtime hashes identify immutable characterization results; geometry, laws, supports, load and connections invalidate affected dependencies. Separate physical states for instances. | **Partial, tested evidence reuse:** existing-owner references now survive unrelated edits and refuse relevant stale dependencies. Native end-frame checkpoints now reuse saved physical state and prior outputs under unchanged complete dependencies, executing every new step. General response reuse and geometry mappings remain planned. |
-| 12. Counterfactual failure explanations | Restore a checkpoint, vary one supported parameter, compare the result and show an actionable alternative on the same Blender construction. Reuse `tools.recipe_experiments`, native history and libuipc recorded controls. | **Native membrane and libuipc A/B UIs implemented above.** Existing attachment controls are reusable at equal simulated time, with visible changed inputs and saved native-cache references. Bounded native material-choice search and explicit libuipc changed-input/rebinding guidance are implemented; automatic causal explanations and general material qualification remain unfinished. |
+| 12. Counterfactual failure explanations | Restore a checkpoint, vary one supported parameter, compare the result and show an actionable alternative on the same Blender construction. Reuse `tools.recipe_experiments`, native history and libuipc recorded controls. | **Native membrane and libuipc A/B UIs implemented above.** Existing attachment controls are reusable at equal simulated time, with visible changed inputs and saved native-cache references. **Bounded automatic requirement-based explanations now implemented below:** trajectory extrema, single/joint/confounded input classification, demonstrated material/seam proposals and accepted-cache reuse. General causal experiment design and material qualification remain unfinished. |
 | 13. Bounded evolutionary code/workflow optimization | Propose limited implementation variants against a fixed independent evaluator, with correctness and full end-to-end cost. [AlphaEvolve](https://deepmind.google/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/) motivates the loop. | **First measured bounded optimization implemented above.** Profiling plus two executor variants reduced small-scene procedure latency by 24.3%, preserving exact outputs and human-edit detection. Automatic variant generation/search remains planned. No automatic solver-policy edits, benchmark weakening or unbounded candidate runs. |
 | 14. Outcome-driven agent procedure optimization | Qwen chooses peers, accepts/defers/rejects Step findings and sends Maya useful fixes. Compare procedure variants on accepted user-visible progress, rework, elapsed time and escaped defects. [GEPA](https://github.com/gepa-ai/gepa) is a reference. | **Manual workflow exists; measured optimizer planned.** One bounded procedure comparison before adoption; model agreement is not the reward. |
-| 15. Retrievable procedural memory | Retrieve purpose, source IDs, commands, accepted evidence and limits from existing recipe/receipt owners. Keep these references through compression and saving. | **Partial, tested owner retrieval:** saved purpose/history and A/B identities now link to existing records, receipts, measured scope and rejected reductions. Freshness is explicit; native admission is separate. The native-trial template preserves source identities and its material parameter; mined native procedures now retain purpose, commands, parameter examples and partial progress in existing operation history, with tested human/CLI retrieval and replay. Layered edit/bake purpose, learned nested parameters, explicit part bindings, native-cache evidence and completed/interrupted outcomes now persist through fresh reopening. Native layer checkpoint purpose and interrupted continuation also survive saved/reopened operation history. General cross-owner procedural memory remains planned, with no second database. |
+| 15. Retrievable procedural memory | Retrieve purpose, source IDs, commands, accepted evidence and limits from existing recipe/receipt owners. Keep these references through compression and saving. | **Partial, tested owner retrieval:** saved purpose/history and A/B identities now link to existing records, receipts, measured scope and rejected reductions. Freshness is explicit; native admission is separate. The native-trial template preserves source identities and its material parameter; mined native procedures now retain purpose, commands, parameter examples and partial progress in existing operation history, with tested human/CLI retrieval and replay. Layered edit/bake purpose, learned nested parameters, explicit part bindings, native-cache evidence and completed/interrupted outcomes now persist through fresh reopening. Native checkpoint purpose, interrupted continuation, construction requirements, recomputed A/B explanations and pending measured corrections survive saving/reopening through existing records. General cross-owner procedural memory remains planned, with no second database. |
 
 Implement in this order: **shared operations/recovery (1) → existing-trial/evidence
 adapter (11, 15) and visible counterfactual (12) → recipe discovery and varied
@@ -5340,6 +5340,37 @@ Native membrane procedure and physical-resume regressions passed. Evidence:
 `ChimeraStudio/integration/evidence/layer-procedures/acceptance.json` and its
 `Reusable layered procedure.blend`. This extends techniques 2/15 without another
 catalog; general AP mappings and synthesis remain. The separate checkpoint adapter below now supplies bounded end-frame physical continuation.
+
+**Requirement-based counterfactual explanations (October 19).** Existing native
+A/B caches now answer a concrete construction question through **Explain
+Construction Outcome**: choose a shared part, horizon, displacement measure and
+limit. It measures peaks over every stored frame, preserves purpose and checks
+initial configuration, geometry, native/effective solver conditions and changed
+inputs. A single intervention is distinguished from joint changes or confounds.
+Both-pass means no fix is required for that criterion; neither-pass is not called
+a solution. Qwen/human retains the decision about whether the criterion matters
+for the usable construction and ultimately the game.
+
+A disabled canopy seam illustrates the benefit: its final downward movement is
+**0.306012 m**, apparently inside the frozen **0.35 m** limit, but the trajectory
+peaks at **0.459521 m at 0.31 s**. Re-enabling that one seam holds the saved peak
+to **0.328347 m** over **0.4 s / 41 frames / 80 native steps**. A density-only
+comparison measures **0.353151 m at 1000 kg/m3 versus 0.328347 m at 200 kg/m3**.
+These existing shell/rod laws are illustrative, not material certification.
+New native trials took **3.69/3.11 s**; explanation plus a checked report took
+**0.148 s** on this scene. Peaks between stored frames are not bounded.
+
+A demonstrated single material/seam correction becomes an ordinary shared
+proposal only when current inputs match the losing baseline and projected full
+inputs match the accepted winner, including disabled seam internals. It remains
+reviewable/discardable; no correction is applied automatically. The existing
+cache-recovery owner can restore the accepted winner after the edit without
+re-solving. Actual human/CLI, A/B-to-review handoff, raw-MDD measurement,
+forged/stale evidence refusal and pending-save recovery pass. Requirement,
+evidence and pending operation survive reopening without starting a worker.
+Evidence: `ChimeraStudio/integration/evidence/layer-explanations/acceptance.json`.
+This advances techniques 12/15; it does not claim the still-missing measured
+multi-agent policy optimizer in 14 or general causal experiment discovery.
 
 **Evaluated geometry to native matter (October 19).** The shared **Create
 Physical Copy** action now accepts a nonphysical mesh's current-frame viewport
