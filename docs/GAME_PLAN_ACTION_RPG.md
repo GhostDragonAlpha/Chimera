@@ -5088,7 +5088,7 @@ compelling game using simulated matter; the editor serves building and inspectio
 | 12. Counterfactual failure explanations | Restore a checkpoint, vary one supported parameter, compare the result and show an actionable alternative on the same Blender construction. Reuse `tools.recipe_experiments`, native history and libuipc recorded controls. | **Native membrane and libuipc A/B UIs implemented above.** Existing attachment controls are reusable at equal simulated time, with visible changed inputs and saved native-cache references. **Bounded automatic requirement-based explanations now implemented below:** trajectory extrema, single/joint/confounded input classification, demonstrated material/seam proposals and accepted-cache reuse. General causal experiment design and material qualification remain unfinished. |
 | 13. Bounded evolutionary code/workflow optimization | Propose limited implementation variants against a fixed independent evaluator, with correctness and full end-to-end cost. [AlphaEvolve](https://deepmind.google/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/) motivates the loop. | **First measured bounded optimization implemented above.** Profiling plus two executor variants reduced small-scene procedure latency by 24.3%, preserving exact outputs and human-edit detection. Automatic variant generation/search remains planned. No automatic solver-policy edits, benchmark weakening or unbounded candidate runs. |
 | 14. Outcome-driven agent procedure optimization | Qwen chooses peers, accepts/defers/rejects Step findings and sends Maya useful fixes. Compare procedure variants on accepted user-visible progress, rework, elapsed time and escaped defects. [GEPA](https://github.com/gepa-ai/gepa) is a reference. | **Manual workflow exists; measured optimizer planned.** One bounded procedure comparison before adoption; model agreement is not the reward. |
-| 15. Retrievable procedural memory | Retrieve purpose, source IDs, commands, accepted evidence and limits from existing recipe/receipt owners. Keep these references through compression and saving. | **Partial, tested owner retrieval:** saved purpose/history and A/B identities now link to existing records, receipts, measured scope and rejected reductions. Freshness is explicit; native admission is separate. The native-trial template preserves source identities and its material parameter; mined native procedures now retain purpose, commands, parameter examples and partial progress in existing operation history, with tested human/CLI retrieval and replay. Layered edit/bake purpose, learned nested parameters, explicit part bindings, native-cache evidence and completed/interrupted outcomes now persist through fresh reopening. Native checkpoint purpose, interrupted continuation, controller history/clock, construction requirements, recomputed A/B explanations and pending measured corrections survive saving/reopening through existing records. General cross-owner procedural memory remains planned, with no second database. |
+| 15. Retrievable procedural memory | Retrieve purpose, source IDs, commands, accepted evidence and limits from existing recipe/receipt owners. Keep these references through compression and saving. | **Partial, tested owner retrieval:** saved purpose/history and A/B identities now link to existing records, receipts, measured scope and rejected reductions. Freshness is explicit; native admission is separate. The native-trial template preserves source identities and its material parameter; mined native procedures now retain purpose, commands, parameter examples and partial progress in existing operation history, with tested human/CLI retrieval and replay. Layered edit/bake purpose, learned nested parameters, explicit part bindings, native-cache evidence and completed/interrupted outcomes now persist through fresh reopening. Native checkpoint purpose, interrupted continuation, controller history/clock, construction requirements, recomputed A/B explanations and pending measured corrections survive saving/reopening through existing records. Task-based discovery now queries existing procedures, native/layer A/B trials, reusable assemblies and pinned references through one human/CLI path; explicit inspection preserves owner freshness and scope, and selection clears old bindings. No solver runs during discovery. Cross-project/AP response retrieval and semantic applicability mapping remain planned, with no second database. |
 
 Implement in this order: **shared operations/recovery (1) → existing-trial/evidence
 adapter (11, 15) and visible counterfactual (12) → recipe discovery and varied
@@ -5722,6 +5722,29 @@ while retaining source-change invalidation. Evidence:
 Materials. Current scope remains unchanged-action end-frame extension with soft
 quasistatic driven links. Arbitrary-time branching, editing future actions without
 rebaking, driven component refinement and general motor/rig mappings remain open.
+
+**Find existing construction knowledge (October 20).** Blender's new Find Saved
+Construction Knowledge panel and local `search_memory` / `inspect_memory` methods
+retrieve work by its construction purpose from existing procedures, membrane/layer
+A/B slots, reusable assembly and pinned mechanism-factory records. For example,
+`rib seam support` finds the retained shell-support procedure and response trials.
+Explicit inspection reuses the original validators and reports bounds, parameters,
+source IDs, missing caches or stale receipts. Refused historical documents remain
+discoverable rather than disappearing. Keyword matches do not transfer physical
+qualification between owners. Bind This Procedure selects the existing workflow
+with fresh part bindings; execution remains explicit and uses the native checks.
+
+Actual Object/Edit panel, external client and fresh ordinary/UI saves pass. Twelve
+cached geometry samples replay exactly; purpose/query and owner records persist,
+and unfinished edits are preserved. Median search is **0.81 ms across 20 queries**
+in the small fixture; four external requests take **0.51 s** including inspection.
+No simulation ran or new physics evidence was minted. Original projects, source
+records, native owners, working services and saved Z Code goal remain unchanged.
+Evidence: `ChimeraStudio/integration/evidence/construction-memory/acceptance.json`;
+example `run-05/Saved construction knowledge.blend` beneath it. Use this discovery
+before commissioning a repeated experiment, then let Qwen judge the specific
+construction's applicability. It covers the current project and pinned references;
+AP response cards, cross-project retrieval and semantic mappings remain work.
 
 **Next editor work.** Use the measured component comparison on another useful
 construction shape/load before widening its envelope; retain detailed FEM when
