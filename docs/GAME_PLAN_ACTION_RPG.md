@@ -5207,7 +5207,7 @@ compelling game using simulated matter; the editor serves building and inspectio
 | 4. Inverse design | Desired deflection/load/space becomes a bounded search over supported geometry/materials. Reuse mechanism-factory fits and native evaluation. [Warp](https://github.com/NVIDIA/warp) differentiates its own kernels; our Vulkan/native path needs an explicit derivative adapter. | **Bounded native material search and target-directed sampling implemented above.** Desired movement/load chooses among measured tensions with saved native checkpoints, independent checks and explicit no-match; the equal-budget comparison records both target gains and held-out losses. Bounded XY-scale geometry exploration now works through the quality-diversity adapter. Layered libuipc constructions now search one stiffness or two independently bound stiffness controls on one/two parts using complete native bakes, target-guided sampling and explicit measured-cache reuse. Shared human/CLI controls, a thirteen-trial same-part run and completed/interrupted replay are tested. The same tested search now also varies bounded axis-aligned part scales, retaining native seam endpoint pairs and recomputing rest gaps; complete native trials, rollback, human/CLI reuse and completed/interrupted replay pass. An optional measured archive now retains smaller-footprint alternatives within declared movement bands, separately from target error. General shape, rotated/joint-driven sizing, more controls, multiple objectives and derivative adapters remain planned; no gradient claim. |
 | 5. Learned solver warm starts | Predict an initial guess, then let the existing solver enforce its residual/acceptance criteria. Compare against ordinary continuation warm starts including inference/transfer overhead. [NOWS](https://arxiv.org/abs/2511.02481). | **Bounded native implementation.** Existing RBF initial guesses now narrow GPU-verified equilibrium brackets for the single-free-Z membrane, with ordinary fallback and unchanged physics. Six loads train from accepted history; actual 20-query Blender pass improved only 1.9%, so keep opt-in. General/neural predictors and libuipc integration remain open. See measured warm-start scope below. |
 | 6. Static condensation / component reduction | Eliminate internal degrees of freedom while retaining boundary ports; reuse AP two-port/finite-area concepts. [MFEM](https://docs.mfem.org/3.1/classmfem_1_1StaticCondensation.html) describes linear block elimination. | **Bounded native affine-body adapter implemented below.** Reversible FEM/affine authoring preserves boundary stitches and the saved detailed mesh; complete trajectory/port-force comparison measures cost and rejects unsuitable reductions. A shared measured-choice operation now selects an existing detailed/affine result only when boundary, partner-motion and attachment-force budgets plus recorded worker-time gain justify it; a flexible asymmetric bracket is correctly kept detailed. The native ABD path remains separate from the newly implemented AP02 static Schur path: two to eight saved response cards reduce two shared Z coordinates to one, reconstruct the internal rail, check full native forces and fall back to detailed equilibrium when needed. Both exposed-port choices, eight instances, shared human/CLI controls and offline replay pass. General many-internal-DOF/nonlinear reduction remains planned; explicit affine-to-detailed motion transfer is available through technique 10. |
-| 7. Hyper-reduction / optimized cubature | Reduce element-force evaluations inside a measured deformation/material domain, retaining every requested timestep. [Original work](https://www.cs.cornell.edu/~stevenan/cubature/). | **Bounded AP02 native cubature implemented below.** Positive 6/6/5-of-8 triangle rules pass independent unseen energy/reaction and two-piece composition checks; Blender human/CLI controls and saved observation replay pass. Complete batch time was 0.410/0.396 s in one benchmark, so remain optional. General material, dynamic and libuipc domains remain open. |
+| 7. Hyper-reduction / optimized cubature | Reduce element-force evaluations inside a measured deformation/material domain, retaining every requested timestep. [Original work](https://www.cs.cornell.edu/~stevenan/cubature/). | **Bounded AP02 native cubature implemented below.** Positive 6/6/5-of-8 triangle rules pass independent unseen energy/reaction and two-piece composition checks; Blender human/CLI controls and saved observation replay pass. Complete batch time was 0.410/0.396 s in one benchmark, so remain optional. GPU-trained triangle weights now have tested geometric scale/tension reuse, with 232 independent held-out states, shared Blender controls and portable offline cards below. General material, dynamic and libuipc domains remain open. |
 | 8. Port-Hamiltonian learned components | Learn bounded energy/dissipation/port response and compose through explicit physical interconnections, building on AP rather than inventing another solver. [Research](https://proceedings.mlr.press/v211/neary23a.html) demonstrates spring-mass-damper compositions. | **Blender static response composition implemented; full Port-Hamiltonian dynamics still planned.** Two to eight independent saved AP02 cards share explicit P/Q rail loads and rim translations through the existing equilibrium owner. Detailed/reference/native checks and automatic detailed fallback pass, with human/CLI controls and offline save/reopen. Time integration, dissipation, contact, dynamic interconnections and libuipc coupling remain unimplemented. |
 | 9. Active learning | Reuse UnitcellDB/FEBio data under their conditions, then choose experiments that resolve the selected construction's uncertainty; existing experiment runner owns receipts. [PhysicsNeMo method](https://docs.nvidia.com/physicsnemo/26.05/user-guide/active_learning.html). | **Bounded native active sampling implemented above.** Equal-budget target finding, held-out prediction errors, full cost, actual UI and saved/replayed observations are measured. Existing sampling now also drives complete libuipc stiffness trials; a measured-target bracket policy reaches the tested cloth/rib target where equal-budget fixed sampling misses, while earlier adaptive losses remain recorded. Two-control native searches now reuse that measured-query workflow: nine adaptive/fixed trials both meet a 3 mm tolerance, with 0.067/0.242 mm target error in the tested cloth/rib scene. Published FEBio elastic-input assignment and UnitcellDB directional-reference inspection now work through the existing material/evidence controls below; full benchmark/anisotropic mappings and broader domains remain planned. The size/stiffness trial above preserves a counterexample: fixed coverage achieves lower target error than adaptive sampling at the same nine-query budget. Before another layer experiment, the knowledge panel can now query existing native measurements by required movement/time and footprint, check current-scene reuse and apply a qualifying cached result. No universal sample-efficiency or surrogate-runtime claim. |
 | 10. Adaptive fidelity | Switch a component between qualified reduced and detailed responses near contacts, large deformation or domain boundaries, preserving state/port exchanges. Learned-mesh research is inspiration, not a substitute native owner. | **Explicit native refinement implemented; automatic policy remains planned.** Shared Blender/CLI refinement retains motion, performs energy/momentum admission, rolls back failures and produces a checkpoint that continues after reopening. Loaded coarsening remains refused. Offline rest-shape selection now applies a checked existing representation/cache from A/B evidence with transactional rollback; this is separate from automatic live state switching. Demonstrate useful multi-part coverage and a measured complete-workflow benefit before automatic selection; no hidden skipped steps. |
@@ -5306,10 +5306,11 @@ qualified finer patch or layered response, preserving boundary work and needed
 history. Learning that reduction must reuse the existing owner and independent
 checks. Bending needs neighboring faces; volume-dependent behavior retains the
 applicable shell/bulk owner. DFT density is upstream microscopic evidence, not a
-three-vertex density substitution. Per-triangle learned multiscale laws remain
-proposed, and do not replace the existing native laws merely by changing a label. The tested
-triangle inspector below exposes current geometry and painted coefficients without
-claiming that learned hierarchy is already implemented.
+three-vertex density substitution. The first tested scale-transfer connection below
+reuses GPU-learned AP02 triangle quadrature under its existing energy law. It does
+not yet learn a new per-triangle cloth/solid law or a dynamic scale hierarchy.
+The native cloth inspector exposes geometry and painted coefficients; these alone
+are not constitutive energy/force training labels.
 
 
 
@@ -5338,7 +5339,7 @@ were repaired in accepted run-02. Original user Projects/native owners are uncha
 These are saved-frame geometric observations, not stress, strength, bending energy,
 signed inversion detection or a between-frame bound. Triangle IDs are specific to
 the exact cache/topology. Native physical continuation remains its separate tested
-owner. Full stress/energy views and learned multiscale triangle laws remain open.
+owner. Full cloth stress/energy views and learned cloth scale reductions remain open. The AP02 scale-transfer increment below has a different explicit native law.
 Use `ChimeraStudio/integration/evidence/triangle-inspection/run-02/gui/Triangle inspection UI.blend`
 through GPU Materials and Save As; retain referenced caches. Acceptance:
 `ChimeraStudio/integration/evidence/triangle-inspection/acceptance.json`.
@@ -5824,8 +5825,9 @@ detailed equilibrium to **0.0134 mm**, with independent detailed verification
 and native GPU reduced force balance. This is a quasistatic conservative response
 foundation, not completed Port-Hamiltonian dynamics or live libuipc coupling.
 
-The UI offers Learn GPU response, Measure ports and Show saved observation.
-Heights remain within +/-0.34 m with fixed scale and gamma=1 J/m2. Full eight-face
+The original UI offers Learn GPU response, Measure ports and Show saved observation
+at scale 1 and gamma=1 J/m2, with heights within +/-0.34 m. The additional scale
+controls below preserve those original operations and their saved cards. Full eight-face
 display meshes retain the authored geometry while cyan marks evaluated triangles;
 labels report measured reactions. Current requests and measured heights are
 explicitly distinguished. Human controls and actual external CLI preserve
@@ -5846,6 +5848,44 @@ Open `blender-02/gui/Port response UI.blend` beneath that evidence directory.
 This advances technique 7; the subsequent Blender assembly increment below advances
 8 within a static domain. Dynamic composition remains a separate owner-backed task.
 Original projects, native owners, model services and saved Z Code goal remain unchanged.
+
+**GPU-trained triangles reused across scales (October 20; tested).** Blender's
+Membrane Responses Across Scales uses the existing AP02 learner, positive triangle
+weights, Vulkan teacher, independent Heron checks, worker and saved-card storage.
+Learn once, qualify unseen scales, evaluate another physical size/surface tension,
+then show/save/Append the card. Each displayed face retains its ID, rest area and
+quadrature weight; all geometry remains visible. The purpose is reusable construction
+responses with less repeated computation, serving the game and its Blender workflow.
+
+Accepted seed 2 retains 5/8 evaluated triangles. At 232 states across unseen scales
+0.5/0.8/1.3/2.0 and varied tensions, worst reaction/strain-energy errors are
+**0.08367% / 0.02578%**, within unchanged 0.5% budgets. Full native/reference error
+is below 2e-7 peak-relative; energy-gradient discrepancy is 4.31e-10 N. Qualified
+geometric scale is 0.5–2, surface tension 0–2 J/m2 and physical height/scale within
++/-0.34 m. Energy scales as gamma*s^2 and conjugate reactions as gamma*s; these are
+properties of this explicit law, not general scaling rules for every material.
+
+Saved-response queries require zero new GPU calls. One 232-query batch measured
+**52.12 ms** for saved response evaluation versus **219.62 ms** native including
+process/transfer/output. This is no game frame-rate claim; the GUI still pays its
+worker/transport cost. Actual Object/Edit human controls and local client pass
+(4.42 s query/show/reuse/error roundtrip). Normal/pending saves retain exact geometry,
+energy/reactions and recover interrupted work. Blender Append reuses a card in a
+fresh project with old training-directory access blocked. Prior AP02 saves pass.
+Rehashed bad weights, altered observations/meshes and invalid domains fail clearly;
+cancellation/deadline retains accepted state. Native owners and user Projects stay
+unchanged. Example: `ChimeraStudio/integration/evidence/scale-response/run-03/gui/Scaled response UI.blend`;
+acceptance: `ChimeraStudio/integration/evidence/scale-response/acceptance.json`.
+
+**Next triangle-training connection:** retain native cloth material frames, painted
+stretch/shear coefficients, neighboring-face bending and needed history; obtain
+energy/force labels from that installed owner before fitting its reduced response.
+Use this same worker/card/independent-check path. A geometric strain snapshot alone
+cannot train a constitutive law. Coarse-patch reduction must separately preserve
+boundary work and qualify mesh resolution; physical resizing is not homogenization.
+New cloth/solid laws, scaled-card assembly, contact and dynamic coupling remain
+unimplemented. Keep that work tied to a useful editable layered construction and
+measured benefit; no universal triangle equation or second material catalog is claimed.
 
 **Saved response assembly (October 20).** Humans and the real local CLI can now
 compose two to eight independent saved AP02 cards using the existing equilibrium
