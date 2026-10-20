@@ -6028,6 +6028,40 @@ Cancel, deadline, edited cards and infeasible loads keep accepted work. Evidence
 `run-01/gui/Shared cloth supports.blend` below that directory. Original projects,
 physical owners, model services and the saved Z Code goal remain unchanged.
 
+**Native compliant-attachment comparison (October 20; measured).** A bounded
+full native fixture now connects the half/full-size cloth supports to one
+prescribed fixed-shape carrier through the existing positive-gap
+`SoftVertexStitch` owner. Unlike the ideal rail, each cloth attachment vertex is
+free in all three directions. With a 5 mm carrier displacement and 20 mm initial
+stitch gap, 1,000 N/m stitches produce **0.630594 N** total reaction versus the
+ideal-card **0.901473 N**: **30.05% difference**. At 100,000 N/m the reaction is
+**0.812823 N**, still **9.83% different**. Sideways port motion reaches **46.6
+micrometres**. Cloth plus stitch static residual stays below **2.17e-5 N**;
+final native convergence and the independent cloth energy/gradient checks pass.
+The existing attachment inspector supplies stitch forces/energy from the saved
+double-precision geometry. Contact and gravity are disabled in this static fixture.
+
+This does not invalidate the existing cards inside their declared ideal-rail
+constraints. It demonstrates that increasing attachment stiffness alone did not
+recover that response in these two cases. Changed lateral freedom is an observed
+mapping difference; isolate its causal share before claiming a complete error
+explanation. Do not silently reuse the scalar card for this native attachment.
+The next useful teacher should expose three-component attachment displacement
+and reaction (or explicitly constrain the missing directions), then include the
+existing stitch energy in the composition. For finite-area moment transfer, reuse
+the existing multi-point/FAA concepts and native attachment owner rather than
+inventing a scalar shortcut. This is driven by the usable stitched construction,
+not a new generic mathematics backlog.
+
+Native worker times were **2.79 / 2.40 s** for the two fixtures, including retained
+label/reference checks. A Blender comparison snapshot preserves actual native
+meshes and measurements exactly on reopen; it is observation evidence, not a
+production coupling operator or physical continuation. Original projects and
+native laws remain unchanged. Evidence:
+`ChimeraStudio/integration/evidence/cloth-stitch/acceptance.json`; open
+`probe-02/Native stitch comparison.blend` below that directory. The initial native
+API class/instance setup error is retained separately; no model was admitted by it.
+
 **Next triangle-training connection:** qualify finite-area or compliant native
 attachments between these reusable supports on a needed layered construction.
 Reuse the existing stitch/joint and comparison owners, account for attachment
