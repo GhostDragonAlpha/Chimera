@@ -5074,7 +5074,7 @@ compelling game using simulated matter; the editor serves building and inspectio
 
 | # / technique | Reuse and first concrete acceptance | Current status / order |
 |---|---|---|
-| 1. Small reliable construction language | Registered operators, `blocks.compile_parts`, native checkpoint owner. Same input through UI/API; stale and duplicate delivery safe; actual completion visible. | **Implemented subset above, including tested external local terminal transport, rebuild recovery, native A/B, shared libuipc material/seam edits, bake/recovery, cache comparisons, native end-frame physical continuation and revision-bound native rendering.** Object/Edit and bounded Weight Paint support/seam authoring now work alongside Image Editor observation; evaluated Geometry Nodes/modifier copies feed existing native shell/rigid material and seam owners. Sculpt/Pose physical snapshots and ordinary layer controls now preserve editable sources, masks and individual rig selections. Keyed controller targets now use the installed native soft quasistatic rigid drive and every-substep sampler; native attachments transmit motion. General inertial/motor/rig mappings and driven physical continuation remain unfinished. |
+| 1. Small reliable construction language | Registered operators, `blocks.compile_parts`, native checkpoint owner. Same input through UI/API; stale and duplicate delivery safe; actual completion visible. | **Implemented subset above, including tested external local terminal transport, rebuild recovery, native A/B, shared libuipc material/seam edits, bake/recovery, cache comparisons, native end-frame physical continuation and revision-bound native rendering.** Object/Edit and bounded Weight Paint support/seam authoring now work alongside Image Editor observation; evaluated Geometry Nodes/modifier copies feed existing native shell/rigid material and seam owners. Sculpt/Pose physical snapshots and ordinary layer controls now preserve editable sources, masks and individual rig selections. Keyed controller targets now use the installed native soft quasistatic rigid drive and every-substep sampler; native attachments transmit motion. Animated end-frame physical continuation now retains native state and the sampled controller clock, with tested old-save compatibility. General inertial/motor/rig mappings remain unfinished. |
 | 2. Library learning | Mine repeated successful construction sequences into parameterized recipes with ports and provenance through existing mechanism-factory/AP owners. [DreamCoder](https://people.csail.mit.edu/asolar/papers/EllisWNSMHCST21.pdf) motivates reusable program components. Demonstrate one mined recipe reducing authoring effort with identical compiled meaning. | **Bounded parameter abstraction and native/layered sequence mining implemented.** Confirmed trials yield a reusable geometry template; repeated successful commands now yield typed procedures with new part bindings and observed numeric parameters, preserving compiled meaning. Layered material/seam/bake patterns now bind new endpoint parts and named groups, with final native-cache evidence. General program/function discovery and broader owner mappings remain planned. |
 | 3. Quality-diversity / MAP-Elites | Index accepted comparisons by size, mass, compliance, response direction and measured cost; keep useful alternatives rather than a single score winner. Use existing evidence identities. [Method](https://arxiv.org/abs/1504.04909). | **Bounded native MAP-Elites implemented above.** Three response bands retain independently checked material/XY-scale alternatives under the same load and maximum footprint; native A/B, editable recreation and saved lineage pass. General size/mass/direction descriptors and broader owner mappings remain planned. |
 | 4. Inverse design | Desired deflection/load/space becomes a bounded search over supported geometry/materials. Reuse mechanism-factory fits and native evaluation. [Warp](https://github.com/NVIDIA/warp) differentiates its own kernels; our Vulkan/native path needs an explicit derivative adapter. | **Bounded native material search and target-directed sampling implemented above.** Desired movement/load chooses among measured tensions with saved native checkpoints, independent checks and explicit no-match; the equal-budget comparison records both target gains and held-out losses. Bounded XY-scale geometry exploration now works through the quality-diversity adapter. Target-directed general geometry search and derivative adapters remain planned; no gradient claim. |
@@ -5088,7 +5088,7 @@ compelling game using simulated matter; the editor serves building and inspectio
 | 12. Counterfactual failure explanations | Restore a checkpoint, vary one supported parameter, compare the result and show an actionable alternative on the same Blender construction. Reuse `tools.recipe_experiments`, native history and libuipc recorded controls. | **Native membrane and libuipc A/B UIs implemented above.** Existing attachment controls are reusable at equal simulated time, with visible changed inputs and saved native-cache references. **Bounded automatic requirement-based explanations now implemented below:** trajectory extrema, single/joint/confounded input classification, demonstrated material/seam proposals and accepted-cache reuse. General causal experiment design and material qualification remain unfinished. |
 | 13. Bounded evolutionary code/workflow optimization | Propose limited implementation variants against a fixed independent evaluator, with correctness and full end-to-end cost. [AlphaEvolve](https://deepmind.google/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/) motivates the loop. | **First measured bounded optimization implemented above.** Profiling plus two executor variants reduced small-scene procedure latency by 24.3%, preserving exact outputs and human-edit detection. Automatic variant generation/search remains planned. No automatic solver-policy edits, benchmark weakening or unbounded candidate runs. |
 | 14. Outcome-driven agent procedure optimization | Qwen chooses peers, accepts/defers/rejects Step findings and sends Maya useful fixes. Compare procedure variants on accepted user-visible progress, rework, elapsed time and escaped defects. [GEPA](https://github.com/gepa-ai/gepa) is a reference. | **Manual workflow exists; measured optimizer planned.** One bounded procedure comparison before adoption; model agreement is not the reward. |
-| 15. Retrievable procedural memory | Retrieve purpose, source IDs, commands, accepted evidence and limits from existing recipe/receipt owners. Keep these references through compression and saving. | **Partial, tested owner retrieval:** saved purpose/history and A/B identities now link to existing records, receipts, measured scope and rejected reductions. Freshness is explicit; native admission is separate. The native-trial template preserves source identities and its material parameter; mined native procedures now retain purpose, commands, parameter examples and partial progress in existing operation history, with tested human/CLI retrieval and replay. Layered edit/bake purpose, learned nested parameters, explicit part bindings, native-cache evidence and completed/interrupted outcomes now persist through fresh reopening. Native checkpoint purpose, interrupted continuation, construction requirements, recomputed A/B explanations and pending measured corrections survive saving/reopening through existing records. General cross-owner procedural memory remains planned, with no second database. |
+| 15. Retrievable procedural memory | Retrieve purpose, source IDs, commands, accepted evidence and limits from existing recipe/receipt owners. Keep these references through compression and saving. | **Partial, tested owner retrieval:** saved purpose/history and A/B identities now link to existing records, receipts, measured scope and rejected reductions. Freshness is explicit; native admission is separate. The native-trial template preserves source identities and its material parameter; mined native procedures now retain purpose, commands, parameter examples and partial progress in existing operation history, with tested human/CLI retrieval and replay. Layered edit/bake purpose, learned nested parameters, explicit part bindings, native-cache evidence and completed/interrupted outcomes now persist through fresh reopening. Native checkpoint purpose, interrupted continuation, controller history/clock, construction requirements, recomputed A/B explanations and pending measured corrections survive saving/reopening through existing records. General cross-owner procedural memory remains planned, with no second database. |
 
 Implement in this order: **shared operations/recovery (1) → existing-trial/evidence
 adapter (11, 15) and visible counterfactual (12) → recipe discovery and varied
@@ -5686,8 +5686,42 @@ Evidence: `ChimeraStudio/integration/evidence/controller-motion/acceptance.json`
 example `run-02/gui/Animated shell UI.blend` beneath that directory, opened through
 GPU Materials with its cache. Native scale/shear, NLA/drivers/constraints and bone
 parenting need explicit mappings. This is not an inertial/torque-limited actuator;
-**driven physical checkpoint continuation remains refused**. Saved animation is
-not that capability. The native undriven continuation workflow remains supported.
+**driven physical checkpoint continuation now works through the extension below**.
+Ordinary saved animation alone still contains no native velocity/history state.
+
+**Animated native continuation (October 20).** The same Bake with Physical
+Checkpoint / Continue Saved Physics controls now save the native controller clock
+alongside actual solver positions, velocities and history. Preserve the full
+controller action and physical inputs; every previously executed target sample
+must match, and only subsequent native steps execute. Checkpoint v2 stores target
+identities and hashes. The exact prior undriven v1 adapter/worker pair remains
+compatible with unchanged native/addon identities. Ordinary animation caches do
+not gain physical state retrospectively.
+
+A lift-and-turn construction changes translation direction and rotation after its
+checkpoint. Fresh-process recovery restores native buffers exactly, preserves all
+41 earlier frames, reuses **80 steps** and executes **40 new steps**. Against an
+uninterrupted 120-step run, maximum position difference is **7.45e-9 m** and relative
+seam-force difference **2.65e-11**, within the frozen 10 micrometer / 0.1% budgets.
+The explicit Custom test profile is unchanged from the documented continuation
+example; no defaults change. Full/prefix/continuation cost is **4.16/6.02/6.56 s**:
+this supports reliable recovery, not a small-scene speed claim.
+
+Actual human controls and external CLI pass; the latter extends to step 160 without
+repeating a delivered command. Completed, pending and UI saves reopen exact tested
+mesh samples spanning their timelines, with another continuation available. Changed
+keys/target prefixes, corrupted velocities and rehashed clock/owner records refuse.
+A discovered startup-order bug is repaired: interrupted recovery waits for optional
+GPU Materials registration and then restores only its unchanged saved timeline,
+without a solve. The old four-material checkpoint resumes 120->160 steps and
+matches uninterrupted to **3.33e-8 m**; refined-component and ordinary animated
+saves remain usable. Controller-reader identity excludes unrelated panel wording
+while retaining source-change invalidation. Evidence:
+`ChimeraStudio/integration/evidence/motion-continuation/acceptance.json`; example
+`run-02/gui/Animated physical continuation UI.blend` beneath it, through GPU
+Materials. Current scope remains unchanged-action end-frame extension with soft
+quasistatic driven links. Arbitrary-time branching, editing future actions without
+rebaking, driven component refinement and general motor/rig mappings remain open.
 
 **Next editor work.** Use the measured component comparison on another useful
 construction shape/load before widening its envelope; retain detailed FEM when
