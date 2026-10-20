@@ -4642,8 +4642,8 @@ workspaces in our template and the installed build's capabilities.
 | Modeling / Edit Mode | Use ordinary vertex/edge/face tools and selection for membrane geometry, supported boundaries and ports | Select an apex, reshape a supported fan, rebuild and inspect the changed response |
 | Properties / Shading / paint tools | Bind explicit material IDs and supported physical parameters to objects or regions; use colors as a visible legend | Surface-tension assignment first; face/layer painting requires a native region/law mapping before it changes physics |
 | Geometry Nodes / modifiers | Generate repeatable geometry and named attributes, then compile an explicit evaluated result with stable region/port mapping | **Bounded shell/rigid physical-copy path implemented below:** freeze current evaluated geometry and explicit attribute groups; retain the editable graph. General imported machinery, FEM/rod conversion and automatic rebinding remain separate |
-| Sculpting / Sculpt Mode | Author organic source shapes through Blender tools, then check whether the physical compiler supports the resulting geometry | Later authoring adapter; topology changes require rebuilding/rebinding affected ports and material regions |
-| Animation / Pose Mode / Timeline | Author camera motion and, when supported, prescribed motion or actuator targets through explicit native contracts | Presentation now; physical replay/time and force-driven motion need their existing native owners |
+| Sculpting / Sculpt Mode | Author organic source shapes through Blender tools, then check whether the physical compiler supports the resulting geometry | **Bounded authoring adapter implemented below:** sculpted mesh snapshots enter existing shell/rigid materials and seams while preserving masks/mode. Finish Dyntopo explicitly; topology changes require new admission and binding |
+| Animation / Pose Mode / Timeline | Author camera motion and, when supported, prescribed motion or actuator targets through explicit native contracts | **Posed physical snapshots implemented below**, preserving rigs and selected bones. Cached physical replay remains native-owned; animated actuation still requires an explicit native motion/force contract |
 | Rendering / Image Editor / 3D Viewport | Inspect the native image and computed geometry with matching state, transforms and view | Continue the current native-render handoff; shader appearance remains distinct from physical material behavior |
 
 **Mode-aware AI operations.** Extend the registered Chimera operators and their
@@ -5074,7 +5074,7 @@ compelling game using simulated matter; the editor serves building and inspectio
 
 | # / technique | Reuse and first concrete acceptance | Current status / order |
 |---|---|---|
-| 1. Small reliable construction language | Registered operators, `blocks.compile_parts`, native checkpoint owner. Same input through UI/API; stale and duplicate delivery safe; actual completion visible. | **Implemented subset above, including tested external local terminal transport, rebuild recovery, native A/B, shared libuipc material/seam edits, bake/recovery, cache comparisons, native end-frame physical continuation and revision-bound native rendering.** Object/Edit and bounded Weight Paint support/seam authoring now work alongside Image Editor observation; evaluated Geometry Nodes/modifier copies feed existing native shell/rigid material and seam owners. Sculpt/Pose and broader owner mappings remain unfinished. |
+| 1. Small reliable construction language | Registered operators, `blocks.compile_parts`, native checkpoint owner. Same input through UI/API; stale and duplicate delivery safe; actual completion visible. | **Implemented subset above, including tested external local terminal transport, rebuild recovery, native A/B, shared libuipc material/seam edits, bake/recovery, cache comparisons, native end-frame physical continuation and revision-bound native rendering.** Object/Edit and bounded Weight Paint support/seam authoring now work alongside Image Editor observation; evaluated Geometry Nodes/modifier copies feed existing native shell/rigid material and seam owners. Sculpt/Pose physical snapshots and ordinary layer controls now preserve editable sources, masks and individual rig selections. Animated physical actuation and broader owner mappings remain unfinished. |
 | 2. Library learning | Mine repeated successful construction sequences into parameterized recipes with ports and provenance through existing mechanism-factory/AP owners. [DreamCoder](https://people.csail.mit.edu/asolar/papers/EllisWNSMHCST21.pdf) motivates reusable program components. Demonstrate one mined recipe reducing authoring effort with identical compiled meaning. | **Bounded parameter abstraction and native/layered sequence mining implemented.** Confirmed trials yield a reusable geometry template; repeated successful commands now yield typed procedures with new part bindings and observed numeric parameters, preserving compiled meaning. Layered material/seam/bake patterns now bind new endpoint parts and named groups, with final native-cache evidence. General program/function discovery and broader owner mappings remain planned. |
 | 3. Quality-diversity / MAP-Elites | Index accepted comparisons by size, mass, compliance, response direction and measured cost; keep useful alternatives rather than a single score winner. Use existing evidence identities. [Method](https://arxiv.org/abs/1504.04909). | **Bounded native MAP-Elites implemented above.** Three response bands retain independently checked material/XY-scale alternatives under the same load and maximum footprint; native A/B, editable recreation and saved lineage pass. General size/mass/direction descriptors and broader owner mappings remain planned. |
 | 4. Inverse design | Desired deflection/load/space becomes a bounded search over supported geometry/materials. Reuse mechanism-factory fits and native evaluation. [Warp](https://github.com/NVIDIA/warp) differentiates its own kernels; our Vulkan/native path needs an explicit derivative adapter. | **Bounded native material search and target-directed sampling implemented above.** Desired movement/load chooses among measured tensions with saved native checkpoints, independent checks and explicit no-match; the equal-budget comparison records both target gains and held-out losses. Bounded XY-scale geometry exploration now works through the quality-diversity adapter. Target-directed general geometry search and derivative adapters remain planned; no gradient claim. |
@@ -5398,6 +5398,26 @@ uses the separate checkpoint owner. Evidence:
 `ChimeraStudio/integration/evidence/evaluated-geometry/acceptance.json`.
 This extends the construction language without a second modeler or solver.
 
+**Sculpt/Pose construction authoring (October 19).** The existing shared context
+adapter now preserves Sculpt/Pose during current-frame physical-copy creation,
+material/seam controls, ordinary bake/recovery and A/B use. Real sculpted geometry,
+masks, face sets and groups survive; Blender 5 PoseBone selections and transforms
+are retained for two simultaneous rigs. Finish Dyntopo explicitly. Changed source
+geometry/pose invalidates reviewed copies. Independent physical snapshots retain
+their accepted cache when the source is subsequently reshaped.
+
+The posed canopy's sixteen native stitches reduce mean drop from **0.801042 m to
+0.160414 m** and increase rod movement **0.315771 -> 0.334243 m**, with identical
+material/geometry/solver inputs otherwise and 80 steps / 41 frames (0.4 s). A real
+Sculpt Inflate operation and attached native bake also pass. Full bakes take
+**3.86 s** (sculpt), **2.77/3.86 s** (posed A/B); this is small-scene evidence, not
+a speedup comparison. Native contact checks refused an earlier intersecting pose.
+Actual UI/external CLI, stale-copy refusal, late rollback, offline reopen and prior
+Edit/Weight Paint/explanation regressions pass; both saves reproduce fifteen exact
+mesh samples without a solver. Evidence: `ChimeraStudio/integration/evidence/author-modes/acceptance.json`.
+This advances technique 1. Skeleton animation is not yet physical actuation;
+automatic topology/port remapping and the broader fifteen techniques remain open.
+
 **Painted physical regions (October 19; mode-aware native integration).**
 Blender Weight Paint and Edit Mode vertex groups now drive the existing libuipc
 pin and stitch owners through the same human/AI commands. The visible panel
@@ -5409,8 +5429,9 @@ Locked groups, shared meshes, invalid indices/weights and affine-reduced group
 edits refuse; interrupted writes restore prior weights. No native law or
 installed addon changes. Existing material, seam, ordinary bake and A/B commands
 now preserve Weight Paint mode, active group and selection, including shared-job
-completion consumed by the installed timer. Sculpt/Pose, general material fields
-and arbitrary topology mappings remain unfinished.
+completion consumed by the installed timer. The later Sculpt/Pose adapter adds
+physical snapshots and ordinary layer controls; general material fields and
+automatic topology mappings remain unfinished.
 
 The existing mounted shell/two-rod construction retains identical materials and
 sixteen stitches across two 80-step / 41-frame (0.4 s) trials. Its selected patch
