@@ -5082,7 +5082,7 @@ compelling game using simulated matter; the editor serves building and inspectio
 | 7. Hyper-reduction / optimized cubature | Reduce element-force evaluations inside a measured deformation/material domain, retaining every requested timestep. [Original work](https://www.cs.cornell.edu/~stevenan/cubature/). | **Planned native-owner extension.** Compare full/reduced forces, energy and total cost; no accepted recipe from sampling alone. |
 | 8. Port-Hamiltonian learned components | Learn bounded energy/dissipation/port response and compose through explicit physical interconnections, building on AP rather than inventing another solver. [Research](https://proceedings.mlr.press/v211/neary23a.html) demonstrates spring-mass-damper compositions. | **Planned.** First compare a two-component response with the detailed solve; integrator, contact and out-of-domain fallback still need independent checks. |
 | 9. Active learning | Reuse UnitcellDB/FEBio data under their conditions, then choose experiments that resolve the selected construction's uncertainty; existing experiment runner owns receipts. [PhysicsNeMo method](https://docs.nvidia.com/physicsnemo/26.05/user-guide/active_learning.html). | **Bounded native active sampling implemented above.** Equal-budget target finding, held-out prediction errors, full cost, actual UI and saved/replayed observations are measured. UnitcellDB/FEBio mapping and broader AP/libuipc construction domains remain planned; no universal sample-efficiency or surrogate-runtime claim. |
-| 10. Adaptive fidelity | Switch a component between qualified reduced and detailed responses near contacts, large deformation or domain boundaries, preserving state/port exchanges. Learned-mesh research is inspiration, not a substitute native owner. | **Planned after 6–8.** Native same-representation checkpoint continuation is now tested groundwork, not adaptive transfer. Demonstrate an actual representation/state-transfer/fallback case with measured error and latency; no hidden skipped steps. |
+| 10. Adaptive fidelity | Switch a component between qualified reduced and detailed responses near contacts, large deformation or domain boundaries, preserving state/port exchanges. Learned-mesh research is inspiration, not a substitute native owner. | **Native transfer prototype, not automatic UI behavior.** Rest -> affine -> detailed FEM passes a bounded moving fixture; loaded coarsening fails port/energy budgets and is refused. Ten Blender save/reopen samples pass. Shared refinement/rollback/physical-checkpoint controls and a beneficial measured policy remain; see the measured transfer scope below. No hidden skipped steps. |
 | 11. Dependency-aware physical reuse | Existing recipe/source/runtime hashes identify immutable characterization results; geometry, laws, supports, load and connections invalidate affected dependencies. Separate physical states for instances. | **Partial, tested evidence reuse:** existing-owner references now survive unrelated edits and refuse relevant stale dependencies. Native end-frame checkpoints now reuse saved physical state and prior outputs under unchanged complete dependencies, executing every new step. General response reuse and geometry mappings remain planned. |
 | 12. Counterfactual failure explanations | Restore a checkpoint, vary one supported parameter, compare the result and show an actionable alternative on the same Blender construction. Reuse `tools.recipe_experiments`, native history and libuipc recorded controls. | **Native membrane and libuipc A/B UIs implemented above.** Existing attachment controls are reusable at equal simulated time, with visible changed inputs and saved native-cache references. Bounded native material-choice search and explicit libuipc changed-input/rebinding guidance are implemented; automatic causal explanations and general material qualification remain unfinished. |
 | 13. Bounded evolutionary code/workflow optimization | Propose limited implementation variants against a fixed independent evaluator, with correctness and full end-to-end cost. [AlphaEvolve](https://deepmind.google/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/) motivates the loop. | **First measured bounded optimization implemented above.** Profiling plus two executor variants reduced small-scene procedure latency by 24.3%, preserving exact outputs and human-edit detection. Automatic variant generation/search remains planned. No automatic solver-policy edits, benchmark weakening or unbounded candidate runs. |
@@ -5441,6 +5441,35 @@ include `Physical layer continuation UI.blend` and the FEM/affine component blen
 This advances 1/11/15; current cap is 601 output frames / 256 MiB. Arbitrary-time
 branching, drives and state transfer between representations (10) remain open.
 No original user project, model setting or saved Z Code goal changed.
+
+**Measured component state-transfer scope (October 19).** A native prototype
+now imports current/rest geometry and native velocities without substituting a
+Python physical solver. The same-representation control first matched complete
+native checkpoint continuation to 4.55e-13 m. The actual rest-FEM -> affine ->
+detailed sequence ran four coarse then 40 detailed steps. Against 44 detailed
+steps, boundary discrepancy was **0.09923 mm** and seam-force discrepancy
+**5.823%**, within the frozen 2 mm / 10% budgets. The moving refinement retained
+boundary positions exactly and preserved both momenta below 1e-18 in their SI
+units, with explicit kinetic/strain/stitch/gravity checks. Native uniform-box
+mass/inertia integrals were independently checked; a rotating control exercises
+all momenta. Ten saved mesh samples reopen exactly in isolated Blender. These
+are prototype and animation-replay results, not production transfer controls or
+full native continuation from the preview blend.
+
+The important counterexample is **loaded coarsening**: only 0.0496 mm of shape
+change still caused **26.4%** port-force error, lost 0.325 mJ of strain energy and
+added 0.409 mJ of total potential. It was refused; the 1 kPa control also refused.
+Keep detailed state when these checks fail, and never redefine rest geometry to
+hide stored strain. Initial instrumented process times were 2.306 s detailed
+versus 0.953 + 2.167 s coarse/refined, excluding extra projection/template setup;
+no speed benefit is demonstrated. The complete fresh reproduction passes.
+This advances technique 10's feasibility only for an undriven BDF1 fixture with
+no active contact at transfer. Existing shared controls still explicitly reset
+from authored rest shape. Next connect explicit refinement to their existing
+jobs, rollback and physical-checkpoint owners, then measure complete workflow
+cost before an automatic policy. Evidence:
+`ChimeraStudio/integration/evidence/adaptive-components/acceptance.json`.
+Native owners, original projects, model settings and the saved goal are unchanged.
 
 **Next editor work.** Use the measured component comparison on another useful
 construction shape/load before widening its envelope; retain detailed FEM when
