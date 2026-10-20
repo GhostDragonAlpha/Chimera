@@ -4641,7 +4641,7 @@ workspaces in our template and the installed build's capabilities.
 | Layout / Object Mode / Outliner | Select, arrange and instance source parts; inspect stable identities and explicit connections | Select two films, connect supported apices and see the same pieces in the native result |
 | Modeling / Edit Mode | Use ordinary vertex/edge/face tools and selection for membrane geometry, supported boundaries and ports | Select an apex, reshape a supported fan, rebuild and inspect the changed response |
 | Properties / Shading / paint tools | Bind explicit material IDs and supported physical parameters to objects or regions; use colors as a visible legend | Surface-tension assignment first; face/layer painting requires a native region/law mapping before it changes physics |
-| Geometry Nodes / modifiers | Generate repeatable geometry and named attributes, then compile an explicit evaluated result with stable region/port mapping | Parameterized repeated parts using admitted recipes; retain the editable source graph |
+| Geometry Nodes / modifiers | Generate repeatable geometry and named attributes, then compile an explicit evaluated result with stable region/port mapping | **Bounded shell/rigid physical-copy path implemented below:** freeze current evaluated geometry and explicit attribute groups; retain the editable graph. General imported machinery, FEM/rod conversion and automatic rebinding remain separate |
 | Sculpting / Sculpt Mode | Author organic source shapes through Blender tools, then check whether the physical compiler supports the resulting geometry | Later authoring adapter; topology changes require rebuilding/rebinding affected ports and material regions |
 | Animation / Pose Mode / Timeline | Author camera motion and, when supported, prescribed motion or actuator targets through explicit native contracts | Presentation now; physical replay/time and force-driven motion need their existing native owners |
 | Rendering / Image Editor / 3D Viewport | Inspect the native image and computed geometry with matching state, transforms and view | Continue the current native-render handoff; shader appearance remains distinct from physical material behavior |
@@ -5074,7 +5074,7 @@ compelling game using simulated matter; the editor serves building and inspectio
 
 | # / technique | Reuse and first concrete acceptance | Current status / order |
 |---|---|---|
-| 1. Small reliable construction language | Registered operators, `blocks.compile_parts`, native checkpoint owner. Same input through UI/API; stale and duplicate delivery safe; actual completion visible. | **Implemented subset above, including tested external local terminal transport, rebuild recovery, native A/B, shared libuipc material/seam edits, bake/recovery, cache comparisons, native end-frame physical continuation and revision-bound native rendering.** Object/Edit and bounded Weight Paint support/seam authoring now work alongside Image Editor observation. Sculpt/Pose and broader owner mappings remain unfinished. |
+| 1. Small reliable construction language | Registered operators, `blocks.compile_parts`, native checkpoint owner. Same input through UI/API; stale and duplicate delivery safe; actual completion visible. | **Implemented subset above, including tested external local terminal transport, rebuild recovery, native A/B, shared libuipc material/seam edits, bake/recovery, cache comparisons, native end-frame physical continuation and revision-bound native rendering.** Object/Edit and bounded Weight Paint support/seam authoring now work alongside Image Editor observation; evaluated Geometry Nodes/modifier copies feed existing native shell/rigid material and seam owners. Sculpt/Pose and broader owner mappings remain unfinished. |
 | 2. Library learning | Mine repeated successful construction sequences into parameterized recipes with ports and provenance through existing mechanism-factory/AP owners. [DreamCoder](https://people.csail.mit.edu/asolar/papers/EllisWNSMHCST21.pdf) motivates reusable program components. Demonstrate one mined recipe reducing authoring effort with identical compiled meaning. | **Bounded parameter abstraction and native/layered sequence mining implemented.** Confirmed trials yield a reusable geometry template; repeated successful commands now yield typed procedures with new part bindings and observed numeric parameters, preserving compiled meaning. Layered material/seam/bake patterns now bind new endpoint parts and named groups, with final native-cache evidence. General program/function discovery and broader owner mappings remain planned. |
 | 3. Quality-diversity / MAP-Elites | Index accepted comparisons by size, mass, compliance, response direction and measured cost; keep useful alternatives rather than a single score winner. Use existing evidence identities. [Method](https://arxiv.org/abs/1504.04909). | **Bounded native MAP-Elites implemented above.** Three response bands retain independently checked material/XY-scale alternatives under the same load and maximum footprint; native A/B, editable recreation and saved lineage pass. General size/mass/direction descriptors and broader owner mappings remain planned. |
 | 4. Inverse design | Desired deflection/load/space becomes a bounded search over supported geometry/materials. Reuse mechanism-factory fits and native evaluation. [Warp](https://github.com/NVIDIA/warp) differentiates its own kernels; our Vulkan/native path needs an explicit derivative adapter. | **Bounded native material search and target-directed sampling implemented above.** Desired movement/load chooses among measured tensions with saved native checkpoints, independent checks and explicit no-match; the equal-budget comparison records both target gains and held-out losses. Bounded XY-scale geometry exploration now works through the quality-diversity adapter. Target-directed general geometry search and derivative adapters remain planned; no gradient claim. |
@@ -5341,6 +5341,32 @@ Native membrane procedure and physical-resume regressions passed. Evidence:
 `Reusable layered procedure.blend`. This extends techniques 2/15 without another
 catalog; general AP mappings and synthesis remain. The separate checkpoint adapter below now supplies bounded end-frame physical continuation.
 
+**Evaluated geometry to native matter (October 19).** The shared **Create
+Physical Copy** action now accepts a nonphysical mesh's current-frame viewport
+Geometry Nodes/modifier output through libuipc's existing geometry/material
+validators. The human panel selects a saved shell/rigid preset and maps named
+FLOAT/BOOLEAN point attributes to ordinary vertex groups. It preserves the
+editable source, creates an independent part with a new native identity, and
+feeds existing material, seam, pin and bake controls. Display shaders remain
+separate. Reviewed content/frame/transform/preset bind stale-input checks;
+late failures roll back the owned copy and preserve prior cache presentation.
+Unrealized instances/non-mesh components refuse explicitly. FEM/rod generation,
+automatic source regeneration and attachment retargeting are not claimed.
+
+The tested 40-vertex procedural canopy joins two existing rods with sixteen
+stitches. Identical geometry/materials over 80 steps / 41 frames (0.4 s) give
+mean shell drop **0.804476 m unattached versus 0.125778 m attached**, with greater
+rod motion under the attached shell. Both solves converge. Full bakes take
+**3.26/4.08 s**, not a speedup comparison. A beveled rigid part preserves evaluated
+vertex groups. Human controls and external CLI retain unfinished Edit Mode;
+node/frame staleness, invalid mappings, omitted component refusal and late failure
+are tested. Fifteen saved mesh samples, source graph, regions and provenance
+reopen exactly offline. Source-only edits leave the independent physical copy's
+validated replay intact. This is saved mesh animation; physical continuation
+uses the separate checkpoint owner. Evidence:
+`ChimeraStudio/integration/evidence/evaluated-geometry/acceptance.json`.
+This extends the construction language without a second modeler or solver.
+
 **Painted physical regions (October 19; mode-aware native integration).**
 Blender Weight Paint and Edit Mode vertex groups now drive the existing libuipc
 pin and stitch owners through the same human/AI commands. The visible panel
@@ -5580,8 +5606,9 @@ admission to a deployed engine/controller.
 provides computational design and repeated cellular surfaces, not biomechanical
 tissue mechanics. [Sverchok](https://github.com/nortikin/sverchok) supplies
 parametric geometry, fields and CAD-oriented construction; try existing Geometry
-Nodes first for simple repetition. Feed evaluated geometry/attributes through
-our compiler instead of rebuilding a modeler.
+Nodes first for simple repetition. The evaluated shell/rigid copy path above
+now feeds geometry/attribute groups through native admission; other outputs
+need their specific mapping rather than another modeler.
 [Taichi Elements](https://github.com/taichi-dev/taichi_elements) has a
 multi-material continuum research engine and experimental Blender path;
 [PolyFEM's Blender plugin](https://github.com/ETSim/PolyFEMBlenderPlugin) has an
