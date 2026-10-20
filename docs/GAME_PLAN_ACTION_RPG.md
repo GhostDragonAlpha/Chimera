@@ -5911,17 +5911,68 @@ invalid data retain the earlier dataset. Original AP02 saves remain compatible.
 Evidence: `ChimeraStudio/integration/evidence/cloth-labels/acceptance.json`;
 example: `run-03/gui/Cloth training UI.blend` beneath that directory.
 
-**Next triangle-training connection:** use those native labels for a useful
-patch/port reduction through the existing positive-energy fit and comparison
-workflow. Keep untouched validation states, full native fallback and a measured
-editor/runtime benefit. Preserve boundary work, material directions, strain domain
-and needed history before admitting the response. Coarse-patch reduction separately
-qualifies mesh resolution; physical resizing is not homogenization. AP02 remains
-the demonstrated learned scale-response family. New cloth/solid laws, reduced cloth
-dynamics, contact surrogates, scaled-card assembly and CA force coupling remain open.
-The shared human/AI actions and purpose/provenance travel together; no second
-material catalog, universal triangle equation or automatic physical admission.
-Native owners, original projects, model services and saved Z Code goal stay unchanged.
+**Reusable native cloth attachment response (October 20; tested).** The next
+step now exists in Blender's **Learned Cloth Attachment** panel. Collect the
+existing cloth training dataset, pick one interior vertex in Blender (or use the
+central default), then learn a scalar normal-rail response for the saved patch.
+Every boundary vertex is fixed; the remaining interior vertices relax through
+unchanged libuipc. The teacher sums the actual triangle stretch/shear and shared-edge
+bending energies/forces, including the source's painted material. This is a bounded
+construction function, not a bulk material law or a free-moving cloth surrogate.
+
+The existing AP01 conservative table owner fits force and integrates it into
+energy; no new Python physical solver or second material registry is added. Each
+physical scale **0.5 / 1 / 2** is taught separately with the selected thickness
+policy. The checked example uses fixed thickness. Allowed normal displacement is
+**+/-0.01 m times scale**, with 33/33/65 training knots and **32/32/64 independent
+held-out positions**. Do not infer intermediate scales or apply AP01's constant-
+gamma scaling rule to cloth; the saved lineage forbids that shortcut. The card
+keeps geometry, material, boundary conditions, purpose, source/runtime identities,
+training poses and exact response tables together in Blender.
+
+Reuse an already qualified card first; retrain when its physical inputs or chosen
+scale/boundary domain changes. This is an aid to the selected construction task,
+not a prerequisite for ordinary interface work or a reason to start unrelated
+mathematical experiments.
+
+The 40-vertex, 56-triangle, 73-bending-edge example passes **128 held-out states**:
+worst peak-normalized force/energy errors **0.299% / 0.373%** and shape error
+**0.172 mm**, within unchanged 0.5% / 0.5% / 0.2 mm budgets. The native free-vertex
+residual is **3.77e-5 N**; independent energy/gradient and boundary-work checks pass.
+The initial double-size fit failed at 0.266 mm and was refined, retaining that
+failure and testing new held-out states. Native relaxation diagnostics remain
+attached; final convergence and static balance are required. These are equilibrium
+fixtures, not trajectories. Whole moving-cloth reduction remains unqualified.
+
+Measured native teaching is **82.62 s**, with **92.49 s** for the complete Blender
+client action/check/save. Subsequent fully checked saved shape/force/energy queries
+measure **18.86 ms median** without GPU calls; a prevalidated scalar-only table
+batch takes **2.37-2.66 ms for 1,024 queries**. These timings have different scopes;
+no dynamic or game-frame-rate speedup is claimed. The full native construction
+remains available, and unsupported scales/states refuse clearly rather than
+inventing a result. This is useful for reusing a known support response when
+choosing layered constructions and attachment loads.
+
+Human Object/Edit controls and external client queries preserve unfinished edits.
+Create Reusable Cloth Card produces a normal Blender asset with visible triangle
+edges and its learned response. Save/reopen and fresh-project Append retain exact
+responses; the original native construction's mesh replay remains exact. Pending
+jobs reopen interrupted; cancellation, hard deadline, stale sources, edited cards,
+nonconservative altered tables and invalid domains retain the accepted response.
+All original Projects/native owners/model services and Z Code's saved goal are
+unchanged. Evidence: `ChimeraStudio/integration/evidence/cloth-port/acceptance.json`;
+open `run-01/gui/Learned cloth attachment.blend` below that evidence directory.
+
+**Next triangle-training connection:** reuse these existing cards and comparison
+owners for a needed layered construction. Qualify a small shared-load attachment
+against the detailed native construction before any live force injection. Keep
+full native fallback, independent checks, material directions, boundary work,
+strain domain and history requirements. New mesh resolution needs separate
+qualification; physical resizing is not homogenization. Coupled cloth dynamics,
+contact/fracture surrogates, solid constitutive training and CA force coupling
+remain open owner-backed work. The scalar preview is not physical continuation,
+a universal triangle equation or automatic scientific-graph admission. Water stays
+deferred; this lane continues to deliver the game's Blender interface.
 
 **Saved response assembly (October 20).** Humans and the real local CLI can now
 compose two to eight independent saved AP02 cards using the existing equilibrium
