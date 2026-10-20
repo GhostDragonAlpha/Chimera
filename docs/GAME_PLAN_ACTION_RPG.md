@@ -4673,8 +4673,9 @@ gpu_workspace.py checkpoint lifecycle. Acceptance examples: the same supported
 edit through UI and AI produces equivalent compiled input; wrong context, changed
 selection or a stale source revision leaves confirmed state intact; a failed
 build and an undo/reopen retain a usable construction. This is the integration
-contract. The local Object/Edit command subset below is implemented; broader
-mode adapters remain unfinished; the local Z Code transport below is now tested. Sources: [Blender modes](https://docs.blender.org/manual/en/latest/editors/3dview/modes.html),
+contract. Object/Edit commands and the painted support/seam mapping below are
+implemented, including actual Weight Paint mode preservation. Broader mode
+adapters remain unfinished; local Z Code transport is tested. Sources: [Blender modes](https://docs.blender.org/manual/en/latest/editors/3dview/modes.html),
 [workspaces](https://docs.blender.org/manual/en/3.0/interface/window_system/workspaces.html),
 [operators](https://developer.blender.org/docs/features/interface/operators/) and
 [undo](https://developer.blender.org/docs/features/core/undo/). Check the actual
@@ -5073,7 +5074,7 @@ compelling game using simulated matter; the editor serves building and inspectio
 
 | # / technique | Reuse and first concrete acceptance | Current status / order |
 |---|---|---|
-| 1. Small reliable construction language | Registered operators, `blocks.compile_parts`, native checkpoint owner. Same input through UI/API; stale and duplicate delivery safe; actual completion visible. | **Implemented subset above, including tested external local terminal transport, rebuild recovery, native A/B, shared libuipc material/seam edits, bake/recovery, cache comparisons, native end-frame physical continuation and revision-bound native rendering.** Broader owner/mode adapters remain; Object/Edit authoring plus Image Editor observation. |
+| 1. Small reliable construction language | Registered operators, `blocks.compile_parts`, native checkpoint owner. Same input through UI/API; stale and duplicate delivery safe; actual completion visible. | **Implemented subset above, including tested external local terminal transport, rebuild recovery, native A/B, shared libuipc material/seam edits, bake/recovery, cache comparisons, native end-frame physical continuation and revision-bound native rendering.** Object/Edit and bounded Weight Paint support/seam authoring now work alongside Image Editor observation. Sculpt/Pose and broader owner mappings remain unfinished. |
 | 2. Library learning | Mine repeated successful construction sequences into parameterized recipes with ports and provenance through existing mechanism-factory/AP owners. [DreamCoder](https://people.csail.mit.edu/asolar/papers/EllisWNSMHCST21.pdf) motivates reusable program components. Demonstrate one mined recipe reducing authoring effort with identical compiled meaning. | **Bounded parameter abstraction and native/layered sequence mining implemented.** Confirmed trials yield a reusable geometry template; repeated successful commands now yield typed procedures with new part bindings and observed numeric parameters, preserving compiled meaning. Layered material/seam/bake patterns now bind new endpoint parts and named groups, with final native-cache evidence. General program/function discovery and broader owner mappings remain planned. |
 | 3. Quality-diversity / MAP-Elites | Index accepted comparisons by size, mass, compliance, response direction and measured cost; keep useful alternatives rather than a single score winner. Use existing evidence identities. [Method](https://arxiv.org/abs/1504.04909). | **Bounded native MAP-Elites implemented above.** Three response bands retain independently checked material/XY-scale alternatives under the same load and maximum footprint; native A/B, editable recreation and saved lineage pass. General size/mass/direction descriptors and broader owner mappings remain planned. |
 | 4. Inverse design | Desired deflection/load/space becomes a bounded search over supported geometry/materials. Reuse mechanism-factory fits and native evaluation. [Warp](https://github.com/NVIDIA/warp) differentiates its own kernels; our Vulkan/native path needs an explicit derivative adapter. | **Bounded native material search and target-directed sampling implemented above.** Desired movement/load chooses among measured tensions with saved native checkpoints, independent checks and explicit no-match; the equal-budget comparison records both target gains and held-out losses. Bounded XY-scale geometry exploration now works through the quality-diversity adapter. Target-directed general geometry search and derivative adapters remain planned; no gradient claim. |
@@ -5339,6 +5340,37 @@ Native membrane procedure and physical-resume regressions passed. Evidence:
 `ChimeraStudio/integration/evidence/layer-procedures/acceptance.json` and its
 `Reusable layered procedure.blend`. This extends techniques 2/15 without another
 catalog; general AP mappings and synthesis remain. The separate checkpoint adapter below now supplies bounded end-frame physical continuation.
+
+**Painted physical regions (October 19; mode-aware native integration).**
+Blender Weight Paint and Edit Mode vertex groups now drive the existing libuipc
+pin and stitch owners through the same human/AI commands. The visible panel
+writes selected weights, applies/removes partial fixed supports and reports
+counts at the actual native threshold. Pins fix world positions; stitches select
+weights >=0.5. Paint is membership, not proportional stiffness or arbitrary
+material interpolation. Decimal thresholds use Blender's actual float storage.
+Locked groups, shared meshes, invalid indices/weights and affine-reduced group
+edits refuse; interrupted writes restore prior weights. No native law or
+installed addon changes. Existing material, seam, ordinary bake and A/B commands
+now preserve Weight Paint mode, active group and selection, including shared-job
+completion consumed by the installed timer. Sculpt/Pose, general material fields
+and arbitrary topology mappings remain unfinished.
+
+The existing mounted shell/two-rod construction retains identical materials and
+sixteen stitches across two 80-step / 41-frame (0.4 s) trials. Its selected patch
+drops **0.129664 m** without extra supports and stays fixed when painted pins are
+applied; other vertices still deform **0.090844 m**. Complete bakes took
+**4.03/3.15 s**; these different physical cases do not establish a speedup.
+A separate seam check selects seven versus eight endpoints at the unchanged
+native threshold and restores the binding. Actual human controls, Edit/Weight
+Paint panel drawing and external CLI pass. Painting during a bake rejects stale
+output while retaining the new brush edit and prior cache. Fifteen mesh samples,
+weights, pins and A/B references reopen exactly offline. This is saved native
+mesh-animation replay; full physical continuation is the separate workflow below.
+Evidence: `ChimeraStudio/integration/evidence/painted-regions/acceptance.json`;
+open `run-03/gui/Painted physical regions UI.blend` underneath that directory.
+Purpose and state stay in existing operation records, Blender groups and native
+cache owners. Next choose a concrete missing authoring action or useful physical
+comparison, preserving the broader game goal and existing native responsibilities.
 
 **Measured native component reduction (October 19).** Studio now exposes a
 reversible authored-rest FEM/affine switch through the same human and local CLI
