@@ -5078,7 +5078,7 @@ compelling game using simulated matter; the editor serves building and inspectio
 | 3. Quality-diversity / MAP-Elites | Index accepted comparisons by size, mass, compliance, response direction and measured cost; keep useful alternatives rather than a single score winner. Use existing evidence identities. [Method](https://arxiv.org/abs/1504.04909). | **Bounded native MAP-Elites implemented above.** Three response bands retain independently checked material/XY-scale alternatives under the same load and maximum footprint; native A/B, editable recreation and saved lineage pass. General size/mass/direction descriptors and broader owner mappings remain planned. |
 | 4. Inverse design | Desired deflection/load/space becomes a bounded search over supported geometry/materials. Reuse mechanism-factory fits and native evaluation. [Warp](https://github.com/NVIDIA/warp) differentiates its own kernels; our Vulkan/native path needs an explicit derivative adapter. | **Bounded native material search and target-directed sampling implemented above.** Desired movement/load chooses among measured tensions with saved native checkpoints, independent checks and explicit no-match; the equal-budget comparison records both target gains and held-out losses. Bounded XY-scale geometry exploration now works through the quality-diversity adapter. Target-directed general geometry search and derivative adapters remain planned; no gradient claim. |
 | 5. Learned solver warm starts | Predict an initial guess, then let the existing solver enforce its residual/acceptance criteria. Compare against ordinary continuation warm starts including inference/transfer overhead. [NOWS](https://arxiv.org/abs/2511.02481). | **Planned native-owner extension.** No neural predictor is installed in Studio. Keep only a measured total-time improvement at equal tolerances. |
-| 6. Static condensation / component reduction | Eliminate internal degrees of freedom while retaining boundary ports; reuse AP two-port/finite-area concepts. [MFEM](https://docs.mfem.org/3.1/classmfem_1_1StaticCondensation.html) describes linear block elimination. | **Existing research prerequisites; Blender adapter planned.** Verify port reactions and reconstructed internal state against the detailed owner. Nonlinear contact needs its own treatment. |
+| 6. Static condensation / component reduction | Eliminate internal degrees of freedom while retaining boundary ports; reuse AP two-port/finite-area concepts. [MFEM](https://docs.mfem.org/3.1/classmfem_1_1StaticCondensation.html) describes linear block elimination. | **Bounded native affine-body adapter implemented below.** Reversible FEM/affine authoring preserves boundary stitches and the saved detailed mesh; complete trajectory/port-force comparison measures cost and rejects unsuitable reductions. This uses native ABD, not Schur condensation. General AP port reductions, internal deformation reconstruction, nonlinear contacts and state transfer remain planned. |
 | 7. Hyper-reduction / optimized cubature | Reduce element-force evaluations inside a measured deformation/material domain, retaining every requested timestep. [Original work](https://www.cs.cornell.edu/~stevenan/cubature/). | **Planned native-owner extension.** Compare full/reduced forces, energy and total cost; no accepted recipe from sampling alone. |
 | 8. Port-Hamiltonian learned components | Learn bounded energy/dissipation/port response and compose through explicit physical interconnections, building on AP rather than inventing another solver. [Research](https://proceedings.mlr.press/v211/neary23a.html) demonstrates spring-mass-damper compositions. | **Planned.** First compare a two-component response with the detailed solve; integrator, contact and out-of-domain fallback still need independent checks. |
 | 9. Active learning | Reuse UnitcellDB/FEBio data under their conditions, then choose experiments that resolve the selected construction's uncertainty; existing experiment runner owns receipts. [PhysicsNeMo method](https://docs.nvidia.com/physicsnemo/26.05/user-guide/active_learning.html). | **Bounded native active sampling implemented above.** Equal-budget target finding, held-out prediction errors, full cost, actual UI and saved/replayed observations are measured. UnitcellDB/FEBio mapping and broader AP/libuipc construction domains remain planned; no universal sample-efficiency or surrogate-runtime claim. |
@@ -5340,8 +5340,45 @@ Native membrane procedure and physical-resume regressions passed. Evidence:
 `Reusable layered procedure.blend`. This extends techniques 2/15 without another
 catalog; general AP mappings, synthesis and full physical continuation remain.
 
-**Next editor work.** Extend accepted-trial references through existing owners
-and make those references useful when reusing this editable construction. Feed
+**Measured native component reduction (October 19).** Studio now exposes a
+reversible authored-rest FEM/affine switch through the same human and local CLI
+operations. The installed libuipc laws remain unchanged. Original detailed meshes,
+groups, part IDs and boundary-stitch identities/rest lengths stay recoverable;
+interior nodes leave the affine proxy through an explicit correspondence. Bake
+FEM as A and affine as B, then compare all saved boundary samples and native
+stitch-force vectors under explicit budgets. Keep other inputs/runtime equal,
+require every requested converged native step, and retain prior results on
+failed validation. Saved references and detailed meshes reopen offline.
+
+The 208-node/648-tet, eight-stitch suspended beam used 100 MPa detailed FEM and
+native ABD rigidity 1e8 (different constitutive parameters, no automatic modulus
+conversion). Across 61 frames / 120 native steps, error was **0.0992 mm maximum
+boundary position / 5.57% port force** against the predeclared 2 mm / 10% example
+budgets. Two alternating complete runs each measured **2.54 s detailed / 1.18 s
+affine** median on this 4090, about 2.15x for the small scene; 624 component
+coordinates became 12. A 10 MPa trial failed port-force accuracy at 33.2% despite
+passing position; the 1 kPa control failed by 1.324 m. Keep these failures rather
+than broadening the budget. This is evidence for selecting a stiff representation
+for a bounded task, not qualifying all shapes, loads or materials.
+
+Actual Blender panel/operators and external CLI pass; unfinished human Edit Mode
+work survives. Eight saved mesh samples replay exactly, detailed restoration
+matches the original complete native input fingerprint, and late faults roll
+back bindings/geometry/visibility. Existing native membrane authoring and
+connected-layer copying pass. Evidence:
+`ChimeraStudio/integration/evidence/component-reduction/acceptance.json`; the
+editable example is `Compared affine component.blend` beside its caches.
+This advances technique 6 only within its stated scope. Cached mesh replay is
+not physical restart; live state transfer, generic AP/Schur responses, internal
+deformation reconstruction, learned warm starts, cubature and adaptive fidelity
+remain open. Independent physics checks stay authoritative. Native runtime,
+original projects, model settings and the saved Z Code goal remain unchanged.
+
+**Next editor work.** Use the measured component comparison on another useful
+construction shape/load before widening its envelope; retain detailed FEM when
+port loads fail even if the picture looks close. Continue native acceleration
+through existing owners, then extend accepted-trial references when reusing this
+editable construction. Feed
 accepted response trials into the existing recipe/mechanism evidence pipeline
 once the mapping is explicit; do not build another catalog. Studio's
 `Libuipc/WORK_LOG.md` preserves decisions, evidence and the next bounded tasks.
