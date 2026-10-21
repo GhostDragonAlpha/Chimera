@@ -5208,7 +5208,7 @@ compelling game using simulated matter; the editor serves building and inspectio
 | 5. Learned solver warm starts | Predict an initial guess, then let the existing solver enforce its residual/acceptance criteria. Compare against ordinary continuation warm starts including inference/transfer overhead. [NOWS](https://arxiv.org/abs/2511.02481). | **Bounded native implementation.** Existing RBF initial guesses now narrow GPU-verified equilibrium brackets for the single-free-Z membrane, with ordinary fallback and unchanged physics. Six loads train from accepted history; actual 20-query Blender pass improved only 1.9%, so keep opt-in. General/neural predictors and libuipc integration remain open. See measured warm-start scope below. |
 | 6. Static condensation / component reduction | Eliminate internal degrees of freedom while retaining boundary ports; reuse AP two-port/finite-area concepts. [MFEM](https://docs.mfem.org/3.1/classmfem_1_1StaticCondensation.html) describes linear block elimination. | **Bounded native affine-body adapter implemented below.** Reversible FEM/affine authoring preserves boundary stitches and the saved detailed mesh; complete trajectory/port-force comparison measures cost and rejects unsuitable reductions. A shared measured-choice operation now selects an existing detailed/affine result only when boundary, partner-motion and attachment-force budgets plus recorded worker-time gain justify it; a flexible asymmetric bracket is correctly kept detailed. The native ABD path remains separate from the newly implemented AP02 static Schur path: two to eight saved response cards reduce two shared Z coordinates to one, reconstruct the internal rail, check full native forces and fall back to detailed equilibrium when needed. Both exposed-port choices, eight instances, shared human/CLI controls and offline replay pass. General many-internal-DOF/nonlinear reduction remains planned; explicit affine-to-detailed motion transfer is available through technique 10. |
 | 7. Hyper-reduction / optimized cubature | Reduce element-force evaluations inside a measured deformation/material domain, retaining every requested timestep. [Original work](https://www.cs.cornell.edu/~stevenan/cubature/). | **Bounded AP02 native cubature implemented below.** Positive 6/6/5-of-8 triangle rules pass independent unseen energy/reaction and two-piece composition checks; Blender human/CLI controls and saved observation replay pass. Complete batch time was 0.410/0.396 s in one benchmark, so remain optional. GPU-trained triangle weights now have tested geometric scale/tension reuse, with 232 independent held-out states, shared Blender controls and portable offline cards below. The native cloth teaching-data connection below now supplies checked energy/force labels; general learned material, dynamic and libuipc reduction domains remain open. |
-| 8. Port-Hamiltonian learned components | Learn bounded energy/dissipation/port response and compose through explicit physical interconnections, building on AP rather than inventing another solver. [Research](https://proceedings.mlr.press/v211/neary23a.html) demonstrates spring-mass-damper compositions. | **Blender static response composition implemented; full Port-Hamiltonian dynamics still planned.** Two to eight independent saved AP02 cards share explicit P/Q rail loads and rim translations through the existing equilibrium owner. Detailed/reference/native checks and automatic detailed fallback pass, with human/CLI controls and offline save/reopen. Time integration, dissipation, contact, dynamic interconnections and live libuipc coupling remain unimplemented.  A separate cloth path now composes two to four qualified native cloth responses on one ideal normal rail, retaining per-support independent/native checks and total balance; tested results and limits are below. |
+| 8. Port-Hamiltonian learned components | Learn bounded energy/dissipation/port response and compose through explicit physical interconnections, building on AP rather than inventing another solver. [Research](https://proceedings.mlr.press/v211/neary23a.html) demonstrates spring-mass-damper compositions. | **Blender static response composition implemented; full Port-Hamiltonian dynamics still planned.** Two to eight independent saved AP02 cards share explicit P/Q rail loads and rim translations through the existing equilibrium owner. Detailed/reference/native checks and automatic detailed fallback pass, with human/CLI controls and offline save/reopen. Time integration, dissipation, contact, dynamic interconnections and live libuipc coupling remain unimplemented.  A separate cloth path now composes two to four qualified native cloth responses on one ideal normal rail, retaining per-support independent/native checks and total balance; tested results and limits are below. A vector attachment teacher now returns the port's full three-component reaction and energy for a prescribed normal displacement from a GPU-free learned card; the lateral displacement domain is explicitly refused as buckling-limited and compliant-stitch composition is a named unqualified pilot, so the detailed native stitch fixture remains the owner for compliant stitched supports (measured record below). |
 | 9. Active learning | Reuse UnitcellDB/FEBio data under their conditions, then choose experiments that resolve the selected construction's uncertainty; existing experiment runner owns receipts. [PhysicsNeMo method](https://docs.nvidia.com/physicsnemo/26.05/user-guide/active_learning.html). | **Bounded native active sampling implemented above.** Equal-budget target finding, held-out prediction errors, full cost, actual UI and saved/replayed observations are measured. Existing sampling now also drives complete libuipc stiffness trials; a measured-target bracket policy reaches the tested cloth/rib target where equal-budget fixed sampling misses, while earlier adaptive losses remain recorded. Two-control native searches now reuse that measured-query workflow: nine adaptive/fixed trials both meet a 3 mm tolerance, with 0.067/0.242 mm target error in the tested cloth/rib scene. Published FEBio elastic-input assignment and UnitcellDB directional-reference inspection now work through the existing material/evidence controls below; full benchmark/anisotropic mappings and broader domains remain planned. The size/stiffness trial above preserves a counterexample: fixed coverage achieves lower target error than adaptive sampling at the same nine-query budget. Before another layer experiment, the knowledge panel can now query existing native measurements by required movement/time and footprint, check current-scene reuse and apply a qualifying cached result. No universal sample-efficiency or surrogate-runtime claim. |
 | 10. Adaptive fidelity | Switch a component between qualified reduced and detailed responses near contacts, large deformation or domain boundaries, preserving state/port exchanges. Learned-mesh research is inspiration, not a substitute native owner. | **Explicit native refinement implemented; automatic policy remains planned.** Shared Blender/CLI refinement retains motion, performs energy/momentum admission, rolls back failures and produces a checkpoint that continues after reopening. Loaded coarsening remains refused. Offline rest-shape selection now applies a checked existing representation/cache from A/B evidence with transactional rollback; this is separate from automatic live state switching. Demonstrate useful multi-part coverage and a measured complete-workflow benefit before automatic selection; no hidden skipped steps. |
 | 11. Dependency-aware physical reuse | Existing recipe/source/runtime hashes identify immutable characterization results; geometry, laws, supports, load and connections invalidate affected dependencies. Separate physical states for instances. | **Partial, tested evidence reuse:** existing-owner references now survive unrelated edits and refuse relevant stale dependencies. Native end-frame checkpoints now reuse saved physical state and prior outputs under unchanged complete dependencies, executing every new step. Native Blender construction assets preserve source identities while giving each new instance independent meshes/IDs; changed geometry, material or contact conflicts refuse. Native hinges, including constant/captured keyed torque, native angle targets/arrival ramps and soft limits, are included in source/cache identity, saved physical continuation and independent v3 asset instances; v2 assets and original passive-hinge caches remain supported. New scene physics is baked rather than inheriting an unrelated cache. Rigid construction placement now retains directional cloth references in dependency identity, and refuses stale continuation after placement. Behavior lookup now checks full native inputs after declared size/material edits before offering saved-cache reuse. Painted stiffness group/weights/factors and adapter identity now join existing native cache, checkpoint and independent construction-asset fingerprints. Arbitrary scale/response mappings remain planned. |
@@ -6053,6 +6053,37 @@ the existing multi-point/FAA concepts and native attachment owner rather than
 inventing a scalar shortcut. This is driven by the usable stitched construction,
 not a new generic mathematics backlog.
 
+**Vector attachment card (October 20; measured, lead-accepted).** The teacher
+above was attempted twice against frozen preregistered designs and both were
+refused by their own guards, so the scope was refrozen once to what the physics
+supports. First falsification: the lateral reaction components of a
+normal-displacement slice are exactly even in the displacement
+(R_t ≈ −1.09e5·h², reaching −2.73/−5.40/−10.77 N at scales 0.5/1/2), so they are
+not strictly monotone and cannot enter the AP01 table owner. Second
+falsification: a quadratic lateral card self-refused its 5% symmetry guard
+because the lateral response buckles — the +tangent branch destabilizes near
+**4e-5 m** and the true response is a full 2×2 K(u_n) with a **−40,150 N/m**
+cross-stiffness (48% of the diagonals 82,356/106,600 N/m), while the measured
+stitch operating drift is 3.85e-5 m; no honest bounded quadratic lateral domain
+exists at that point. What ships is the honest half: a learned vector attachment
+card that prescribes only the normal port displacement and returns the full
+three-component reaction plus energy instantly with no GPU, using the same AP01
+tables (odd primitives of the one-signed even components are monotone and
+storable) and the same held-out qualification — force/energy **0.3198%/0.3601%,
+0.1316%/0.3722%, 0.0332%/0.0971%** at scales 0.5/1/2, shape ≤ **1.71e-4 m**,
+free-port force ≤ **3.77e-5 N**, native teaching **92.5 s**. Composing it with
+the existing stitch law into a compliant stitched-support prediction is kept as
+a named, always-refused pilot: measured composition error on this fixture is
+**8.63%/10.52%**, so compliant stitched supports continue to use the detailed
+native fixture above. Lateral queries and stitched predictions refuse with the
+recorded buckling boundary. Evidence:
+`ChimeraStudio/integration/evidence/cloth-vector/run-01/` plus the independent
+lead acceptance `evidence/cloth-vector/lead-accept-01/` (run/guards/reopen pass;
+the first two lead runs were refused by the unchanged GPU-busy guard, which left
+all services running); decision record `evidence/cloth-vector/compose-prereg.json`;
+probe/scan artifacts under `.user/cloth-vector-decide/` and
+`.user/cloth-vector-scan/`.
+
 Native worker times were **2.79 / 2.40 s** for the two fixtures, including retained
 label/reference checks. A Blender comparison snapshot preserves actual native
 meshes and measurements exactly on reopen; it is observation evidence, not a
@@ -6062,8 +6093,36 @@ native laws remain unchanged. Evidence:
 `probe-02/Native stitch comparison.blend` below that directory. The initial native
 API class/instance setup error is retained separately; no model was admitted by it.
 
-**Next triangle-training connection:** qualify finite-area or compliant native
-attachments between these reusable supports on a needed layered construction.
+**Native compliant-attachment controls (October 20; measured).** Blender and
+the external local client can now use the detailed stitched-support owner directly
+when the learned normal-only card does not cover the needed attachment. Select a
+saved card/scale, positive rest gap, stitch stiffness and world-space anchor move;
+the fixed-rim cloth port relaxes freely in XYZ under existing native cloth/bending
+and SoftVertexStitch laws. Show the measured cloth, stitch and anchor as a separate
+snapshot. This is a construction decision tool, not a new solver or admission of
+the refused reduced compliant model.
+
+Five native cases cover the three taught scales, 1000/100000 N/m stitches and an
+off-axis anchor. Worker time including independent checks is **1.94-2.01 s**;
+maximum static residual **4.22e-5 N** remains below the unchanged 1e-4 N limit.
+Half/full-size cases reproduce the prior full native probe within
+**1.84e-6/3.79e-10 N**. Native final convergence and independent triangle/bending
+energy/gradient/balance checks remain required for every new request. Human
+Object/Edit controls and external-client calls preserve unfinished work; cancel,
+deadline and stale-result refusal retain the last accepted result. Completed,
+UI and pending saves reopen without GPU work with exact accepted data and original
+animation. This is static observation, not physical restart or live force coupling.
+Evidence: `ChimeraStudio/integration/evidence/cloth-stitch-control/acceptance.json`;
+example `run-01/gui/Native stitched support.blend` below that directory. The
+existing vector teacher and cards remain unchanged; their guard/recovery regression
+passes. Original projects and model services/settings are preserved.
+
+**Next triangle-training connection:** use these detailed native attachment checks
+for the needed layered construction now; qualify a learned finite-area or compliant
+response only when repeated construction queries demonstrate a useful cost saving.
+Keep the already-measured normal-only card for its admitted conditions. For
+broader attachments between reusable supports, qualify the needed layered
+construction through its existing native owners.
 Reuse the existing stitch/joint and comparison owners, account for attachment
 energy and any changed free modes, then compare with the complete detailed native
 construction before live force injection. Keep independent checks, material
