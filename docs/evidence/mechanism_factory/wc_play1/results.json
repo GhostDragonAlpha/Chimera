@@ -1,0 +1,237 @@
+{
+  "steps": [
+    {
+      "step": "supports at rung-law rest before build",
+      "com": {
+        "hazard_pad": [
+          0.62,
+          0.01,
+          0
+        ],
+        "kit_pallet": [
+          -0.25,
+          0.02,
+          0
+        ]
+      }
+    },
+    {
+      "step": "pillar attempt 1",
+      "part": "pillar_0",
+      "ok": true,
+      "detail": "up_y=1.0000 speed=0.00000 com=[0.622142911, 0.0630533958, -0.000140428543]"
+    },
+    {
+      "step": "crate attempt 1",
+      "part": "crate_1",
+      "ok": true,
+      "detail": "up_y=1.0000 bottom-top=-6.7 mm speed=0.00000 crate_com=[0.621598482, 0.122790629, -0.00238347054] pillar_com=[0.622142911, 0.0544994568, -0.000140428543] anchor=[0.621598, 0.113053, -0.002383]"
+    }
+  ],
+  "shots": {
+    "1-scene-startup": {
+      "file": "1-scene-startup.png",
+      "sha256": "4b5e0319ee67a7fe93265a3acf559b7c8109530d8a8ffdbe617960a7821a047e",
+      "bytes": 7750787
+    },
+    "2-pillar-placed": {
+      "file": "2-pillar-placed.png",
+      "sha256": "f5aa4532421ee5812d15db3b02d1aaa7d6492c686c8544d8533030ccf17d0ea3",
+      "bytes": 7750787
+    },
+    "3-crate-HELD": {
+      "file": "3-crate-HELD.png",
+      "sha256": "ecd75860e39b63fe0bab9b83921461b4ec1db0ad3f3c681c74e5b47239ddaf79",
+      "bytes": 7750787
+    },
+    "4-broken-LOST": {
+      "file": "4-broken-LOST.png",
+      "sha256": "9afffc99606cce39e8e50c8dc55bf8536f4954defe9096441160ed5772f64788",
+      "bytes": 7750787
+    },
+    "5-loaded-HELD": {
+      "file": "5-loaded-HELD.png",
+      "sha256": "b7f3007764d8fc7229f84308b6fc435e47c67a5809762658c9003ba02fa34460",
+      "bytes": 7750787
+    },
+    "6-offcentre-LOST": {
+      "file": "6-offcentre-LOST.png",
+      "sha256": "94a75364c08bc7004ffdaf56ba0f6ce3584f20449be32cee704e8d0962d3edfe",
+      "bytes": 7750787
+    }
+  },
+  "asserts": [
+    {
+      "name": "scene booted admitted (no HTTP admit posted)",
+      "ok": true,
+      "detail": "{\"active\": true, \"steps\": 11691}"
+    },
+    {
+      "name": "hazard slab in the booted scene",
+      "ok": true,
+      "detail": "[\"hazard_pad\", \"kit_pallet\"]"
+    },
+    {
+      "name": "scene has exactly the boot scene's parts",
+      "ok": true,
+      "detail": "[\"hazard_pad\", \"kit_pallet\"]"
+    },
+    {
+      "name": "board feed states the upright law",
+      "ok": true,
+      "detail": "objective law: the newest crate's COM stays inside the marked region x 0.54..0.70 m, -0.05..+0.05 m with its bottom >= 4 mm above the slab top and its up-axis within 10 deg of vertical (up_y >= 0.9848, the driver's tipped band); bottom is COM y minus half the crate's authored height (25 mm) -- the upright approximation, valid while the crate stands unrotated (a leaning crate defeats the axis-aligned clearance metric, so tilt is checked separately); the load path is the admitted contact physics only"
+    },
+    {
+      "name": "board LOST with the ACTION line before any build",
+      "ok": true,
+      "detail": "LOST: no crate in the scene. ACTION: place a crate"
+    },
+    {
+      "name": "Tab arms place_2 (the pillar kit part)",
+      "ok": true,
+      "detail": "{\"interactive\": true, \"mode\": \"place_2\", \"selected\": null, \"anchor\": null, \"hovered\": null}"
+    },
+    {
+      "name": "the board's tool line names the player's keys",
+      "ok": true,
+      "detail": "Tab place mode | Enter commit | F weld | X remove | F9 save | F10 load"
+    },
+    {
+      "name": "pillar selection + mode survive the commit",
+      "ok": true,
+      "detail": "{\"interactive\": true, \"mode\": \"place_2\", \"selected\": \"pillar_0\", \"anchor\": [0.622143, 0.03, -0.00014], \"hovered\": \"hazard_pad\"}"
+    },
+    {
+      "name": "exactly one crate in the scene",
+      "ok": true,
+      "detail": "[\"hazard_pad\", \"kit_pallet\", \"pillar_0\", \"crate_1\"]"
+    },
+    {
+      "name": "board verdict HELD after the build settles",
+      "ok": true,
+      "detail": "HELD: crate 80 mm above the hazard slab, inside the marked region."
+    },
+    {
+      "name": "F9 logged 'saved 4 parts to workshop_save.json'",
+      "ok": true,
+      "detail": "[{\"seq\": 1, \"t\": \"2026-10-21T18:46:38.540\", \"kind\": \"scene\", \"detail\": \"--scene: admitted \\\"D:\\\\Chimera-Maintenance\\\\PythonChimera\\\\tools\\\\construction_packet\\\\workshop1_scene.json\\\"\"}, {\"seq\": 2, \"t\": \"2026-10-21T18:46:47.461\", \"kind\": \"b2i\", \"detail\": \"place mode: place_1\"}, {\"seq\": 3, \"t\": \"2026-10-21T18:46:47.838\", \"kind\": \"b2i\", \"detail\": \"place mode: place_2\"}, {\"seq\": 4, \"t\": \"2026-10-21T18:47:28.785\", \"kind\": \"b2i\", \"detail\": \"part placed at the pick point\"}, {\"seq\": 5, \"t\": \"2026-10-21T18:47:34.069\", \"kind\": \"b2i\", \"detail\": \"place mode: place_3\"}, {\"seq\": 6, \"t\": \"2026-10-21T18:47:34.439\", \"kind\": \"b2i\", \"detail\": \"place mode: place_4\"}, {\"seq\": 7, \"t\": \"2026-10-21T18:47:47.135\", \"kind\": \"b2i\", \"detail\": \"part placed at the pick point\"}, {\"seq\": 8, \"t\": \"2026-10-21T18:48:00.900\", \"kind\": \"b2i\", \"detail\": \"saved 4 parts to workshop_save.json\"}]"
+    },
+    {
+      "name": "save doc carries the 4-part invention",
+      "ok": true,
+      "detail": "[\"hazard_pad\", \"kit_pallet\", \"pillar_0\", \"crate_1\"]"
+    },
+    {
+      "name": "X removed the selected crate",
+      "ok": true,
+      "detail": "[\"hazard_pad\", \"kit_pallet\", \"pillar_0\"]"
+    },
+    {
+      "name": "click selects the pillar",
+      "ok": true,
+      "detail": "{\"interactive\": true, \"mode\": \"place_4\", \"selected\": \"pillar_0\", \"anchor\": [0.615453, 0.106107, -0.06014], \"hovered\": \"pillar_0\"}"
+    },
+    {
+      "name": "X removed the pillar \u2014 the invention is wiped",
+      "ok": true,
+      "detail": "[\"hazard_pad\", \"kit_pallet\"]"
+    },
+    {
+      "name": "board verdict LOST after the wipe",
+      "ok": true,
+      "detail": "LOST: no crate in the scene. ACTION: place a crate"
+    },
+    {
+      "name": "LOST names the ACTION: place a crate",
+      "ok": true,
+      "detail": "LOST: no crate in the scene. ACTION: place a crate"
+    },
+    {
+      "name": "F10 logged the 4-part load",
+      "ok": true,
+      "detail": "[{\"seq\": 11, \"t\": \"2026-10-21T18:48:03.590\", \"kind\": \"b2i\", \"detail\": \"loaded 4 parts from workshop_save.json\"}]"
+    },
+    {
+      "name": "F10 restored the invention",
+      "ok": true,
+      "detail": "[\"hazard_pad\", \"kit_pallet\", \"pillar_0\", \"crate_1\"]"
+    },
+    {
+      "name": "board verdict HELD again after the load",
+      "ok": true,
+      "detail": "HELD: crate 80 mm above the hazard slab, inside the marked region."
+    },
+    {
+      "name": "click selects the crate",
+      "ok": true,
+      "detail": "{\"interactive\": true, \"mode\": \"place_4\", \"selected\": \"crate_1\", \"anchor\": [0.61547, 0.132462, -0.027384], \"hovered\": \"crate_1\"}"
+    },
+    {
+      "name": "crate removed for the retry",
+      "ok": true,
+      "detail": "[\"hazard_pad\", \"kit_pallet\", \"pillar_0\"]"
+    },
+    {
+      "name": "off-centre crate committed at the edge",
+      "ok": true,
+      "detail": "{\"interactive\": true, \"mode\": \"place_4\", \"selected\": \"crate_2\", \"anchor\": [0.67119, 0.113043, -0.057962], \"hovered\": \"pillar_0\"}"
+    },
+    {
+      "name": "the off-centre crate actually toppled (up-axis far off vertical)",
+      "ok": true,
+      "detail": "up_y=-0.0265"
+    },
+    {
+      "name": "board verdict LOST for the off-centre crate",
+      "ok": true,
+      "detail": "LOST: the crate TIPPED off its support. ACTION: remove the crate and centre it over its support."
+    },
+    {
+      "name": "LOST carries the challenge-1 ACTION line",
+      "ok": true,
+      "detail": "LOST: the crate TIPPED off its support. ACTION: remove the crate and centre it over its support."
+    }
+  ],
+  "exe_sha256": "ce032e9dfe0ccf0180e53138b91b6a98857d992577a0035a16909fdc28c94af0",
+  "scene_sha256": "81b4e7a4f229e0f3d89eefccb0adfe65004d46731664471b8df63ba85a514c28",
+  "feed_sha256": "f3d2876b8b2868101a5c73445c595b1d404762a7396438cc1010f2c3567c1c94",
+  "pid": 11868,
+  "client": [
+    1920,
+    1009
+  ],
+  "held_state": {
+    "ids": [
+      "hazard_pad",
+      "kit_pallet",
+      "pillar_0",
+      "crate_1"
+    ],
+    "crate_com_m": [
+      0.621598482,
+      0.122790629,
+      -0.00238347054
+    ]
+  },
+  "edge_anchor": [
+    0.678666,
+    0.104499,
+    -0.024843
+  ],
+  "offcentre": {
+    "crate2_com_m": [
+      0.698055012,
+      0.0618140422,
+      -0.028283518
+    ],
+    "crate2_speed_m_s": 0.000472901423,
+    "crate2_up_y": -0.02651254243181711,
+    "edge_hit_m": [
+      0.678666,
+      0.104499,
+      -0.024843
+    ],
+    "slab_com_y": -0.00209164593
+  },
+  "verdict": "PASS"
+}

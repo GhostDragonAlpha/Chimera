@@ -54,6 +54,10 @@ public:
     // contact agree by construction. Returns false when the ray hits nothing.
     bool pick(const float eye[3], const float dir[3],
               std::string &id_out, float point_out[3]) const;
+    // The part's total ground stiffness k_total = 4·k_site (the B3 chain
+    // law's pair-equilibrium spawn input for the interactive kit). False
+    // when the id is not in the scene.
+    bool part_k_total(const std::string &id, double &k_total) const;
     // B-INTERACTIVE selection highlight (display only, never serialized --
     // save_doc_/state_hash never see it): the part id whose render pass uses
     // kHighlightRgb instead of its palette color; empty = none. A removed id
@@ -169,6 +173,11 @@ private:
         std::vector<double> verts;               // 3N authored vertex positions (m)
         std::vector<int> tris;                   // 3T boundary triangle indices
         double k_site = 0.0, c_site = 0.0;       // this part's per-site ground rung
+        // B9-measured number of base vertices sharing the ground rung (the
+        // parse_part_ band count; 4 for a box). part_k_total must use the
+        // MEASURED count, not a hardcoded 4, or non-box supports report a
+        // silently wrong total stiffness.
+        int n_sites = 0;
         double mu = 0.0;                         // Coulomb ratio, all contacts (0 = frictionless)
         // persistent external load (off-center load control): the load rides
         // the part — the application point is captured in local axes at

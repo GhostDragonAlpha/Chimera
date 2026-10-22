@@ -474,6 +474,10 @@ void B2Scene::parse_part_(const JVal &pj, const std::string &where,
         double P[3]; world_vert_(p, vi, P);
         if (P[1] <= b9_bottom + B9_BASE_BAND_M) ++b9_nbase;
     }
+    // The measured count rides the part: part_k_total (the interactive
+    // commit's support stiffness) must see the SAME n-base-vertices law,
+    // not a hardcoded box site count.
+    p.n_sites = (int)std::max<size_t>(b9_nbase, 1);
     double b9_sink = p.mass * gravity /
                      (std::max<size_t>(b9_nbase, 1) * p.k_site);
     {
@@ -2622,4 +2626,17 @@ bool B2Scene::pick(const float eye[3], const float dir[3],
         }
     }
     return hit;
+}
+
+bool B2Scene::part_k_total(const std::string &id, double &k_total) const {
+    for (const auto &p : parts_)
+        if (p.id == id) {
+            // B9-consistent: the rung's total stiffness is the MEASURED
+            // base-vertex count (parse_part_'s B9 band) times the per-site
+            // constant — 4 only for a box. The old hardcoded 4.0 was
+            // silently wrong for every non-box support.
+            k_total = (double)(p.n_sites > 0 ? p.n_sites : 1) * p.k_site;
+            return true;
+        }
+    return false;
 }

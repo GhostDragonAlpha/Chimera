@@ -3095,9 +3095,6 @@ bool StudioUI::create_scene_grid_pipeline(VkRenderPass rt_pass, VkSampleCountFla
 
 void StudioUI::record_grid_scene(VkCommandBuffer cb) {
     if (pipe_scene_grid_ == VK_NULL_HANDLE || scene_grid_verts_.empty()) return;
-    static bool said = false;
-    if (!said && getenv("CHIMERA_GRID_DIAG")) { fprintf(stderr, "[grid-scene] drawing %zu verts\n", scene_grid_verts_.size());
-                 said = true; }
     VkDeviceSize bytes = scene_grid_verts_.size() * sizeof(Vert);
     if (!ensure_scene_vbuf(bytes)) return;
     std::memcpy(scene_vmap_, scene_grid_verts_.data(), bytes);

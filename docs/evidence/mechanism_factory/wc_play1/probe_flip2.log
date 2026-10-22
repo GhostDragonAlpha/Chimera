@@ -1,0 +1,18 @@
+rest gate open: {"hazard_pad": [0.62, 0.01, 0], "kit_pallet": [-0.25, 0.02, 0]}
+    scan attempt 1 (step 0.02): 59 pick hits, 42 for hazard_pad
+offcentre top hits 1123 z -0.08 .. 0.0774
+offcentre aim -> [0.48, 0.029349, -0.035711]
+offcentre anchor: [0.48, 0.029643, -0.036014]
+offcentre pillar placed: pillar_0
+offcentre final: {"pillar_0": {"com": [0.495853, 0.04, -0.026374], "quat": [0.99961, 0.0, 0.02804, -0.0], "up_y": 1.0, "speed": 0.0, "pen_step": 0.01, "pen_run": 0.0237, "pp_n": 0, "pp_ct": 0}, "hazard_pad": {"com": [0.613406, 0.01, -0.004532], "quat": [1.0, -0.0, -0.00213, 0.0], "up_y": 1.0, "speed": 0.0, "pen_step": 0.01, "pen_run": 0.019842, "pp_n": 0, "pp_ct": 0}}
+offcentre pillar_0 max |dcom| first->last: 18.257 mm
+offcentre hazard_pad max |dcom| first->last: 6.166 mm
+    scan attempt 1 (step 0.02): 59 pick hits, 42 for hazard_pad
+centred_control top hits 1142 z -0.0851 .. 0.0634
+centred_control aim -> [0.546204, 0.03, -0.001527]
+centred_control anchor: [0.48, 0.029643, -0.036014]
+centred_control pillar placed: pillar_1
+centred_control final: {"pillar_1": {"com": [0.479079, 0.046171, -0.028435], "quat": [0.99036, -0.06221, 0.09768, 0.07596], "up_y": 0.98072, "speed": 5.88e-05, "pen_step": 0.019447, "pen_run": 0.019465, "pp_n": 14.137, "pp_ct": 1}, "hazard_pad": {"com": [0.61279, 0.007015, -0.007012], "quat": [0.99989, 0.01239, -0.00589, -0.00594], "up_y": 0.99962, "speed": 2.86e-05, "pen_step": 0.016638, "pen_run": 0.019842, "pp_n": 14.137, "pp_ct": 1}}
+centred_control pillar_1 max |dcom| first->last: 1.904 mm
+centred_control hazard_pad max |dcom| first->last: 2.502 mm
+PROBE DONE

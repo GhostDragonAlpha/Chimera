@@ -1,0 +1,41 @@
+window hwnd=0xd0ca6 client=1920x1009
+PASS  scene booted admitted (no HTTP admit posted)  {"active": true, "steps": 11691}
+PASS  hazard slab in the booted scene  ["hazard_pad", "kit_pallet"]
+PASS  scene has exactly the boot scene's parts  ["hazard_pad", "kit_pallet"]
+PASS  board feed states the upright law  objective law: the newest crate's COM stays inside the marked region x 0.54..0.70 m, -0.05..+0.05 m with its bottom >= 4 mm above the slab top and its up-axis within 10 deg of vertical (up_y >= 0.9848, the driver's tipped band); bottom is COM y minus half the crate's authored height (25 mm) -- the upright approximation, valid while the crate stands unrotated (a leaning crate defeats the axis-aligned clearance metric, so tilt is checked separately); the load path is the admitted contact physics only
+PASS  board LOST with the ACTION line before any build  LOST: no crate in the scene. ACTION: place a crate
+shot  1-scene-startup: 7750787 bytes
+PASS  Tab arms place_2 (the pillar kit part)  {"interactive": true, "mode": "place_2", "selected": null, "anchor": null, "hovered": null}
+PASS  the board's tool line names the player's keys  Tab place mode | Enter commit | F weld | X remove | F9 save | F10 load
+    scan attempt 1 (step 0.02): 7 pick hits, 6 for hazard_pad
+    aim round 1: 443 top hits, 589 refined, 93 fit the pillar bottom face
+    pillar aim: [0.622158, 0.03, -6.2e-05]
+    pillar commit anchor: [0.622143, 0.03, -0.00014] hovered=hazard_pad px=(710,493)
+    pillar attempt 1: ok
+PASS  pillar selection + mode survive the commit  {"interactive": true, "mode": "place_2", "selected": "pillar_0", "anchor": [0.622143, 0.03, -0.00014], "hovered": "hazard_pad"}
+shot  2-pillar-placed: 7750787 bytes
+    crate commit anchor: [0.621598, 0.113053, -0.002383] hovered=pillar_0 px=(708,461)
+    crate attempt 1: ok
+PASS  exactly one crate in the scene  ["hazard_pad", "kit_pallet", "pillar_0", "crate_1"]
+PASS  board verdict HELD after the build settles  HELD: crate 80 mm above the hazard slab, inside the marked region.
+shot  3-crate-HELD: 7750787 bytes
+PASS  F9 logged 'saved 4 parts to workshop_save.json'  [{"seq": 1, "t": "2026-10-21T18:46:38.540", "kind": "scene", "detail": "--scene: admitted \"D:\\Chimera-Maintenance\\PythonChimera\\tools\\construction_packet\\workshop1_scene.json\""}, {"seq": 2, "t": "2026-10-21T18:46:47.461", "kind": "b2i", "detail": "place mode: place_1"}, {"seq": 3, "t": "2026-10-21T18:46:47.838", "kind": "b2i", "detail": "place mode: place_2"}, {"seq": 4, "t": "2026-10-21T18:47:28.785", "kind": "b2i", "detail": "part placed at the pick point"}, {"seq": 5, "t": "2026-10-21T18:47:34.069", "kind": "b2i", "detail": "place mode: place_3"}, {"seq": 6, "t": "2026-10-21T18:47:34.439", "kind": "b2i", "detail": "place mode: place_4"}, {"seq": 7, "t": "2026-10-21T18:47:47.135", "kind": "b2i", "detail": "part placed at the pick point"}, {"seq": 8, "t": "2026-10-21T18:48:00.900", "kind": "b2i", "detail": "saved 4 parts to workshop_save.json"}]
+PASS  save doc carries the 4-part invention  ["hazard_pad", "kit_pallet", "pillar_0", "crate_1"]
+PASS  X removed the selected crate  ["hazard_pad", "kit_pallet", "pillar_0"]
+PASS  click selects the pillar  {"interactive": true, "mode": "place_4", "selected": "pillar_0", "anchor": [0.615453, 0.106107, -0.06014], "hovered": "pillar_0"}
+PASS  X removed the pillar — the invention is wiped  ["hazard_pad", "kit_pallet"]
+PASS  board verdict LOST after the wipe  LOST: no crate in the scene. ACTION: place a crate
+PASS  LOST names the ACTION: place a crate  LOST: no crate in the scene. ACTION: place a crate
+shot  4-broken-LOST: 7750787 bytes
+PASS  F10 logged the 4-part load  [{"seq": 11, "t": "2026-10-21T18:48:03.590", "kind": "b2i", "detail": "loaded 4 parts from workshop_save.json"}]
+PASS  F10 restored the invention  ["hazard_pad", "kit_pallet", "pillar_0", "crate_1"]
+PASS  board verdict HELD again after the load  HELD: crate 80 mm above the hazard slab, inside the marked region.
+shot  5-loaded-HELD: 7750787 bytes
+PASS  click selects the crate  {"interactive": true, "mode": "place_4", "selected": "crate_1", "anchor": [0.61547, 0.132462, -0.027384], "hovered": "crate_1"}
+PASS  crate removed for the retry  ["hazard_pad", "kit_pallet", "pillar_0"]
+PASS  off-centre crate committed at the edge  {"interactive": true, "mode": "place_4", "selected": "crate_2", "anchor": [0.67119, 0.113043, -0.057962], "hovered": "pillar_0"}
+PASS  the off-centre crate actually toppled (up-axis far off vertical)  up_y=-0.0265
+PASS  board verdict LOST for the off-centre crate  LOST: the crate TIPPED off its support. ACTION: remove the crate and centre it over its support.
+PASS  LOST carries the challenge-1 ACTION line  LOST: the crate TIPPED off its support. ACTION: remove the crate and centre it over its support.
+shot  6-offcentre-LOST: 7750787 bytes
+VERDICT PASS

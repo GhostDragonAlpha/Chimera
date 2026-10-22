@@ -170,6 +170,13 @@ add_custom_command(TARGET chimera_engine POST_BUILD
         ${CMAKE_CURRENT_SOURCE_DIR}/launch_chimera.bat
         $<TARGET_FILE_DIR:chimera_engine>/launch_chimera.bat)
 
+# WC-PLAY-1 double-click launch: the boot scene lives NEXT TO the exe too,
+# so launch_chimera.bat's --scene "%~dp0workshop1_scene.json" resolves.
+add_custom_command(TARGET chimera_engine POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../tools/construction_packet/workshop1_scene.json
+        $<TARGET_FILE_DIR:chimera_engine>/workshop1_scene.json)
+
 # Crash offsets must be symbolizable: /Zi does not change codegen, so
 # Release offsets map 1:1 to the map file + PDB (two unsymbolizable
 # access violations on 2026-09-13 taught this).

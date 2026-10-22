@@ -1,0 +1,14 @@
+rest gate open: {"hazard_pad": [0.62, 0.01, 0], "kit_pallet": [-0.25, 0.02, 0]}
+    scan attempt 1 (step 0.02): 19 pick hits, 14 for hazard_pad
+slab top-face hits: 947 y 0.0281 z -0.08 .. 0.072
+run8-style aim -> [0.62021, 0.03, 0.000708]
+anchor at commit: [0.620208, 0.03, 0.001312]
+pillar placed: pillar_0
+after 90 s: {"pillar_0": {"com": [0.620208, 0.063053, 0.001312], "quat": [1, 0, 0, 0], "up_y": 1, "speed": 0.0, "pen_step": 0.008911, "pen_run": 0, "pp_n": 38.141, "pp_ct": 4}, "hazard_pad": {"com": [0.62, 0.001964, 0], "quat": [1, 0, 0, 0], "up_y": 1, "speed": 0.0, "pen_step": 0.018036, "pen_run": 0.019175, "pp_n": 38.141, "pp_ct": 4}}
+    scan attempt 1 (step 0.01): 221 pick hits, 157 for hazard_pad
+control: top hits 942 z -0.0721 .. 0.0768
+control aim -> [0.619307, 0.03, 0.00099]
+control anchor: [0.620208, 0.03, 0.001312]
+control pillar placed: pillar_1
+control after 30 s: {"pillar_1": {"com": [0.620208, 0.063053, 0.001312], "quat": [1, 0, 0, 0], "up_y": 1, "speed": 0.0, "pen_step": 0.008911, "pen_run": 0, "pp_n": 38.141, "pp_ct": 4}, "hazard_pad": {"com": [0.62, 0.001964, 0], "quat": [1, 0, 0, 0], "up_y": 1, "speed": 0.0, "pen_step": 0.018036, "pen_run": 0.019175, "pp_n": 38.141, "pp_ct": 4}}
+PROBE DONE

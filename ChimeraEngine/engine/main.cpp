@@ -941,6 +941,49 @@ int main(int argc, char** argv) {
     for (int i = 1; i < argc; ++i)
         if (std::string(argv[i]) == "--interactive") g_tick.b2i_set_enabled(true);
 
+    // WC-PLAY-1: --scene <path> admits a chimera.b2_scene.v1 document at
+    // boot, so the double-click launch opens the workshop WITH the hazard
+    // already in it -- no HTTP admit, no terminal commands (GAME_PLAN §5.1
+    // "deliver and observe"). The SAME MembraneTick::b2_admit transaction
+    // the /tick_b2_admit route serves runs here, so validation and refusal
+    // text are the route's. Failure never kills boot: the reason lands on
+    // stderr and the session continues with an empty scene -- today's
+    // behavior. DEFAULT: --scene absent = exactly today's boot.
+    // The outcome lines are ALSO surfaced in the engine log (kind "scene")
+    // once the Engine exists: under --hidden stderr is invisible, so the
+    // /log route (and the board feed that reads it) is the only surface
+    // where the player can see WHY the workshop booted empty.
+    std::vector<std::string> scene_boot_log;
+    {
+        std::string scene_path;
+        for (int i = 1; i + 1 < argc; ++i)
+            if (std::string(argv[i]) == "--scene") scene_path = argv[i + 1];
+        if (!scene_path.empty()) {
+            std::ifstream f(scene_path, std::ios::binary);
+            if (!f) {
+                std::string line = "--scene: cannot open \"" + scene_path +
+                                   "\"; booting with an empty scene";
+                fprintf(stderr, "%s\n", line.c_str());
+                scene_boot_log.push_back(line);
+            } else {
+                std::string doc((std::istreambuf_iterator<char>(f)),
+                                std::istreambuf_iterator<char>());
+                std::string why = g_tick.b2_admit(doc, std::string());
+                if (!why.empty()) {
+                    std::string line = "--scene: admit refused (" + why +
+                                       "); booting with an empty scene";
+                    fprintf(stderr, "%s\n", line.c_str());
+                    scene_boot_log.push_back(line);
+                } else {
+                    std::string line =
+                        "--scene: admitted \"" + scene_path + "\"";
+                    fprintf(stderr, "%s\n", line.c_str());
+                    scene_boot_log.push_back(line);
+                }
+            }
+        }
+    }
+
     // Physics init (passes cfg so it can set physical params)
     g_physics.init(cfg.n_particles, cfg);
 
@@ -952,6 +995,11 @@ int main(int argc, char** argv) {
     }
     for (int i=1;i<argc;++i)
         if(std::string(argv[i])=="--preserve-mesh-topology") engine.preserve_mesh_topology_=true;
+    // WC-PLAY-1: the boot --scene outcome lands in the engine log now that
+    // the Engine (and its /log route) exists -- under --hidden stderr is
+    // retired, so this is the player-visible surface.
+    for (const auto &scene_line : scene_boot_log)
+        engine.log_event("scene", scene_line);
     g_engine = &engine;
     // Opt-in graph scene; existing sessions take no new path.
     for (int i=1;i+1<argc;++i) if(std::string(argv[i])=="--science-surface") {

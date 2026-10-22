@@ -17,6 +17,8 @@
 #include <type_traits>
 #include <unordered_map>
 #include <utility>
+#include <fstream>      // WC-PLAY-1 workshop save/load (F9/F10) file IO
+#include <iterator>     // istreambuf_iterator (whole-file read for F10)
 
 namespace {
 
@@ -3771,36 +3773,61 @@ const int kInteractiveKitN =
     (int)(sizeof(kInteractiveKit) / sizeof(kInteractiveKit[0]));
 // Boundary triangles of the centered box (b2_scene_gen.BOX_FACES, proven
 // outward winding -- the contact law's containment assumes it).
+// WC-PLAY-1 fix (measured, probe_flush.py): the +y pair here was (2,6,7),
+// (2,7,3) -- CW seen from the OUTSIDE, the opposite of the owner convention
+// b2_scene_gen.BOX_FACES ((2,3,7),(2,7,6)). The contact law's containment
+// (b2_scene.cpp, cross(ee,qq)·n > 0) assumes CCW-outward, so every vertex
+// genuinely inside a kit part's TOP face was rejected and every vertex
+// outside it accepted: a crate placed on an interactive pillar never
+// contacted its top face and fell through to the slab (constant-velocity
+// slide once inside). The COM-flip kept the normals outward, which is why
+// the pick/render paths looked fine and only contact betrayed the winding.
 const int kBoxTris[36] = {
     0,2,1, 0,3,2, 4,5,6, 4,6,7, 0,1,5, 0,5,4,
-    2,6,7, 2,7,3, 0,4,7, 0,7,3, 1,2,6, 1,6,5,
+    2,3,7, 2,7,6, 0,4,7, 0,7,3, 1,2,6, 1,6,5,
 };
 // One chimera.b2_scene.v1 place document for a kit part spawned so its
-// BOTTOM FACE rests on the pick anchor (the part spawns at its document
-// pose, at rest). Returns the document and the generated unique id.
+// BOTTOM FACE rests on the pick anchor, PRE-SUNK by the B3 pair-equilibrium
+// depth (the challenge drivers' chain law, workshop_challenge1.crate_doc:
+// y0 = support_top - w_new/pair_kt, pair_kt = (kt_new+kt_support)/2). The
+// anchor is the LIVE support surface, already at its own equilibrium, so
+// only the pair penetration this part's weight causes is subtracted -- the
+// part rides the further descent its own weight causes. Spawning flush
+// instead free-falls into the soft contact and the overshoot walks the
+// stack (measured: crate-on-pillar slid to the slab). sink = 0 keeps the
+// old flush spawn (no known support stiffness).
 void b2i_kit_doc_(const B2iKitPart &k, const float anchor[3], uint64_t seq,
-                  std::string &id_out, std::string &doc_out) {
+                  double sink, std::string &id_out, std::string &doc_out) {
     double dx = k.dx, dy = k.dy, dz = k.dz;
     double mass = (double)k.rho * dx * dy * dz;
     double ixx = mass / 12.0 * (dy * dy + dz * dz);
     double iyy = mass / 12.0 * (dx * dx + dz * dz);
     double izz = mass / 12.0 * (dx * dx + dy * dy);
     // rung constants (b2_scene_gen.rung_constants): s* = 1 cm, zeta = 0.7,
-    // 4 ground sites (only the bottom face can penetrate y = 0 at rest)
+    // 4 ground sites (only the bottom face can penetrate y = 0 at rest).
+    // EVERY numeric field prints at %.17g (the b2_scene save-doc g17
+    // convention): parse_part_'s B9 band recomputes the rest sink from the
+    // PARSED mass and k_site against a 1e-12 tolerance, so ANY field's
+    // %.9g round-trip error shifts the recomputed sink past the band --
+    // measured "rest sink 9.99999999 mm is below the qualified minimum
+    // 10 mm" refusals on the pillar (the kit dims are floats, so mass is
+    // 3.888000251... and its %.9g rounding alone moved the sink ~6e-12).
+    // %.17g round-trips each double exactly and the recomputation lands
+    // back on the authored 10 mm sink.
     double k_total = mass * 9.81 / 0.01;
     double c_total = 2.0 * 0.7 * std::sqrt(k_total * mass);
     id_out = std::string(k.name) + "_" + std::to_string(seq);
-    char buf[1024];
+    char buf[2048];   // 24 vertices x 17-digit doubles: 1024 could truncate
     std::snprintf(buf, sizeof buf,
-        "{\"id\":\"%s\",\"mass_kg\":%.9g,\"com_local_m\":[0,0,0],"
-        "\"inertia_com_local_kg_m2\":[%.9g,0,0,0,%.9g,0,0,0,%.9g],"
+        "{\"id\":\"%s\",\"mass_kg\":%.17g,\"com_local_m\":[0,0,0],"
+        "\"inertia_com_local_kg_m2\":[%.17g,0,0,0,%.17g,0,0,0,%.17g],"
         "\"vertices_local_m\":"
-        "[-%.9g,-%.9g,-%.9g,%.9g,-%.9g,-%.9g,%.9g,%.9g,-%.9g,-%.9g,%.9g,-%.9g,"
-        "-%.9g,-%.9g,%.9g,%.9g,-%.9g,%.9g,%.9g,%.9g,%.9g,-%.9g,%.9g,%.9g],"
+        "[-%.17g,-%.17g,-%.17g,%.17g,-%.17g,-%.17g,%.17g,%.17g,-%.17g,-%.17g,%.17g,-%.17g,"
+        "-%.17g,-%.17g,%.17g,%.17g,-%.17g,%.17g,%.17g,%.17g,%.17g,-%.17g,%.17g,%.17g],"
         "\"boundary_triangles\":[%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,"
         "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d],"
-        "\"pose_c_m\":[%.9g,%.9g,%.9g],\"pose_q_wxyz\":[1.0,0.0,0.0,0.0],"
-        "\"ground\":{\"k_n_per_m\":%.9g,\"c_n_s_per_m\":%.9g},\"mu\":%.3g}",
+        "\"pose_c_m\":[%.17g,%.17g,%.17g],\"pose_q_wxyz\":[1.0,0.0,0.0,0.0],"
+        "\"ground\":{\"k_n_per_m\":%.17g,\"c_n_s_per_m\":%.17g},\"mu\":%.3g}",
         id_out.c_str(), mass, ixx, iyy, izz,
         dx/2, dy/2, dz/2,  dx/2, dy/2, dz/2,  dx/2, dy/2, dz/2,  dx/2, dy/2, dz/2,
         dx/2, dy/2, dz/2,  dx/2, dy/2, dz/2,  dx/2, dy/2, dz/2,  dx/2, dy/2, dz/2,
@@ -3810,7 +3837,7 @@ void b2i_kit_doc_(const B2iKitPart &k, const float anchor[3], uint64_t seq,
         kBoxTris[18], kBoxTris[19], kBoxTris[20], kBoxTris[21], kBoxTris[22], kBoxTris[23],
         kBoxTris[24], kBoxTris[25], kBoxTris[26], kBoxTris[27], kBoxTris[28], kBoxTris[29],
         kBoxTris[30], kBoxTris[31], kBoxTris[32], kBoxTris[33], kBoxTris[34], kBoxTris[35],
-        anchor[0], anchor[1] + (float)dy * 0.5, anchor[2],
+        anchor[0], anchor[1] + (float)dy * 0.5 - (float)sink, anchor[2],
         k_total / 4.0, c_total / 4.0, (double)k.mu);
     doc_out = buf;
 }
@@ -3824,6 +3851,7 @@ void MembraneTick::b2i_set_enabled(bool on) {
         b2i_selected_.clear();
         b2i_hovered_.clear();   // hover is input state too: reset with the rest
         b2i_anchor_valid_ = false;
+        b2i_anchor_support_.clear();
     }
 }
 
@@ -3841,6 +3869,7 @@ void MembraneTick::b2i_click(const float eye[3], const float dir[3]) {
     std::lock_guard<std::mutex> lk(b2i_mtx_);
     if (!got) return;
     b2i_selected_ = id;
+    b2i_anchor_support_ = id;   // the B3 pre-sink reads this at commit
     for (int k = 0; k < 3; ++k) b2i_anchor_[k] = hit[k];
     b2i_anchor_valid_ = true;
 }
@@ -3864,6 +3893,7 @@ void MembraneTick::b2i_hover(const float eye[3], const float dir[3]) {
     std::lock_guard<std::mutex> lk(b2i_mtx_);
     if (!got) return;
     b2i_hovered_ = id;
+    b2i_anchor_support_ = id;   // the B3 pre-sink reads this at commit
     for (int k = 0; k < 3; ++k) b2i_anchor_[k] = hit[k];
     b2i_anchor_valid_ = true;
 }
@@ -3897,15 +3927,33 @@ std::string MembraneTick::b2i_status_line() const {
 }
 
 std::string MembraneTick::b2i_commit() {
-    std::string doc, id;
+    std::string doc, id, support;
+    const B2iKitPart *kit;
+    float anchor[3]; uint64_t seq;
     {
         std::lock_guard<std::mutex> lk(b2i_mtx_);
         if (b2i_mode_ < 0)
             return std::string("interactive: place mode is off");
         if (!b2i_anchor_valid_)
             return std::string("interactive: no pick point yet (click a part first)");
-        b2i_kit_doc_(kInteractiveKit[b2i_mode_], b2i_anchor_, b2i_seq_, id, doc);
+        kit = &kInteractiveKit[b2i_mode_];
+        for (int k = 0; k < 3; ++k) anchor[k] = b2i_anchor_[k];
+        seq = b2i_seq_;
+        support = b2i_anchor_support_;
     }
+    // B3 pair-equilibrium pre-sink (see b2i_kit_doc_): the support's own
+    // k_total comes from the live scene; the kit part's from its rung law.
+    double kt_sup = 0.0, sink = 0.0;
+    if (!support.empty()) {
+        std::lock_guard<std::mutex> lk(b2_mtx_);
+        b2_.part_k_total(support, kt_sup);
+    }
+    if (kt_sup > 0.0) {
+        double mass = (double)kit->rho * kit->dx * kit->dy * kit->dz;
+        double kt_new = mass * 9.81 / 0.01;
+        sink = mass * 9.81 / (0.5 * (kt_new + kt_sup));
+    }
+    b2i_kit_doc_(*kit, anchor, seq, sink, id, doc);
     std::string why;
     {
         std::lock_guard<std::mutex> lk(b2_mtx_);
@@ -4014,6 +4062,73 @@ std::string MembraneTick::b2i_weld(std::string *ok_msg) {
     }
     if (why.empty() && ok_msg) *ok_msg = "welded " + sel + " to " + hov;
     return why;
+}
+
+// ─── WC-PLAY-1 workshop save/load (F9/F10, engine.cpp b2i_key) ───────────────
+// The player's one-key invention persist, callable entirely from the window:
+// F9 writes the live scene's save document to "workshop_save.json" in the
+// engine's CWD; F10 reads it back and restores. Both ride the SAME B2Scene
+// transactions the HTTP routes serve (save_json / restore) -- no new scene
+// semantics, no new validation: a refused restore leaves the scene untouched
+// and names itself. The part count in the success messages is counted from
+// the document's own parts array (each entry carries exactly one mass_kg).
+namespace {
+// "workshop_save.json" in the engine's CWD (the launch directory a player
+// double-clicks into) -- the same convention the board file's default uses.
+const char kSaveFile[] = "workshop_save.json";
+
+size_t count_parts_(const std::string &state_doc) {
+    // The state document's parts array: every entry opens {"id": and carries
+    // exactly one "mass_kg". Counting on mass_kg keeps welds/chambers
+    // (different keys) out of the tally.
+    size_t n = 0, pos = 0;
+    while ((pos = state_doc.find("\"mass_kg\"", pos)) != std::string::npos) {
+        ++n;
+        pos += 9;
+    }
+    return n;
+}
+}   // namespace
+
+std::string MembraneTick::b2i_save_scene() {
+    bool active;
+    std::string doc;
+    {
+        std::lock_guard<std::mutex> lk(b2_mtx_);
+        active = b2_.active();
+        if (active) doc = b2_.save_json();
+    }
+    if (!active)
+        return std::string("save refused: scene not admitted");
+    // tmp + replace: a mid-write crash can never leave a truncated save for
+    // F10 to read.
+    {
+        std::ofstream f(std::string(kSaveFile) + ".tmp", std::ios::binary);
+        if (!f) return std::string("save refused: cannot write " + std::string(kSaveFile));
+        f << doc;
+    }
+    std::remove(kSaveFile);   // Windows rename refuses an existing target
+    if (std::rename((std::string(kSaveFile) + ".tmp").c_str(), kSaveFile) != 0)
+        return std::string("save refused: cannot write " + std::string(kSaveFile));
+    return "saved " + std::to_string(count_parts_(doc)) + " parts to "
+         + kSaveFile;
+}
+
+std::string MembraneTick::b2i_load_scene() {
+    std::ifstream f(kSaveFile, std::ios::binary);
+    if (!f)
+        return std::string("load refused: no workshop_save.json");
+    std::string doc((std::istreambuf_iterator<char>(f)),
+                    std::istreambuf_iterator<char>());
+    std::string why;
+    {
+        std::lock_guard<std::mutex> lk(b2_mtx_);
+        why = b2_.restore(doc);   // the SAME transaction /tick_b2_restore runs
+    }
+    if (!why.empty())
+        return std::string("restore refused: ") + why;
+    return "loaded " + std::to_string(count_parts_(doc)) + " parts from "
+         + kSaveFile;
 }
 
 bool MembraneTick::b2i_ghost(float out[3], float half[3]) const {

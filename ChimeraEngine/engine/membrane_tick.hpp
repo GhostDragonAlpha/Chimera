@@ -265,6 +265,13 @@ public:
     // the refusal text; ok_msg (when non-null) receives "welded <a> to <b>"
     // for the engine log (the b2_inspect out-param convention).
     std::string b2i_weld(std::string *ok_msg = nullptr);
+    // WC-PLAY-1 workshop save/load (F9/F10): the window's one-key invention
+    // persist. Both call the SAME B2Scene transactions the /tick_b2_save and
+    // /tick_b2_restore routes serve; the file is "workshop_save.json" in the
+    // engine's CWD. No new scene semantics: a refused transaction leaves the
+    // scene untouched and the refusal text returns for engine.log_event.
+    std::string b2i_save_scene();                 // F9: doc -> workshop_save.json
+    std::string b2i_load_scene();                 // F10: workshop_save.json -> restore
     std::string b2i_mode_name() const;                        // "off" | "place_N"
     // One STATUS-panel line for main.cpp's 1 Hz composer (set_status_lines is
     // a public inline setter -- the build-mode readout needs no ui.cpp edit).
@@ -694,6 +701,8 @@ private:
                                      // F verb reads it, the click never moves it
     bool b2i_anchor_valid_ = false;  // true once a click's ray hit a part
     float b2i_anchor_[3] = {0, 0, 0};
+    std::string b2i_anchor_support_; // the part the anchor was picked on:
+    // the B3 pre-sink needs its ground stiffness (pair-equilibrium spawn)
     uint64_t b2i_seq_ = 0;           // unique placed-part id suffix
     // F1 STANCE state (see set_stance above). Default OFF; the lead owns
     // the policy flip after the bars pass (the gravity precedent).

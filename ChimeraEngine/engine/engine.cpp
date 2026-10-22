@@ -119,6 +119,22 @@ static bool b2i_key(unsigned char vk, Engine* eng) {
         eng->log_event("b2i", why.empty() ? ok : "weld refused: " + why);
         return true;
     }
+    // WC-PLAY-1 workshop save/load (F9/F10): the player's one-key invention
+    // persist, callable entirely from the window. F2-F8 are the Studio panel
+    // shortcuts, so F9/F10 are free. They are input-state-adjacent
+    // conveniences ONLY: both go through the SAME B2Scene save/restore
+    // transactions the /tick_b2_save and /tick_b2_restore routes serve --
+    // no new scene semantics. Same console gate + edge trigger as the other
+    // verbs (the caller's law); refusals (no active scene, missing file,
+    // invalid document) land in the log by name.
+    if (vk == VK_F9) {
+        eng->log_event("b2i", g_interactive_tick->b2i_save_scene());
+        return true;
+    }
+    if (vk == VK_F10) {
+        eng->log_event("b2i", g_interactive_tick->b2i_load_scene());
+        return true;
+    }
     return false;
 }
 // THE ENGINE STUDIO: ui.cpp's one-shot font upload needs the engine's queue + a
