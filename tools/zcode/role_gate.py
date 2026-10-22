@@ -11,16 +11,16 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 STATE = Path(os.environ.get("CHIMERA_WORKFLOW_STATE_DIR", str(ROOT / "sessions")))
-VERSION = "playable-purpose-20261018-v5-saved-plan-goal"
+VERSION = "playable-purpose-20261022-v8-mandatory-blender"
 PROFILES = {"chimera-worker", "chimera-maya", "chimera-step37", "chimera-researcher"}
 RESEARCH_TOOLS = {"Read", "Glob", "Grep", "WebSearch", "WebFetch",
                   "ListMcpResourcesTool", "ReadMcpResourceTool",
                   "RespondToCoordinator"}
 DELEGATION = {"Agent", "Task", "CreateWorkflow", "AmendWorkflow"}
-MARKER = "[CHIMERA TASK PURPOSE v1]"
+MARKER = "[CHIMERA TASK PURPOSE v2 BLENDER]"
 TRANSFER = (
     MARKER + "\n"
-    "Main goal: a playable matter-simulator game where players build, test, repair "
+    "Main goal: a compelling game using simulated matter where players build, test, repair "
     "and reuse meaningful constructions. Follow the lead's current milestone and "
     "specific task below; do not replace it with a new project. Understand the "
     "player benefit, why this task matters now, and the decision your result enables. "
@@ -29,6 +29,28 @@ TRANSFER = (
     "identity and pending decision through compression and resume. Report game "
     "impact, evidence/limits, decision and next useful action. Suggest a better "
     "method when useful; the lead may choose any suitable peer or work directly.\n"
+    "Mandatory delivery: Blender is the product interface for every agent. Follow "
+    "D:/Chimera-Maintenance/PythonChimera/docs/GAME_PLAN_ACTION_RPG.md sections 0, 12.2 and 13.1. "
+    "Name the Blender project/action, existing operation/native owner and acceptance "
+    "condition. Native or headless tests may support that action; an engine-only "
+    "demo cannot replace it. Use the existing Studio client/operators. Preserve "
+    "this delivery path through compression and report its outcome or blocker. "
+    "Historical plans are reference, not another task queue.\n"
+    "File locations: D:/Chimera-Maintenance is a container. Blender integration "
+    "root is D:/Chimera-Maintenance/ChimeraStudio/integration; its registration "
+    "file is D:/Chimera-Maintenance/ChimeraStudio/integration/python/chimera_studio/__init__.py. "
+    "Its workflow is D:/Chimera-Maintenance/ChimeraStudio/integration/BLENDER_WORKFLOW.md. "
+    "Use absolute paths and the assignment's relevant files/tests/evidence. "
+    "Read entry points before scoped searches; preserve these paths through "
+    "compression. Missing files or search timeouts require correcting the root "
+    "or narrowing scope, not repeating a whole-workspace scan.\n"
+    "Every agent returns a report, including partial or blocked work: purpose "
+    "and outcome; actual changes/findings with absolute files and evidence; "
+    "checks run or NOT RUN, failures/unknowns; recommendation and next action. "
+    "Use your final response or RespondToCoordinator if available. A separate "
+    "report file is optional; read-only agents must not write one. Qwen gathers "
+    "the relevant information before dispatch, evaluates reports, and sends "
+    "only accepted fixes to an implementer.\n"
 )
 
 def context():
@@ -116,7 +138,12 @@ def respond(event):
         extra.append("Inspect the actual terminal child result (TaskOutput if needed). "
                      "Acknowledge game impact and limits, then choose implementation, "
                      "research, focused review, optimization or the next useful action. "
-                     "Delivery/running status is not a verdict; no automatic review round is required.")
+                     "Delivery/running status is not a verdict; no automatic review round is required. "
+                     "Require the child's actual report: outcome, exact files/evidence, "
+                     "checks and limits, recommendation and next action. If missing, "
+                     "request a focused report or recover the same child; do not "
+                     "repeat completed work. Integrate the reports and give the user "
+                     "the resulting progress, decisions and remaining gaps.")
     if extra:
         result["additionalContext"] = "\n\n".join(extra)
     _save(path, saved)

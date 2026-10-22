@@ -21,7 +21,7 @@ class WorkflowTests(unittest.TestCase):
         return self.hook.respond(dict(hook_event_name=kind,session_id=sid,**more))
     def test_startup_and_active_session_migration(self):
         r=self.event("SessionStart")
-        self.assertIn("playable matter-simulator game",r["additionalContext"])
+        self.assertIn("game that uses simulated matter",r["additionalContext"])
         self.assertIn("recursively improve",r["additionalContext"])
         self.assertEqual(self.event("PreToolUse",tool_name="Read",tool_input={}),{})
         fresh=self.event("PreToolUse",sid="existing",tool_name="Read",tool_input={})
@@ -97,6 +97,30 @@ class WorkflowTests(unittest.TestCase):
         r=self.event("PostToolUse",tool_name="Agent",tool_input={})
         self.assertIn("no automatic review round",r["additionalContext"])
         self.assertNotIn("decision",r.get("hookSpecificOutput",{}))
+
+    def test_blender_mandate_migrates_existing_session_once_without_reset(self):
+        self.event("SessionStart",sid="active-lead")
+        path,state=self.hook._load({"session_id":"active-lead"})
+        state.update(purpose_version="playable-purpose-20261021-v7-roles-and-reports",
+                     retained_report="accepted existing report")
+        self.hook._save(path,state)
+        changed=self.event("PreToolUse",sid="active-lead",tool_name="Bash",
+                           tool_input={"command":"run the scoped native dependency check"})
+        self.assertIn("Blender is mandatory",changed["additionalContext"])
+        self.assertNotIn("permissionDecision",changed.get("hookSpecificOutput",{}))
+        _,state=self.hook._load({"session_id":"active-lead"})
+        self.assertEqual(state["retained_report"],"accepted existing report")
+        self.assertEqual(self.event("PreToolUse",sid="active-lead",tool_name="Read",tool_input={}),{})
+    def test_blender_path_reaches_child_and_same_child_followup(self):
+        args={"subagent_type":"chimera-maya","prompt":"Fix native loading for the Blender seam."}
+        child=self.event("PreToolUse",tool_name="Agent",tool_input=args)["hookSpecificOutput"]["updatedInput"]
+        self.assertIn("Mandatory delivery: Blender",child["prompt"])
+        self.assertTrue(child["prompt"].endswith(args["prompt"]))
+        follow={"to":"agent_existing","message":"Resume the same result; retain the saved construction."}
+        resumed=self.event("PreToolUse",tool_name="SendMessage",tool_input=follow)["hookSpecificOutput"]["updatedInput"]
+        self.assertEqual(resumed["to"],"agent_existing")
+        self.assertIn("Mandatory delivery: Blender",resumed["message"])
+        self.assertTrue(resumed["message"].endswith(follow["message"]))
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
