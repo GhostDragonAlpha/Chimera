@@ -10,7 +10,7 @@ thoughtLevel: on
 
 tools: [Read, Write, Edit, Bash, Glob, Grep, WebSearch, WebFetch, TodoWrite, js, js_reset, js_add_node_module_dir]
 
-disallowedTools: [Agent, Task, CreateWorkflow, AmendWorkflow]
+disallowedTools: [Agent, Task, SendMessage, CreateWorkflow, AmendWorkflow]
 
 injectAgentsMd: true
 

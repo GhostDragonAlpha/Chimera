@@ -1,5 +1,7 @@
 # Chimera compression instructions
 
+Only the lead may delegate. Every subagent, including Explore, general-purpose, Maya, Step and researchers, works directly and returns a report; it cannot spawn or resume another agent or launch a workflow that delegates. If more expertise is needed, report the question and evidence to Qwen. Use RespondToCoordinator or a final response for reports. Preserve this rule through compression and resume; do not bypass it through a shell/CLI. Qwen alone chooses the next peer.
+
 **Mandatory delivery path:** Blender is the product interface for the lead and
 every subagent. Retain the current .blend/project or owned copy, Blender action,
 shared operation, native owner and integration acceptance condition. Native,

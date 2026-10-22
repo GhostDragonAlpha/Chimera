@@ -122,5 +122,31 @@ class WorkflowTests(unittest.TestCase):
         self.assertIn("Mandatory delivery: Blender",resumed["message"])
         self.assertTrue(resumed["message"].endswith(follow["message"]))
 
+    def test_all_child_identities_deny_delegation_and_keep_reports(self):
+        identities=[{"agent_type":"Explore"},{"agent_type":"general-purpose"},
+                    {"agentName":"zcode-any-custom-profile"},{"runtimeScope":"subagent"},
+                    {"taskType":"workflow_child"},{"taskType":"nested_workflow_child"}]
+        for i,identity in enumerate(identities):
+            sid="builtin-child-"+str(i)
+            self.event("SessionStart",sid=sid,**identity)
+            for name in self.hook.DELEGATION:
+                result=self.event("PreToolUse",sid=sid,tool_name=name,
+                                  tool_input={"agent_type":"main","subagent_type":"Explore"})
+                self.assertEqual(result["hookSpecificOutput"]["permissionDecision"],"deny",(identity,name))
+            self.assertEqual(self.event("PreToolUse",sid=sid,tool_name="Read",tool_input={}),{})
+            self.assertEqual(self.event("PreToolUse",sid=sid,tool_name="RespondToCoordinator",tool_input={}),{})
+            self.event("SessionStart",sid=sid)
+            self.assertEqual(self.event("PreToolUse",sid=sid,tool_name="SendMessage",tool_input={})
+                             ["hookSpecificOutput"]["permissionDecision"],"deny")
+
+    def test_reserved_child_id_and_parent_tool_arguments_do_not_confuse_caller(self):
+        result=self.event("PreToolUse",sid="sess_subagent_existing",tool_name="Task",
+                          tool_input={"agent_type":"main"})
+        self.assertEqual(result["hookSpecificOutput"]["permissionDecision"],"deny")
+        result=self.event("PreToolUse",sid="real-lead",tool_name="Agent",
+                          tool_input={"agent_type":"Explore","prompt":"Find the existing owner."})
+        self.assertNotIn("permissionDecision",result["hookSpecificOutput"])
+        self.assertIn("updatedInput",result["hookSpecificOutput"])
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

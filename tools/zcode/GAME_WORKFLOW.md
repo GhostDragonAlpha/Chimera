@@ -37,6 +37,8 @@ sentences plus artifact links are enough. Children restate any missing rationale
 from the actual assignment as an assumption, identify real uncertainty, and ask
 the lead when it changes the work. Never invent a completed capability.
 
+Only the lead may delegate. Every subagent, including Explore, general-purpose, Maya, Step and researchers, works directly and returns a report; it cannot spawn or resume another agent or launch a workflow that delegates. If more expertise is needed, report the question and evidence to Qwen. Use RespondToCoordinator or a final response for reports. Preserve this rule through compression and resume; do not bypass it through a shell/CLI. Qwen alone chooses the next peer.
+
 The lead may implement, research directly, select any available suitable subagent,
 change task size or order, and choose proportionate verification and optimization.
 Qwen usually leads and Maya often implements. Step is strictly a read-only analyst

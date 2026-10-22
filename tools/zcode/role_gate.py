@@ -11,12 +11,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 STATE = Path(os.environ.get("CHIMERA_WORKFLOW_STATE_DIR", str(ROOT / "sessions")))
-VERSION = "playable-purpose-20261022-v8-mandatory-blender"
+VERSION = "playable-purpose-20261022-v9-single-level"
 PROFILES = {"chimera-worker", "chimera-maya", "chimera-step37", "chimera-researcher"}
 RESEARCH_TOOLS = {"Read", "Glob", "Grep", "WebSearch", "WebFetch",
                   "ListMcpResourcesTool", "ReadMcpResourceTool",
                   "RespondToCoordinator"}
-DELEGATION = {"Agent", "Task", "CreateWorkflow", "AmendWorkflow"}
+DELEGATION = {"Agent", "Task", "SendMessage", "CreateWorkflow", "AmendWorkflow"}
 MARKER = "[CHIMERA TASK PURPOSE v2 BLENDER]"
 TRANSFER = (
     MARKER + "\n"
@@ -44,6 +44,9 @@ TRANSFER = (
     "Read entry points before scoped searches; preserve these paths through "
     "compression. Missing files or search timeouts require correcting the root "
     "or narrowing scope, not repeating a whole-workspace scan.\n"
+    "Only the lead delegates. Subagents cannot call Explore or any other agent, "
+    "resume peers with SendMessage, or launch delegating workflows. Work directly "
+    "and return missing expertise to the lead; preserve this through compression.\n"
     "Every agent returns a report, including partial or blocked work: purpose "
     "and outcome; actual changes/findings with absolute files and evidence; "
     "checks run or NOT RUN, failures/unknowns; recommendation and next action. "
@@ -100,6 +103,14 @@ def respond(event):
     sid = str(event.get("session_id", event.get("sessionId", "")))
     child = bool(role in PROFILES or role == "chimera-consultant"
                  or saved.get("child") or sid.startswith("sess_subagent_"))
+    # Built-in/custom child identity can arrive without a reserved session prefix.
+    # Trust lifecycle metadata only; never let tool arguments identify the caller.
+    native_name = str(event.get("agentName") or "")
+    child = child or role in {"Explore", "Plan", "general-purpose", "zcode-Explore", "zcode-general-purpose"}
+    child = child or native_name.startswith("zcode-")
+    child = child or event.get("runtimeScope", event.get("runtime_scope")) == "subagent"
+    child = child or event.get("taskType", event.get("task_type")) in {
+        "subagent_child", "workflow_child", "nested_workflow_child"}
     reviewer = role == "chimera-step37"
     researcher = role in {"chimera-researcher", "chimera-consultant"}
     saved.update(role=role, child=child)
@@ -118,7 +129,7 @@ def respond(event):
         elif researcher and name not in RESEARCH_TOOLS:
             result = _deny("This researcher is read-only; return findings or a suggested implementation to the lead.")
         elif child and name in DELEGATION:
-            result = _deny("Return delegation suggestions to the lead; this harness uses one child level.")
+            result = _deny("Only the lead can delegate or resume other agents, including Explore. Work directly; return the question and evidence with RespondToCoordinator or a final report.")
         elif not child and name in {"Agent", "Task"}:
             if args.get("run_in_background"):
                 result = _deny("Use a foreground child on this single-GPU host; choose any suitable available profile.")

@@ -1,5 +1,7 @@
 # Chimera: mandatory Blender delivery — 2026-10-22
 
+Only the lead may delegate. Every subagent, including Explore, general-purpose, Maya, Step and researchers, works directly and returns a report; it cannot spawn or resume another agent or launch a workflow that delegates. If more expertise is needed, report the question and evidence to Qwen. Use RespondToCoordinator or a final response for reports. Preserve this rule through compression and resume; do not bypass it through a shell/CLI. Qwen alone chooses the next peer.
+
 The saved goal follows
 D:/Chimera-Maintenance/PythonChimera/docs/GAME_PLAN_ACTION_RPG.md.
 Read §0, §3, §12.2 and §13.1 before selecting work; §11.22 defines roles.
