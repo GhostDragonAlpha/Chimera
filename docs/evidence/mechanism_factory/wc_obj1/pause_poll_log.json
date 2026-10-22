@@ -1,0 +1,74 @@
+[
+ {
+  "label": "pre-0",
+  "t": 1792680964.682,
+  "steps": 28045,
+  "paused": false,
+  "cell": "HELD: crate's worst in-footprint corner 80 mm above the hazard slab, inside the marked region.",
+  "status": "green"
+ },
+ {
+  "label": "pre-1",
+  "t": 1792680965.384,
+  "steps": 30991,
+  "paused": false,
+  "cell": "HELD: crate's worst in-footprint corner 80 mm above the hazard slab, inside the marked region.",
+  "status": "green"
+ },
+ {
+  "label": "pre-2",
+  "t": 1792680966.086,
+  "steps": 33914,
+  "paused": false,
+  "cell": "HELD: crate's worst in-footprint corner 80 mm above the hazard slab, inside the marked region.",
+  "status": "green"
+ },
+ {
+  "label": "paused-0",
+  "t": 1792680966.793,
+  "steps": 33927,
+  "paused": true,
+  "cell": "PAUSED: physics clock stopped (steps 33927) \u2014 no fresh sample to rule HELD. ACTION: none; resume the simulation.",
+  "status": "amber"
+ },
+ {
+  "label": "paused-1",
+  "t": 1792680967.495,
+  "steps": 33927,
+  "paused": true,
+  "cell": "PAUSED: physics clock stopped (steps 33927) \u2014 no fresh sample to rule HELD. ACTION: none; resume the simulation.",
+  "status": "amber"
+ },
+ {
+  "label": "paused-2",
+  "t": 1792680968.199,
+  "steps": 33927,
+  "paused": true,
+  "cell": "PAUSED: physics clock stopped (steps 33927) \u2014 no fresh sample to rule HELD. ACTION: none; resume the simulation.",
+  "status": "amber"
+ },
+ {
+  "label": "resumed-0",
+  "t": 1792680968.901,
+  "steps": 36858,
+  "paused": false,
+  "cell": "HELD: crate's worst in-footprint corner 80 mm above the hazard slab, inside the marked region.",
+  "status": "green"
+ },
+ {
+  "label": "resumed-1",
+  "t": 1792680969.603,
+  "steps": 39788,
+  "paused": false,
+  "cell": "HELD: crate's worst in-footprint corner 80 mm above the hazard slab, inside the marked region.",
+  "status": "green"
+ },
+ {
+  "label": "resumed-2",
+  "t": 1792680970.305,
+  "steps": 42721,
+  "paused": false,
+  "cell": "HELD: crate's worst in-footprint corner 80 mm above the hazard slab, inside the marked region.",
+  "status": "green"
+ }
+]

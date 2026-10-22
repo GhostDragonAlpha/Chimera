@@ -1,0 +1,16 @@
+{
+ "standing": "MATTER WORKSHOP - live objective",
+ "updated": "workshop board feed (WC-OBJ-1)",
+ "stages": [
+  {
+   "id": "WS3",
+   "name": "Salvage over the hazard",
+   "status": "green",
+   "law": "objective law, measured at the newest physical sample: HELD only while the engine's step counter advances (paused or step-stalled polls show a stale chip, not a ruling); the newest crate's COM is inside the marked region x 0.54..0.70 m, -0.05..+0.05 m, and every corner of the crate box (50 x 25 x 25 m half-extents about the COM, rotated by the crate's live pose) whose x/z projects inside the pad-top footprint x 0.48..0.76 m, z -0.08..+0.08 m sits >= 4 mm above the live slab top (corners projecting outside the footprint do not count; mild tilt is legal); supports may stand on the pad \u2014 only the crate's own corners are judged here, until gap row 4 decides otherwise; the load path is the admitted contact physics only",
+   "tool": "Tab place mode | Enter commit | F weld | X remove | F9 save | F10 load",
+   "artifact": "live verdict chip + clearance readout",
+   "falsifier": "a crate corner resting on the hazard slab at the newest physical sample, or COM out of the region",
+   "cell": "HELD: crate's worst in-footprint corner 80 mm above the hazard slab, inside the marked region."
+  }
+ ]
+}

@@ -70,7 +70,9 @@ for p in (str(HERE), str(HERE.parent), str(HERE.parent.parent)):
     if p not in sys.path:
         sys.path.insert(0, p)
 
-import b2_scene_gen  # noqa: E402
+import b2_scene_gen
+import workshop_board_feed as board_feed  # the corner rule the board feed
+                                          # states — single source of truth
 
 REPO = HERE.parent.parent
 EXE = REPO / ".tmp" / "body-engine" / "Release" / "chimera_engine.exe"
@@ -116,17 +118,22 @@ PIER_SPAWN_TOP = PIER["h"] - RS                     # analytic pre-sunk top
 PAD_SPAWN_TOP = PAD["h"] - RS                       # pre-sunk alone-rest top
 
 # objective predicate bands (frozen here; the prereg quotes them verbatim)
-CLEAR_OK = 0.004            # crate bottom >= pad top + 4 mm == held
-CLEAR_LOST = 0.003          # crate bottom <= pad top + 3 mm == on the hazard
+CLEAR_OK = 0.004            # every in-footprint crate corner >= pad top
+CLEAR_LOST = 0.003          # worst corner <= pad top + 3 mm == on the hazard
 REGION_X = (0.54, 0.70)     # crate COM x band (pad 0.48..0.76 with margin)
 REGION_Z = 0.05             # |crate COM z| band
-TILT_MIN_UP_Y = 0.9848      # crate up-axis >= 10 deg from vertical == tipped
-                            # (a leaning crate defeats the axis-aligned
-                            # clearance metric; measured leaning rest: the
-                            # toppled crate held +19 mm clearance at a large
-                            # tilt)
-HISTORY_S = 5.0             # measured load/attachment history window
-SAMPLE_DT = 0.25            # 20 samples; the last 8 span the 2 s window
+TILT_MIN_UP_Y = 0.9848      # up-axis band KEPT FOR WORDING ONLY: the tipped
+                            # clause no longer gates HELD (mild tilt is
+                            # legal, WC-OBJ-1); it names the LOST reason
+HISTORY_S = 8.0             # wall DEADLINE for the measured history; the
+                            # continuity window itself is declared in steps
+WINDOW_STEPS = 20000        # declared continuity window in ENGINE SUBSTEPS:
+                            # 20000 x dt_substep_s 0.00025 (verified from
+                            # /tick_b2_state) = 5 s physical. Judged by the
+                            # step span first->last row, never wall samples;
+                            # a paused/starved engine accrues nothing, and a
+                            # deadline hit first records INCOMPLETE.
+SAMPLE_DT = 0.25            # wall sample cadence for the histories
 SETTLE_V = 2e-3             # "settled": every part speed below this
 EQUIV_TOL = 1e-3            # objective-loop cross-run band (measured floor)
 EQUIV_SKIP = frozenset({"steps", "omega_rad_s"})
@@ -338,19 +345,35 @@ def board_write(path: Path, standing: str, cell: str, status: str) -> None:
            "stages": [{"id": "WS3",
                        "name": "Salvage over the hazard",
                        "status": status,
-                       "law": "objective law: the crate's COM stays inside "
-                              "the marked region with its bottom >= 4 mm "
-                              "above the slab top for the whole window; the "
-                              "load path is the admitted contact/weld "
-                              "physics only",
+                       "law": "objective law, measured at the newest "
+                              "physical sample: HELD only while the "
+                              "engine's step counter advances (paused or "
+                              "step-stalled polls show a stale chip, not "
+                              "a ruling); the crate's COM is inside the "
+                              "marked region x 0.54..0.70 m, -0.05..+0.05 "
+                              "m, and every corner of the crate box "
+                              "(50 x 25 x 25 mm half-extents about the "
+                              "COM, rotated by the crate's live pose) "
+                              "whose x/z projects inside the pad-top "
+                              "footprint x 0.48..0.76 m, z -0.08..+0.08 m "
+                              "sits >= 4 mm above the live slab top "
+                              "(corners projecting outside the footprint "
+                              "do not count; mild tilt is legal); "
+                              "supports may stand on the pad — only the "
+                              "crate's own corners are judged here, until "
+                              "gap row 4 decides otherwise; the "
+                              "continuity window is the declared 20000-"
+                              "substep step span (5 s physical at "
+                              "dt_substep 0.00025); the load path is the "
+                              "admitted contact/weld physics only",
                        "tool": "/tick_b2_place | /tick_b2_weld | "
                                "/tick_b2_remove | /tick_b2_save | "
                                "/tick_b2_restore",
                        "artifact": "run receipt + load/attachment histories",
-                       "falsifier": "crate bottom <= slab top + 3 mm at "
-                                    "settle (on the hazard) or COM out of "
-                                    "the region; rejected edits moving the "
-                                    "hash",
+                       "falsifier": "a crate corner resting at/below the "
+                                    "slab top at settle (on the hazard) or "
+                                    "COM out of the region; rejected edits "
+                                    "moving the hash",
                        "cell": cell}]}
     tmp = path.with_suffix(".tmp")
     tmp.write_text(json.dumps(doc, indent=1), encoding="utf-8")
@@ -448,22 +471,36 @@ class Run:
         return self.part(st, PAD["id"])["com_m"][1] + PAD["h"] / 2
 
     def check(self, st):
+        """The SAME corner rule the board feed states (WC-OBJ-1): the
+        scripted evaluator and the on-screen promise are one predicate.
+        Helpers come from workshop_board_feed (single source of truth)."""
         p = self.part(st, CRATE["id"])
         c = p["com_m"]
-        bottom = c[1] - CRATE["h"] / 2
-        clear = bottom - self.pad_top(st)
         in_region = (REGION_X[0] <= c[0] <= REGION_X[1]
                      and abs(c[2]) <= REGION_Z)
+        bottom = c[1] - CRATE["h"] / 2   # axis-aligned, history continuity only
+        clear, n_in, worst_local = board_feed.corner_clearance(
+            c, p["pose_q_wxyz"],
+            (CRATE["dx"] / 2, CRATE["h"] / 2, CRATE["dz"] / 2),
+            self.pad_top(st), CLEAR_OK,
+            (PAD["x0"], PAD["x1"], PAD["z0"], PAD["z1"]))
         w, x, y, z = p["pose_q_wxyz"]
         up_y = 1 - 2 * (x * x + z * z)     # world y of the crate's up-axis
-        tipped = up_y < TILT_MIN_UP_Y
-        return (in_region and clear >= CLEAR_OK and not tipped), \
-            round(clear, 6), in_region, round(bottom, 6), tipped
+        tipped = up_y < TILT_MIN_UP_Y      # wording only, NOT a pass gate
+        ok = in_region and clear is not None and clear >= CLEAR_OK
+        return ok, (None if clear is None else round(clear, 6)), \
+            in_region, round(bottom, 6), tipped
 
     def measure(self, name: str):
-        """Free-run the scene for HISTORY_S seconds, sampling the predicate
-        and the load/attachment history; pause at the end. The last 8
-        samples are the declared 2 s continuity window."""
+        """Free-run the scene, sampling the predicate and the load/attachment
+        history, then pause. The continuity window is declared in ENGINE
+        SUBSTEPS, not wall samples: WINDOW_STEPS substeps (20000 x
+        dt_substep_s 0.00025, verified from /tick_b2_state, = 5 s physical).
+        The window is the trailing run of rows whose first->last STEP span
+        reaches WINDOW_STEPS; a paused or starved engine accrues nothing
+        (its step counter is the physical clock). If the wall deadline
+        (HISTORY_S) expires before the declared step span elapses, the
+        measurement is recorded INCOMPLETE — never a physics pass."""
         self.pause(False)
         rows = []
         t0 = time.time()
@@ -473,9 +510,11 @@ class Run:
             ok, clear, in_region, bottom, tipped = self.check(st)
             rows.append({
                 "t_s": round(time.time() - t0, 3), "steps": st["steps"],
+                "paused": st["paused"],
                 "ok": ok, "clearance_m": clear, "in_region": in_region,
                 "crate_bottom_m": bottom, "tipped": tipped,
                 "diverged": st["diverged"],
+                "dt_substep_s": st["dt_substep_s"],
                 "total_reaction_n": st["total_reaction_n"],
                 "welds": [{"a": w["a"], "b": w["b"],
                            "k_n_per_m": w["k_n_per_m"],
@@ -485,10 +524,34 @@ class Run:
                                     "reaction_n": p["reaction_n"]}
                           for p in st["parts"]}})
         self.pause(True)
-        window = rows[-8:]
-        passed = (all(r["ok"] and not r["diverged"] for r in window)
+        window = []
+        incomplete = True
+        span = 0
+        if len(rows) >= 2:
+            span = rows[-1]["steps"] - rows[0]["steps"]
+            if span >= WINDOW_STEPS:
+                incomplete = False
+                # trim from the front: the LATEST-starting trailing window
+                # whose step span still reaches the declared WINDOW_STEPS
+                i = 0
+                while (i + 1 < len(rows) - 1
+                       and rows[-1]["steps"] - rows[i + 1]["steps"]
+                       >= WINDOW_STEPS):
+                    i += 1
+                window = rows[i:]
+                span = rows[-1]["steps"] - rows[i]["steps"]
+        passed = (not incomplete
+                  and all(r["ok"] and not r["diverged"] for r in window)
                   and rows[-1]["in_region"])
         rec_row = {"passed": passed,
+                   "incomplete": incomplete,
+                   "window_rule": (f"step span >= {WINDOW_STEPS} substeps "
+                                   f"({WINDOW_STEPS * 0.00025:.0f} s physical "
+                                   "at dt_substep_s 0.00025), judged "
+                                   "first->last row steps; wall deadline "
+                                   f"{HISTORY_S} s"),
+                   "window_steps_span": span,
+                   "window_rows": len(window),
                    "window_clearances_m": [r["clearance_m"] for r in window],
                    "settled": rows[-1]}
         self.rec["predicate"][name] = rec_row
@@ -615,9 +678,10 @@ def run_walkthrough(out: Path, port: int) -> dict:
         else:
             why = ("the crate TIPPED off its support" if tipped
                    else "the crate came down onto the hazard"
-                   if clear <= CLEAR_LOST else
+                   if clear is not None and clear <= CLEAR_LOST else
                    "the crate left the marked region")
-            named = (f"LOST SUPPORT: {why} (clearance {clear * 1000:.0f} mm). "
+            c_txt = "n/a" if clear is None else f"{clear * 1000:.0f} mm"
+            named = (f"LOST SUPPORT: {why} (clearance {c_txt}). "
                      "ACTION: remove the crate and centre it over its "
                      "support before loading.")
         rec["predicate"]["attempt1"] = {

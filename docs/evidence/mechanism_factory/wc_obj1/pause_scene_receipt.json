@@ -1,0 +1,242 @@
+{
+ "pad_top_m": 0.03,
+ "pillar_top_m": 0.1130533947,
+ "crate_com_y_authored": 0.13134456639472694,
+ "state": {
+  "ok": true,
+  "schema": "chimera.b2_scene.v1",
+  "active": true,
+  "diverged": false,
+  "steps": 25046,
+  "dt_substep_s": 0.00025,
+  "gravity_m_s2": 9.81,
+  "gravity_on": true,
+  "support_on": true,
+  "paused": false,
+  "total_weight_n": 115.029117,
+  "total_reaction_n": 115.029129,
+  "max_penetration_m": 0.0232669619,
+  "energy_j": 5.75590035,
+  "energy_drift_j": -0.297190815,
+  "admission_reason": "WC-OBJ-1 receipt 2 stage A: settle the pad",
+  "welds": [],
+  "parts": [
+   {
+    "id": "hazard_pad",
+    "mass_kg": 4.8384,
+    "weight_n": 47.464704,
+    "reaction_n": 104.858121,
+    "contacts_active": 4,
+    "pen_step_m": 0.022091806,
+    "pen_run_m": 0.0232669619,
+    "contact_pp_n": 57.3934132,
+    "contacts_pp_active": 4,
+    "pen_pp_run_m": 0.0143104994,
+    "mu": 0.5,
+    "load_n": [
+     0,
+     0,
+     0
+    ],
+    "site_reactions_n": [
+     26.2145302,
+     26.2145302,
+     0,
+     0,
+     26.2145302,
+     26.2145302,
+     0,
+     0
+    ],
+    "com_m": [
+     0.62,
+     -0.00209180597,
+     0
+    ],
+    "speed_m_s": 8.31770405e-08,
+    "pose_q_wxyz": [
+     1,
+     0,
+     0,
+     0
+    ],
+    "ground": {
+     "k_n_per_m": 1186.6176,
+     "c_n_s_per_m": 53.040098
+    }
+   },
+   {
+    "id": "kit_pallet",
+    "mass_kg": 1.0368,
+    "weight_n": 10.171008,
+    "reaction_n": 10.171008,
+    "contacts_active": 4,
+    "pen_step_m": 0.01,
+    "pen_run_m": 0.01,
+    "contact_pp_n": 0,
+    "contacts_pp_active": 0,
+    "pen_pp_run_m": 0,
+    "mu": 0.6,
+    "load_n": [
+     0,
+     0,
+     0
+    ],
+    "site_reactions_n": [
+     2.542752,
+     2.542752,
+     0,
+     0,
+     2.542752,
+     2.542752,
+     0,
+     0
+    ],
+    "com_m": [
+     -0.25,
+     0.02,
+     0
+    ],
+    "speed_m_s": 3.91919008e-17,
+    "pose_q_wxyz": [
+     1,
+     1.85790089e-17,
+     -3.86680826e-34,
+     3.66420179e-17
+    ],
+    "ground": {
+     "k_n_per_m": 254.2752,
+     "c_n_s_per_m": 11.3657353
+    }
+   },
+   {
+    "id": "pillar_1",
+    "mass_kg": 3.888,
+    "weight_n": 38.14128,
+    "reaction_n": 0,
+    "contacts_active": 0,
+    "pen_step_m": 0.0134087357,
+    "pen_run_m": 0,
+    "contact_pp_n": 76.6455414,
+    "contacts_pp_active": 8,
+    "pen_pp_run_m": 0.0143104994,
+    "mu": 0.6,
+    "load_n": [
+     0,
+     0,
+     0
+    ],
+    "site_reactions_n": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "com_m": [
+     0.62,
+     0.0544994583,
+     0
+    ],
+    "speed_m_s": 1.47706712e-07,
+    "pose_q_wxyz": [
+     1,
+     0,
+     0,
+     0
+    ],
+    "ground": {
+     "k_n_per_m": 953.532,
+     "c_n_s_per_m": 42.6215073
+    }
+   },
+   {
+    "id": "crate_1",
+    "mass_kg": 1.9625,
+    "weight_n": 19.252125,
+    "reaction_n": 0,
+    "contacts_active": 0,
+    "pen_step_m": 0.00670882774,
+    "pen_run_m": 0,
+    "contact_pp_n": 19.2521282,
+    "contacts_pp_active": 4,
+    "pen_pp_run_m": 0.00724222754,
+    "mu": 0.4,
+    "load_n": [
+     0,
+     0,
+     0
+    ],
+    "site_reactions_n": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "com_m": [
+     0.62,
+     0.122790631,
+     0
+    ],
+    "speed_m_s": 1.8498553e-07,
+    "pose_q_wxyz": [
+     1,
+     0,
+     0,
+     0
+    ],
+    "ground": {
+     "k_n_per_m": 481.303125,
+     "c_n_s_per_m": 21.5135566
+    }
+   }
+  ],
+  "pools": {
+   "parts": [
+    4,
+    6
+   ],
+   "welds": [
+    0,
+    15
+   ],
+   "chambers": [
+    0,
+    6
+   ],
+   "valves": [
+    0,
+    12
+   ],
+   "heat": [
+    0,
+    12
+   ],
+   "pistons": [
+    0,
+    6
+   ]
+  },
+  "display": {
+   "lod": 0,
+   "display_tris": 48,
+   "physical_tris": 48
+  },
+  "round_trips": {
+   "saves": 0,
+   "restores": 0,
+   "hash_reads": 0
+  },
+  "backstop_engagements": 36,
+  "out_of_envelope_events": 0,
+  "out_of_envelope_last": null,
+  "out_of_envelope_limits": {}
+ }
+}
