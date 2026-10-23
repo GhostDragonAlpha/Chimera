@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "fallback_probe": {
+    "ok": false,
+    "error": "ValueError: reply JSON is 2097418 bytes; the limit is 1048576 bytes; the operation MAY HAVE EXECUTED. Retrieve current state via status or the operation history; do not repeat the request automatically.",
+    "request_sha256_present": true,
+    "names_reply_limit": true,
+    "names_actual_bytes": true,
+    "may_have_executed_wording": true,
+    "session_state_still_set": true,
+    "stop_never_called": true
+  },
+  "oversize_request_probe": {
+    "request_bytes": 131760,
+    "ok": false,
+    "error": "ValueError: JSON is 131073 bytes; the limit is 131072 bytes",
+    "names_request_limit": true,
+    "session_state_still_set": true
+  }
+}

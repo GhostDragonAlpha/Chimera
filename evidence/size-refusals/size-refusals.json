@@ -1,0 +1,57 @@
+{
+  "schema": "chimera.studio.evidence.size-refusals.v1",
+  "date": "2026-10-22",
+  "task": "Plan 13.1 increment (researcher-evidenced with 4 runtime receipts): numbered size refusals and a bounded fallback reply in the shared human/AI transport, so an AI operator can tell how much to trim and a transport overflow can never stop the session or hide that an operation may have executed",
+  "purpose": "Live refusals read {\"ok\":false,\"error\":\"ValueError: JSON exceeds the protocol size limit\",\"request_sha256\":null}, naming neither the 131072-byte request limit (client_protocol.py:15) nor the actual byte count, so an operator cannot tell how much to trim. Second, same family: client_bridge._one() wrote the reply via wire.atomic() OUTSIDE the try/except, so an oversize reply (>1 MiB) escaped to poll() which called stop(): session died, no response file, and for an apply whose operator already ran (record embeds full inspect(), operations.py ~780) the caller could not tell whether the edit executed. Player benefit: actionable numbers on refusals; the recovery contract (OPERATIONS.md: a missing reply is an unknown outcome, never an automatic repeat) stays enforceable.",
+  "additive_only": true,
+  "changes": [
+    "D:/Chimera-Maintenance/ChimeraStudio/integration/python/chimera_studio/client_protocol.py: read() (~line 62) and atomic() (~line 69) now raise ValueError('JSON is {len(raw)} bytes; the limit is {limit} bytes') - same exception type, both numbers, message stays parseable; new pure helper oversize_reply(error, session, request_id, fingerprint) builds the bounded fallback reply (fixed short text, always within MAX_REPLY): ok:false, both numbers, request_sha256, 'the operation MAY HAVE EXECUTED. Retrieve current state via status or the operation history; do not repeat the request automatically.'",
+    "D:/Chimera-Maintenance/ChimeraStudio/integration/python/chimera_studio/client_bridge.py: _one()'s final reply write is now wrapped; on ValueError from wire.atomic(destination, reply) it writes wire.oversize_reply(str(error), s['id'], key, fingerprint) instead. The ValueError no longer escapes to poll(), so poll() never stops on a reply overflow and the response file always exists. NO limit change, NO schema change, NO new transport, NO retry/auto-resubmit logic.",
+    "D:/Chimera-Maintenance/ChimeraStudio/integration/tests/test_client_protocol_sizes.py (NEW, bpy-free, runs under the pinned external Python): 5 checks - atomic() refusal names actual bytes and MAX_REPLY; atomic() refusal names both numbers for a custom limit; read() refusal names the truncated actual byte count (read() reads limit+1) and the limit, including the 131072 request-side limit; oversize_reply() is within MAX_REPLY, carries both numbers plus request_sha256 and never claims the operation failed/completed; small values still round-trip through atomic()+read()."
+  ],
+  "commit": {
+    "code_and_tests": "9de765d 'Name both byte counts in transport size refusals and add a bounded fallback reply' (chimera/studio-integration, Agent: Codex; exactly python/chimera_studio/client_protocol.py, python/chimera_studio/client_bridge.py, tests/test_client_protocol_sizes.py)",
+    "receipt_commit": "this receipt + client-inspect.json + client-oversize-refusal.json + sessions-after.json + client-inspect-after.json + oversize-request.json + fallback-probe.json committed separately in evidence/size-refusals/ so the code commit hash could be recorded",
+    "test_local_client_not_touched": "tests/test_local_client.py is UNTRACKED per git ls-files (not tracked-and-clean), so per the assignment it was NOT edited; live behavior is proven by this receipt's real-window checks instead",
+    "foreign_files_untouched": "blocks_ui.py, gpu_native.py, gpu_workspace.py, native_session.py, operations_ui.py, __init__.py, OPERATIONS.md, README.md, BLENDER_WORKFLOW.md, test_membrane_ui.py, test_viewport_camera_native.py: not edited"
+  },
+  "project_file": "D:/Chimera-Maintenance/ChimeraStudio/Projects/Membrane Workshop/Chimera Membrane Workshop.blend",
+  "project_sha256_before": "9939fe449a9cf8b70f7e6a29979659883046b29d61468ac35002d4603df57086",
+  "project_sha256_after": "9939fe449a9cf8b70f7e6a29979659883046b29d61468ac35002d4603df57086",
+  "project_byte_identical": true,
+  "window_restart": {
+    "closed": "blender.exe PID 94656 (lead's instance with the OLD add-on code) taskkill //PID 94656 //F per assignment; SUCCESS, no unsaved edits were made by this lane",
+    "relaunch_command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \"& 'D:/Chimera-Maintenance/ChimeraStudio/integration/launch/Start-ChimeraStudio.ps1' -EnableClient\"",
+    "relaunch_pid": 101108,
+    "sessions_after_40s": {"active": true, "pid": 101108, "session": "24cade6074d74e90ae3fbc1a393798e4", "file": "D:\\Chimera-Maintenance\\ChimeraStudio\\Projects\\Membrane Workshop\\Chimera Membrane Workshop.blend", "transport": "local JSON files; typed Studio operations only"}
+  },
+  "real_window_client_checks": {
+    "oversized_request": {
+      "evidence": "evidence/size-refusals/client-oversize-refusal.json (raw .user/clients/24cade6074d74e90ae3fbc1a393798e4/responses/3962e7b01c54427381d370c3f2fd8971.json via studio_client.py response)",
+      "request_bytes": 136260,
+      "result": "response file EXISTS with {\"ok\":false,\"error\":\"ValueError: JSON is 131073 bytes; the limit is 131072 bytes\",\"request_sha256\":null} - BOTH numbers present; session STILL LISTED LIVE afterwards (evidence/size-refusals/sessions-after.json: active true, pid 101108, fresh updated heartbeat); note the actual count reported is the truncated read size (MAX_REQUEST+1) because read() reads at most limit+1 bytes - still an actionable bound"
+    },
+    "normal_inspect_round_trip": {
+      "evidence": "evidence/size-refusals/client-inspect.json (before) and client-inspect-after.json (after the oversized refusal)",
+      "result": "both ok:true with request_sha256 fingerprint; dispatch still works immediately after the refusal, proving the poll loop kept running"
+    },
+    "forced_oversize_reply_live": "NOT RUN in the live window: there is no typed method that returns >1 MiB on this scene and no remote code-execution path by design (mutating the scene or foreign files to inflate a reply would violate the assignment's no-dirty-files rule); proven instead by the headless bpy probe below, which drives the REAL client_bridge._one() with a 2 MiB dispatch result",
+    "headless_real_one_probe": {
+      "evidence": "evidence/size-refusals/fallback-probe.json (uncommitted probe .user/size-refusals/probe_fallback.py, run headless: blender.exe --background --factory-startup --python .user/size-refusals/probe_fallback.py)",
+      "result": "REAL _one() with an oversized reply wrote the bounded fallback: {\"ok\":false,\"error\":\"ValueError: reply JSON is 2097418 bytes; the limit is 1048576 bytes; the operation MAY HAVE EXECUTED. Retrieve current state via status or the operation history; do not repeat the request automatically.\",\"request_sha256\":...} - both numbers, MAY HAVE EXECUTED wording, request_sha256 present, session state still set, stop() never called; an oversized 131760-byte REQUEST through real _one() got {\"ok\":false,\"error\":\"ValueError: JSON is 131073 bytes; the limit is 131072 bytes\"} with the session state still set"
+    }
+  },
+  "headless_tests": [
+    {
+      "command": "cd D:/Chimera-Maintenance/ChimeraStudio/integration && Libuipc/.venv/Scripts/python.exe -B tests/test_client_protocol_sizes.py (pinned Python 3.14.2, no bpy)",
+      "result": "PASS, exit 0, 5/5 checks: atomic() refusal names actual bytes and MAX_REPLY; custom-limit refusal names both numbers; read() refusal names truncated actual count and limit incl. MAX_REQUEST; oversize_reply() bounded within MAX_REPLY, both numbers + MAY HAVE EXECUTED, never claims failure; small values round-trip"
+    }
+  ],
+  "left_running": "one Blender with -EnableClient, PID 101108, Membrane Workshop project open (byte-identical), session 24cade6074d74e90ae3fbc1a393798e4 active",
+  "scope_honesty": "Transport only: numbered refusals + bounded fallback + tests + receipt. No limit changed (128 KiB request / 1 MiB reply), no schema change, no retry/auto-resubmit logic, no operations.py change, no foreign-dirt file touched. The fallback explicitly never claims the operation failed; it names both byte counts and directs the operator to status/operation history.",
+  "unknowns": [
+    "read() reports the truncated byte count (limit+1) rather than the full file size for oversized requests; both numbers are present and actionable (the operator learns the limit exactly), but the full request size is not reported",
+    "The fallback path in a LIVE window (a real >1 MiB reply from a typed method) was not exercised live; evidence is the headless probe through the real _one() code path",
+    "client_protocol.py and client_bridge.py are untracked files in the repo; this commit adds them as new files per the assignment's commit list"
+  ]
+}
