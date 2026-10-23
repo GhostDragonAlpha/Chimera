@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param([string]$ProjectFile, [switch]$Empty, [switch]$Describe)
+param([string]$ProjectFile, [switch]$Empty, [switch]$Describe, [switch]$EnableClient)
 $ErrorActionPreference = 'Stop'
 if ($Empty -and $ProjectFile) { throw 'Choose a project file or an empty workspace, not both.' }
 $studioIntegration = Split-Path -Parent $PSScriptRoot
@@ -32,10 +32,15 @@ if (-not $Empty) {
     if ([IO.Path]::GetExtension($ProjectFile) -ne '.blend') { throw 'Choose a .blend project.' }
     $studioArgs += $ProjectFile
 }
+if ($EnableClient) {
+    $studioArgs += '--python'
+    $studioArgs += (Join-Path $PSScriptRoot 'enable_client.py')
+}
 if ($Describe) {
     [pscustomobject]@{
         executable=$chosenExe; arguments=$studioArgs; project=$ProjectFile
         workingDirectory=$studioRoot; integration=$studioIntegration; opensOffline=$true
+        enableClient=[bool]$EnableClient
     } | ConvertTo-Json -Depth 4
     return
 }

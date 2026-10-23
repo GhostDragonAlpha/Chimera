@@ -1,0 +1,37 @@
+{
+  "schema": "chimera.studio.evidence.enable-flag.v1",
+  "date": "2026-10-22",
+  "task": "Launcher -EnableClient opt-in for chimera.enable_client via bundled launch/enable_client.py timer",
+  "additive_only": true,
+  "changes": [
+    "D:/Chimera-Maintenance/ChimeraStudio/integration/launch/Start-ChimeraStudio.ps1 (param -EnableClient, appends --python launch/enable_client.py, reflected in -Describe JSON as enableClient; build-completion check / installed-exe fallback / quoting untouched)",
+    "D:/Chimera-Maintenance/ChimeraStudio/integration/launch/enable_client.py (new, 25 lines: capped timer, ~1s retry up to 60 tries, bpy.ops.chimera.enable_client(), prints CHIMERA_CLIENT_ENABLED ok / failure line, never raises out of the timer)",
+    "D:/Chimera-Maintenance/ChimeraStudio/integration/OPERATIONS.md (one opt-in sentence added to 'External local client' section, near line 330; default stays opt-out)",
+    "No add-on code changed; no new transport; no --python passthrough beyond this single bundled script; no env var"
+  ],
+  "commit": "lead decision after chimera-step37 review (5/5 PASS, commit as-is): launch/Start-ChimeraStudio.ps1, launch/enable_client.py and this evidence dir committed as a scoped commit with Agent: Codex trailer; OPERATIONS.md left untracked (lane owner's untracked doc; the added sentence remains on disk at line 334)",
+  "project_sha256_before": "9939fe449a9cf8b70f7e6a29979659883046b29d61468ac35002d4603df57086",
+  "project_sha256_after": "9939fe449a9cf8b70f7e6a29979659883046b29d61468ac35002d4603df57086",
+  "project_file": "D:/Chimera-Maintenance/ChimeraStudio/Projects/Membrane Workshop/Chimera Membrane Workshop.blend",
+  "exe_chosen": "D:\\Chimera-Maintenance\\ChimeraStudio\\build-blender\\bin\\Release\\blender.exe (fork build; build-exit.txt == 0)",
+  "flag_run": {
+    "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"D:/Chimera-Maintenance/ChimeraStudio/integration/launch/Start-ChimeraStudio.ps1\" -EnableClient",
+    "pid": 72296,
+    "wait_seconds": 35,
+    "sessions": {"ok": true, "sessions": [{"active": true, "file": "D:\\Chimera-Maintenance\\ChimeraStudio\\Projects\\Membrane Workshop\\Chimera Membrane Workshop.blend", "pid": 72296, "scene": "Scene", "schema": "chimera.studio.client.v1", "session": "1df06f2bb2da42a7bf6a8d0eb701641c", "transport": "local JSON files; typed Studio operations only"}], "session_count": 1},
+    "inspect_request": {"method": "inspect", "args": {}},
+    "inspect_result": {"ok": true, "schema": "chimera.studio.operations.v1", "actions_count": 61, "parts": ["Film A 201v", "Film B 201v", "Film C 201v"], "source_matches_native": true},
+    "describe_json_arguments": ["--factory-startup", "--app-template", "ChimeraStudio", "D:\\Chimera-Maintenance\\ChimeraStudio\\Projects\\Membrane Workshop\\Chimera Membrane Workshop.blend", "--python", "D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\launch\\enable_client.py"],
+    "describe_enableClient": true
+  },
+  "control_run": {
+    "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"D:/Chimera-Maintenance/ChimeraStudio/integration/launch/Start-ChimeraStudio.ps1\" (no flag)",
+    "pid": 65756,
+    "wait_seconds": 40,
+    "sessions": {"ok": true, "sessions": [], "session_count": 0}
+  },
+  "timer_retries_needed": "not directly observable from the CLI; session existed at first poll 35 s after launch (timer fires ~every 1 s until success, so up to ~35 callbacks may have run); Blender stderr not captured this run",
+  "cleanup": "flag-run PID 72296 and control-run PID 65756 both taskkilled; project file byte-identical (hash above)",
+  "left_running": "one Blender relaunched with -EnableClient at end of run (see left_running_session in a follow-up sessions capture)",
+  "known_limit": "enable_client.py retry count (60) and interval (1.0 s) are caps; if the app template takes longer than ~60 s to reach an enabled operator the run prints the explicit failure line and the launch still completes"
+}
