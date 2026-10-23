@@ -11,6 +11,7 @@ import threading
 import time
 import uuid
 
+import numpy as np
 import bpy
 import bmesh
 from bpy.app.handlers import persistent
@@ -221,6 +222,54 @@ def _connections_report(source, doc):
     return sorted(edges.values(), key=lambda item: item['edge'])
 
 
+def _regions_report(doc):
+    """Per-film area and energy from the accepted membrane assembly.
+
+    Decomposes the declared law U = gamma * sum(face_area) exactly: each
+    region's face list partitions spec['triangles'], so Heron areas of the
+    accepted float32 positions times the uniform gamma sum to native energy_J
+    (independently re-checked in tests). This is Blender-side arithmetic on
+    accepted native geometry, NOT an independent native measurement; the sum
+    is checked against state['energy_J'] and the report fails closed (no
+    numbers) if they disagree or no accepted membrane doc exists.
+    """
+    if not (doc and 'assembly' in doc['spec']):
+        return {'available': False,
+                'reason': 'Region energy needs a built membrane assembly; build or resume one first'}
+    try:
+        spec, state = doc['spec'], doc['state']
+        faces = np.asarray(spec['triangles'])
+        claimed = sorted(int(f) for r in spec['assembly']['regions'] for f in r['faces'])
+        if claimed != list(range(len(faces))):
+            raise ValueError('region face lists are not the exact triangle partition')
+        positions = np.asarray(state['positions_f32'], dtype='<f4').astype(float).reshape(-1, 3)
+        if len(positions) != len(spec['positions']):
+            raise ValueError('accepted state vertex count does not match the compiled spec')
+        gamma = float(spec['gamma'])
+        regions = []
+        for region in spec['assembly']['regions']:
+            v = positions[faces[np.asarray(region['faces'])]]
+            ab = np.linalg.norm(v[:, 1] - v[:, 0], axis=1)
+            bc = np.linalg.norm(v[:, 2] - v[:, 1], axis=1)
+            ca = np.linalg.norm(v[:, 0] - v[:, 2], axis=1)
+            s = (ab + bc + ca) * .5
+            area = float(np.sqrt(np.maximum(0., s * (s - ab) * (s - bc) * (s - ca))).sum())
+            regions.append({'id': region['id'], 'name': region['name'], 'faces': len(region['faces']),
+                            'area_m2': area, 'energy_J': area * gamma})
+        total = math.fsum(r['energy_J'] for r in regions)
+        residual = abs(total - float(state['energy_J']))
+        if not (math.isfinite(total) and math.isfinite(residual) and residual <= 3e-4):
+            return {'available': False,
+                    'reason': f'Per-film energy sum deviates from native energy_J by {residual:.3g} J; numbers refused'}
+        return {'available': True, 'gamma_J_m2': gamma, 'regions': regions,
+                'energy_sum_J': total, 'energy_residual_J': residual,
+                'basis': 'decomposition of the declared law U = gamma*sum(face area) on accepted native '
+                         'geometry; Blender-side arithmetic checked against native energy_J, not an '
+                         'independent native measurement'}
+    except (KeyError, IndexError, TypeError, ValueError) as error:
+        return {'available': False, 'reason': 'Accepted membrane state not decomposable: ' + str(error)}
+
+
 def _construction_snapshot(context):
     # Always read current Blender/native state. No cross-call cache: a person
     # can edit geometry, materials or connections between any two timer calls.
@@ -280,6 +329,7 @@ def inspect(context=None):
             'source_matches_native': matches, 'needs_rebuild': matches is False, 'source_note': reason,
             'parts': [{'id': p['id'], 'name': p['name'], 'vertices': len(p['vertices'])} for p in source['parts']],
             'connections': _connections_report(source, doc),
+            'regions': _regions_report(doc),
             'native_hinges':source.get('native_hinges',[]),
             'native_warm_start':native_warm_start.report(),
             'actions': [a for a in ACTIONS if (a not in layer_editing.ACTIONS or hasattr(context.scene,'uipc_settings')) and (a not in ('create_mounted_panel','duplicate_layers','capture_layers','compare_layers','show_layer_trials','clear_layer_preview') or hasattr(context.scene,'uipc_settings'))],

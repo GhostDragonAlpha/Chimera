@@ -122,6 +122,17 @@ try:
     report=op.inspect()['connections']
     assert not any(c['stale'] or c['missing'] for c in report)
     checks.append('restoring the authored welds clears every stale/missing flag')
+    # Per-film area/energy report: offline and fail-closed. Placed before the
+    # pre-existing owned-helper-failure step so these checks always run.
+    none_report=op._regions_report(None)
+    assert none_report['available'] is False and set(none_report)=={'available','reason'},none_report
+    forged=op._regions_report(copy.deepcopy(w.document())|{'state':{**w.document()['state'],'energy_J':float(w.document()['state']['energy_J'])+1.}})
+    assert forged['available'] is False and set(forged)=={'available','reason'} and 'energy_J' in forged['reason'],forged
+    live=op._regions_report(w.document())
+    assert live['available'] is True and live['energy_residual_J']<=3e-4,live
+    assert abs(sum(r['energy_J'] for r in live['regions'])-live['energy_sum_J'])<1e-9
+    assert live['regions']==op.inspect()['regions']['regions']
+    checks.append('region area/energy report is offline, exact and fail-closed against forged native energy_J')
     loaded=wait(run('apply_load',params={'load':.8}));assert loaded['status']=='succeeded',loaded
     state=copy.deepcopy(w.document()['state'])
     bpy.context.scene.chimera_gpu.load=.8

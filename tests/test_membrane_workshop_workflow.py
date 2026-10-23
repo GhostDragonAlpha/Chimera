@@ -11,7 +11,7 @@ ROOT=Path(__file__).resolve().parents[1]
 import sys
 sys.path.insert(0,str(ROOT/'python'))
 import chimera_studio
-from chimera_studio import gpu_workspace as w,gpu_native as g,blocks_ui as ui
+from chimera_studio import gpu_workspace as w,gpu_native as g,blocks_ui as ui,operations as op
 
 PROJECT=ROOT.parent/'Projects/Membrane Workshop/Chimera Membrane Workshop.blend'
 EVIDENCE=ROOT/'evidence/membrane-workshop-workflow-checks.json'
@@ -162,6 +162,25 @@ def inspect():
         a,b=line[5:].split(' + ',1)
         assert a in names.values() and b.split(':')[0].strip() in names.values(),(line,names)
     state['panel_weld_lines']=welds
+    # Per-film area/energy: inspect's regions must agree with an independent
+    # recomputation from r.state/r.spec, and the sum must match native energy_J.
+    rep=op.inspect()['regions']
+    assert rep['available'] is True,rep
+    assert 'not an' in rep['basis'] and 'independent' in rep['basis'],rep['basis']
+    faces=np.asarray(r.spec['triangles']);gamma=float(r.spec['gamma']);total=0.
+    assert sorted(int(f) for region in r.spec['assembly']['regions'] for f in region['faces'])==list(range(len(faces)))
+    for region in r.spec['assembly']['regions']:
+        entry=next(x for x in rep['regions'] if x['id']==region['id'])
+        assert region['name']==entry['name'] and len(region['faces'])==entry['faces'],(region,entry)
+        v=pos[faces[np.asarray(region['faces'])]]
+        ab=np.linalg.norm(v[:,1]-v[:,0],axis=1);bc=np.linalg.norm(v[:,2]-v[:,1],axis=1);ca=np.linalg.norm(v[:,0]-v[:,2],axis=1)
+        s=(ab+bc+ca)*.5
+        area=float(np.sqrt(np.maximum(0,s*(s-ab)*(s-bc)*(s-ca))).sum())
+        assert abs(area-entry['area_m2'])<1e-9 and abs(gamma*area-entry['energy_J'])<1e-9,(region['id'],area,entry)
+        total+=gamma*area
+    assert abs(total-rep['energy_sum_J'])<1e-9
+    assert rep['energy_residual_J']<=3e-4,rep
+    assert abs(abs(total-float(st['energy_J']))-rep['energy_residual_J'])<1e-9
     long='Status wrap check. '+'Q'*400
     w.message(long)
     labels=panel_labels(ui.Panel)
@@ -170,6 +189,8 @@ def inspect():
     w.message('Workshop workflow inspection complete.')
     return {'apex_drop_m':z_drop,'energy_J':st['energy_J'],'centre_load_N':float(st['centre_load_N']),
             'scope_note_drawn':ui.ATTACHMENT_SCOPE_NOTE,'panel_weld_lines':state['panel_weld_lines'],
+            'regions_reported':[{'id':x['id'],'area_m2':x['area_m2'],'energy_J':x['energy_J']} for x in rep['regions']],
+            'regions_energy_sum_J':rep['energy_sum_J'],'regions_energy_residual_J':rep['energy_residual_J'],
             'full_400_char_status_drawn':True}
 check('Deformation finite; attachment scope note and full status message drawn',inspect)
 
