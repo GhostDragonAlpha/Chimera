@@ -76,7 +76,7 @@ static bool g_membrane_active = true;  // 3DGS-only: the N-body sim (7-float) is
 // reserved u32 (32-byte header), then positions f32[nv*3], indices u32[nf*3],
 // CSR offsets u32[nv+1], CSR corner ids u32[nf*3], gamma f32[nf].
 struct MembraneDemoRequest {
-    int kind = 0;       // 1 init, 2 control, 3 status, 4 save, 5 restore
+    int kind = 0;       // 1 init, 2 control, 3 status, 4 save, 5 restore, 7 forces
     int ctl_kind = 0;   // 0 reset, 1 step, 2 run, 3 pause, 4 gamma, 5 reject, 6 deform
     Engine::MembraneDemoUpload upload;
     uint32_t n_steps = 0;
@@ -734,6 +734,20 @@ static std::string membrane_demo_save_route(int kind = 4) {
     bool waited = wait_for_shutdown(g_md_cv, lk, std::chrono::seconds(10), []{ return g_md_applied; });
     return waited && g_md_req.ok ? g_md_req.blob
           : "{\"ok\":false,\"error\":\"membrane demo save failed or timed out\"}";
+}
+
+// Per-vertex force readback for reaction inspection at apex welds and
+// anchors (the same render-thread handoff as the save route above).
+static std::string membrane_demo_forces_route() {
+    {
+        std::lock_guard<std::mutex> lk(g_md_mutex);
+        g_md_req = MembraneDemoRequest{};
+        g_md_req.kind = 7; g_md_pending = true; g_md_applied = false;
+    }
+    std::unique_lock<std::mutex> lk(g_md_mutex);
+    bool waited = wait_for_shutdown(g_md_cv, lk, std::chrono::seconds(10), []{ return g_md_applied; });
+    return waited && g_md_req.ok ? g_md_req.blob
+          : "{\"ok\":false,\"error\":\"membrane demo forces failed or timed out\"}";
 }
 
 static std::string membrane_demo_restore_route(const std::string& req_body) {
@@ -4225,6 +4239,8 @@ int main(int argc, char** argv) {
                 mdb = membrane_demo_save_route();
             else if (p == "/membrane_demo_render" && method == "GET")
                 mdb = membrane_demo_save_route(6);
+            else if (p == "/membrane_demo_forces" && method == "GET")
+                mdb = membrane_demo_forces_route();
             else if (p == "/membrane_demo_restore" && method == "POST")
                 mdb = membrane_demo_restore_route(req_body);
             if (!mdb.empty()) { body = mdb; content_type = "application/json"; }
@@ -4555,6 +4571,8 @@ int main(int argc, char** argv) {
                     ok = engine.membrane_demo_save(g_md_req.blob);
                 } else if (g_md_req.kind == 6) {
                     ok = engine.membrane_demo_render_snapshot(g_md_req.blob);
+                } else if (g_md_req.kind == 7) {
+                    ok = engine.membrane_demo_forces(g_md_req.blob);
                 } else if (g_md_req.kind == 5) {
                     ok = engine.membrane_demo_restore(g_md_req.restore, g_md_req.status);
                 } else {

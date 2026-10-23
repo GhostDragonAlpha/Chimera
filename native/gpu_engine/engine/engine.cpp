@@ -5180,6 +5180,45 @@ bool Engine::membrane_demo_ctl(int kind, uint32_t n_steps, double gamma,
     return true;
 }
 
+// membrane_demo_forces: per-vertex force readback for reaction inspection at
+// apex welds and pinned rims (GAME_PLAN_ACTION_RPG.md §12.2 first gap). The
+// pinned kernel computes vf[v] = -dU/dx_v for EVERY vertex including pinned
+// ones (shaders/membrane_demo.comp assemble_vertex; the pin zeroing in
+// md_step_once is host-side DIRECTION only), but until now only the centre
+// component was exposed (membrane_demo_status). Sign convention: vf[v] is the
+// force the MATTER exerts on vertex v; the constraint/weld reaction a pinned
+// vertex carries is -vf[v]. The vf buffer is SHARED between the accepted and
+// trial descriptor sets, so md_eval(2) (any trial) would clobber it -- every
+// existing reader re-evaluates the ACCEPTED set (md_eval(1)) before reading,
+// e.g. md_step_once and md_deform; this endpoint does the same.
+bool Engine::membrane_demo_forces(std::string& doc_out) {
+    if (!md_active_) return false;
+    float U = 0.f;
+    md_eval(1, U);
+    md_energy_last_ = U;
+    const float* vf = static_cast<const float*>(md_vf_map_);
+    std::string forces;
+    forces.reserve(size_t(md_nv_) * 3 * 14 + 16);
+    char buf[64];
+    for (uint32_t v = 0; v < md_nv_; ++v) {
+        for (int c = 0; c < 3; ++c) {
+            if (v || c) forces += ',';
+            snprintf(buf, sizeof buf, "%.9g",
+                     static_cast<double>(vf[size_t(v) * 4 + c]));
+            forces += buf;
+        }
+    }
+    char hdr[512];
+    snprintf(hdr, sizeof hdr,
+        "{\"schema\":\"chimera.studio.membrane-forces.v1\","
+        "\"accepted_state_id\":\"%llu\",\"n_verts\":%u,\"centre_index\":%u,"
+        "\"energy_J\":%.17g,\"centre_load_N\":%.17g,\"vertex_forces\":[",
+        static_cast<unsigned long long>(md_accepted_id_), md_nv_, md_centre_,
+        md_energy_last_, md_load_);
+    doc_out = std::string(hdr) + forces + "]}";
+    return true;
+}
+
 // membrane_demo_save: full-state document for the membrane-demo state class
 // (chimera.membrane_demo_state.v1) -- the /tick_b2_save pattern applied to
 // this state class. Doubles print %.17g (exact round-trip), the f32

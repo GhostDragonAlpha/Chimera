@@ -1,0 +1,89 @@
+{
+  "schema": "chimera.studio.evidence.membrane-forces.v1",
+  "date": "2026-10-22",
+  "task": "Plan §12.2 first gap 'Membrane apex-weld reaction inspection', backend increment scoped by research to CLEAN engine-fork files; Blender wiring DELIBERATELY DEFERRED per plan §13.1.3 (identify caller + closing evidence, do not implement)",
+  "purpose": "The pinned kernel already computes per-vertex forces vf[v] = -dU/dx_v for EVERY vertex including pinned ones (shaders/membrane_demo.comp assemble_vertex ~121-126; pin zeroing is host-side direction only, engine.cpp ~4818-4819), but only the centre component was exposed (engine.cpp membrane_demo_status). This increment exposes ALL of them so reaction inspection at apex welds and anchors (plan §11.10-11.11: the physics that makes connections meaningful) has a physics-verified native endpoint. Player benefit (eventual, once the deferred caller lands): a weld shows what load it carries; anchors show the reaction they hold.",
+  "additive_only": true,
+  "changes": [
+    "D:/Chimera-Maintenance/ChimeraStudio/integration/native/gpu_engine/engine/engine.cpp: new Engine::membrane_demo_forces(std::string&) (~45 lines, membrane_demo_save serialization pattern). Calls md_eval(1) on the ACCEPTED set before serializing (the vf buffer is shared between accepted and trial descriptor sets; md_eval(2) would clobber it; every existing reader does this, e.g. md_step_once, md_deform). Documented sign convention in a code comment: vf = force the MATTER exerts on the vertex; constraint reaction = -vf. Output JSON {schema:'chimera.studio.membrane-forces.v1', accepted_state_id (decimal string, u64-does-not-survive-double-parsing), n_verts, centre_index, energy_J (%.17g), centre_load_N, vertex_forces:[x,y,z per vertex, %.9g f32 exact round-trip, vec4 stride 4]}",
+    "D:/Chimera-Maintenance/ChimeraStudio/integration/native/gpu_engine/engine/engine.hpp: declaration beside the other membrane_demo_* (~line 244)",
+    "D:/Chimera-Maintenance/ChimeraStudio/integration/native/gpu_engine/engine/main.cpp: new request kind 7 beside the struct kinds (comment updated), new file-scope membrane_demo_forces_route() beside membrane_demo_save_route (C1061 block-nesting guard respected: post-ladder block), render-thread dispatch kind 7 -> engine.membrane_demo_forces, late-block registration GET /membrane_demo_forces. UNCHANGED: http_server.cpp, all shaders, membrane_tick.cpp, python/chimera_studio/*",
+    "D:/Chimera-Maintenance/ChimeraStudio/integration/tests/test_membrane_forces.py: NEW bpy-free headless test. Launch pattern tests/test_gpu_lifetime.py (local subprocess, --no-board --no-restore --hidden) against the LOCALLY BUILT build/gpu-engine/Release/chimera_engine.exe (NOT runtime/gpu); three-film assembly via blocks.starter/compile_parts + membrane_packet (the /membrane_demo_bin pattern of the existing membrane tests); raw HTTP via the same vendored vendor/gpu/control_client.EngineControl",
+    "D:/Chimera-Maintenance/ChimeraStudio/integration/tools/Test-MembraneForces.ps1: NEW ~12-line runner (Build-Gpu.ps1 / Test-Studio.ps1 pattern) invoking the pinned venv python on the test"
+  ],
+  "build": {
+    "command": "cmake -S native/gpu_engine/engine -B build/gpu-engine -G 'Visual Studio 17 2022' -A x64 && cmake --build build/gpu-engine --config Release --parallel 2  (exactly tools/Build-Gpu.ps1 lines 6-8; the script's trailing pin_gpu_runtime.py call was DELIBERATELY SKIPPED per the lead's NO-REPIN decision)",
+    "compiler": "MSBuild 17.14.40+3e7442088 (VS2022), x64 Release",
+    "duration_s": 16.4,
+    "exe": "D:/Chimera-Maintenance/ChimeraStudio/integration/build/gpu-engine/Release/chimera_engine.exe",
+    "exe_bytes": 2927616,
+    "exe_sha256_prefix": "22c8b7673f708ff4580b5d4e3062fa28",
+    "exe_mtime": "2026-10-23 11:57:17 local (host clock; session date 2026-10-22)",
+    "no_repin_statement": "tools/pin_gpu_runtime.py was NOT run; GPU_SOURCE_LOCK.json and runtime/gpu/ are UNTOUCHED (verified: git status shows no change to either). The tests ran against the locally built exe only. All saved constructions keyed to the pinned runtime identity are unaffected.",
+    "build_discrepancy_flag": "The assignment said 'BUILD: tools/Build-Gpu.ps1' AND 'do NOT run tools/pin_gpu_runtime.py'; the script unconditionally runs the pin step, so I ran its cmake configure+build steps verbatim and skipped only the pin step. Flagged to the lead; no lock file or runtime/gpu byte changed."
+  },
+  "headless_tests": [
+    {
+      "command": "cd D:/Chimera-Maintenance/ChimeraStudio/integration && D:/Chimera-Maintenance/Runtime/local-ai/Strata/.venv/Scripts/python.exe tests/test_membrane_forces.py  (and tools/Test-MembraneForces.ps1 for reproducibility)",
+      "result": "PASS both runs, deterministic",
+      "setup": "three-film apex-weld assembly (blocks.starter: films A/B/C, 2 apex connections, 601 verts / 600 triangles / uniform gamma=1.0 J/m2), deformed to centre dead-load W = float32(0.8) N via POST /membrane_demo {op:'deform',load_N:0.8}, then GET /membrane_demo_forces"
+    }
+  ],
+  "measurements": {
+    "accepted_state_id": "3307074145101044206",
+    "accepted_state_id_matches": "GET /membrane_demo_save (decimal string) and GET /membrane_demo (numeric form) — the forces document describes the RESTORED/ACCEPTED state",
+    "n_verts": 601,
+    "centre_index": 0,
+    "W_N": 0.800000011920929,
+    "energy_J": 6.315981864929199,
+    "independent_heron_energy_J": 6.315992048579768,
+    "energy_residual_J": 1.0183650569040026e-05,
+    "energy_residual_note": "float32 position readback vs float32 stored energy; same stable ~1e-5 residual class the region-energy receipt recorded (gate 3e-4)",
+    "apex_vs_load": {
+      "vf_centre": [-2.7939677238464355e-08, -1.1670636013150215e-08, 0.800000011920929],
+      "W_N": 0.800000011920929,
+      "max_abs_err": 2.794e-08,
+      "statement": "free centre apex vf[0] = (0, 0, W) within 1e-4 (actual 2.8e-8); the apex force is exactly the dead-load it balances, x/y zero on the world-Z rail"
+    },
+    "sum_invariant": {
+      "sum_vf": [-2.7939677238464355e-08, -1.1670636013150215e-08, -6.7148357629776e-07],
+      "max_abs_component": 6.715e-07,
+      "statement": "sum over all 601 vertices of vf = 0 (translation invariance of U = gamma*sum(area)); within 1e-4 (actual 6.7e-7, f32 accumulation)"
+    },
+    "finite_difference_check": {
+      "method": "INDEPENDENT client-side Heron finite difference on 3-D edge lengths: U(P) = gamma*sum(Heron face area) from the accepted f32 positions; per vertex/component R_fd = -(U(P+d*e)-U(P-d*e))/(2d), d=1e-5; compared to the endpoint vf (precedent tests/test_membrane_assembly.py:64-72)",
+      "coverage": "ALL 601 vertices x 3 components (1803 central differences)",
+      "max_deviation": 6.172e-07,
+      "max_deviation_at": "vertex 0 (centre) component z",
+      "max_rim_deviation": 3.736e-07,
+      "gate": 1e-4,
+      "verdict": "kernel vf is the exact gradient of the declared surface-energy law at EVERY vertex, pinned and free",
+      "table": [
+        {"vertex": 0, "role": "shared apex weld (centre, free)", "component": "z", "vf": 0.800000011920929, "R_fd": 0.800000629164, "dev": 6.172e-07},
+        {"vertex": 0, "role": "shared apex weld (centre, free)", "component": "x", "vf": -2.794e-08, "R_fd": 0.0, "dev": 2.794e-08},
+        {"vertex": 1, "role": "film A rim (pinned anchor)", "component": "x", "vf": -0.031434614211, "R_fd": -0.031434585246, "dev": 2.897e-08},
+        {"vertex": 1, "role": "film A rim (pinned anchor)", "component": "z", "vf": 0.004296643659, "R_fd": 0.004296748513, "dev": 1.049e-07},
+        {"vertex": 2, "role": "film A rim (pinned anchor)", "component": "x", "vf": -0.031418912113, "R_fd": -0.031418941004, "dev": 2.889e-08},
+        {"vertex": 202, "role": "film B interior rim vertex", "component": "z", "vf": -0.004612526391, "R_fd": -0.004612152837, "dev": 3.736e-07},
+        {"vertex": 402, "role": "film C interior rim vertex", "component": "z", "vf": -0.003685120028, "R_fd": -0.003685086103, "dev": 3.392e-08}
+      ],
+      "reaction_example": "film A rim vertex 1 carries vf[x] = -0.0314 N: the matter pulls the anchor with 0.031 N along x; the ANCHOR'S REACTION on the matter is -vf = +0.0314 N. This is the number reaction inspection will surface at welds/anchors."
+    }
+  },
+  "deferred_blender_caller": {
+    "status": "DELIBERATELY DEFERRED per lead (plan §13.1.3): python/chimera_studio/* is the foreign lane's dirty territory (gpu_native.py has uncommitted foreign modifications) and must not be touched by this increment",
+    "caller_to_close": [
+      "python/chimera_studio/gpu_native.py GpuSession: a forces() method issuing GET /membrane_demo_forces (beside snapshot()'s /membrane_demo_save), validating schema 'chimera.studio.membrane-forces.v1' and accepted_state_id against the session state",
+      "python/chimera_studio/client_bridge.py: an inspect-side method exposing the per-vertex forces / selected-vertex reaction (=-vf at pinned vertices) through the typed client protocol",
+      "python/chimera_studio/operations_ui.py + blocks_ui.py: a panel line rendering the selected weld/anchor reaction, with the sign wording 'vf = force the matter exerts on the vertex; the weld reaction is -vf'"
+    ],
+    "closing_evidence_needed": "live -EnableClient window: open the Membrane Workshop project, select an apex/anchor, panel shows the reaction consistent with this receipt's numbers; plus save/reopen/replay unaffected (gpu_save/gpu_resume round-trip still bit-exact)",
+    "note": "the native endpoint, its request kind (7) and route (/membrane_demo_forces) are committed and pinned-source-independent; the Blender feature lands when the foreign lane commits gpu_native.py/blocks_ui.py/operations_ui.py"
+  },
+  "scope_honesty": "Native endpoint + headless physics verification ONLY. No Blender-visible feature is delivered by this commit; no claim that the UI shows forces. The kernel's vf at pinned vertices is the mathematical gradient (-dU/dx), i.e. the force the matter exerts on the pin; calling it 'the reaction the weld carries' is the -vf convention documented in code, not an additional physical model. No repin, no runtime/gpu or GPU_SOURCE_LOCK.json change, no python/chimera_studio/* change, no shader change, no http_server.cpp change.",
+  "unknowns": [
+    "exe mtime reads 2026-10-23 on a session dated 2026-10-22 (host clock/timezone); recorded as-is",
+    "FD z-deviation at the centre (6.2e-7) is the largest of all 1803 components; consistent with f32 vf rounding of the largest force component, still 160x under the 1e-4 gate",
+    "Blender was closed (PIDs 101108, 95520) for GPU contention per assignment and relaunched after tests via the official launcher; the two killed instances were running before this lane started and no unsaved edits were made by this lane"
+  ]
+}

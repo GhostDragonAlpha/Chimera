@@ -242,6 +242,11 @@ public:
     // and swaps it in atomically (a refused document leaves the state
     // untouched).
     bool membrane_demo_save(std::string& doc_out);
+    // Per-vertex force readback (vf = force the matter exerts on the vertex;
+    // the weld/anchor reaction is -vf) for reaction inspection at apex welds.
+    // Re-evaluates the ACCEPTED descriptor set first: the vf buffer is shared
+    // with the trial set and a trial evaluation would clobber it.
+    bool membrane_demo_forces(std::string& doc_out);
     bool membrane_demo_restore(const MembraneDemoRestoreDoc& doc,
                                MembraneDemoStatus& out);
     bool membrane_demo_render_snapshot(std::string& out);
