@@ -1,0 +1,66 @@
+{
+  "schema": "chimera.studio.evidence.weld-inspection.v1",
+  "date": "2026-10-22",
+  "task": "Connection inspection slice of plan 13.1: name each apex weld (authored vs accepted vs stale/missing) in operations.inspect() and the Membrane Assembly panel",
+  "purpose": "Connection editing becomes recoverable and intelligible: a human (N > Chimera panel) or an AI operator (studio_client inspect) sees WHICH apex welds exist, which are in the accepted native build and which are stale/missing, instead of a generic needs_rebuild boolean",
+  "additive_only": true,
+  "changes": [
+    "D:/Chimera-Maintenance/ChimeraStudio/integration/python/chimera_studio/operations.py (new _connections_report(source, doc); inspect() gains 'connections': one entry per weld with edge part IDs, names, authored, accepted, and derived stale/missing flags; needs_rebuild/source_note and build filtering untouched)",
+    "D:/Chimera-Maintenance/ChimeraStudio/integration/python/chimera_studio/blocks_ui.py (new weld_lines(context) + compact wrapped weld lines in Panel.draw after the connect/disconnect/build operators; ATTACHMENT_SCOPE_NOTE kept verbatim)",
+    "D:/Chimera-Maintenance/ChimeraStudio/integration/OPERATIONS.md (inspect contract paragraph extended with the connections field docs; no reaction-force or new-physics wording)",
+    "D:/Chimera-Maintenance/ChimeraStudio/integration/tests/test_shared_operations.py (four new checks after the rename/correspondence check: authored+accepted listing, disconnect flags exactly that edge missing offline, a newly authored weld outside the accepted build flags stale by edge identity, restore clears flags)",
+    "D:/Chimera-Maintenance/ChimeraStudio/integration/tests/test_membrane_workshop_workflow.py (panel-label recorder asserts weld lines: one missing weld after disconnect, two 'authored and accepted' after reconnect and after the native build; weld lines added to the recorded inspect details)"
+  ],
+  "commit": {
+    "operations_doc_tests": "29b4e40 'Name each apex weld in shared inspect and the Membrane Assembly panel' (chimera/studio-integration; Agent: Codex; exactly operations.py, OPERATIONS.md, tests/test_shared_operations.py, tests/test_membrane_workshop_workflow.py - the latter two were clean-untracked lane files committed whole)",
+    "receipt_commit": "this receipt + client inspect JSONs committed separately so the code commit hash could be recorded",
+    "blocks_ui_not_committed": "blocks_ui.py is edited on disk but NOT committed: the lane repo has ANOTHER LANE's uncommitted rewrite of blocks_ui.py (581 changed lines vs HEAD) in the same file; committing it would drag in that foreign work. __init__.py, gpu_native.py, gpu_workspace.py untouched per rules."
+  },
+  "project_file": "D:/Chimera-Maintenance/ChimeraStudio/Projects/Membrane Workshop/Chimera Membrane Workshop.blend",
+  "project_sha256_before": "9939fe449a9cf8b70f7e6a29979659883046b29d61468ac35002d4603df57086",
+  "project_sha256_after": "9939fe449a9cf8b70f7e6a29979659883046b29d61468ac35002d4603df57086",
+  "project_byte_identical": true,
+  "window_restart": {
+    "closed": "blender.exe PID 74536 (lead's instance with the OLD add-on code) taskkill /PID 74536 /F per assignment; SUCCESS, no unsaved project edits were made by this lane",
+    "relaunch_command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \"& 'D:/Chimera-Maintenance/ChimeraStudio/integration/launch/Start-ChimeraStudio.ps1' -EnableClient\"",
+    "relaunch_pid": 62592,
+    "sessions_after_35s": {"active": true, "pid": 62592, "session": "f59bd872cd864658b3914f01655087fc", "file": "D:\\Chimera-Maintenance\\ChimeraStudio\\Projects\\Membrane Workshop\\Chimera Membrane Workshop.blend", "transport": "local JSON files; typed Studio operations only"}
+  },
+  "real_window_client_checks": {
+    "initial_inspect": {
+      "evidence": "evidence/weld-inspection/client-inspect-initial.json",
+      "result": "two apex connections of the default assembly, both authored=true accepted=true stale=false missing=false, with film names (Film C + Film A, Film B + Film A); source_matches_native=true needs_rebuild=false"
+    },
+    "disconnect_one_weld_via_client": {
+      "method": "propose/apply disconnect_apices on membrane:0d04906182974ed1805aefc06ccf9ed8 + membrane:36b6ce0f247445c0ba1b3ced7bf9fad7 through the existing authoring flow (the project opens with sources behind the native preview, so 'authoring' was proposed/applied first; a first propose correctly refused with 'Film C: return to authoring and make this source selectable' - recorded as expected behavior)",
+      "recorded_result": "Film C + Film A: authored=False accepted=True stale=False missing=True; Film B + Film A: authored=True accepted=True; source_matches_native=False needs_rebuild=True (flagging stayed offline; accepted checkpoint unchanged)",
+      "note": "transcript capture; the .user/wd-apply.json snapshot was later overwritten by the reconnect apply"
+    },
+    "reconnect_via_client": {
+      "recorded_result": "both welds authored=True accepted=True; source_matches_native=True needs_rebuild=False"
+    },
+    "restore_playback": "propose/apply 'resume' succeeded; accepted_state_id 11467616885574259981 live again; final inspect clean (evidence/weld-inspection/client-inspect-final.json)"
+  },
+  "headless_tests": [
+    {
+      "command": "cd D:/Chimera-Maintenance/ChimeraStudio/integration && set CHIMERA_STUDIO_ROOT=D:/Chimera-Maintenance/ChimeraStudio/integration && set BLENDER_USER_SCRIPTS=D:/Chimera-Maintenance/ChimeraStudio/integration/.user/scripts && D:/Chimera-Maintenance/ChimeraStudio/build-blender/bin/Release/blender.exe --background --factory-startup --app-template ChimeraStudio --python-exit-code 7 --python tests/test_membrane_workshop_workflow.py",
+      "result": "PASS, exit 0, 9/9 checks; evidence/membrane-workshop-workflow-checks.json regenerated with panel_weld_lines ['Weld Film C + Film A: authored and accepted','Weld Film B + Film A: authored and accepted']; reconnect check asserts one missing-weld line during disconnect and two authored-and-accepted lines after reconnect; project_byte_identical=true"
+    },
+    {
+      "command": "cd D:/Chimera-Maintenance/ChimeraStudio/integration && D:/Chimera-Maintenance/ChimeraStudio/build-blender/bin/Release/blender.exe --background --factory-startup --python-exit-code 7 --python tests/test_shared_operations.py",
+      "result": "ALL FOUR NEW CONNECTION CHECKS PASS: 'inspect connections lists every authored and accepted apex weld with names', 'disconnecting one weld flags exactly that edge missing while inspect stays offline', 'a newly authored weld outside the accepted build is flagged stale by edge identity', 'restoring the authored welds clears every stale/missing flag'; the run then stopped at the PRE-EXISTING owned-helper-failure step ('Private native owner closed; resume explicitly' now raised synchronously at submit, so the original run() assertion fails before the intended wait())"
+    },
+    {
+      "command": "same command with tests/.probe_orig_shared_operations.py (verbatim original test body without this task's additions; probe removed after the run)",
+      "result": "FAILS at the identical step with the identical error, proving the shared-operations gate breakage is PRE-EXISTING on the current tree (foreign lane's uncommitted gpu_native/gpu_workspace/native_session changes dated Oct 19-21 postdate the recorded Oct-19 gate pass), NOT caused by the connection-inspection change. The prior gate evidence dir was backed up and restored byte-for-byte; this run's failure.json is preserved at D:/Chimera-Maintenance/ChimeraStudio/integration/.user/weld-inspection/failure-shared-operations-gpu-close-step.json"
+    }
+  ],
+  "headless_panel_evidence": "weld lines drawn through operations_ui.wrapped in the real panel; headless recorder path (context.region absent) falls back to l.label, which is what the workshop gate asserts",
+  "left_running": "one Blender with -EnableClient, PID 62592, Membrane Workshop project open, helper resumed on accepted_state_id 11467616885574259981, session f59bd872cd864658b3914f01655087fc active (client-sessions-final.json)",
+  "scope_honesty": "No reaction forces or new physics: the panel's ATTACHMENT_SCOPE_NOTE is unchanged and pinned by test; the build all()/any() filtering asymmetry (blocks_ui.py Build vs operations._source_match) is intentionally NOT changed in this increment - it is now visible per edge. No engine, model-service or transport change.",
+  "known_limits": [
+    "inspect['connections'] compares the authored scene list with the accepted compiled spec only; it does not validate geometry/material staleness per edge (that stays in source_matches_native/source_note)",
+    "duplicate authored edges would collapse into one reported weld (the existing Connect operator already refuses duplicates)",
+    "the live-window disconnect/reconnect receipt is transcript-captured; only the initial and final client inspect JSONs are on disk in this dir"
+  ]
+}
