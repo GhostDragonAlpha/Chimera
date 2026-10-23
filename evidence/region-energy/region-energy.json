@@ -1,0 +1,58 @@
+{
+  "schema": "chimera.studio.evidence.region-energy.v1",
+  "date": "2026-10-22",
+  "task": "Plan 13.1 next increment (researcher-verified): per-film area (m2) and energy contribution (J) in Inspect Current Matter, with an explicit residual check against native energy_J, fail-closed",
+  "purpose": "Inspect Current Matter shows each film's current area and energy contribution as real native-consequence numbers per construction part; the declared law U = gamma * sum(face_area) (pinned kernel vendor/gpu/source/shaders/membrane_demo.comp:128-134) makes the per-region decomposition EXACT, and the sum is checked against native energy_J (engine.cpp:5266 enforces sum==energy_J on restore; independent finite-difference precedent tests/test_membrane_assembly.py:69-72). Fail-closed: a wrong number can never display (plan 14: no correct-looking display of unsupported physics).",
+  "additive_only": true,
+  "changes": [
+    "D:/Chimera-Maintenance/ChimeraStudio/integration/python/chimera_studio/operations.py (new pure helper _regions_report(doc): per region {id, name, faces, area_m2, energy_J} in float64 via Heron from accepted state['positions_f32'] and spec['assembly']['regions'][i]['faces'] x uniform gamma; verifies the region face lists are the exact triangle partition; energy_sum_J and energy_residual_J = |sum - state['energy_J']|; FAIL-CLOSED -> {'available': False, 'reason': ...} with NO numbers when residual > 3e-4 J, values non-finite, partition broken, or no accepted membrane doc; wired into inspect() beside 'connections'; no native/engine change, no new math in view_match/native_capture, no blocks_ui.py edit)",
+    "D:/Chimera-Maintenance/ChimeraStudio/integration/python/chimera_studio/operations_ui.py (UNCOMMITTED, foreign lane's untracked file: after the 'Last inspection' line the Shared Human / AI Operations panel draws one compact wrapped line per film, e.g. 'Film A: 3.266 m\u00b2 \u00b7 3.266 J', plus a residual line carrying the honesty wording 'Blender-side arithmetic on accepted geometry, not an independent native measurement'; live draw follows the same guarded pattern as the Membrane Assembly weld lines; edited on disk only, per commit rules)",
+    "D:/Chimera-Maintenance/ChimeraStudio/integration/OPERATIONS.md (inspect contract paragraph extended after the connections fields with the regions field docs and the honesty wording: decomposition of the declared law U = gamma*sum(face area); sum checked against native energy_J; region values are Blender-side arithmetic on accepted native geometry, NOT independent native measurements; edited on disk, NOT committed per commit rules)",
+    "D:/Chimera-Maintenance/ChimeraStudio/integration/tests/test_membrane_workshop_workflow.py (extended the existing 'Deformation finite...' inspect check, keeping the gate at 9/9: recomputes every region's Heron area from r.state/r.spec independently, asserts exact agreement with inspect()['regions'] (name, faces, area_m2, energy_J), the exact triangle partition, sum agreement, residual <= 3e-4 J and residual == |recomputed sum - native energy_J|; records the actual per-region numbers in the check details)",
+    "D:/Chimera-Maintenance/ChimeraStudio/integration/tests/test_shared_operations.py (new offline checks placed BEFORE the pre-existing broken owned-helper step, after the weld-flag checks: no accepted doc -> {'available': False, 'reason': ...} with no other keys; forged energy_J (+1 J) -> fail-closed refusal with reason naming energy_J; plus live agreement: available, residual <= 3e-4 J, sum of region energies == energy_sum_J, and inspect()['regions']['regions'] equality; pattern follows tests/test_workflow_outcomes_guards.py:15)"
+  ],
+  "commit": {
+    "code_and_tests": "a354949 'Report per-film area and energy in shared inspect with a native-energy residual check' (chimera/studio-integration, Agent: Codex; exactly operations.py, tests/test_membrane_workshop_workflow.py, tests/test_shared_operations.py)",
+    "receipt_commit": "this receipt + client-inspect-initial.json + panel-probe.json committed separately in evidence/region-energy/ so the code commit hash could be recorded",
+    "operations_ui_not_committed": "operations_ui.py is the foreign lane's UNTRACKED file; edited on disk, NOT committed",
+    "operations_doc_not_committed": "OPERATIONS.md edited on disk, NOT committed per commit rules. NOTE: the assignment said OPERATIONS.md is UNTRACKED, but at HEAD 170b90e it is a tracked file with uncommitted modifications from earlier lanes (' M OPERATIONS.md'); it was left uncommitted either way, per the explicit commit list."
+  },
+  "project_file": "D:/Chimera-Maintenance/ChimeraStudio/Projects/Membrane Workshop/Chimera Membrane Workshop.blend",
+  "project_sha256_before": "9939fe449a9cf8b70f7e6a29979659883046b29d61468ac35002d4603df57086",
+  "project_sha256_after": "9939fe449a9cf8b70f7e6a29979659883046b29d61468ac35002d4603df57086",
+  "project_byte_identical": true,
+  "window_restart": {
+    "closed": "blender.exe PID 84380 (lead's instance with the OLD add-on code) taskkill /PID 84380 /F per assignment; SUCCESS, no unsaved edits were made by this lane",
+    "relaunch_command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \"& 'D:/Chimera-Maintenance/ChimeraStudio/integration/launch/Start-ChimeraStudio.ps1' -EnableClient\"",
+    "relaunch_pid": 94656,
+    "sessions_after_35s": {"active": true, "pid": 94656, "session": "6434a4dc9acd4902b62ec4d3f5b5d714", "file": "D:\\Chimera-Maintenance\\ChimeraStudio\\Projects\\Membrane Workshop\\Chimera Membrane Workshop.blend", "transport": "local JSON files; typed Studio operations only"}
+  },
+  "real_window_client_checks": {
+    "inspect": {
+      "evidence": "evidence/region-energy/client-inspect-initial.json",
+      "request": ".user/region-inspect-req.json (typed studio_client request --file, session 6434a4dc9acd4902b62ec4d3f5b5d714)",
+      "result": "regions available=true, gamma_J_m2=1.0; Film C 200 faces 0.889224 m2 / 0.889224 J; Film B 200 faces 2.161121 m2 / 2.161121 J; Film A 200 faces 3.265649 m2 / 3.265649 J; energy_sum_J=6.315993216839711; energy_residual_J=2.059617908756195e-05 (<= 3e-4); accepted_state_id 11467616885574259981 resumed offline"
+    },
+    "panel_lines": {
+      "evidence": "evidence/region-energy/panel-probe.json (uncommitted .user/region-energy/panel-probe.py; headless draw of CHIMERA_PT_operations with a fake 400px region)",
+      "result": "film lines ['Film C: 0.889 m\u00b2 \u00b7 0.889 J', 'Film B: 2.161 m\u00b2 \u00b7 2.161 J', 'Film A: 3.266 m\u00b2 \u00b7 3.266 J'] plus residual line 'Film energy sum 6.316 J; residual vs native energy_J ...' drawn through wrapped(); project .blend byte-identical",
+      "note": "kept as an uncommitted probe because committed test assertions must depend only on clean files and operations_ui.py is the foreign lane's untracked file; the real -EnableClient window draws the same lines live every redraw"
+    }
+  },
+  "headless_tests": [
+    {
+      "command": "cd D:/Chimera-Maintenance/ChimeraStudio/integration && set CHIMERA_STUDIO_ROOT=D:/Chimera-Maintenance/ChimeraStudio/integration && set BLENDER_USER_SCRIPTS=D:/Chimera-Maintenance/ChimeraStudio/integration/.user/scripts && D:/Chimera-Maintenance/ChimeraStudio/build-blender/bin/Release/blender.exe --background --factory-startup --app-template ChimeraStudio --python-exit-code 7 --python tests/test_membrane_workshop_workflow.py",
+      "result": "PASS, exit 0, 9/9 checks (gate kept at nine); evidence/membrane-workshop-workflow-checks.json regenerated with regions_energy_sum_J=6.316000509763984, regions_energy_residual_J=1.7594789238906117e-05 vs native energy_J 6.316018104553223, per-region areas 0.8892206962868612 / 2.1611162847733687 / 3.2656635287037536 m2; project_byte_identical=true"
+    },
+    {
+      "command": "cd D:/Chimera-Maintenance/ChimeraStudio/integration && D:/Chimera-Maintenance/ChimeraStudio/build-blender/bin/Release/blender.exe --background --factory-startup --python-exit-code 7 --python tests/test_shared_operations.py",
+      "result": "ALL THIRTEEN CHECKS UP TO AND INCLUDING THE NEW ONE PASS: 'region area/energy report is offline, exact and fail-closed against forged native energy_J' (no-doc available:false with only {'available','reason'}; forged energy_J +1 J refused with reason naming energy_J; live residual <= 3e-4 and inspect equality). The run then stopped at the PRE-EXISTING foreign owned-helper-failure step ('Private native owner closed; resume explicitly' raised synchronously at submit so run('apply_load') fails its status assertion) - recorded honestly, NOT fixed (foreign gpu_native/gpu_workspace/native_session files untouched, same pre-existing breakage the weld-inspection receipt documented). This run's failure.json preserved at D:/Chimera-Maintenance/ChimeraStudio/integration/.user/region-energy/failure-shared-operations-gpu-close-step.json"
+    }
+  ],
+  "left_running": "one Blender with -EnableClient, PID 94656, Membrane Workshop project open, accepted checkpoint 11467616885574259981 restored offline, session 6434a4dc9acd4902b62ec4d3f5b5d714 active",
+  "scope_honesty": "Accepted-state per-region area+energy ONLY: no authored-vs-accepted delta, no per-face table, no forces/stiffness/reaction wording, no libuipc regions. The numbers are Blender-side arithmetic on accepted native geometry checked against native energy_J (labels, OPERATIONS.md and the report 'basis' string all say NOT independent native measurements). No engine, native kernel, blocks_ui.py, gpu_workspace.py, gpu_native.py, native_session.py, view_match.py or native_capture.py change.",
+  "unknowns": [
+    "The residual (~2e-5 J) comes from float32 position readback vs the float32 stored energy_J; it is stable and far under the 3e-4 J gate on both the restored project state and the freshly built gate assembly",
+    "The shared-operations gate remains broken past step 13 by the pre-existing foreign owned-helper change; my checks and all weld-connection checks run and pass before it"
+  ]
+}

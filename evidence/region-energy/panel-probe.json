@@ -1,0 +1,13 @@
+{
+  "panel": "CHIMERA_PT_operations (Shared Human / AI Operations)",
+  "film_lines": [
+    "Film C: 0.889 m\u00b2 \u00b7 0.889 J",
+    "Film B: 2.161 m\u00b2 \u00b7 2.161 J",
+    "Film A: 3.266 m\u00b2 \u00b7 3.266 J"
+  ],
+  "residual_lines": [
+    "Film energy sum 6.316 J; residual vs native"
+  ],
+  "project_byte_identical": true,
+  "inspect_regions_agrees": true
+}
