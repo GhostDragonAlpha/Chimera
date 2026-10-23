@@ -1,0 +1,267 @@
+{
+  "GPU_SOURCE_LOCK.json": {
+    "sha256": "7eb2b11543b7138978d6b355671c6b176c51d79d0fb1c7b804c671effe106e44",
+    "bytes": 40366,
+    "mtime": "2026-10-19T09:49:39"
+  },
+  "runtime/gpu/chimera_engine.exe": {
+    "sha256": "b385535126bdd3ad36fa3ab3177474f53ae19a3f6021a4ceb06f65e088c9a572",
+    "bytes": 2922496,
+    "mtime": "2026-10-19T09:49:39"
+  },
+  "build/gpu-engine/Release/chimera_engine.exe": {
+    "sha256": "22c8b7673f708ff4580b5d4e3062fa28d040e27c98d40f72c0cede6f6679fb27",
+    "bytes": 2927616,
+    "mtime": "2026-10-23T11:57:17"
+  },
+  "runtime/gpu/shaders\\compute.spv": {
+    "sha256": "2a22bf45212204113f5d4b8785a52ac9eb6280b6302ade133efd5d676bbe91ab",
+    "bytes": 7976,
+    "mtime": "2026-10-19T09:49:39"
+  },
+  "runtime/gpu/shaders\\floor.frag.spv": {
+    "sha256": "bcf012a1937628bdefcc78f025846db00bd3dea8c618fbd3d66e071d1c009671",
+    "bytes": 2720,
+    "mtime": "2026-10-19T09:49:39"
+  },
+  "runtime/gpu/shaders\\floor.vert.spv": {
+    "sha256": "99f48656bdd8f1df9893b5ed561b5bf4715779d4f0ff183169cb54a59c91831e",
+    "bytes": 2296,
+    "mtime": "2026-10-19T09:49:39"
+  },
+  "runtime/gpu/shaders\\frost_decode.spv": {
+    "sha256": "fd4287fafb487d662d592ee26c7718613b516e682700af460a2b74541ef8c545",
+    "bytes": 27100,
+    "mtime": "2026-10-19T09:49:39"
+  },
+  "runtime/gpu/shaders\\gait.spv": {
+    "sha256": "36c26a9df5d095e1d01d765a16e1538dffddf5d660585b0f495c4be9ed1933a7",
+    "bytes": 19812,
+    "mtime": "2026-10-19T09:49:39"
+  },
+  "runtime/gpu/shaders\\hinge.spv": {
+    "sha256": "3a3326fe7485ad6601e8bea6f8ab584564c7898f1a0edf1ec213c416c8c64b94",
+    "bytes": 9276,
+    "mtime": "2026-10-19T09:49:39"
+  },
+  "runtime/gpu/shaders\\joints.spv": {
+    "sha256": "5c5cdc9bf230570c54c3ebab7631c16846b607da71e972c6fd1dda43e037dbb4",
+    "bytes": 27776,
+    "mtime": "2026-10-19T09:49:39"
+  },
+  "runtime/gpu/shaders\\membrane_demo.spv": {
+    "sha256": "438e1c3b61732a9b53e011ded24526767a3132f8b2292cc45d8b4cce7ef10f57",
+    "bytes": 16120,
+    "mtime": "2026-10-19T09:49:39"
+  },
+  "runtime/gpu/shaders\\render.frag.spv": {
+    "sha256": "5f8d792dbd6f2b4184aa6fb9218bb6238339a64fa40a1d638b514fa34436be40",
+    "bytes": 1364,
+    "mtime": "2026-10-19T09:49:39"
+  },
+  "runtime/gpu/shaders\\render.vert.spv": {
+    "sha256": "a36b5acc73a3a01086d2dc0fa1d24c2b7c7d2c7f0985058f9531c403449ae8a9",
+    "bytes": 8724,
+    "mtime": "2026-10-19T09:49:39"
+  },
+  "runtime/gpu/shaders\\render_tri.frag.spv": {
+    "sha256": "a26c2ec8b473be0a36c4e43292706358a3fd9ce09a75bdca5a28e6aa877b5cd6",
+    "bytes": 3160,
+    "mtime": "2026-10-19T09:49:39"
+  },
+  "runtime/gpu/shaders\\render_tri.vert.spv": {
+    "sha256": "c0e931b30514f3c8cde707199ddd1ee246e93958b37bbb441f2dc11d991c7079",
+    "bytes": 2368,
+    "mtime": "2026-10-19T09:49:39"
+  },
+  "runtime/gpu/shaders\\render_tri_edge.frag.spv": {
+    "sha256": "59f7213e2ee27bec45840fa48c99bada928af0638736f7f9d6f5383c7d47957d",
+    "bytes": 560,
+    "mtime": "2026-10-19T09:49:39"
+  },
+  "runtime/gpu/shaders\\render_tri_frost.frag.spv": {
+    "sha256": "7ea15d358ecf1fa35eafdead08032a3c8c1e2218bc7c05f5391c2a34cf52e8af",
+    "bytes": 1696,
+    "mtime": "2026-10-19T09:49:39"
+  },
+  "runtime/gpu/shaders\\render_tri_shadow.frag.spv": {
+    "sha256": "77d591d5e4714f216cf8c65b0867385c289393cb1b1eebd801cf1e61d4525a8e",
+    "bytes": 468,
+    "mtime": "2026-10-19T09:49:39"
+  },
+  "runtime/gpu/shaders\\render_tri_shadow.vert.spv": {
+    "sha256": "f0caad5f6ca9a079b706c0a97efe0e2178135d331c4d1ac7abca8406d1ff2ba3",
+    "bytes": 2376,
+    "mtime": "2026-10-19T09:49:39"
+  },
+  "runtime/gpu/shaders\\skin.spv": {
+    "sha256": "7e3d5580c5e8442946dabac7e7d7aca16dcbf6983c7a0f6e8c4ccf765b0af8f3",
+    "bytes": 9308,
+    "mtime": "2026-10-19T09:49:39"
+  },
+  "runtime/gpu/shaders\\sort.spv": {
+    "sha256": "a582577800675712c9ec614af1504b3078b5c3cd5be03d11a17ee8516b79e177",
+    "bytes": 4452,
+    "mtime": "2026-10-19T09:49:39"
+  },
+  "runtime/gpu/shaders\\ui.frag.spv": {
+    "sha256": "eb1f89e00ba352d3662132be8d86dbdd43d032ec562bb209eb01afa62b9b0fd6",
+    "bytes": 1268,
+    "mtime": "2026-10-19T09:49:39"
+  },
+  "runtime/gpu/shaders\\ui.vert.spv": {
+    "sha256": "6163718742b52974a5b5119aacb42294d4454d86375ec9daa1f60d4b5b51b97d",
+    "bytes": 1664,
+    "mtime": "2026-10-19T09:49:39"
+  },
+  "runtime/gpu/shaders\\volp.spv": {
+    "sha256": "4d4c3c7e8139c64fb0ec000db97977e15e41ab355cce9b3c772e2f80f486d877",
+    "bytes": 62044,
+    "mtime": "2026-10-19T09:49:39"
+  },
+  "runtime/gpu/shaders\\water_color.spv": {
+    "sha256": "78165aa62ae6b8eac82f37c2c20c39b42a767627110621d384134a62ee18d017",
+    "bytes": 7764,
+    "mtime": "2026-10-19T09:49:39"
+  },
+  "runtime/gpu/shaders\\water_depth.spv": {
+    "sha256": "5cc325a665e46278e0c9c208605523ba48b41ddd398e15546d78066c8618f6b0",
+    "bytes": 2544,
+    "mtime": "2026-10-19T09:49:39"
+  },
+  "runtime/gpu/shaders\\water_occ.spv": {
+    "sha256": "a28781dc32dcf8b1c8bf315cd2fac09d6552b6088396c4ae4a2f12c51cbd75d8",
+    "bytes": 1436,
+    "mtime": "2026-10-19T09:49:39"
+  },
+  "runtime/gpu/shaders\\water_vis.spv": {
+    "sha256": "72f422800dd0a8032fe5dfc1590610eac2159dc85ad06d1346a7ca3eab79f38d",
+    "bytes": 7380,
+    "mtime": "2026-10-19T09:49:39"
+  },
+  "build/gpu-engine/Release/shaders\\compute.spv": {
+    "sha256": "2a22bf45212204113f5d4b8785a52ac9eb6280b6302ade133efd5d676bbe91ab",
+    "bytes": 7976,
+    "mtime": "2026-10-23T11:57:17"
+  },
+  "build/gpu-engine/Release/shaders\\floor.frag.spv": {
+    "sha256": "bcf012a1937628bdefcc78f025846db00bd3dea8c618fbd3d66e071d1c009671",
+    "bytes": 2720,
+    "mtime": "2026-10-23T11:57:17"
+  },
+  "build/gpu-engine/Release/shaders\\floor.vert.spv": {
+    "sha256": "99f48656bdd8f1df9893b5ed561b5bf4715779d4f0ff183169cb54a59c91831e",
+    "bytes": 2296,
+    "mtime": "2026-10-23T11:57:17"
+  },
+  "build/gpu-engine/Release/shaders\\frost_decode.spv": {
+    "sha256": "fd4287fafb487d662d592ee26c7718613b516e682700af460a2b74541ef8c545",
+    "bytes": 27100,
+    "mtime": "2026-10-23T11:57:17"
+  },
+  "build/gpu-engine/Release/shaders\\gait.spv": {
+    "sha256": "36c26a9df5d095e1d01d765a16e1538dffddf5d660585b0f495c4be9ed1933a7",
+    "bytes": 19812,
+    "mtime": "2026-10-23T11:57:17"
+  },
+  "build/gpu-engine/Release/shaders\\hinge.spv": {
+    "sha256": "3a3326fe7485ad6601e8bea6f8ab584564c7898f1a0edf1ec213c416c8c64b94",
+    "bytes": 9276,
+    "mtime": "2026-10-23T11:57:17"
+  },
+  "build/gpu-engine/Release/shaders\\joints.spv": {
+    "sha256": "5c5cdc9bf230570c54c3ebab7631c16846b607da71e972c6fd1dda43e037dbb4",
+    "bytes": 27776,
+    "mtime": "2026-10-23T11:57:17"
+  },
+  "build/gpu-engine/Release/shaders\\membrane_demo.spv": {
+    "sha256": "438e1c3b61732a9b53e011ded24526767a3132f8b2292cc45d8b4cce7ef10f57",
+    "bytes": 16120,
+    "mtime": "2026-10-23T11:57:17"
+  },
+  "build/gpu-engine/Release/shaders\\render.frag.spv": {
+    "sha256": "5f8d792dbd6f2b4184aa6fb9218bb6238339a64fa40a1d638b514fa34436be40",
+    "bytes": 1364,
+    "mtime": "2026-10-23T11:57:17"
+  },
+  "build/gpu-engine/Release/shaders\\render.vert.spv": {
+    "sha256": "a36b5acc73a3a01086d2dc0fa1d24c2b7c7d2c7f0985058f9531c403449ae8a9",
+    "bytes": 8724,
+    "mtime": "2026-10-23T11:57:17"
+  },
+  "build/gpu-engine/Release/shaders\\render_tri.frag.spv": {
+    "sha256": "a26c2ec8b473be0a36c4e43292706358a3fd9ce09a75bdca5a28e6aa877b5cd6",
+    "bytes": 3160,
+    "mtime": "2026-10-23T11:57:17"
+  },
+  "build/gpu-engine/Release/shaders\\render_tri.vert.spv": {
+    "sha256": "c0e931b30514f3c8cde707199ddd1ee246e93958b37bbb441f2dc11d991c7079",
+    "bytes": 2368,
+    "mtime": "2026-10-23T11:57:17"
+  },
+  "build/gpu-engine/Release/shaders\\render_tri_edge.frag.spv": {
+    "sha256": "59f7213e2ee27bec45840fa48c99bada928af0638736f7f9d6f5383c7d47957d",
+    "bytes": 560,
+    "mtime": "2026-10-23T11:57:17"
+  },
+  "build/gpu-engine/Release/shaders\\render_tri_frost.frag.spv": {
+    "sha256": "7ea15d358ecf1fa35eafdead08032a3c8c1e2218bc7c05f5391c2a34cf52e8af",
+    "bytes": 1696,
+    "mtime": "2026-10-23T11:57:17"
+  },
+  "build/gpu-engine/Release/shaders\\render_tri_shadow.frag.spv": {
+    "sha256": "77d591d5e4714f216cf8c65b0867385c289393cb1b1eebd801cf1e61d4525a8e",
+    "bytes": 468,
+    "mtime": "2026-10-23T11:57:17"
+  },
+  "build/gpu-engine/Release/shaders\\render_tri_shadow.vert.spv": {
+    "sha256": "f0caad5f6ca9a079b706c0a97efe0e2178135d331c4d1ac7abca8406d1ff2ba3",
+    "bytes": 2376,
+    "mtime": "2026-10-23T11:57:17"
+  },
+  "build/gpu-engine/Release/shaders\\skin.spv": {
+    "sha256": "7e3d5580c5e8442946dabac7e7d7aca16dcbf6983c7a0f6e8c4ccf765b0af8f3",
+    "bytes": 9308,
+    "mtime": "2026-10-23T11:57:17"
+  },
+  "build/gpu-engine/Release/shaders\\sort.spv": {
+    "sha256": "a582577800675712c9ec614af1504b3078b5c3cd5be03d11a17ee8516b79e177",
+    "bytes": 4452,
+    "mtime": "2026-10-23T11:57:17"
+  },
+  "build/gpu-engine/Release/shaders\\ui.frag.spv": {
+    "sha256": "eb1f89e00ba352d3662132be8d86dbdd43d032ec562bb209eb01afa62b9b0fd6",
+    "bytes": 1268,
+    "mtime": "2026-10-23T11:57:17"
+  },
+  "build/gpu-engine/Release/shaders\\ui.vert.spv": {
+    "sha256": "6163718742b52974a5b5119aacb42294d4454d86375ec9daa1f60d4b5b51b97d",
+    "bytes": 1664,
+    "mtime": "2026-10-23T11:57:17"
+  },
+  "build/gpu-engine/Release/shaders\\volp.spv": {
+    "sha256": "4d4c3c7e8139c64fb0ec000db97977e15e41ab355cce9b3c772e2f80f486d877",
+    "bytes": 62044,
+    "mtime": "2026-10-23T11:57:17"
+  },
+  "build/gpu-engine/Release/shaders\\water_color.spv": {
+    "sha256": "78165aa62ae6b8eac82f37c2c20c39b42a767627110621d384134a62ee18d017",
+    "bytes": 7764,
+    "mtime": "2026-10-23T11:57:17"
+  },
+  "build/gpu-engine/Release/shaders\\water_depth.spv": {
+    "sha256": "5cc325a665e46278e0c9c208605523ba48b41ddd398e15546d78066c8618f6b0",
+    "bytes": 2544,
+    "mtime": "2026-10-23T11:57:17"
+  },
+  "build/gpu-engine/Release/shaders\\water_occ.spv": {
+    "sha256": "a28781dc32dcf8b1c8bf315cd2fac09d6552b6088396c4ae4a2f12c51cbd75d8",
+    "bytes": 1436,
+    "mtime": "2026-10-23T11:57:17"
+  },
+  "build/gpu-engine/Release/shaders\\water_vis.spv": {
+    "sha256": "72f422800dd0a8032fe5dfc1590610eac2159dc85ad06d1346a7ca3eab79f38d",
+    "bytes": 7380,
+    "mtime": "2026-10-23T11:57:17"
+  }
+}

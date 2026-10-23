@@ -1,0 +1,8 @@
+-- Selecting Windows SDK version 10.0.26100.0 to target Windows 10.0.26200.
+-- Configuring done (0.1s)
+-- Generating done (0.1s)
+-- Build files have been written to: D:/Chimera-Maintenance/ChimeraStudio/integration/build/gpu-engine
+MSBuild version 17.14.40+3e7442088 for .NET Framework
+
+  chimera_engine.vcxproj -> D:\Chimera-Maintenance\ChimeraStudio\integration\build\gpu-engine\Release\chimera_engine.exe
+WARNING: PIN SKIPPED: runtime/gpu and GPU_SOURCE_LOCK.json unchanged; Blender keeps using the pinned runtime.
