@@ -1,0 +1,92 @@
+{
+  "schema": "chimera.studio.evidence.camera-view-match.v1",
+  "date": "2026-10-22",
+  "task": "Show Native Render in Image Editor with Match Blender View now follows a real camera view (Numpad-0): read_viewport accepts rv.view_perspective=='CAMERA', frames the native raster through the viewport's camera, keeps orthographic/panorama cameras and orthographic orbit views refusing honestly",
+  "decided_semantics": "viewport-as-seen-through-the-camera (view_perspective=='CAMERA'); NOT camera selection, NOT clip mapping, NOT aspect mapping",
+  "changes": [
+    "D:/Chimera-Maintenance/ChimeraStudio/integration/python/chimera_studio/blocks_ui.py read_viewport: PERSP orbit path byte-identical; new CAMERA branch derives eye/orientation from the viewed camera object (space.camera, falling back to scene.camera) and the FOV from the camera data through the existing view_match.viewport_fov_rad (sensor_width/lens/region aspect); non-PERSP/non-CAMERA and non-PERSP-camera cases raise the extended ORTHO_MESSAGE wording. No changes to view_match.py or native_capture.py.",
+    "D:/Chimera-Maintenance/ChimeraStudio/integration/tests/test_membrane_ui.py: new real-window phases 8/9/10 -- create a 50 mm camera at the established fixed-view eye aimed at the membrane centre, enter camera view with bpy.ops.view3d.view_camera in the real window, native render, assert mode=='VIEWPORT' framed to the camera (eye round-trip < 1e-6), FOV-mismatch warning present, no roll warning, ORTHO camera refuses with the message, Image Editor screenshot; deadline 45->75 s; refusal assertions now catch the RuntimeError that bpy.ops raises for a refused operator (previously asserted {'CANCELLED'}, which the operator never returns through Python).",
+    "D:/Chimera-Maintenance/ChimeraStudio/integration/tests/test_viewport_camera_native.py: one camera-derived pose pin through capture() asserting the existing gates (delta_px<1.5, readback_max_err<2e-4), upright camera with 50 mm lens (FOV warning asserted, roll warning asserted absent), eye round-trip < 1e-9."
+  ],
+  "commit_rules": "COMMIT RULES STATED HONESTLY: blocks_ui.py, tests/test_membrane_ui.py and tests/test_viewport_camera_native.py carry ANOTHER LANE's uncommitted work (git status shows all three modified before this task); they were edited here but are NOT committed. Only this evidence/camera-view-match/ directory is committed, with an Agent: Codex trailer.",
+  "verification": {
+    "real_window_run": {
+      "command": "blender.exe (fork build D:/Chimera-Maintenance/ChimeraStudio/build-blender/bin/Release/blender.exe, build-exit.txt==0) --factory-startup --app-template ChimeraStudio --python tests/test_membrane_ui.py (arguments identical to Start-ChimeraStudio.ps1 minus the project file, which the launcher only adds for the Workshop; -Empty was dropped after the first run because blender.exe itself misparses '-Empty' as a file name and raised a cosmetic 'Unable to Load File' popup unrelated to the feature)",
+      "evidence_files": [
+        "D:/Chimera-Maintenance/ChimeraStudio/integration/evidence/membrane-ui-checks.json (pass:true; keys view_match, camera_view)",
+        "D:/Chimera-Maintenance/ChimeraStudio/integration/evidence/membrane-blender-camera-view.png (Image Editor showing the camera-framed native render; inspected visually: membrane under load seen through the camera, no refusal, no unrelated dialogs)",
+        "D:/Chimera-Maintenance/ChimeraStudio/integration/evidence/membrane-blender-native-view.png"
+      ],
+      "orbit_view_receipt": {
+        "delta_px": 3.303462940328324e-05,
+        "readback_max_err": 7.865864083411722e-07,
+        "warnings": ["native camera has no roll; the render is upright", "native raster uses a fixed 45 deg vertical FOV; framing differs from the viewport"]
+      },
+      "camera_view_receipt": {
+        "mode": "VIEWPORT",
+        "requested_cam8": [3.5, 0.60000003597676, 0.3649763646690929, -0.16825628280639648, 0.1861410140991211, 0.2459392547607422, 0.0, 0.0],
+        "delta_px": 1.9172226502803938e-05,
+        "readback_max_err": 3.7171936035085285e-06,
+        "frame_changed": true,
+        "warnings": ["native raster uses a fixed 45 deg vertical FOV; framing differs from the viewport"],
+        "camera_eye_physical": [1.6778212785720825, 2.4524645805358887, 1.435386300086975],
+        "eye_roundtrip_assert": "max|vm.eye_from_cam8(requested_cam8) - (x,z,-y) of camera world position| < 1e-6 PASSED",
+        "camera_entry_assert": "bpy.ops.view3d.view_camera set rv.view_perspective=='CAMERA' and space.camera resolved to the scene camera: PASSED (programmatic camera-view entry DOES sync region_3d's rotation and perspective; see known_limits for what it does not sync)"
+      },
+      "refusal_asserts": {
+        "ortho_camera": "camera data.type='ORTHO' inside camera view: render refused; bpy.ops raised RuntimeError containing ORTHO_MESSAGE ('...switch the viewport to Perspective...'); panel message contains 'Perspective': PASSED",
+        "ortho_viewport": "region_3d.view_perspective='ORTHO' orbit: same refusal: PASSED"
+      }
+    },
+    "headless_capture_run": {
+      "command": "blender.exe --background --factory-startup --app-template ChimeraStudio --python-exit-code 7 --python tests/test_viewport_camera_native.py",
+      "evidence_file": "D:/Chimera-Maintenance/ChimeraStudio/integration/evidence/viewport-camera/native.json (passed:true, 4 views)",
+      "camera_pose_pin": {
+        "requested_cam8": [3.257748, 0.6, 0.422356, 0.0, 0.1, 0.0, 0.0, 0.0],
+        "readback_max_err": 3.6902174682662547e-06,
+        "delta_px": 2.0594878569686847e-05,
+        "warnings": ["native raster uses a fixed 45 deg vertical FOV; framing differs from the viewport"],
+        "eye_roundtrip_err": "< 1e-9 asserted and passed"
+      }
+    },
+    "region_3d_semantics_probe": {
+      "purpose": "verify the assignment's stated assumption that window_matrix already encodes the camera lens/sensor-fit FOV in camera view, before relying on it",
+      "method": "real-window probe scripts (retained at .user/camera-view-probe.py) plus reading the fork source (view3d_navigate_view_camera.cc, view3d_navigate_smoothview.cc, view3d_utils.cc ED_view3d_from_m4, view3d_view.cc view3d_viewmatrix_set/obmat_to_viewmat, blenkernel camera.cc BKE_camera_params_from_view3d/compute_viewplane)",
+      "findings": [
+        "ORBIT convention confirmed by Blender itself: 'Align Camera to View' placed a camera at exactly view_location + view_rotation.to_matrix()@(0,0,view_distance) = (2.090112, -2.511183, 2.348109) -- the existing PERSP conversion is correct and untouched.",
+        "Assignment assumption VERIFIED FALSE: in camera view window_matrix[1][1] still carried the passepartout zoom. 50 mm lens, 36 mm sensor, region 1180x2258 (portrait): camera vfov = 39.5978 deg, window_matrix vfov = 71.5078 deg = exactly 2x (BKE_camera_params_from_view3d uses CAMERA_PARAM_ZOOM_INIT_CAMOB/zoom_to_fac(camzoom); default camzoom 0 -> 2.0 zoom-out). Using it would have rendered the passepartout, not the camera frame.",
+        "view_camera_sync: rv.view_rotation becomes the camera's world rotation, but rv.view_location and rv.view_distance keep the previous orbit's pivot/distance (stale).",
+        "rv.view_camera is None in this fork even inside camera view; the viewed camera is resolved as space.camera (the same v3d->camera the camera view draws through), falling back to scene.camera.",
+        "Consequently the CAMERA branch uses the camera object's matrix_world for eye/orientation and view_match.viewport_fov_rad(sensor_width, lens, region aspect) for the FOV -- existing math, reused, not reimplemented."
+      ],
+      "probe_files": "D:/Chimera-Maintenance/ChimeraStudio/integration/.user/camera-view-probe.py, camera-view-probe.json, camera-view-probe.log (scratch, uncommitted)"
+    }
+  },
+  "flag_run": {
+    "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"D:/Chimera-Maintenance/ChimeraStudio/integration/launch/Start-ChimeraStudio.ps1\" -EnableClient",
+    "launcher_exit": 0,
+    "pid": 84380,
+    "wait_seconds": 35,
+    "sessions": {"ok": true, "session_count": 1, "session": {"active": true, "file": "D:\\Chimera-Maintenance\\ChimeraStudio\\Projects\\Membrane Workshop\\Chimera Membrane Workshop.blend", "pid": 84380, "scene": "Scene", "schema": "chimera.studio.client.v1", "session": "37eda0b00e744ef1abf2502d5abcf0e8", "transport": "local JSON files; typed Studio operations only"}},
+    "inspect_request": {"method": "inspect", "args": {}},
+    "inspect_result_summary": {"ok": true, "schema": "chimera.studio.operations.v1", "actions_count": 61, "parts": ["Film A", "Film B", "Film C"], "source_matches_native": true, "render_native_action_available": true}
+  },
+  "project_sha256_before": "9939fe449a9cf8b70f7e6a29979659883046b29d61468ac35002d4603df57086",
+  "project_sha256_after": "9939fe449a9cf8b70f7e6a29979659883046b29d61468ac35002d4603df57086",
+  "project_file": "D:/Chimera-Maintenance/ChimeraStudio/Projects/Membrane Workshop/Chimera Membrane Workshop.blend",
+  "left_running": "one Blender (pid 84380) launched via the official launcher with -EnableClient, session 37eda0b00e744ef1abf2502d5abcf0e8 live and verified",
+  "not_run": [
+    "shared-operations headless gate: not run; the owned-helper-failure step would be pre-existing foreign-lane breakage per evidence/weld-inspection/weld-inspect.json:17 and is explicitly out of scope here",
+    "evidence/viewport-camera/acceptance.json untouched (frozen committed receipt)"
+  ],
+  "known_limits": [
+    "sensor-fit resolves against the viewport region aspect (observed 1180x2258 portrait); the native 384x256=1.5 aspect may frame the camera differently horizontally -- pre-existing class, unchanged",
+    "camera clip_start/clip_end stay unmapped to native NEAR/FAR (0.1-1000)",
+    "roll > 2 deg warns (native law has no roll); the test camera is upright and asserts no roll warning",
+    "window_matrix in camera view carries the camera-view passepartout zoom (2x at default camzoom), so it is NOT used for the camera FOV; the FOV comes from the camera object via view_match.viewport_fov_rad. Zooming inside camera view (camzoom/camdx) changes the on-screen framing but not the camera object, so the native render follows the camera object, not the zoomed screen",
+    "region_3d does not sync view_location/view_distance in camera view (verified: they keep the previous orbit's pivot/distance); the CAMERA branch reuses rv.view_distance clamped into the native orbit range only as the free radius parameter r -- the rendered image depends on the camera eye/direction/FOV, not on r",
+    "rv.view_camera is None in this fork; the viewed camera is space.camera (fallback scene.camera) -- the same object the viewport camera view renders through",
+    "camera matrix_world is read from the evaluated object; a parented/animated camera needs an up-to-date depsgraph evaluation (operator invocation follows a redraw, so this holds in practice; not specially guarded)",
+    "the membrane UI test's first run in this task hit a cosmetic 'Unable to Load File' popup because blender.exe misparses '-Empty' (an argument only the launcher script interprets); the final run uses launcher-equivalent arguments without -Empty and the popup is gone"
+  ]
+}
