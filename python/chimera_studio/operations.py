@@ -79,6 +79,8 @@ ACTIONS = {
     'authoring': ('chimera.gpu_authoring', (0, 0), False),
     'learn_native_warm_start': ('chimera.learn_native_warm_start',(0,0),False),
     'set_native_warm_start': ('chimera.set_native_warm_start',(0,0),True),
+    'save_trial': ('chimera.gpu_save', (0, 0), False),
+    'open_trial': ('chimera.gpu_open', (0, 0), False),
     'duplicate_layers': ('uipc.duplicate_construction', (1, 128), False),
 }
 
@@ -342,6 +344,32 @@ def _number(value, lo, hi, name):
     return value
 
 
+def _trial_path(value, *, open_file):
+    """Absolute .matter.json path inside the Studio root, for the shared
+    save/open trial boundary. The scripted path is stricter than the human
+    file browser: relative paths and foreign roots are refused with a named
+    reason, so a proposal can never point the native owner at another location."""
+    from pathlib import Path
+    from .native import ROOT
+    from . import gpu_native
+    if not isinstance(value, str) or not value or '\0' in value:
+        raise ValueError('Give the trial an absolute .matter.json path inside the Studio root')
+    p = Path(value)
+    if not p.is_absolute():
+        raise ValueError('Trial path must be absolute; relative paths are refused')
+    p = p.resolve()
+    root = ROOT.resolve()
+    if p != root and root not in p.parents:
+        raise ValueError('Trial path stays inside the Studio root (' + str(root) + '); foreign roots are refused')
+    if not p.name.lower().endswith('.matter.json'):
+        raise ValueError('Trial file uses the .matter.json suffix')
+    if open_file:
+        if not p.is_file():raise ValueError('Trial file does not exist: ' + str(p))
+        if p.stat().st_size > gpu_native.MAX_DOC:raise ValueError('Matter trial exceeds 8 MiB')
+    elif not p.parent.is_dir():
+        raise ValueError('Trial folder does not exist: ' + str(p.parent))
+    return p
+
 def preflight(context, action, targets, params):
     if action not in ACTIONS or not isinstance(params, dict):
         raise ValueError('Choose an advertised Studio action and parameter object')
@@ -392,6 +420,7 @@ def preflight(context, action, targets, params):
         return [],native_warm_start.preflight(action,params)
     keys = {'learn_procedure': {'candidate','name'}, 'run_procedure': {'procedure','bindings','values'}, 'forget_procedure': {'procedure'}, 'search_adaptive': {'gammas','load','target','tolerance','budget','schedule'}, 'select_adaptive_result': {'index'}, 'create_adaptive_result': {'index'}, 'search_designs': {'gammas','scales','load','band_width','bands','budget','seed'}, 'select_design': {'index'}, 'create_design': {'index'}, 'create_mounted_panel': {'origin'}, 'render_native': {'view'}, 'search_material': {'gammas','load','target','tolerance'}, 'select_material_result': {'index'}, 'learn_assembly': {'name'}, 'instantiate_assembly': {'gamma'}, 'assign_surface': {'gamma'}, 'mark_apex': {'vertex'}, 'apply_load': {'load'},
             'replay': {'checkpoint'}, 'duplicate_layers': {'offset'}, 'capture_layers': {'slot','label'}, 'compare_layers': {'seconds','focus'}, 'show_layer_trials': {'seconds','focus'}, 'capture_trial': {'slot','label'}, 'link_evidence': {'target','recipe'}}.get(action, set())
+    if action in ('save_trial','open_trial'):keys = {'path'}
     if action=='run_procedure' and 'strategy' in params:keys=keys|{'strategy'}
     if set(params) != keys:
         raise ValueError('Expected parameters: ' + ', '.join(sorted(keys)))
@@ -490,6 +519,9 @@ def preflight(context, action, targets, params):
             _number(value, -1000, 1000, 'Offset')
         # Native libuipc validates the closed selection again at execution.
         preview['requires_bake'] = True
+    elif action in ('save_trial', 'open_trial'):
+        checked = _trial_path(params['path'], open_file=action == 'open_trial')
+        preview['trial_path'] = str(checked)
     return objects, preview
 
 
@@ -584,6 +616,15 @@ def propose(action, targets=None, params=None, purpose='', context=None):
         else:
             raise ValueError('Finish or discard pending proposals before creating more')
     _records[record['id']] = record
+    if action in ('save_trial','open_trial'):
+        # The visible proposal panel enumerates only the actions it labels;
+        # mirror a scripted save/open trial by message so the shared record
+        # still reaches the human without editing that enum here.
+        if hasattr(context.scene,'chimera_operations'):
+            settings=context.scene.chimera_operations
+            settings.parameters=canonical(params);settings.purpose=purpose.strip()
+            settings.latest=record['id'];settings.message='Proposal ready: '+action
+        return copy.deepcopy(record)
     if hasattr(context.scene,'chimera_operations'):
         settings=context.scene.chimera_operations
         settings.action=action;settings.parameters=canonical(params);settings.purpose=purpose.strip()
@@ -740,6 +781,7 @@ def apply(operation_id, context=None):
             if action=='instantiate_assembly':kwargs={'gamma_json':canonical(params['gamma']),'purpose':record['purpose']}
             if action in ('capture_trial','link_evidence','capture_layers'):kwargs={**params,'purpose':record['purpose']}
             if action in ('compare_layers','show_layer_trials'):kwargs={**params,'preview':action=='show_layer_trials'}
+            if action in ('save_trial','open_trial'):kwargs={'filepath':params['path']}
             if not operator.poll():raise ValueError('Blender operator is unavailable in this context')
             result = operator('EXEC_DEFAULT', **kwargs)
             if result != {'FINISHED'}:raise RuntimeError('Blender command refused: ' + str(result))

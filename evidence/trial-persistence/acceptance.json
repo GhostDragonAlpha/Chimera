@@ -1,0 +1,105 @@
+{
+  "schema": "chimera.studio.trial-persistence-acceptance.v1",
+  "deliverable": "A1 - expose the .matter.json native-trial save/open through the shared human/AI operations boundary",
+  "plan_provenance": {
+    "document": "D:/Chimera-Maintenance/PythonChimera/docs/GAME_PLAN_ACTION_RPG.md",
+    "sections": ["12.2 Human and AI use one path (~:705-712)", "Persistence meanings (~:721-726)", "Working loop save/reopen offline/replay (~:714-719)", "5 save/reuse verbs (~:122-124)"]
+  },
+  "outcome": "PASS with recorded deviations",
+  "player_benefit": "A construction saved from the Membrane Workshop is written by the same chimera.gpu_save operator a human clicks and reopened by the same chimera.gpu_open operator, so a saved construction is a real artifact both a person and a script can reopen offline and replay or continue.",
+  "native_owner_unchanged": {
+    "file": "D:/Chimera-Maintenance/ChimeraStudio/integration/python/chimera_studio/gpu_workspace.py",
+    "operators": ["chimera.gpu_save (Save, ExportHelper, self.filepath, atomic tmp+replace)", "chimera.gpu_open (Load, ImportHelper, self.filepath, 8 MiB gate at gpu_workspace.py:373)"],
+    "edited_by_this_task": false,
+    "gpu_or_lock_touched": false
+  },
+  "changes": {
+    "file": "D:/Chimera-Maintenance/ChimeraStudio/integration/python/chimera_studio/operations.py",
+    "base": "HEAD e72c146 blob + six additive hunks only (see commit_disclosure)",
+    "hunks": [
+      "ACTIONS: 'save_trial': ('chimera.gpu_save', (0, 0), False), 'open_trial': ('chimera.gpu_open', (0, 0), False)",
+      "preflight parameter keys: save_trial/open_trial accept {'path'}",
+      "_trial_path helper: absolute, Studio-root-owned .matter.json paths only; relative paths, foreign roots and wrong suffix refused with a named reason; open leg additionally requires an existing file up to gpu_native.MAX_DOC; save leg requires an existing folder",
+      "preflight save_trial/open_trial branch binds preview['trial_path']",
+      "apply passes kwargs {'filepath': params['path']} to the existing operator under EXEC_DEFAULT",
+      "propose mirrors save_trial/open_trial proposals to the human panel by message/latest only and returns early, because the visible panel's action enum (operations_ui.py, foreign-dirty, not touched) is static and does not list the new actions; all other actions take the unchanged path"
+    ],
+    "client_bridge.py": "no change (verified: dispatch routes any advertised action via commands.propose/apply)",
+    "expected_binding": "expected['native_revision'] was already bound for every action by the existing propose pattern; no additional binding needed"
+  },
+  "operations_md_contract_sentences": {
+    "note": "OPERATIONS.md is foreign-dirty and was not edited; these are the owed contract sentences, to be merged when the file's owner lands it (deferred item)",
+    "save_trial": "save_trial {\"path\": \"<absolute .matter.json inside the Studio root>\"} writes the confirmed native trial document through the existing Save GPU Matter Trial operator (atomic temp+replace). Refusals, each leaving the accepted state untouched: missing confirmed state, relative path, path outside the Studio root, non-.matter.json suffix, missing folder.",
+    "open_trial": "open_trial {\"path\": \"<absolute .matter.json inside the Studio root>\"} reopens a saved trial through the existing Open GPU Matter Trial operator into authoring display; the GPU runtime stays closed until an explicit resume. Refusals, each leaving the accepted state untouched: relative path, foreign root, missing file, file over 8 MiB, malformed or non-matching trial content.",
+    "shared_path": "Both actions are proposed/checked/applied by the same revision-checked operations path humans and scripts share; the human buttons and the scripted commands drive the identical operators."
+  },
+  "checks": {
+    "dedicated_test": {
+      "file": "D:/Chimera-Maintenance/ChimeraStudio/integration/tests/test_trial_persistence.py",
+      "invocation": "build-blender/bin/Release/blender.exe --background --factory-startup --python-exit-code 7 --python tests/test_trial_persistence.py",
+      "result": "PASS 20/20, exit 0",
+      "log": "D:/Chimera-Maintenance/ChimeraStudio/integration/.user/test_trial_run.log",
+      "artifact": "evidence/trial-persistence/trial-persistence-headless.json",
+      "saved_headless_file_sha256": "5f1329893da35f3639464d059d8bea1df90d5d542e0ba7a9a132e52ef8458ab0",
+      "coverage": [
+        "inspect advertises save_trial/open_trial",
+        "save_trial round-trip: saved document digest == owner document digest; accepted_state_id and spec equal",
+        "open_trial in a fresh (offline) state restores equal accepted_state_id and spec; no GPU session started",
+        "corrupt file refused at apply (record failed, accepted state digest unchanged)",
+        "oversized file (>8 MiB) refused at propose ('Matter trial exceeds 8 MiB'), state unchanged",
+        "relative path refused at propose (open and save legs), foreign root and sibling root refused with named reason, state unchanged"
+      ]
+    },
+    "existing_lane": {
+      "invocation": "powershell -File tools/Test-Studio.ps1 (default: test_blender.py, test_template.py, test_ca_checkpoint_offline.py)",
+      "result": "PASS, exit 0, 15 PASS lines; includes pre-existing 'Save and open physical trial preserves native state'",
+      "log": "D:/Chimera-Maintenance/ChimeraStudio/integration/.user/test_studio_default.log"
+    },
+    "live_client": {
+      "workshop_session_note": "The user's workshop window (blender.exe pid 107340, session 39814da4023943fd9f9c9621f413a490) was started before this edit; its loaded module does not list the new actions. It was left completely untouched. The live leg ran on a second opt-in session started with the documented Start-ChimeraStudio -EnableClient pattern (scratch pid 110116, session c3fffed7b397430e8831ab332bd50fea) on the current code, same workshop .blend; that window was closed after the check (taskkill on the spawned PID). No GPU session was ever started in either window; the .blend was never saved.",
+      "session": "c3fffed7b397430e8831ab332bd50fea",
+      "transport": "tools/studio_client.py sessions/request/wait over .user/clients JSON queue",
+      "steps": [
+        {"step": "inspect", "request_response_id": "7f14d79fbd604c67a32ff176324742ae", "assert": "save_trial and open_trial advertised; accepted_state_id 11467616885574259981; mode OBJECT"},
+        {"step": "propose save_trial", "request_response_id": "5505ee2934c1458e9cf2f58588d4bc73", "operation": "ef537ef041f0450cb96d80bf2fc6fd6a", "assert": "status proposed"},
+        {"step": "apply save_trial", "request_response_id": "8f42790f286549b890d5d28bbe9ee427", "assert": "status succeeded; file created under integration/.user/"},
+        {"step": "saved file", "path": "D:/Chimera-Maintenance/ChimeraStudio/integration/.user/trial-persistence-live.matter.json", "sha256": "34a698857b77599650e55c63734e37fbe36fa6dcc117d4380f669680e01d6598", "assert": "accepted_state_id 11467616885574259981, membrane, 601 vertices, schema chimera.studio.gpu-trial.v2"},
+        {"step": "propose open_trial", "request_response_id": "74ce0dada8c84e2497707bbc1241ef6e", "operation": "ff271f9669f645a18a6604a758269415", "assert": "status proposed"},
+        {"step": "apply open_trial", "request_response_id": "8a20033a88354b7386560eba7a52d08f", "assert": "status succeeded; reopened native accepted_state_id 11467616885574259981 equals the saved file"}
+      ],
+      "live_open_leg_scope": "The live open_trial leg ran in the scratch session (fresh owner state restored from the .blend text, then reopened from the saved file); the user's workshop session was never used for open_trial."
+    },
+    "blend_unchanged": {
+      "path": "D:/Chimera-Maintenance/ChimeraStudio/Projects/Membrane Workshop/Chimera Membrane Workshop.blend",
+      "sha256_before": "9939fe449a9cf8b70f7e6a29979659883046b29d61468ac35002d4603df57086",
+      "sha256_after": "9939fe449a9cf8b70f7e6a29979659883046b29d61468ac35002d4603df57086",
+      "user_session_alive_after": true
+    }
+  },
+  "commit_disclosure": {
+    "working_tree_baseline": "HEAD e72c146 + uncommitted foreign work (14 files, +5410/-432). Tests ran against the working tree, i.e. HEAD + foreign + mine. The committed operations.py blob is HEAD + the six additive hunks only, built by D:/Chimera-Maintenance/ChimeraStudio/integration/.user/build_blob.py and verified: diff(blob, HEAD) contains only additions from this task; diff(blob, working tree) contains only the foreign hunks listed below. The committed blob was therefore NOT executed as-is; it differs from the tested working tree only by the absence of the foreign hunks, none of which the new code path touches or references.",
+    "foreign_hunks_present_in_tested_tree_but_excluded_from_commit": [
+      "operations.py target_id(): 'alloy:' identity branch (chimera_alloy_id/chimera_alloy_card)",
+      "operations.py _source(): alloy_card/role/phase_indices item fields; chimera_matter_card and chimera_alloy_field source fields",
+      "operations.py preflight(): layer_editing branch prefix selection for set_alloy_temperature/export_alloy_asset",
+      "operations.py propose(): expected matter_card_packet / matter_interaction_recipe / alloy_packet / alloy_solid_packet bindings",
+      "operations.py apply(): alloy_packet/alloy_solid_packet recheck, matter_cards packet/recipe recheck, matter_card/alloy/alloy_field/matter_interaction result capture",
+      "client_bridge.py (not committed by this task): matter_cards report dispatch"
+    ],
+    "foreign_actions_in_live_inspect": "The live session's inspect may list foreign actions (create_matter_card, compose_alloy_card, set_matter_interaction, and others); assertions here are only on save_trial/open_trial, the saved file and the accepted_state_id.",
+    "verifications_run": [
+      "git show :python/chimera_studio/operations.py | grep -c -E 'alloy|matter_card' -> 0 (staged blob)",
+      "git diff --cached HEAD -- python/chimera_studio/operations.py -> only the six additive hunks"
+    ]
+  },
+  "deferred": [
+    "OPERATIONS.md sentences for save_trial/open_trial (this file records the owed contract text; OPERATIONS.md is foreign-dirty and was not edited)",
+    "A LABELS/DEFAULTS entry for save_trial/open_trial in operations_ui.py so the visible proposal panel can also propose them from its enum (operations_ui.py is foreign-dirty; until then humans use the existing panel buttons directly and scripts use the shared propose/apply path)"
+  ],
+  "limits": [
+    "The dedicated headless test seeds a synthetic-but-owner-validated membrane document (gpu_native.fixture_spec + validate_membrane_state FNV accepted_state_id) instead of starting a GPU engine; the live leg used the workshop's real confirmed checkpoint restored from the .blend without GPU.",
+    "open_trial in the live window replays the saved document into authoring display; resuming GPU from it is the existing explicit resume path and was not exercised (never start a GPU session in a live Blender window).",
+    "The scratch live session's session.json may briefly linger as 'active' after its forced close until its heartbeat expires (10 s freshness window filters it)."
+  ],
+  "next_decision": "Commit hash recorded in the task report; lead may land the OPERATIONS.md sentences and the operations_ui LABELS entries with their own files."
+}

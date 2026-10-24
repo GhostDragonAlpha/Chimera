@@ -1,0 +1,95 @@
+{
+  "pass": true,
+  "scope": "Shared save_trial/open_trial boundary: owner document round-trip, offline reopen, refusal set with no accepted-state change",
+  "saved_file_sha256": "5f1329893da35f3639464d059d8bea1df90d5d542e0ba7a9a132e52ef8458ab0",
+  "checks": [
+    {
+      "check": "inspect advertises save_trial/open_trial",
+      "pass": true,
+      "detail": "['begin_workflow_trial', 'cancel_workflow_trial', 'finish_workflow_trial', 'compare_workflow_trials', 'import_response_asset', 'export_response_asset', 'search_layer_material', 'use_layer_search_result', 'cancel_layer_search', 'prepare_layer_alternative', 'explain_layer_trials', 'create_physical_copy', 'compose_port_responses', 'measure_scaled_response', 'show_scaled_response', 'show_condensed_response', 'measure_port_response', 'learn_condensed_response', 'show_port_assembly', 'show_port_response', 'use_scaled_response_card', 'cancel_port_response', 'qualify_scaled_response', 'learn_port_response', 'measure_condensed_response', 'learn_procedure', 'run_procedure', 'cancel_procedure', 'forget_procedure', 'search_adaptive', 'cancel_adaptive_search', 'select_adaptive_result', 'create_adaptive_result', 'search_designs', 'cancel_design_search', 'select_design', 'create_design', 'render_native', 'cancel_comparison', 'search_material', 'cancel_material_search', 'select_material_result', 'learn_assembly', 'instantiate_assembly', 'link_evidence', 'capture_trial', 'compare_trials', 'create_films', 'assign_surface', 'mark_apex', 'connect_apices', 'disconnect_apices', 'build_films', 'apply_load', 'resume', 'replay', 'release', 'authoring', 'learn_native_warm_start', 'set_native_warm_start', 'save_trial', 'open_trial']"
+    },
+    {
+      "check": "apply save_trial drives the existing chimera.gpu_save operator",
+      "pass": true
+    },
+    {
+      "check": "saved document digest equals the owner document digest",
+      "pass": true
+    },
+    {
+      "check": "saved accepted_state_id matches the owner accepted_state_id",
+      "pass": true
+    },
+    {
+      "check": "saved spec equals the owner spec",
+      "pass": true
+    },
+    {
+      "check": "proposal preview carries the resolved trial path",
+      "pass": true
+    },
+    {
+      "check": "fresh state starts without a saved trial",
+      "pass": true
+    },
+    {
+      "check": "apply open_trial drives the existing chimera.gpu_open operator",
+      "pass": true
+    },
+    {
+      "check": "reopened accepted_state_id equals the saved accepted_state_id",
+      "pass": true
+    },
+    {
+      "check": "reopened spec equals the saved spec",
+      "pass": true
+    },
+    {
+      "check": "open leaves no running GPU session",
+      "pass": true
+    },
+    {
+      "check": "corrupt trial file refused at apply",
+      "pass": true,
+      "detail": "Error: Expecting value: line 1 column 55 (char 54)\n"
+    },
+    {
+      "check": "corrupt refusal leaves the accepted state unchanged",
+      "pass": true
+    },
+    {
+      "check": "oversized trial file refused at propose",
+      "pass": true,
+      "detail": "Matter trial exceeds 8 MiB"
+    },
+    {
+      "check": "oversized refusal leaves the accepted state unchanged",
+      "pass": true
+    },
+    {
+      "check": "relative path refused at propose with a named reason",
+      "pass": true,
+      "detail": "Trial path must be absolute; relative paths are refused"
+    },
+    {
+      "check": "foreign root refused at propose with a named reason",
+      "pass": true,
+      "detail": "Trial path stays inside the Studio root (D:\\Chimera-Maintenance\\ChimeraStudio\\integration); foreign roots are refused"
+    },
+    {
+      "check": "sibling root refused at propose with a named reason",
+      "pass": true,
+      "detail": "Trial path stays inside the Studio root (D:\\Chimera-Maintenance\\ChimeraStudio\\integration); foreign roots are refused"
+    },
+    {
+      "check": "save_trial relative path refused at propose with a named reason",
+      "pass": true,
+      "detail": "Trial path must be absolute; relative paths are refused"
+    },
+    {
+      "check": "path refusals leave the accepted state unchanged",
+      "pass": true
+    }
+  ],
+  "runtime": "7eb2b11543b7138978d6b355671c6b176c51d79d0fb1c7b804c671effe106e44"
+}
