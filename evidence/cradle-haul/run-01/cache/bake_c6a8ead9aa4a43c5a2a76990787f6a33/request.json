@@ -1,0 +1,206 @@
+{
+  "schema_version": 8,
+  "settings": {
+    "frame_start": 0,
+    "frame_end": 60,
+    "fps": 100.0,
+    "unit_scale": 1.0,
+    "substeps": 2,
+    "gravity": [
+      0.0,
+      0.0,
+      -9.8100004196167
+    ],
+    "d_hat": 0.0010000000474974513,
+    "friction": 0.800000011920929,
+    "resistance": 1000000000.0,
+    "solver_accuracy": "CONVERGED",
+    "contact_pairs": [
+      {
+        "material_a": "Cargo",
+        "material_b": "Pad",
+        "friction": 1.2000000476837158,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "material_a": "Pad",
+        "material_b": "Sling fabric",
+        "friction": 1.0,
+        "resistance": 1000000000.0,
+        "enabled": true
+      }
+    ],
+    "attachments": [
+      {
+        "id": "69bc2b6e04984364831df8a5e8886268",
+        "law": "SoftVertexStitch-v1",
+        "name": "Right rail to sling (2 stitches, 0.08 m spacing)",
+        "a": "811ff6d2a0f548f494cc5e77fd021532",
+        "b": "59dbe38dbacf46a39bff8abd0d8d20b5",
+        "pairs": [
+          [
+            0,
+            80
+          ],
+          [
+            3,
+            83
+          ]
+        ],
+        "rest_lengths": [
+          0.009999990463256836,
+          0.009999990463256836
+        ],
+        "stiffness": 500.0,
+        "group_a_ids": [
+          0,
+          3
+        ],
+        "group_b_ids": [
+          80,
+          83
+        ],
+        "pairing": "INDEX",
+        "reverse_b": false,
+        "a_signature": "92dd55ab65fae6b77f33b1c145c9c446d7e3bc94ef808ef99e0d4710d90add3a",
+        "b_signature": "e465c59bef49f4745a35ee32847e09290289b2c4d0c2587ee2e86d413ff369b5"
+      }
+    ]
+  },
+  "output_options": {
+    "compact_abd": true
+  },
+  "fingerprint": "87fdd2508db84b29f5745751a161c88c538eb0d792002c3232547e6456ee720c",
+  "objects": [
+    {
+      "id": "b3270df5542d4a7ebc7661f704471635",
+      "name": "01 | Left rigid rail (fixed)",
+      "material": {
+        "role": "RIGID",
+        "density": 7800.0,
+        "thickness": 0.0010000000474974513,
+        "stretch": 50000.0,
+        "shear": 10.0,
+        "bending": 30000.0,
+        "poisson": 0.49000000953674316,
+        "strain_rate": 100.0,
+        "rigidity": 1000000000.0,
+        "young_modulus": 100000.0,
+        "fixed": true,
+        "self_collision": true,
+        "pin_group": "",
+        "pin_threshold": 0.5,
+        "contact_material": "Rail"
+      }
+    },
+    {
+      "id": "811ff6d2a0f548f494cc5e77fd021532",
+      "name": "02 | Right FEM rail (pinned root)",
+      "material": {
+        "role": "FEM",
+        "density": 1500.0,
+        "thickness": 0.0020000000949949026,
+        "stretch": 50000.0,
+        "shear": 10.0,
+        "bending": 30000.0,
+        "poisson": 0.4000000059604645,
+        "strain_rate": 100.0,
+        "rigidity": 100000000.0,
+        "young_modulus": 50000000.0,
+        "fixed": false,
+        "self_collision": true,
+        "pin_group": "Fixed root",
+        "pin_threshold": 0.5,
+        "contact_material": "Rail"
+      }
+    },
+    {
+      "id": "59dbe38dbacf46a39bff8abd0d8d20b5",
+      "name": "03 | Cloth sling strap",
+      "material": {
+        "role": "CLOTH",
+        "density": 200.0,
+        "thickness": 0.0010000000474974513,
+        "stretch": 50000.0,
+        "shear": 50000.0,
+        "bending": 30000.0,
+        "poisson": 0.30000001192092896,
+        "strain_rate": 100.0,
+        "rigidity": 100000000.0,
+        "young_modulus": 100000.0,
+        "fixed": false,
+        "self_collision": true,
+        "pin_group": "",
+        "pin_threshold": 0.5,
+        "contact_material": "Sling fabric",
+        "stretch_poisson": 0.30000001192092896,
+        "shear_poisson": 0.30000001192092896,
+        "bending_poisson": 0.30000001192092896
+      }
+    },
+    {
+      "id": "e610c97e3d6a46f3b492cda5df14872d",
+      "name": "04 | Compliant pad (FEM)",
+      "material": {
+        "role": "FEM",
+        "density": 900.0,
+        "thickness": 0.003000000026077032,
+        "stretch": 50000.0,
+        "shear": 10.0,
+        "bending": 30000.0,
+        "poisson": 0.4000000059604645,
+        "strain_rate": 100.0,
+        "rigidity": 100000000.0,
+        "young_modulus": 200000.0,
+        "fixed": false,
+        "self_collision": true,
+        "pin_group": "",
+        "pin_threshold": 0.5,
+        "contact_material": "Pad"
+      }
+    },
+    {
+      "id": "eeef93c343f8429fbc2f24aaa9fca6c4",
+      "name": "05 | Off-center haul load",
+      "material": {
+        "role": "RIGID",
+        "density": 4000.0,
+        "thickness": 0.0010000000474974513,
+        "stretch": 50000.0,
+        "shear": 10.0,
+        "bending": 30000.0,
+        "poisson": 0.49000000953674316,
+        "strain_rate": 100.0,
+        "rigidity": 1000000000.0,
+        "young_modulus": 100000.0,
+        "fixed": false,
+        "self_collision": true,
+        "pin_group": "",
+        "pin_threshold": 0.5,
+        "contact_material": "Cargo"
+      }
+    },
+    {
+      "id": "c5af81c344d54f8b80cb171e25ecdf51",
+      "name": "06 | Static ground (authored surrogate)",
+      "material": {
+        "role": "STATIC",
+        "density": 200.0,
+        "thickness": 0.0010000000474974513,
+        "stretch": 50000.0,
+        "shear": 10.0,
+        "bending": 30000.0,
+        "poisson": 0.49000000953674316,
+        "strain_rate": 100.0,
+        "rigidity": 100000000.0,
+        "young_modulus": 100000.0,
+        "fixed": false,
+        "self_collision": true,
+        "pin_group": "",
+        "pin_threshold": 0.5,
+        "contact_material": "Ground"
+      }
+    }
+  ]
+}

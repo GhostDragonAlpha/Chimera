@@ -1,0 +1,14 @@
+{
+  "schema_version": 8,
+  "operation": "generate_volume",
+  "name": "04 | Compliant pad (FEM)",
+  "fingerprint": "6ca547150ba8659377d98562cd0c313000d10e227855b779b1b5106611f63e4c",
+  "unit_scale": 1.0,
+  "options": {
+    "preserve_surface": true,
+    "target_edge_length": 0.029999999329447746,
+    "quality_passes": 2,
+    "refinement_budget": 256
+  },
+  "groups": []
+}

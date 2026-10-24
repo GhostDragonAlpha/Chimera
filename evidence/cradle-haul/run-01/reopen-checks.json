@@ -1,0 +1,99 @@
+{
+  "project": "D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\evidence\\cradle-haul\\run-01\\Rescue cradle haul.blend",
+  "checks": [
+    {
+      "name": "Saved owned project reopens offline with no solver start",
+      "pass": true,
+      "details": {
+        "open_seconds": 0.01,
+        "roles": [
+          "CLOTH",
+          "FEM",
+          "FEM",
+          "RIGID",
+          "RIGID",
+          "STATIC"
+        ],
+        "cached_frames": 66,
+        "solver_started": false,
+        "recorded_pass": true
+      }
+    },
+    {
+      "name": "Exact geometry replay: evaluated cache samples match the workflow digests bit-for-bit",
+      "pass": true,
+      "details": {
+        "digest_objects": [
+          "01 | Left rigid rail (fixed)",
+          "02 | Right FEM rail (pinned root)",
+          "03 | Cloth sling strap",
+          "04 | Compliant pad (FEM)",
+          "05 | Off-center haul load"
+        ],
+        "frames": [
+          "1",
+          "31",
+          "61"
+        ],
+        "playback_error_m": 0.0,
+        "method": "sha256 of evaluated mesh cache samples"
+      }
+    },
+    {
+      "name": "Seam loads recompute offline: inspector matches independent raw decode and the repair-bake peaks",
+      "pass": true,
+      "details": {
+        "saved_bake": "bake_ed04e97cfd8a4993a1e2a0ebbf2a8e3f",
+        "seams": {
+          "Left rail to sling (4 stitches, 0.02-0.04 m spacing)": {
+            "peak_N": 110.85966215242024,
+            "peak_frame": 43
+          },
+          "Right rail to sling (2 stitches, 0.08 m spacing)": {
+            "peak_N": 57.77082575930956,
+            "peak_frame": 40
+          }
+        },
+        "inspector_vs_decode_max_diff": 0.0,
+        "rest_residual_frame0_N": 0.0,
+        "peak_drift_vs_repair_bake_N": {
+          "Left rail to sling (4 stitches, 0.02-0.04 m spacing)": 5.209999983435409e-06,
+          "Right rail to sling (2 stitches, 0.08 m spacing)": 9.413582937156662e-06
+        }
+      }
+    },
+    {
+      "name": "Layer Trial A/B pair survives save/reopen and compares with the same B-minus-A drop",
+      "pass": true,
+      "details": {
+        "slots": {
+          "A": {
+            "label": "Released left seam",
+            "content_id": "92125556987364c9"
+          },
+          "B": {
+            "label": "Repaired: partial over-rail rebind",
+            "content_id": "e095529f6253f37a"
+          }
+        },
+        "seconds": 0.6,
+        "focus": "05 | Off-center haul load",
+        "A_drop_m": 1.0556877995985396,
+        "B_drop_m": 0.3474690768132481,
+        "B_minus_A_drop_m": -0.7082187227852915,
+        "matches_workflow_record": true,
+        "changed_inputs": [
+          "settings: attachments"
+        ]
+      }
+    }
+  ],
+  "pass": true,
+  "summary": {
+    "reopened_project": "D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\evidence\\cradle-haul\\run-01\\Rescue cradle haul.blend",
+    "labels": {
+      "playback": "Cached native mesh animation replay; not a new physical solve",
+      "release_repair": "AUTHORING-LEVEL seam disable/rebind; NOT force-triggered slip (I09 deferred)"
+    }
+  }
+}

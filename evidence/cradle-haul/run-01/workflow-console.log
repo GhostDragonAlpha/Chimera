@@ -1,0 +1,17 @@
+CHIMERA_LIBUIPC_READY bl_ext.user_default.libuipc_blender offline
+00:00.703  blend            | Read blend: "D:\Chimera-Maintenance\ChimeraStudio\integration\evidence\cradle-haul\run-01\Rescue cradle haul.blend"
+PASS Owned cradle opens offline with two unequal rails, sling, pad, load, ground and valid cache
+PASS Attached bake: seam peaks differ (asymmetry) and match the independent decode + energy finite difference
+PASS RELEASE through the shared operation: re-bake shows the load dropping materially farther
+PASS Store released bake as Layer Trial A through the panel operator
+Info: Bound 2 stitches, rest gap 0.09â€“0.09 m
+PASS REPAIR by partial over-the-rail rebind: re-bake holds the load with a materially different drop
+PASS Layer Trial Comparison at one exact sample time: repaired vs released drops differ materially
+PASS (optional) Physical checkpoint and five-frame native continuation of the repaired cradle
+Info: Saved "Rescue cradle haul.blend"
+PASS Save the owned cradle with its caches; user projects stay byte-identical
+PASS all cradle haul workflow steps; evidence/cradle-haul/run-01/checks.json
+Blender 5.0.1 (hash 68c79f03362e built 2026-10-19 02:32:56)
+
+Blender quit
+Error: Not freed memory blocks: 315, total unfreed memory 0.023346 MB

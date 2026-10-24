@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "fingerprint": "87fdd2508db84b29f5745751a161c88c538eb0d792002c3232547e6456ee720c",
+  "frame_start": 0,
+  "frame_end": 60,
+  "fps": 100.0,
+  "sampling": "world-space output-frame finite differences",
+  "units": {
+    "speed": "m/s",
+    "acceleration": "m/s^2"
+  },
+  "note": "Peaks are diagnostic observations, not proof of physical error or convergence.",
+  "series_sha256": "7b6c7b86718512508240310865b6093ed9503ac235f4c9f39e67208d524785b1",
+  "solver": {
+    "steps": 120,
+    "max_newton_iterations": 14,
+    "max_linear_solver_iterations": 2150,
+    "max_line_search_trials": 15,
+    "nonconverged_steps": 0,
+    "limit_frames": [],
+    "minimum_line_search_alpha": 1.0,
+    "minimum_ccd_toi": 1.0
+  },
+  "objects": [
+    {
+      "index": 0,
+      "name": "01 | Left rigid rail (fixed)",
+      "role": "RIGID",
+      "max_speed": 0.0,
+      "speed_frame": 0,
+      "speed_vertex": 0,
+      "max_acceleration": 0.0,
+      "acceleration_frame": 0,
+      "acceleration_vertex": 0,
+      "final_rms_speed": 0.0,
+      "samples": 61
+    },
+    {
+      "index": 1,
+      "name": "02 | Right FEM rail (pinned root)",
+      "role": "FEM",
+      "max_speed": 0.059609344412171854,
+      "speed_frame": 2,
+      "speed_vertex": 4,
+      "max_acceleration": 4.298701010832307,
+      "acceleration_frame": 3,
+      "acceleration_vertex": 4,
+      "final_rms_speed": 3.606608513387081e-05,
+      "samples": 61
+    },
+    {
+      "index": 2,
+      "name": "03 | Cloth sling strap",
+      "role": "CLOTH",
+      "max_speed": 7.4625203014573955,
+      "speed_frame": 41,
+      "speed_vertex": 3,
+      "max_acceleration": 154.55037925611398,
+      "acceleration_frame": 42,
+      "acceleration_vertex": 3,
+      "final_rms_speed": 1.9895301335749842,
+      "samples": 61
+    },
+    {
+      "index": 3,
+      "name": "04 | Compliant pad (FEM)",
+      "role": "FEM",
+      "max_speed": 4.2918752082445994,
+      "speed_frame": 44,
+      "speed_vertex": 7,
+      "max_acceleration": 289.35277464393954,
+      "acceleration_frame": 49,
+      "acceleration_vertex": 7,
+      "final_rms_speed": 0.4599980959982442,
+      "samples": 61
+    },
+    {
+      "index": 4,
+      "name": "05 | Off-center haul load",
+      "role": "RIGID",
+      "max_speed": 4.58617519403996,
+      "speed_frame": 47,
+      "speed_vertex": 0,
+      "max_acceleration": 360.86000554055244,
+      "acceleration_frame": 49,
+      "acceleration_vertex": 4,
+      "final_rms_speed": 0.39258006969654835,
+      "samples": 61
+    }
+  ]
+}

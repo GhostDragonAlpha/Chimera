@@ -1,0 +1,427 @@
+{
+  "schema_version": 8,
+  "fingerprint": "1499e1498c97c123cee928466849941c10ac669d050474f1f79b0e9280a837a6",
+  "build_info": {
+    "version": "0.0.29",
+    "python_abi": "cp314",
+    "build_type": "Release",
+    "cuda_backend": true,
+    "cuda_architectures": "75-real,80-real,86-real,89-real,120-real,89-virtual",
+    "cuda_toolkit_version": "12.8.93"
+  },
+  "frames": 61,
+  "elapsed_seconds": 30.050802200014004,
+  "performance": {
+    "schema_version": 1,
+    "total_seconds": 30.345926199981477,
+    "clock": "host_perf_counter_no_added_gpu_sync",
+    "phases": {
+      "input_load_validate": {
+        "seconds": 0.008598099986556917,
+        "calls": 1
+      },
+      "runtime_import": {
+        "seconds": 0.010670999996364117,
+        "calls": 1
+      },
+      "scene_engine_setup": {
+        "seconds": 0.2764539999770932,
+        "calls": 1
+      },
+      "world_init": {
+        "seconds": 0.12576020002597943,
+        "calls": 1
+      },
+      "retrieve": {
+        "seconds": 0.008303500158945099,
+        "calls": 61
+      },
+      "cache_write": {
+        "seconds": 0.0032694997498765588,
+        "calls": 250
+      },
+      "output_transform": {
+        "seconds": 0.007976199849508703,
+        "calls": 490
+      },
+      "motion_diagnostics": {
+        "seconds": 0.011805600166553631,
+        "calls": 305
+      },
+      "status_write": {
+        "seconds": 0.038480699789943174,
+        "calls": 61
+      },
+      "advance": {
+        "seconds": 29.816407500009518,
+        "calls": 120
+      },
+      "solver_diagnostics": {
+        "seconds": 0.01010950017371215,
+        "calls": 180
+      },
+      "cache_finalize": {
+        "seconds": 0.001582199998665601,
+        "calls": 1
+      },
+      "diagnostics_finalize": {
+        "seconds": 0.005792599986307323,
+        "calls": 1
+      }
+    },
+    "output_frames": 61,
+    "native_steps": 120,
+    "output_vertices": 130,
+    "stored_vertex_samples": 6846,
+    "dense_cache_bytes": 96420,
+    "cache_bytes": 83172,
+    "diagnostics_bytes": 127691
+  },
+  "attachments": [
+    {
+      "id": "31ea853701de417fbf98839875f915e2",
+      "law": "SoftVertexStitch-v1",
+      "name": "Left rail to sling (4 stitches, 0.02-0.04 m spacing)",
+      "a": "b3270df5542d4a7ebc7661f704471635",
+      "b": "59dbe38dbacf46a39bff8abd0d8d20b5",
+      "pairs": [
+        [
+          4,
+          0
+        ],
+        [
+          7,
+          3
+        ]
+      ],
+      "rest_lengths": [
+        0.0899999737739563,
+        0.0899999737739563
+      ],
+      "stiffness": 500.0,
+      "group_a_ids": [
+        4,
+        7
+      ],
+      "group_b_ids": [
+        0,
+        3
+      ],
+      "pairing": "INDEX",
+      "reverse_b": false,
+      "a_signature": "b5f513320f2337c18d7896a384f446bf2d8579710e974856f99a1e98ddd1965d",
+      "b_signature": "e465c59bef49f4745a35ee32847e09290289b2c4d0c2587ee2e86d413ff369b5",
+      "native_constitution": "SoftVertexStitch",
+      "native_stitches": 2,
+      "contact_policy": "unchanged; no excluded collisions"
+    },
+    {
+      "id": "69bc2b6e04984364831df8a5e8886268",
+      "law": "SoftVertexStitch-v1",
+      "name": "Right rail to sling (2 stitches, 0.08 m spacing)",
+      "a": "811ff6d2a0f548f494cc5e77fd021532",
+      "b": "59dbe38dbacf46a39bff8abd0d8d20b5",
+      "pairs": [
+        [
+          0,
+          80
+        ],
+        [
+          3,
+          83
+        ]
+      ],
+      "rest_lengths": [
+        0.009999990463256836,
+        0.009999990463256836
+      ],
+      "stiffness": 500.0,
+      "group_a_ids": [
+        0,
+        3
+      ],
+      "group_b_ids": [
+        80,
+        83
+      ],
+      "pairing": "INDEX",
+      "reverse_b": false,
+      "a_signature": "92dd55ab65fae6b77f33b1c145c9c446d7e3bc94ef808ef99e0d4710d90add3a",
+      "b_signature": "e465c59bef49f4745a35ee32847e09290289b2c4d0c2587ee2e86d413ff369b5",
+      "native_constitution": "SoftVertexStitch",
+      "native_stitches": 2,
+      "contact_policy": "unchanged; no excluded collisions"
+    }
+  ],
+  "solver_accuracy": "CONVERGED",
+  "effective_newton": {
+    "ccd_tol": 1.0,
+    "max_iter": 1024,
+    "min_iter": 0,
+    "semi_implicit": {
+      "K_min": 6,
+      "beta_tol": 0.001,
+      "enable": 0
+    },
+    "transrate_tol": 0.1,
+    "use_adaptive_tol": 0,
+    "velocity_tol": 0.001,
+    "velocity_tol_relative": 0.0
+  },
+  "effective_linear_system": {
+    "check_interval": 5,
+    "fem_preconditioner": "diag",
+    "solver": "fused_pcg",
+    "tol_rate": 1e-06,
+    "use_cuda_graph": 1
+  },
+  "effective_line_search": {
+    "max_iter": 32,
+    "report_energy": 0
+  },
+  "solver_statistics_available": true,
+  "cloth_stiffness": {
+    "03 | Cloth sling strap": {
+      "stretch": 109.89011597334121,
+      "shear": 19230.76905442413,
+      "bending": 1.0989012641234231e-05
+    }
+  },
+  "rod_stiffness": {},
+  "cache_integrity": 1,
+  "effective_contacts": {
+    "groups": [
+      {
+        "material": "Default",
+        "assembly": "",
+        "driven": false,
+        "friction": null
+      },
+      {
+        "material": "Rail",
+        "assembly": "",
+        "driven": false,
+        "friction": null
+      },
+      {
+        "material": "Sling fabric",
+        "assembly": "",
+        "driven": false,
+        "friction": null
+      },
+      {
+        "material": "Pad",
+        "assembly": "",
+        "driven": false,
+        "friction": null
+      },
+      {
+        "material": "Cargo",
+        "assembly": "",
+        "driven": false,
+        "friction": null
+      },
+      {
+        "material": "Ground",
+        "assembly": "",
+        "driven": false,
+        "friction": null
+      }
+    ],
+    "assignments": [
+      1,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "models": [
+      {
+        "a": 0,
+        "b": 0,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 0,
+        "b": 1,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 0,
+        "b": 2,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 0,
+        "b": 3,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 0,
+        "b": 4,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 0,
+        "b": 5,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 1,
+        "b": 1,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 1,
+        "b": 2,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 1,
+        "b": 3,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 1,
+        "b": 4,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 1,
+        "b": 5,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 2,
+        "b": 2,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 2,
+        "b": 3,
+        "friction": 1.0,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 2,
+        "b": 4,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 2,
+        "b": 5,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 3,
+        "b": 3,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 3,
+        "b": 4,
+        "friction": 1.2000000476837158,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 3,
+        "b": 5,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 4,
+        "b": 4,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 4,
+        "b": 5,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 5,
+        "b": 5,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      }
+    ]
+  },
+  "quality_report_sha256": "124a8f14a193d45a7ac4ffaedacd16787c7e67b1308f9a6da14b38df5b84b7c4",
+  "objects": [
+    {
+      "index": 0,
+      "vertices": 14,
+      "encoding": "VERTEX",
+      "stored_frames": 1,
+      "sha256": "6ea1572cb83b57f5909644fa5e9b5f72d52cc67415c09bec016e0b140dd65426"
+    },
+    {
+      "index": 1,
+      "vertices": 15,
+      "encoding": "VERTEX",
+      "stored_frames": 61,
+      "sha256": "8f6cd1d702bcf8a7869fbf1fe42b192a2b23af61d511e99d38da73fbf09bcc1f"
+    },
+    {
+      "index": 2,
+      "vertices": 84,
+      "encoding": "VERTEX",
+      "stored_frames": 61,
+      "sha256": "dad212bfb462815f06f56c7373725453aad3aaece6d319d47e2c5a5bea135b90"
+    },
+    {
+      "index": 3,
+      "vertices": 9,
+      "encoding": "VERTEX",
+      "stored_frames": 61,
+      "sha256": "dfa370e40ddd12274a19acb0d43959186912dee8d62676b351d587c0adf76726"
+    },
+    {
+      "index": 4,
+      "vertices": 8,
+      "encoding": "AFFINE",
+      "stored_frames": 61,
+      "sha256": "65416a2cd0684fa958053df550556cb9f8d14d722c60002e7df50870e01c9061"
+    }
+  ]
+}

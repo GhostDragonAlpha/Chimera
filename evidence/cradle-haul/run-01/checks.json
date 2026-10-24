@@ -1,0 +1,226 @@
+{
+  "scope": "Owned rescue-cradle haul construction (plan 13.0 R2, catalog I05-I09): inspect asymmetric seam loads with independent raw-cache decode and finite-difference of the published SoftVertexStitch energy; authoring-level release and partial over-the-rail repair; Layer Trial Comparison A/B at one exact sample time; optional physical checkpoint; save for offline reopen. Finite-gap stitches only: no fracture, delamination or force-triggered slip.",
+  "project": "D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\evidence\\cradle-haul\\run-01\\Rescue cradle haul.blend",
+  "checks": [
+    {
+      "name": "Owned cradle opens offline with two unequal rails, sling, pad, load, ground and valid cache",
+      "pass": true,
+      "details": {
+        "open_seconds": 0.01,
+        "roles": [
+          "CLOTH",
+          "FEM",
+          "FEM",
+          "RIGID",
+          "RIGID",
+          "STATIC"
+        ],
+        "seams": [
+          {
+            "name": "Left rail to sling (4 stitches, 0.02-0.04 m spacing)",
+            "pairs": 4,
+            "stitch_y_positions_m": [
+              -0.04,
+              -0.02,
+              0.02,
+              0.04
+            ],
+            "stitch_spacings_m": [
+              0.02,
+              0.04,
+              0.02
+            ],
+            "rest_gap_lengths_m": [
+              0.009999990463256836,
+              0.009999990463256836,
+              0.009999990463256836,
+              0.009999990463256836
+            ],
+            "stiffness_N_per_m": 500.0
+          },
+          {
+            "name": "Right rail to sling (2 stitches, 0.08 m spacing)",
+            "pairs": 2,
+            "stitch_y_positions_m": [
+              -0.04,
+              0.04
+            ],
+            "stitch_spacings_m": [
+              0.08
+            ],
+            "rest_gap_lengths_m": [
+              0.009999990463256836,
+              0.009999990463256836
+            ],
+            "stiffness_N_per_m": 500.0
+          }
+        ],
+        "cached_frames": 61,
+        "spacing_asymmetry": {
+          "left_4_stitches_max_gap_m": 0.04,
+          "right_2_stitches_min_gap_m": 0.08
+        }
+      }
+    },
+    {
+      "name": "Attached bake: seam peaks differ (asymmetry) and match the independent decode + energy finite difference",
+      "pass": true,
+      "details": {
+        "seams": {
+          "Right rail to sling (2 stitches, 0.08 m spacing)": {
+            "peak_N": 87.07687537453172,
+            "peak_frame": 40,
+            "tension": true,
+            "fd_energy_force_error_N": 2.6288596899348704e-07,
+            "net_N": 173.3340427837249
+          },
+          "Left rail to sling (4 stitches, 0.02-0.04 m spacing)": {
+            "peak_N": 45.70579767942973,
+            "peak_frame": 42,
+            "tension": true,
+            "fd_energy_force_error_N": 8.315893538224373e-07,
+            "net_N": 181.66242770104233
+          }
+        },
+        "rest_residual_frame0_N": 0.0,
+        "independent_decode_max_diff": 7.105427357601002e-15,
+        "load_drop_m": 0.2811977491036217,
+        "samples": 61,
+        "final_load_z_m": 0.9188022389754493,
+        "asymmetry_delta_N": 41.371077695101995
+      }
+    },
+    {
+      "name": "RELEASE through the shared operation: re-bake shows the load dropping materially farther",
+      "pass": true,
+      "details": {
+        "wall_seconds": 37.78,
+        "native_seconds": 37.29,
+        "seams": [
+          "Right rail to sling (2 stitches, 0.08 m spacing)"
+        ],
+        "released_drop_m": 1.0556877995985396,
+        "attached_drop_m": 0.2811977491036217,
+        "drop_delta_m": 0.7744900504949179
+      }
+    },
+    {
+      "name": "Store released bake as Layer Trial A through the panel operator",
+      "pass": true,
+      "details": {
+        "slot": "A",
+        "label": "Released left seam",
+        "content_id": "92125556987364c9d56ec422bb76aadb8db293d72dc4a0175cd0f30e6021d012"
+      }
+    },
+    {
+      "name": "REPAIR by partial over-the-rail rebind: re-bake holds the load with a materially different drop",
+      "pass": true,
+      "details": {
+        "wall_seconds": 30.71,
+        "native_seconds": 30.35,
+        "repaired_rest_gaps_m": [
+          0.09,
+          0.09
+        ],
+        "seams": [
+          "Left rail to sling (4 stitches, 0.02-0.04 m spacing)",
+          "Right rail to sling (2 stitches, 0.08 m spacing)"
+        ],
+        "repaired_drop_m": 0.34746907681324823,
+        "attached_drop_m": 0.2811977491036217,
+        "released_drop_m": 1.0556877995985396
+      }
+    },
+    {
+      "name": "Layer Trial Comparison at one exact sample time: repaired vs released drops differ materially",
+      "pass": true,
+      "details": {
+        "seconds": 0.6,
+        "A_drop_m": 1.0556877995985396,
+        "B_drop_m": 0.3474690768132481,
+        "B_minus_A_drop_m": -0.7082187227852915,
+        "changed_inputs": [
+          "settings: attachments"
+        ],
+        "attached_reference_drop_m": 0.2811977491036217
+      }
+    },
+    {
+      "name": "Save the owned cradle with its caches; user projects stay byte-identical",
+      "pass": true,
+      "details": {
+        "saved": true,
+        "digest_samples": 15,
+        "user_projects_byte_identical": true,
+        "membrane_project_unchanged": true,
+        "cache_files": 167
+      }
+    }
+  ],
+  "guard_refusals": [],
+  "optional": [
+    {
+      "name": "Physical checkpoint and five-frame native continuation of the repaired cradle",
+      "pass": true,
+      "details": {
+        "checkpoint_sha256": "3b88c23b8a11fd06",
+        "native_step": 120,
+        "continued_to_frame": 65
+      }
+    }
+  ],
+  "summary": {
+    "attached_drop_m": 0.2811977491036217,
+    "released_drop_m": 1.0556877995985396,
+    "repaired_drop_m": 0.34746907681324823,
+    "comparison_time_s": 0.6,
+    "attached_seam_peaks_N": {
+      "Right rail to sling (2 stitches, 0.08 m spacing)": 87.07687537453172,
+      "Left rail to sling (4 stitches, 0.02-0.04 m spacing)": 45.70579767942973
+    },
+    "released_seam_peaks_N": {
+      "Right rail to sling (2 stitches, 0.08 m spacing)": 0.33829305087011446
+    },
+    "repaired_seam_peaks_N": {
+      "Left rail to sling (4 stitches, 0.02-0.04 m spacing)": 110.85965694242026,
+      "Right rail to sling (2 stitches, 0.08 m spacing)": 57.7708351728925
+    },
+    "rest_residual_frame0_N": 0.0,
+    "B_minus_A_drop_m": -0.7082187227852915,
+    "labels": {
+      "release_repair": "AUTHORING-LEVEL seam disable / partial rebind; NOT force-triggered slip (I09 deferred)",
+      "rope": "I06 cloth sling surrogate (specified-only)",
+      "pad": "I07 illustrative FEM silicone, measured material missing",
+      "ground": "I08 authored static surrogate"
+    }
+  },
+  "pass": true,
+  "geometry_digests": {
+    "01 | Left rigid rail (fixed)": {
+      "1": "9b07ea177ae1a9d5732147de3c5ab74c2030e8361fec3dfcda876b5458399c6c",
+      "31": "9b07ea177ae1a9d5732147de3c5ab74c2030e8361fec3dfcda876b5458399c6c",
+      "61": "9b07ea177ae1a9d5732147de3c5ab74c2030e8361fec3dfcda876b5458399c6c"
+    },
+    "02 | Right FEM rail (pinned root)": {
+      "1": "ae160de5e20e71883e7af7d722b9ccb75844ffcbb91aa0a9e2184487fb815f7e",
+      "31": "43530e142b6da2addc30925aabd78886040cf55a6407724f2c82d3a585a16d8b",
+      "61": "0435088baba0d6a3b4d29be94fbfde3a85c524d15af7a8fa4444ecb89edc2b40"
+    },
+    "03 | Cloth sling strap": {
+      "1": "46886fa585332f43d7f4a0db23059ef10138fa9c189754b74485a33c835e2ac5",
+      "31": "4a46b5efb162cb128d9fff941bf223a961db1d703f474da9f3ef89fbac549422",
+      "61": "2c2d396219b6be2d2222ccc5bf6aea2972bfd2decfc79281ac5dcda9b767cb50"
+    },
+    "04 | Compliant pad (FEM)": {
+      "1": "3c1673e0e9a114bee3a72cd0763f27201908ed27c777afc21d7e1805328c20e5",
+      "31": "1fe775f03477d4ee93bc42fa3a7026f10f647d84c4248b3dc1629ce7536f5217",
+      "61": "643232960de497a39d1085475e77c9d86915fc266ec5cbeb011a47a3d9df3a5e"
+    },
+    "05 | Off-center haul load": {
+      "1": "0e45d39bfbd128741994e7b08bf2604f962f131e7e2a0831c1ac67c6cf6b7799",
+      "31": "cc8f842b401e3ecc02cf8da6810eb5feaf4eb7b54c9b47c841335270598f209e",
+      "61": "e1317b8226c8c5c80f297d28e53dab31205f947c5b0aad7e3e8ab70dcad99c53"
+    }
+  }
+}

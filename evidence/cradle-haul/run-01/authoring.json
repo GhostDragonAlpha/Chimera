@@ -1,0 +1,164 @@
+{
+  "project": "D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\evidence\\cradle-haul\\run-01\\Rescue cradle haul.blend",
+  "bake_directory": "D:\\Chimera-Maintenance\\ChimeraStudio\\integration\\evidence\\cradle-haul\\run-01\\cache\\bake_0de161091bde45fcba8f7cc6a97a2c56",
+  "user_projects_byte_identical": true,
+  "bake_wall_seconds": 22.977,
+  "native_seconds": {
+    "schema_version": 1,
+    "total_seconds": 22.485031000018353,
+    "clock": "host_perf_counter_no_added_gpu_sync",
+    "phases": {
+      "input_load_validate": {
+        "seconds": 0.008173000009264797,
+        "calls": 1
+      },
+      "runtime_import": {
+        "seconds": 0.011004500003764406,
+        "calls": 1
+      },
+      "scene_engine_setup": {
+        "seconds": 0.28499300000839867,
+        "calls": 1
+      },
+      "world_init": {
+        "seconds": 0.1339684999838937,
+        "calls": 1
+      },
+      "retrieve": {
+        "seconds": 0.00947759993141517,
+        "calls": 61
+      },
+      "cache_write": {
+        "seconds": 0.0033825004065874964,
+        "calls": 250
+      },
+      "output_transform": {
+        "seconds": 0.008055799728026614,
+        "calls": 490
+      },
+      "motion_diagnostics": {
+        "seconds": 0.011815400037448853,
+        "calls": 305
+      },
+      "status_write": {
+        "seconds": 0.04037819991935976,
+        "calls": 61
+      },
+      "advance": {
+        "seconds": 21.929988300136756,
+        "calls": 120
+      },
+      "solver_diagnostics": {
+        "seconds": 0.010360500164097175,
+        "calls": 180
+      },
+      "cache_finalize": {
+        "seconds": 0.0025397000135853887,
+        "calls": 1
+      },
+      "diagnostics_finalize": {
+        "seconds": 0.010207399987848476,
+        "calls": 1
+      }
+    },
+    "output_frames": 61,
+    "native_steps": 120,
+    "output_vertices": 130,
+    "stored_vertex_samples": 6846,
+    "dense_cache_bytes": 96420,
+    "cache_bytes": 83172,
+    "diagnostics_bytes": 127723
+  },
+  "frames": 61,
+  "fps": 100,
+  "substeps": 2,
+  "horizon_seconds": 0.6,
+  "build_info": {
+    "version": "0.0.29",
+    "python_abi": "cp314",
+    "build_type": "Release",
+    "cuda_backend": true,
+    "cuda_architectures": "75-real,80-real,86-real,89-real,120-real,89-virtual",
+    "cuda_toolkit_version": "12.8.93"
+  },
+  "parts": {
+    "01 | Left rigid rail (fixed)": "RIGID",
+    "02 | Right FEM rail (pinned root)": "FEM",
+    "03 | Cloth sling strap": "CLOTH",
+    "04 | Compliant pad (FEM)": "FEM",
+    "05 | Off-center haul load": "RIGID",
+    "06 | Static ground (authored surrogate)": "STATIC"
+  },
+  "seams": [
+    {
+      "name": "Left rail to sling (4 stitches, 0.02-0.04 m spacing)",
+      "pairs": 4,
+      "stiffness_N_per_m": 500.0,
+      "rest_lengths_m": [
+        0.01,
+        0.01,
+        0.01,
+        0.01
+      ]
+    },
+    {
+      "name": "Right rail to sling (2 stitches, 0.08 m spacing)",
+      "pairs": 2,
+      "stiffness_N_per_m": 500.0,
+      "rest_lengths_m": [
+        0.01,
+        0.01
+      ]
+    }
+  ],
+  "peak_seam_loads_attached": {
+    "Left rail to sling (4 stitches, 0.02-0.04 m spacing)": {
+      "peak_N": 45.70579767942973,
+      "peak_frame": 42,
+      "rest_residual_frame0_N": 0.0,
+      "net_vertical_final_N": -4.939355841937248
+    },
+    "Right rail to sling (2 stitches, 0.08 m spacing)": {
+      "peak_N": 87.07687537453172,
+      "peak_frame": 40,
+      "rest_residual_frame0_N": 0.0,
+      "net_vertical_final_N": -1.989651573742882
+    }
+  },
+  "attached_load_drop_m": 0.2811977491036217,
+  "geometry_digests": {
+    "01 | Left rigid rail (fixed)": {
+      "1": "9b07ea177ae1a9d5732147de3c5ab74c2030e8361fec3dfcda876b5458399c6c",
+      "31": "9b07ea177ae1a9d5732147de3c5ab74c2030e8361fec3dfcda876b5458399c6c",
+      "61": "9b07ea177ae1a9d5732147de3c5ab74c2030e8361fec3dfcda876b5458399c6c"
+    },
+    "02 | Right FEM rail (pinned root)": {
+      "1": "814aac54cc566783900a81f0e5b9c53b94a67edd382a9599d4af2048d8687759",
+      "31": "62dcd2f38c7ee3852f900ace034c3e5ca33557a2a1297db54f9408b720a7e603",
+      "61": "672c7992d2b84032326fb7715c998aed643d382c0b06e1084fbd2d0f8775aab5"
+    },
+    "03 | Cloth sling strap": {
+      "1": "5bd8eb7e9a57d75f0d5a8fb9e5905d67288a0c84124e84f49af7e95ab56c0a99",
+      "31": "d9132eeef2e450b6ced2f5646a0022761cd4c00a4dfa3c224bd79a2294965749",
+      "61": "2a004213d92b4169335fffb650037f8f4dad5993624ef9ce8c5bf833ce8d88f8"
+    },
+    "04 | Compliant pad (FEM)": {
+      "1": "6f9ba82ef8f4f06dad97b5b840df24ac845449401a890c01ae4f05843e2c6cda",
+      "31": "5ae6556e88422fd5ed0b2f9e49e6a072fab87646d629b7157f4575caae4f283a",
+      "61": "f9a180838384d36780ee2960467c1594bfb5c170acd12b038257fc28becc4c2c"
+    },
+    "05 | Off-center haul load": {
+      "1": "0e45d39bfbd128741994e7b08bf2604f962f131e7e2a0831c1ac67c6cf6b7799",
+      "31": "2af7c49df1e68350eb4e86b9ae1545368d9720068b5fea227fc033a3da3d266e",
+      "61": "d9a36a2ec0b53b7186335626bf544f720c2362a76d2341c3e7cf5b8c9037cc90"
+    }
+  },
+  "scope": "Owned authoring of the R2 rescue cradle: two unequal rails (RIGID fixed / FEM pinned), cloth sling (labeled rope surrogate I06), illustrative FEM pad (I07), off-center rigid haul load, static ground surrogate (I08), two asymmetric SoftVertexStitch seams. One attached reference bake; release/repair comparisons run in the workflow test. Finite-gap stitches, authoring-level release/repair only; no fracture or force-triggered slip (I09 deferred).",
+  "labels": {
+    "rope": "I06 cloth sling surrogate (specified-only, not measured rope)",
+    "pad": "I07 illustrative FEM silicone, measured material missing",
+    "ground": "I08 authored static surrogate",
+    "release_repair": "AUTHORING-LEVEL seam disable/rebind; NOT force-triggered slip",
+    "slip": "I09 force-triggered slip deferred pending a native-law decision"
+  }
+}

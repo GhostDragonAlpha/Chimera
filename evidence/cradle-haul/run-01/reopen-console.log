@@ -1,0 +1,11 @@
+CHIMERA_LIBUIPC_READY bl_ext.user_default.libuipc_blender offline
+00:00.422  blend            | Read blend: "D:\Chimera-Maintenance\ChimeraStudio\integration\evidence\cradle-haul\run-01\Rescue cradle haul.blend"
+PASS Saved owned project reopens offline with no solver start
+PASS Exact geometry replay: evaluated cache samples match the workflow digests bit-for-bit
+PASS Seam loads recompute offline: inspector matches independent raw decode and the repair-bake peaks
+PASS Layer Trial A/B pair survives save/reopen and compares with the same B-minus-A drop
+PASS all cradle haul reopen steps; evidence/cradle-haul/run-01/reopen-checks.json
+Blender 5.0.1 (hash 68c79f03362e built 2026-10-19 02:32:56)
+
+Blender quit
+Error: Not freed memory blocks: 315, total unfreed memory 0.023346 MB

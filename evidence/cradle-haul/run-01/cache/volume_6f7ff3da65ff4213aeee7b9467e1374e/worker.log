@@ -1,0 +1,28 @@
+[2026-10-24 10:15:39.423] [warning] Tetrahedral quality optimization reverted to its certified conservative mesh: Assertion i->second.second == 1 && !same_orientation(i->second.first, f) failed. Internal tetrahedralization error: overlapping or non-manifold face. D:\a\libuipc\libuipc\src\geometry\tetrahedralization\tetrahedralize.cpp(716):
+Stack trace (most recent call first):
+#0  0x00007ff918cc24b8 in uipc::Exception::Exception
+#1  0x00007ff91ba87145 in uipc::geometry::affine_body::compute_dyadic_mass
+#2  0x00007ff91ba90f6e in uipc::geometry::tetrahedralize
+#3  0x00007ff918f81d36 in  ?? 
+#4  0x00007ff918f80897 in  ?? 
+#5  0x00007ff918f7ff1a in  ?? 
+#6  0x00007ff918e4c6ce in  ?? 
+#7  0x00007ff969960363 in PyLong_AsLongAndOverflow
+#8  0x00007ff96992d45e in PyObject_Vectorcall
+#9  0x00007ff96992d3c8 in PyObject_Vectorcall
+#10 0x00007ff969930dc0 in PyEval_EvalFrameDefault
+#11 0x00007ff9699ebb7e in PyTuple_FromArray
+#12 0x00007ff9699e81a3 in PyEval_EvalCode
+#13 0x00007ff9699df37b in PyArena_AddPyObject
+#14 0x00007ff9699df45b in PyArena_AddPyObject
+#15 0x00007ff969a92a6e in PyContextVar_New
+#16 0x00007ff969a9177b in PyRun_SimpleStringFlags
+#17 0x00007ff969a91587 in PyEval_MakePendingCalls
+#18 0x00007ff969a912a3 in Py_fopen
+#19 0x00007ff969a9160b in PyEval_MakePendingCalls
+#20 0x00007ff9699c3076 in PyPathConfig_ClearGlobal
+#21 0x00007ff9699c3e15 in Py_RunMain
+#22 0x00007ff9699c4f2e in Py_Main
+#23 0x00007ff787fd122f in  ?? 
+#24 0x00007ff9abe4dda6 in BaseThreadInitThunk
+#25 0x00007ff9ad39ee4b in RtlUserThreadStart D:\a\libuipc\libuipc\src\geometry\tetrahedralization\tetrahedralize.cpp(828)

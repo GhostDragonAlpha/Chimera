@@ -1,0 +1,80 @@
+{
+  "objects": {
+    "0": {
+      "index": 0,
+      "name": "01 | Left rigid rail (fixed)",
+      "role": "RIGID",
+      "max_speed": 0.0,
+      "speed_frame": 0,
+      "speed_vertex": 0,
+      "max_acceleration": 0.0,
+      "acceleration_frame": 0,
+      "acceleration_vertex": 0,
+      "final_rms_speed": 0.0,
+      "samples": 61
+    },
+    "1": {
+      "index": 1,
+      "name": "02 | Right FEM rail (pinned root)",
+      "role": "FEM",
+      "max_speed": 0.0596092826616083,
+      "speed_frame": 2,
+      "speed_vertex": 4,
+      "max_acceleration": 4.29869320249514,
+      "acceleration_frame": 3,
+      "acceleration_vertex": 4,
+      "final_rms_speed": 0.00401994072639196,
+      "samples": 61
+    },
+    "2": {
+      "index": 2,
+      "name": "03 | Cloth sling strap",
+      "role": "CLOTH",
+      "max_speed": 2.911421455792896,
+      "speed_frame": 28,
+      "speed_vertex": 27,
+      "max_acceleration": 223.4474077541794,
+      "acceleration_frame": 29,
+      "acceleration_vertex": 40,
+      "final_rms_speed": 1.5604496543122013,
+      "samples": 61
+    },
+    "3": {
+      "index": 3,
+      "name": "04 | Compliant pad (FEM)",
+      "role": "FEM",
+      "max_speed": 2.8892654627739947,
+      "speed_frame": 28,
+      "speed_vertex": 3,
+      "max_acceleration": 217.25791591178393,
+      "acceleration_frame": 29,
+      "acceleration_vertex": 1,
+      "final_rms_speed": 2.1058800924183085,
+      "samples": 61
+    },
+    "4": {
+      "index": 4,
+      "name": "05 | Off-center haul load",
+      "role": "RIGID",
+      "max_speed": 2.623110307726749,
+      "speed_frame": 27,
+      "speed_vertex": 6,
+      "max_acceleration": 34.01072661392769,
+      "acceleration_frame": 41,
+      "acceleration_vertex": 2,
+      "final_rms_speed": 2.0414091151850857,
+      "samples": 61
+    }
+  },
+  "solver": {
+    "steps": 120,
+    "max_newton_iterations": 65,
+    "max_linear_solver_iterations": 11045,
+    "max_line_search_trials": 74,
+    "nonconverged_steps": 0,
+    "limit_frames": [],
+    "minimum_line_search_alpha": 1.0,
+    "minimum_ccd_toi": 1.0
+  },
+  "limit_frames": []
+}

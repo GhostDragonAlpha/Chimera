@@ -1,0 +1,441 @@
+{
+  "schema_version": 8,
+  "fingerprint": "602576bd1d5dde885cddfc2758838ee1c246bccd6ad81a9da8ec35144eb93ad6",
+  "build_info": {
+    "version": "0.0.29",
+    "python_abi": "cp314",
+    "build_type": "Release",
+    "cuda_backend": true,
+    "cuda_architectures": "75-real,80-real,86-real,89-real,120-real,89-virtual",
+    "cuda_toolkit_version": "12.8.93"
+  },
+  "frames": 61,
+  "elapsed_seconds": 22.181995700026164,
+  "performance": {
+    "schema_version": 1,
+    "total_seconds": 22.485031000018353,
+    "clock": "host_perf_counter_no_added_gpu_sync",
+    "phases": {
+      "input_load_validate": {
+        "seconds": 0.008173000009264797,
+        "calls": 1
+      },
+      "runtime_import": {
+        "seconds": 0.011004500003764406,
+        "calls": 1
+      },
+      "scene_engine_setup": {
+        "seconds": 0.28499300000839867,
+        "calls": 1
+      },
+      "world_init": {
+        "seconds": 0.1339684999838937,
+        "calls": 1
+      },
+      "retrieve": {
+        "seconds": 0.00947759993141517,
+        "calls": 61
+      },
+      "cache_write": {
+        "seconds": 0.0033825004065874964,
+        "calls": 250
+      },
+      "output_transform": {
+        "seconds": 0.008055799728026614,
+        "calls": 490
+      },
+      "motion_diagnostics": {
+        "seconds": 0.011815400037448853,
+        "calls": 305
+      },
+      "status_write": {
+        "seconds": 0.04037819991935976,
+        "calls": 61
+      },
+      "advance": {
+        "seconds": 21.929988300136756,
+        "calls": 120
+      },
+      "solver_diagnostics": {
+        "seconds": 0.010360500164097175,
+        "calls": 180
+      },
+      "cache_finalize": {
+        "seconds": 0.0025397000135853887,
+        "calls": 1
+      },
+      "diagnostics_finalize": {
+        "seconds": 0.010207399987848476,
+        "calls": 1
+      }
+    },
+    "output_frames": 61,
+    "native_steps": 120,
+    "output_vertices": 130,
+    "stored_vertex_samples": 6846,
+    "dense_cache_bytes": 96420,
+    "cache_bytes": 83172,
+    "diagnostics_bytes": 127723
+  },
+  "attachments": [
+    {
+      "id": "095928c4663b44b588fdeb5f25c6aab9",
+      "law": "SoftVertexStitch-v1",
+      "name": "Left rail to sling (4 stitches, 0.02-0.04 m spacing)",
+      "a": "b3270df5542d4a7ebc7661f704471635",
+      "b": "59dbe38dbacf46a39bff8abd0d8d20b5",
+      "pairs": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          3
+        ]
+      ],
+      "rest_lengths": [
+        0.009999990463256836,
+        0.009999990463256836,
+        0.009999990463256836,
+        0.009999990463256836
+      ],
+      "stiffness": 500.0,
+      "group_a_ids": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "group_b_ids": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "pairing": "INDEX",
+      "reverse_b": false,
+      "a_signature": "b5f513320f2337c18d7896a384f446bf2d8579710e974856f99a1e98ddd1965d",
+      "b_signature": "e465c59bef49f4745a35ee32847e09290289b2c4d0c2587ee2e86d413ff369b5",
+      "native_constitution": "SoftVertexStitch",
+      "native_stitches": 4,
+      "contact_policy": "unchanged; no excluded collisions"
+    },
+    {
+      "id": "69bc2b6e04984364831df8a5e8886268",
+      "law": "SoftVertexStitch-v1",
+      "name": "Right rail to sling (2 stitches, 0.08 m spacing)",
+      "a": "811ff6d2a0f548f494cc5e77fd021532",
+      "b": "59dbe38dbacf46a39bff8abd0d8d20b5",
+      "pairs": [
+        [
+          0,
+          80
+        ],
+        [
+          3,
+          83
+        ]
+      ],
+      "rest_lengths": [
+        0.009999990463256836,
+        0.009999990463256836
+      ],
+      "stiffness": 500.0,
+      "group_a_ids": [
+        0,
+        3
+      ],
+      "group_b_ids": [
+        80,
+        83
+      ],
+      "pairing": "INDEX",
+      "reverse_b": false,
+      "a_signature": "92dd55ab65fae6b77f33b1c145c9c446d7e3bc94ef808ef99e0d4710d90add3a",
+      "b_signature": "e465c59bef49f4745a35ee32847e09290289b2c4d0c2587ee2e86d413ff369b5",
+      "native_constitution": "SoftVertexStitch",
+      "native_stitches": 2,
+      "contact_policy": "unchanged; no excluded collisions"
+    }
+  ],
+  "solver_accuracy": "CONVERGED",
+  "effective_newton": {
+    "ccd_tol": 1.0,
+    "max_iter": 1024,
+    "min_iter": 0,
+    "semi_implicit": {
+      "K_min": 6,
+      "beta_tol": 0.001,
+      "enable": 0
+    },
+    "transrate_tol": 0.1,
+    "use_adaptive_tol": 0,
+    "velocity_tol": 0.001,
+    "velocity_tol_relative": 0.0
+  },
+  "effective_linear_system": {
+    "check_interval": 5,
+    "fem_preconditioner": "diag",
+    "solver": "fused_pcg",
+    "tol_rate": 1e-06,
+    "use_cuda_graph": 1
+  },
+  "effective_line_search": {
+    "max_iter": 32,
+    "report_energy": 0
+  },
+  "solver_statistics_available": true,
+  "cloth_stiffness": {
+    "03 | Cloth sling strap": {
+      "stretch": 109.89011597334121,
+      "shear": 19230.76905442413,
+      "bending": 1.0989012641234231e-05
+    }
+  },
+  "rod_stiffness": {},
+  "cache_integrity": 1,
+  "effective_contacts": {
+    "groups": [
+      {
+        "material": "Default",
+        "assembly": "",
+        "driven": false,
+        "friction": null
+      },
+      {
+        "material": "Rail",
+        "assembly": "",
+        "driven": false,
+        "friction": null
+      },
+      {
+        "material": "Sling fabric",
+        "assembly": "",
+        "driven": false,
+        "friction": null
+      },
+      {
+        "material": "Pad",
+        "assembly": "",
+        "driven": false,
+        "friction": null
+      },
+      {
+        "material": "Cargo",
+        "assembly": "",
+        "driven": false,
+        "friction": null
+      },
+      {
+        "material": "Ground",
+        "assembly": "",
+        "driven": false,
+        "friction": null
+      }
+    ],
+    "assignments": [
+      1,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "models": [
+      {
+        "a": 0,
+        "b": 0,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 0,
+        "b": 1,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 0,
+        "b": 2,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 0,
+        "b": 3,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 0,
+        "b": 4,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 0,
+        "b": 5,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 1,
+        "b": 1,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 1,
+        "b": 2,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 1,
+        "b": 3,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 1,
+        "b": 4,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 1,
+        "b": 5,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 2,
+        "b": 2,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 2,
+        "b": 3,
+        "friction": 1.0,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 2,
+        "b": 4,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 2,
+        "b": 5,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 3,
+        "b": 3,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 3,
+        "b": 4,
+        "friction": 1.2000000476837158,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 3,
+        "b": 5,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 4,
+        "b": 4,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 4,
+        "b": 5,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      },
+      {
+        "a": 5,
+        "b": 5,
+        "friction": 0.800000011920929,
+        "resistance": 1000000000.0,
+        "enabled": true
+      }
+    ]
+  },
+  "quality_report_sha256": "97bcfe95484037c7cc33b3554a642796c0ba3d6654255b85a3258bcaa9c1a5b7",
+  "objects": [
+    {
+      "index": 0,
+      "vertices": 14,
+      "encoding": "VERTEX",
+      "stored_frames": 1,
+      "sha256": "6ea1572cb83b57f5909644fa5e9b5f72d52cc67415c09bec016e0b140dd65426"
+    },
+    {
+      "index": 1,
+      "vertices": 15,
+      "encoding": "VERTEX",
+      "stored_frames": 61,
+      "sha256": "cc740a7c0029faa9f108007df7e396f83f3e5be90d33238e8a19b33232523c39"
+    },
+    {
+      "index": 2,
+      "vertices": 84,
+      "encoding": "VERTEX",
+      "stored_frames": 61,
+      "sha256": "4e447ad1c5e5afd31fb95b349e8555d41a5a03d078d77cf2e8add5418f086a4e"
+    },
+    {
+      "index": 3,
+      "vertices": 9,
+      "encoding": "VERTEX",
+      "stored_frames": 61,
+      "sha256": "e7836bd19ebd5a852874d95fc0c8dbed948c265fbfffd58254b24a9c1134f80f"
+    },
+    {
+      "index": 4,
+      "vertices": 8,
+      "encoding": "AFFINE",
+      "stored_frames": 61,
+      "sha256": "798f0b93daaf38bb02f08900f6f4c0c77e55d72bdebb36109d9d9146974f4a28"
+    }
+  ]
+}

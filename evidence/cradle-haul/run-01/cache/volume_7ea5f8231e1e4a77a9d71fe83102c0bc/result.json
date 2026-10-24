@@ -1,0 +1,31 @@
+{
+  "schema_version": 8,
+  "fingerprint": "6ca547150ba8659377d98562cd0c313000d10e227855b779b1b5106611f63e4c",
+  "report": {
+    "accepted_improvements": 0,
+    "boundary_triangles": 12,
+    "boundary_verified": true,
+    "conservative_min_quality": 0.29787892560167406,
+    "conservative_search_nodes": 0,
+    "conservative_search_rounds": 0,
+    "elapsed_seconds": 0.2137715,
+    "input_vertices": 8,
+    "method": "visibility_kernel",
+    "min_quality": 0.29787892560167406,
+    "optimization_reverted": true,
+    "oriented_boundary_verified": true,
+    "preserve_surface": true,
+    "target_edge_length": 0.029999999329447746,
+    "tetrahedra": 12,
+    "vertices": 9,
+    "volume": 0.0005759994249344121
+  },
+  "build_info": {
+    "version": "0.0.29",
+    "python_abi": "cp314",
+    "build_type": "Release",
+    "cuda_backend": true,
+    "cuda_architectures": "75-real,80-real,86-real,89-real,120-real,89-virtual",
+    "cuda_toolkit_version": "12.8.93"
+  }
+}

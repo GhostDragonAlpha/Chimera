@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "draw_modes": [
+    "OBJECT"
+  ],
+  "errors": [],
+  "seams": [
+    {
+      "name": "Left rail to sling (4 stitches, 0.02-0.04 m spacing)",
+      "peak_N": 110.85966215242024,
+      "peak_frame": 43
+    },
+    {
+      "name": "Right rail to sling (2 stitches, 0.08 m spacing)",
+      "peak_N": 57.77082575930956,
+      "peak_frame": 40
+    }
+  ],
+  "compare_B_minus_A_drop_m": -0.7082187227852915,
+  "compare_seconds": 0.6,
+  "peak_navigation": true,
+  "trial_preview_copies": true,
+  "panel_category_accommodation": "Blender 5.0.1 made Region.active_panel_category read-only; the same panel classes are drawn in the default 'Item' sidebar tab",
+  "offline_native_launch_disabled": true
+}

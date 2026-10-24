@@ -1,0 +1,14 @@
+{
+  "schema_version": 8,
+  "operation": "generate_volume",
+  "name": "02 | Right FEM rail (pinned root)",
+  "fingerprint": "de4e014ccbf3a3748f363de5283d461c12b61f702ee38a9f8d6d39b53a0c28cf",
+  "unit_scale": 1.0,
+  "options": {
+    "preserve_surface": true,
+    "target_edge_length": 0.05000000074505806,
+    "quality_passes": 2,
+    "refinement_budget": 256
+  },
+  "groups": []
+}
