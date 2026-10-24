@@ -758,6 +758,19 @@ where possible. Keep one foreground model task at a time on this host and use
 existing GPU resource coordination; this plan adds no context/output limit,
 model change, scheduler or requirement to interrupt working agents.
 
+The integrated local-model handoff loads through the actual Agent/SendMessage
+request and reuses resident models; do not add separate warm-up commands.
+Updated workers distinguish startup from ordinary stream inactivity and retain
+native progress watchdogs. Resume the same saved child after an explicit failure.
+Client changes take effect for newly started Z Code workers. Runtime fixes and
+sequential installed-program test results are recorded in
+`D:/Chimera-Maintenance/Runtime/local-ai/integrated-handoff-20261024/RESULTS.md`.
+The 2026-10-24 desktop restart and foreground Qwen/Maya/Qwen check passed with
+one child, no overlapping inference and all original sessions/goals preserved.
+Restored chats now reconcile goal controls with saved status; the development
+goal remains paused and displays "Resume goal". App evidence is in
+`D:/Chimera-Maintenance/Runtime/local-ai/integrated-handoff-20261024/app-verification-20261024/RESULTS.md`.
+
 ### 11.23 Structure as nested membranes and repeating physical arrangements
 
 Use geometric repetition and nested layers as a generative vocabulary. Explicit
@@ -913,12 +926,15 @@ and later expansion never gate the finish line. Update status in place.
   Blender-visible half OPEN behind a user-consented repin plus foreign-lane
   wiring of `gpu_native.py`/`blocks_ui.py`/`operations_ui.py`.
 
-**R2. Rescue cradle / haul load path reusable in Blender — NEXT DELIVERABLE**
-Selected or explicitly authored strap/rope; pad and terrain response; supported
-material-pair contact; attachment slip/release; a repair comparison; saved
-condition. Catalog matrix rows I05–I09 (`GAME_MATTER_CATALOG.md`); current pinned
-native owners; one bounded construction with physical/error/runtime targets
-chosen before expanding the material list.
+**R2. Rescue cradle / haul load path reusable in Blender — MILESTONE 1 DONE
+October 24** (`integration` 143f781, `integration/evidence/cradle-haul/`;
+independent stitch-load check 0.0 N residual, counterfactual drops
+0.2812/1.0557/0.3475 m, seam asymmetry 41.37 N, offline reopen 0.0 m;
+independent review ACCEPT). Authoring-level release/repair only; force-triggered
+slip (I09) deferred pending a native-law decision; rope/pad/ground are labeled
+surrogates (I06/I07/I08). Remaining R2 later-half: measured silicone, sourced
+rope, calibrated terrain pair, demonstrated metal/cloth contact — each needs
+data or a native-law decision, none gates R3.
 
 **R3. “Bring Them Home” playable slice — OPEN (§6 gate preserved)**
 Investigate a damaged environment → construct/adapt a way through →
