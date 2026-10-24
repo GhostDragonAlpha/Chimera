@@ -617,13 +617,14 @@ def propose(action, targets=None, params=None, purpose='', context=None):
             raise ValueError('Finish or discard pending proposals before creating more')
     _records[record['id']] = record
     if action in ('save_trial','open_trial'):
-        # The visible proposal panel enumerates only the actions it labels;
-        # mirror a scripted save/open trial by message so the shared record
-        # still reaches the human without editing that enum here.
+        # The visible proposal panel enumerates only the actions it labels and
+        # draws the latest record's label unguarded; the record reaches the
+        # human by message only here, and the panel LABELS entry stays owed by
+        # operations_ui.py's owner.
         if hasattr(context.scene,'chimera_operations'):
             settings=context.scene.chimera_operations
             settings.parameters=canonical(params);settings.purpose=purpose.strip()
-            settings.latest=record['id'];settings.message='Proposal ready: '+action
+            settings.message='Proposal ready: '+action
         return copy.deepcopy(record)
     if hasattr(context.scene,'chimera_operations'):
         settings=context.scene.chimera_operations

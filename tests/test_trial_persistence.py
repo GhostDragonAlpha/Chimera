@@ -70,6 +70,12 @@ try:
     check('saved accepted_state_id matches the owner accepted_state_id',saved['state']['accepted_state_id']==saved_id==owner['state']['accepted_state_id'])
     check('saved spec equals the owner spec',saved['spec']==owner['spec'])
     check('proposal preview carries the resolved trial path',record['preview']['trial_path']==str(target))
+    panel=getattr(bpy.context.scene,'chimera_operations',None)
+    # The shared panel draws LABELS[latest-record action] unguarded, so a
+    # scripted trial proposal must not move 'latest'; the human sees the message.
+    check('scripted proposal is panel-safe: latest untouched, message mirrored',
+          panel is not None and panel.latest!=record['id'] and 'save_trial' in (panel.message or ''),
+          None if panel is None else (panel.latest,panel.message))
     report['saved_file_sha256']=hashlib.sha256(target.read_bytes()).hexdigest()
 
     fresh()

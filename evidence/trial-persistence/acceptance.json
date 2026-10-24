@@ -101,5 +101,23 @@
     "open_trial in the live window replays the saved document into authoring display; resuming GPU from it is the existing explicit resume path and was not exercised (never start a GPU session in a live Blender window).",
     "The scratch live session's session.json may briefly linger as 'active' after its forced close until its heartbeat expires (10 s freshness window filters it)."
   ],
-  "next_decision": "Commit hash recorded in the task report; lead may land the OPERATIONS.md sentences and the operations_ui LABELS entries with their own files."
+  "next_decision": "Commit hash recorded in the task report; lead may land the OPERATIONS.md sentences and the operations_ui LABELS entries with their own files.",
+  "review_fix": {
+    "review": "Step37 review of commit 1d327d5, verdict ACCEPT-WITH-FIXES; one RAISE accepted by the lead",
+    "raise": "The propose early-return for save_trial/open_trial set settings.latest=record['id']; operations_ui.py:175 draws LABELS[record['action']] unguarded when s.latest is in commands._records, and those actions are absent from LABELS, so opening the Shared Human / AI Operations panel after a scripted propose would crash it with KeyError. The original comment claiming the mirror was 'by message only' was inaccurate while latest was also mutated.",
+    "accepted_fix": {
+      "file": "D:/Chimera-Maintenance/ChimeraStudio/integration/python/chimera_studio/operations.py",
+      "change": "Removed settings.latest=record['id'] from the early-return; kept the parameters/purpose/message mirror and corrected the comment: the record reaches the human by message only and the panel LABELS entry stays owed by operations_ui.py's owner. operations_ui.py itself was not touched (foreign).",
+      "test_added": "tests/test_trial_persistence.py now checks that after propose(save_trial) the scene's chimera_operations.latest is NOT the new record id and the message was mirrored ('scripted proposal is panel-safe: latest untouched, message mirrored')"
+    },
+    "rechecks": {
+      "dedicated_test": "PASS 21/21, exit 0 (.user/test_trial_run2.log)",
+      "existing_lane": "tools/Test-Studio.ps1 default suite PASS, exit 0, 15 PASS lines (.user/test_studio_default2.log)"
+    },
+    "still_owed_by_operations_ui_owner": [
+      "A LABELS/DEFAULTS entry for save_trial/open_trial so the visible panel can propose them from its enum",
+      "A guard (or LABELS fallback) at the operations_ui.py:175 record draw so any future shared action absent from LABELS cannot crash the panel"
+    ],
+    "original_claims_unchanged": true
+  }
 }
