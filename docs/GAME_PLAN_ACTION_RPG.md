@@ -903,8 +903,11 @@ and later expansion never gate the finish line. Update status in place.
 - Shared human/AI one-path operations incl. transport size refusals: DONE
   (`integration/evidence/local-client/`, `integration/evidence/size-refusals/`).
 - Save/reopen a native trial through the shared operations path
-  (`save_trial`/`open_trial`): OPEN — scoped; commit purity blocked on the
-  foreign lane's uncommitted `python/chimera_studio` work.
+  (`save_trial`/`open_trial`): DONE October 24 (`integration` 1d327d5 + fix
+  c30b1ae, `integration/evidence/trial-persistence/`) — headless 21/21 plus a
+  live-client save→reopen round-trip restoring the workshop's accepted state
+  id; panel LABELS/DEFAULTS entries and a draw guard remain owed by
+  `operations_ui.py`'s owner (recorded in the receipt).
 - Apex-weld reaction display: backend DONE physics-verified
   (`integration` b2da149, `integration/evidence/membrane-forces/`);
   Blender-visible half OPEN behind a user-consented repin plus foreign-lane
