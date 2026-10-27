@@ -75,8 +75,11 @@ def main(argv: list) -> int:
             "report_paths": [a["path"] for a in attempts],
         }
 
-    run_seconds = round(sum(float(t.get("elapsed_seconds", 0.0)) for t in timings), 3)
-    run_tokens = sum(int(t.get("tokens", 0)) for t in timings)
+    coordinator = [t for t in timings if t.get("source") != "workflow-script"]
+    scripted = [t for t in timings if t.get("source") == "workflow-script"]
+    run_seconds = round(sum(float(t.get("elapsed_seconds", 0.0)) for t in coordinator), 3)
+    run_tokens = sum(int(t.get("tokens", 0)) for t in coordinator)
+    stage_run_seconds = round(sum(float(t.get("elapsed_seconds", 0.0)) for t in scripted), 3)
     result = {
         "schema": "chimera.matter-metrics.v1",
         "bundle": str(bundle),
@@ -85,6 +88,7 @@ def main(argv: list) -> int:
         "measured_agent_wall_seconds": round(agent_seconds, 3),
         "workflow_run_seconds": run_seconds,
         "workflow_run_tokens": run_tokens,
+        "stage_run_seconds": stage_run_seconds,
         "timings_records": len(timings),
         "not_covered": "host/GPU/gateway resource sampling (matter_observe.py); "
                        "coordinator inference time; between-sample peaks",
