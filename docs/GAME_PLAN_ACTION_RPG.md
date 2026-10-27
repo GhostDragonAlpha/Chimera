@@ -6,6 +6,22 @@ retain its identity, progress, budgets, decisions and child conversations.
 
 ## 0. Mandatory delivery path and reading order
 
+**Operator goal update, 2026-10-26:** build and validate the executable Z Code
+workflow that enables the agents themselves to create games, mechanisms,
+environments and other constructions from simulated matter. Connect the existing
+ontology/databases, DFT evidence and scale reduction, machine learning/local CA
+rules, native physics and Blender. Require spatial understanding before
+implementation, independent physical/Blender tests, recovery from missing
+evidence, retained recipes/tools/tests and demonstrated reuse for a different
+construction. Qwen coordinates; Step 3.7 performs both spatial preparation and
+post-implementation review through actual subagent handoffs. Instructions alone
+do not complete this goal. Preserve sessions and ownership, use one local
+inference agent at a time with the existing GPU handoff, and keep water deferred.
+The [executable workflow record](../tools/zcode/MATTER_WORKFLOW.md) separates
+implemented dispatch/checkpoint checks from the pending real-agent alloy,
+energy-accounting, CA and reuse demonstrations. The original saved Z Code goal
+has not been reset or resumed by this workflow development.
+
 **Build and deliver Chimera through Blender. This applies to Qwen and every
 subagent. Blender is the mandatory authoring, inspection and product-validation
 interface, not an optional viewer attached after engine development.** The current
@@ -221,6 +237,19 @@ to geometry/rendering. Keep current CA/native owners; a trained material-respons
 query is not automatically a CA evolution law. Bind a new coupling only for an
 identified Blender capability with independent checks. The flow-specific water
 continuation implementation does not supply a general cloth/solid interface.
+
+**CA and machine-learning connection, October 26:** develop local rules that
+materialize structure, useful mechanical behavior and energy exchanges through
+the existing ontology recipes and native owners. The first implemented component
+is the [learned matter rule lab](../../ChimeraStudio/integration/MATTER_RULE_LEARNING.md):
+a source-bound local elastic-energy fit, physical tetrahedral neighborhoods and
+Blender inspection of the saved alloy construction. Its native energy/force and
+save/reopen checks are scoped to this offline component. Function-conditioned
+structure learning, temporal CA updates and the complete native port-work ledger
+remain required; a fitted constitutive response does not close those steps. The
+linked implementation sequence preserves the active haul assignment and current
+agent work. Its additive ontology object is a checked proposal, not a rewrite of
+the graph used by the running agents.
 
 ### 11.5 Construction is a conservative topology transaction
 
@@ -514,6 +543,17 @@ The original increment records the [queryable design](../tools/science_funnel/da
 and checked ontology additions. Its first bounded implementation is now recorded
 in §11.21.13; the original design and two contact-enabled assets are preserved.
 
+**Connected to learned local rules, October 26:** the Blender matter-rule lab
+now replays the existing solid-alloy source route and retains phase-level DFT
+lineage. Six routes use DFT-derived elastic tensors, including JARVIS JVASP-1075
+and JVASP-8222; one uses measured nanoindentation data. Proxies and authored
+baselines retain their labels. The implemented path is DFT-derived properties
+through phase reduction, alloy/native response and learned cell energy. Raw
+electron-density grids, new DFT jobs, temperature-dependent atomistic response
+and learned growth/time evolution are still separate required capabilities.
+The [DFT connection and calculation-bundle contract](../../ChimeraStudio/integration/MATTER_RULE_LEARNING.md#dft-supplies-the-microscopic-material-evidence)
+states the inputs, source identities, density meanings and energy references.
+
 #### 11.21.12 Accumulating standardized tests for matter features
 
 **Operator direction:** build a growing library of reference experiments, like
@@ -725,6 +765,161 @@ budget, and derive the matter catalog/interaction matrix from §11.21.14.
 
 ### 11.22 Peer-agent development: deliver the game, preserve the science
 
+**Executable matter workflow (2026-10-26, in progress).** The opt-in controller
+`tools/zcode/matter_workflow.py` and `matter_hook.py` binds a request to a native
+lead session, enforces ready dependencies/profiles, records terminal child
+reports, routes missing evidence to research or bounded experiments, dispatches frozen tests and requires
+Step before implementation and afterward. Native Agent/SendMessage preserves
+distinct Qwen and Step models. Installed-CLI mock-endpoint wiring and CPU fault
+tests pass; these are not real model or Blender qualification. Remaining work and
+evidence are in [MATTER_WORKFLOW.md](../tools/zcode/MATTER_WORKFLOW.md).
+For a new physical capability, a separate implementation-profile task authors
+tests after spatial/source understanding; Step approves the exact proposal before
+construction implementation. The original acceptance remains fixed. The private
+real-run entry point is `tools/zcode/matter_setup.py`; the first alloy request is
+running in `Runtime/zcode-matter-workflow-20261026/alloy-real-01` under the workspace
+root. Its checkpoint records actual progress; no completed physical or reuse
+demonstration is claimed. Production agent definitions and sessions are unchanged.
+
+New requests can enter through `matter_setup.py prepare-intent` with literal user
+text and an operating envelope. Actual native Step roles supply conceptual 3D
+design and separate specification review before the controller freezes a request.
+Empirical gaps become dependencies; measurements needing the future construction
+become explicit acceptance tests. Immutable clarification and bounded report
+repair retain the same child and prior evidence. Installed-CLI intake wiring
+passed with mock responses; real science and successful reuse remain open.
+The real alloy experiment returned measurements, but report references and a
+missed terminal-result retrieval required recovery. The same child is resumed
+with a structural report checker; no measurements or physics were rerun by Codex.
+The report was subsequently accepted structurally and returned to the original
+Step child. Step's first resumed response repeated its earlier missing-evidence
+report without recorded reads of the new measurements and had invalid trailing
+JSON. Its next correction failed similarly. The controller stopped that task;
+tested future dispatches now distinguish accepted dependencies from failed history
+and require Step's cited assessment of the new evidence. One explicit transport
+repair per task preserves the legacy experiment allowance as consumed and refuses
+scientific/test failures. The same Step child has been resumed with this revised
+handoff; scientific acceptance remains open.
+The resumed Step read the accepted experiment report and dependency manifest,
+corrected its own JSON using the report checker, and returned a valid
+`NEEDS_EVIDENCE` report. Qwen dispatched its new question about native contact
+gradient scaling and friction export to the read-only researcher. This verifies
+an actual evidence/recovery handoff; it does not qualify the alloy. Automatic
+format retries now count consecutive invalid reports since a validated terminal
+report, preserving historical failures and consumed explicit repair allowances.
+The research handoff also exposes native fetched-source artifacts and warns when
+the local web tool returns excerpts rather than a complete source. Missing lines
+remain unknown and can trigger bounded source acquisition; source retrieval is
+not physical qualification.
+The research report has now returned a narrower friction question; Qwen dispatched
+analysis of saved measurement arrays before any conditional native rerun. Native
+web observations are archived separately from report claims on future terminal
+handoffs. This improves evidence retention without qualifying the construction.
+That analysis found transient nonzero friction in the saved arrays without a GPU
+rerun. The researcher inspected it and returned READY; Qwen has now resumed the
+original Step child with all three accepted evidence reports. Step's assessment,
+independent test plan and full physical qualification remain pending.
+Its first resumed draft nevertheless repeated the old questions without reading
+the new brief. Native records confirm delivery; the report checker refused the
+missing dependency assessments. Future private attempts now require actual native
+Read access to the current brief/manifest and accepted reports before acting and
+at terminal acceptance. Identical previously read reports can be reused. Expired
+repair instructions are excluded from future briefs while historical records and
+allowances remain intact. The current run is preserved; 105 affected CPU tests
+pass, and actual future-agent use of this new access gate remains to be observed.
+Dependency errors also identify the current pinned assignment and missing report
+paths explicitly; their replay preserves the draft and workflow state. The agent
+still has to inspect and assess those results itself.
+The same child subsequently used the diagnostic and read the missing experiment
+and research reports. Its fifth dispatch returned an accepted `NEEDS_EVIDENCE`
+report reconciling all three dependencies; Qwen then dispatched
+`research-49bf442359` to investigate per-substep slip/velocity export for numerical
+friction-work closure. This is verified evidence routing, not a physical pass.
+The installed native wait matcher now also includes
+`chimera-spatial`, with 15 CPU compatibility checks and a preserved rollback.
+This removes an omitted-role cause of coordinator wakeups for future CLI processes;
+the current process was not restarted, and live future-process timing is unverified.
+Passive activity accounting now separates coordinator/child response receipts,
+pending counters and deduplicated compaction spans. The live replay covers six
+bound sessions and three compactions; 27 combined activity/observation tests pass.
+Response spans include waiting and tools. Full-task/reuse costs remain unqualified
+until delivery; missing compaction inference usage is explicitly unknown.
+Final Step review can now route an implementation correction or additive
+qualification correction after tests pass: preserved evidence -> spatial diagnosis
+-> independently approved extra tests where needed -> implementation -> fresh
+tests -> the same final reviewer. Original acceptance, existing tests and attempt
+limits remain fixed. Recovery after interrupted state saving is covered; actual
+agent use of this correction path is pending. The combined workflow, recovery,
+archival and accounting suite has 145 passes and one host-dependent symlink skip.
+The latest research report was corrected by the same child and returned to Step
+spatial attempt6, which now carries the assignment-access policy. It proposes a
+calculation from saved positions; numerical friction-work closure is still open.
+Future retries also retain native web observations after a rejected structured
+report, using recorded raw-response hashes and explicit rejected-report labeling.
+Historical reports and the current assignment remain unchanged.
+
+The accumulating ontology must preserve each run's exact scientific inputs while
+allowing unrelated new records. The workflow now seals historical graph bytes,
+checks relevant directional dependencies for current reuse, and searches completed
+result descriptors through the existing ontology. Explicit protected inputs and
+independent tests retain their byte checks. Publication of a qualified result and
+a new request finding and using it remain separate acceptance gates; a private
+admission database or a proposed descriptor alone does not establish cumulative
+reuse. See the executable workflow record for the checked APIs and limitations.
+The bound `matter_setup.py publish BUNDLE` command and native completion guidance
+now connect qualified delivery to the existing authored/native graph authority.
+They preserve the sealed run and resume one transaction, refusing changed targets
+or unqualified sources. CPU fixtures pass; actual qualified publication and a
+different construction discovered through it are still required.
+The prepared second demonstration request is
+`Runtime/zcode-matter-workflow-20261026/reuse-pressure-plate-intent.txt` under the
+workspace root: a game pressure plate whose load/release trigger derives from
+native deformation. Step must establish its design and operating domain. It is
+not started; launch depends on qualified publication of the first result. Reuse
+must be demonstrated through actual retained identities and independent Blender
+tests, with measured reductions in repeated work.
+Its prepared `reuse-pressure-plate-acceptance.json` fixes explicit local-rule,
+energy and successful-reuse obligations; `reuse-pressure-plate-entry.json` records
+the unexecuted private Z Code CLI entry. No app-session opt-in is implied by it.
+The existing matter/DFT records also now survive the authored rebuild: 57 current
+objects and 166 relations were preserved exactly in `project_program.json` after
+an isolated owner-build check. The live graph and active agent inputs were left
+byte-identical; this preservation adds no new scientific qualification.
+
+**Implementation routing update (2026-10-26).** The `chimera-maya` role keeps its
+dispatch name and implementation permissions but now uses Qwen IQ4_XS, matching
+the lead's provider, with reasoning enabled. Lead and implementer retain separate
+conversations. Step's spatial preparation and subsequent independent review stay
+in place. `chimera-glm` is an optional read-only second opinion on a concrete
+uncertainty; DeepSeek remains optional. Preserve current child/model identities
+and work. Z Code caches profiles at worker startup, so reload after current work
+finishes to apply the new routing. This change does not restart assignments, reset
+or pause the active saved goal, change provider defaults or introduce warm-ups.
+Continue sequentially through the existing handoff. Runtime definitions and the
+verification record are in `.zcode/agents/` and
+`Runtime/local-ai/qwen-implementer-20261026/` under D:/Chimera-Maintenance.
+
+**Spatial understanding before mathematical implementation (2026-10-25).**
+`chimera-spatial` is a separate agent using the Step model. For interacting 3D
+objects and matter fields, Qwen first supplies it an owned scene/evidence copy,
+existing ontology paths, task purpose and unchanged acceptance criteria. It
+reconstructs coordinate frames, shapes, connections, boundaries, motion and
+deformation; traces actual graph identities/relations; distinguishes observed,
+intended and unknown behavior; and returns a grounded account or precise missing
+evidence. `NEEDS_EVIDENCE` is a successful reasoning outcome when justified, not
+permission to guess or start another speculative implementation. Qwen obtains
+that information and returns it before dependent work. Maya then formulates and
+implements; the existing `chimera-step37` reviews the actual Blender results,
+including whether the earlier spatial interpretation was wrong. Qwen preserves
+the reports, predictions, evidence requests and decisions in the existing cycle
+record and chooses the next action. One agent at a time; no separate warm-up.
+The new agent may write diagnostic scripts/reports in its assigned evidence
+area; it does not repair geometry or change production science/graph records.
+The existing reviewer and all current assignments remain unchanged. This profile
+does not supply missing scene-instance ontology bindings, prove agent reasoning
+quality or resume the paused development goal. Its instructions are
+`D:/Chimera-Maintenance/.zcode/agents/chimera-spatial.md`.
+
 Only the lead may delegate. Every subagent, including Explore, general-purpose, Maya, Step and researchers, works directly and returns a report; it cannot spawn or resume another agent or launch a workflow that delegates. If more expertise is needed, report the question and evidence to Qwen. Use RespondToCoordinator or a final response for reports. Preserve this rule through compression and resume; do not bypass it through a shell/CLI. Qwen alone chooses the next peer.
 
 **Qwen leads:** first gather enough current source, paths and evidence to frame a
@@ -732,7 +927,7 @@ useful assignment. Choose the next Blender outcome, research or implement direct
 when useful, select suitable peers and optimize task size, review and process.
 Stop gathering once the task and uncertainty are clear; avoid another full audit.
 
-**Maya usually implements:** use existing owners, deliver the scoped change and
+**Maya (Qwen-powered role) usually implements:** use existing owners, deliver the scoped change and
 checks, then return a report. **Step is read-only:** inspect supplied files and
 evidence, analyze consequential issues and return findings; no code execution,
 file edits or implementation. A researcher or flexible worker can be chosen when
@@ -747,7 +942,8 @@ the tool's delivery acknowledgement, and gives the user an integrated report.
 
 Qwen may accept, defer or reject Step criticism with reasons based on evidence,
 user value, risk and cost. Only accepted scoped fixes go to implementation.
-No mandatory Step round or agreement veto is added. Actual failed physical checks
+For the bound matter workflow, Step's spatial and final review rounds are required.
+Other scoped tasks retain proportionate review. Actual failed physical checks
 remain failed for that capability. Use focused checks for consequential changes
 and broader regression when the change or a failure justifies it.
 
@@ -854,6 +1050,13 @@ request must not target a guessed session or another construction. Missing/stale
 connections are reported, not bypassed by mutating the engine behind Blender.
 CPU/unit work and owned headless Blender tests remain available when the window
 is closed. Keep UI evidence explicit when the visible path has not been exercised.
+
+**Spatial evidence before geometry tuning.** The existing Blender/native cache
+export now provides ontology references, measured mesh/attachment/motion data and
+labeled views. Use [SCENE_EVIDENCE.md](../../ChimeraStudio/integration/SCENE_EVIDENCE.md)
+for complex contact/deformation debugging, preserving the current assignment and
+unchanged acceptance tests. This is an inspection capability, not a new physical
+law or a completed haul milestone.
 
 **Working loop.** Open → inspect current source/accepted state → edit one supported
 part/material/connection → build or bake with its existing owner → inspect native
@@ -985,7 +1188,23 @@ budgets; catalog growth alone; §12.2 techniques 3–14 research options.
    outcome, evidence, limits and next decision in the existing work record. Update
    this plan's current status in place when the direction/capability changes.
 
-**Current increment (October 23): completed game matter catalog.** The
+**Current workflow increment (October 27):** run the executable agent-led matter
+workflow through the reusable Z Code dynamic workflow
+`.zcode/workflows/matter-construction.dwf.ts`. One run advances one stage
+(`spatial → research → implement → test → review → deliver`) of a
+`chimera.matter-workflow.v1` bundle; Qwen coordinates and selects the stage model
+(Step 3.7 for spatial and independent review, Qwen for the rest), reports are the
+persistent checkpoints, `NEEDS_EVIDENCE` escalates to research, the script re-runs
+the bundle verifier as an independent gate, and delivery is gated on a PASSED
+review. Validation runs on the existing aluminum/stainless/alloy construction in
+`Runtime/zcode-matter-workflow-20261027/alloy-zcode-01` (deformation, contact
+interaction, complete energy accounting, save/reopen, editable construction);
+`alloy-real-01` and all earlier sessions remain preserved and untouched. Actual
+Qwen/Step reports, native/Blender tests, complete energy accounting and retained
+cross-request reuse must establish completion. The earlier game increments below
+retain their evidence and are not a competing assignment for these workflow agents.
+
+**Completed increment (October 23): game matter catalog.** The
 [34-entry roster and 29-scenario interaction matrix](GAME_MATTER_CATALOG.md)
 are linked to the existing ontology, 29 source routes, reusable Blender assets
 and accumulating benchmark registry (§11.21.14). Five initial material roles,
