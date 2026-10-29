@@ -128,17 +128,28 @@ On October 27 the reusable entry became a saved Z Code dynamic workflow,
 `.zcode/workflows/matter-construction.dwf.ts`: one run advances one stage
 (`spatial`, `research`, `implement`, `test`, `review`, `deliver`) of a bundle's
 `flow/request.json` and `flow/reports/` checkpoints, with the coordinator
-selecting Step 3.7 for spatial and independent review and Qwen for the other
-stages. Stage dependencies, the research escalation on `NEEDS_EVIDENCE`, an
+selecting Step 3.7 for spatial, tests and independent review, GLM-5.3-Flash for
+implementation and Qwen for delivery. Stage dependencies, the research escalation on `NEEDS_EVIDENCE`, an
 independent script re-run of the bundle verifier, and delivery gated on a PASSED
 review are enforced by the workflow script; Blender work inside stages still
-goes through this integration's operations and the existing GPU lease. The
-alloy/stainless validation bundle is
-`D:/Chimera-Maintenance/Runtime/zcode-matter-workflow-20261027/alloy-zcode-01`;
-its acceptance covers deformation, contact interaction, complete energy
-accounting, save/reopen and an editable construction. The workflow is saved and
-typechecked with its first spatial stage executing; Blender qualification and
-reuse remain pending actual results.
+goes through this integration's operations and the existing GPU lease. **Validated
+end-to-end October 28–29 on two bundles through this integration's addon
+operations.** The alloy/stainless construction
+`D:/Chimera-Maintenance/Runtime/zcode-matter-workflow-20261027/alloy-zcode-01`
+passed deformation, contact interaction, complete energy accounting, save/reopen
+and editable-construction acceptance through review-2 after one review-caused
+additive correction; its delivered editable .blend is pinned by hash in
+`flow/DELIVERY.md`. The reuse construction
+`Runtime/zcode-matter-workflow-20261027/pressure-plate-zcode-01` (SS304 loader,
+mixed-alloy compliant plate, aluminum frame, deformation-derived game trigger
+with checked return) passed all six acceptance items including `successful_reuse`
+with causal evidence — experiment stage skipped by reusing the alloy's qualified
+force data, implement 20,700 s versus 32,504 s — and its delivered .blend plus
+trigger evaluator reopen and replay offline through this integration. Descriptor
+publication through the existing owner is refused for Z Code bundle format
+(recorded honestly; graph untouched; owner-adapter recorded as follow-up), so
+reuse discovery runs by path+hash pinning. Blender qualification and reuse are
+now established by the receipts in the two bundles, not pending.
 
 ## Product and scope
 
