@@ -28,6 +28,8 @@ def load_reports(bundle: Path) -> dict:
             continue
         try:
             report = json.loads(path.read_text(encoding="utf-8"))
+            if isinstance(report, str):  # review actors may write double-encoded JSON
+                report = json.loads(report)
         except (json.JSONDecodeError, UnicodeDecodeError) as exc:
             reports[match.group(1)].append({"attempt": int(match.group(2)),
                                             "status": "UNREADABLE", "error": str(exc),

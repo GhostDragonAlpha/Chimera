@@ -1188,20 +1188,33 @@ budgets; catalog growth alone; §12.2 techniques 3–14 research options.
    outcome, evidence, limits and next decision in the existing work record. Update
    this plan's current status in place when the direction/capability changes.
 
-**Current workflow increment (October 27):** run the executable agent-led matter
+**Current workflow increment (October 27–29): validated on two constructions.** Run the executable agent-led matter
 workflow through the reusable Z Code dynamic workflow
 `.zcode/workflows/matter-construction.dwf.ts`. One run advances one stage
 (`spatial → research → implement → test → review → deliver`) of a
 `chimera.matter-workflow.v1` bundle; Qwen coordinates and selects the stage model
-(Step 3.7 for spatial and independent review, Qwen for the rest), reports are the
+(Step 3.7 for spatial, tests and independent review; GLM-5.3-Flash for
+implementation; Qwen for delivery), reports are the
 persistent checkpoints, `NEEDS_EVIDENCE` escalates to research, the script re-runs
 the bundle verifier as an independent gate, and delivery is gated on a PASSED
-review. Validation runs on the existing aluminum/stainless/alloy construction in
-`Runtime/zcode-matter-workflow-20261027/alloy-zcode-01` (deformation, contact
-interaction, complete energy accounting, save/reopen, editable construction);
-`alloy-real-01` and all earlier sessions remain preserved and untouched. Actual
-Qwen/Step reports, native/Blender tests, complete energy accounting and retained
-cross-request reuse must establish completion. The earlier game increments below
+review. **Validated end-to-end October 28–29 on two bundles.** The aluminum/stainless/alloy
+construction in `Runtime/zcode-matter-workflow-20261027/alloy-zcode-01` passed
+deformation, contact interaction, complete energy accounting, save/reopen and
+editable-construction acceptance through review-2 (after the review stage FAILED
+test attempt 1 on tolerance discipline and the workflow ran the additive
+correction → re-review loop); its `flow/DELIVERY.md` and `flow/reuse-instructions.md`
+pin the tested .blend by hash. The reuse demo
+`Runtime/zcode-matter-workflow-20261027/pressure-plate-zcode-01` then passed all
+six acceptance items including `successful_reuse` with causal evidence: the
+experiment stage was skipped entirely by reusing the alloy's qualified force data
+(threshold derived from it), spatial took 1 attempt/520 s versus 2/870 s,
+implement 20,700 s versus 32,504 s, with cards, recipe, contact-pair pattern,
+tolerance method and toolchain reused verbatim. Descriptor publication through
+the existing owner is refused for Z Code bundle format (recorded honestly in both
+deliver reports; graph untouched, verified by hash; owner-adapter is a recorded
+follow-up), so reuse discovery runs by path+hash pinning per the reuse
+instructions. `alloy-real-01` and all earlier sessions remain preserved and
+untouched. The earlier game increments below
 retain their evidence and are not a competing assignment for these workflow agents.
 
 **Completed increment (October 23): game matter catalog.** The

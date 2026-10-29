@@ -30,8 +30,9 @@ best model per stage): `spatial` and `review` use Step 3.7
 `implement` uses GLM-5.3-Flash, with DeepSeek Maya-XS
 (`chimera-deepseek-maya-xs/deepseek-v4.1-flash-1017-maya-xs`) for a bounded
 second attempt on difficult geometry/contact/recipe blockers; `test` uses
-Chimera Code Dirk Qwen 27B (`chimera-code-provider/dirk-qwen3.8-27b`) for
-command-driven harness execution; `deliver` uses the session Qwen. This
+Step 3.7 (October 28 operator change: the llama.cpp-side Dirk provider proved
+incompatible with workflow dispatch, and Step's spatial perception suits test
+authoring); `deliver` uses the session Qwen. This
 preserves real role profiles instead of renaming a Qwen actor. Dependencies are enforced by the script (each stage refuses to start
 without its predecessor's accepted status), `NEEDS_EVIDENCE` returns a research
 escalation to the coordinator, the `test` stage re-runs the bundle's
@@ -40,13 +41,28 @@ downgrade a claim, and `deliver` is gated on a `PASSED` review covering every
 acceptance id. GPU work stays behind `run_gpu_job.py`; actors are instructed to
 work only inside their bundle and preserve failures.
 
-Validation runs on the existing aluminum/stainless/alloy construction in
-`Runtime/zcode-matter-workflow-20261027/alloy-zcode-01` (acceptance:
+**Validated end-to-end October 28–29 on two bundles.** The aluminum/stainless/alloy
+construction in `Runtime/zcode-matter-workflow-20261027/alloy-zcode-01` (acceptance:
 deformation, contact interaction, complete energy accounting, save/reopen,
 editable construction; protected inputs byte-identical to `alloy-real-01`,
-which is untouched). The workflow is saved and typechecked and its first
-spatial stage is executing; no physical qualification or reuse is claimed from
-the workflow's existence alone.
+which is untouched) completed all six stages: the review stage FAILED test
+attempt 1 on tolerance discipline (a receipt declared a looser tolerance than
+spatial-2 justified), the workflow ran the additive correction and re-review, and
+review-2 PASSED 5/5 with the reviewer independently recomputing the energy
+residual and re-hashing protected inputs. The reuse demo
+`Runtime/zcode-matter-workflow-20261027/pressure-plate-zcode-01` then passed all
+six acceptance items including `successful_reuse` with causal evidence — the
+experiment stage skipped entirely by reusing the alloy's qualified force data,
+spatial 1 attempt/520 s versus 2/870 s, implement 20,700 s versus 32,504 s.
+Descriptor publication through the existing owner is refused for Z Code bundle
+format (recorded honestly; graph untouched by hash; owner-adapter recorded as
+follow-up), so reuse discovery runs by path+hash pinning. Two workflow defects
+were found and fixed during validation: `files.glob` walks the whole workspace
+(90–120 s per call) and was replaced by a scoped directory listing, and review
+actors write double-encoded JSON reports, which the report parser now normalizes.
+`matter_metrics.py` reads the bundles for the time/rework/resource measurements.
+No physical qualification or reuse is claimed from the workflow's existence
+alone; the claims above rest on the receipts in the two bundles.
 
 The request front door is now `matter_setup.py prepare-intent BUNDLE --intent
 UTF8_TEXT_FILE --mode new` (or `--mode existing --scene ORIGINAL_BLEND`). Optional
