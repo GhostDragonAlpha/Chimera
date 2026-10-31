@@ -159,7 +159,16 @@ passed review-2, the delivered editable .blend reopens and replays through this
 integration with the gate at 28/28 checks, and the terrain-support statics was
 closed by a force-balance reconstruction after the recorded contact rows proved
 to structurally omit cloth-FEM support pairs — the missing per-substep
-cloth-FEM barrier capture in the native owner is recorded as a follow-up.
+cloth-FEM barrier capture in the native owner is recorded as a follow-up. The
+publication owner was adapted for bundle format on October 31:
+`matter_publication.py` now accepts a bundle through `matter_bundle_adapter.py`
+(routing-only, independently reviewed, 372 tests passing) with every guard
+running unchanged on a staged owner-format view; a smoke `prepare` on the alloy
+bundle passed all integrity, pin and scope guards, then correctly refused at
+the retention guard — no delivered bundle yet carries GraphWorkflowControl
+admission and lookup receipts — so descriptor publication stays blocked and
+reuse discovery still runs by path+hash pinning until bundle owners produce
+those artifacts.
 
 ## Product and scope
 
