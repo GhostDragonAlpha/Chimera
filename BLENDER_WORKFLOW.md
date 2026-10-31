@@ -149,7 +149,17 @@ trigger evaluator reopen and replay offline through this integration. Descriptor
 publication through the existing owner is refused for Z Code bundle format
 (recorded honestly; graph untouched; owner-adapter recorded as follow-up), so
 reuse discovery runs by path+hash pinning. Blender qualification and reuse are
-now established by the receipts in the two bundles, not pending.
+now established by the receipts in the two bundles, not pending. A third run
+October 29–31 delivered the rescue cradle/haul load path
+`Runtime/zcode-matter-workflow-20261029/rescue-cradle-zcode-01` (catalog rows
+I05–I09: stone-ledge surrogate, silicone pad, cloth sling stitched to aluminum
+rails, stainless load, cloth haul rope, slip/release at a measured 9.0 N
+threshold, repair comparison, saved condition): all eight acceptance items
+passed review-2, the delivered editable .blend reopens and replays through this
+integration with the gate at 28/28 checks, and the terrain-support statics was
+closed by a force-balance reconstruction after the recorded contact rows proved
+to structurally omit cloth-FEM support pairs — the missing per-substep
+cloth-FEM barrier capture in the native owner is recorded as a follow-up.
 
 ## Product and scope
 
