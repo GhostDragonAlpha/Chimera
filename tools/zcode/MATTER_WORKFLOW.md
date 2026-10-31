@@ -117,6 +117,31 @@ persistent directory so published descriptors stay verifiable. The tooling
 tree remains untracked in the sync branch by existing convention; this
 paragraph is the committed record.
 
+**First descriptor published through the adapter October 31 (discoverable
+knowledge loop closed).** `alloy-zcode-01` gained real owner-format retention
+through an additive workflow chain — implement-2 created the artifacts
+(GraphWorkflowControl database with a real `graph_apply` admission receipt,
+asset/procedure lookup receipts; three requested graph IDs that did not exist
+were honestly not fabricated), test-3 independently reproduced
+`verified_retention`, review-3 PASSED all five original acceptance items plus
+`retention_publication`, and deliver-2 carried `details.retention`. The first
+publication attempt — run by the deliver actor inside its own ask — published
+a permanently stale descriptor, because the workflow rewrites the stage report
+and appends the timing entry after the actor returns; the lead diagnosed the
+drift (13/14 view pins; `source_completed_at` shift), rolled the publication
+back cleanly from the transaction's owner-preserved before bytes, and
+republished after the run settled with a persistent view root
+(`CHIMERA_MATTER_BUNDLE_VIEW_ROOT`, required identically for prepare and
+apply). Descriptor `source.matter_result.v1.fd8507abcd3eb48d…` now passes the
+plan's acceptance: `discover()` by function with no artifact path returns it
+as the single hit with `current_eligibility` true, and
+`prepare_discovered_reuse`/`verify_discovered_reuse` bind the retained asset
+and procedure (`verified_discovered_reuse_source`). Full sequence and lessons:
+`flow/evidence/lead-republication-1/receipt.json`. The authority graph and
+program working copies carry another session's uncommitted changes and are
+deliberately not committed; the transaction before/after bytes are the record.
+Blender instantiation of the discovered reuse is the next increment.
+
 The request front door is now `matter_setup.py prepare-intent BUNDLE --intent
 UTF8_TEXT_FILE --mode new` (or `--mode existing --scene ORIGINAL_BLEND`). Optional
 `--evidence`, `--protect`, `--ontology`, `--hardware` and `--acceptance-floor`
