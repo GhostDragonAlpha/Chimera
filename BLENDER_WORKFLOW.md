@@ -163,12 +163,17 @@ cloth-FEM barrier capture in the native owner is recorded as a follow-up. The
 publication owner was adapted for bundle format on October 31:
 `matter_publication.py` now accepts a bundle through `matter_bundle_adapter.py`
 (routing-only, independently reviewed, 372 tests passing) with every guard
-running unchanged on a staged owner-format view; a smoke `prepare` on the alloy
-bundle passed all integrity, pin and scope guards, then correctly refused at
-the retention guard — no delivered bundle yet carries GraphWorkflowControl
-admission and lookup receipts — so descriptor publication stays blocked and
-reuse discovery still runs by path+hash pinning until bundle owners produce
-those artifacts.
+running unchanged on a staged owner-format view. The same day the first
+descriptor was published through it: `alloy-zcode-01` gained real retention
+artifacts (GraphWorkflowControl admission receipt, asset/procedure lookup
+receipts) through an additive implement→test→review→deliver chain, and after
+one honestly diagnosed and cleanly rolled-back premature publication, the lead
+republished descriptor `source.matter_result.v1.fd8507abcd3eb48d…`. A fresh
+`discover()` by function with no artifact path now finds it as the single
+eligible hit, and `prepare_discovered_reuse`/`verify_discovered_reuse` bind
+its retained .blend and reuse procedure — Blender instantiation of the
+discovered reuse is the next increment. Sequence and lessons:
+`Runtime/zcode-matter-workflow-20261027/alloy-zcode-01/flow/evidence/lead-republication-1/receipt.json`.
 
 ## Product and scope
 
