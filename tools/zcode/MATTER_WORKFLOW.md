@@ -89,6 +89,34 @@ gate passed end-to-end (exit 0) in test-2. Metrics: 13 stage runs, 145,210 s
 stage wall, 65,984 s agent wall, rework spatial 3 / implement 3 / test 1 /
 review 1.
 
+**Publication owner adapted for bundle format October 31 (first recorded
+connection closed).** `matter_publication.py prepare`/`apply` now detect a
+dynamic-workflow bundle and route it through `matter_bundle_adapter.py`, which
+materializes a deterministic owner-format view (request.json, state.json,
+sealed ontology snapshot) in a staging directory outside the bundle — the
+bundle is never written — so every existing guard (`matter_reuse._completed`,
+integrity, test pins, `validate_retention`, scope comparison, the publication
+transaction) runs unchanged on the mapped view. Independent review returned
+ACCEPT-WITH-FIXES (routing-only; no guard bypassed; `details.retention` copied
+verbatim only when present, never fabricated; post-cleanup discovery fails
+closed, never falsely current); the one review fix — a dedicated bundle test
+for the verify.bat gate — was applied, and the zcode suite passes 372 tests
+(1 skipped, 101 subtests). A smoke `prepare` on `alloy-zcode-01` passed 9/9
+protected pins, test pins, review coverage, blend hash, ontology-ID
+intersection and scope currency, then refused at `validate_retention` with
+`details.retention required` and the authority graph byte-identical: the
+honest finding is that no delivered bundle yet carries owner-format retention
+artifacts (a quiescent GraphWorkflowControl database with a real
+`graph_apply` admission receipt plus asset/procedure lookup receipts), so
+descriptor publication stays blocked until bundle owners produce them;
+`rescue-cradle-zcode-01` refuses earlier because its protected GAME_PLAN pin
+predates the milestone paragraph recorded in the plan afterward — the
+integrity guard correctly detects that drift. Staging defaults to `%TEMP%`;
+at actual apply time `CHIMERA_MATTER_BUNDLE_VIEW_ROOT` must point at a
+persistent directory so published descriptors stay verifiable. The tooling
+tree remains untracked in the sync branch by existing convention; this
+paragraph is the committed record.
+
 The request front door is now `matter_setup.py prepare-intent BUNDLE --intent
 UTF8_TEXT_FILE --mode new` (or `--mode existing --scene ORIGINAL_BLEND`). Optional
 `--evidence`, `--protect`, `--ontology`, `--hardware` and `--acceptance-floor`
