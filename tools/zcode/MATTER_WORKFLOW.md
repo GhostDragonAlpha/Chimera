@@ -64,6 +64,31 @@ actors write double-encoded JSON reports, which the report parser now normalizes
 No physical qualification or reuse is claimed from the workflow's existence
 alone; the claims above rest on the receipts in the two bundles.
 
+**Third production run October 29–31: rescue cradle/haul load path.**
+`Runtime/zcode-matter-workflow-20261029/rescue-cradle-zcode-01` (catalog rows
+I05–I09: stone-ledge surrogate, silicone pad, cloth sling stitched to aluminum
+rails, stainless load, cloth haul rope, slip/release/repair, saved condition)
+passed all eight acceptance items through review-2 after two genuine physics
+escalations exercised the correction loops: an unreachable frozen threshold
+(50 N authored without measurement; measured peak 7.25 N) was re-derived to
+9.0 N from the measured load distribution in spatial-2 and re-measured
+additively in implement-2; and a review-1 FAILED terrain_support item — the
+recorded contact rows structurally omit the cloth-FEM support pair (Newton-3
+violation 0.814 N) — was closed by the experiment stage's per-vertex
+quasi-static force-balance reconstruction from owned arrays (load support
+within relative 1.16e-5 of weight; validated by rope cross-check, inertia
+error bounds and threshold stability), frozen in spatial-4 and independently
+reproduced by the tester. The frame-7 energy residual stays an explicit
+unknown under the declared missing terms; direct per-substep cloth-FEM barrier
+capture in the native owner is the recorded follow-up. Two more workflow
+defects were found and fixed: actors write Python-style list repeats
+(`[0.006] * 9`) into JSON reports, which the report parser now expands, and
+the verify.bat gate was invoked with a relative forward-slash path that
+`cmd.exe /c` cannot run — it now passes an absolute backslash path, and the
+gate passed end-to-end (exit 0) in test-2. Metrics: 13 stage runs, 145,210 s
+stage wall, 65,984 s agent wall, rework spatial 3 / implement 3 / test 1 /
+review 1.
+
 The request front door is now `matter_setup.py prepare-intent BUNDLE --intent
 UTF8_TEXT_FILE --mode new` (or `--mode existing --scene ORIGINAL_BLEND`). Optional
 `--evidence`, `--protect`, `--ontology`, `--hardware` and `--acceptance-floor`
